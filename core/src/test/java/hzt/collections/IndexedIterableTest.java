@@ -1,5 +1,6 @@
 package hzt.collections;
 
+import hzt.sequences.Sequence;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ class IndexedIterableTest {
     void testForEachIndexed() {
         List<IndexedValue<Integer>> list = new ArrayList<>();
 
-        IterableX.rangeClosed(1, 100, this::isEven).forEachIndexedValue(list::add);
+        Sequence.rangeClosed(1, 100, this::isEven).forEachIndexedValue(list::add);
 
         System.out.println("list = " + list);
 

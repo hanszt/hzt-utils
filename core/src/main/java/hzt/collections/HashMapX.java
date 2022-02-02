@@ -89,11 +89,6 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
         return MutableSetX.of(map.entrySet());
     }
 
-    @Override
-    public Iterable<Entry<K, V>> iterable() {
-        return map.entrySet();
-    }
-
     @NotNull
     @Override
     public Iterator<Map.Entry<K, V>> iterator() {
@@ -119,7 +114,7 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
 
     @Override
     public String toString() {
-        return "MapX{" +
+        return "HashMapX{" +
                 "map=" + map +
                 '}';
     }

@@ -3,7 +3,6 @@ package hzt.collections;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.NavigableSet;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -29,12 +28,6 @@ public interface NavigableSetX<E> extends NavigableSet<E>, MutableSetX<E> {
     @SafeVarargs
     static <E, R extends Comparable<R>> NavigableSetX<E> of(Function<E, R> selector, E first, E... others) {
         return new TreeSetX<>(selector, first, others);
-    }
-
-    @NotNull
-    @Override
-    default Iterator<E> iterator() {
-        return iterable().iterator();
     }
 
     @Override

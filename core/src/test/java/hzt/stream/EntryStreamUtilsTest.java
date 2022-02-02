@@ -1,4 +1,4 @@
-package hzt.tuples;
+package hzt.stream;
 
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Book;

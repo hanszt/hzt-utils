@@ -1,6 +1,7 @@
 package hzt.collections;
 
 import hzt.function.Transformable;
+import hzt.iterables.IterableX;
 
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;

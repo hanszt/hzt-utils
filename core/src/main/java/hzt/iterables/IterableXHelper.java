@@ -1,5 +1,7 @@
-package hzt.collections;
+package hzt.iterables;
 
+import hzt.collections.IndexedValue;
+import hzt.collections.MutableListX;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -9,19 +11,18 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
-import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
 
-final class IterableXHelper {
+public final class IterableXHelper {
 
     private IterableXHelper() {
     }
     static <T, R> MutableListX<T> filterToMutableListBy(Iterable<T> iterable,
-            Function<? super T, ? extends R> function, Predicate<R> predicate, Predicate<R> nullPredicate) {
-        MutableListX<T> list = MutableListX.<T>empty();
+                                                        Function<? super T, ? extends R> function,
+                                                        Predicate<R> predicate,
+                                                        Predicate<R> nullPredicate) {
+        MutableListX<T> list = MutableListX.empty();
         for (T t : iterable) {
             if (t != null) {
                 final R r = function.apply(t);
@@ -137,7 +138,7 @@ final class IterableXHelper {
         return Optional.empty();
     }
 
-    static <T> MutableListX<T> dropToMutableListWhile(Iterable<T> iterable, Predicate<T> predicate, boolean exclusive) {
+    static <T> MutableListX<T> skipToMutableListWhile(Iterable<T> iterable, Predicate<T> predicate, boolean exclusive) {
         boolean yielding = false;
         MutableListX<T> list = MutableListX.empty();
         for (T item : iterable) {
@@ -168,61 +169,21 @@ final class IterableXHelper {
         return new NoSuchElementException("No value present");
     }
 
-    static <T> int binarySearch(
-            int size, IntFunction<T> midValExtractor, int fromIndex, int toIndex, ToIntFunction<T> comparison) {
-        rangeCheck(size, fromIndex, toIndex);
-
-        int low = fromIndex;
-        int high = toIndex - 1;
-
-        while (low <= high) {
-            final int mid = (low + high) >>> 1;
-            final T midVal = midValExtractor.apply(mid);
-            final int cmp = comparison.applyAsInt(midVal);
-
-            if (cmp < 0) {
-                low = mid + 1;
-            } else if (cmp > 0) {
-                high = mid - 1;
-            } else {
-                return mid; // key found
+    public static <T> Iterator<IndexedValue<T>> indexedIterator(Iterator<T> iterator) {
+        return new Iterator<IndexedValue<T>>() {
+            private int index = 0;
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
             }
-        }
-        return -(low + 1);  // key not found
-    }
-
-    static int binarySearch(
-            int size, IntUnaryOperator midValExtractor, int fromIndex, int toIndex, IntUnaryOperator comparison) {
-        rangeCheck(size, fromIndex, toIndex);
-
-        int low = fromIndex;
-        int high = toIndex - 1;
-
-        while (low <= high) {
-            final int mid = (low + high) >>> 1;
-            final int midVal = midValExtractor.applyAsInt(mid);
-            final int cmp = comparison.applyAsInt(midVal);
-
-            if (cmp < 0) {
-                low = mid + 1;
-            } else if (cmp > 0) {
-                high = mid - 1;
-            } else {
-                return mid; // key found
+            @Override
+            public IndexedValue<T> next() {
+                int prevIndex = index;
+                if (prevIndex < 0) {
+                    throw new IllegalStateException("indexed iterator index overflow");
+                }
+                return new IndexedValue<>(index++, iterator.next());
             }
-        }
-        return -(low + 1);  // key not found
-    }
-
-    private static void rangeCheck(int size, int fromIndex, int toIndex) {
-        if (fromIndex > toIndex) {
-            throw new IllegalArgumentException("fromIndex (" + fromIndex + ") is greater than toIndex (" + toIndex + ").");
-        }
-        if (fromIndex < 0) {
-            throw new IndexOutOfBoundsException("fromIndex (" + fromIndex + ") is less than zero.");
-        }
-        if (toIndex > size) {
-            throw new IndexOutOfBoundsException("toIndex (" + toIndex + ") is greater than size (" + size + ").");
-        }
+        };
     }
 }

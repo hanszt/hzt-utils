@@ -1,14 +1,15 @@
-package hzt.collectors;
+package hzt.tuples;
 
 import java.util.Objects;
 
 public final class QuadTuple<R1, R2, R3, R4> {
+
     private final R1 first;
     private final R2 second;
     private final R3 third;
     private final R4 fourth;
 
-    QuadTuple(R1 first, R2 second, R3 third, R4 fourth) {
+    private QuadTuple(R1 first, R2 second, R3 third, R4 fourth) {
         this.first = first;
         this.second = second;
         this.third = third;
@@ -52,6 +53,10 @@ public final class QuadTuple<R1, R2, R3, R4> {
                 "second=" + second + ", " +
                 "third=" + third + ", " +
                 "fourth=" + fourth + ']';
+    }
+
+    public static <A, B, C, D> QuadTuple<A, B, C, D> of(A first, B second, C third, D fourth) {
+        return new QuadTuple<>(first, second, third, fourth);
     }
 
 }

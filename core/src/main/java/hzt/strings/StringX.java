@@ -1,13 +1,13 @@
 package hzt.strings;
 
-import hzt.collections.IterableX;
 import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.collections.MutableMapX;
 import hzt.function.It;
-import hzt.numbers.IntX;
 import hzt.function.Transformable;
+import hzt.iterables.IterableX;
+import hzt.numbers.IntX;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
@@ -96,38 +96,27 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return StringX.of(charArray);
     }
 
-    @Override
-    public Iterable<Character> iterable() {
-        return charIterable(string);
-    }
-
-    private Iterable<Character> charIterable(String string) {
-        final class CharIterable implements Iterable<Character> {
+    @NotNull
+    private Iterator<Character> charIterator() {
+        return new Iterator<Character>() {
 
             private int index = 0;
             private final char[] charArray = string.toCharArray();
-            @NotNull
+
             @Override
-            public Iterator<Character> iterator() {
-                return new Iterator<Character>() {
-
-                    @Override
-                    public boolean hasNext() {
-                        return index < charArray.length;
-                    }
-
-                    @Override
-                    public Character next() {
-                        int prevIndex = index;
-                        if (prevIndex >= charArray.length) {
-                            throw new NoSuchElementException();
-                        }
-                        return charArray[index++];
-                    }
-                };
+            public boolean hasNext() {
+                return index < charArray.length;
             }
-        }
-        return new CharIterable();
+
+            @Override
+            public Character next() {
+                int prevIndex = index;
+                if (prevIndex >= charArray.length) {
+                    throw new NoSuchElementException();
+                }
+                return charArray[index++];
+            }
+        };
     }
 
     @Override
@@ -436,5 +425,11 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
     @Override
     public StringX get() {
         return this;
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Character> iterator() {
+        return charIterator();
     }
 }

@@ -1,4 +1,4 @@
-package hzt.collectors;
+package hzt.statistics;
 
 import java.util.DoubleSummaryStatistics;
 
@@ -20,7 +20,7 @@ public final class DoubleStatistics extends DoubleSummaryStatistics {
         sumOfSquareWithCompensation(squareValue);
     }
 
-    DoubleStatistics combine(DoubleStatistics other) {
+    public DoubleStatistics combine(DoubleStatistics other) {
         super.combine(other);
         simpleSumOfSquare += other.simpleSumOfSquare;
         sumOfSquareWithCompensation(other.sumOfSquare);

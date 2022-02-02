@@ -1,5 +1,8 @@
 package hzt.collectors;
 
+import hzt.statistics.BigDecimalStatistics;
+import hzt.statistics.BigDecimalSummaryStatistics;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;

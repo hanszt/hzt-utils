@@ -1,8 +1,7 @@
-package hzt.stream.collectors;
+package hzt.collectors;
 
-import hzt.collectors.BigDecimalSummaryStatistics;
-import hzt.collectors.CollectorsX;
-import hzt.collectors.DoubleStatistics;
+import hzt.statistics.BigDecimalSummaryStatistics;
+import hzt.statistics.DoubleStatistics;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;

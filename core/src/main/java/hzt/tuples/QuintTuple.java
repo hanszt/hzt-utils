@@ -1,4 +1,4 @@
-package hzt.collectors;
+package hzt.tuples;
 
 import java.util.Objects;
 
@@ -10,7 +10,7 @@ public final class QuintTuple<R1, R2, R3, R4, R5> {
     private final R4 fourth;
     private final R5 fifth;
 
-    QuintTuple(R1 first, R2 second, R3 third, R4 fourth, R5 fifth) {
+    private QuintTuple(R1 first, R2 second, R3 third, R4 fourth, R5 fifth) {
         this.first = first;
         this.second = second;
         this.third = third;
@@ -61,6 +61,10 @@ public final class QuintTuple<R1, R2, R3, R4, R5> {
                 "third=" + third + ", " +
                 "fourth=" + fourth + ", " +
                 "fifth=" + fifth + ']';
+    }
+
+    public static <A, B, C, D, E> QuintTuple<A, B, C, D, E> of(A first, B second, C third, D fourth, E fifth) {
+        return new QuintTuple<>(first, second, third, fourth, fifth);
     }
 
 }

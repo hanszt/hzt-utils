@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -60,7 +61,7 @@ final class ArrayListX<T> implements MutableListX<T> {
 
     @Override
     public int binarySearch(int fromIndex, int toIndex, ToIntFunction<T> comparison) {
-        return IterableXHelper.binarySearch(size(), list::get, fromIndex, toIndex, comparison);
+        return ArrayHelper.binarySearch(size(), list::get, fromIndex, toIndex, comparison);
     }
 
     @Override
@@ -83,9 +84,10 @@ final class ArrayListX<T> implements MutableListX<T> {
         return list.contains(o);
     }
 
+    @NotNull
     @Override
-    public Iterable<T> iterable() {
-        return list;
+    public Iterator<T> iterator() {
+        return list.iterator();
     }
 
     @NotNull

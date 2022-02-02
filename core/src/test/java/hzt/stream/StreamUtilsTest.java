@@ -1,6 +1,5 @@
-package hzt.tuples;
+package hzt.stream;
 
-import hzt.stream.StreamUtils;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Book;
 import org.hzt.test.model.Museum;

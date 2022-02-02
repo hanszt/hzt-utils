@@ -1,5 +1,6 @@
 package hzt.collections;
 
+import hzt.iterables.IterableX;
 import org.junit.jupiter.api.Test;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;

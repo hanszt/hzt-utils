@@ -1,8 +1,13 @@
-package hzt.collections;
+package hzt.iterables;
 
+import hzt.collections.ListX;
+import hzt.collections.MapX;
+import hzt.collections.MutableListX;
+import hzt.collections.MutableMapX;
+import hzt.collections.SetX;
 import hzt.collectors.BigDecimalCollectors;
-import hzt.collectors.BigDecimalSummaryStatistics;
-import hzt.collectors.TriTuple;
+import hzt.sequences.Sequence;
+import hzt.statistics.BigDecimalSummaryStatistics;
 import hzt.function.It;
 import hzt.strings.StringX;
 import hzt.test.Generator;
@@ -50,7 +55,7 @@ import static hzt.collectors.CollectorsX.toMapX;
 import static java.util.stream.Collectors.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class IterableXTest {
+public class IterableXTest {
 
     @Test
     void testMappingToSet() {
@@ -395,12 +400,12 @@ class IterableXTest {
     }
 
     @Test
-    void testLimit() {
+    void testTake() {
         final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final List<Museum> expected = museumList.stream().limit(3).collect(Collectors.toList());
 
-        final IterableX<Museum> actual = museumList.limit(3);
+        final IterableX<Museum> actual = museumList.take(3);
 
         System.out.println("actual = " + actual);
 
@@ -521,7 +526,7 @@ class IterableXTest {
 
         list.forEach(System.out::println);
 
-        final MutableListX<Integer> integers = list.dropLastToMutableListWhile(i -> i != 10);
+        final MutableListX<Integer> integers = list.skipLastToMutableListWhile(i -> i != 10);
 
         System.out.println("integers = " + integers);
 
@@ -534,7 +539,7 @@ class IterableXTest {
 
         list.forEach(System.out::println);
 
-        final IterableX<Integer> integers = list.dropWhile(i -> i != 5);
+        final IterableX<Integer> integers = list.skipWhile(i -> i != 5);
 
         System.out.println("integers = " + integers);
 
@@ -628,29 +633,6 @@ class IterableXTest {
         System.out.println("actual = " + actual);
 
         assertEquals(expected, actual);
-    }
-
-    @Test
-    void testLargeTransform() {
-        final MutableListX<BigDecimal> bigDecimals = IterableX.range(0, 100_000)
-                .filter(integer -> integer % 2 == 0)
-                .toDescendingSortedMutableListOf(BigDecimal::valueOf);
-
-        assertEquals(50_000, bigDecimals.size());
-    }
-
-    @Test
-    void testRange() {
-        assertArrayEquals(
-                IntStream.range(5, 10).toArray(),
-                IterableX.range(5, 10).toIntArrayOf(Integer::intValue));
-    }
-
-    @Test
-    void testRangeClosed() {
-        assertArrayEquals(
-                IntStream.rangeClosed(5, 10).toArray(),
-                IterableX.rangeClosed(5, 10).toIntArrayOf(Integer::intValue));
     }
 
     @Test
@@ -1015,7 +997,7 @@ class IterableXTest {
         //arrange
         final ListX<Painting> paintingList = ListX.of(TestSampleGenerator.createPaintingList());
 
-        final TriTuple<Map<Boolean, List<Painter>>, IntSummaryStatistics, Long> expected = paintingList.stream()
+        final Triple<Map<Boolean, List<Painter>>, IntSummaryStatistics, Long> expected = paintingList.stream()
                 .collect(branching(
                         partitioningBy(Painting::isInMuseum, mapping(Painting::painter, toList())),
                         summarizingInt(Painting::ageInYears),
@@ -1035,5 +1017,28 @@ class IterableXTest {
                 () -> assertEquals(expectedStats.getMax(), actualStats.getMax()),
                 () -> assertEquals(expected.third(), actual.third())
         );
+    }
+
+    @Test
+    void testDifferenceBetweenIterableXAndSequence() {
+        final ListX<Integer> range = Sequence.range(0, 20).toListX();
+
+        final ListX<String> strings = range/*.asSequence()*/
+                .filter(i -> i % 2 == 0)
+                .map(IterableXTest::compute200Millis)
+                .onEachOf(String::length, System.out::println)
+                .takeToMutableListWhileInclusive(s -> s.length() < 6);
+
+        assertEquals(6, strings.size());
+    }
+
+    public static String compute200Millis(Integer integer) {
+        try {
+            Thread.sleep(100);
+            return "val " + integer;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return "error " + integer;
+        }
     }
 }

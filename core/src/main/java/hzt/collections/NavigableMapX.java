@@ -2,7 +2,6 @@ package hzt.collections;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.function.Function;
@@ -32,12 +31,6 @@ public interface NavigableMapX<K, V> extends NavigableMap<K, V>, MutableMapX<K, 
     static <K, V, R extends Comparable<R>> NavigableMapX<K, V> ofEntries(
             Function<K, R> selector, Map.Entry<K, V> first, Map.Entry<K, V>... others) {
         return new TreeMapX<>(selector, first, others);
-    }
-
-    @NotNull
-    @Override
-    default Iterator<Entry<K, V>> iterator() {
-        return iterable().iterator();
     }
 
     @Override

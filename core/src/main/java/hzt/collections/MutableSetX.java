@@ -1,10 +1,8 @@
 package hzt.collections;
 
 import hzt.function.Transformable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -33,12 +31,6 @@ public interface MutableSetX<E> extends Set<E>, SetX<E>, Transformable<MutableSe
     @SafeVarargs
     static <E> MutableSetX<E> of(E... values) {
         return new HashSetX<>(values);
-    }
-
-    @NotNull
-    @Override
-    default Iterator<E> iterator() {
-        return iterable().iterator();
     }
 
     @Override

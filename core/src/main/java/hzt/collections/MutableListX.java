@@ -5,7 +5,6 @@ import hzt.function.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -86,11 +85,6 @@ public interface MutableListX<E> extends List<E>, ListX<E>, Transformable<Mutabl
      *
      * @return an iterator over the elements in this list in proper sequence
      */
-    @NotNull
-    @Override
-    default Iterator<E> iterator() {
-        return iterable().iterator();
-    }
 
     @Override
     default Stream<E> stream() {

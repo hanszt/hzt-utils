@@ -8,8 +8,12 @@ import hzt.collections.SetX;
 import hzt.function.QuadFunction;
 import hzt.function.QuintFunction;
 import hzt.function.TriFunction;
+import hzt.statistics.DoubleStatistics;
 import hzt.stream.StreamUtils;
 import hzt.tuples.Pair;
+import hzt.tuples.QuadTuple;
+import hzt.tuples.QuintTuple;
+import hzt.tuples.Triple;
 
 import java.util.AbstractMap;
 import java.util.Collection;
@@ -333,10 +337,10 @@ public final class CollectorsX {
     }
 
     public static <T, R1, R2, R3>
-    Collector<T, ?, TriTuple<R1, R2, R3>> branching(Collector<? super T, ?, R1> downstream1,
+    Collector<T, ?, Triple<R1, R2, R3>> branching(Collector<? super T, ?, R1> downstream1,
                                                     Collector<? super T, ?, R2> downstream2,
                                                     Collector<? super T, ?, R3> downstream3) {
-        return branching0(downstream1, downstream2, downstream3, TriTuple::new);
+        return branching0(downstream1, downstream2, downstream3, Triple::of);
     }
 
     private static <T, A1, A2, A3, R1, R2, R3, R>
@@ -440,7 +444,7 @@ public final class CollectorsX {
                                                          Collector<? super T, ?, R2> downstream2,
                                                          Collector<? super T, ?, R3> downstream3,
                                                          Collector<? super T, ?, R4> downstream4) {
-        return branching0(downstream1, downstream2, downstream3, downstream4, QuadTuple::new);
+        return branching0(downstream1, downstream2, downstream3, downstream4, QuadTuple::of);
     }
 
     private static <T, A1, A2, A3, A4, R1, R2, R3, R4, R>
@@ -557,7 +561,7 @@ public final class CollectorsX {
                                                               Collector<? super T, ?, R3> downstream3,
                                                               Collector<? super T, ?, R4> downstream4,
                                                               Collector<? super T, ?, R5> downstream5) {
-        return branching0(downstream1, downstream2, downstream3, downstream4, downstream5, QuintTuple::new);
+        return branching0(downstream1, downstream2, downstream3, downstream4, downstream5, QuintTuple::of);
     }
 
     private static <T, A1, A2, A3, A4, A5, R1, R2, R3, R4, R5, R>

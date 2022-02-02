@@ -1,5 +1,6 @@
 package hzt.collections;
 
+import hzt.PreConditions;
 import hzt.function.It;
 import hzt.strings.StringX;
 import org.jetbrains.annotations.NotNull;
@@ -110,7 +111,7 @@ public interface ListX<E> extends CollectionView<E> {
         return toListOf(It::self);
     }
 
-    default SetX<E> toSetMutableSet() {
+    default MutableSetX<E> toMutableSet() {
         return toMutableSetOf(It::self);
     }
 
@@ -173,7 +174,7 @@ public interface ListX<E> extends CollectionView<E> {
     }
 
     default MutableListX<E> takeLastToMutableList(int n) {
-        IterableX.requireGreaterThanZero(n);
+        PreConditions.requireGreaterThanZero(n);
         if (n == 0) {
             return MutableListX.empty();
         }

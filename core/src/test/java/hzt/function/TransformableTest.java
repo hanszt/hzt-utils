@@ -1,4 +1,4 @@
-package hzt.tuples;
+package hzt.function;
 
 import hzt.collections.MutableListX;
 import hzt.function.Transformable;

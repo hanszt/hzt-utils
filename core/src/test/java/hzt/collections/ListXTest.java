@@ -1,5 +1,6 @@
 package hzt.collections;
 
+import hzt.iterables.IterableX;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
@@ -84,17 +85,6 @@ class ListXTest {
         final List<Year> years = auction.toListOf(Painting::getYearOfCreation);
 
         assertThrows(UnsupportedOperationException.class, () -> years.add(yearToAdd));
-    }
-
-    @Test
-    void testRandomWithinBound() {
-        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5);
-        final MutableMapX<Integer, MutableListX<Integer>> group = IterableX.iterate(integers::random, list -> list.size() < 10_000).group();
-
-        assertAll(
-                () -> assertEquals(integers.size(), group.size()),
-                () -> group.values().forEach(list -> assertTrue(list.isNotEmpty()))
-        );
     }
 
     @Test

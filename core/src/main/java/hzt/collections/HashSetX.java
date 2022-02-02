@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 
@@ -45,11 +46,6 @@ final class HashSetX<E> implements MutableSetX<E> {
     }
 
     @Override
-    public Iterable<E> iterable() {
-        return set;
-    }
-
-    @Override
     public int size() {
         return set.size();
     }
@@ -62,6 +58,12 @@ final class HashSetX<E> implements MutableSetX<E> {
     @Override
     public boolean contains(Object o) {
         return set.contains(o);
+    }
+
+    @NotNull
+    @Override
+    public Iterator<E> iterator() {
+        return set.iterator();
     }
 
     @NotNull

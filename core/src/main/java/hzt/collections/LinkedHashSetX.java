@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -42,11 +43,6 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E> {
     }
 
     @Override
-    public Iterable<E> iterable() {
-        return set;
-    }
-
-    @Override
     public int size() {
         return set.size();
     }
@@ -59,6 +55,12 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E> {
     @Override
     public boolean contains(Object o) {
         return set.contains(o);
+    }
+
+    @NotNull
+    @Override
+    public Iterator<E> iterator() {
+        return set.iterator();
     }
 
     @NotNull

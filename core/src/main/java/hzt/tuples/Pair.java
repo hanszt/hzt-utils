@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-@SuppressWarnings("ClassCanBeRecord")
 public final class Pair<A, B> {
 
     private final A first;

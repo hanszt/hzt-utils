@@ -1,6 +1,6 @@
 package hzt.test.model;
 
-import hzt.collections.IterableX;
+import hzt.iterables.IterableX;
 import org.hzt.test.model.Painting;
 import org.jetbrains.annotations.NotNull;
 
@@ -82,11 +82,6 @@ public final class PaintingAuction implements Comparable<PaintingAuction>, Itera
     @Override
     public int compareTo(PaintingAuction o) {
         return name.compareTo(o.getName());
-    }
-
-    @Override
-    public Iterable<Painting> iterable() {
-        return this;
     }
 
     @Override

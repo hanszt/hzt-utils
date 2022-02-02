@@ -1,4 +1,4 @@
-package hzt.collectors;
+package hzt.statistics;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

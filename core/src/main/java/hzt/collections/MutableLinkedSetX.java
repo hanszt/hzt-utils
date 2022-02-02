@@ -1,9 +1,6 @@
 package hzt.collections;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -28,12 +25,6 @@ public interface MutableLinkedSetX<E> extends MutableSetX<E> {
     @SafeVarargs
     static <E> MutableLinkedSetX<E> of(E first, E... others) {
         return new LinkedHashSetX<>(first, others);
-    }
-
-    @NotNull
-    @Override
-    default Iterator<E> iterator() {
-        return iterable().iterator();
     }
 
     @Override

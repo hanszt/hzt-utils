@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
@@ -140,11 +141,6 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements NavigableMapX<K, 
     public @NotNull MutableSetX<Entry<K, V>> entrySet() {
         return MutableSetX.of(map.entrySet());
     }
-
-    @Override
-    public Iterable<Entry<K, V>> iterable() {
-        return map.entrySet();
-    }
     
     @Override
     public K lowerKey(K key) {
@@ -260,4 +256,9 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements NavigableMapX<K, 
                 '}';
     }
 
+    @NotNull
+    @Override
+    public Iterator<Entry<K, V>> iterator() {
+        return map.entrySet().iterator();
+    }
 }

@@ -1,6 +1,6 @@
-package hzt.stream.collectors;
+package hzt.collectors;
 
-import hzt.collectors.BigDecimalSummaryStatistics;
+import hzt.statistics.BigDecimalSummaryStatistics;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingSupplier;
 

@@ -1,5 +1,8 @@
 package hzt.function;
 
+import hzt.collections.ListX;
+import hzt.tuples.Pair;
+
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -59,6 +62,14 @@ public interface Transformable<T> extends Supplier<T> {
     default Optional<T> takeUnless(Predicate<T> predicate) {
         T t = get();
         return predicate.test(t) ? Optional.empty() : Optional.ofNullable(t);
+    }
+
+    default <B> Pair<T, B> to(B other) {
+        return Pair.of(get(), other);
+    }
+
+    default ListX<T> asListX() {
+        return ListX.of(get());
     }
 
 }

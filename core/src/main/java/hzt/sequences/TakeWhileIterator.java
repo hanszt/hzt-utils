@@ -12,8 +12,7 @@ final class TakeWhileIterator<T> implements Iterator<T> {
 
     private boolean inclusiveConsumed = false;
     private T nextItem;
-    // -2 for start unknown, -1 for unknown, 0 for done, 1 for continue
-    private byte nextState = -2;
+    private State nextState = State.INIT_UNKNOWN;
 
     TakeWhileIterator(Iterator<T> iterator, Predicate<T> predicate, boolean inclusive) {
         this.iterator = iterator;
@@ -25,40 +24,40 @@ final class TakeWhileIterator<T> implements Iterator<T> {
         if (iterator.hasNext()) {
             final T item = iterator.next();
             if (predicate.test(item) && !inclusiveConsumed) {
-                nextState = 1;
+                nextState = State.CONTINUE;
                 nextItem = item;
                 return;
             }
-            if (inclusive && !inclusiveConsumed && nextState != -2) {
-                nextState = 1;
+            if (inclusive && !inclusiveConsumed && nextState != State.INIT_UNKNOWN) {
+                nextState = State.CONTINUE;
                 nextItem = item;
                 inclusiveConsumed = true;
                 return;
             }
         }
-        nextState = 0;
+        nextState = State.DONE;
     }
 
     @Override
     public boolean hasNext() {
-        if (nextState < 0) {
+        if (nextState.isUnknown()) {
             calculateNext();
         }
-        return nextState == 1;
+        return nextState == State.CONTINUE;
     }
 
     @Override
     public T next() {
-        if (nextState < 0) {
+        if (nextState.isUnknown()) {
             calculateNext();
         }
-        if (nextState == 0) {
+        if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
         T result = nextItem;
         // Clean next to avoid keeping reference on yielded instance
         nextItem = null;
-        nextState = -1;
+        nextState = State.NEXT_UNKNOWN;
         return result;
     }
 }

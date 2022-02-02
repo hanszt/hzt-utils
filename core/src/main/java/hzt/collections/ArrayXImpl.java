@@ -2,6 +2,7 @@ package hzt.collections;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
@@ -49,5 +50,10 @@ final class ArrayXImpl<E> implements ArrayX<E> {
     @Override
     public Iterator<E> iterator() {
         return new ArrayIterator<>(array);
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(array);
     }
 }

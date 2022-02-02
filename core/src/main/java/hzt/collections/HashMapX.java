@@ -1,5 +1,6 @@
 package hzt.collections;
 
+import hzt.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +25,15 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
         Map<K, V> newMap = new HashMap<>();
         for (Map.Entry<K, V> entry : iterable) {
             newMap.put(entry.getKey(), entry.getValue());
+        }
+        this.map = newMap;
+    }
+
+    @SafeVarargs
+    HashMapX(Pair<K, V>... iterable) {
+        Map<K, V> newMap = new HashMap<>();
+        for (Pair<K, V> entry : iterable) {
+            newMap.put(entry.first(), entry.second());
         }
         this.map = newMap;
     }
@@ -114,8 +124,6 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
 
     @Override
     public String toString() {
-        return "HashMapX{" +
-                "map=" + map +
-                '}';
+        return map.toString();
     }
 }

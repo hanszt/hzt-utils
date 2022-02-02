@@ -251,9 +251,7 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements NavigableMapX<K, 
 
     @Override
     public String toString() {
-        return "MapX{" +
-                "map=" + map +
-                '}';
+        return map.toString();
     }
 
     @NotNull

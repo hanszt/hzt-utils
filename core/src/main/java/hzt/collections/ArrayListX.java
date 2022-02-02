@@ -215,8 +215,6 @@ final class ArrayListX<T> implements MutableListX<T> {
 
     @Override
     public String toString() {
-        return "ArrayListX{" +
-                "elements=" + Arrays.toString(list.toArray()) +
-                '}';
+        return list.toString();
     }
 }

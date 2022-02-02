@@ -14,9 +14,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -31,6 +31,7 @@ import java.util.function.UnaryOperator;
  *
  * @param <T> the type of the items in the Sequence
  */
+@SuppressWarnings("unused")
 public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
 
     static <T> Sequence<T> empty() {
@@ -38,7 +39,7 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
     }
 
     static <T> Sequence<T> of(@NotNull Iterable<T> iterable) {
-        return new Sequence<T>() {
+        return new Sequence<>() {
             @NotNull
             @Override
             public Iterator<T> iterator() {
@@ -73,20 +74,12 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
         return new GeneratorSequence<>(seedFunction, nextFunction);
     }
 
-    static Sequence<Integer> range(int start, int end, IntPredicate predicate) {
-        return generate(start, i -> i + 1).take(end - start).filter(predicate::test);
-    }
-
     static Sequence<Integer> range(int start, int end) {
-        return range(start, end, It.noIntFilter());
-    }
-
-    static Sequence<Integer> rangeClosed(int start, int endInclusive, IntPredicate predicate) {
-        return generate(start, i -> i + 1).take(endInclusive + 1 - start).filter(predicate::test);
+        return generate(start, i -> i + 1).take(end - start);
     }
 
     static Sequence<Integer> rangeClosed(int start, int endInclusive) {
-        return rangeClosed(start, endInclusive, It.noIntFilter());
+        return generate(start, i -> i + 1).take(endInclusive + 1 - start);
     }
 
     @Override
@@ -102,6 +95,13 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
     @Override
     default Sequence<T> filter(@NotNull Predicate<T> predicate) {
         return new FilteringSequence<>(this, predicate, true);
+    }
+
+    @Override
+    default Sequence<T> filterIndexed(@NotNull BiPredicate<Integer, T> predicate) {
+        return new TransformingSequence<>(
+                new FilteringSequence<>(withIndex(),
+                        val -> predicate.test(val.index(), val.value()), true), IndexedValue::value);
     }
 
     @Override
@@ -122,16 +122,50 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
     @NotNull
     @Override
     default Sequence<T> onEach(@NotNull Consumer<? super T> consumer) {
-        return onEachOf(It::self, consumer);
+        return onEach(It::self, consumer);
     }
 
     @NotNull
     @Override
-    default <R> Sequence<T> onEachOf(@NotNull Function<? super T, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
+    default <R> Sequence<T> onEach(@NotNull Function<? super T, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
         return map(item -> {
             consumer.accept(selector.apply(item));
             return item;
         });
+    }
+
+    @NotNull
+    @Override
+    default Sequence<T> distinct() {
+        return distinctBy(It::self);
+    }
+
+    @NotNull
+    @Override
+    default <R> Sequence<T> distinctBy(Function<T, R> selector) {
+        return new DistinctSequence<>(this, selector);
+    }
+
+    default Sequence<ListX<T>> windowed(int size) {
+        return windowed(size, 1);
+    }
+
+    default Sequence<ListX<T>> windowed(int size, int step) {
+        return windowed(size, step, false);
+    }
+
+    default Sequence<ListX<T>> windowed(int size, int step, boolean partialWindows) {
+        return new WindowedSequence<>(this, size, step, partialWindows, false);
+    }
+
+    @Override
+    default <R> Sequence<R> zipWithNext(BiFunction<T, T, R> function) {
+        return Sequence.of(zipWithNextToMutableListOf(function));
+    }
+
+    @Override
+    default <A, R> Sequence<R> zipWith(Iterable<A> iterable, BiFunction<T, A, R> function) {
+        return Sequence.of(zipToMutableListWith(iterable, function));
     }
 
     @Override
@@ -173,6 +207,16 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
         } else {
             return new SkipSequence<>(this, n);
         }
+    }
+
+    @Override
+    default <R extends Comparable<R>> Sequence<T> sortedBy(@NotNull Function<T, R> selector) {
+        return Sequence.of(toMutableListSortedBy(selector));
+    }
+
+    @Override
+    default Sequence<T> sorted() {
+        return Sequence.of(IterableX.super.sorted());
     }
 
     default MutableListX<T> toMutableList() {

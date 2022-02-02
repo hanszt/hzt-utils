@@ -3,14 +3,14 @@ package hzt.function;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
+import static java.lang.System.*;
+
 public final class It {
 
     private It() {
     }
 
     /**
-     *
-     *
      * <p>
      * It can be used to return itself as method reference
      * <pre>{@code
@@ -66,5 +66,13 @@ public final class It {
 
     public static <T> Predicate<T> blockingFilter() {
         return t -> false;
+    }
+
+    public static <T> void println(T value) {
+        out.println(value);
+    }
+
+    public static <T> void print(T value) {
+        out.print(value);
     }
 }

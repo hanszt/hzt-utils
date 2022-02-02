@@ -5,7 +5,6 @@ import hzt.statistics.BigDecimalSummaryStatistics;
 import hzt.statistics.DoubleStatistics;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -57,7 +56,6 @@ class BigDecimalCollectorsTest {
     }
 
     @Test
-    @Disabled("Standard deviation not implemented")
     void testStandardDeviatingBigDecimal() {
         final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
         System.out.println("Sample bankaccountList:");
@@ -87,7 +85,6 @@ class BigDecimalCollectorsTest {
     }
 
     @Test
-    @Disabled("Standard deviation not implemented")
     void testStatisticsFromRandomGaussianDataset() {
         BigDecimal targetMean = BigDecimal.valueOf(3);
         BigDecimal targetStdDev = BigDecimal.valueOf(4);

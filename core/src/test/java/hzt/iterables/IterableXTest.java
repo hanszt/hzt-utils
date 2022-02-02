@@ -713,10 +713,10 @@ public class IterableXTest {
     void testToString() {
         final ListX<Painting> paintings = ListX.of(TestSampleGenerator.createPaintingList());
 
-        final String expected = "ArrayListX{elements=[" +
+        final String expected = "[" +
                 "Painting[name=Lentetuin, de pastorietuin te Nuenen in het voorjaar, " +
                 "painter=Painter{firstName='Vincent', lastname='van Gogh', dateOfBirth=1853-03-20}, " +
-                "yearOfCreation=1884, isInMuseum=false]]}";
+                "yearOfCreation=1884, isInMuseum=false]]";
 
         final ListX<Painting> actual = paintings.filterNot(Painting::isInMuseum);
 
@@ -979,7 +979,7 @@ public class IterableXTest {
     // causes compiler error on java 11 and older:
     // java: Compilation failed: internal java compiler error
     public static <T> IterableX<T> empty() {
-        return ListX.of(() -> new Iterator<T>() {
+        return ListX.of(() -> new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return false;
@@ -1026,7 +1026,7 @@ public class IterableXTest {
         final ListX<String> strings = range/*.asSequence()*/
                 .filter(i -> i % 2 == 0)
                 .map(IterableXTest::compute200Millis)
-                .onEachOf(String::length, System.out::println)
+                .onEach(String::length, System.out::println)
                 .takeToMutableListWhileInclusive(s -> s.length() < 6);
 
         assertEquals(6, strings.size());

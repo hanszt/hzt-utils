@@ -1,5 +1,8 @@
 package hzt.collections;
 
+import hzt.function.It;
+import hzt.sequences.Sequence;
+import hzt.strings.StringX;
 import hzt.tuples.Pair;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
@@ -16,7 +19,6 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MapXTest {
@@ -133,5 +135,25 @@ class MapXTest {
         final String actual = ListX.of(pairs).maxOf(Painting::name);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testMapOfPairs() {
+        final var hallo = StringX.of("Hallo");
+        final var map = MapX.of(hallo.to("s"), StringX.of("asd").to("asdd"));
+        assertEquals(2, map.size());
+        assertTrue(map.containsValue("asdd"));
+    }
+
+    @Test
+    void testBuildMap() {
+        final var mapX = MapX.<Integer, LocalDate>build(map ->
+                Sequence.range(1990, 2022).forEach(year -> map.put(year, LocalDate.of(year, 1, 1))));
+
+        mapX.forEach(It::println);
+
+        It.println("mapX = " + mapX);
+
+        assertEquals(32, mapX.size());
     }
 }

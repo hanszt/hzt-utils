@@ -132,13 +132,6 @@ final class HashSetX<E> implements MutableSetX<E> {
     }
 
     @Override
-    public String toString() {
-        return "HashSetX{" +
-                "set=" + set +
-                '}';
-    }
-
-    @Override
     public boolean isNotEmpty() {
         return !set.isEmpty();
     }
@@ -146,5 +139,10 @@ final class HashSetX<E> implements MutableSetX<E> {
     @Override
     public boolean containsNot(E e) {
         return !contains(e);
+    }
+
+    @Override
+    public String toString() {
+        return set.toString();
     }
 }

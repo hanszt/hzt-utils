@@ -224,9 +224,7 @@ final class TreeSetX<E, R extends Comparable<R>> implements NavigableSetX<E> {
 
     @Override
     public String toString() {
-        return "TreeSetX{" +
-                "items=" + navigableSet +
-                '}';
+        return navigableSet.toString();
     }
 
     @Override

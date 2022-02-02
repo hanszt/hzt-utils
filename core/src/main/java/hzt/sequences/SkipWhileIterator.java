@@ -7,9 +7,8 @@ final class SkipWhileIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
     private final Predicate<T> predicate;
-    private T nextItem;
-    // -1 for not skipping, 1 for nextItem, 0 for normal iteration
-    private byte skipState = -1;
+    private T nextItem = null;
+    private SkipState state = SkipState.NOT_SKIPPING;
 
     SkipWhileIterator(Iterator<T> iterator, Predicate<T> predicate) {
         this.iterator = iterator;
@@ -21,32 +20,36 @@ final class SkipWhileIterator<T> implements Iterator<T> {
             final T item = iterator.next();
             if (!predicate.test(item)) {
                 nextItem = item;
-                skipState = 1;
+                state = SkipState.NEXT_ITEM;
                 return;
             }
         }
-        skipState = 0;
+        state = SkipState.NORMAL_ITERATION;
     }
 
     @Override
     public boolean hasNext() {
-        if (skipState == -1) {
+        if (state == SkipState.NOT_SKIPPING) {
             skip();
         }
-        return skipState == 1 || iterator.hasNext();
+        return state == SkipState.NEXT_ITEM || iterator.hasNext();
     }
 
     @Override
     public T next() {
-        if (skipState == -1) {
+        if (state == SkipState.NOT_SKIPPING) {
             skip();
         }
-        if (skipState == 1) {
+        if (state == SkipState.NEXT_ITEM) {
             T result = nextItem;
             nextItem = null;
-            skipState = 0;
+            state = SkipState.NORMAL_ITERATION;
             return result;
         }
         return iterator.next();
+    }
+
+    private enum SkipState {
+        NOT_SKIPPING, NEXT_ITEM, NORMAL_ITERATION
     }
 }

@@ -1,8 +1,10 @@
 package hzt.tuples;
 
+import hzt.function.Transformable;
+
 import java.util.Objects;
 
-public final class QuintTuple<R1, R2, R3, R4, R5> {
+public final class QuintTuple<R1, R2, R3, R4, R5> implements Transformable<QuintTuple<R1, R2, R3, R4, R5>> {
 
     private final R1 first;
     private final R2 second;
@@ -67,4 +69,8 @@ public final class QuintTuple<R1, R2, R3, R4, R5> {
         return new QuintTuple<>(first, second, third, fourth, fifth);
     }
 
+    @Override
+    public QuintTuple<R1, R2, R3, R4, R5> get() {
+        return this;
+    }
 }

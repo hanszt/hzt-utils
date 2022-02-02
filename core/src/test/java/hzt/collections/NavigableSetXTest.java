@@ -29,10 +29,10 @@ class NavigableSetXTest {
 
         final NavigableSetX<String> names = museumListContainingNulls.toNavigableSetOf(Museum::getName);
 
-        MutableListX<Integer> list = MutableListX.<Integer>empty();
+        MutableListX<Integer> list = MutableListX.empty();
 
         final double average = names
-                .onEachOf(String::length, It
+                .onEach(String::length, It
                         .<Consumer<Integer>>self(System.out::println)
                         .andThen(list::add))
                 .filterBy(String::length, length -> length > 14)

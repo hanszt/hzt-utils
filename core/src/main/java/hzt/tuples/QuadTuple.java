@@ -1,34 +1,36 @@
 package hzt.tuples;
 
+import hzt.function.Transformable;
+
 import java.util.Objects;
 
-public final class QuadTuple<R1, R2, R3, R4> {
+public final class QuadTuple<A, B, C, D> implements Transformable<QuadTuple<A, B, C, D>> {
 
-    private final R1 first;
-    private final R2 second;
-    private final R3 third;
-    private final R4 fourth;
+    private final A first;
+    private final B second;
+    private final C third;
+    private final D fourth;
 
-    private QuadTuple(R1 first, R2 second, R3 third, R4 fourth) {
+    private QuadTuple(A first, B second, C third, D fourth) {
         this.first = first;
         this.second = second;
         this.third = third;
         this.fourth = fourth;
     }
 
-    public R1 first() {
+    public A first() {
         return first;
     }
 
-    public R2 second() {
+    public B second() {
         return second;
     }
 
-    public R3 third() {
+    public C third() {
         return third;
     }
 
-    public R4 fourth() {
+    public D fourth() {
         return fourth;
     }
 
@@ -46,6 +48,10 @@ public final class QuadTuple<R1, R2, R3, R4> {
         return Objects.hash(first, second, third, fourth);
     }
 
+    public <E> QuintTuple<A, B, C, D, E> plus(E fifth) {
+        return QuintTuple.of(first, second, third, fourth, fifth);
+    }
+
     @Override
     public String toString() {
         return "QuadTuple[" +
@@ -59,4 +65,8 @@ public final class QuadTuple<R1, R2, R3, R4> {
         return new QuadTuple<>(first, second, third, fourth);
     }
 
+    @Override
+    public QuadTuple<A, B, C, D> get() {
+        return this;
+    }
 }

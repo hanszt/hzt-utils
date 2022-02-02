@@ -1,8 +1,10 @@
 package hzt.tuples;
 
+import hzt.function.Transformable;
+
 import java.util.Objects;
 
-public final class Triple<A, B, C> {
+public final class Triple<A, B, C> implements Transformable<Triple<A, B, C>> {
     private final A first;
     private final B second;
     private final C third;
@@ -44,6 +46,10 @@ public final class Triple<A, B, C> {
                 Objects.equals(this.third, that.third);
     }
 
+    public <D> QuadTuple<A, B, C, D> plus(D fourth) {
+        return QuadTuple.of(first, second, third, fourth);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(first, second, third);
@@ -57,4 +63,8 @@ public final class Triple<A, B, C> {
                 "third=" + third + ']';
     }
 
+    @Override
+    public Triple<A, B, C> get() {
+        return this;
+    }
 }

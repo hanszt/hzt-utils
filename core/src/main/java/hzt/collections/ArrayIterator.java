@@ -3,7 +3,7 @@ package hzt.collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class ArrayIterator<E> implements Iterator<E> {
+public final class ArrayIterator<E> implements Iterator<E> {
 
     private final E[] array;
     private int index = 0;

@@ -1,12 +1,14 @@
 package hzt.function;
 
+import hzt.collections.MapX;
 import hzt.collections.MutableListX;
-import hzt.function.Transformable;
+import hzt.strings.StringX;
+import hzt.test.Generator;
+import hzt.test.model.PaintingAuction;
+import hzt.tuples.Pair;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
-import hzt.test.Generator;
-import hzt.test.model.PaintingAuction;
 
 import java.time.LocalDate;
 
@@ -44,5 +46,23 @@ class TransformableTest {
 
         assertTrue(list::isNotEmpty);
         assertEquals(expected, painter);
+    }
+
+    @Test
+    void testToPair() {
+        final var hallo = StringX.of("Hallo");
+
+        final var pair = hallo.to("Joepie");
+
+        assertEquals(Pair.of(hallo, "Joepie"), pair);
+    }
+
+    @Test
+    void testAsList() {
+        final var hallo = StringX.of("Hallo");
+
+        final var actual = hallo.asListX();
+
+        assertEquals(1, actual.size());
     }
 }

@@ -40,12 +40,12 @@ final class EmptyIterator<T> implements ListIterator<T> {
     }
 
     @Override
-    public void set(Object o) {
+    public void set(T o) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void add(Object o) {
+    public void add(T o) {
         throw new UnsupportedOperationException();
     }
 }

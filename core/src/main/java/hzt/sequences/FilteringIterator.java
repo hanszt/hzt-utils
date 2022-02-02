@@ -9,8 +9,7 @@ final class FilteringIterator<T> implements Iterator<T> {
     private final Iterator<T> iterator;
     private final Predicate<T> predicate;
     private final boolean sendWhen;
-    // -1 for unknown, 0 for done, 1 for continue
-    private byte nextState = -1;
+    private State nextState = State.NEXT_UNKNOWN;
     private T nextItem = null;
 
     FilteringIterator(Iterator<T> iterator, Predicate<T> predicate, boolean sendWhen) {
@@ -21,23 +20,23 @@ final class FilteringIterator<T> implements Iterator<T> {
 
     @Override
     public boolean hasNext() {
-        if (nextState == -1) {
+        if (nextState == State.NEXT_UNKNOWN) {
             calculateNext();
         }
-        return nextState == 1;
+        return nextState == State.CONTINUE;
     }
 
     @Override
     public T next() {
-        if (nextState == -1) {
+        if (nextState == State.NEXT_UNKNOWN) {
             calculateNext();
         }
-        if (nextState == 0) {
+        if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
         final T result = nextItem;
         nextItem = null;
-        nextState = -1;
+        nextState = State.NEXT_UNKNOWN;
         return result;
     }
 
@@ -46,10 +45,10 @@ final class FilteringIterator<T> implements Iterator<T> {
             T item = iterator.next();
             if (predicate.test(item) == sendWhen) {
                 nextItem = item;
-                nextState = 1;
+                nextState = State.CONTINUE;
                 return;
             }
         }
-        nextState = 0;
+        nextState = State.DONE;
     }
 }

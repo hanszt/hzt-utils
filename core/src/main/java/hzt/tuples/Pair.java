@@ -1,11 +1,13 @@
 package hzt.tuples;
 
+import hzt.function.Transformable;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public final class Pair<A, B> {
+public final class Pair<A, B> implements Transformable<Pair<A, B>> {
 
     private final A first;
     private final B second;
@@ -53,6 +55,10 @@ public final class Pair<A, B> {
         return mapper.apply(first, second);
     }
 
+    public <C> Triple<A, B, C> plus(C third) {
+        return Triple.of(first, second, third);
+    }
+
     public <A1, B1> Pair<A1, B1> mapBoth(Function<A, A1> firstValueMapper, Function<B, B1> secondValueMapper) {
         return Pair.of(firstValueMapper.apply(first), secondValueMapper.apply(second));
     }
@@ -72,4 +78,8 @@ public final class Pair<A, B> {
                 "second=" + second + ']';
     }
 
+    @Override
+    public Pair<A, B> get() {
+        return this;
+    }
 }

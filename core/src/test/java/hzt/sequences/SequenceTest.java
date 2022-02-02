@@ -6,6 +6,7 @@ import hzt.collections.MutableListX;
 import hzt.collections.SetX;
 import hzt.function.It;
 import hzt.iterables.IterableXTest;
+import hzt.strings.StringX;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painter;
@@ -91,6 +92,18 @@ class SequenceTest {
     }
 
     @Test
+    void testFilterIndexed() {
+        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+
+        final var sum = Sequence.of(list)
+                .map(String::length)
+                .filterIndexed((index, length) -> length > 2 && index % 2 == 1)
+                .sumOfLongs(It::self);
+
+        assertEquals(6, sum);
+    }
+
+    @Test
     void testMapFilterReduceToList() {
         ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
         final ListX<Integer> result = list.asSequence()
@@ -99,6 +112,16 @@ class SequenceTest {
                 .toListX();
 
         assertEquals(ListX.of(5, 4), result);
+    }
+
+    @Test
+    void testMapFilterReduceToSet() {
+        var list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final var result = list.asSequence()
+                .map(String::length)
+                .toSetX();
+
+        assertEquals(SetX.of(2, 3, 4, 5), result);
     }
 
     @Test
@@ -185,7 +208,7 @@ class SequenceTest {
 
     @Test
     void testSkipWhile() {
-        final ListX<String> strings = Sequence.generate(0, i -> i + 1)
+        final var strings = Sequence.generate(0, i -> i + 1)
                 .skipWhile(s -> s < 4)
                 .filter(i -> i % 2 == 0)
                 .take(6)
@@ -210,6 +233,13 @@ class SequenceTest {
     }
 
     @Test
+    void testRangeWithInterval() {
+        assertArrayEquals(
+                IntStream.range(5, 10).filter(i -> i % 2 == 0).toArray(),
+                Sequence.range(5, 10).filter(i -> i % 2 == 0).toIntArrayOf(Integer::intValue));
+    }
+
+    @Test
     void testRangeClosed() {
         assertArrayEquals(
                 IntStream.rangeClosed(5, 10).toArray(),
@@ -231,6 +261,21 @@ class SequenceTest {
                 () -> assertEquals(integers.size(), group.size()),
                 () -> group.values().forEachOf(ListX::isNotEmpty, Assertions::assertTrue)
         );
+    }
+
+    @Test
+    void testDistinctBy() {
+        final var integers = Sequence.of("hallo", "hoe", "is", "het");
+
+        final var strings = integers
+                .distinctBy(String::length)
+                .map(StringX::of)
+                .map(StringX::reversed)
+                .toListOf(StringX::toString);
+
+        System.out.println("strings = " + strings);
+
+        assertEquals(List.of("ollah", "eoh", "si"), strings);
     }
 
     @Test

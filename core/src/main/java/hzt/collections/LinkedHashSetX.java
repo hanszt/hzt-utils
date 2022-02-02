@@ -120,4 +120,9 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E> {
     public boolean containsNot(E e) {
         return !contains(e);
     }
+
+    @Override
+    public String toString() {
+        return set.toString();
+    }
 }

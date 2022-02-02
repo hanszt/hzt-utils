@@ -2,6 +2,7 @@ package hzt.collections;
 
 import hzt.function.It;
 import hzt.iterables.IterableX;
+import hzt.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -29,9 +31,19 @@ public interface MapX<K, V> extends IterableX<Map.Entry<K, V>> {
     }
 
     @SafeVarargs
-    @SuppressWarnings("varargs")
+    static <K, V> MapX<K, V> of(Pair<K, V>... pairs) {
+        return new HashMapX<>(pairs);
+    }
+
+    @SafeVarargs
     static <K, V> Map<K, V> ofEntries(Map.Entry<? extends K, ? extends V>... entries) {
         throw new UnsupportedOperationException();
+    }
+
+    static <K, V> MapX<K, V> build(Consumer<MutableMapX<K, V>> mapXConsumer) {
+        MutableMapX<K, V> mapX = MutableMapX.empty();
+        mapXConsumer.accept(mapX);
+        return mapX;
     }
 
     <K1, V1> MapX<K1, V1> map(Function<K, K1> keyMapper, Function<V, V1> valueMapper);
@@ -66,7 +78,7 @@ public interface MapX<K, V> extends IterableX<Map.Entry<K, V>> {
     @NotNull
     default Iterator<V> valueIterator() {
         Iterator<Map.Entry<K, V>> iterator = iterator();
-        return new Iterator<V>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -98,7 +110,7 @@ public interface MapX<K, V> extends IterableX<Map.Entry<K, V>> {
     @NotNull
     default Iterator<K> keyIterator() {
         Iterator<Map.Entry<K, V>> iterator = iterator();
-        return new Iterator<K>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();

@@ -21,6 +21,7 @@ import hzt.statistics.BigDecimalStatistics;
 import hzt.statistics.DoubleStatistics;
 import hzt.strings.StringX;
 import hzt.tuples.Pair;
+import hzt.tuples.QuadTuple;
 import hzt.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
@@ -352,13 +353,13 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return collection;
     }
 
-    default <R extends Comparable<R>> MutableListX<T> toListSortedBy(@NotNull Function<T, R> selector) {
+    default <R extends Comparable<R>> MutableListX<T> toMutableListSortedBy(@NotNull Function<T, R> selector) {
         final MutableListX<T> list = toMutableListOf(It::self);
         list.sort(Comparator.comparing(selector));
         return list;
     }
 
-    default <R extends Comparable<R>> MutableListX<T> toListSortedDescendingBy(@NotNull Function<T, R> selector) {
+    default <R extends Comparable<R>> MutableListX<T> toMutableListSortedDescendingBy(@NotNull Function<T, R> selector) {
         final MutableListX<T> list = toMutableListOf(It::self);
         list.sort(Comparator.comparing(selector).reversed());
         return list;
@@ -546,7 +547,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default <R extends Comparable<R>> IterableX<T> sortedBy(@NotNull Function<T, R> selector) {
-        return toListSortedBy(selector);
+        return toMutableListSortedBy(selector);
     }
 
     default <R extends Comparable<R>> IterableX<T> sorted() {
@@ -650,7 +651,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return sum;
     }
 
-    default double sumOf(@NotNull ToDoubleFunction<T> selector) {
+    default double sumOfDoubles(@NotNull ToDoubleFunction<T> selector) {
         double sum = 0;
         for (T t : this) {
             if (t != null) {
@@ -757,16 +758,16 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default <R> void forEachOf(@NotNull Function<? super T, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
-        onEachOf(selector, consumer);
+        onEach(selector, consumer);
     }
 
     @NotNull
     default IterableX<T> onEach(@NotNull Consumer<? super T> consumer) {
-        return onEachOf(It::self, consumer);
+        return onEach(It::self, consumer);
     }
 
     @NotNull
-    default <R> IterableX<T> onEachOf(@NotNull Function<? super T, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
+    default <R> IterableX<T> onEach(@NotNull Function<? super T, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
         for (T t : this) {
             consumer.accept(t != null ? selector.apply(t) : null);
         }
@@ -832,6 +833,14 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
             @NotNull Collector<T, A3, R3> downStream3,
             @NotNull TriFunction<R1, R2, R3, R> merger) {
         return collect(CollectorsX.branching(downstream1, downStream2, downStream3, merger));
+    }
+
+    default <A1, R1, A2, R2, A3, R3, A4, R4, R> QuadTuple<R1, R2, R3, R4> branching(
+            @NotNull Collector<T, A1, R1> downstream1,
+            @NotNull Collector<T, A2, R2> downStream2,
+            @NotNull Collector<T, A3, R3> downStream3,
+            @NotNull Collector<T, A4, R4> downStream4) {
+        return collect(CollectorsX.branching(downstream1, downStream2, downStream3, downStream4, QuadTuple::of));
     }
 
     default <A1, R1, A2, R2, A3, R3, A4, R4, R> R branching(

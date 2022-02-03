@@ -6,9 +6,9 @@ import hzt.collections.MutableListX;
 import hzt.collections.MutableMapX;
 import hzt.collections.SetX;
 import hzt.collectors.BigDecimalCollectors;
+import hzt.function.It;
 import hzt.sequences.Sequence;
 import hzt.statistics.BigDecimalSummaryStatistics;
-import hzt.function.It;
 import hzt.strings.StringX;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
@@ -143,7 +143,7 @@ public class IterableXTest {
     @Test
     void testSortedIfOfComparableType() {
         MutableListX<Integer> list = MutableListX.of(1, 3, 5, 4, 2, 7, 214, 5, 8, 3, 4, 123);
-        final IterableX<Integer> sorted = list.sorted();
+        final var sorted = list.sorted();
         assertIterableEquals(ListX.of(1, 2, 3, 3, 4, 4, 5, 5, 7, 8, 123, 214), sorted);
     }
 
@@ -229,7 +229,7 @@ public class IterableXTest {
 
         final Map<Painter, List<Painting>> expectedMap = paintings.stream().collect(groupingBy(Painting::painter));
 
-        final MutableMapX<Painter, MutableListX<Painting>> actualMap = paintings.groupBy(Painting::painter);
+        final MapX<Painter, MutableListX<Painting>> actualMap = paintings.groupBy(Painting::painter);
 
         assertEquals(expectedMap, actualMap);
     }
@@ -241,7 +241,7 @@ public class IterableXTest {
         final Map<Painter, List<Year>> expectedMap = paintings.stream()
                 .collect(groupingBy(Painting::painter, Collectors.mapping(Painting::getYearOfCreation, toList())));
 
-        final MutableMapX<Painter, MutableListX<Year>> actualMap = ListX.of(paintings)
+        final MapX<Painter, MutableListX<Year>> actualMap = ListX.of(paintings)
                 .groupMapping(Painting::painter, Painting::getYearOfCreation);
 
         assertEquals(expectedMap, actualMap);
@@ -301,6 +301,7 @@ public class IterableXTest {
         final ListX<BankAccount> bankAccounts = ListX.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
 
         final BigDecimalSummaryStatistics expected = bankAccounts.stream()
+                .filter(Objects::nonNull)
                 .map(BankAccount::getBalance)
                 .collect(BigDecimalCollectors.summarizingBigDecimal());
 
@@ -346,6 +347,27 @@ public class IterableXTest {
         final Deque<LocalDate> actualLocalDates = museumList
                 .filterBy(Museum::getPaintings, paintings -> paintings.size() > 3)
                 .mapTo(ArrayDeque::new, Museum::getDateOfOpening);
+
+        assertIterableEquals(expectedLocalDates, actualLocalDates);
+    }
+
+    @Test
+    void testMapToExistingCollection() {
+        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
+
+        Deque<LocalDate> deque = new ArrayDeque<>();
+        deque.add(LocalDate.MAX);
+
+        final Deque<LocalDate> expectedLocalDates = museumList.stream()
+                .map(Museum::getDateOfOpening)
+                .filter(Objects::nonNull)
+                .collect(toCollection(() -> deque));
+
+        final Deque<LocalDate> actualLocalDates = museumList.asSequence()
+                .mapNotNull(Museum::getDateOfOpening)
+                .mapTo(() -> deque, It::self);
+
+        System.out.println("actualLocalDates = " + actualLocalDates);
 
         assertIterableEquals(expectedLocalDates, actualLocalDates);
     }
@@ -776,12 +798,8 @@ public class IterableXTest {
         assertEquals(expected, actual);
     }
 
-    private BigDecimal addAccountBalance(BigDecimal balance, BankAccount account) {
-        return balance.add(account.getBalance());
-    }
-
     @Test
-    void testCollectingToIterX() {
+    void testMapNotNullMaxOf() {
         ListX<Painting> paintingList = ListX.of(TestSampleGenerator.createPaintingList());
 
         final LocalDate expected = paintingList.stream()
@@ -795,13 +813,13 @@ public class IterableXTest {
                 .collect(toListX())
                 .maxOf(Painter::getDateOfBirth);
 
-        final ChronoLocalDate maxWithFullTransformer = paintingList
+        final var actual = paintingList
                 .mapNotNull(Painting::painter)
                 .maxOf(Painter::getDateOfBirth);
 
         assertAll(
                 () -> assertEquals(expected, max),
-                () -> assertEquals(expected, maxWithFullTransformer)
+                () -> assertEquals(expected, actual)
         );
     }
 
@@ -830,6 +848,7 @@ public class IterableXTest {
                 .of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
 
         final String expected = bankAccounts.stream()
+                .filter(Objects::nonNull)
                 .map(BankAccount::getCustomer)
                 .filter(Objects::nonNull)
                 .map(Customer::getId)
@@ -1025,20 +1044,10 @@ public class IterableXTest {
 
         final ListX<String> strings = range/*.asSequence()*/
                 .filter(i -> i % 2 == 0)
-                .map(IterableXTest::compute200Millis)
+                .map(Generator::toStringIn100Millis)
                 .onEach(String::length, System.out::println)
                 .takeToMutableListWhileInclusive(s -> s.length() < 6);
 
         assertEquals(6, strings.size());
-    }
-
-    public static String compute200Millis(Integer integer) {
-        try {
-            Thread.sleep(100);
-            return "val " + integer;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return "error " + integer;
-        }
     }
 }

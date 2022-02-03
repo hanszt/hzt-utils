@@ -46,7 +46,7 @@ public interface ListX<E> extends CollectionView<E> {
     }
 
     static ListX<Boolean> ofBools(boolean... values) {
-        MutableListX<Boolean> valueList = MutableListX.<Boolean>empty();
+        MutableListX<Boolean> valueList = MutableListX.empty();
         for (boolean value : values) {
             valueList.add(value);
         }
@@ -62,7 +62,7 @@ public interface ListX<E> extends CollectionView<E> {
     }
 
     static ListX<Long> ofLongs(long... values) {
-        MutableListX<Long> valueList = MutableListX.<Long>empty();
+        MutableListX<Long> valueList = MutableListX.empty();
         for (long value : values) {
             valueList.add(value);
         }
@@ -70,7 +70,7 @@ public interface ListX<E> extends CollectionView<E> {
     }
 
     static ListX<Double> ofDoubles(double... values) {
-        MutableListX<Double> valueList = MutableListX.<Double>empty();
+        MutableListX<Double> valueList = MutableListX.empty();
         for (double value : values) {
             valueList.add(value);
         }
@@ -272,6 +272,10 @@ public interface ListX<E> extends CollectionView<E> {
     ListIterator<E> listIterator();
 
     ListIterator<E> listIterator(int index);
+
+    ListX<E> headTo(int toIndex);
+
+    ListX<E> tailFrom(int fromIndex);
 
     ListX<E> subList(int fromIndex, int toIndex);
 }

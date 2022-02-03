@@ -16,7 +16,8 @@ class NavigableMapXTest {
 
     @Test
     void testGetNavigableMap() {
-        final SetX<Museum> museumListContainingNulls = SetX.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final var museumListContainingNulls = ListX.of(TestSampleGenerator.getMuseumListContainingNulls())
+                .sortedBy(e -> Math.random());
 
         final NavigableMap<String, Museum> expected = new TreeMap<>(museumListContainingNulls.stream()
                 .filter(m -> m != null && m.getName() != null)
@@ -24,6 +25,8 @@ class NavigableMapXTest {
 
         final NavigableMapX<String, Museum> actual = museumListContainingNulls
                 .toNavigableMapAssociatedBy(Museum::getName);
+
+        actual.keySet().forEach(System.out::println);
 
         assertAll(
                 () -> assertIterableEquals(actual.keySet(), expected.keySet()),

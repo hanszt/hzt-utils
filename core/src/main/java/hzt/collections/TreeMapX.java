@@ -129,7 +129,7 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements NavigableMapX<K, 
 
     @Override
     public @NotNull MutableSetX<K> keySet() {
-        return MutableSetX.of(map.keySet());
+        return MutableLinkedSetX.of(map.keySet());
     }
 
     @Override

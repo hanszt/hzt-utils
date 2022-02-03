@@ -40,4 +40,10 @@ public final class PreConditions {
             throw new IllegalArgumentException(messageSupplier.get());
         }
     }
+
+    public static void require(boolean value) {
+        if (!value) {
+            throw new IllegalArgumentException();
+        }
+    }
 }

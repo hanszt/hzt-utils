@@ -330,7 +330,7 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return group1.equals(group2);
     }
 
-    private static MutableMapX<Character, MutableListX<Character>> groupedCharacters(StringX s1) {
+    private static MapX<Character, MutableListX<Character>> groupedCharacters(StringX s1) {
         final StringX trimmedAndNoSpaces = s1.trim().replace(" ", "").toLowerCase();
         return trimmedAndNoSpaces.group();
     }

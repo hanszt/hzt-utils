@@ -45,4 +45,27 @@ public final class Generator {
         return new PaintingAuction("Van Gogh Auction", LocalDate.of(1992, Month.APRIL, 2), vanGoghPaintings);
     }
 
+    public static String toStringIn100Millis(int integer) {
+        try {
+            Thread.sleep(100);
+            return "val " + integer;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return "error " + integer;
+        }
+    }
+
+    public static long fib(long n) {
+        long first = 0;
+        long next = 1;
+        if (n == 0)
+            return first;
+        for (int i = 2; i <= n; i++) {
+            long temp = first + next;
+            first = next;
+            next = temp;
+        }
+        return next;
+    }
+
 }

@@ -17,7 +17,7 @@ public abstract class AbstractIterator<T> implements Iterator<T> {
 
     @Override
     public boolean hasNext() {
-        PreConditions.require(state != State.FAILED, () -> "Failed state of iterator");
+        PreConditions.require(state != State.FAILED);
         switch (state) {
             case DONE:
                 return false;

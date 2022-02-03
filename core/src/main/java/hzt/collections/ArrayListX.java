@@ -31,27 +31,22 @@ final class ArrayListX<T> implements MutableListX<T> {
         this.list = new ArrayList<>(collection);
     }
 
-    ArrayListX(List<T> list) {
-        this.list = list;
-    }
-
     ArrayListX(Iterable<T> iterable) {
-        final List<T> newList = new ArrayList<>();
-        iterable.forEach(newList::add);
-        this.list = newList;
+        list = new ArrayList<>();
+        for (T t : iterable) {
+            list.add(t);
+        }
     }
 
     @SafeVarargs
     ArrayListX(T... values) {
-        final List<T> arrayList = new ArrayList<>(values.length + 1);
-        arrayList.addAll(Arrays.asList(values));
-        this.list = arrayList;
+        list = new ArrayList<>(values.length + 1);
+        list.addAll(Arrays.asList(values));
     }
 
     ArrayListX(T value) {
-        final List<T> arrayList = new ArrayList<>(1);
-        arrayList.add(value);
-        this.list = arrayList;
+        list = new ArrayList<>(1);
+        list.add(value);
     }
 
     @Override
@@ -183,6 +178,18 @@ final class ArrayListX<T> implements MutableListX<T> {
     @Override
     public ListIterator<T> listIterator(int index) {
         return list.listIterator(index);
+    }
+
+    @NotNull
+    @Override
+    public MutableListX<T> headTo(int toIndex) {
+        return subList(0, toIndex);
+    }
+
+    @NotNull
+    @Override
+    public MutableListX<T> tailFrom(int fromIndex) {
+        return subList(fromIndex, size());
     }
 
     @NotNull

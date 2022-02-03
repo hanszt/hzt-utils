@@ -20,10 +20,6 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E> {
         this.set = new LinkedHashSet<>(n);
     }
 
-    LinkedHashSetX(Set<E> set) {
-        this.set = set;
-    }
-
     LinkedHashSetX(Collection<E> collection) {
         this.set = new LinkedHashSet<>(collection);
     }

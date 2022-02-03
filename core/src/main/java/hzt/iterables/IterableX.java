@@ -574,7 +574,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return mapTo(MutableLinkedSetX::empty, It::self);
     }
 
-    default <R> ListX<T> distinctToListBy(Function<T, R> selector) {
+    default <R> ListX<T> distinctToListXBy(Function<T, R> selector) {
         return distinctToMutableListBy(selector);
     }
 
@@ -824,7 +824,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
             @NotNull Collector<T, A1, R1> downstream1,
             @NotNull Collector<T, A2, R2> downStream2,
             @NotNull Collector<T, A3, R3> downStream3) {
-        return collect(CollectorsX.branching(downstream1, downStream2, downStream3, Triple::of));
+        return branching(downstream1, downStream2, downStream3, Triple::of);
     }
 
     default <A1, R1, A2, R2, A3, R3, R> R branching(
@@ -840,7 +840,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
             @NotNull Collector<T, A2, R2> downStream2,
             @NotNull Collector<T, A3, R3> downStream3,
             @NotNull Collector<T, A4, R4> downStream4) {
-        return collect(CollectorsX.branching(downstream1, downStream2, downStream3, downStream4, QuadTuple::of));
+        return branching(downstream1, downStream2, downStream3, downStream4, QuadTuple::of);
     }
 
     default <A1, R1, A2, R2, A3, R3, A4, R4, R> R branching(
@@ -855,7 +855,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     default <A, R> R collect(@NotNull Collector<T, A, R> collector) {
         A result = collector.supplier().get();
         final BiConsumer<A, T> accumulator = collector.accumulator();
-        forEach(t -> accumulator.accept(result, t));
+        asSequence().filter(Objects::nonNull).forEach(t -> accumulator.accept(result, t));
         return collector.finisher().apply(result);
     }
 
@@ -892,15 +892,15 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return finisher.apply(result);
     }
 
-    default MutableMapX<T, MutableListX<T>> group() {
+    default MapX<T, MutableListX<T>> group() {
         return groupBy(It::self);
     }
 
-    default <K> MutableMapX<K, MutableListX<T>> groupBy(@NotNull Function<T, K> classifier) {
+    default <K> MapX<K, MutableListX<T>> groupBy(@NotNull Function<T, K> classifier) {
         return groupMapping(classifier, It::self);
     }
 
-    default <K, R> MutableMapX<K, MutableListX<R>> groupMapping(@NotNull Function<T, K> classifier,
+    default <K, R> MapX<K, MutableListX<R>> groupMapping(@NotNull Function<T, K> classifier,
                                                          @NotNull Function<T, R> valueMapper) {
         return IterableReductions.groupMapping(this, classifier, valueMapper);
     }

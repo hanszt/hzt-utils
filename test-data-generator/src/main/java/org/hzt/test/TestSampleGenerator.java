@@ -119,6 +119,7 @@ public final class TestSampleGenerator {
 
     public static List<BankAccount> createSampleBankAccountListContainingNulls() {
         final List<BankAccount> bankAccounts = new ArrayList<>(createSampleBankAccountList());
+        bankAccounts.add(null);
         bankAccounts.add(new BankAccount("", null, null));
         bankAccounts.add(new BankAccount("Test", new Customer("", "", Collections.emptyList()), null));
         return bankAccounts;

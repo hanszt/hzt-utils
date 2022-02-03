@@ -8,9 +8,9 @@ import java.util.function.Function;
 final class TransformingSequence<T, R> implements Sequence<R> {
 
     private final Sequence<T> upStream;
-    private final Function<T, R> mapper;
+    private final Function<? super T, ? extends R> mapper;
 
-    TransformingSequence(Sequence<T> upStream, Function<T, R> mapper) {
+    TransformingSequence(Sequence<T> upStream, Function<? super T, ? extends R> mapper) {
         this.upStream = upStream;
         this.mapper = mapper;
     }

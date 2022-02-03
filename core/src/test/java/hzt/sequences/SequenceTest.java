@@ -5,9 +5,10 @@ import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.collections.SetX;
 import hzt.function.It;
-import hzt.iterables.IterableXTest;
 import hzt.strings.StringX;
+import hzt.test.Generator;
 import org.hzt.test.TestSampleGenerator;
+import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
@@ -104,6 +105,17 @@ class SequenceTest {
     }
 
     @Test
+    void testMapNotNull() {
+        var list = ListX.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
+
+        final var sum = Sequence.of(list)
+                .mapNotNull(BankAccount::getBalance)
+                .toListX();
+
+        assertFalse(sum.contains(null));
+    }
+
+    @Test
     void testMapFilterReduceToList() {
         ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
         final ListX<Integer> result = list.asSequence()
@@ -129,11 +141,13 @@ class SequenceTest {
         final ListX<Iterable<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
                 new ArrayDeque<>(Collections.singleton("test")));
 
-        final ListX<String> result = list.asSequence()
+        final var result = list.asSequence()
                 .flatMap(It::self)
                 .filter(s -> s.length() > 3)
                 .filterNot(String::isEmpty)
                 .toListX();
+
+        It.println("result = " + result);
 
         assertIterableEquals(ListX.of("Hallo", "test"), result);
     }
@@ -162,14 +176,16 @@ class SequenceTest {
 
     @Test
     void testGenerateSequence() {
-        final ListX<String> strings = Sequence.generate(0, i -> i + 1)
-                .take(12)
+        final var strings = Sequence.generate(0, i -> ++i)
+                .map(Generator::fib)
                 .filter(i -> i % 2 == 0)
-                .map(IterableXTest::compute200Millis)
-                .onEach(System.out::println)
+                .take(12)
+                .map(Long::intValue)
+                .map(Generator::toStringIn100Millis)
+                .onEach(It::println)
                 .toListX();
 
-        assertEquals(6, strings.size());
+        assertEquals(12, strings.size());
     }
 
     @Test
@@ -183,15 +199,15 @@ class SequenceTest {
 
     @Test
     void testTakeWhile() {
-        final ListX<String> strings = Sequence.generate(0, i -> i + 1)
-                .takeWhile(s -> s < 4)
+        final ListX<String> strings = Sequence.generate(0, i -> ++i)
+                .takeWhile(i -> i < 10)
                 .filter(i -> i % 2 == 0)
-                .map(IterableXTest::compute200Millis)
-                .onEach(System.out::println)
+                .onEach(It::println)
+                .map(Generator::toStringIn100Millis)
                 .map(String::trim)
                 .toListX();
 
-        assertEquals(2, strings.size());
+        assertEquals(5, strings.size());
     }
 
     @Test
@@ -209,10 +225,10 @@ class SequenceTest {
     @Test
     void testSkipWhile() {
         final var strings = Sequence.generate(0, i -> i + 1)
-                .skipWhile(s -> s < 4)
+                .skipWhile(i -> i < 4)
                 .filter(i -> i % 2 == 0)
                 .take(6)
-                .map(IterableXTest::compute200Millis)
+                .map(Generator::toStringIn100Millis)
                 .onEach(System.out::println)
                 .map(String::trim)
                 .toListX();
@@ -276,6 +292,116 @@ class SequenceTest {
         System.out.println("strings = " + strings);
 
         assertEquals(List.of("ollah", "eoh", "si"), strings);
+    }
+
+    @Test
+    void testWindowedThrowsExceptionWhenStepSizeNegative() {
+        final var range = Sequence.range(0, 9);
+         assertThrows(IllegalArgumentException.class, () -> range.windowed(-4));
+    }
+
+    @Test
+    void testWindowedStepGreaterThanWindowSizeWithPartialWindow() {
+        final var windows = Sequence.range(0, 98)
+                .windowed(5, 6, true)
+                .toListX();
+
+        System.out.println("windows = " + windows);
+
+        assertAll(
+                () -> assertEquals(ListX.of(0, 1, 2, 3, 4), windows.first()),
+                () -> assertEquals(ListX.of(96, 97), windows.last())
+        );
+    }
+
+    @Test
+    void testWindowedStepGreaterThanWindowSizeNoPartialWindow() {
+        final var windows = Sequence.range(0, 98)
+                .windowed(5, 6)
+                .toListX();
+
+        System.out.println("windows = " + windows);
+
+        assertAll(
+                () -> assertEquals(16, windows.size()),
+                () -> assertEquals(ListX.of(0, 1, 2, 3, 4), windows.first()),
+                () -> assertEquals(ListX.of(90, 91, 92, 93, 94), windows.last())
+        );
+    }
+
+    @Test
+    void testWindowedStepSmallerThanWindowSizeWithPartialWindow() {
+        final var windows = Sequence.rangeClosed(0, 10)
+                .windowed(5, 2, true)
+                .toListX();
+
+        System.out.println("windows = " + windows);
+
+        assertAll(
+                () -> assertEquals(6, windows.size()),
+                () -> assertEquals(ListX.of(0, 1, 2, 3, 4), windows.first()),
+                () -> assertEquals(ListX.of(10), windows.last())
+        );
+    }
+
+    @Test
+    void testWindowedStepSmallerThanWindowSizeNoPartialWindow() {
+        final var windows = Sequence.range(0, 9)
+                .windowed(4, 2)
+                .toListX();
+
+        System.out.println("windows = " + windows);
+
+        assertAll(
+                () -> assertEquals(3, windows.size()),
+                () -> assertEquals(ListX.of(0, 1, 2, 3), windows.first()),
+                () -> assertEquals(ListX.of(4, 5, 6, 7), windows.last())
+        );
+    }
+
+    @Test
+    void testWindowedSizeGreaterThanSequenceSizeNoPartialWindowGivesEmptyList() {
+        final var windows = Sequence.range(0, 8)
+                .windowed(10)
+                .toListX();
+
+        System.out.println("windows = " + windows);
+
+        assertTrue(windows.isEmpty());
+    }
+
+    @Test
+    void testWindowedLargeSequence() {
+        final var windows = Sequence.range(0, 1_000_000)
+                .windowed(2_001, 23, true)
+                .toListX();
+
+        final var lastWindow = windows.last();
+
+        final var tail = windows.tailFrom(windows.size() - 2);
+
+        System.out.println("tail = " + tail);
+
+        assertAll(
+                () -> assertEquals(43479, windows.size()),
+                () -> assertEquals(999_994, lastWindow.first()),
+                () -> assertEquals(999_999, lastWindow.last())
+        );
+    }
+
+    @Test
+    void testSequenceWindowedTransformed() {
+        final var sizes = Sequence.range(0, 1_000)
+                .filter(i -> i % 5 == 0)
+                .windowed(51, 7, ListX::size)
+                .toListX();
+
+        System.out.println("sizes = " + sizes);
+
+        System.out.println("windows.first() = " + sizes.findFirst());
+        System.out.println("windows.last() = " + sizes.findLast());
+
+        assertEquals(22, sizes.size());
     }
 
     @Test

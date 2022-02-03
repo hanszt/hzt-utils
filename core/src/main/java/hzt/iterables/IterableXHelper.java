@@ -67,7 +67,7 @@ public final class IterableXHelper {
     }
 
     static <T> Iterator<Integer> indexIterator(Iterator<T> iterator) {
-        return new Iterator<Integer>() {
+        return new Iterator<>() {
             private int index = 0;
             @Override
             public boolean hasNext() {
@@ -86,8 +86,10 @@ public final class IterableXHelper {
     }
 
     @NotNull
-    static  <T, R extends Comparable<R>> R comparisonOf(
-            Iterator<T> iterator, @NotNull Function<T, R> selector, @NotNull BiPredicate<R, R> biPredicate) {
+    static  <T, R extends Comparable<? extends R>> R comparisonOf(
+            @NotNull Iterator<T> iterator,
+            @NotNull Function<? super T, ? extends R> selector,
+            @NotNull BiPredicate<? super R, ? super R> biPredicate) {
         if (!iterator.hasNext()) {
             throw noValuePresentException();
         }
@@ -108,7 +110,7 @@ public final class IterableXHelper {
         throw noValuePresentException();
     }
 
-    static <T> Optional<T> findLastIfUnknownIterable(Predicate<T> predicate, Iterator<T> iterator) {
+    static <T> Optional<T> findLastIfUnknownIterable(Predicate<? super T> predicate, Iterator<T> iterator) {
         T result = iterator.next();
         if (!predicate.test(result) && !iterator.hasNext()) {
             return Optional.empty();
@@ -122,7 +124,7 @@ public final class IterableXHelper {
         return Optional.ofNullable(result);
     }
 
-    static <T> Optional<T> findLastIfInstanceOfList(Predicate<T> predicate, List<T> list) {
+    static <T> Optional<T> findLastIfInstanceOfList(Predicate<? super T> predicate, List<T> list) {
         final T last = list.get(list.size() - 1);
         if (last != null && predicate.test(last)) {
             return Optional.of(last);
@@ -138,7 +140,10 @@ public final class IterableXHelper {
         return Optional.empty();
     }
 
-    static <T> MutableListX<T> skipToMutableListWhile(Iterable<T> iterable, Predicate<T> predicate, boolean exclusive) {
+    static <T> MutableListX<T> skipToMutableListWhile(
+            Iterable<T> iterable,
+            Predicate<? super T> predicate,
+            boolean exclusive) {
         boolean yielding = false;
         MutableListX<T> list = MutableListX.empty();
         for (T item : iterable) {
@@ -170,12 +175,14 @@ public final class IterableXHelper {
     }
 
     public static <T> Iterator<IndexedValue<T>> indexedIterator(Iterator<T> iterator) {
-        return new Iterator<IndexedValue<T>>() {
+        return new Iterator<>() {
             private int index = 0;
+
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
             }
+
             @Override
             public IndexedValue<T> next() {
                 int prevIndex = index;

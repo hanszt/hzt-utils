@@ -43,7 +43,7 @@ final class ArrayXImpl<E> implements ArrayX<E> {
 
     @Override
     public E[] toArray() {
-        return array;
+        return Arrays.copyOf(array, array.length);
     }
 
     @NotNull

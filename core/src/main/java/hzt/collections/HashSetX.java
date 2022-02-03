@@ -20,10 +20,6 @@ final class HashSetX<E> implements MutableSetX<E> {
         this.set = new HashSet<>(n);
     }
 
-    HashSetX(Set<E> set) {
-        this.set = set;
-    }
-
     HashSetX(Collection<E> collection) {
         this.set = new HashSet<>(collection);
     }

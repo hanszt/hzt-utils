@@ -1,6 +1,7 @@
 package hzt.iterables;
 
 import hzt.collections.ListX;
+import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.collections.MutableMapX;
 import hzt.collections.MutableSetX;
@@ -49,7 +50,7 @@ public final class IterableReductions {
         return collector.finisher().apply(result);
     }
 
-    public static <T, R, K> MutableMapX<K, MutableListX<R>> groupMapping(
+    public static <T, R, K> MapX<K, MutableListX<R>> groupMapping(
             Iterable<T> iterable,
             Function<T, K> classifier,
             Function<T, R> valueMapper) {

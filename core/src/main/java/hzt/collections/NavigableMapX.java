@@ -13,10 +13,6 @@ public interface NavigableMapX<K, V> extends NavigableMap<K, V>, MutableMapX<K, 
         return new TreeMapX<>(selector);
     }
 
-    static <K, V> NavigableMapX<K, V> of(NavigableMap<K, V> map) {
-        return new TreeMapX<>(map);
-    }
-
     static <K, V, R extends Comparable<R>> NavigableMapX<K, V> of(
             Iterable<Entry<K, V>> iterable, Function<? super K, ? extends R> selector) {
         return new TreeMapX<>(iterable, selector);

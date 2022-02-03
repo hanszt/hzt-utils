@@ -28,13 +28,13 @@ public interface MutableListX<E> extends List<E>, ListX<E>, Transformable<Mutabl
         return new ArrayListX<>(collection);
     }
 
-    static <E> MutableListX<E> of(@NotNull List<E> list) {
-        return new ArrayListX<>(list);
-    }
-
     @SafeVarargs
     static <E> MutableListX<E> of(@NotNull E... values) {
         return new ArrayListX<>(values);
+    }
+
+    static <E> MutableListX<E> of(@NotNull E value) {
+        return new ArrayListX<>(value);
     }
 
     @Override
@@ -92,6 +92,10 @@ public interface MutableListX<E> extends List<E>, ListX<E>, Transformable<Mutabl
     }
 
     ListX<E> toListX();
+
+    MutableListX<E> headTo(int toIndex);
+
+    MutableListX<E> tailFrom(int fromIndex);
 
     MutableListX<E> subList(int fromIndex, int toIndex);
 

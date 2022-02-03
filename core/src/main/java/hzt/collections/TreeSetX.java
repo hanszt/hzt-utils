@@ -24,7 +24,7 @@ final class TreeSetX<E, R extends Comparable<R>> implements NavigableSetX<E> {
     }
 
     TreeSetX(NavigableSet<E> navigableSet) {
-        this.navigableSet = navigableSet;
+        this.navigableSet = new TreeSet<>(navigableSet);
     }
 
     TreeSetX(Collection<E> collection, Function<E, R> selector) {

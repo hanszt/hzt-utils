@@ -4,19 +4,16 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
-final class FlatteningIterator<T, R, E> implements Iterator<E> {
+final class FlatteningIterator<T, R> implements Iterator<R> {
 
     private final Iterator<T> iterator;
-    private final Function<T, R> transformer;
-    private final Function<R, Iterator<E>> toIteratorFunction;
+    private final Function<T, Iterator<R>> toIteratorFunction;
 
-    private Iterator<E> itemIterator = null;
+    private Iterator<R> itemIterator = null;
 
     FlatteningIterator(Iterator<T> iterator,
-                       Function<T, R> transformer,
-                       Function<R, Iterator<E>> toIteratorFunction) {
+                       Function<T, Iterator<R>> toIteratorFunction) {
         this.iterator = iterator;
-        this.transformer = transformer;
         this.toIteratorFunction = toIteratorFunction;
     }
 
@@ -26,7 +23,7 @@ final class FlatteningIterator<T, R, E> implements Iterator<E> {
     }
 
     @Override
-    public E next() {
+    public R next() {
         if (!ensureItemIterator()) {
             throw new NoSuchElementException();
         }
@@ -42,7 +39,7 @@ final class FlatteningIterator<T, R, E> implements Iterator<E> {
                 return false;
             } else {
                 final T item  = iterator.next();
-                final Iterator<E> nextItemIterator = toIteratorFunction.apply(transformer.apply(item));
+                final Iterator<R> nextItemIterator = toIteratorFunction.apply(item);
                 if (nextItemIterator.hasNext()) {
                     itemIterator = nextItemIterator;
                     return true;

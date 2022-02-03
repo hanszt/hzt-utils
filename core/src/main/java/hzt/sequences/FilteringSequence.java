@@ -11,6 +11,10 @@ final class FilteringSequence<T> implements Sequence<T> {
     private final Predicate<T> predicate;
     private final boolean sendWhen;
 
+    FilteringSequence(Sequence<T> upstream, Predicate<T> predicate) {
+        this(upstream, predicate, true);
+    }
+
     FilteringSequence(Sequence<T> upstream, Predicate<T> predicate, boolean sendWhen) {
         this.upstream = upstream;
         this.predicate = predicate;

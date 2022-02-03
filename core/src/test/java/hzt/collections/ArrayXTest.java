@@ -1,6 +1,7 @@
 package hzt.collections;
 
 import hzt.function.It;
+import hzt.test.Generator;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
@@ -23,7 +24,7 @@ class ArrayXTest {
 
         array.forEach(System.out::println);
 
-        final MutableMapX<Integer, MutableListX<String>> group = array.groupBy(String::length);
+        final MapX<Integer, MutableListX<String>> group = array.groupBy(String::length);
 
         System.out.println("group = " + group);
 
@@ -32,28 +33,15 @@ class ArrayXTest {
 
     @Test
     void testArraySum() {
-        ArrayX<Long> array = ArrayX.of(40, ArrayXTest::fib);
+        ArrayX<Long> array = ArrayX.of(40, Generator::fib);
 
-        array.forEach(System.out::println);
+        array.forEach(It::println);
 
         final long sum = array.sumOfLongs(It::asLong);
 
         System.out.println("sum = " + sum);
 
         assertEquals(165580140, sum);
-    }
-
-    private static long fib(int n) {
-        long first = 0;
-        long next = 1;
-        if (n == 0)
-            return first;
-        for (int i = 2; i <= n; i++) {
-            long temp = first + next;
-            first = next;
-            next = temp;
-        }
-        return next;
     }
 
 }

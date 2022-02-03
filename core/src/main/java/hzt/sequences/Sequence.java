@@ -12,7 +12,10 @@ import hzt.function.Transformable;
 import hzt.iterables.IterableX;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -20,12 +23,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 /**
  * A sequence is a simplified stream. It evaluates its operations in a lazy way.
- *
+ * <p>
  * It does not support parallel execution.
- *
+ * <p>
  * The implementation is heavily inspired on Kotlin's sequences api. This api provides offers simpler syntax than streams
  * and is easier to understand
  *
@@ -88,20 +92,28 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
     }
 
     @Override
+    default <R> Sequence<R> mapNotNull(Function<? super T, ? extends R> mapper) {
+        return new FilteringSequence<>(
+                new TransformingSequence<>(
+                        new FilteringSequence<>(this,
+                                Objects::nonNull), mapper), Objects::nonNull);
+    }
+
+    @Override
     default <R> Sequence<R> mapIndexed(BiFunction<Integer, ? super T, ? extends R> mapper) {
         return new TransformingIndexedSequence<>(this, mapper);
     }
 
     @Override
     default Sequence<T> filter(@NotNull Predicate<T> predicate) {
-        return new FilteringSequence<>(this, predicate, true);
+        return new FilteringSequence<>(this, predicate);
     }
 
     @Override
     default Sequence<T> filterIndexed(@NotNull BiPredicate<Integer, T> predicate) {
         return new TransformingSequence<>(
                 new FilteringSequence<>(withIndex(),
-                        val -> predicate.test(val.index(), val.value()), true), IndexedValue::value);
+                        val -> predicate.test(val.index(), val.value())), IndexedValue::value);
     }
 
     @Override
@@ -112,6 +124,10 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
     @Override
     default <R, I extends Iterable<R>> Sequence<R> flatMap(@NotNull Function<T, I> transform) {
         return new FlatteningSequence<>(this, transform, Iterable::iterator);
+    }
+
+    default <R> Sequence<R> flatMapStream(@NotNull Function<T, Stream<R>> transform) {
+        return new FlatteningSequence<>(this, transform, Stream::iterator);
     }
 
     @Override
@@ -150,12 +166,28 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
         return windowed(size, 1);
     }
 
+    default <R> Sequence<R> windowed(int size, Function<ListX<T>, R> transform) {
+        return windowed(size, 1).map(transform);
+    }
+
     default Sequence<ListX<T>> windowed(int size, int step) {
         return windowed(size, step, false);
     }
 
+    default <R> Sequence<R> windowed(int size, int step, Function<ListX<T>, R> transform) {
+        return windowed(size, step, false).map(transform);
+    }
+
+    default Sequence<ListX<T>> windowed(int size, boolean partialWindows) {
+        return windowed(size, 1, partialWindows);
+    }
+
     default Sequence<ListX<T>> windowed(int size, int step, boolean partialWindows) {
-        return new WindowedSequence<>(this, size, step, partialWindows, false);
+        return new WindowedSequence<>(this, size, step, partialWindows);
+    }
+
+    default <R> Sequence<R> windowed(int size, int step, boolean partialWindows, Function<ListX<T>, R> transform) {
+        return new WindowedSequence<>(this, size, step, partialWindows).map(transform);
     }
 
     @Override
@@ -219,12 +251,20 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
         return Sequence.of(IterableX.super.sorted());
     }
 
+    default <C extends Collection<T>> C toCollection(Supplier<C> collectionFactory) {
+        return filterToCollection(collectionFactory, It.noFilter());
+    }
+
     default MutableListX<T> toMutableList() {
-        return toCollectionNotNullOf(MutableListX::empty, It::self);
+        return toMutableListOf(It::self);
     }
 
     default ListX<T> toListX() {
         return toMutableList();
+    }
+
+    default List<T> toList() {
+        return List.copyOf(toMutableList());
     }
 
     default MutableSetX<T> toMutableSet() {

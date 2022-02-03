@@ -1,5 +1,6 @@
 package hzt.collectors;
 
+import hzt.sequences.Sequence;
 import hzt.statistics.BigDecimalSummaryStatistics;
 import hzt.statistics.DoubleStatistics;
 import org.hzt.test.TestSampleGenerator;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.Set;
 
@@ -20,7 +22,6 @@ import static hzt.collectors.BigDecimalCollectors.summarizingBigDecimal;
 import static hzt.collectors.BigDecimalCollectors.summingBigDecimal;
 import static hzt.collectors.BigDecimalCollectors.toMaxBigDecimal;
 import static hzt.collectors.BigDecimalCollectors.toMinBigDecimal;
-import static hzt.collectors.CollectorsX.branching;
 import static hzt.collectors.CollectorsX.intersectingBy;
 import static hzt.collectors.CollectorsX.toIntersection;
 import static java.util.stream.Collectors.counting;
@@ -37,16 +38,17 @@ class CollectorsXTest {
         final List<BankAccount> sampleBankAccountListContainingNulls = TestSampleGenerator.createSampleBankAccountListContainingNulls();
 
         final BigDecimalSummaryStatistics expected = sampleBankAccountListContainingNulls.stream()
+                .filter(Objects::nonNull)
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
 
-        final BigDecimalSummaryStatistics actual = sampleBankAccountListContainingNulls.stream()
-                .collect(branching(
-                        counting(),
-                        summingBigDecimal(BankAccount::getBalance),
-                        toMinBigDecimal(BankAccount::getBalance),
-                        toMaxBigDecimal(BankAccount::getBalance),
-                        BigDecimalSummaryStatistics::new
-                ));
+        final BigDecimalSummaryStatistics actual = Sequence.of(sampleBankAccountListContainingNulls).branching(
+                counting(),
+                summingBigDecimal(BankAccount::getBalance),
+                toMinBigDecimal(BankAccount::getBalance),
+                toMaxBigDecimal(BankAccount::getBalance),
+                BigDecimalSummaryStatistics::new
+        );
+
         assertAll(
                 () -> assertNotEquals(expected.getAverage(), actual.getAverage()),
                 () -> assertNotEquals(expected.getCount(), actual.getCount()),

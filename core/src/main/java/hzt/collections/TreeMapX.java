@@ -26,26 +26,23 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements NavigableMapX<K, 
     }
 
     TreeMapX(Map<K, V> map, Function<? super K, ? extends R> selector) {
-        TreeMap<K, V> newMap = new TreeMap<>(Comparator.comparing(selector));
-        newMap.putAll(map);
-        this.map = newMap;
+        this.map = new TreeMap<>(Comparator.comparing(selector));
+        this.map.putAll(map);
     }
     TreeMapX(Iterable<Entry<K, V>> iterable, Function<? super K, ? extends R> selector) {
-        TreeMap<K, V> newMap = new TreeMap<>(Comparator.comparing(selector));
+        map = new TreeMap<>(Comparator.comparing(selector));
         for (Map.Entry<K, V> entry : iterable) {
-            newMap.put(entry.getKey(), entry.getValue());
+            map.put(entry.getKey(), entry.getValue());
         }
-        this.map = newMap;
     }
 
     @SafeVarargs
     TreeMapX(Function<? super K, ? extends R> selector, Entry<K, V> first, Entry<K, V>... others) {
-        TreeMap<K, V> newMap = new TreeMap<>(Comparator.comparing(selector));
-        newMap.put(first.getKey(), first.getValue());
+        map = new TreeMap<>(Comparator.comparing(selector));
+        map.put(first.getKey(), first.getValue());
         for (Map.Entry<K, V> entry : others) {
-            newMap.put(entry.getKey(), entry.getValue());
+            map.put(entry.getKey(), entry.getValue());
         }
-        this.map = newMap;
     }
 
     @Override

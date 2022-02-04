@@ -1,19 +1,18 @@
 package hzt.sequences;
 
 import hzt.PreConditions;
-import hzt.iterators.ArrayIterator;
 import hzt.collections.IndexedValue;
 import hzt.collections.ListX;
 import hzt.collections.MutableListX;
 import hzt.collections.MutableSetX;
 import hzt.collections.SetX;
+import hzt.iterables.IterableX;
+import hzt.iterators.ArrayIterator;
 import hzt.utils.It;
 import hzt.utils.Transformable;
-import hzt.iterables.IterableX;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -36,6 +35,7 @@ import java.util.stream.Stream;
  * @param <T> the type of the items in the Sequence
  */
 @SuppressWarnings("unused")
+@FunctionalInterface
 public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
 
     static <T> Sequence<T> empty() {
@@ -43,18 +43,7 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
     }
 
     static <T> Sequence<T> of(@NotNull Iterable<T> iterable) {
-        return new Sequence<>() {
-            @NotNull
-            @Override
-            public Iterator<T> iterator() {
-                return iterable.iterator();
-            }
-
-            @Override
-            public Sequence<T> get() {
-                return this;
-            }
-        };
+        return iterable::iterator;
     }
 
     @SafeVarargs

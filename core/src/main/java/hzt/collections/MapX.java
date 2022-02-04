@@ -36,8 +36,8 @@ public interface MapX<K, V> extends IterableX<Map.Entry<K, V>> {
     }
 
     @SafeVarargs
-    static <K, V> Map<K, V> ofEntries(Map.Entry<? extends K, ? extends V>... entries) {
-        throw new UnsupportedOperationException();
+    static <K, V> MapX<K, V> ofEntries(Map.Entry<? extends K, ? extends V>... entries) {
+        return new HashMapX<>(entries);
     }
 
     static <K, V> MapX<K, V> build(Consumer<MutableMapX<K, V>> mapXConsumer) {
@@ -248,7 +248,7 @@ public interface MapX<K, V> extends IterableX<Map.Entry<K, V>> {
         }
     }
 
-    static <K, V> Map<K, V> copyOf(Map<? extends K, ? extends V> map) {
-        throw new UnsupportedOperationException();
+    static <K, V> MapX<K, V> copyOf(MapX<K, V> map) {
+        return new HashMapX<>(map);
     }
 }

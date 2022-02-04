@@ -25,17 +25,17 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E> {
     }
 
     LinkedHashSetX(Iterable<E> iterable) {
-        Set<E> newSet = new LinkedHashSet<>();
-        iterable.forEach(newSet::add);
-        this.set = newSet;
+        set = new LinkedHashSet<>();
+        for (E e : iterable) {
+            set.add(e);
+        }
     }
 
     @SafeVarargs
     LinkedHashSetX(E first, E @NotNull ... others) {
-        Set<E> newSet = new LinkedHashSet<>();
-        newSet.add(first);
-        Collections.addAll(newSet, others);
-        this.set = newSet;
+        set = new LinkedHashSet<>();
+        set.add(first);
+        Collections.addAll(set, others);
     }
 
     @Override

@@ -22,20 +22,26 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
     }
 
     HashMapX(Iterable<Entry<K, V>> iterable) {
-        Map<K, V> newMap = new HashMap<>();
+        map = new HashMap<>();
         for (Map.Entry<K, V> entry : iterable) {
-            newMap.put(entry.getKey(), entry.getValue());
+            map.put(entry.getKey(), entry.getValue());
         }
-        this.map = newMap;
     }
 
     @SafeVarargs
-    HashMapX(Pair<K, V>... iterable) {
-        Map<K, V> newMap = new HashMap<>();
-        for (Pair<K, V> entry : iterable) {
-            newMap.put(entry.first(), entry.second());
+    HashMapX(Pair<K, V>... pairs) {
+        map = new HashMap<>();
+        for (Pair<K, V> pair : pairs) {
+            map.put(pair.first(), pair.second());
         }
-        this.map = newMap;
+    }
+
+    @SafeVarargs
+    HashMapX(Entry<? extends K, ? extends V>... entries) {
+        map = new HashMap<>();
+        for (Entry<? extends K, ? extends V> entry : entries) {
+            map.put(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override

@@ -25,20 +25,18 @@ final class HashSetX<E> implements MutableSetX<E> {
     }
 
     HashSetX(Iterable<E> iterable) {
-        Set<E> newSet = new HashSet<>();
-        iterable.forEach(newSet::add);
-        this.set = newSet;
+        set = new HashSet<>();
+        iterable.forEach(set::add);
     }
 
     @SafeVarargs
     HashSetX(E @NotNull ... values) {
-        Set<E> newSet = new HashSet<>();
+        set = new HashSet<>();
         for (E item : values) {
-            if (!newSet.add(item)) {
+            if (!set.add(item)) {
                 throw new IllegalStateException("Duplicate elements in set. This is not allowed");
             }
         }
-        this.set = newSet;
     }
 
     @Override

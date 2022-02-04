@@ -44,7 +44,7 @@ class TransformableTest {
         final Painter painter = Transformable.of(vanGoghAuction)
                 .apply(auction -> auction.setMostPopularPainting(Painting.of("Nijntje")))
                 .run(PaintingAuction::getMostPopularPainting)
-                .apply(System.out::println)
+                .apply(It::println)
                 .alsoUnless(Painting::isInMuseum, list::add)
                 .run(Painting::painter)
                 .let(p -> expected);

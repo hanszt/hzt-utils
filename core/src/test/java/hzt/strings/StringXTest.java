@@ -1,6 +1,7 @@
 package hzt.strings;
 
 import hzt.collections.ListX;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -29,7 +30,7 @@ class StringXTest {
 
         final ListX<Integer> characterCounts = StringX.of(hallo).group().valuesToListXOf(List::size);
 
-        System.out.println("hallo = " + characterCounts);
+        It.println("hallo = " + characterCounts);
 
         assertIterableEquals(expected, characterCounts);
     }

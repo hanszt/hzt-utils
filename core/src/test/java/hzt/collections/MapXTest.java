@@ -1,9 +1,9 @@
 package hzt.collections;
 
-import hzt.utils.It;
-import hzt.sequences.Sequence;
+import hzt.ranges.IntRange;
 import hzt.strings.StringX;
 import hzt.tuples.Pair;
+import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
@@ -33,7 +33,7 @@ class MapXTest {
 
         final MapX<Museum, String> actual = MapX.of(museumMap).toInvertedMap();
 
-        System.out.println("actual = " + actual);
+        It.println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -51,7 +51,7 @@ class MapXTest {
                 .valuesToIterX(Museum::getDateOfOpening)
                 .sumOfInts(LocalDate::getDayOfMonth);
 
-        System.out.println("actual = " + actual);
+        It.println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -65,7 +65,7 @@ class MapXTest {
 
         ListX.of(museumListContainingNulls).associateBy(Museum::getName).forEachIndexed(biConsumer);
 
-        list.forEach(System.out::println);
+        list.forEach(It::println);
 
         assertEquals(3, list.size());
     }
@@ -80,7 +80,7 @@ class MapXTest {
 
         final List<Painting> actual = MapX.of(museumMap).flatMapValuesToListOf(Museum::getPaintings);
 
-        System.out.println("actual = " + actual);
+        It.println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -90,9 +90,9 @@ class MapXTest {
         final Map<String, Museum> museumMap = TestSampleGenerator.createMuseumMap();
 
         final MapX<String, Museum> mapX = MapX.of(museumMap);
-        MapX.of(mapX).entrySet().forEach(System.out::println);
+        MapX.of(mapX).entrySet().forEach(It::println);
 
-        System.out.println("mapX = " + mapX);
+        It.println("mapX = " + mapX);
 
         assertEquals(museumMap, mapX);
     }
@@ -110,7 +110,7 @@ class MapXTest {
             throw new IllegalStateException();
         });
 
-        System.out.println("van_gogh = " + van_gogh);
+        It.println("van_gogh = " + van_gogh);
 
         assertEquals(expected, van_gogh);
     }
@@ -140,7 +140,7 @@ class MapXTest {
     @Test
     void testMapOfPairs() {
         final var hallo = StringX.of("Hallo");
-        final var map = MapX.of(hallo.to("s"), StringX.of("asd").to("asdd"));
+        final var map = MapX.ofPairs(hallo.to("s"), StringX.of("asd").to("asdd"));
         assertEquals(2, map.size());
         assertTrue(map.containsValue("asdd"));
     }
@@ -148,7 +148,7 @@ class MapXTest {
     @Test
     void testBuildMap() {
         final var mapX = MapX.<Integer, LocalDate>build(map ->
-                Sequence.range(1990, 2022).forEach(year -> map.put(year, LocalDate.of(year, 1, 1))));
+                IntRange.of(1990, 2022).forEach(year -> map.put(year, LocalDate.of(year, 1, 1))));
 
         mapX.forEach(It::println);
 

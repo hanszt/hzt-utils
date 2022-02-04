@@ -92,7 +92,7 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
 
     @Override
     public @NotNull MutableSetX<K> keySet() {
-        return MutableSetX.of(map.keySet());
+        return MutableLinkedSetX.of(map.keySet());
     }
 
     @Override

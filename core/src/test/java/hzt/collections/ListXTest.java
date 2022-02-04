@@ -1,12 +1,12 @@
 package hzt.collections;
 
-import hzt.iterables.IterableX;
+import hzt.test.Generator;
+import hzt.test.model.PaintingAuction;
+import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
-import hzt.test.Generator;
-import hzt.test.model.PaintingAuction;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -40,15 +39,15 @@ class ListXTest {
     void testTakeWhile() {
         final List<Museum> museumList = TestSampleGenerator.getMuseumListContainingNulls();
 
-//        final List<Museum> expected = museumList.stream()
-//                .takeWhile(museum -> museum.getPaintings().size() < 3).collect(Collectors.toList());
+        final List<Museum> expected = museumList.stream()
+                .takeWhile(museum -> museum.getPaintings().size() < 3).collect(Collectors.toList());
 
         final MutableListX<Museum> actual = ListX.of(museumList)
                 .takeToListXWhile(museum -> museum.getPaintings().size() < 3).toMutableList();
 
-        System.out.println("actual = " + actual);
+        It.println("actual = " + actual);
 
-        assertTrue(actual.isNotEmpty());
+        assertEquals(expected, actual);
     }
 
     @Test

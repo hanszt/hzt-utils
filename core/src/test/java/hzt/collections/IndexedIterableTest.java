@@ -1,5 +1,6 @@
 package hzt.collections;
 
+import hzt.ranges.IntRange;
 import hzt.utils.It;
 import hzt.sequences.Sequence;
 import org.junit.jupiter.api.Test;
@@ -15,12 +16,12 @@ class IndexedIterableTest {
     void testForEachIndexed() {
         List<IndexedValue<Integer>> list = new ArrayList<>();
 
-        Sequence.rangeClosed(1, 100)
+        IntRange.closed(1, 100)
                 .filter(this::isEven)
                 .onEach(It::println)
                 .forEachIndexedValue(list::add);
 
-        System.out.println("list = " + list);
+        It.println("list = " + list);
 
         assertEquals(50, list.size());
     }

@@ -3,6 +3,7 @@ package hzt.collectors;
 import hzt.sequences.Sequence;
 import hzt.statistics.BigDecimalSummaryStatistics;
 import hzt.statistics.DoubleStatistics;
+import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;
@@ -71,7 +72,7 @@ class CollectorsXTest {
                 .mapToDouble(Painting::ageInYears)
                 .average();
 
-        System.out.println("summarizingAges = " + summarizingAges);
+        It.println("summarizingAges = " + summarizingAges);
 
         assertAll(
                 () -> assertEquals(standardDeviationAge, summarizingAges.getStandardDeviation()),
@@ -93,7 +94,7 @@ class CollectorsXTest {
         final Set<String> intersection = stringLists.stream()
                 .collect(toIntersection());
 
-        System.out.println("intersection = " + intersection);
+        It.println("intersection = " + intersection);
 
         assertAll(
                 () -> assertEquals(2, intersection.size()),
@@ -110,7 +111,7 @@ class CollectorsXTest {
                 .map(Museum::getPaintings)
                 .collect(intersectingBy(Painting::getMilleniumOfCreation));
 
-        System.out.println("paintingMadeInPreviousMilleniumPresentInAllMuseums = " + paintingNamesPresentInAllMuseums);
+        It.println("paintingMadeInPreviousMilleniumPresentInAllMuseums = " + paintingNamesPresentInAllMuseums);
 
         assertFalse(paintingNamesPresentInAllMuseums.isEmpty());
     }

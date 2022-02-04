@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.SortedMap;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -23,6 +24,10 @@ public interface NavigableMapX<K, V> extends NavigableMap<K, V>, MutableMapX<K, 
         return new TreeMapX<>(map, selector);
     }
 
+    static <K, V, R extends Comparable<R>> NavigableMapX<K, V> ofSortedMap(SortedMap<K, V> sortedMap) {
+        return new TreeMapX<>(sortedMap);
+    }
+
     @SafeVarargs
     static <K, V, R extends Comparable<R>> NavigableMapX<K, V> ofEntries(
             Function<K, R> selector, Map.Entry<K, V> first, Map.Entry<K, V>... others) {
@@ -34,15 +39,50 @@ public interface NavigableMapX<K, V> extends NavigableMap<K, V>, MutableMapX<K, 
         return MutableMapX.super.stream();
     }
 
-    @Override
     @NotNull
-    default Entry<K, V> first() {
-        return MutableMapX.super.first();
-    }
+    @Override
+    NavigableMapX<K, V> subMap(K fromKey, K toKey);
+
+    @NotNull
+    @Override
+    NavigableMapX<K, V> headMap(K toKey);
+
+    @NotNull
+    @Override
+    NavigableMapX<K, V> tailMap(K fromKey);
 
     @Override
-    default Entry<K, V> last() {
-        return MutableMapX.super.last();
-    }
+    MutableSetX<K> keySet();
+
+    @Override
+    MutableListX<V> values();
+
+    @Override
+    MutableSetX<Entry<K, V>> entrySet();
+
+    @Override
+    NavigableMapX<K, V> descendingMap();
+
+    @Override
+    NavigableSetX<K> navigableKeySet();
+
+    @Override
+    NavigableSetX<K> descendingKeySet();
+
+    @Override
+    NavigableMapX<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive);
+
+    @Override
+    NavigableMapX<K, V> headMap(K toKey, boolean inclusive);
+
+    @Override
+    NavigableMapX<K, V> tailMap(K fromKey, boolean inclusive);
+
+    @Override
+    @NotNull
+    Entry<K, V> first();
+
+    @Override
+    Entry<K, V> last();
 
 }

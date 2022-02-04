@@ -1,6 +1,7 @@
 package hzt.collections;
 
 import hzt.iterables.IterableX;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
@@ -44,7 +45,7 @@ class MutableListXTest {
                 .map(PaintingAuction::getDateOfOpening)
                 .plus(ListX.of(LocalDate.MIN, LocalDate.MAX));
 
-        System.out.println("dates = " + dates);
+        It.println("dates = " + dates);
 
         assertEquals(expected, dates);
     }
@@ -62,7 +63,7 @@ class MutableListXTest {
                 .map(PaintingAuction::getDateOfOpening)
                 .also(localDates -> localDates.add(LocalDate.MIN));
 
-        System.out.println("dates = " + dates);
+        It.println("dates = " + dates);
 
         assertEquals(expected, dates);
     }
@@ -88,7 +89,7 @@ class MutableListXTest {
                 .takeIf(ListX::isNotEmpty)
                 .orElseThrow(NoSuchElementException::new);
 
-        System.out.println("dates = " + dates);
+        It.println("dates = " + dates);
 
         assertEquals(expected, dates);
     }

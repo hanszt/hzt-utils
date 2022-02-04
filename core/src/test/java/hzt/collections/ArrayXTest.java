@@ -1,11 +1,12 @@
 package hzt.collections;
 
-import hzt.utils.It;
 import hzt.test.Generator;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -19,14 +20,24 @@ class ArrayXTest {
     }
 
     @Test
+    void testArrayXOfNulls() {
+        ArrayX<Integer> array = ArrayX.ofNulls(3);
+
+        assertAll(
+                () -> assertTrue(array.all(Objects::isNull)),
+                () -> assertEquals(3, array.size())
+        );
+    }
+
+    @Test
     void testArrayGroupBy() {
         ArrayX<String> array = ArrayX.of("hallo", "raar", "gedoe", "moe", "stom");
 
-        array.forEach(System.out::println);
+        array.forEach(It::println);
 
         final MapX<Integer, MutableListX<String>> group = array.groupBy(String::length);
 
-        System.out.println("group = " + group);
+        It.println("group = " + group);
 
         assertEquals(ListX.of("raar", "stom"), group.get(4));
     }
@@ -39,9 +50,21 @@ class ArrayXTest {
 
         final long sum = array.sumOfLongs(It::asLong);
 
-        System.out.println("sum = " + sum);
+        It.println("sum = " + sum);
 
         assertEquals(165580140, sum);
+    }
+
+    @Test
+    void testBinarySearchFrom() {
+        ArrayX<Long> array = ArrayX.of(40, Generator::fib);
+
+        array.forEach(It::println);
+
+        // the inverted insertion point (-insertion point - 1)
+        final long index = array.binarySearchFrom(10, aLong -> aLong.compareTo(34L));
+
+        assertEquals(-11, index);
     }
 
 }

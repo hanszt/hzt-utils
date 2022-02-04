@@ -1,5 +1,6 @@
 package hzt.stream;
 
+import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Book;
 import org.hzt.test.model.Museum;
@@ -21,12 +22,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static hzt.stream.StreamUtils.*;
 import static hzt.function.predicates.DateTimePredicates.isBefore;
 import static hzt.function.predicates.StringPredicates.contains;
 import static hzt.function.predicates.StringPredicates.containsNoneOf;
 import static hzt.function.predicates.StringPredicates.hasEqualLength;
 import static hzt.function.predicates.StringPredicates.startsWith;
+import static hzt.stream.StreamUtils.*;
 import static java.util.Comparator.comparing;
 import static java.util.function.Predicate.isEqual;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -59,9 +60,9 @@ class StreamUtilsTest {
         final Color colorByCombinedFilter = combinedFilter.apply(originalColor);
         final Color colorByComposedFilter = composedFilter.apply(originalColor);
 
-        System.out.println("originalColor = " + originalColor);
-        System.out.println("colorByCombinedFilter = " + colorByCombinedFilter);
-        System.out.println("colorByComposedFilter = " + colorByComposedFilter);
+        It.println("originalColor = " + originalColor);
+        It.println("colorByCombinedFilter = " + colorByCombinedFilter);
+        It.println("colorByComposedFilter = " + colorByComposedFilter);
         //assert
         assertAll(
                 () -> assertEquals(colorByCombinedFilter, colorByComposedFilter),
@@ -182,7 +183,7 @@ class StreamUtilsTest {
                 .filter(by(Book::getTitle, containsNoneOf(E, A)))
                 .collect(Collectors.toList());
 
-        filteredBookList.forEach(System.out::println);
+        filteredBookList.forEach(It::println);
 
         assertEquals(expected, filteredBookList);
     }
@@ -198,7 +199,7 @@ class StreamUtilsTest {
                 .flatMap(Arrays::stream)
                 .collect(Collectors.toList());
 
-        fieldListOfObjectClass.forEach(System.out::println);
+        fieldListOfObjectClass.forEach(It::println);
 
         assertFalse(fieldListOfObjectClass.isEmpty());
     }
@@ -211,7 +212,7 @@ class StreamUtilsTest {
                 .filter(by(Book::hasCopies).or(Book::isAboutProgramming))
                 .collect(Collectors.toList());
 
-        filteredBookList.forEach(System.out::println);
+        filteredBookList.forEach(It::println);
 
         assertEquals(2, filteredBookList.size());
     }
@@ -228,7 +229,7 @@ class StreamUtilsTest {
                 .filter(by(Book::getTitle, startsWith("t")).and(by(Book::getCategory, contains("2"))))
                 .collect(Collectors.toList());
 
-        filteredBookList.forEach(System.out::println);
+        filteredBookList.forEach(It::println);
 
         assertEquals(expected, filteredBookList);
     }
@@ -258,8 +259,8 @@ class StreamUtilsTest {
                 .flatMap(castIfInstance(Double.class))
                 .collect(Collectors.toList());
 
-        System.out.println("numbers.size() = " + numbers.size());
-        System.out.println("actual.size() = " + actual.size());
+        It.println("numbers.size() = " + numbers.size());
+        It.println("actual.size() = " + actual.size());
 
         assertEquals(expected, actual);
     }
@@ -269,7 +270,7 @@ class StreamUtilsTest {
         //arrange
         final List<Book> bookList = TestSampleGenerator.createBookList();
         //act
-        bookList.forEach(transformAndThen(Book::getCategory, System.out::println));
+        bookList.forEach(transformAndThen(Book::getCategory, It::println));
         //assert
         assertFalse(bookList.isEmpty());
     }
@@ -285,7 +286,7 @@ class StreamUtilsTest {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        System.out.println("concatenatedList = " + concatenatedList);
+        It.println("concatenatedList = " + concatenatedList);
 
         final List<Painting> paintings = concatenatedList.stream()
                 .filter(nonNull(Painting::painter))
@@ -303,7 +304,7 @@ class StreamUtilsTest {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        System.out.println("concatenatedList = " + concatenatedList);
+        It.println("concatenatedList = " + concatenatedList);
 
         final List<Painting> containingNullsFilteredOutList = concatenatedList.stream()
                 .filter(nonNull(Painting::painter, Painter::getDateOfBirth))
@@ -334,7 +335,7 @@ class StreamUtilsTest {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        System.out.println("containingNulls = " + containingNulls);
+        It.println("containingNulls = " + containingNulls);
 
         final List<Museum> actual = containingNulls.stream()
                 .filter(nonNull(Museum::getMostPopularPainting, Painting::painter, Painter::getDateOfBirth))
@@ -352,7 +353,7 @@ class StreamUtilsTest {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        System.out.println("paintings = " + paintings);
+        It.println("paintings = " + paintings);
 
         final List<LocalDate> expected = paintings.stream()
                 .filter(Objects::nonNull)
@@ -373,7 +374,7 @@ class StreamUtilsTest {
     void testMapThreeLevelsDeepNullSafe() {
         final List<Museum> concatenatedMuseumList = getMuseumsContainingNulls();
 
-        System.out.println("concatenatedList = " + concatenatedMuseumList);
+        It.println("concatenatedList = " + concatenatedMuseumList);
 
         final List<DayOfWeek> expected = concatenatedMuseumList.stream()
                 .filter(Objects::nonNull)
@@ -394,7 +395,7 @@ class StreamUtilsTest {
                         LocalDate::getDayOfWeek))
                 .collect(Collectors.toList());
 
-        System.out.println("listOfDayOfWeekBirthDateMostPopularPaintingPainters = " + listOfDayOfWeekBirthDateMostPopularPaintingPainters);
+        It.println("listOfDayOfWeekBirthDateMostPopularPaintingPainters = " + listOfDayOfWeekBirthDateMostPopularPaintingPainters);
 
         assertEquals(expected, listOfDayOfWeekBirthDateMostPopularPaintingPainters);
     }
@@ -403,7 +404,7 @@ class StreamUtilsTest {
     void testMapFourLevelsDeepNullSafe() {
         final List<Museum> concatenatedMuseumList = getMuseumsContainingNulls();
 
-        System.out.println("concatenatedList = " + concatenatedMuseumList);
+        It.println("concatenatedList = " + concatenatedMuseumList);
 
         final List<DayOfWeek> expected = concatenatedMuseumList.stream()
                 .filter(Objects::nonNull)
@@ -429,7 +430,7 @@ class StreamUtilsTest {
                 LocalDate.of(1853, Month.MARCH, 20).getDayOfWeek(),
                 LocalDate.of(1881, Month.OCTOBER, 25).getDayOfWeek());
 
-        System.out.println("expectedDaysOfWeek = " + expectedDaysOfWeek);
+        It.println("expectedDaysOfWeek = " + expectedDaysOfWeek);
 
         assertAll(
                 () -> assertEquals(expectedDaysOfWeek, actual),
@@ -441,7 +442,7 @@ class StreamUtilsTest {
     void testMapFourLevelsDeepNullSafeWithMapMulti() {
         final List<Museum> concatenatedMuseumList = getMuseumsContainingNulls();
 
-        System.out.println("concatenatedList = " + concatenatedMuseumList);
+        It.println("concatenatedList = " + concatenatedMuseumList);
 
         final List<DayOfWeek> expected = concatenatedMuseumList.stream()
                 .filter(Objects::nonNull)
@@ -459,7 +460,7 @@ class StreamUtilsTest {
                 LocalDate.of(1853, Month.MARCH, 20).getDayOfWeek(),
                 LocalDate.of(1881, Month.OCTOBER, 25).getDayOfWeek());
 
-        System.out.println("expectedDaysOfWeek = " + expectedDaysOfWeek);
+        It.println("expectedDaysOfWeek = " + expectedDaysOfWeek);
 
                 assertEquals(expectedDaysOfWeek, expected);
     }
@@ -491,7 +492,7 @@ class StreamUtilsTest {
                 .map(Painting::name)
                 .collect(Collectors.toList());
 
-        names.forEach(System.out::println);
+        names.forEach(It::println);
 
         assertEquals(1, names.size());
     }

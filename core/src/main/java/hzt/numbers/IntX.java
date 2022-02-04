@@ -1,15 +1,30 @@
 package hzt.numbers;
 
+import hzt.ranges.IntRange;
 import hzt.utils.Transformable;
 
 import java.util.Objects;
 
 public final class IntX extends Number implements NumberX, Transformable<IntX> {
 
+    private static final long serialVersionUID = 20;
+
     private final Integer integer;
 
     private IntX(Integer integer) {
         this.integer = integer;
+    }
+
+    public IntRange downTo(int target) {
+        return target > integer ? IntRange.empty() : IntRange.of(integer, target - 1);
+    }
+
+    public IntRange upTo(int target) {
+        return target < integer ? IntRange.empty() : IntRange.closed(integer, target);
+    }
+
+    public IntRange until(int target) {
+        return target < integer ? IntRange.empty() : IntRange.of(integer, target);
     }
 
     public static String toString(int i, int radix) {

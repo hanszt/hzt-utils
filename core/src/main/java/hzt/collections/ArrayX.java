@@ -1,12 +1,11 @@
 package hzt.collections;
 
 import hzt.utils.Transformable;
-import hzt.iterables.IterableX;
 
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
 
-public interface ArrayX<E> extends IterableX<E>, Transformable<ArrayX<E>> {
+public interface ArrayX<E> extends CollectionView<E>, Transformable<ArrayX<E>> {
 
     @SafeVarargs
     static <E> ArrayX<E> of(E... values) {
@@ -25,6 +24,7 @@ public interface ArrayX<E> extends IterableX<E>, Transformable<ArrayX<E>> {
 
     void set(int index, E value);
 
+    @Override
     int size();
 
     default  int binarySearchTo(int toIndex, ToIntFunction<E> comparison) {

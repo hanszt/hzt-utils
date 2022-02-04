@@ -50,8 +50,8 @@ final class HashSetX<E> implements MutableSetX<E> {
     }
 
     @Override
-    public boolean contains(Object o) {
-        return set.contains(o);
+    public boolean contains(Object value) {
+        return set.contains(value);
     }
 
     @NotNull

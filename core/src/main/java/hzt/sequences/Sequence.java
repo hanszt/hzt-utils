@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -67,14 +68,6 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
         return new GeneratorSequence<>(seedFunction, nextFunction);
     }
 
-    static Sequence<Integer> range(int start, int end) {
-        return generate(start, i -> i + 1).take(end - start);
-    }
-
-    static Sequence<Integer> rangeClosed(int start, int endInclusive) {
-        return generate(start, i -> i + 1).take(endInclusive + 1 - start);
-    }
-
     @Override
     default <R> Sequence<R> map(@NotNull Function<T, R> mapper) {
         return new TransformingSequence<>(this, mapper);
@@ -91,6 +84,10 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
     @Override
     default <R> Sequence<R> mapIndexed(BiFunction<Integer, ? super T, ? extends R> mapper) {
         return new TransformingIndexedSequence<>(this, mapper);
+    }
+
+    default <K, V> EntrySequence<K, V> asEntrySequence(Function<T, K> keyMapper, Function<T, V> valueMapper) {
+        return EntrySequence.of(map(value -> Map.entry(keyMapper.apply(value), valueMapper.apply(value))));
     }
 
     @Override

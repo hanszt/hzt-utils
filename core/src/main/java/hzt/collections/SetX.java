@@ -1,10 +1,8 @@
 package hzt.collections;
 
 import hzt.utils.It;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Set;
 
 public interface SetX<E> extends CollectionView<E> {
@@ -32,11 +30,11 @@ public interface SetX<E> extends CollectionView<E> {
         return toSetOf(It::self);
     }
 
+    @Override
     int size();
 
-    boolean contains(Object o);
-
-    boolean containsAll(@NotNull Collection<?> c);
+    @Override
+    boolean contains(Object value);
 
     default MutableListX<E> toMutableList() {
         return CollectionView.super.getListOrElseCompute();

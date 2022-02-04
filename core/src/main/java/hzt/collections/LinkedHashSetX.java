@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 final class LinkedHashSetX<E> implements MutableLinkedSetX<E> {
@@ -39,6 +40,23 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LinkedHashSetX<?> that = (LinkedHashSetX<?>) o;
+        return set.equals(that.set);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(set);
+    }
+
+    @Override
     public int size() {
         return set.size();
     }
@@ -49,8 +67,8 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E> {
     }
 
     @Override
-    public boolean contains(Object o) {
-        return set.contains(o);
+    public boolean contains(Object value) {
+        return set.contains(value);
     }
 
     @NotNull

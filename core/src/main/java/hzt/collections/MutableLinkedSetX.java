@@ -2,7 +2,6 @@ package hzt.collections;
 
 import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Stream;
 
 public interface MutableLinkedSetX<E> extends MutableSetX<E> {
 
@@ -25,11 +24,6 @@ public interface MutableLinkedSetX<E> extends MutableSetX<E> {
     @SafeVarargs
     static <E> MutableLinkedSetX<E> of(E first, E... others) {
         return new LinkedHashSetX<>(first, others);
-    }
-
-    @Override
-    default Stream<E> stream() {
-        return MutableSetX.super.stream();
     }
 
 }

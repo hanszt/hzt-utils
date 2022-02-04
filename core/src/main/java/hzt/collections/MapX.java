@@ -1,8 +1,10 @@
 package hzt.collections;
 
-import hzt.utils.It;
+import hzt.iterables.EntryIterableX;
 import hzt.iterables.IterableX;
+import hzt.sequences.EntrySequence;
 import hzt.tuples.Pair;
+import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -17,27 +19,75 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
-public interface MapX<K, V> extends IterableX<Map.Entry<K, V>> {
+public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterableX<K, V> {
+
+    static <K, V> MapX<K, V> empty() {
+        return MutableMapX.empty();
+    }
 
     static <K, V> MapX<K, V> of(Map<K, V> map) {
-        return new HashMapX<>(map);
+        return MutableMapX.of(map);
     }
 
     static <K, V> MapX<K, V> of(Iterable<Map.Entry<K, V>> entries) {
         return new HashMapX<>(entries);
     }
 
-    @SafeVarargs
-    static <K, V> MapX<K, V> of(Pair<K, V>... pairs) {
-        return new HashMapX<>(pairs);
+    static <K, V> MapX<K, V> of(K k1, V v1) {
+        return MapX.of(Map.of(k1, v1));
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2) {
+        return MapX.of(Map.of(k1, v1, k2, v2));
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3) {
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3));
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4));
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5));
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6) {
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6));
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7) {
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7));
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
+                                K k6, V v6, K k7, V v7, K k8, V v8) {
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8));
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
+                                K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9) {
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9));
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
+                                K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10) {
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9, k10, v10));
     }
 
     @SafeVarargs
     static <K, V> MapX<K, V> ofEntries(Map.Entry<? extends K, ? extends V>... entries) {
         return new HashMapX<>(entries);
+    }
+
+    @SafeVarargs
+    static <K, V> MapX<K, V> ofPairs(Pair<K, V>... pairs) {
+        return new HashMapX<>(pairs);
     }
 
     static <K, V> MapX<K, V> build(Consumer<MutableMapX<K, V>> mapXConsumer) {
@@ -46,11 +96,23 @@ public interface MapX<K, V> extends IterableX<Map.Entry<K, V>> {
         return mapX;
     }
 
-    <K1, V1> MapX<K1, V1> map(Function<K, K1> keyMapper, Function<V, V1> valueMapper);
+    <K1, V1> MapX<K1, V1> map(@NotNull Function<K, K1> keyMapper, Function<V, V1> valueMapper);
 
-    <K1> MapX<K1, V> mapKeys(Function<K, K1> keyMapper);
+    default <K1, V1> MutableMapX<K1, V1> map(@NotNull BiFunction<K, V, Pair<K1, V1>> biFunction) {
+        return asSequence().map(biFunction).toMutableMap();
+    }
 
-    <V1> MapX<K, V1> mapValues(Function<V, V1> valueMapper);
+    <K1> MapX<K1, V> mapKeys(@NotNull Function<K, K1> keyMapper);
+
+    <V1> MapX<K, V1> mapValues(@NotNull Function<V, V1> valueMapper);
+
+    default MapX<K, V> filterByKeys(@NotNull Predicate<K> predicate) {
+        return asSequence().filterByKeys(predicate).toMapX();
+    }
+
+    default MapX<K, V> filterByValues(@NotNull Predicate<V> predicate) {
+        return asSequence().filterByValues(predicate).toMapX();
+    }
 
     default <K1, V1> MapX<K1, V1> toInvertedMapOf(Function<K, V1> toValueMapper, Function<V, K1> toKeyMapper) {
         Map<K1, V1> resultMap = new HashMap<>();
@@ -193,14 +255,11 @@ public interface MapX<K, V> extends IterableX<Map.Entry<K, V>> {
         return (MutableListX<R>) flatMapValuesTo(MutableListX::empty, mapper);
     }
 
-    default  <R> List<R> flatMapValuesToListOf(Function<V, Collection<R>> mapper) {
+    default <R> List<R> flatMapValuesToListOf(Function<V, Collection<R>> mapper) {
         return flatMapValuesToMutableListOf(mapper);
     }
 
-    int size();
-
-    boolean isEmpty();
-
+    @Override
     default boolean isNotEmpty() {
         return !isEmpty();
     }
@@ -217,35 +276,32 @@ public interface MapX<K, V> extends IterableX<Map.Entry<K, V>> {
 
     MutableSetX<Map.Entry<K, V>> entrySet();
 
-    boolean equals(Object o);
-
-    int hashCode();
-
     default V getOrDefault(Object key, V defaultValue) {
-        V v;
-        return (((v = get(key)) != null) || containsKey(key))
-                ? v
-                : defaultValue;
+        V value = get(key);
+        return (value != null || containsKey(key)) ? value : defaultValue;
     }
 
     default MutableMapX<K, V> toMutableMap() {
         return MutableMapX.ofEntries(this);
     }
 
-    default void forEach(BiConsumer<? super K, ? super V> action) {
+    default void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
         Objects.requireNonNull(action);
         for (Map.Entry<K, V> entry : entrySet()) {
-            K k;
-            V v;
             try {
-                k = entry.getKey();
-                v = entry.getValue();
+                K k = entry.getKey();
+                V v = entry.getValue();
+                action.accept(k, v);
             } catch (IllegalStateException ise) {
                 // this usually means the entry is no longer in the map.
                 throw new ConcurrentModificationException(ise);
             }
-            action.accept(k, v);
         }
+    }
+
+    @Override
+    default EntrySequence<K, V> asSequence() {
+        return EntrySequence.of(this);
     }
 
     static <K, V> MapX<K, V> copyOf(MapX<K, V> map) {

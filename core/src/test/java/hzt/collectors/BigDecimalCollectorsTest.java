@@ -3,6 +3,7 @@ package hzt.collectors;
 import hzt.statistics.BigDecimalStatistics;
 import hzt.statistics.BigDecimalSummaryStatistics;
 import hzt.statistics.DoubleStatistics;
+import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
 import org.junit.jupiter.api.Test;
@@ -20,13 +21,13 @@ class BigDecimalCollectorsTest {
     @Test
     void testSummarizingBigDecimal() {
         final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
-        System.out.println("Sample bankaccountList:");
-        sampleBankAccountList.forEach(System.out::println);
+        It.println("Sample bankaccountList:");
+        sampleBankAccountList.forEach(It::println);
 
         final BigDecimalSummaryStatistics bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
 
-        System.out.println("bigDecimalSummaryStatistics = " + bigDecimalSummaryStatistics);
+        It.println("bigDecimalSummaryStatistics = " + bigDecimalSummaryStatistics);
 
         assertAll(
                 () -> assertEquals(BigDecimal.valueOf(46502.27), bigDecimalSummaryStatistics.getAverage()),
@@ -40,8 +41,8 @@ class BigDecimalCollectorsTest {
     @Test
     void testAveragingBigDecimal() {
         final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
-        System.out.println("Sample bankaccountList:");
-        sampleBankAccountList.forEach(System.out::println);
+        It.println("Sample bankaccountList:");
+        sampleBankAccountList.forEach(It::println);
 
         final BigDecimalSummaryStatistics bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
@@ -49,7 +50,7 @@ class BigDecimalCollectorsTest {
         final BigDecimal average = sampleBankAccountList.stream()
                 .collect(averagingBigDecimal(BankAccount::getBalance));
 
-        System.out.println("average = " + average);
+        It.println("average = " + average);
 
         final BigDecimal expected = bigDecimalSummaryStatistics.getAverage();
         assertEquals(average, expected);
@@ -58,8 +59,8 @@ class BigDecimalCollectorsTest {
     @Test
     void testStandardDeviatingBigDecimal() {
         final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
-        System.out.println("Sample bankaccountList:");
-        sampleBankAccountList.forEach(System.out::println);
+        It.println("Sample bankaccountList:");
+        sampleBankAccountList.forEach(It::println);
 
         final DoubleStatistics doubleStatistics = sampleBankAccountList.stream()
                 .map(BankAccount::getBalance)
@@ -75,8 +76,8 @@ class BigDecimalCollectorsTest {
         final BigDecimal standarDeviationBalances = sampleBankAccountList.stream()
                 .collect(standardDeviatingBigDecimal(BankAccount::getBalance));
 
-        System.out.println("bigDecimalStatistics = " + bigDecimalStatistics);
-        System.out.println("doubleStatistics = " + doubleStatistics);
+        It.println("bigDecimalStatistics = " + bigDecimalStatistics);
+        It.println("doubleStatistics = " + doubleStatistics);
 
         assertAll(
                 () -> assertEquals(expected, standarDeviationBalances),
@@ -94,7 +95,7 @@ class BigDecimalCollectorsTest {
                 .mapToObj(BigDecimal::valueOf)
                 .collect(BigDecimalCollectors.toBigDecimalStatistics());
 
-        System.out.println("statistics = " + statistics);
+        It.println("statistics = " + statistics);
 
         final BigDecimal standardDeviation = statistics.getStandardDeviation()
                 .setScale(1, RoundingMode.HALF_UP);
@@ -110,8 +111,8 @@ class BigDecimalCollectorsTest {
     @Test
     void testSummingBigDecimal() {
         final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
-        System.out.println("Sample bankaccountList:");
-        sampleBankAccountList.forEach(System.out::println);
+        It.println("Sample bankaccountList:");
+        sampleBankAccountList.forEach(It::println);
 
         final double sumAsDouble = sampleBankAccountList.stream()
                 .map(BankAccount::getBalance)
@@ -124,7 +125,7 @@ class BigDecimalCollectorsTest {
         final BigDecimal sum = sampleBankAccountList.stream()
                 .collect(summingBigDecimal(BankAccount::getBalance));
 
-        System.out.println("sum = " + sum);
+        It.println("sum = " + sum);
 
         final BigDecimal expected = bigDecimalSummaryStatistics.getSum();
 
@@ -137,8 +138,8 @@ class BigDecimalCollectorsTest {
     @Test
     void testToMaxBigDecimal() {
         final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
-        System.out.println("Sample bankaccountList:");
-        sampleBankAccountList.forEach(System.out::println);
+        It.println("Sample bankaccountList:");
+        sampleBankAccountList.forEach(It::println);
 
         final BigDecimalSummaryStatistics bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
@@ -146,7 +147,7 @@ class BigDecimalCollectorsTest {
         final BigDecimal max = sampleBankAccountList.stream()
                 .collect(toMaxBigDecimal(BankAccount::getBalance));
 
-        System.out.println("max = " + max);
+        It.println("max = " + max);
 
         final BigDecimal expected = bigDecimalSummaryStatistics.getMax();
         assertEquals(max, expected);
@@ -155,8 +156,8 @@ class BigDecimalCollectorsTest {
     @Test
     void testToMinBigDecimal() {
         final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
-        System.out.println("Sample bankaccountList:");
-        sampleBankAccountList.forEach(System.out::println);
+        It.println("Sample bankaccountList:");
+        sampleBankAccountList.forEach(It::println);
 
         final BigDecimalSummaryStatistics bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
@@ -164,7 +165,7 @@ class BigDecimalCollectorsTest {
         final BigDecimal min = sampleBankAccountList.stream()
                 .collect(toMinBigDecimal(BankAccount::getBalance));
 
-        System.out.println("min = " + min);
+        It.println("min = " + min);
 
         final BigDecimal expected = bigDecimalSummaryStatistics.getMin();
         assertEquals(min, expected);

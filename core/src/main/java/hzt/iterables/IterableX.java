@@ -432,28 +432,28 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return array;
     }
 
-    default IntSummaryStatistics statsOf(ToIntFunction<T> mapper) {
+    default IntSummaryStatistics statsOfInts(ToIntFunction<T> mapper) {
         return collect(IntSummaryStatistics::new,
                 Objects::nonNull,
                 mapper::applyAsInt,
                 IntSummaryStatistics::accept);
     }
 
-    default LongSummaryStatistics statsOf(ToLongFunction<T> mapper) {
+    default LongSummaryStatistics statsOfLongs(ToLongFunction<T> mapper) {
         return collect(LongSummaryStatistics::new,
                 Objects::nonNull,
                 mapper::applyAsLong,
                 LongSummaryStatistics::accept);
     }
 
-    default DoubleStatistics statsOf(ToDoubleFunction<T> mapper) {
+    default DoubleStatistics statsOfDoubles(ToDoubleFunction<T> mapper) {
         return collect(DoubleStatistics::new,
                 Objects::nonNull,
                 mapper::applyAsDouble,
                 DoubleStatistics::accept);
     }
 
-    default BigDecimalStatistics statsOf(Function<T, BigDecimal> mapper) {
+    default BigDecimalStatistics statsOfBigDecimals(Function<T, BigDecimal> mapper) {
         return collect(BigDecimalStatistics::new,
                 Objects::nonNull,
                 mapper,
@@ -757,7 +757,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
                 .comparisonOf(iterator(), selector, (first, second) -> first != null && second != null && first.compareTo(second) < 0);
     }
 
-    default <R> void forEachOf(@NotNull Function<? super T, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
+    default <R> void forEach(@NotNull Function<? super T, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
         onEach(selector, consumer);
     }
 

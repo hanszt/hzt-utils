@@ -4,9 +4,10 @@ import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.collections.SetX;
-import hzt.utils.It;
+import hzt.ranges.IntRange;
 import hzt.strings.StringX;
 import hzt.test.Generator;
+import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Year;
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -190,7 +193,7 @@ class SequenceTest {
 
     @Test
     void testLargeSequence() {
-        final MutableListX<BigDecimal> bigDecimals = Sequence.range(0, 100_000)
+        final MutableListX<BigDecimal> bigDecimals = IntRange.of(0, 100_000)
                 .filter(integer -> integer % 2 == 0)
                 .toDescendingSortedMutableListOf(BigDecimal::valueOf);
 
@@ -215,7 +218,7 @@ class SequenceTest {
         final ListX<String> strings = Sequence.generate(1, i -> i + 2)
                 .map(String::valueOf)
                 .takeWhileInclusive(s -> !s.contains("0"))
-                .onEach(System.out::println)
+                .onEach(It::println)
                 .map(String::trim)
                 .toListX();
 
@@ -229,7 +232,7 @@ class SequenceTest {
                 .filter(i -> i % 2 == 0)
                 .take(6)
                 .map(Generator::toStringIn100Millis)
-                .onEach(System.out::println)
+                .onEach(It::println)
                 .map(String::trim)
                 .toListX();
 
@@ -245,21 +248,21 @@ class SequenceTest {
     void testRange() {
         assertArrayEquals(
                 IntStream.range(5, 10).toArray(),
-                Sequence.range(5, 10).toIntArrayOf(Integer::intValue));
+                IntRange.of(5, 10).toIntArrayOf(Integer::intValue));
     }
 
     @Test
     void testRangeWithInterval() {
         assertArrayEquals(
                 IntStream.range(5, 10).filter(i -> i % 2 == 0).toArray(),
-                Sequence.range(5, 10).filter(i -> i % 2 == 0).toIntArrayOf(Integer::intValue));
+                IntRange.of(5, 10).filter(i -> i % 2 == 0).toIntArrayOf(Integer::intValue));
     }
 
     @Test
     void testRangeClosed() {
         assertArrayEquals(
                 IntStream.rangeClosed(5, 10).toArray(),
-                Sequence.rangeClosed(5, 10).toIntArrayOf(Integer::intValue));
+                IntRange.closed(5, 10).toIntArrayOf(Integer::intValue));
     }
 
     @Test
@@ -271,11 +274,11 @@ class SequenceTest {
                 .take(10_000_000)
                 .group();
 
-        group.values().forEachOf(List::size, System.out::println);
+        group.values().forEach(List::size, It::println);
 
         assertAll(
                 () -> assertEquals(integers.size(), group.size()),
-                () -> group.values().forEachOf(ListX::isNotEmpty, Assertions::assertTrue)
+                () -> group.values().forEach(ListX::isNotEmpty, Assertions::assertTrue)
         );
     }
 
@@ -289,24 +292,24 @@ class SequenceTest {
                 .map(StringX::reversed)
                 .toListOf(StringX::toString);
 
-        System.out.println("strings = " + strings);
+        It.println("strings = " + strings);
 
         assertEquals(List.of("ollah", "eoh", "si"), strings);
     }
 
     @Test
     void testWindowedThrowsExceptionWhenStepSizeNegative() {
-        final var range = Sequence.range(0, 9);
+        final var range = IntRange.of(0, 9);
          assertThrows(IllegalArgumentException.class, () -> range.windowed(-4));
     }
 
     @Test
     void testWindowedStepGreaterThanWindowSizeWithPartialWindow() {
-        final var windows = Sequence.range(0, 98)
+        final var windows = IntRange.of(0, 98)
                 .windowed(5, 6, true)
                 .toListX();
 
-        System.out.println("windows = " + windows);
+        It.println("windows = " + windows);
 
         assertAll(
                 () -> assertEquals(ListX.of(0, 1, 2, 3, 4), windows.first()),
@@ -316,11 +319,11 @@ class SequenceTest {
 
     @Test
     void testWindowedStepGreaterThanWindowSizeNoPartialWindow() {
-        final var windows = Sequence.range(0, 98)
+        final var windows = IntRange.of(0, 98)
                 .windowed(5, 6)
                 .toListX();
 
-        System.out.println("windows = " + windows);
+        It.println("windows = " + windows);
 
         assertAll(
                 () -> assertEquals(16, windows.size()),
@@ -331,11 +334,11 @@ class SequenceTest {
 
     @Test
     void testWindowedStepSmallerThanWindowSizeWithPartialWindow() {
-        final var windows = Sequence.rangeClosed(0, 10)
+        final var windows = IntRange.closed(0, 10)
                 .windowed(5, 2, true)
                 .toListX();
 
-        System.out.println("windows = " + windows);
+        It.println("windows = " + windows);
 
         assertAll(
                 () -> assertEquals(6, windows.size()),
@@ -346,11 +349,11 @@ class SequenceTest {
 
     @Test
     void testWindowedStepSmallerThanWindowSizeNoPartialWindow() {
-        final var windows = Sequence.range(0, 9)
+        final var windows = IntRange.of(0, 9)
                 .windowed(4, 2)
                 .toListX();
 
-        System.out.println("windows = " + windows);
+        It.println("windows = " + windows);
 
         assertAll(
                 () -> assertEquals(3, windows.size()),
@@ -361,18 +364,18 @@ class SequenceTest {
 
     @Test
     void testWindowedSizeGreaterThanSequenceSizeNoPartialWindowGivesEmptyList() {
-        final var windows = Sequence.range(0, 8)
+        final var windows = IntRange.of(0, 8)
                 .windowed(10)
                 .toListX();
 
-        System.out.println("windows = " + windows);
+        It.println("windows = " + windows);
 
         assertTrue(windows.isEmpty());
     }
 
     @Test
     void testWindowedLargeSequence() {
-        final var windows = Sequence.range(0, 1_000_000)
+        final var windows = IntRange.of(0, 1_000_000)
                 .windowed(2_001, 23, true)
                 .toListX();
 
@@ -380,7 +383,7 @@ class SequenceTest {
 
         final var tail = windows.tailFrom(windows.size() - 2);
 
-        System.out.println("tail = " + tail);
+        It.println("tail = " + tail);
 
         assertAll(
                 () -> assertEquals(43479, windows.size()),
@@ -391,15 +394,15 @@ class SequenceTest {
 
     @Test
     void testSequenceWindowedTransformed() {
-        final var sizes = Sequence.range(0, 1_000)
+        final var sizes = IntRange.of(0, 1_000)
                 .filter(i -> i % 5 == 0)
                 .windowed(51, 7, ListX::size)
                 .toListX();
 
-        System.out.println("sizes = " + sizes);
+        It.println("sizes = " + sizes);
 
-        System.out.println("windows.first() = " + sizes.findFirst());
-        System.out.println("windows.last() = " + sizes.findLast());
+        It.println("windows.first() = " + sizes.findFirst());
+        It.println("windows.last() = " + sizes.findLast());
 
         assertEquals(22, sizes.size());
     }
@@ -408,6 +411,69 @@ class SequenceTest {
     void testEmpty() {
         final ListX<Object> listX = Sequence.empty().toListX();
         assertTrue(listX.isEmpty());
+    }
+
+    @Test
+    void testGeneratedSequenceCanBeConsumedMultipleTimes() {
+        var leapYears = IntRange.from(1900).upTo(2000).step(2)
+                .map(Year::of)
+                .filter(Year::isLeap);
+
+        final var first = leapYears.first();
+        final var last = leapYears.last();
+
+        It.println("first = " + first);
+        It.println("last = " + last);
+        final var stats = leapYears.statsOfInts(Year::getValue);
+
+        assertAll(
+                () -> assertEquals(Year.of(1904), first),
+                () -> assertEquals(Year.of(2000), last),
+                () -> assertEquals(48800, stats.getSum())
+        );
+    }
+
+    @Test
+    void testSequenceCanBeConsumedMultipleTimes() {
+        var names = Sequence.of(List.of(1, 2, 3, 4, 5,3, -1,6 ,12))
+                .onEach(It::println)
+                .mapNotNull(Year::of)
+                .sorted();
+
+        final var first = names.first();
+        final var last = names.last();
+
+        final var nameList = names.toList();
+
+        It.println("first = " + first);
+        It.println("last = " + last);
+
+        assertAll(
+                () -> assertEquals(Year.of(-1), first),
+                () -> assertEquals(Year.of(12), last),
+                () -> assertEquals(9, nameList.size()),
+                () -> assertEquals(3, names.windowed(2, 3).count())
+        );
+    }
+
+    @Test
+    void testStreamCanOnlyBeConsumedOnce() {
+        final var yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
+                .filter(i -> i % 2 == 0)
+                .map(Year::of);
+
+        final var years = yearStream.collect(Collectors.toList());
+
+        assertAll(
+                () -> assertEquals(4, years.size()),
+                () -> assertStreamCanOnlyBeConsumedOnce(yearStream)
+        );
+    }
+
+    private void assertStreamCanOnlyBeConsumedOnce(Stream<Year> yearStream) {
+        //noinspection ResultOfMethodCallIgnored
+        final var exception = assertThrows(IllegalStateException.class, yearStream::findFirst);
+        assertEquals("stream has already been operated upon or closed", exception.getMessage());
     }
 
 }

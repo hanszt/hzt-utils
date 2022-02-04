@@ -34,6 +34,11 @@ public interface MutableSetX<E> extends Set<E>, SetX<E>, Transformable<MutableSe
     }
 
     @Override
+    default boolean isEmpty() {
+        return SetX.super.isEmpty();
+    }
+
+    @Override
     default Stream<E> stream() {
         return Set.super.stream();
     }

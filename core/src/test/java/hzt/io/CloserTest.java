@@ -1,5 +1,6 @@
 package hzt.io;
 
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -50,18 +51,18 @@ class CloserTest {
 
 
         public void load() throws IOException {
-            System.out.println(name + " loading...");
-            System.out.println(name + " loaded");
+            It.println(name + " loading...");
+            It.println(name + " loaded");
         }
 
         public String read() throws IOException {
-            System.out.println(name + " reading...");
-            System.out.println(name + " read");
+            It.println(name + " reading...");
+            It.println(name + " read");
             return "Read result";
         }
 
         public void close() {
-            System.out.println(name + " is now closed");
+            It.println(name + " is now closed");
             closed = true;
         }
 

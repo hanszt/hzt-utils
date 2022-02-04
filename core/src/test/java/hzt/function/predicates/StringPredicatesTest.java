@@ -1,5 +1,6 @@
 package hzt.function.predicates;
 
+import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, containsAnyOf(O, A)))
                 .collect(Collectors.toList());
 
-        result.forEach(System.out::println);
+        result.forEach(It::println);
         assertEquals(expected, result);
     }
 
@@ -45,7 +46,7 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, isEqualIgnoreCase(NAME1).or(isEqualIgnoreCase(NAME2))))
                 .collect(Collectors.toList());
 
-        result.forEach(System.out::println);
+        result.forEach(It::println);
         assertEquals(expected, result);
     }
 
@@ -63,7 +64,7 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, startsWith(LE).or(startsWith(ME))))
                 .collect(Collectors.toList());
 
-        result.forEach(System.out::println);
+        result.forEach(It::println);
         assertEquals(expected, result);
     }
 
@@ -82,7 +83,7 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, endsWithAnyOf(EL, HOED, NON)))
                 .collect(Collectors.toList());
 
-        result.forEach(System.out::println);
+        result.forEach(It::println);
         assertEquals(expected, result);
     }
 
@@ -99,7 +100,7 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, hasEqualLength(NAME)))
                 .collect(Collectors.toList());
 
-        result.forEach(System.out::println);
+        result.forEach(It::println);
 
         assertEquals(expected, result);
     }
@@ -120,7 +121,7 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, containsAllOf("Meisje", "de", "first")))
                 .collect(Collectors.toList());
 
-        result.forEach(System.out::println);
+        result.forEach(It::println);
         assertEquals(expected, result);
     }
 
@@ -140,10 +141,10 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, containsAnyOf(EL, HOED, NON)))
                 .collect(Collectors.toList());
 
-        System.out.println("Input:");
-        paintingList.forEach(System.out::println);
-        System.out.println("result:");
-        result.forEach(System.out::println);
+        It.println("Input:");
+        paintingList.forEach(It::println);
+        It.println("result:");
+        result.forEach(It::println);
         //assert
         assertEquals(expected, result);
     }
@@ -164,10 +165,10 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, containsNoneOf(EL, HOED, NON)))
                 .collect(Collectors.toList());
 
-        System.out.println("Input:");
-        paintingList.forEach(System.out::println);
-        System.out.println("result:");
-        result.forEach(System.out::println);
+        It.println("Input:");
+        paintingList.forEach(It::println);
+        It.println("result:");
+        result.forEach(It::println);
         //assert
         assertEquals(expected, result);
     }

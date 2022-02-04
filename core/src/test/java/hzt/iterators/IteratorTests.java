@@ -16,7 +16,7 @@ class IteratorTests {
         Iterable<String> strings = () -> iterator;
         for (String s : strings) {
             final var length = s.length();
-            System.out.println("s = " + s);
+            It.println("s = " + s);
             assertTrue(() -> isPowerOfTwo(length));
             if (length > 1000) {
                 break;

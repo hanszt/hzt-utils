@@ -55,8 +55,8 @@ final class TreeSetX<E, R extends Comparable<R>> implements NavigableSetX<E> {
     }
 
     @Override
-    public boolean contains(Object o) {
-        return navigableSet.contains(o);
+    public boolean contains(Object value) {
+        return navigableSet.contains(value);
     }
 
     @NotNull

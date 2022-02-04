@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -202,10 +203,18 @@ public interface ListX<E> extends CollectionView<E> {
         return distinctToMutableListBy(selector);
     }
 
-    E random();
+    Optional<E> findRandom();
+
+    default E random() {
+        return findRandom().orElseThrow();
+    }
+
+    default Optional<E> findRandom(Random random) {
+        return isNotEmpty() ? Optional.of(get(random.nextInt(size()))) : Optional.empty();
+    }
 
     default E random(Random random) {
-        return get(random.nextInt(size()));
+        return findRandom(random).orElseThrow();
     }
 
     default int binarySearchTo(int toIndex, ToIntFunction<E> comparison) {
@@ -240,27 +249,25 @@ public interface ListX<E> extends CollectionView<E> {
      */
     int binarySearch(int fromIndex, int toIndex, ToIntFunction<E> comparison);
 
+    @Override
     int size();
 
     int lastIndex();
 
+    @Override
     boolean isEmpty();
 
+    @Override
     default boolean isNotEmpty() {
         return !isEmpty();
     }
 
-    boolean contains(Object o);
+    @Override
+    boolean contains(Object value);
 
     @Override
     default boolean containsNot(E e) {
         return !contains(e);
-    }
-
-    boolean containsAll(Collection<?> c);
-
-    default boolean containsNoneOf(Collection<?> collection) {
-        return !containsAll(collection);
     }
 
     E get(int index);

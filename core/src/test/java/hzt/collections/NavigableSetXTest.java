@@ -33,14 +33,14 @@ class NavigableSetXTest {
 
         final double average = names
                 .onEach(String::length, It
-                        .<Consumer<Integer>>self(System.out::println)
+                        .<Consumer<Integer>>self(It::println)
                         .andThen(list::add))
                 .filterBy(String::length, length -> length > 14)
                 .averageOfInts(String::length);
 
-        System.out.println("average = " + average);
+        It.println("average = " + average);
 
-        names.forEach(System.out::println);
+        names.forEach(It::println);
 
         assertAll(
                 () -> assertIterableEquals(ListX.of(14, 15, 14), list),
@@ -59,7 +59,7 @@ class NavigableSetXTest {
 
         final NavigableSetX<Museum> sortedMuseums = museumListContainingNulls.toSetSortedBy(Museum::getName);
 
-        sortedMuseums.forEach(System.out::println);
+        sortedMuseums.forEach(It::println);
 
         assertIterableEquals(sortedMuseums, expected);
     }

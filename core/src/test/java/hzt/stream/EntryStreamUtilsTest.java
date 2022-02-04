@@ -1,5 +1,6 @@
 package hzt.stream;
 
+import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Book;
 import org.hzt.test.model.Painter;
@@ -34,7 +35,7 @@ class EntryStreamUtilsTest {
                 .map(toSingle(EntryStreamUtilsTest::asString))
                 .collect(Collectors.toList());
 
-        groupedByBookNameListAsString.forEach(System.out::println);
+        groupedByBookNameListAsString.forEach(It::println);
 
         assertTrue(groupedByBookNameListAsString.stream().noneMatch(String::isEmpty));
     }
@@ -44,8 +45,8 @@ class EntryStreamUtilsTest {
         final Map<String, List<Book>> groupedByCategoryMap = TestSampleGenerator.createBookList().stream()
                 .collect(Collectors.groupingBy(Book::getCategory));
 
-        System.out.println("groupedByCategoryMap:");
-        groupedByCategoryMap.entrySet().forEach(System.out::println);
+        It.println("groupedByCategoryMap:");
+        groupedByCategoryMap.entrySet().forEach(It::println);
 
         final Map<String, Set<Book>> expectedMap = groupedByCategoryMap.entrySet().stream()
                 .map(e -> new AbstractMap.SimpleEntry<String, HashSet<Book>>(e.getKey(), new HashSet<>(e.getValue())) {})
@@ -60,8 +61,8 @@ class EntryStreamUtilsTest {
                 .filter(byValue(books -> !books.isEmpty()))
                 .collect(toMap());
 
-        System.out.println("Result:");
-        actualMap.entrySet().forEach(System.out::println);
+        It.println("Result:");
+        actualMap.entrySet().forEach(It::println);
 
         assertEquals(expectedMap, actualMap);
     }
@@ -79,14 +80,14 @@ class EntryStreamUtilsTest {
 
         groupedByPainterMap.entrySet().stream()
                 .map(value(List::size))
-                .forEach(System.out::println);
+                .forEach(It::println);
 
         final Map<String, Integer> result = groupedByPainterMap.entrySet().stream()
                 .filter(byEntry(EntryStreamUtilsTest::painterBornIn19thCenturyAndListGreaterThan1))
                 .map(toEntry(Painter::getLastname, List::size))
                 .collect(toMap());
 
-        System.out.println("result = " + result);
+        It.println("result = " + result);
         assertTrue(result.keySet().containsAll(Arrays.asList("van Gogh", "Picasso")));
     }
 
@@ -102,7 +103,7 @@ class EntryStreamUtilsTest {
 
         groupedByPainterMap.entrySet().stream()
                 .map(value(List::size))
-                .forEach(System.out::println);
+                .forEach(It::println);
 
         Throwable throwable = assertThrows(IllegalStateException.class, () -> invertKeysAndValues(groupedByPainterMap));
         throwable.printStackTrace();
@@ -113,7 +114,7 @@ class EntryStreamUtilsTest {
                 .filter(byValue(list -> list.size() > 1))
                 .map(toInvertedEntry(Painter::getLastname, List::size))
                 .collect(toMap())
-                .entrySet().forEach(System.out::println);
+                .entrySet().forEach(It::println);
     }
 
     @Test
@@ -121,8 +122,8 @@ class EntryStreamUtilsTest {
         final Map<String, List<Book>> groupedByCategoryMap = TestSampleGenerator.createBookList().stream()
                 .collect(Collectors.groupingBy(Book::getCategory));
 
-        System.out.println("groupedByCategoryMap:");
-        groupedByCategoryMap.entrySet().forEach(System.out::println);
+        It.println("groupedByCategoryMap:");
+        groupedByCategoryMap.entrySet().forEach(It::println);
 
         groupedByCategoryMap.entrySet().stream()
                 .map(value(HashSet::new))
@@ -130,7 +131,7 @@ class EntryStreamUtilsTest {
                 .filter(byValue(books -> !books.isEmpty()))
                 .forEach(entry(EntryStreamUtilsTest::assertResult)
                         .andThen(entry((bookCategory, bookSet) ->
-                                System.out.println("key: " +  bookCategory + ", value: " + bookSet))));
+                                It.println("key: " +  bookCategory + ", value: " + bookSet))));
     }
 
     private static void assertResult(String category, HashSet<Book> books) {

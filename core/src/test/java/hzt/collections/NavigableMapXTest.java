@@ -26,7 +26,7 @@ class NavigableMapXTest {
         final NavigableMapX<String, Museum> actual = museumListContainingNulls
                 .toNavigableMapAssociatedBy(Museum::getName);
 
-        actual.keySet().forEach(System.out::println);
+        actual.keySet().forEach(It::println);
 
         assertAll(
                 () -> assertIterableEquals(actual.keySet(), expected.keySet()),
@@ -49,7 +49,7 @@ class NavigableMapXTest {
 
         final Museum firstMuseum = actual.first().getKey();
 
-        System.out.println("firstMuseum = " + firstMuseum);
+        It.println("firstMuseum = " + firstMuseum);
 
         assertAll(
                 () -> assertIterableEquals(actual.keySet(), expected.keySet()),

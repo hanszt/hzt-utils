@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.ToIntFunction;
 
@@ -50,8 +51,8 @@ final class ArrayListX<T> implements MutableListX<T> {
     }
 
     @Override
-    public T random() {
-        return list.get(RANDOM.nextInt(list.size()));
+    public Optional<T> findRandom() {
+        return isNotEmpty() ? Optional.of(get(RANDOM.nextInt(size()))) : Optional.empty();
     }
 
     @Override
@@ -75,8 +76,8 @@ final class ArrayListX<T> implements MutableListX<T> {
     }
 
     @Override
-    public boolean contains(Object o) {
-        return list.contains(o);
+    public boolean contains(Object value) {
+        return list.contains(value);
     }
 
     @NotNull

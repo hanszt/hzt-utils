@@ -1,6 +1,6 @@
 package hzt.collections;
 
-import hzt.iterables.EntryIterableX;
+import hzt.iterables.EntryIterable;
 import hzt.iterables.IterableX;
 import hzt.sequences.EntrySequence;
 import hzt.tuples.Pair;
@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
-public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterableX<K, V> {
+public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterable<K, V> {
 
     static <K, V> MapX<K, V> empty() {
         return MutableMapX.empty();

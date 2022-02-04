@@ -4,7 +4,7 @@ import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableMapX;
 import hzt.collections.SetX;
-import hzt.iterables.EntryIterableX;
+import hzt.iterables.EntryIterable;
 import hzt.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,7 @@ import java.util.function.Predicate;
  * @param <V> the value type of the items in the Sequence
  */
 @SuppressWarnings("unused")
-public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIterableX<K, V> {
+public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIterable<K, V> {
 
     static <K, V> EntrySequence<K, V> of(Iterable<Map.Entry<K,V>> iterable) {
         return iterable::iterator;

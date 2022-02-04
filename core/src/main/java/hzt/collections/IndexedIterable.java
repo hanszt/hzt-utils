@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+@FunctionalInterface
 public interface IndexedIterable<T> {
 
     Iterator<IndexedValue<T>> indexedIterator();

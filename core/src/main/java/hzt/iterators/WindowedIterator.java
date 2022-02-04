@@ -1,4 +1,4 @@
-package hzt.sequences;
+package hzt.iterators;
 
 import hzt.collections.ListX;
 import hzt.collections.MutableListX;
@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
-public class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
+public final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
 
     private final Iterator<T> iterator;
     private final int size;
@@ -16,15 +16,22 @@ public class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
     private MutableListX<T> nextWindow = MutableListX.empty();
     private int skip = 0;
 
-    public WindowedIterator(
-            @NotNull Sequence<T> upstream,
+    private WindowedIterator(
+            @NotNull Iterator<T> iterator,
             int size,
             int step,
             boolean partialWindows) {
-        this.iterator = upstream.iterator();
+        this.iterator = iterator;
         this.size = size;
         this.step = step;
         this.partialWindows = partialWindows;
+    }
+
+    public static <T> WindowedIterator<T> of(@NotNull Iterator<T> iterator,
+                                             int size,
+                                             int step,
+                                             boolean partialWindows) {
+        return new WindowedIterator<>(iterator, size, step, partialWindows);
     }
 
     private ListX<T> computeNextWindow() {
@@ -89,7 +96,7 @@ public class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
     }
 
     @Override
-    void computeNext() {
+    protected void computeNext() {
         final var next = computeNextWindow();
         if (next.isEmpty()) {
             done();

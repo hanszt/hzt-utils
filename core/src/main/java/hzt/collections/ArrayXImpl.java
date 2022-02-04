@@ -1,5 +1,6 @@
 package hzt.collections;
 
+import hzt.iterators.ArrayIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -49,7 +50,7 @@ final class ArrayXImpl<E> implements ArrayX<E> {
     @NotNull
     @Override
     public Iterator<E> iterator() {
-        return new ArrayIterator<>(array);
+        return ArrayIterator.of(array);
     }
 
     @Override

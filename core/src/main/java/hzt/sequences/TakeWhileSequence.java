@@ -1,5 +1,6 @@
 package hzt.sequences;
 
+import hzt.iterators.TakeWhileIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -20,6 +21,6 @@ final class TakeWhileSequence<T> implements Sequence<T> {
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return new TakeWhileIterator<>(upstream.iterator(), predicate, inclusive);
+        return TakeWhileIterator.of(upstream.iterator(), predicate, inclusive);
     }
 }

@@ -2,6 +2,7 @@ package hzt.sequences;
 
 import hzt.PreConditions;
 import hzt.collections.ListX;
+import hzt.iterators.WindowedIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -36,6 +37,6 @@ public class WindowedSequence<T> implements Sequence<ListX<T>> {
     @NotNull
     @Override
     public Iterator<ListX<T>> iterator() {
-        return new WindowedIterator<>(upstream, size, step, partialWindows);
+        return WindowedIterator.of(upstream.iterator(), size, step, partialWindows);
     }
 }

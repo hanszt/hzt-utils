@@ -1,5 +1,6 @@
 package hzt.sequences;
 
+import hzt.iterators.FlatteningIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -25,7 +26,7 @@ final class FlatteningSequence<T, R, E> implements Sequence<E> {
     @NotNull
     @Override
     public Iterator<E> iterator() {
-        return new FlatteningIterator<>(upstream.iterator(), toIteratorFunction);
+        return FlatteningIterator.of(upstream.iterator(), toIteratorFunction);
     }
 
 }

@@ -1,11 +1,11 @@
-package hzt.sequences;
+package hzt.iterators;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-final class GeneratorIterator<T> implements Iterator<T> {
+public final class GeneratorIterator<T> implements Iterator<T> {
 
     private final Supplier<T> initSupplier;
     private final UnaryOperator<T> nextValueSupplier;
@@ -13,9 +13,13 @@ final class GeneratorIterator<T> implements Iterator<T> {
     private T nextItem = null;
     private State nextState = State.INIT_UNKNOWN;
 
-    GeneratorIterator(Supplier<T> initSupplier, UnaryOperator<T> nextValueSupplier) {
+    private GeneratorIterator(Supplier<T> initSupplier, UnaryOperator<T> nextValueSupplier) {
         this.initSupplier = initSupplier;
         this.nextValueSupplier = nextValueSupplier;
+    }
+
+    public static <T> GeneratorIterator<T> of(Supplier<T> initSupplier, UnaryOperator<T> nextValueSupplier) {
+        return new GeneratorIterator<>(initSupplier, nextValueSupplier);
     }
 
     @Override

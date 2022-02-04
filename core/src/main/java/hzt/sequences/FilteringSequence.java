@@ -1,5 +1,6 @@
 package hzt.sequences;
 
+import hzt.iterators.FilteringIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -24,7 +25,7 @@ final class FilteringSequence<T> implements Sequence<T> {
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return new FilteringIterator<>(upstream.iterator(), predicate, sendWhen);
+        return FilteringIterator.of(upstream.iterator(), predicate, sendWhen);
     }
 
     @Override

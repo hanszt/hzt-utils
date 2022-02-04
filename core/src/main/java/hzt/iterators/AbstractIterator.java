@@ -1,4 +1,4 @@
-package hzt.sequences;
+package hzt.iterators;
 
 import hzt.PreConditions;
 
@@ -14,6 +14,9 @@ public abstract class AbstractIterator<T> implements Iterator<T> {
 
     private State state = State.NEXT_UNKNOWN;
     private T nextValue = null;
+
+    protected AbstractIterator() {
+    }
 
     @Override
     public boolean hasNext() {
@@ -43,7 +46,7 @@ public abstract class AbstractIterator<T> implements Iterator<T> {
         return state == State.CONTINUE;
     }
 
-    abstract void computeNext();
+    protected abstract void computeNext();
 
     protected void setNext(T value) {
         nextValue = value;

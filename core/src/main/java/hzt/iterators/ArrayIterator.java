@@ -1,4 +1,4 @@
-package hzt.collections;
+package hzt.iterators;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -8,8 +8,12 @@ public final class ArrayIterator<E> implements Iterator<E> {
     private final E[] array;
     private int index = 0;
 
-    public ArrayIterator(E[] array) {
+    private ArrayIterator(E[] array) {
         this.array = array;
+    }
+
+    public static <E> Iterator<E> of(E[] array) {
+        return new ArrayIterator<>(array);
     }
 
     @Override

@@ -1,20 +1,23 @@
-package hzt.sequences;
+package hzt.iterators;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
-final class FlatteningIterator<T, R> implements Iterator<R> {
+public final class FlatteningIterator<T, R> implements Iterator<R> {
 
     private final Iterator<T> iterator;
     private final Function<T, Iterator<R>> toIteratorFunction;
 
     private Iterator<R> itemIterator = null;
 
-    FlatteningIterator(Iterator<T> iterator,
-                       Function<T, Iterator<R>> toIteratorFunction) {
+    private FlatteningIterator(Iterator<T> iterator, Function<T, Iterator<R>> toIteratorFunction) {
         this.iterator = iterator;
         this.toIteratorFunction = toIteratorFunction;
+    }
+
+    public static <T, R> FlatteningIterator<T, R> of(Iterator<T> iterator, Function<T, Iterator<R>> toIteratorFunction) {
+        return new FlatteningIterator<>(iterator, toIteratorFunction);
     }
 
     @Override

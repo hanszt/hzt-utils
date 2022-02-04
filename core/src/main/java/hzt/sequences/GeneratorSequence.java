@@ -1,5 +1,6 @@
 package hzt.sequences;
 
+import hzt.iterators.GeneratorIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -19,6 +20,6 @@ final class GeneratorSequence<T> implements Sequence<T> {
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return new GeneratorIterator<>(initSupplier, nextValueSupplier);
+        return GeneratorIterator.of(initSupplier, nextValueSupplier);
     }
 }

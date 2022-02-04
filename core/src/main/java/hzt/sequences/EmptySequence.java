@@ -1,5 +1,6 @@
 package hzt.sequences;
 
+import hzt.iterators.EmptyIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;

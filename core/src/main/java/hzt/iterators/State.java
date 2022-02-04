@@ -1,4 +1,4 @@
-package hzt.sequences;
+package hzt.iterators;
 
 enum State {
     INIT_UNKNOWN, NEXT_UNKNOWN, CONTINUE, DONE, FAILED;

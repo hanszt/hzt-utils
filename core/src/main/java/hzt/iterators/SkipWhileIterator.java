@@ -1,9 +1,9 @@
-package hzt.sequences;
+package hzt.iterators;
 
 import java.util.Iterator;
 import java.util.function.Predicate;
 
-final class SkipWhileIterator<T> implements Iterator<T> {
+public final class SkipWhileIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
     private final Predicate<T> predicate;
@@ -13,6 +13,10 @@ final class SkipWhileIterator<T> implements Iterator<T> {
     SkipWhileIterator(Iterator<T> iterator, Predicate<T> predicate) {
         this.iterator = iterator;
         this.predicate = predicate;
+    }
+
+    public static <T> SkipWhileIterator<T> of(Iterator<T> iterator, Predicate<T> predicate) {
+        return new SkipWhileIterator<>(iterator, predicate);
     }
 
     private void skip() {

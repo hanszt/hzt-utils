@@ -1,10 +1,10 @@
-package hzt.sequences;
+package hzt.iterators;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
-final class TakeWhileIterator<T> implements Iterator<T> {
+public final class TakeWhileIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
     private final Predicate<T> predicate;
@@ -14,10 +14,18 @@ final class TakeWhileIterator<T> implements Iterator<T> {
     private T nextItem;
     private State nextState = State.INIT_UNKNOWN;
 
-    TakeWhileIterator(Iterator<T> iterator, Predicate<T> predicate, boolean inclusive) {
+    private TakeWhileIterator(Iterator<T> iterator, Predicate<T> predicate, boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
+    }
+
+    public static <T> TakeWhileIterator<T> of(Iterator<T> iterator, Predicate<T> predicate, boolean inclusive) {
+        return new TakeWhileIterator<>(iterator, predicate, inclusive);
+    }
+
+    public static <T> TakeWhileIterator<T> of(Iterator<T> iterator, Predicate<T> predicate) {
+        return new TakeWhileIterator<>(iterator, predicate, false);
     }
 
     private void calculateNext() {

@@ -1,5 +1,6 @@
 package hzt.sequences;
 
+import hzt.iterators.AbstractIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -24,7 +25,7 @@ final class DistinctSequence<T, K> implements Sequence<T> {
             private final Iterator<T> iterator = upstream.iterator();
             private final Set<K> observed = new HashSet<>();
             @Override
-            void computeNext() {
+            protected void computeNext() {
                 while (iterator.hasNext()) {
                     T next = iterator.next();
                     K key = selector.apply(next);

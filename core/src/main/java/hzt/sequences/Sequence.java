@@ -1,7 +1,7 @@
 package hzt.sequences;
 
 import hzt.PreConditions;
-import hzt.collections.ArrayIterator;
+import hzt.iterators.ArrayIterator;
 import hzt.collections.IndexedValue;
 import hzt.collections.ListX;
 import hzt.collections.MutableListX;
@@ -59,7 +59,7 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
 
     @SafeVarargs
     static <T> Sequence<T> of(T... values) {
-        return () -> new ArrayIterator<>(values);
+        return () -> ArrayIterator.of(values);
     }
 
     static <T> Sequence<T> ofNullable(T value) {

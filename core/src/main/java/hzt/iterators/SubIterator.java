@@ -1,9 +1,9 @@
-package hzt.sequences;
+package hzt.iterators;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-final class SubIterator<T> implements Iterator<T> {
+public final class SubIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
     private final int startIndex;
@@ -11,10 +11,14 @@ final class SubIterator<T> implements Iterator<T> {
 
     private int position;
 
-    SubIterator(Iterator<T> iterator, int startIndex, int endIndex) {
+    private SubIterator(Iterator<T> iterator, int startIndex, int endIndex) {
         this.iterator = iterator;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
+    }
+
+    public static <T> SubIterator<T> of(Iterator<T> iterator, int startIndex, int endIndex) {
+        return new SubIterator<>(iterator, startIndex, endIndex);
     }
 
     private void skip() {

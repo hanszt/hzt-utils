@@ -1,5 +1,6 @@
 package hzt.sequences;
 
+import hzt.iterators.SkipWhileIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -18,6 +19,6 @@ public class SkipWhileSequence<T> implements Sequence<T> {
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return new SkipWhileIterator<>(upstream.iterator(), predicate);
+        return SkipWhileIterator.of(upstream.iterator(), predicate);
     }
 }

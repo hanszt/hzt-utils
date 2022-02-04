@@ -1,10 +1,10 @@
-package hzt.sequences;
+package hzt.iterators;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
-final class FilteringIterator<T> implements Iterator<T> {
+public final class FilteringIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
     private final Predicate<T> predicate;
@@ -12,10 +12,18 @@ final class FilteringIterator<T> implements Iterator<T> {
     private State nextState = State.NEXT_UNKNOWN;
     private T nextItem = null;
 
-    FilteringIterator(Iterator<T> iterator, Predicate<T> predicate, boolean sendWhen) {
+    private FilteringIterator(Iterator<T> iterator, Predicate<T> predicate, boolean sendWhen) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.sendWhen = sendWhen;
+    }
+
+    public static <T> FilteringIterator<T> of(Iterator<T> iterator, Predicate<T> predicate, boolean sendWhen) {
+        return new FilteringIterator<>(iterator, predicate, sendWhen);
+    }
+
+    public static <T> FilteringIterator<T> of(Iterator<T> iterator, Predicate<T> predicate) {
+        return new FilteringIterator<>(iterator, predicate, true);
     }
 
     @Override

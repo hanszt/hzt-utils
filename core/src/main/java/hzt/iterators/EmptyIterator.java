@@ -1,9 +1,10 @@
-package hzt.sequences;
+package hzt.iterators;
 
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
-final class EmptyIterator<T> implements ListIterator<T> {
+public final class EmptyIterator<T> implements ListIterator<T> {
+
     @Override
     public boolean hasNext() {
         return false;

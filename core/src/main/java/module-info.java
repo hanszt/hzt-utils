@@ -1,4 +1,4 @@
-module core {
+open module core {
 
     requires org.jetbrains.annotations;
     requires java.desktop;

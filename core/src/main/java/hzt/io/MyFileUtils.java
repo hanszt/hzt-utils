@@ -1,5 +1,7 @@
 package hzt.io;
 
+import hzt.function.It;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -27,7 +29,7 @@ public final class MyFileUtils {
      */
     @SafeVarargs
     public static Map<String, List<Path>> findFilesWithDuplicateContent(Path start, Predicate<Path>... pathFilters) {
-        Predicate<Path> combinedPathFilter = Stream.of(pathFilters).reduce(e -> true, Predicate::and);
+        Predicate<Path> combinedPathFilter = Stream.of(pathFilters).reduce(It.noFilter(), Predicate::and);
         try (final Stream<Path> walk = Files.walk(start)) {
             return walk.filter(by(Path::toFile, File::isFile))
                     .filter(combinedPathFilter)

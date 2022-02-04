@@ -1,31 +1,33 @@
 package hzt.io;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.function.Predicate;
 
-public class Closer<T> implements AutoCloseable {
+public final class Closer<T> implements AutoCloseable {
 
     private final T resource;
-    private final ConsumingAutoClosable<T> closeable;
+    private final ThrowingConsumer<T> closeable;
 
-    public Closer(T resource, ConsumingAutoClosable<T> consumingAutoClosable) {
+    private Closer(T resource, ThrowingConsumer<T> consumingAutoClosable) {
         this.resource = resource;
         this.closeable = consumingAutoClosable;
     }
 
-    public static <T> Closer<T> forResource(T resource, ConsumingAutoClosable<T> consumingAutoClosable) {
+    public static <T> Closer<T> forResource(@NotNull T resource, @NotNull ThrowingConsumer<T> consumingAutoClosable) {
         return new Closer<>(resource, consumingAutoClosable);
     }
 
     @Override
     public void close() {
         try {
-            closeable.close(resource);
+            closeable.accept(resource);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public <R> R execute(ThrowingFunction<T, R> function) {
+    public <R> R apply(@NotNull ThrowingFunction<T, R> function) {
         try {
             return function.apply(resource);
         } catch (Exception e) {
@@ -33,7 +35,15 @@ public class Closer<T> implements AutoCloseable {
         }
     }
 
-    public boolean test(Predicate<T> predicate) {
+    public void execute(@NotNull ThrowingConsumer<T> function) {
+        try {
+            function.accept(resource);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public boolean test(@NotNull Predicate<T> predicate) {
         return predicate.test(resource);
     }
 
@@ -42,10 +52,10 @@ public class Closer<T> implements AutoCloseable {
     }
 
     @FunctionalInterface
-    public interface ConsumingAutoClosable<T> {
+    public interface ThrowingConsumer<T> {
 
         @SuppressWarnings("all")
-        void close(T t) throws Exception;
+        void accept(T t) throws Exception;
     }
 
     @FunctionalInterface

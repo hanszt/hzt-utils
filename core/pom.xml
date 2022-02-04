@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.hzt.utils</groupId>
         <artifactId>commons</artifactId>
-        <version>0.1</version>
+        <version>0.5</version>
     </parent>
 
     <artifactId>core</artifactId>

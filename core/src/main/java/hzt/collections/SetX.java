@@ -1,6 +1,6 @@
 package hzt.collections;
 
-import hzt.function.It;
+import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;

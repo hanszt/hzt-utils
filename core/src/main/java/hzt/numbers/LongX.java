@@ -1,6 +1,6 @@
 package hzt.numbers;
 
-import hzt.function.Transformable;
+import hzt.utils.Transformable;
 
 import java.util.Objects;
 

@@ -1,6 +1,6 @@
 package hzt.collections;
 
-import hzt.function.It;
+import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.junit.jupiter.api.Test;

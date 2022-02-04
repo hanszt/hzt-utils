@@ -1,6 +1,6 @@
 package hzt.collections;
 
-import hzt.function.Transformable;
+import hzt.utils.Transformable;
 
 import java.util.Collection;
 import java.util.Set;

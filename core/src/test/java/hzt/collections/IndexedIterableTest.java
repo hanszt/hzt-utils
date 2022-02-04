@@ -1,6 +1,6 @@
 package hzt.collections;
 
-import hzt.function.It;
+import hzt.utils.It;
 import hzt.sequences.Sequence;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,6 @@
 package hzt.io;
 
-import hzt.function.It;
+import hzt.utils.It;
 
 import java.io.File;
 import java.io.IOException;

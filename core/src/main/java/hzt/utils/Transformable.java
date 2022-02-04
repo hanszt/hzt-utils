@@ -1,4 +1,4 @@
-package hzt.function;
+package hzt.utils;
 
 import hzt.collections.ListX;
 import hzt.tuples.Pair;

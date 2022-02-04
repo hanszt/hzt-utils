@@ -6,7 +6,7 @@ import hzt.collections.MutableListX;
 import hzt.collections.MutableMapX;
 import hzt.collections.SetX;
 import hzt.collectors.BigDecimalCollectors;
-import hzt.function.It;
+import hzt.utils.It;
 import hzt.sequences.Sequence;
 import hzt.statistics.BigDecimalSummaryStatistics;
 import hzt.strings.StringX;

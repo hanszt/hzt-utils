@@ -1,7 +1,7 @@
 package hzt.collections;
 
-import hzt.function.It;
-import hzt.function.Transformable;
+import hzt.utils.It;
+import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

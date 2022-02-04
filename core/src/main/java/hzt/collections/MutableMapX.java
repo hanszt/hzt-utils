@@ -1,7 +1,7 @@
 package hzt.collections;
 
-import hzt.function.It;
-import hzt.function.Transformable;
+import hzt.utils.It;
+import hzt.utils.Transformable;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -23,7 +23,7 @@ public interface MutableMapX<K, V> extends Map<K, V>, MapX<K, V>, Transformable<
 
     @Override
     default <K1, V1> MutableMapX<K1, V1> map(Function<K, K1> keyMapper, Function<V, V1> valueMapper) {
-        MutableMapX<K1, V1> resultMap = MutableMapX.<K1, V1>empty();
+        MutableMapX<K1, V1> resultMap = MutableMapX.empty();
         for (Map.Entry<K, V> entry : this) {
             K key = entry.getKey();
             if (key != null) {

@@ -1,6 +1,6 @@
 package hzt.numbers;
 
-import hzt.function.Transformable;
+import hzt.utils.Transformable;
 
 public final class DoubleX extends Number implements NumberX, Transformable<DoubleX> {
 

@@ -1,4 +1,4 @@
-package hzt.function;
+package hzt.utils;
 
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;

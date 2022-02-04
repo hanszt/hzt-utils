@@ -1,7 +1,7 @@
 package hzt.collections;
 
 import hzt.PreConditions;
-import hzt.function.It;
+import hzt.utils.It;
 import hzt.strings.StringX;
 import org.jetbrains.annotations.NotNull;
 
@@ -186,7 +186,7 @@ public interface ListX<E> extends CollectionView<E> {
         if (n == 1) {
             return MutableListX.of(last());
         }
-        MutableListX<E> resultList = MutableListX.<E>withInitCapacity(n);
+        MutableListX<E> resultList = MutableListX.withInitCapacity(n);
         for (int index = size - n; index < size; index++) {
             resultList.add(list.get(index));
         }

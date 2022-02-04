@@ -4,7 +4,7 @@ import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.collections.SetX;
-import hzt.function.It;
+import hzt.utils.It;
 import hzt.strings.StringX;
 import hzt.test.Generator;
 import org.hzt.test.TestSampleGenerator;

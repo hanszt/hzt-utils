@@ -1,6 +1,6 @@
 package hzt.collections;
 
-import hzt.function.It;
+import hzt.utils.It;
 import hzt.iterables.IterableX;
 import hzt.tuples.Pair;
 import org.jetbrains.annotations.NotNull;

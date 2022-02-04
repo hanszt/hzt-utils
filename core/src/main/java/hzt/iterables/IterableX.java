@@ -13,7 +13,7 @@ import hzt.collections.NavigableMapX;
 import hzt.collections.NavigableSetX;
 import hzt.collections.SetX;
 import hzt.collectors.CollectorsX;
-import hzt.function.It;
+import hzt.utils.It;
 import hzt.function.QuadFunction;
 import hzt.function.TriFunction;
 import hzt.sequences.Sequence;

@@ -7,8 +7,8 @@ import hzt.collections.ListX;
 import hzt.collections.MutableListX;
 import hzt.collections.MutableSetX;
 import hzt.collections.SetX;
-import hzt.function.It;
-import hzt.function.Transformable;
+import hzt.utils.It;
+import hzt.utils.Transformable;
 import hzt.iterables.IterableX;
 import org.jetbrains.annotations.NotNull;
 

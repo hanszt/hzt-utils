@@ -1,6 +1,6 @@
 package hzt.tuples;
 
-import hzt.function.Transformable;
+import hzt.utils.Transformable;
 
 import java.util.Map;
 import java.util.Objects;

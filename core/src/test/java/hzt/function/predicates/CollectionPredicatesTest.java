@@ -1,4 +1,4 @@
-package hzt.stream.predicates;
+package hzt.function.predicates;
 
 import org.junit.jupiter.api.Test;
 

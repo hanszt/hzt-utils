@@ -1,6 +1,5 @@
 package hzt.function;
 
-import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.strings.StringX;
 import hzt.test.Generator;
@@ -18,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class TransformableTest {
 
     @Test
-    void testCreateAnObjectXOfSomethingAndUseTheDefaultFunctions() {
+    void testCreateATransformableOfSomethingAndUseTheDefaultFunctions() {
         final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
 
         final LocalDate localDate = Transformable.of(vanGoghAuction)

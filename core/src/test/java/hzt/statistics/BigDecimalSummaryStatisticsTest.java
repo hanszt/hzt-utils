@@ -1,4 +1,4 @@
-package hzt.collectors;
+package hzt.statistics;
 
 import hzt.statistics.BigDecimalSummaryStatistics;
 import org.junit.jupiter.api.Test;

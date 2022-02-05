@@ -7,22 +7,35 @@ public final class SkipWhileIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
     private final Predicate<T> predicate;
-    private T nextItem = null;
-    private SkipState state = SkipState.NOT_SKIPPING;
+    private final boolean inclusive;
 
-    SkipWhileIterator(Iterator<T> iterator, Predicate<T> predicate) {
+    private boolean inclusiveSkipped = false;
+    private T nextItem = null;
+    private SkipState state = SkipState.SKIPPING;
+
+    SkipWhileIterator(Iterator<T> iterator, Predicate<T> predicate, boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
+        this.inclusive = inclusive;
     }
 
-    public static <T> SkipWhileIterator<T> of(Iterator<T> iterator, Predicate<T> predicate) {
-        return new SkipWhileIterator<>(iterator, predicate);
+    public static <T> SkipWhileIterator<T> of(Iterator<T> iterator, Predicate<T> predicate, boolean inclusive) {
+        return new SkipWhileIterator<>(iterator, predicate, inclusive);
     }
 
     private void skip() {
+        if (inclusive && inclusiveSkipped && iterator.hasNext()) {
+            nextItem = iterator.next();
+            state = SkipState.NEXT_ITEM;
+            return;
+        }
         while (iterator.hasNext()) {
             final T item = iterator.next();
             if (!predicate.test(item)) {
+                if (inclusive && !inclusiveSkipped) {
+                    inclusiveSkipped = true;
+                    return;
+                }
                 nextItem = item;
                 state = SkipState.NEXT_ITEM;
                 return;
@@ -33,7 +46,7 @@ public final class SkipWhileIterator<T> implements Iterator<T> {
 
     @Override
     public boolean hasNext() {
-        if (state == SkipState.NOT_SKIPPING) {
+        if (state == SkipState.SKIPPING) {
             skip();
         }
         return state == SkipState.NEXT_ITEM || iterator.hasNext();
@@ -41,7 +54,7 @@ public final class SkipWhileIterator<T> implements Iterator<T> {
 
     @Override
     public T next() {
-        if (state == SkipState.NOT_SKIPPING) {
+        if (state == SkipState.SKIPPING) {
             skip();
         }
         if (state == SkipState.NEXT_ITEM) {
@@ -54,6 +67,6 @@ public final class SkipWhileIterator<T> implements Iterator<T> {
     }
 
     private enum SkipState {
-        NOT_SKIPPING, NEXT_ITEM, NORMAL_ITERATION
+        SKIPPING, NEXT_ITEM, NORMAL_ITERATION
     }
 }

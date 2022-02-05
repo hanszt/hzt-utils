@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class StringXTest {
 
     @Test
-    void testToStringX() {
+    void testGroupStringX() {
         final String hallo = "hallo";
 
         final List<Integer> expected = groupByChars(hallo)
@@ -46,6 +47,23 @@ class StringXTest {
     void testStringXPlus() {
         final StringX stringX = StringX.of("Hallo").plus("Raar");
         assertEquals("HalloRaar", stringX.toString());
+    }
+
+    @Test
+    void testStringXToCharArrayX() {
+        final var characters = StringX.of("Hello").toCharacterArrayX();
+
+        assertAll(
+                () -> assertEquals('H', characters.first()),
+                () -> assertEquals('o', characters.last())
+        );
+    }
+
+    @Test
+    void testStringXOfCharIterable() {
+        final var characters = List.of('H', 'e', 'y', '!', '1', '2', '3');
+
+        assertEquals("Hey!123", StringX.of(characters).toString());
     }
 
     @ParameterizedTest

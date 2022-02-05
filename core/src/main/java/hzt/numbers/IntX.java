@@ -23,8 +23,8 @@ public final class IntX extends Number implements NumberX, Transformable<IntX> {
         return target < integer ? IntRange.empty() : IntRange.closed(integer, target);
     }
 
-    public IntRange until(int target) {
-        return target < integer ? IntRange.empty() : IntRange.of(integer, target);
+    public IntRange until(int bound) {
+        return bound < integer ? IntRange.empty() : IntRange.of(integer, bound);
     }
 
     public static String toString(int i, int radix) {

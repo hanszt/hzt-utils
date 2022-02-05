@@ -10,15 +10,17 @@ public class SkipWhileSequence<T> implements Sequence<T> {
 
     private final Sequence<T> upstream;
     private final Predicate<T> predicate;
+    private final boolean inclusive;
 
-    public SkipWhileSequence(Sequence<T> upstream, Predicate<T> predicate) {
+    public SkipWhileSequence(Sequence<T> upstream, Predicate<T> predicate, boolean inclusive) {
         this.upstream = upstream;
         this.predicate = predicate;
+        this.inclusive = inclusive;
     }
 
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return SkipWhileIterator.of(upstream.iterator(), predicate);
+        return SkipWhileIterator.of(upstream.iterator(), predicate, inclusive);
     }
 }

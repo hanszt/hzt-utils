@@ -6,12 +6,14 @@ import hzt.collections.MutableMapX;
 import hzt.collections.SetX;
 import hzt.iterables.EntryIterable;
 import hzt.tuples.Pair;
+import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -29,7 +31,7 @@ import java.util.function.Predicate;
 @SuppressWarnings("unused")
 public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIterable<K, V> {
 
-    static <K, V> EntrySequence<K, V> of(Iterable<Map.Entry<K,V>> iterable) {
+    static <K, V> EntrySequence<K, V> of(Iterable<Map.Entry<K, V>> iterable) {
         return iterable::iterator;
     }
 
@@ -63,6 +65,12 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
 
     default EntrySequence<K, V> filterByValues(@NotNull Predicate<V> predicate) {
         return EntrySequence.of(Sequence.super.filter(e -> predicate.test(e.getValue())));
+    }
+
+    @NotNull
+    @Override
+    default EntrySequence<K, V> onEach(@NotNull Consumer<? super Map.Entry<K, V>> consumer) {
+        return EntrySequence.of(Sequence.super.onEach(consumer));
     }
 
     default void forEach(@NotNull BiConsumer<? super K, ? super V> biConsumer) {

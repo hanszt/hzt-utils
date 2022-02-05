@@ -7,8 +7,8 @@ import hzt.collections.MutableMapX;
 import hzt.collections.SetX;
 import hzt.collectors.BigDecimalCollectors;
 import hzt.ranges.IntRange;
-import hzt.utils.It;
 import hzt.sequences.Sequence;
+import hzt.utils.It;
 import hzt.statistics.BigDecimalSummaryStatistics;
 import hzt.strings.StringX;
 import hzt.test.Generator;
@@ -557,7 +557,7 @@ public class IterableXTest {
     }
 
     @Test
-    void testDropWhile() {
+    void testSkipWhile() {
         ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         list.forEach(It::println);
@@ -566,7 +566,20 @@ public class IterableXTest {
 
         It.println("integers = " + integers);
 
-        assertIterableEquals(Arrays.asList(5, 10, 6, 5, 3, 5, 6), integers);
+        assertIterableEquals(List.of(5, 10, 6, 5, 3, 5, 6), integers);
+    }
+
+    @Test
+    void testSkipWhileInclusive() {
+        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+
+        list.forEach(It::println);
+
+        final IterableX<Integer> integers = list.skipWhileInclusive(i -> i != 5);
+
+        It.println("integers = " + integers);
+
+        assertIterableEquals(List.of(10, 6, 5, 3, 5, 6), integers);
     }
 
     @Test
@@ -623,7 +636,7 @@ public class IterableXTest {
 
         final int expected = list.stream().mapToInt(Painting::ageInYears).sum();
 
-        final int actual = list.sumOfInts(Painting::ageInYears);
+        final long actual = list.sumOfInts(Painting::ageInYears);
 
         It.println("actual = " + actual);
 
@@ -1023,19 +1036,19 @@ public class IterableXTest {
                         summarizingInt(Painting::ageInYears),
                         counting()));
 
-        final Triple<Map<Boolean, List<Painter>>, IntSummaryStatistics, Long> actual = paintingList.branching(
-                partitioningBy(Painting::isInMuseum, mapping(Painting::painter, toList())),
-                summarizingInt(Painting::ageInYears),
-                counting());
+        final var actual = paintingList.asSequence()
+                .toThree(s -> s.partitionMapping(Painting::isInMuseum, Painting::painter),
+                        s -> s.statsOfInts(Painting::ageInYears),
+                        Sequence::count);
 
         final IntSummaryStatistics expectedStats = expected.second();
         final IntSummaryStatistics actualStats = actual.second();
 
         assertAll(
-                () -> assertEquals(expected.first(), actual.first()),
+                () -> assertEquals(expected.first().get(true), actual.first().first()),
                 () -> assertEquals(expectedStats.getAverage(), actualStats.getAverage()),
                 () -> assertEquals(expectedStats.getMax(), actualStats.getMax()),
-                () -> assertEquals(expected.third(), actual.third())
+                () -> assertEquals(expected.third().intValue(), actual.third())
         );
     }
 

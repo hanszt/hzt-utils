@@ -4,6 +4,7 @@ import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.collections.SetX;
+import hzt.iterables.IterableX;
 import hzt.ranges.IntRange;
 import hzt.strings.StringX;
 import hzt.test.Generator;
@@ -17,9 +18,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
 import java.time.Year;
 import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -227,21 +231,28 @@ class SequenceTest {
 
     @Test
     void testSkipWhile() {
-        final var strings = Sequence.generate(0, i -> i + 1)
-                .skipWhile(i -> i < 4)
-                .filter(i -> i % 2 == 0)
-                .take(6)
-                .map(Generator::toStringIn100Millis)
-                .onEach(It::println)
-                .map(String::trim)
-                .toListX();
+        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
-        assertAll(
-                () -> assertEquals(6, strings.size()),
-                () -> assertEquals("val 4", strings
-                        .minBy(s -> Integer.parseInt(s.substring(s.length() - 2).trim()))
-                        .orElse(""))
-        );
+        final var integers = list.asSequence()
+                .skipWhile(i -> i != 5)
+                .toList();
+
+        It.println("integers = " + integers);
+
+        assertEquals(List.of(5, 10, 6, 5, 3, 5, 6), integers);
+    }
+
+    @Test
+    void testSkipWhileInclusive() {
+        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+
+        final var integers = list.asSequence()
+                .skipWhileInclusive(i -> i != 5)
+                .toList();
+
+        It.println("integers = " + integers);
+
+        assertEquals(List.of(10, 6, 5, 3, 5, 6), integers);
     }
 
     @Test
@@ -408,9 +419,54 @@ class SequenceTest {
     }
 
     @Test
+    void testZipWithNext() {
+        final var sums = IntRange.of(0, 1_000)
+                .filter(i -> i % 10 == 0)
+                .onEach(i -> It.print(i + ", "))
+                .zipWithNext(Integer::sum)
+                .toListX();
+
+        It.println("\nsums = " + sums);
+
+        It.println("windows.first() = " + sums.findFirst());
+        It.println("windows.last() = " + sums.findLast());
+
+        assertEquals(99, sums.size());
+    }
+
+    @Test
+    void testSequenceOfMap() {
+        final var map = Map.of(1, "a", 2, "b", 3, "c", 4, "d");
+
+        final var mapX = Sequence.of(map)
+                .mapValues(s -> StringX.of(s).first())
+                .filterByValues(Character::isLetter)
+                .filterByKeys(i -> i % 2 == 0)
+                .toMapX();
+
+        assertEquals(2, mapX.size());
+    }
+
+    @Test
     void testEmpty() {
-        final ListX<Object> listX = Sequence.empty().toListX();
-        assertTrue(listX.isEmpty());
+        final var list = Sequence.empty().toList();
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    void testSequenceFromStream() {
+        final var stream = IntStream.range(0, 100).boxed();
+
+        final var list = Sequence.of(stream)
+                .filter(i -> i % 2 == 0)
+                .sorted()
+                .windowed(3, true)
+                .flatMap(It::self)
+                .toList();
+
+        It.println("list = " + list);
+
+        assertEquals(147, list.size());
     }
 
     @Test
@@ -441,11 +497,12 @@ class SequenceTest {
                 .sorted();
 
         final var first = names.first();
+        It.println("first = " + first);
+        It.println("first = " + names.first());
+        final var nameList = names.toList();
         final var last = names.last();
 
-        final var nameList = names.toList();
 
-        It.println("first = " + first);
         It.println("last = " + last);
 
         assertAll(
@@ -453,6 +510,49 @@ class SequenceTest {
                 () -> assertEquals(Year.of(12), last),
                 () -> assertEquals(9, nameList.size()),
                 () -> assertEquals(3, names.windowed(2, 3).count())
+        );
+    }
+
+    @Test
+    void testBranchSequence() {
+        final var leepYearResult = Sequence
+                .generate(LocalDate.of(1950, Month.JANUARY, 1), date -> date.plusDays(1))
+                .takeWhileInclusive(date -> date.getYear() <= 2000)
+                .filter(LocalDate::isLeapYear)
+                .toTwo(Sequence::toList, IterableX::last);
+
+        assertAll(
+                () -> assertEquals(4758, leepYearResult.first().size()),
+                () -> assertEquals(LocalDate.of(2000, Month.DECEMBER, 31), leepYearResult.second())
+        );
+    }
+
+    @Test
+    void testBranchSequenceToThree() {
+        final var triple = IntRange.from(0).until(100)
+                .toThree(Sequence::toList, s -> s.filter(i -> i % 2 == 0), s -> s.statsOfInts(It::self));
+
+        assertAll(
+                () -> assertEquals(100, triple.first().size()),
+                () -> assertEquals(50, triple.second().count()),
+                () -> assertEquals(49.5, triple.third().getAverage())
+        );
+    }
+
+    @Test
+    void testBranchSequenceToFour() {
+        final var actual = IntRange.from(0).until(100)
+                .toFour(Sequence::count,
+                        s -> s.minOf(It::self),
+                        s -> s.maxOf(It::self),
+                        s -> s.sumOfInts(It::self),
+                        IntSummaryStatistics::new);
+
+        assertAll(
+                () -> assertEquals(100, actual.getCount()),
+                () -> assertEquals(4950, actual.getSum()),
+                () -> assertEquals(49.5, actual.getAverage()),
+                () -> assertEquals(99, actual.getMax())
         );
     }
 

@@ -47,7 +47,7 @@ class MapXTest {
                 .mapToInt(LocalDate::getDayOfMonth)
                 .sum();
 
-        final int actual = MapX.of(museumMap)
+        final long actual = MapX.of(museumMap)
                 .valuesToIterX(Museum::getDateOfOpening)
                 .sumOfInts(LocalDate::getDayOfMonth);
 

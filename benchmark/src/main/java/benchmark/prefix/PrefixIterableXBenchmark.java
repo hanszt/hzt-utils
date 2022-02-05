@@ -1,7 +1,6 @@
 package benchmark.prefix;
 
-import hzt.iterables.IterableX;
-import hzt.sequences.Sequence;
+import hzt.ranges.IntRange;
 import hzt.strings.StringX;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Param;
@@ -22,12 +21,12 @@ public class PrefixIterableXBenchmark {
 
     @Benchmark
     public List<StringX> mapToList() {
-        return Sequence.range(0, nrOfIterations).toListOf(StringX::valueOf);
+        return IntRange.of(0, nrOfIterations).toListOf(StringX::of);
     }
     
     @Benchmark
     public boolean anyMatch() {
-        return Sequence.range(0, nrOfIterations).any(x -> x == -1);
+        return IntRange.of(0, nrOfIterations).any(x -> x == -1);
     }
 
 }

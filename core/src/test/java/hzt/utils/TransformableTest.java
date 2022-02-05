@@ -5,7 +5,6 @@ import hzt.strings.StringX;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
 import hzt.tuples.Pair;
-import hzt.utils.Transformable;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ class TransformableTest {
         final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
         final var nijntje = Painting.of("Nijntje");
 
-        final LocalDate localDate = Transformable.of(vanGoghAuction)
+        final LocalDate localDate = Transformable.from(vanGoghAuction)
                 .apply(a -> a.setMostPopularPainting(nijntje))
                 .let(PaintingAuction::getDateOfOpening);
 
@@ -41,7 +40,7 @@ class TransformableTest {
 
         final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
 
-        final Painter painter = Transformable.of(vanGoghAuction)
+        final Painter painter = Transformable.from(vanGoghAuction)
                 .apply(auction -> auction.setMostPopularPainting(Painting.of("Nijntje")))
                 .run(PaintingAuction::getMostPopularPainting)
                 .apply(It::println)

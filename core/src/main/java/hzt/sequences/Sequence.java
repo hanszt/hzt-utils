@@ -6,16 +6,21 @@ import hzt.collections.ListX;
 import hzt.collections.MutableListX;
 import hzt.collections.MutableSetX;
 import hzt.collections.SetX;
+import hzt.function.QuadFunction;
+import hzt.function.TriFunction;
 import hzt.iterables.IterableX;
 import hzt.iterators.ArrayIterator;
+import hzt.tuples.Pair;
+import hzt.tuples.QuadTuple;
+import hzt.tuples.Triple;
 import hzt.utils.It;
-import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -37,7 +42,7 @@ import java.util.stream.Stream;
  */
 @SuppressWarnings("unused")
 @FunctionalInterface
-public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
+public interface Sequence<T> extends IterableX<T> {
 
     static <T> Sequence<T> empty() {
         return new EmptySequence<>();
@@ -45,6 +50,14 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
 
     static <T> Sequence<T> of(@NotNull Iterable<T> iterable) {
         return iterable::iterator;
+    }
+
+    static <T> Sequence<T> of(@NotNull Stream<T> stream) {
+        return stream::iterator;
+    }
+
+    static <K, V> EntrySequence<K, V> of(Map<K, V> map) {
+        return map.entrySet()::iterator;
     }
 
     @SafeVarargs
@@ -178,7 +191,7 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
 
     @Override
     default <R> Sequence<R> zipWithNext(BiFunction<T, T, R> function) {
-        return Sequence.of(zipWithNextToMutableListOf(function));
+        return windowed(2, listX -> function.apply(listX.first(), listX.get(1)));
     }
 
     @Override
@@ -211,7 +224,12 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
 
     @Override
     default Sequence<T> skipWhile(Predicate<T> predicate) {
-        return new SkipWhileSequence<>(this, predicate);
+        return new SkipWhileSequence<>(this, predicate, false);
+    }
+
+    @Override
+    default Sequence<T> skipWhileInclusive(Predicate<T> predicate) {
+        return new SkipWhileSequence<>(this, predicate, true);
     }
 
     @Override
@@ -261,11 +279,54 @@ public interface Sequence<T> extends IterableX<T>, Transformable<Sequence<T>> {
         return toMutableSet();
     }
 
+    default Set<T> toSet() {
+        return Set.copyOf(toMutableSet());
+    }
+
     default int count() {
         return count(It.noFilter());
     }
 
-    default Sequence<T> get() {
-        return this;
+    default <R1, R2, R> R toTwo(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,
+                                @NotNull Function<? super Sequence<T>, ? extends R2> resultMapper2,
+                                @NotNull BiFunction<R1, R2, R> merger) {
+        return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
+    }
+
+    default <R1, R2> Pair<R1, R2> toTwo(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,
+                                        @NotNull Function<? super Sequence<T>, ? extends R2> resultMapper2) {
+        return toTwo(resultMapper1, resultMapper2, Pair::of);
+    }
+
+    default <R1, R2, R3, R> R toThree(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,
+                                      @NotNull Function<? super Sequence<T>, ? extends R2> resultMapper2,
+                                      @NotNull Function<? super Sequence<T>, ? extends R3> resultMapper3,
+                                      @NotNull TriFunction<R1, R2, R3, R> merger) {
+        return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this), resultMapper3.apply(this));
+    }
+
+    default <R1, R2, R3> Triple<R1, R2, R3> toThree(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,
+                                                    @NotNull Function<? super Sequence<T>, ? extends R2> resultMapper2,
+                                                    @NotNull Function<? super Sequence<T>, ? extends R3> resultMapper3) {
+        return toThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
+    }
+
+    default <R1, R2, R3, R4, R> R toFour(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,
+                                         @NotNull Function<? super Sequence<T>, ? extends R2> resultMapper2,
+                                         @NotNull Function<? super Sequence<T>, ? extends R3> resultMapper3,
+                                         @NotNull Function<? super Sequence<T>, ? extends R4> resultMapper4,
+                                         @NotNull QuadFunction<R1, R2, R3, R4, R> merger) {
+        final var r1 = resultMapper1.apply(this);
+        final var r2 = resultMapper2.apply(this);
+        final var r3 = resultMapper3.apply(this);
+        final var r4 = resultMapper4.apply(this);
+        return merger.apply(r1, r2, r3, r4);
+    }
+
+    default <R1, R2, R3, R4> QuadTuple<R1, R2, R3, R4> toFour(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,
+                                                              @NotNull Function<? super Sequence<T>, ? extends R2> resultMapper2,
+                                                              @NotNull Function<? super Sequence<T>, ? extends R3> resultMapper3,
+                                                              @NotNull Function<? super Sequence<T>, ? extends R4> resultMapper4) {
+        return toFour(resultMapper1, resultMapper2, resultMapper3, resultMapper4, QuadTuple::of);
     }
 }

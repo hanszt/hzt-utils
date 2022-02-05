@@ -12,6 +12,10 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics {
         super();
     }
 
+    public BigDecimalStatistics(long count, BigDecimal sum, BigDecimal min, BigDecimal max) {
+        super(count, sum, min, max);
+    }
+
     @Override
     public void accept(BigDecimal value) {
         super.accept(value);

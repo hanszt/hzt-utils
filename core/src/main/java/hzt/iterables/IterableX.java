@@ -12,17 +12,13 @@ import hzt.collections.MutableSetX;
 import hzt.collections.NavigableMapX;
 import hzt.collections.NavigableSetX;
 import hzt.collections.SetX;
-import hzt.collectors.CollectorsX;
-import hzt.utils.It;
-import hzt.function.QuadFunction;
 import hzt.function.TriFunction;
 import hzt.sequences.Sequence;
 import hzt.statistics.BigDecimalStatistics;
 import hzt.statistics.DoubleStatistics;
 import hzt.strings.StringX;
 import hzt.tuples.Pair;
-import hzt.tuples.QuadTuple;
-import hzt.tuples.Triple;
+import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
@@ -629,8 +625,8 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return counter;
     }
 
-    default int sumOfInts(@NotNull ToIntFunction<T> selector) {
-        int sum = 0;
+    default long sumOfInts(@NotNull ToIntFunction<T> selector) {
+        long sum = 0;
         for (T t : this) {
             if (t != null) {
                 final int value = selector.applyAsInt(t);
@@ -806,50 +802,6 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
 
     default Optional<T> reduce(@NotNull BinaryOperator<T> operation) {
         return IterableReductions.reduce(iterator(), operation);
-    }
-
-    default <A1, R1, A2, R2> Pair<R1, R2> teeing(@NotNull Collector<T, A1, R1> downstream1,
-                                                 @NotNull Collector<T, A2, R2> downStream2) {
-        return teeing(downstream1, downStream2, Pair::of);
-    }
-
-    default <A1, R1, A2, R2, R> R teeing(
-            @NotNull Collector<T, A1, R1> downstream1,
-            @NotNull Collector<T, A2, R2> downStream2,
-            @NotNull BiFunction<R1, R2, R> merger) {
-        return collect(CollectorsX.teeing(downstream1, downStream2, merger));
-    }
-
-    default <A1, R1, A2, R2, A3, R3, R> Triple<R1, R2, R3> branching(
-            @NotNull Collector<T, A1, R1> downstream1,
-            @NotNull Collector<T, A2, R2> downStream2,
-            @NotNull Collector<T, A3, R3> downStream3) {
-        return branching(downstream1, downStream2, downStream3, Triple::of);
-    }
-
-    default <A1, R1, A2, R2, A3, R3, R> R branching(
-            @NotNull Collector<T, A1, R1> downstream1,
-            @NotNull Collector<T, A2, R2> downStream2,
-            @NotNull Collector<T, A3, R3> downStream3,
-            @NotNull TriFunction<R1, R2, R3, R> merger) {
-        return collect(CollectorsX.branching(downstream1, downStream2, downStream3, merger));
-    }
-
-    default <A1, R1, A2, R2, A3, R3, A4, R4, R> QuadTuple<R1, R2, R3, R4> branching(
-            @NotNull Collector<T, A1, R1> downstream1,
-            @NotNull Collector<T, A2, R2> downStream2,
-            @NotNull Collector<T, A3, R3> downStream3,
-            @NotNull Collector<T, A4, R4> downStream4) {
-        return branching(downstream1, downStream2, downStream3, downStream4, QuadTuple::of);
-    }
-
-    default <A1, R1, A2, R2, A3, R3, A4, R4, R> R branching(
-            @NotNull Collector<T, A1, R1> downstream1,
-            @NotNull Collector<T, A2, R2> downStream2,
-            @NotNull Collector<T, A3, R3> downStream3,
-            @NotNull Collector<T, A4, R4> downStream4,
-            @NotNull QuadFunction<R1, R2, R3, R4, R> merger) {
-        return collect(CollectorsX.branching(downstream1, downStream2, downStream3, downStream4, merger));
     }
 
     default <A, R> R collect(@NotNull Collector<T, A, R> collector) {
@@ -1165,7 +1117,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return takeToMutableListWhile(predicate);
     }
 
-    default IterableX<T> skipWhileExclusive(Predicate<T> predicate) {
+    default IterableX<T> skipWhileInclusive(Predicate<T> predicate) {
         return skipToListXWhileExclusive(predicate);
     }
 

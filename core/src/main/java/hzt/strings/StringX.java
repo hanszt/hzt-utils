@@ -1,15 +1,14 @@
 package hzt.strings;
 
+import hzt.collections.ArrayX;
 import hzt.collections.ListX;
-import hzt.collections.MapX;
-import hzt.collections.MutableListX;
-import hzt.utils.It;
-import hzt.utils.Transformable;
-import hzt.iterables.IterableX;
+import hzt.numbers.DoubleX;
 import hzt.numbers.IntX;
+import hzt.numbers.LongX;
+import hzt.sequences.Sequence;
+import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
@@ -18,9 +17,10 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-public final class StringX implements CharSequence, IterableX<Character>, Transformable<StringX> {
+public final class StringX implements CharSequence, Sequence<Character>, Transformable<StringX> {
 
     private final String string;
 
@@ -30,6 +30,10 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
 
     private StringX(CharSequence charSequence) {
         this(String.valueOf(charSequence));
+    }
+
+    private StringX(Iterable<Character> characterIterable) {
+        string = Sequence.of(characterIterable).joinToString();
     }
 
     private StringX(char[] charArray) {
@@ -52,8 +56,16 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return new StringX(s);
     }
 
-    public static StringX of(char[] s) {
+    public static StringX of(Iterable<Character> characterIterable) {
+        return new StringX(characterIterable);
+    }
+
+    public static StringX of(@NotNull char[] s) {
         return new StringX(s);
+    }
+
+    public static StringX of(@NotNull char[] data, int offset, int count) {
+        return StringX.of(String.valueOf(data, offset, count));
     }
 
     public static StringX of(char first, char... chars) {
@@ -71,20 +83,40 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return new StringX(s, charset);
     }
 
+    public static StringX of(Object obj) {
+        return StringX.of(String.valueOf(obj));
+    }
+
+    public static StringX of(boolean b) {
+        return StringX.of(String.valueOf(b));
+    }
+
+    public static StringX of(char c) {
+        return StringX.of(String.valueOf(c));
+    }
+
+    public static StringX of(int i) {
+        return StringX.of(String.valueOf(i));
+    }
+
+    public static StringX of(long l) {
+        return StringX.of(String.valueOf(l));
+    }
+
+    public static StringX of(float f) {
+        return StringX.of(String.valueOf(f));
+    }
+
+    public static StringX of(double d) {
+        return StringX.of(String.valueOf(d));
+    }
+
     public StringX plus(String s) {
         return plus(StringX.of(s)).joinToStringX();
     }
 
     public StringX reversed() {
         return StringX.of(new StringBuilder(string).reverse());
-    }
-
-    public ListX<Character> toListX() {
-        return toMutableList();
-    }
-
-    public MutableListX<Character> toMutableList() {
-        return toMutableListOf(It::self);
     }
 
     public StringX replaceFirstChar(UnaryOperator<Character> replacer) {
@@ -97,7 +129,7 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
 
     @NotNull
     private Iterator<Character> charIterator() {
-        return new Iterator<Character>() {
+        return new Iterator<>() {
 
             private int index = 0;
             private final char[] charArray = string.toCharArray();
@@ -127,7 +159,15 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return string.isEmpty();
     }
 
-    public StringX ifEmpty(Supplier<String> defaultStringSupplier) {
+    public StringX ifEmpty(Supplier<CharSequence> defaultCsSupplier) {
+        return isEmpty() ? StringX.of(defaultCsSupplier.get()) : this;
+    }
+
+    public boolean isBlank() {
+        return string.isBlank();
+    }
+
+    public StringX ifBlank(Supplier<CharSequence> defaultStringSupplier) {
         return isEmpty() ? StringX.of(defaultStringSupplier.get()) : this;
     }
 
@@ -156,10 +196,6 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         string.getChars(srcBegin, srcEnd, dst, dstBegin);
     }
 
-    public byte[] getBytes(@NotNull String charsetName) throws UnsupportedEncodingException {
-        return string.getBytes(charsetName);
-    }
-
     public byte[] getBytes(@NotNull Charset charset) {
         return string.getBytes(charset);
     }
@@ -180,24 +216,20 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return Objects.equals(string, that.string);
     }
 
-    public boolean contentEquals(@NotNull StringBuffer sb) {
-        return string.contentEquals(sb);
-    }
-
     public boolean contentEquals(@NotNull CharSequence cs) {
         return string.contentEquals(cs);
     }
 
-    public boolean equalsIgnoreCase(String anotherString) {
-        return string.equalsIgnoreCase(anotherString);
+    public boolean equalsIgnoreCase(CharSequence another) {
+        return string.equalsIgnoreCase(StringX.of(another).toString());
     }
 
-    public int compareTo(@NotNull String anotherString) {
-        return string.compareTo(anotherString);
+    public int compareTo(@NotNull CharSequence another) {
+        return string.compareTo(StringX.of(another).toString());
     }
 
-    public int compareToIgnoreCase(@NotNull String str) {
-        return string.compareToIgnoreCase(str);
+    public int compareToIgnoreCase(@NotNull CharSequence str) {
+        return string.compareToIgnoreCase(StringX.of(str).toString());
     }
 
     public boolean regionMatches(int toffset, @NotNull String other, int ooffset, int len) {
@@ -208,16 +240,16 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return string.regionMatches(ignoreCase, toffset, other, ooffset, len);
     }
 
-    public boolean startsWith(@NotNull String prefix, int toffset) {
-        return string.startsWith(prefix, toffset);
+    public boolean startsWith(@NotNull CharSequence prefix, int toffset) {
+        return string.startsWith(StringX.of(prefix).toString(), toffset);
     }
 
-    public boolean startsWith(@NotNull String prefix) {
-        return string.startsWith(prefix);
+    public boolean startsWith(@NotNull CharSequence prefix) {
+        return string.startsWith(StringX.of(prefix).toString());
     }
 
-    public boolean endsWith(@NotNull String suffix) {
-        return string.endsWith(suffix);
+    public boolean endsWith(@NotNull CharSequence suffix) {
+        return string.endsWith(StringX.of(suffix).toString());
     }
 
     @Override
@@ -241,20 +273,20 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return string.lastIndexOf(ch, fromIndex);
     }
 
-    public int indexOf(@NotNull String str) {
-        return string.indexOf(str);
+    public int indexOf(@NotNull CharSequence str) {
+        return string.indexOf(StringX.of(str).toString());
     }
 
-    public int indexOf(@NotNull String str, int fromIndex) {
-        return string.indexOf(str, fromIndex);
+    public int indexOf(@NotNull CharSequence str, int fromIndex) {
+        return string.indexOf(StringX.of(str).toString(), fromIndex);
     }
 
-    public int lastIndexOf(@NotNull String str) {
-        return string.lastIndexOf(str);
+    public int lastIndexOf(@NotNull CharSequence str) {
+        return string.lastIndexOf(StringX.of(str).toString());
     }
 
-    public int lastIndexOf(@NotNull String str, int fromIndex) {
-        return string.lastIndexOf(str, fromIndex);
+    public int lastIndexOf(@NotNull CharSequence str, int fromIndex) {
+        return string.lastIndexOf(StringX.of(str).toString(), fromIndex);
     }
 
     public StringX substring(int beginIndex) {
@@ -271,40 +303,40 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return string.subSequence(start, end);
     }
 
-    public StringX concat(@NotNull String str) {
-        return StringX.of(string.concat(str));
+    public StringX concat(@NotNull CharSequence charSequence) {
+        return StringX.of(string.concat(StringX.of(charSequence).toString()));
     }
 
     public StringX replace(char oldChar, char newChar) {
         return StringX.of(string.replace(oldChar, newChar));
     }
 
-    public boolean matches(@NotNull String regex) {
-        return string.matches(regex);
+    public boolean matches(@NotNull Pattern regex) {
+        return regex.matcher(string).matches();
     }
 
     public boolean contains(@NotNull CharSequence s) {
         return string.contains(s);
     }
 
-    public StringX replaceFirst(@NotNull String regex, @NotNull String replacement) {
-        return StringX.of(string.replaceFirst(regex, replacement));
+    public StringX replaceFirst(@NotNull Pattern regex, @NotNull CharSequence replacement) {
+        return StringX.of(string.replaceFirst(regex.toString(), StringX.of(replacement).toString()));
     }
 
-    public StringX replaceAll(@NotNull String regex, @NotNull String replacement) {
-        return StringX.of(string.replaceAll(regex, replacement));
+    public StringX replaceAll(@NotNull Pattern regex, @NotNull String replacement) {
+        return StringX.of(string.replaceAll(regex.toString(), replacement));
     }
 
     public StringX replace(@NotNull CharSequence target, @NotNull CharSequence replacement) {
         return StringX.of(string.replace(target, replacement));
     }
 
-    public ListX<String> split(@NotNull String regex, int limit) {
-        return ListX.of(string.split(regex, limit));
+    public ListX<String> split(@NotNull Pattern regex, int limit) {
+        return ListX.of(string.split(regex.toString(), limit));
     }
 
-    public ListX<String> split(@NotNull String regex) {
-        return ListX.of(string.split(regex));
+    public ListX<String> split(@NotNull CharSequence charSequence) {
+        return ListX.of(this.string.split(StringX.of(charSequence).toString()));
     }
 
     public static StringX join(CharSequence delimiter, CharSequence... elements) {
@@ -323,17 +355,6 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return StringX.of(string.toLowerCase());
     }
 
-    public boolean isAnagramOf(String other) {
-        final MapX<Character, MutableListX<Character>> group1 = groupedCharacters(this);
-        final MapX<Character, MutableListX<Character>> group2 = groupedCharacters(StringX.of(other));
-        return group1.equals(group2);
-    }
-
-    private static MapX<Character, MutableListX<Character>> groupedCharacters(StringX s1) {
-        final StringX trimmedAndNoSpaces = s1.trim().replace(" ", "").toLowerCase();
-        return trimmedAndNoSpaces.group();
-    }
-
     public StringX toUpperCase(@NotNull Locale locale) {
         return StringX.of(string.toUpperCase(locale));
     }
@@ -346,6 +367,11 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return StringX.of(string.trim());
     }
 
+    public boolean isAnagramOf(CharSequence other) {
+        return trim().replace(" ", "").toLowerCase().group()
+                .equals(StringX.of(other).trim().replace(" ", "").toLowerCase().group());
+    }
+
     public IntX toIntX(int radix) {
        return IntX.of(Integer.parseInt(string, radix));
     }
@@ -354,9 +380,17 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return toIntX(10);
     }
 
+    public LongX toLongX() {
+        return LongX.of(Long.parseLong(string));
+    }
+
+    public DoubleX toDoubleX() {
+        return DoubleX.of(Double.parseDouble(string));
+    }
+
     @Override
     public @NotNull String toString() {
-        return joinToString();
+        return string;
     }
 
     @NotNull
@@ -369,6 +403,10 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return string.toCharArray();
     }
 
+    public ArrayX<Character> toCharacterArrayX() {
+        return ArrayX.of(string.chars().mapToObj(i -> (char) i).toArray(Character[]::new));
+    }
+
     public static StringX format(@NotNull String format, Object... args) {
         return StringX.of(String.format(format, args));
     }
@@ -377,48 +415,12 @@ public final class StringX implements CharSequence, IterableX<Character>, Transf
         return StringX.of(String.format(l, format, args));
     }
 
-    public static StringX valueOf(Object obj) {
-        return StringX.of(String.valueOf(obj));
-    }
-
-    public static StringX valueOf(@NotNull char[] data) {
-        return StringX.of(String.valueOf(data));
-    }
-
-    public static StringX valueOf(@NotNull char[] data, int offset, int count) {
-        return StringX.of(String.valueOf(data, offset, count));
-    }
-
-    public static StringX copyValueOf(@NotNull char[] data, int offset, int count) {
+    public static StringX copyOf(@NotNull char[] data, int offset, int count) {
         return StringX.of(String.copyValueOf(data, offset, count));
     }
 
-    public static StringX copyValueOf(@NotNull char[] data) {
+    public static StringX copyOf(@NotNull char[] data) {
         return StringX.of(String.copyValueOf(data));
-    }
-
-    public static StringX valueOf(boolean b) {
-        return StringX.of(String.valueOf(b));
-    }
-
-    public static StringX valueOf(char c) {
-        return StringX.of(String.valueOf(c));
-    }
-
-    public static StringX valueOf(int i) {
-        return StringX.of(String.valueOf(i));
-    }
-
-    public static StringX valueOf(long l) {
-        return StringX.of(String.valueOf(l));
-    }
-
-    public static StringX valueOf(float f) {
-        return StringX.of(String.valueOf(f));
-    }
-
-    public static StringX valueOf(double d) {
-        return StringX.of(String.valueOf(d));
     }
 
     @Override

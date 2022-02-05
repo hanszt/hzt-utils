@@ -1,6 +1,7 @@
 package hzt.collectors;
 
 import hzt.sequences.Sequence;
+import hzt.statistics.BigDecimalStatistics;
 import hzt.statistics.BigDecimalSummaryStatistics;
 import hzt.statistics.DoubleStatistics;
 import hzt.utils.It;
@@ -20,12 +21,8 @@ import java.util.OptionalDouble;
 import java.util.Set;
 
 import static hzt.collectors.BigDecimalCollectors.summarizingBigDecimal;
-import static hzt.collectors.BigDecimalCollectors.summingBigDecimal;
-import static hzt.collectors.BigDecimalCollectors.toMaxBigDecimal;
-import static hzt.collectors.BigDecimalCollectors.toMinBigDecimal;
 import static hzt.collectors.CollectorsX.intersectingBy;
 import static hzt.collectors.CollectorsX.toIntersection;
-import static java.util.stream.Collectors.counting;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -42,12 +39,12 @@ class CollectorsXTest {
                 .filter(Objects::nonNull)
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
 
-        final BigDecimalSummaryStatistics actual = Sequence.of(sampleBankAccountListContainingNulls).branching(
-                counting(),
-                summingBigDecimal(BankAccount::getBalance),
-                toMinBigDecimal(BankAccount::getBalance),
-                toMaxBigDecimal(BankAccount::getBalance),
-                BigDecimalSummaryStatistics::new
+        final var actual = Sequence.of(sampleBankAccountListContainingNulls).toFour(
+                Sequence::count,
+                s -> s.sumOf(BankAccount::getBalance),
+                s -> s.minOf(BankAccount::getBalance),
+                s -> s.maxOf(BankAccount::getBalance),
+                BigDecimalStatistics::new
         );
 
         assertAll(

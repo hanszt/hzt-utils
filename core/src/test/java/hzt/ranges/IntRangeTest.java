@@ -5,6 +5,7 @@ import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,6 +47,22 @@ class IntRangeTest {
     @Test
     void testGetEmptyIntRangeWhenFromValueIsGreaterThanUntilValue() {
         assertEquals(0 , IntRange.from(100).until(0).count());
+    }
+
+    @Test
+    void testStats() {
+        final var expected = IntStream.range(0, 100).summaryStatistics();
+
+        final var actual = IntRange.of(0, 100).stats();
+
+        It.println("actual = " + actual);
+
+        assertAll(
+                () -> assertEquals(expected.getCount(), actual.getCount()),
+                () -> assertEquals(expected.getSum(), actual.getSum()),
+                () -> assertEquals(expected.getAverage(), actual.getAverage()),
+                () -> assertEquals(expected.getMax(), actual.getMax())
+        );
     }
 
 }

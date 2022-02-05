@@ -2,9 +2,12 @@ package hzt.ranges;
 
 import hzt.numbers.IntX;
 import hzt.sequences.Sequence;
+import hzt.utils.It;
 
+import java.util.IntSummaryStatistics;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.ToIntFunction;
 
 public interface IntRange extends Sequence<Integer> {
 
@@ -56,5 +59,25 @@ public interface IntRange extends Sequence<Integer> {
 
     default Optional<Integer> findRandom(Random random) {
         return toListX().findRandom(random);
+    }
+
+    default int min() {
+        return Sequence.super.minOf(It::self);
+    }
+
+    default int max() {
+        return Sequence.super.maxOf(It::self);
+    }
+
+    default double average() {
+        return Sequence.super.averageOfInts(It::self);
+    }
+
+    default long sum() {
+        return Sequence.super.sumOfInts(It::self);
+    }
+
+    default IntSummaryStatistics stats() {
+        return Sequence.super.statsOfInts(It::self);
     }
 }

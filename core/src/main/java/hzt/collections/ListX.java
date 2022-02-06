@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -206,7 +207,7 @@ public interface ListX<E> extends CollectionView<E> {
     Optional<E> findRandom();
 
     default E random() {
-        return findRandom().orElseThrow();
+        return findRandom().orElseThrow(NoSuchElementException::new);
     }
 
     default Optional<E> findRandom(Random random) {
@@ -214,7 +215,7 @@ public interface ListX<E> extends CollectionView<E> {
     }
 
     default E random(Random random) {
-        return findRandom(random).orElseThrow();
+        return findRandom(random).orElseThrow(NoSuchElementException::new);
     }
 
     default int binarySearchTo(int toIndex, ToIntFunction<E> comparison) {

@@ -14,28 +14,25 @@ class CloserTest {
 
     @Test
     void testCloserForResourceNotImplementingAutoClosable() {
-        var closer = Closer.forResource(new Resource("Resource 1"), Resource::close);
-        try (closer) {
+        try (Closer<Resource> closer = Closer.forResource(new Resource("Resource 1"), Resource::close)) {
             assertFalse(closer.getResource().closed);
             closer.execute(Resource::load);
-            final var result = closer.apply(Resource::read);
+            final String result = closer.apply(Resource::read);
             assertEquals("Read result", result);
         }
-        assertTrue(closer.getResource().closed);
     }
 
     @Test
     void testCloserCLosingFunctionThrowingException() {
-        var closer = Closer.forResource(new Resource("Resource 1"), Resource::closeThrowingException);
-        assertThrows(IllegalStateException.class, () -> closeThrowingException(closer));
+        assertThrows(IllegalStateException.class, this::closeThrowingException);
 
     }
 
-    private void closeThrowingException(Closer<Resource> closer) {
-        try (closer) {
+    private void closeThrowingException() {
+        try (Closer<Resource> closer = Closer.forResource(new Resource("Resource 1"), Resource::closeThrowingException)) {
             assertFalse(closer.getResource().closed);
             closer.execute(Resource::load);
-            final var result = closer.apply(Resource::read);
+            final String result = closer.apply(Resource::read);
             assertEquals("Read result", result);
         }
     }

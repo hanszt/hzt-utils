@@ -8,14 +8,15 @@
     <parent>
         <groupId>org.hzt.utils</groupId>
         <artifactId>commons</artifactId>
-        <version>0.5</version>
+        <version>0.7.1.8</version>
     </parent>
 
     <artifactId>core</artifactId>
+    <version>0.5.1.8</version>
 
     <properties>
-        <java.source.version>11</java.source.version>
-        <java.target.version>11</java.target.version>
+        <java.source.version>8</java.source.version>
+        <java.target.version>8</java.target.version>
     </properties>
 
     <dependencies>

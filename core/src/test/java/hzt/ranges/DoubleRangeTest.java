@@ -1,5 +1,6 @@
 package hzt.ranges;
 
+import hzt.statistics.DoubleStatistics;
 import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
@@ -11,7 +12,7 @@ class DoubleRangeTest {
 
     @Test
     void testRange() {
-        final var stats = DoubleRange.of(0, 100, .01).stats();
+        final DoubleStatistics stats = DoubleRange.of(0, 100, .01).stats();
 
         assertAll(
                 () -> assertEquals(10_000, stats.getCount()),

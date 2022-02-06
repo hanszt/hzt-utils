@@ -15,10 +15,6 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
         super();
     }
 
-    public DoubleStatistics(long count, double min, double max, double sum) {
-        super(count, min, max, sum);
-    }
-
     @Override
     public void accept(double value) {
         super.accept(value);

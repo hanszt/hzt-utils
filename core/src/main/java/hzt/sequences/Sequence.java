@@ -19,7 +19,9 @@ import hzt.tuples.Triple;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -111,7 +113,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     default <K, V> EntrySequence<K, V> asEntrySequence(Function<T, K> keyMapper, Function<T, V> valueMapper) {
-        return EntrySequence.of(map(value -> Map.entry(keyMapper.apply(value), valueMapper.apply(value))));
+        return EntrySequence.of(map(value -> new AbstractMap.SimpleEntry<>(keyMapper.apply(value), valueMapper.apply(value))));
     }
 
     @Override
@@ -294,7 +296,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     default List<T> toList() {
-        return List.copyOf(toMutableList());
+        return Collections.unmodifiableList(toMutableList());
     }
 
     default MutableSetX<T> toMutableSet() {
@@ -306,7 +308,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     default Set<T> toSet() {
-        return Set.copyOf(toMutableSet());
+        return Collections.unmodifiableSet(toMutableSet());
     }
 
     default long count() {
@@ -342,10 +344,10 @@ public interface Sequence<T> extends IterableX<T> {
                                          @NotNull Function<? super Sequence<T>, ? extends R3> resultMapper3,
                                          @NotNull Function<? super Sequence<T>, ? extends R4> resultMapper4,
                                          @NotNull QuadFunction<R1, R2, R3, R4, R> merger) {
-        final var r1 = resultMapper1.apply(this);
-        final var r2 = resultMapper2.apply(this);
-        final var r3 = resultMapper3.apply(this);
-        final var r4 = resultMapper4.apply(this);
+        final R1 r1 = resultMapper1.apply(this);
+        final R2 r2 = resultMapper2.apply(this);
+        final R3 r3 = resultMapper3.apply(this);
+        final R4 r4 = resultMapper4.apply(this);
         return merger.apply(r1, r2, r3, r4);
     }
 }

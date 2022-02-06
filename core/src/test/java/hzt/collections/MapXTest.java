@@ -139,15 +139,15 @@ class MapXTest {
 
     @Test
     void testMapOfPairs() {
-        final var hallo = StringX.of("Hallo");
-        final var map = MapX.ofPairs(hallo.to("s"), StringX.of("asd").to("asdd"));
+        final StringX hallo = StringX.of("Hallo");
+        final MapX<StringX, String> map = MapX.ofPairs(hallo.to("s"), StringX.of("asd").to("asdd"));
         assertEquals(2, map.size());
         assertTrue(map.containsValue("asdd"));
     }
 
     @Test
     void testBuildMap() {
-        final var mapX = MapX.<Integer, LocalDate>build(map ->
+        final MapX<Integer, LocalDate> mapX = MapX.<Integer, LocalDate>build(map ->
                 IntRange.of(1990, 2022).forEach(year -> map.put(year, LocalDate.of(year, 1, 1))));
 
         mapX.forEach(It::println);

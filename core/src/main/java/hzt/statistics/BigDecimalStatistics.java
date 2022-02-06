@@ -49,12 +49,13 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
     }
 
     public BigDecimal getStandardDeviation(int scale, RoundingMode roundingMode, MathContext mathContext) {
-        final BigDecimal average = getAverage(scale, roundingMode);
-        final BigDecimal subtract = (getSumOfSquare().divide(BigDecimal.valueOf(getCount()), scale, roundingMode))
-                .subtract(average.multiply(average));
-        final BigDecimal stdDeviation = getCount() > 0 ?
-                subtract.sqrt(mathContext) : BigDecimal.ZERO;
-        return stdDeviation.setScale(scale, roundingMode);
+//        final BigDecimal average = getAverage(scale, roundingMode);
+//        final BigDecimal subtract = (getSumOfSquare().divide(BigDecimal.valueOf(getCount()), scale, roundingMode))
+//                .subtract(average.multiply(average));
+//        final BigDecimal stdDeviation = getCount() > 0 ?
+//                subtract.sqrt(mathContext) : BigDecimal.ZERO;
+//        return stdDeviation.setScale(scale, roundingMode);
+        throw new UnsupportedOperationException("Not available in java 8");
     }
 
     @Override

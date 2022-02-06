@@ -21,7 +21,7 @@ final class DistinctSequence<T, K> implements Sequence<T> {
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return new AbstractIterator<>() {
+        return new AbstractIterator<T>() {
             private final Iterator<T> iterator = upstream.iterator();
             private final Set<K> observed = new HashSet<>();
             @Override

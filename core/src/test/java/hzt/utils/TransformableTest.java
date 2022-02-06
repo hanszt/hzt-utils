@@ -1,5 +1,6 @@
 package hzt.utils;
 
+import hzt.collections.ListX;
 import hzt.collections.MutableListX;
 import hzt.strings.StringX;
 import hzt.test.Generator;
@@ -20,7 +21,7 @@ class TransformableTest {
     @Test
     void testCreateATransformableOfSomethingAndUseTheDefaultFunctions() {
         final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
-        final var nijntje = Painting.of("Nijntje");
+        final Painting nijntje = Painting.of("Nijntje");
 
         final LocalDate localDate = Transformable.from(vanGoghAuction)
                 .apply(a -> a.setMostPopularPainting(nijntje))
@@ -56,18 +57,18 @@ class TransformableTest {
 
     @Test
     void testToPair() {
-        final var hallo = StringX.of("Hallo");
+        final StringX hallo = StringX.of("Hallo");
 
-        final var pair = hallo.to("Joepie");
+        final Pair<StringX, String> pair = hallo.to("Joepie");
 
         assertEquals(Pair.of(hallo, "Joepie"), pair);
     }
 
     @Test
     void testAsList() {
-        final var hallo = StringX.of("Hallo");
+        final StringX hallo = StringX.of("Hallo");
 
-        final var actual = hallo.asListX();
+        final ListX<StringX> actual = hallo.asListX();
 
         assertEquals(1, actual.size());
     }

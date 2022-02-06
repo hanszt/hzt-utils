@@ -67,7 +67,7 @@ public final class IterableXHelper {
     }
 
     static <T> Iterator<Integer> indexIterator(Iterator<T> iterator) {
-        return new Iterator<>() {
+        return new Iterator<Integer>() {
             private int index = 0;
             @Override
             public boolean hasNext() {
@@ -175,7 +175,7 @@ public final class IterableXHelper {
     }
 
     public static <T> Iterator<IndexedValue<T>> indexedIterator(Iterator<T> iterator) {
-        return new Iterator<>() {
+        return new Iterator<IndexedValue<T>>() {
             private int index = 0;
 
             @Override

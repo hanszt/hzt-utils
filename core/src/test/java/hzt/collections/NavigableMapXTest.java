@@ -1,5 +1,6 @@
 package hzt.collections;
 
+import hzt.iterables.IterableX;
 import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
@@ -16,7 +17,7 @@ class NavigableMapXTest {
 
     @Test
     void testGetNavigableMap() {
-        final var museumListContainingNulls = ListX.of(TestSampleGenerator.getMuseumListContainingNulls())
+        final IterableX<Museum> museumListContainingNulls = ListX.of(TestSampleGenerator.getMuseumListContainingNulls())
                 .sortedBy(e -> Math.random());
 
         final NavigableMap<String, Museum> expected = new TreeMap<>(museumListContainingNulls.stream()

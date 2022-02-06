@@ -1,7 +1,9 @@
 package hzt.ranges;
 
+import hzt.statistics.LongStatistics;
 import org.junit.jupiter.api.Test;
 
+import java.util.LongSummaryStatistics;
 import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -11,7 +13,7 @@ class LongRangeTest {
 
     @Test
     void longRangeStatsGreaterThanIntegerMax() {
-        final var stats = LongRange.of(0, Integer.MAX_VALUE * 10L, 1_000L).stats();
+        final LongStatistics stats = LongRange.of(0, Integer.MAX_VALUE * 10L, 1_000L).stats();
 
         assertAll(
                 () -> assertEquals(21474836000L, stats.getMax()),
@@ -20,7 +22,7 @@ class LongRangeTest {
 
     @Test
     void longStreamRangeStatsGreaterThanIntegerMax() {
-        final var stats = LongStream.range(0, Integer.MAX_VALUE + 100_000L)
+        final LongSummaryStatistics stats = LongStream.range(0, Integer.MAX_VALUE + 100_000L)
                 .parallel()
                 .summaryStatistics();
 

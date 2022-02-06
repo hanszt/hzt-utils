@@ -1,10 +1,12 @@
 package hzt.ranges;
 
 import hzt.collections.MutableListX;
+import hzt.statistics.IntStatistics;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.IntSummaryStatistics;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -14,17 +16,17 @@ class IntRangeTest {
 
     @Test
     void testSteppedIntRange() {
-        var list = MutableListX.<Integer>empty();
+        MutableListX<Integer> list = MutableListX.<Integer>empty();
         for (int i : IntRange.until(15).step(4)) {
             It.println(i);
             list.add(i);
         }
-        assertEquals(List.of(0, 4, 8, 12), list);
+        assertEquals(Arrays.asList(0, 4, 8, 12), list);
     }
 
     @Test
     void testDescendingSteppedIntRange() {
-        var list = MutableListX.<Integer>empty();
+        MutableListX<Integer> list = MutableListX.<Integer>empty();
         for (int i : IntRange.from(100).downTo(20).step(5)) {
             It.println(i);
             list.add(i);
@@ -37,7 +39,7 @@ class IntRangeTest {
 
     @Test
     void testDescendingIntRange() {
-        final var integers = IntRange.from(100).downTo(20);
+        final IntRange integers = IntRange.from(100).downTo(20);
         assertAll(
                 () -> assertEquals(81, integers.count()),
                 () -> assertEquals(100, integers.first())
@@ -51,9 +53,9 @@ class IntRangeTest {
 
     @Test
     void testStats() {
-        final var expected = IntStream.range(0, 100).summaryStatistics();
+        final IntSummaryStatistics expected = IntStream.range(0, 100).summaryStatistics();
 
-        final var actual = IntRange.of(0, 100).stats();
+        final IntStatistics actual = IntRange.of(0, 100).stats();
 
         It.println("actual = " + actual);
 

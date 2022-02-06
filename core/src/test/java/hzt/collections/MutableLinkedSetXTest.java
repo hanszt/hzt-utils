@@ -1,7 +1,10 @@
 package hzt.collections;
 
 import org.hzt.test.TestSampleGenerator;
+import org.hzt.test.model.Book;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,9 +18,9 @@ class MutableLinkedSetXTest {
 
     @Test
     void testMutableLinkedSetOfIterableMaintainsOrder() {
-        final var bookList = TestSampleGenerator.createBookList();
+        final List<Book> bookList = TestSampleGenerator.createBookList();
 
-        var set = MutableLinkedSetX.of(bookList);
+        MutableLinkedSetX<Book> set = MutableLinkedSetX.of(bookList);
 
         assertEquals(bookList.get(0), set.first());
     }

@@ -129,7 +129,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     @NotNull
     private Iterator<Character> charIterator() {
-        return new Iterator<>() {
+        return new Iterator<Character>() {
 
             private int index = 0;
             private final char[] charArray = string.toCharArray();
@@ -162,14 +162,6 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     public StringX ifEmpty(Supplier<CharSequence> defaultCsSupplier) {
         return isEmpty() ? StringX.of(defaultCsSupplier.get()) : this;
-    }
-
-    public boolean isBlank() {
-        return string.isBlank();
-    }
-
-    public StringX ifBlank(Supplier<CharSequence> defaultStringSupplier) {
-        return isEmpty() ? StringX.of(defaultStringSupplier.get()) : this;
     }
 
     @Override

@@ -8,6 +8,7 @@ import hzt.collections.SetX;
 import hzt.collectors.BigDecimalCollectors;
 import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
+import hzt.statistics.IntStatistics;
 import hzt.utils.It;
 import hzt.statistics.BigDecimalSummaryStatistics;
 import hzt.strings.StringX;
@@ -144,7 +145,7 @@ public class IterableXTest {
     @Test
     void testSortedIfOfComparableType() {
         MutableListX<Integer> list = MutableListX.of(1, 3, 5, 4, 2, 7, 214, 5, 8, 3, 4, 123);
-        final var sorted = list.sorted();
+        final IterableX<Integer> sorted = list.sorted();
         assertIterableEquals(ListX.of(1, 2, 3, 3, 4, 4, 5, 5, 7, 8, 123, 214), sorted);
     }
 
@@ -566,7 +567,7 @@ public class IterableXTest {
 
         It.println("integers = " + integers);
 
-        assertIterableEquals(List.of(5, 10, 6, 5, 3, 5, 6), integers);
+        assertIterableEquals(Arrays.asList(5, 10, 6, 5, 3, 5, 6), integers);
     }
 
     @Test
@@ -579,7 +580,7 @@ public class IterableXTest {
 
         It.println("integers = " + integers);
 
-        assertIterableEquals(List.of(10, 6, 5, 3, 5, 6), integers);
+        assertIterableEquals(Arrays.asList(10, 6, 5, 3, 5, 6), integers);
     }
 
     @Test
@@ -827,7 +828,7 @@ public class IterableXTest {
                 .collect(toListX())
                 .maxOf(Painter::getDateOfBirth);
 
-        final var actual = paintingList
+        final ChronoLocalDate actual = paintingList
                 .mapNotNull(Painting::painter)
                 .maxOf(Painter::getDateOfBirth);
 
@@ -1012,7 +1013,7 @@ public class IterableXTest {
     // causes compiler error on java 11 and older:
     // java: Compilation failed: internal java compiler error
     public static <T> IterableX<T> empty() {
-        return ListX.of(() -> new Iterator<>() {
+        return ListX.of(() -> new Iterator<T>() {
             @Override
             public boolean hasNext() {
                 return false;
@@ -1036,7 +1037,7 @@ public class IterableXTest {
                         summarizingInt(Painting::ageInYears),
                         counting()));
 
-        final var actual = paintingList.asSequence()
+        final Triple<Pair<ListX<Painter>, ListX<Painter>>, IntStatistics, Long> actual = paintingList.asSequence()
                 .toThree(s -> s.partitionMapping(Painting::isInMuseum, Painting::painter),
                         s -> s.statsOfInts(Painting::ageInYears),
                         Sequence::count);

@@ -7,7 +7,7 @@
 
     <groupId>org.hzt.utils</groupId>
     <artifactId>commons</artifactId>
-    <version>0.5</version>
+    <version>0.7.1.8</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -25,6 +25,7 @@
         <!--        test-->
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <awaitility.version>4.1.1</awaitility.version>
+        <test.data.generator.version>0.5</test.data.generator.version>
         <!--        other-->
         <annotations.version>22.0.0</annotations.version>
         <!--plugins-->
@@ -43,7 +44,7 @@
             <dependency>
                 <groupId>org.hzt.utils</groupId>
                 <artifactId>test-data-generator</artifactId>
-                <version>${project.version}</version>
+                <version>${test.data.generator.version}</version>
                 <scope>test</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.awaitility/awaitility -->

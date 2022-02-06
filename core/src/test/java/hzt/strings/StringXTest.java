@@ -1,11 +1,13 @@
 package hzt.strings;
 
+import hzt.collections.ArrayX;
 import hzt.collections.ListX;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -51,7 +53,7 @@ class StringXTest {
 
     @Test
     void testStringXToCharArrayX() {
-        final var characters = StringX.of("Hello").toCharacterArrayX();
+        final ArrayX<Character> characters = StringX.of("Hello").toCharacterArrayX();
 
         assertAll(
                 () -> assertEquals('H', characters.first()),
@@ -61,7 +63,7 @@ class StringXTest {
 
     @Test
     void testStringXOfCharIterable() {
-        final var characters = List.of('H', 'e', 'y', '!', '1', '2', '3');
+        final List<Character> characters = Arrays.asList('H', 'e', 'y', '!', '1', '2', '3');
 
         assertEquals("Hey!123", StringX.of(characters).toString());
     }

@@ -36,7 +36,7 @@ final class SkipSequence<T> implements SkipTakeSequence<T> {
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return new Iterator<>() {
+        return new Iterator<T>() {
             private final Iterator<T> iterator = upstream.iterator();
             private long left = count;
 

@@ -13,10 +13,6 @@ public final class IntStatistics extends IntSummaryStatistics
         super();
     }
 
-    public IntStatistics(long count, int min, int max, long sum) {
-        super(count, min, max, sum);
-    }
-
     @Override
     public void accept(int value) {
         super.accept(value);

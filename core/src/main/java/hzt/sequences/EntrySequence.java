@@ -6,7 +6,6 @@ import hzt.collections.MutableMapX;
 import hzt.collections.SetX;
 import hzt.iterables.EntryIterable;
 import hzt.tuples.Pair;
-import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -96,12 +95,12 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     @Override
-    default EntrySequence<K, V> skip(int n) {
+    default EntrySequence<K, V> skip(long n) {
         return EntrySequence.of(Sequence.super.skip(n));
     }
 
     @Override
-    default EntrySequence<K, V> take(int n) {
+    default EntrySequence<K, V> take(long n) {
         return EntrySequence.of(Sequence.super.take(n));
     }
 

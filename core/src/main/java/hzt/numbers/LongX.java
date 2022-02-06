@@ -1,15 +1,18 @@
 package hzt.numbers;
 
+import hzt.ranges.LongRange;
 import hzt.utils.Transformable;
 
 import java.util.Objects;
 
 public final class LongX extends Number implements NumberX, Transformable<LongX> {
-    
-    private final Long aLong;
 
-    private LongX(Long aLong) {
-        this.aLong = aLong;
+    private static final long serialVersionUID = 2;
+
+    private final Long thisLong;
+
+    private LongX(Long thisLong) {
+        this.thisLong = thisLong;
     }
     
     public static LongX of(long aLong) {
@@ -77,44 +80,48 @@ public final class LongX extends Number implements NumberX, Transformable<LongX>
         return Long.decode(nm);
     }
 
+    public LongRange until(long l) {
+        return LongRange.of(thisLong, l);
+    }
+
     @Override
     public byte byteValue() {
-        return aLong.byteValue();
+        return thisLong.byteValue();
     }
 
     @Override
     public short shortValue() {
-        return aLong.shortValue();
+        return thisLong.shortValue();
     }
 
     @Override
     public int intValue() {
-        return aLong.intValue();
+        return thisLong.intValue();
     }
 
     @Override
     public long longValue() {
-        return aLong;
+        return thisLong;
     }
 
     @Override
     public float floatValue() {
-        return aLong.floatValue();
+        return thisLong.floatValue();
     }
 
     @Override
     public double doubleValue() {
-        return aLong.doubleValue();
+        return thisLong.doubleValue();
     }
 
     @Override
     public String toString() {
-        return aLong.toString();
+        return thisLong.toString();
     }
 
     @Override
     public int hashCode() {
-        return aLong.hashCode();
+        return thisLong.hashCode();
     }
 
     @Override
@@ -126,7 +133,7 @@ public final class LongX extends Number implements NumberX, Transformable<LongX>
             return false;
         }
         LongX longX = (LongX) o;
-        return Objects.equals(aLong, longX.aLong);
+        return Objects.equals(thisLong, longX.thisLong);
     }
 
     public static Long getLong(String nm) {
@@ -142,7 +149,7 @@ public final class LongX extends Number implements NumberX, Transformable<LongX>
     }
 
     public int compareTo(Long anotherLong) {
-        return aLong.compareTo(anotherLong);
+        return thisLong.compareTo(anotherLong);
     }
 
     public static int compare(long x, long y) {

@@ -10,11 +10,11 @@ import static hzt.PreConditions.require;
 final class SubSequence<T> implements SkipTakeSequence<T> {
 
     private final Sequence<T> upstream;
-    private final int startIndex;
-    private final int endIndex;
-    private final int count;
+    private final long startIndex;
+    private final long endIndex;
+    private final long count;
 
-    SubSequence(Sequence<T> upstream, int startIndex, int endIndex) {
+    SubSequence(Sequence<T> upstream, long startIndex, long endIndex) {
         require(startIndex >= 0, () -> "startIndex should be non-negative, but is " + startIndex);
         require(endIndex >= 0, () -> "endIndex should be non-negative, but is " + endIndex);
         require(endIndex >= startIndex, () -> "endIndex should be not less than startIndex, but was " + endIndex + " < " + startIndex);
@@ -31,17 +31,17 @@ final class SubSequence<T> implements SkipTakeSequence<T> {
     }
 
     @Override
-    public Sequence<T> skip(int n) {
+    public Sequence<T> skip(long n) {
         return n >= count ? new EmptySequence<>() : new SubSequence<>(upstream, startIndex + n, endIndex);
     }
 
     @Override
-    public Sequence<T> take(int n) {
+    public Sequence<T> take(long n) {
         return n >= count ? this : new SubSequence<>(upstream, startIndex, startIndex + 1);
     }
 
     @Override
-    public int count() {
+    public long count() {
         return count;
     }
 }

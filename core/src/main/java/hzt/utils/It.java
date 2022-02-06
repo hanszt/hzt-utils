@@ -1,9 +1,6 @@
 package hzt.utils;
 
-import java.util.function.IntPredicate;
-import java.util.function.Predicate;
-
-import static java.lang.System.*;
+import static java.lang.System.out;
 
 /**
  * <p>
@@ -50,20 +47,16 @@ public final class It {
         return d;
     }
 
-    public static IntPredicate noIntFilter() {
-        return t -> true;
+    public static <T> boolean noFilter(@SuppressWarnings("all") T t) {
+        return true;
     }
 
-    public static <T> Predicate<T> noFilter() {
-        return t -> true;
+    public static <T> boolean blockingFilter(@SuppressWarnings("all") T t) {
+        return false;
     }
 
-    public static IntPredicate blockingIntFilter() {
-        return t -> false;
-    }
-
-    public static <T> Predicate<T> blockingFilter() {
-        return t -> false;
+    public static void println() {
+        out.println();
     }
 
     public static <T> void println(T value) {
@@ -72,5 +65,9 @@ public final class It {
 
     public static <T> void print(T value) {
         out.print(value);
+    }
+
+    public static void printf(String format, Object... values) {
+        out.printf(format, values);
     }
 }

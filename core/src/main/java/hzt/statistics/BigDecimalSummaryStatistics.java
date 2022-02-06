@@ -15,6 +15,7 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
     private BigDecimal max = INIT_MAX_VALUE;
 
     public BigDecimalSummaryStatistics() {
+        super();
     }
 
     public BigDecimalSummaryStatistics(long count, BigDecimal sum, BigDecimal min, BigDecimal max) {

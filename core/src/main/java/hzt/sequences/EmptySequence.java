@@ -8,12 +8,12 @@ import java.util.Iterator;
 final class EmptySequence<T> implements SkipTakeSequence<T> {
 
     @Override
-    public Sequence<T> skip(int n) {
+    public Sequence<T> skip(long n) {
         return new EmptySequence<>();
     }
 
     @Override
-    public Sequence<T> take(int n) {
+    public Sequence<T> take(long n) {
         return new EmptySequence<>();
     }
 

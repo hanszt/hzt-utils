@@ -46,10 +46,6 @@ public final class Triple<A, B, C> implements Transformable<Triple<A, B, C>> {
                 Objects.equals(this.third, that.third);
     }
 
-    public <D> QuadTuple<A, B, C, D> plus(D fourth) {
-        return QuadTuple.of(first, second, third, fourth);
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(first, second, third);

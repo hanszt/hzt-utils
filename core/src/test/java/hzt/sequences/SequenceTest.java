@@ -311,7 +311,7 @@ class SequenceTest {
     @Test
     void testWindowedThrowsExceptionWhenStepSizeNegative() {
         final var range = IntRange.of(0, 9);
-         assertThrows(IllegalArgumentException.class, () -> range.windowed(-4));
+        assertThrows(IllegalArgumentException.class, () -> range.windowed(-4));
     }
 
     @Test
@@ -491,7 +491,7 @@ class SequenceTest {
 
     @Test
     void testSequenceCanBeConsumedMultipleTimes() {
-        var names = Sequence.of(List.of(1, 2, 3, 4, 5,3, -1,6 ,12))
+        var names = Sequence.of(List.of(1, 2, 3, 4, 5, 3, -1, 6, 12))
                 .onEach(It::println)
                 .mapNotNull(Year::of)
                 .sorted();
@@ -510,6 +510,25 @@ class SequenceTest {
                 () -> assertEquals(Year.of(12), last),
                 () -> assertEquals(9, nameList.size()),
                 () -> assertEquals(3, names.windowed(2, 3).count())
+        );
+    }
+
+    @Test
+    void testSequenceAsIntRange() {
+        final int year = 2020;
+
+        final var daysOfYear = Sequence
+                .generate(LocalDate.of(year, Month.JANUARY, 1), date -> date.plusDays(1))
+                .takeWhile(date -> date.getYear() < year + 1)
+                .asIntRange(LocalDate::getDayOfMonth);
+
+        It.println(daysOfYear.joinToString());
+
+        assertAll(
+                () -> assertTrue(Year.of(year).isLeap()),
+                () -> assertEquals(7, daysOfYear.filter(i -> i == 31).count()),
+                () -> assertEquals(12, daysOfYear.filter(i -> i == 29).count()),
+                () -> assertEquals(366, daysOfYear.count())
         );
     }
 
@@ -534,7 +553,7 @@ class SequenceTest {
 
         assertAll(
                 () -> assertEquals(100, triple.first().size()),
-                () -> assertEquals(50, triple.second().count()),
+                () -> assertEquals(Year.of(0), triple.second().toListXOf(Year::of).first()),
                 () -> assertEquals(49.5, triple.third().getAverage())
         );
     }

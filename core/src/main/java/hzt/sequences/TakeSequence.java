@@ -9,30 +9,30 @@ import java.util.NoSuchElementException;
 final class TakeSequence<T> implements SkipTakeSequence<T> {
 
     private final Sequence<T> upstream;
-    private final int count;
+    private final long count;
 
-    TakeSequence(Sequence<T> upstream, int count) {
-        PreConditions.requireGreaterThanZero(count);
+    TakeSequence(Sequence<T> upstream, long count) {
+        PreConditions.require(count >= 0);
         this.upstream = upstream;
         this.count = count;
     }
 
     @Override
-    public Sequence<T> skip(int n) {
+    public Sequence<T> skip(long n) {
         return n >= count ? new EmptySequence<>() : new SubSequence<>(upstream, n, count);
     }
 
     @Override
-    public Sequence<T> take(int n) {
+    public Sequence<T> take(long n) {
         return n >= count ? this : new TakeSequence<>(upstream, n);
     }
 
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             private final Iterator<T> iterator = upstream.iterator();
-            private int left = count;
+            private long left = count;
             @Override
             public boolean hasNext() {
                 return left > 0 && iterator.hasNext();
@@ -49,7 +49,7 @@ final class TakeSequence<T> implements SkipTakeSequence<T> {
     }
 
     @Override
-    public int count() {
+    public long count() {
         return count;
     }
 }

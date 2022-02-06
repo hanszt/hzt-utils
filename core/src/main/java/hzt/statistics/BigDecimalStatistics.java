@@ -1,10 +1,13 @@
 package hzt.statistics;
 
+import hzt.utils.Transformable;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-public final class BigDecimalStatistics extends BigDecimalSummaryStatistics {
+public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
+        implements NumberStatistics, Transformable<BigDecimalStatistics> {
 
     private BigDecimal sumOfSquare = BigDecimal.ZERO;
 
@@ -67,4 +70,8 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics {
                 getStandardDeviation());
     }
 
+    @Override
+    public BigDecimalStatistics get() {
+        return this;
+    }
 }

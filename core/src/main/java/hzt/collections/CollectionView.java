@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public interface CollectionView<E> extends IterableX<E> {
 
     default int size() {
-        return count(It.noFilter());
+        return (int) count(It::noFilter);
     }
 
     default boolean isEmpty() {

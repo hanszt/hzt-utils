@@ -3,6 +3,7 @@ package hzt.utils;
 import hzt.collections.ListX;
 import hzt.tuples.Pair;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -70,6 +71,10 @@ public interface Transformable<T> extends Supplier<T> {
 
     default ListX<T> asListX() {
         return ListX.of(get());
+    }
+
+    default List<T> asList() {
+        return List.of(get());
     }
 
 }

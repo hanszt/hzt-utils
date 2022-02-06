@@ -91,12 +91,12 @@ public interface ListX<E> extends CollectionView<E> {
 
     @Override
     default <R> ListX<R> mapFiltering(Function<? super E, ? extends R> mapper, Predicate<R> resultFilter) {
-        return mapFiltering(It.noFilter(), mapper, resultFilter);
+        return mapFiltering(It::noFilter, mapper, resultFilter);
     }
 
     @Override
     default <R> ListX<R> filterMapping(Predicate<E> predicate, Function<E, R> mapper) {
-        return mapFiltering(predicate, mapper, It.noFilter());
+        return mapFiltering(predicate, mapper, It::noFilter);
     }
 
     @Override
@@ -175,7 +175,7 @@ public interface ListX<E> extends CollectionView<E> {
     }
 
     default MutableListX<E> takeLastToMutableList(int n) {
-        PreConditions.requireGreaterThanZero(n);
+        PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
             return MutableListX.empty();
         }

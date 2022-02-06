@@ -2,12 +2,13 @@ package hzt.ranges;
 
 import hzt.numbers.IntX;
 import hzt.sequences.Sequence;
+import hzt.statistics.IntStatistics;
 import hzt.utils.It;
 
-import java.util.IntSummaryStatistics;
 import java.util.Optional;
 import java.util.Random;
-import java.util.function.ToIntFunction;
+import java.util.function.IntPredicate;
+import java.util.function.LongPredicate;
 
 public interface IntRange extends Sequence<Integer> {
 
@@ -19,9 +20,12 @@ public interface IntRange extends Sequence<Integer> {
         return integers::iterator;
     }
 
-    static IntRange of(int start, int end) {
-        return start < end ? IntRange.of(Sequence.generate(start, i -> ++i).take(end - start)) :
-                IntRange.of(Sequence.generate(start, i -> --i).take(start - end));
+    static IntRange of (int start, int end) {
+        return of(start, end, 1);
+    }
+
+    static IntRange of(int start, int end, int step) {
+        return IntRange.of(Sequence.generate(start, i -> i + (start < end ? step : -step)).take(Math.abs(end - start)));
     }
 
     static IntX from(int start) {
@@ -38,7 +42,7 @@ public interface IntRange extends Sequence<Integer> {
 
     static IntRange closed(int start, int endInclusive) {
         return IntRange.of(Sequence.generate(start, i -> i + (start < endInclusive ? 1 : -1))
-                .take(Math.abs(endInclusive - start) + 1));
+                .take(Math.abs(endInclusive - start) + 1L));
     }
 
     default IntRange step(int step) {
@@ -62,22 +66,50 @@ public interface IntRange extends Sequence<Integer> {
     }
 
     default int min() {
-        return Sequence.super.minOf(It::self);
+        return min(It::noFilter);
+    }
+
+    default int min(IntPredicate predicate) {
+        return filter(predicate::test).minOf(It::asInt);
     }
 
     default int max() {
-        return Sequence.super.maxOf(It::self);
+        return max(It::noFilter);
+    }
+
+    default int max(IntPredicate predicate) {
+        return filter(predicate::test).maxOf(It::asInt);
     }
 
     default double average() {
-        return Sequence.super.averageOfInts(It::self);
+        return average(It::noFilter);
+    }
+
+    default double average(IntPredicate predicate) {
+        return filter(predicate::test).averageOfLongs(It::asLong);
     }
 
     default long sum() {
-        return Sequence.super.sumOfInts(It::self);
+        return sum(It::noFilter);
     }
 
-    default IntSummaryStatistics stats() {
-        return Sequence.super.statsOfInts(It::self);
+    default long sum(IntPredicate predicate) {
+        return filter(predicate::test).sumOfInts(It::asInt);
+    }
+
+    default double stdDev() {
+        return stdDev(It::noFilter);
+    }
+
+    default double stdDev(LongPredicate predicate) {
+        return filter(predicate::test).statsOfLongs(It::asLong).getStandardDeviation();
+    }
+
+    default IntStatistics stats() {
+        return stats(It::noFilter);
+    }
+
+    default IntStatistics stats(IntPredicate predicate) {
+        return filter(predicate::test).statsOfInts(It::asInt);
     }
 }

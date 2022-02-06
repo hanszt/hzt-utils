@@ -68,12 +68,12 @@ public interface MutableListX<E> extends List<E>, ListX<E>, Transformable<Mutabl
 
     @Override
     default <R> MutableListX<R> mapFiltering(Function<? super E, ? extends R> mapper, Predicate<R> resultFilter) {
-        return mapFiltering(It.noFilter(), mapper, resultFilter);
+        return mapFiltering(It::noFilter, mapper, resultFilter);
     }
 
     @Override
     default <R> MutableListX<R> filterMapping(Predicate<E> predicate, Function<E, R> mapper) {
-        return mapFiltering(predicate, mapper, It.noFilter());
+        return mapFiltering(predicate, mapper, It::noFilter);
     }
 
     @Override

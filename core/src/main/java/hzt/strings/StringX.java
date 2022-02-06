@@ -33,7 +33,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     private StringX(Iterable<Character> characterIterable) {
-        string = Sequence.of(characterIterable).joinToString();
+        string = Sequence.of(characterIterable).joinToString("");
     }
 
     private StringX(char[] charArray) {
@@ -155,6 +155,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return string.length();
     }
 
+    @SuppressWarnings("all")
     public boolean isEmpty() {
         return string.isEmpty();
     }

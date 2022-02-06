@@ -13,9 +13,14 @@ import hzt.collections.NavigableMapX;
 import hzt.collections.NavigableSetX;
 import hzt.collections.SetX;
 import hzt.function.TriFunction;
+import hzt.ranges.DoubleRange;
+import hzt.ranges.IntRange;
+import hzt.ranges.LongRange;
 import hzt.sequences.Sequence;
 import hzt.statistics.BigDecimalStatistics;
 import hzt.statistics.DoubleStatistics;
+import hzt.statistics.IntStatistics;
+import hzt.statistics.LongStatistics;
 import hzt.strings.StringX;
 import hzt.tuples.Pair;
 import hzt.utils.It;
@@ -26,11 +31,9 @@ import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.IntSummaryStatistics;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Objects;
@@ -141,7 +144,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default <R> IterableX<T> notNullBy(Function<? super T, ? extends R> selector) {
-        return filterNotNullBy(selector, It.noFilter());
+        return filterNotNullBy(selector, It::noFilter);
     }
 
     default <R> IterableX<T> filterNotNullBy(Function<? super T, ? extends R> selector, Predicate<? super R> predicate) {
@@ -181,7 +184,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default <R, C extends Collection<R>> C mapTo(Supplier<C> collectionFactory, Function<? super T, ? extends R> mapper) {
-        return mapFilteringToCollection(collectionFactory, Objects::nonNull, mapper, It.noFilter());
+        return mapFilteringToCollection(collectionFactory, Objects::nonNull, mapper, It::noFilter);
     }
 
     default <R, C extends Collection<R>> C toCollectionNotNullOf(Supplier<C> collectionFactory, Function<? super T, ? extends R> mapper) {
@@ -197,7 +200,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default <R> MutableListX<T> filterToMutableListBy(Function<? super T, ? extends R> function, Predicate<R> predicate) {
-        return IterableXHelper.filterToMutableListBy(this, function, predicate, It.noFilter());
+        return IterableXHelper.filterToMutableListBy(this, function, predicate, It::noFilter);
     }
 
     default <R> MutableListX<T> filterNotNullToMutableListBy(Function<? super T, ? extends R> function, Predicate<R> predicate) {
@@ -241,15 +244,15 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default <C extends Collection<T>> C filterToCollection(Supplier<C> collectionFactory, Predicate<T> predicate) {
-        return mapFilteringToCollection(collectionFactory, predicate, It::self, It.noFilter());
+        return mapFilteringToCollection(collectionFactory, predicate, It::self, It::noFilter);
     }
 
     default <R> IterableX<R> filterMapping(Predicate<T> predicate, Function<T, R> mapper) {
-        return mapFiltering(predicate, mapper, It.noFilter());
+        return mapFiltering(predicate, mapper, It::noFilter);
     }
 
     default <R> IterableX<R> mapFiltering(Function<? super T, ? extends R> mapper, Predicate<R> resultFilter) {
-        return mapFiltering(It.noFilter(), mapper, resultFilter);
+        return mapFiltering(It::noFilter, mapper, resultFilter);
     }
 
     default <R> IterableX<R> mapFiltering(Predicate<T> predicate, Function<? super T, ? extends R> mapper, Predicate<R> resultFilter) {
@@ -274,7 +277,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default <R, C extends Collection<R>> C castToCollectionIfInstanceOf(Supplier<C> collectionFactory, Class<R> aClass) {
-        return mapFilteringToCollection(collectionFactory, aClass::isInstance, aClass::cast, It.noFilter());
+        return mapFilteringToCollection(collectionFactory, aClass::isInstance, aClass::cast, It::noFilter);
     }
 
     default <C extends Collection<T>> C filterIndexedToCollection(
@@ -391,7 +394,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
 
     default int[] toIntArrayOf(@NotNull ToIntFunction<T> mapper) {
         int counter = 0;
-        int[] array = new int[countNotNullBy(It.noFilter())];
+        int[] array = new int[countNotNullBy(It::noFilter)];
         for (T value : this) {
             if (value != null) {
                 final int anInt = mapper.applyAsInt(value);
@@ -404,7 +407,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
 
     default long[] toLongArray(@NotNull ToLongFunction<T> mapper) {
         int counter = 0;
-        long[] array = new long[countNotNullBy(It.noFilter())];
+        long[] array = new long[countNotNullBy(It::noFilter)];
         for (T value : this) {
             if (value != null) {
                 final long t = mapper.applyAsLong(value);
@@ -417,7 +420,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
 
     default double[] toDoubleArray(@NotNull ToDoubleFunction<T> mapper) {
         int counter = 0;
-        double[] array = new double[countNotNullBy(It.noFilter())];
+        double[] array = new double[countNotNullBy(It::noFilter)];
         for (T value : this) {
             if (value != null) {
                 final double t = mapper.applyAsDouble(value);
@@ -428,18 +431,18 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return array;
     }
 
-    default IntSummaryStatistics statsOfInts(ToIntFunction<T> mapper) {
-        return collect(IntSummaryStatistics::new,
+    default IntStatistics statsOfInts(ToIntFunction<T> mapper) {
+        return collect(IntStatistics::new,
                 Objects::nonNull,
                 mapper::applyAsInt,
-                IntSummaryStatistics::accept);
+                IntStatistics::accept);
     }
 
-    default LongSummaryStatistics statsOfLongs(ToLongFunction<T> mapper) {
-        return collect(LongSummaryStatistics::new,
+    default LongStatistics statsOfLongs(ToLongFunction<T> mapper) {
+        return collect(LongStatistics::new,
                 Objects::nonNull,
                 mapper::applyAsLong,
-                LongSummaryStatistics::accept);
+                LongStatistics::accept);
     }
 
     default DoubleStatistics statsOfDoubles(ToDoubleFunction<T> mapper) {
@@ -558,6 +561,18 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return Sequence.of(this);
     }
 
+    default IntRange asIntRange(ToIntFunction<T> keyMapper) {
+        return IntRange.of(map(keyMapper::applyAsInt));
+    }
+
+    default LongRange asLongRange(ToLongFunction<T> keyMapper) {
+        return LongRange.of(map(keyMapper::applyAsLong));
+    }
+
+    default DoubleRange asDoubleRange(ToDoubleFunction<T> keyMapper) {
+        return DoubleRange.of(map(keyMapper::applyAsDouble));
+    }
+
     default IterableX<Integer> indices() {
         return () -> IterableXHelper.indexIterator(iterator());
     }
@@ -602,8 +617,8 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return counter;
     }
 
-    default int count(@NotNull Predicate<T> predicate) {
-        int counter = 0;
+    default long count(@NotNull Predicate<T> predicate) {
+        long counter = 0;
         for (T t : this) {
             if (predicate.test(t)) {
                 counter++;
@@ -697,7 +712,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return (counter != 0) ? (sum / counter) : 0;
     }
 
-    default double averageOf(@NotNull ToDoubleFunction<T> selector) {
+    default double averageOfDoubles(@NotNull ToDoubleFunction<T> selector) {
         double sum = 0;
         int counter = 0;
         for (T t : this) {
@@ -815,7 +830,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
                              BiConsumer<A, ? super T> accumulator,
                              Function<A, R> finisher) {
         A result = supplier.get();
-        return collect(supplier, It.noFilter(), It::self, It.noFilter(), accumulator, finisher);
+        return collect(supplier, It::noFilter, It::self, It::noFilter, accumulator, finisher);
     }
 
     default <A, R> A collect(Supplier<A> supplier,
@@ -823,7 +838,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
                              Function<T, R> mapper,
                              BiConsumer<A, ? super R> accumulator) {
         A result = supplier.get();
-        return collect(supplier, filter, mapper, It.noFilter(), accumulator, It::self);
+        return collect(supplier, filter, mapper, It::noFilter, accumulator, It::self);
     }
 
     default <A, U, R> R collect(Supplier<A> supplier,
@@ -1145,7 +1160,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         ListIterator<T> iterator = list.listIterator(list.size());
         while (iterator.hasPrevious()) {
             if (!predicate.test(iterator.previous())) {
-                return takeToMutableList(iterator.nextIndex() + 1);
+                return takeToMutableList(iterator.nextIndex() + 1L);
             }
         }
         return MutableListX.empty();
@@ -1178,12 +1193,12 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return input;
     }
 
-    default IterableX<T> take(int n) {
+    default IterableX<T> take(long n) {
         return takeToMutableList(n);
     }
 
-    default MutableListX<T> takeToMutableList(int n) {
-        PreConditions.requireGreaterThanZero(n);
+    default MutableListX<T> takeToMutableList(long n) {
+        PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
             return MutableListX.empty();
         }
@@ -1208,11 +1223,11 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return list;
     }
 
-    default IterableX<T> skip(int count) {
+    default IterableX<T> skip(long count) {
         return skipToListX(count);
     }
 
-    default ListX<T> skipToListX(int n) {
+    default ListX<T> skipToListX(long n) {
        return filterIndexedToMutableList((i, t) -> i >= n);
     }
 
@@ -1225,7 +1240,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default <R> String joinToStringBy(@NotNull Function<T, R> selector) {
-        return joinToStringBy(selector, "");
+        return joinToStringBy(selector, ", ");
     }
 
     default <R> String joinToStringBy(@NotNull Function<T, R> selector, CharSequence delimiter) {

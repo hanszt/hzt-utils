@@ -1,8 +1,11 @@
 package hzt.statistics;
 
+import hzt.utils.Transformable;
+
 import java.util.DoubleSummaryStatistics;
 
-public final class DoubleStatistics extends DoubleSummaryStatistics {
+public final class DoubleStatistics extends DoubleSummaryStatistics
+        implements NumberStatistics, Transformable<DoubleStatistics> {
 
     private double sumOfSquare = 0.0D;
     private double sumOfSquareCompensation; // Low order bits of sum
@@ -10,6 +13,10 @@ public final class DoubleStatistics extends DoubleSummaryStatistics {
 
     public DoubleStatistics() {
         super();
+    }
+
+    public DoubleStatistics(long count, double min, double max, double sum) {
+        super(count, min, max, sum);
     }
 
     @Override
@@ -43,11 +50,7 @@ public final class DoubleStatistics extends DoubleSummaryStatistics {
         return correctedSumOfSquare;
     }
 
-    public DoubleStatistics getDoubleStatistics() {
-        return this;
-    }
-
-    public double getStandardDeviation() {
+    public Double getStandardDeviation() {
         final double average = getAverage();
         return getCount() > 0 ? Math.sqrt((getSumOfSquare() / getCount()) - average * average) : 0.0D;
     }
@@ -65,4 +68,8 @@ public final class DoubleStatistics extends DoubleSummaryStatistics {
                 getStandardDeviation());
     }
 
+    @Override
+    public DoubleStatistics get() {
+        return this;
+    }
 }

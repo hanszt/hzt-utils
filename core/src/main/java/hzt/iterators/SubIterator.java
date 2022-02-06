@@ -6,18 +6,18 @@ import java.util.NoSuchElementException;
 public final class SubIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
-    private final int startIndex;
-    private final int endIndex;
+    private final long startIndex;
+    private final long endIndex;
 
     private int position;
 
-    private SubIterator(Iterator<T> iterator, int startIndex, int endIndex) {
+    private SubIterator(Iterator<T> iterator, long startIndex, long endIndex) {
         this.iterator = iterator;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
     }
 
-    public static <T> SubIterator<T> of(Iterator<T> iterator, int startIndex, int endIndex) {
+    public static <T> SubIterator<T> of(Iterator<T> iterator, long startIndex, long endIndex) {
         return new SubIterator<>(iterator, startIndex, endIndex);
     }
 

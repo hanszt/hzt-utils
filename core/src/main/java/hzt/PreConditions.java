@@ -1,5 +1,7 @@
 package hzt;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -31,8 +33,17 @@ public final class PreConditions {
         }
     }
 
-    public static void requireGreaterThanZero(int n) {
-        require(n >= 0, () -> "Requested element count " + n + " is less than zero.");
+    public static void requireGreaterThanOrEqualToZero(int n) {
+        require(n >= 0, () -> errorMessage(n));
+    }
+
+    public static void requireGreaterThanOrEqualToZero(long n) {
+        require(n >= 0, () -> errorMessage(n));
+    }
+
+    @NotNull
+    private static String errorMessage(long n) {
+        return "Requested element count " + n + " is less than zero.";
     }
 
     public static void require(boolean value, Supplier<String> messageSupplier) {

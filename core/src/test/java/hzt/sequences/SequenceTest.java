@@ -18,7 +18,6 @@ import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -28,7 +27,6 @@ import java.time.Year;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -440,17 +438,16 @@ class SequenceTest {
     }
 
     @Test
-    @Disabled("Needs to be fixed in java 8")
     void testSequenceOfMap() {
-//        final Map<Integer, String> map = Map.of(1, "a", 2, "b", 3, "c", 4, "d");
-//
-//        final MapX<Integer, Character> mapX = Sequence.of(map)
-//                .mapValues(s -> StringX.of(s).first())
-//                .filterByValues(Character::isLetter)
-//                .filterByKeys(i -> i % 2 == 0)
-//                .toMapX();
-//
-//        assertEquals(2, mapX.size());
+        final MapX<Integer, String> map = MapX.of(1, "a", 2, "b", 3, "c", 4, "d");
+
+        final MapX<Integer, Character> mapX = Sequence.of(map)
+                .mapValues(s -> StringX.of(s).first())
+                .filterByValues(Character::isLetter)
+                .filterByKeys(i -> i % 2 == 0)
+                .toMapX();
+
+        assertEquals(2, mapX.size());
     }
 
     @Test
@@ -573,11 +570,13 @@ class SequenceTest {
                         s -> s.sumOfInts(It::self),
                         ListX::of);
 
+        System.out.println("actual = " + actual);
+
         assertAll(
-                () -> assertEquals(100, actual.get(0)),
-                () -> assertEquals(4950, actual.get(1)),
-                () -> assertEquals(49.5, actual.get(2)),
-                () -> assertEquals(99, actual.get(3))
+                () -> assertEquals(100, actual.get(0).intValue()),
+                () -> assertEquals(0, actual.get(1).intValue()),
+                () -> assertEquals(99, actual.get(2).intValue()),
+                () -> assertEquals(4950, actual.get(3).intValue())
         );
     }
 

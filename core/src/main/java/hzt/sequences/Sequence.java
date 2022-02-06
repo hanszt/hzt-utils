@@ -3,6 +3,7 @@ package hzt.sequences;
 import hzt.PreConditions;
 import hzt.collections.IndexedValue;
 import hzt.collections.ListX;
+import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.collections.MutableSetX;
 import hzt.collections.SetX;
@@ -65,6 +66,10 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     static <K, V> EntrySequence<K, V> of(Map<K, V> map) {
+        return map.entrySet()::iterator;
+    }
+
+    static <K, V> EntrySequence<K, V> of(MapX<K, V> map) {
         return map.entrySet()::iterator;
     }
 

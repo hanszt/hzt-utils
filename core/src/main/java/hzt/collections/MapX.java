@@ -37,49 +37,74 @@ public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterab
         return new HashMapX<>(entries);
     }
 
-//    TODO: fix this for java 8
-//    static <K, V> MapX<K, V> of(K k1, V v1) {
-//        return MapX.of(Map.of(k1, v1));
-//    }
-//
-//    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2) {
-//        return MapX.of(Map.of(k1, v1, k2, v2));
-//    }
-//
-//    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3) {
-//        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3));
-//    }
-//
-//    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
-//        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4));
-//    }
-//
-//    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
-//        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5));
-//    }
-//
-//    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6) {
-//        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6));
-//    }
-//
-//    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7) {
-//        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7));
-//    }
-//
-//    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
-//                                K k6, V v6, K k7, V v7, K k8, V v8) {
-//        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8));
-//    }
-//
-//    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
-//                                K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9) {
-//        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9));
-//    }
-//
-//    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
-//                                K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10) {
-//        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9, k10, v10));
-//    }
+    static <K, V> MapX<K, V> of(K k1, V v1) {
+        Map<K, V> map = new HashMap<>();
+        map.put(k1, v1);
+        return MapX.of(map);
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2) {
+        Map<K, V> map = new HashMap<>();
+        map.put(k1, v1);
+        map.put(k2, v2);
+        return MapX.of(map);
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3) {
+        Map<K, V> map = new HashMap<>();
+        map.put(k1, v1);
+        map.put(k2, v2);
+        map.put(k3, v3);
+        return MapX.of(map);
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
+        return MapX.of(MapHelper.mapAddFour(new HashMap<>(), k1, v1, k2, v2, k3, v3, k4, v4));
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
+        Map<K, V> map = MapHelper.mapAddFour(new HashMap<>(), k1, v1, k2, v2, k3, v3, k4, v4);
+        map.put(k5, v5);
+        return MapX.of(map);
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6) {
+        Map<K, V> map = MapHelper.mapAddFour(new HashMap<>(), k1, v1, k2, v2, k3, v3, k4, v4);
+        map.put(k5, v5);
+        map.put(k6, v6);
+        return MapX.of(map);
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7) {
+        Map<K, V> map = MapHelper.mapAddFour(new HashMap<>(), k1, v1, k2, v2, k3, v3, k4, v4);
+        map.put(k5, v5);
+        map.put(k6, v6);
+        map.put(k7, v7);
+        return MapX.of(map);
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
+                                K k6, V v6, K k7, V v7, K k8, V v8) {
+        Map<K, V> map = MapHelper.mapAddFour(new HashMap<>(), k1, v1, k2, v2, k3, v3, k4, v4);
+        return MapX.of(MapHelper.mapAddFour(map, k5, v5, k6, v6, k7, v7, k8, v8));
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
+                                K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9) {
+        Map<K, V> map = MapHelper.mapAddFour(new HashMap<>(), k1, v1, k2, v2, k3, v3, k4, v4);
+        MapHelper.mapAddFour(map, k5, v5, k6, v6, k7, v7, k8, v8);
+        map.put(k9, v9);
+        return MapX.of(map);
+    }
+
+    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
+                                K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10) {
+        Map<K, V> map = MapHelper.mapAddFour(new HashMap<>(), k1, v1, k2, v2, k3, v3, k4, v4);
+        MapHelper.mapAddFour(map, k5, v5, k6, v6, k7, v7, k8, v8);
+        map.put(k9, v9);
+        map.put(k10, v10);
+        return MapX.of(map);
+    }
 
     @SafeVarargs
     static <K, V> MapX<K, V> ofEntries(Map.Entry<? extends K, ? extends V>... entries) {

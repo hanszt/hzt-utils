@@ -21,20 +21,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class EntrySequenceTest {
 
     @Test
-    @Disabled("Needs to be fixed in java 8")
     void testEntrySequence() {
-//        final MapX<String, Integer> mapX = MapX.of("1", 1, "2", 2, "3", 3, "4", 4);
-//
-//        final MapX<LocalDate, String> resultMap = mapX.asSequence()
-//                .map(this::reversed)
-//                .filterByKeys(value -> value <= 3)
-//                .mapKeys(day -> LocalDate.of(2000, Month.JANUARY, day))
-//                .toMapX();
-//
-//        assertAll(
-//                () -> assertEquals(3, resultMap.size()),
-//                () -> assertFalse(resultMap.containsKey(LocalDate.of(2000, Month.JANUARY, 4)))
-//        );
+        final MapX<String, Integer> mapX = MapX.of("1", 1, "2", 2, "3", 3, "4", 4);
+
+        final MapX<LocalDate, String> resultMap = mapX.asSequence()
+                .map(this::reversed)
+                .filterByKeys(value -> value <= 3)
+                .mapKeys(day -> LocalDate.of(2000, Month.JANUARY, day))
+                .toMapX();
+
+        assertAll(
+                () -> assertEquals(3, resultMap.size()),
+                () -> assertFalse(resultMap.containsKey(LocalDate.of(2000, Month.JANUARY, 4)))
+        );
     }
 
     @NotNull

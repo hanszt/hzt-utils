@@ -12,11 +12,10 @@
     </parent>
 
     <artifactId>core</artifactId>
-    <version>0.5.1.8</version>
 
     <properties>
-        <java.source.version>8</java.source.version>
-        <java.target.version>8</java.target.version>
+        <java.source.version>1.8</java.source.version>
+        <java.target.version>1.8</java.target.version>
     </properties>
 
     <dependencies>
@@ -28,6 +27,7 @@
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

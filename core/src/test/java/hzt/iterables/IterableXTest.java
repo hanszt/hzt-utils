@@ -846,10 +846,6 @@ public class IterableXTest {
                 .map(Painting::painter)
                 .collect(Collectors.toMap(Painter::getDateOfBirth, Painter::getLastname, (a, b) -> a));
 
-//        final Set<LocalDate> expectedLocalDates = expected.keySet().stream()
-//                .flatMap(date -> date.datesUntil(LocalDate.of(2000, Month.JANUARY, 1)))
-//                .collect(toSet());
-
         final MapX<LocalDate, String> actual = ListX.of(paintingList)
                 .map(Painting::painter)
                 .collect(toMapX(Painter::getDateOfBirth, Painter::getLastname, (a, b) -> a));

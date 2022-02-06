@@ -169,7 +169,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public StringX ifBlank(Supplier<CharSequence> defaultStringSupplier) {
-        return isEmpty() ? StringX.of(defaultStringSupplier.get()) : this;
+        return isBlank() ? StringX.of(defaultStringSupplier.get()) : this;
     }
 
     @Override

@@ -485,34 +485,34 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
 
     default MutableListX<T> getListOrElseCompute() {
         final Iterable<T> iterable = this;
-        return iterable instanceof List ? MutableListX.of((List<T>) iterable) : MutableListX.of(this);
+        return iterable instanceof List<T> list ? MutableListX.of(list) : MutableListX.of(this);
     }
 
     default MutableSetX<T> geSetOrElseCompute() {
         final Iterable<T> iterable = this;
-        return iterable instanceof Set ? MutableSetX.of((Set<T>) iterable) : MutableSetX.of(this);
+        return iterable instanceof Set<T> set ? MutableSetX.of(set) : MutableSetX.of(this);
     }
 
     default MutableListX<T> getListOrElseThrow() {
         final Iterable<T> iterable = this;
-        if (iterable instanceof List) {
-            return MutableListX.of((List<T>) iterable);
+        if (iterable instanceof List<T> list) {
+            return MutableListX.of(list);
         }
         throw new IllegalArgumentException(iterable.getClass().getSimpleName() + " is not an instance of List");
     }
 
     default MutableSetX<T> getSetOrElseThrow() {
         final Iterable<T> iterable = this;
-        if (iterable instanceof Set) {
-            return MutableSetX.of(((Set<T>) iterable));
+        if (iterable instanceof Set<T> set) {
+            return MutableSetX.of(set);
         }
         throw new IllegalArgumentException(iterable.getClass().getSimpleName() + " is not an instance of Set");
     }
 
     default NavigableSetX<T> getNavigableSetOrElseThrow() {
         final Iterable<T> iterable = this;
-        if (iterable instanceof NavigableSet) {
-            return NavigableSetX.of((NavigableSet<T>) iterable);
+        if (iterable instanceof NavigableSet<T> set) {
+            return NavigableSetX.of(set);
         }
         throw new IllegalArgumentException(iterable.getClass().getSimpleName() + " is not an instance of NavigableSet");
     }
@@ -959,8 +959,8 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         final Iterator<T> iterator = iterator();
         if (!iterator.hasNext()) {
             throw IterableXHelper.noValuePresentException();
-        } else if (iterable instanceof List) {
-            return IterableXHelper.findLastIfInstanceOfList(Objects::nonNull, (List<T>) iterable).map(mapper)
+        } else if (iterable instanceof List<T> list) {
+            return IterableXHelper.findLastIfInstanceOfList(Objects::nonNull, list).map(mapper)
                     .orElseThrow(IllegalStateException::new);
         } else {
             return IterableXHelper.findLastIfUnknownIterable(Objects::nonNull, iterator).map(mapper)
@@ -985,8 +985,8 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         final Iterator<T> iterator = iterator();
         if (!iterator.hasNext()) {
             throw IterableXHelper.noValuePresentException();
-        } else if (iterable instanceof List) {
-            return IterableXHelper.findLastIfInstanceOfList(predicate, ((List<T>) iterable));
+        } else if (iterable instanceof List<T> list) {
+            return IterableXHelper.findLastIfInstanceOfList(predicate, list);
         } else {
             return IterableXHelper.findLastIfUnknownIterable(predicate, iterator);
         }
@@ -1203,8 +1203,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
             return MutableListX.empty();
         }
         final Iterable<T> iterable = this;
-        if (iterable instanceof Collection) {
-            Collection<T> c = (Collection<T>) iterable;
+        if (iterable instanceof Collection<T> c) {
             if (n >= c.size()) {
                 return MutableListX.of(c);
             }

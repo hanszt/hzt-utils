@@ -130,8 +130,7 @@ public final class IterableReductions {
         final Iterator<T> iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             return Optional.empty();
-        } else if (iterable instanceof List) {
-            List<T> list = (List<T>) iterable;
+        } else if (iterable instanceof List<T> list) {
             return Optional.ofNullable(list.get(list.size() - 1)).map(mapper);
         } else {
             T result = iterator.next();
@@ -146,8 +145,8 @@ public final class IterableReductions {
         final Iterator<T> iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             throw IterableXHelper.noValuePresentException();
-        } else if (iterable instanceof List) {
-            return IterableXHelper.findLastIfInstanceOfList(predicate, ((List<T>) iterable));
+        } else if (iterable instanceof List<T> list) {
+            return IterableXHelper.findLastIfInstanceOfList(predicate, list);
         } else {
             return IterableXHelper.findLastIfUnknownIterable(predicate, iterator);
         }

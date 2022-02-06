@@ -68,10 +68,10 @@ public final class PaintingAuction implements Comparable<PaintingAuction>, Itera
 
     @Override
     public boolean equals(Object o) {
-        return this == o || (o instanceof PaintingAuction &&
-                Objects.equals(name, ((PaintingAuction) o).name) &&
-                Objects.equals(dateOfOpening, ((PaintingAuction) o).dateOfOpening) &&
-                Objects.equals(mostPopularPainting, ((PaintingAuction) o).mostPopularPainting));
+        return this == o || (o instanceof PaintingAuction auction &&
+                Objects.equals(name, auction.name) &&
+                Objects.equals(dateOfOpening, auction.dateOfOpening) &&
+                Objects.equals(mostPopularPainting, auction.mostPopularPainting));
     }
 
     @Override

@@ -57,8 +57,7 @@ public final class IterableXHelper {
     }
 
     static <R, K extends Comparable<K>> K asComparableOrThrow(R key) {
-        if (key instanceof Comparable) {
-            Comparable<?> c = (Comparable<?>) key;
+        if (key instanceof Comparable<?> c) {
             //noinspection unchecked
             return (K) c;
         } else {
@@ -166,7 +165,7 @@ public final class IterableXHelper {
     }
 
     static <T> int collectionSizeOrElseGet(Iterable<T> iterable, IntSupplier supplier) {
-        return iterable instanceof Collection ? ((Collection<T>) iterable).size() : supplier.getAsInt();
+        return iterable instanceof Collection<T> c ? c.size() : supplier.getAsInt();
     }
 
     @NotNull

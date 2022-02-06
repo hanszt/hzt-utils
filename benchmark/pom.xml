@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.hzt.utils</groupId>
     <artifactId>commons</artifactId>
-    <version>0.5</version>
+    <version>0.7.11</version>
   </parent>
 
   <artifactId>hzt-utils-benchmark</artifactId>

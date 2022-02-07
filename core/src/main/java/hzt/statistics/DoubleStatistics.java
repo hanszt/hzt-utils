@@ -1,6 +1,7 @@
 package hzt.statistics;
 
 import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.DoubleSummaryStatistics;
 
@@ -65,7 +66,7 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
     }
 
     @Override
-    public DoubleStatistics get() {
+    public @NotNull DoubleStatistics get() {
         return this;
     }
 }

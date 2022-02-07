@@ -1,6 +1,7 @@
 package hzt.collections;
 
 import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Set;
@@ -44,7 +45,7 @@ public interface MutableSetX<E> extends Set<E>, SetX<E>, Transformable<MutableSe
     }
 
     @Override
-    default MutableSetX<E> get() {
+    default @NotNull MutableSetX<E> get() {
         return this;
     }
 }

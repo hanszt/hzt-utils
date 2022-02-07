@@ -6,11 +6,12 @@ import hzt.strings.StringX;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
 import hzt.tuples.Pair;
-import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,25 +35,25 @@ class TransformableTest {
     }
 
     @Test
-    void testAlsoWhen() {
+    void testTransformablePipeline() {
         final MutableListX<Painting> list = MutableListX.empty();
-
-        final Painter expected = new Painter("Test", "Hallo", LocalDate.of(2000, 1, 1));
 
         final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
 
-        final Painter painter = Transformable.from(vanGoghAuction)
-                .apply(auction -> auction.setMostPopularPainting(Painting.of("Nijntje")))
+        final var nijntje = "Nijntje";
+
+        vanGoghAuction
+                .apply(auction -> auction.setMostPopularPainting(Painting.of(nijntje)))
                 .run(PaintingAuction::getMostPopularPainting)
                 .apply(It::println)
                 .alsoUnless(Painting::isInMuseum, list::add)
-                .run(Painting::painter)
-                .let(p -> expected);
+                .takeIf(Objects::nonNull)
+                .map(Painting::name)
+                .ifPresentOrElse(name -> assertAll(
+                        () -> assertTrue(list::isNotEmpty),
+                        () -> assertEquals(nijntje, name)
+                ), Assertions::fail);
 
-        assertAll(
-                () -> assertTrue(list::isNotEmpty),
-                () -> assertEquals(expected, painter)
-        );
     }
 
     @Test

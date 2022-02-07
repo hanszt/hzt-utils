@@ -417,7 +417,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     @Override
-    public StringX get() {
+    public @NotNull StringX get() {
         return this;
     }
 

@@ -36,7 +36,7 @@ public final class IterableXHelper {
 
     @NotNull
     static <T, R extends Comparable<R>> Optional<T> compareBy(final Iterator<T> iterator,
-            @NotNull Function<T, R> selector, @NotNull BiPredicate<R, R> biPredicate) {
+            @NotNull Function<? super T, ? extends R> selector, @NotNull BiPredicate<R, R> biPredicate) {
         if (!iterator.hasNext()) {
             return Optional.empty();
         }

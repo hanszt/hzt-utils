@@ -2,6 +2,7 @@ package hzt.numbers;
 
 import hzt.ranges.IntRange;
 import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -97,7 +98,7 @@ public final class IntX extends Number implements NumberX, Transformable<IntX> {
         return new IntX(i);
     }
 
-    public IntX get() {
+    public @NotNull IntX get() {
         return this;
     }
 

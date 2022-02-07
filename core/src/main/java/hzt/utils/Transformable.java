@@ -2,6 +2,7 @@ package hzt.utils;
 
 import hzt.collections.ListX;
 import hzt.tuples.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,29 +16,33 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface Transformable<T> extends Supplier<T> {
 
-    static <T> Transformable<T> from(T t) {
+    @NotNull
+    @Override
+    T get();
+
+    static <T> Transformable<T> from(@NotNull T t) {
         return () -> t;
     }
 
-    default <R> R let(Function<T, R> mapper) {
+    default <R> R let(@NotNull Function<? super T, ? extends R> mapper) {
         return mapper.apply(get());
     }
 
-    default <R> Transformable<R> run(Function<T, R> mapper) {
+    default <R> Transformable<R> run(@NotNull Function<? super T, ?extends R> mapper) {
         return Transformable.from(let(mapper));
     }
 
-    default T also(Consumer<T> block) {
+    default T also(@NotNull Consumer<? super T> block) {
         final T t = get();
         block.accept(t);
         return t;
     }
 
-    default Transformable<T> apply(Consumer<T> block) {
+    default Transformable<T> apply(@NotNull Consumer<? super T> block) {
         return Transformable.from(also(block));
     }
 
-    default T when(Predicate<T> predicate, Consumer<T> block) {
+    default T when(@NotNull Predicate<T> predicate, @NotNull Consumer<? super T> block) {
         T t = get();
         if (predicate.test(t)) {
             block.accept(t);
@@ -45,26 +50,26 @@ public interface Transformable<T> extends Supplier<T> {
         return t;
     }
 
-    default T unless(Predicate<T> predicate, Consumer<T> block) {
+    default T unless(@NotNull Predicate<T> predicate, @NotNull Consumer<? super T> block) {
         return when(predicate.negate(), block);
     }
 
-    default Transformable<T> alsoWhen(Predicate<T> predicate, Consumer<T> block) {
+    default Transformable<T> alsoWhen(@NotNull Predicate<T> predicate, Consumer<? super T> block) {
         return Transformable.from(when(predicate, block));
     }
 
-    default Transformable<T> alsoUnless(Predicate<T> predicate, Consumer<T> block) {
+    default Transformable<T> alsoUnless(@NotNull Predicate<T> predicate, Consumer<? super T> block) {
         return Transformable.from(unless(predicate, block));
     }
 
-    default Optional<T> takeIf(Predicate<T> predicate) {
+    default Optional<T> takeIf(@NotNull Predicate<T> predicate) {
         T t = get();
-        return predicate.test(t) ? Optional.ofNullable(t) : Optional.empty();
+        return predicate.test(t) ? Optional.of(t) : Optional.empty();
     }
 
-    default Optional<T> takeUnless(Predicate<T> predicate) {
+    default Optional<T> takeUnless(@NotNull Predicate<T> predicate) {
         T t = get();
-        return predicate.test(t) ? Optional.empty() : Optional.ofNullable(t);
+        return predicate.test(t) ? Optional.empty() : Optional.of(t);
     }
 
     default <B> Pair<T, B> to(B other) {

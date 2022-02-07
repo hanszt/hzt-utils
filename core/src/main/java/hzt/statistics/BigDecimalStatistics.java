@@ -1,6 +1,7 @@
 package hzt.statistics;
 
 import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -72,7 +73,7 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
     }
 
     @Override
-    public BigDecimalStatistics get() {
+    public @NotNull BigDecimalStatistics get() {
         return this;
     }
 }

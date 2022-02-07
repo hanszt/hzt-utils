@@ -1,6 +1,7 @@
 package hzt.collections;
 
 import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
@@ -44,7 +45,7 @@ public interface ArrayX<E> extends CollectionView<E>, Transformable<ArrayX<E>> {
     E[] toArray();
 
     @Override
-    default ArrayX<E> get() {
+    default @NotNull ArrayX<E> get() {
         return this;
     }
 }

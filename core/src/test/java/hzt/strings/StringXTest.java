@@ -31,7 +31,9 @@ class StringXTest {
                 .map(List::size)
                 .collect(Collectors.toList());
 
-        final ListX<Integer> characterCounts = StringX.of(hallo).group().valuesToListXOf(List::size);
+        final ListX<Integer> characterCounts = StringX.of(hallo)
+                .group()
+                .valuesToListXOf(List::size);
 
         It.println("hallo = " + characterCounts);
 

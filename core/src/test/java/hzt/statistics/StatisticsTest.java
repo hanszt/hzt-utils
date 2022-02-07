@@ -20,19 +20,24 @@ class StatisticsTest {
                 .map(d -> (int) (d * 100))
                 .toListX();
 
-        final var intRange = list.asLongRange(It::asLong);
+        final var intRange = list.asIntRange(It::asInt);
         final var longRange = intRange.asLongRange(It::asLong);
         final var doubleRange = intRange.asDoubleRange(It::asDouble);
 
-        final var standardDeviationIntRange = intRange.stats().getStandardDeviation();
+        final var stats = intRange.stats();
 
+        System.out.println("stats = " + stats);
+        final var standardDeviationIntRange = stats.getStandardDeviation();
+
+        System.out.println("longRange.count() = " + longRange.count());
+        System.out.println(longRange.sum());
         It.println(intRange.joinToString());
         It.println(longRange.joinToString());
         It.println(doubleRange.joinToString());
         It.println(standardDeviationIntRange);
 
         assertAll(
-                () -> assertEquals(standardDeviationIntRange, longRange.stats().getStandardDeviation()),
+                () -> assertEquals(standardDeviationIntRange, longRange.stats().also(System.out::println).getStandardDeviation()),
                 () -> assertEquals(standardDeviationIntRange, doubleRange.stats().getStandardDeviation())
         );
 

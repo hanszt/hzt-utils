@@ -61,7 +61,7 @@ public interface MutableMapX<K, V> extends Map<K, V>, MapX<K, V>, Transformable<
     }
 
     @Override
-    default MutableMapX<K, V> get() {
+    default @NotNull MutableMapX<K, V> get() {
         return this;
     }
 }

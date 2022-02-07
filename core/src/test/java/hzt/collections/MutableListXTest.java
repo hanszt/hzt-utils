@@ -33,15 +33,15 @@ class MutableListXTest {
 
     @Test
     void testListWithAll() {
-        final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
+        final MutableListX<PaintingAuction> auctions = Generator.createAuctions().toMutableList();
 
-        final List<LocalDate> expected = museums.stream()
+        final List<LocalDate> expected = auctions.stream()
                 .map(PaintingAuction::getDateOfOpening)
                 .collect(Collectors.toList());
         expected.add(LocalDate.MIN);
         expected.add(LocalDate.MAX);
 
-        final ListX<LocalDate> dates = museums
+        final ListX<LocalDate> dates = auctions
                 .map(PaintingAuction::getDateOfOpening)
                 .plus(ListX.of(LocalDate.MIN, LocalDate.MAX));
 

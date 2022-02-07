@@ -1,6 +1,7 @@
 package hzt.statistics;
 
 import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LongSummaryStatistics;
 
@@ -50,7 +51,7 @@ public final class LongStatistics extends LongSummaryStatistics
     }
 
     @Override
-    public LongStatistics get() {
+    public @NotNull LongStatistics get() {
         return this;
     }
 }

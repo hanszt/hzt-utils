@@ -4,22 +4,44 @@ import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
 import hzt.statistics.LongStatistics;
 import hzt.utils.It;
+import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
+import java.util.function.Consumer;
 import java.util.function.LongPredicate;
+import java.util.function.Supplier;
 import java.util.stream.LongStream;
 
-public interface LongRange extends Sequence<Long> {
+public interface LongRange extends NumberRange<Long>, Sequence<Long>, Transformable<LongRange> {
 
     static LongRange empty() {
         return LongRange.of(Sequence.empty());
     }
 
     static LongRange of(Iterable<Long> longIterable) {
-        return longIterable::iterator;
+        return toLongRange(longIterable::iterator);
     }
 
     static LongRange of(LongStream longStream) {
-        return longStream::iterator;
+        return toLongRange(longStream::iterator);
+    }
+
+    @NotNull
+    private static LongRange toLongRange(Supplier<Iterator<Long>> iteratorSupplier) {
+        return new LongRange() {
+            @NotNull
+            @Override
+            public Iterator<Long> iterator() {
+                // needs to be fetched for every iteration. That's why this is a supplier
+                return iteratorSupplier.get();
+            }
+
+            @Override
+            public @NotNull LongRange get() {
+                return this;
+            }
+        };
     }
 
     static LongRange of(long start, long end) {
@@ -56,7 +78,7 @@ public interface LongRange extends Sequence<Long> {
         return LongRange.of(filter(i -> i % step == 0));
     }
 
-    default long min() {
+    default @NotNull Long min() {
         return min(It::noFilter);
     }
 
@@ -64,7 +86,7 @@ public interface LongRange extends Sequence<Long> {
         return filter(predicate::test).minOf(It::asLong);
     }
 
-    default long max() {
+    default @NotNull Long max() {
         return max(It::noFilter);
     }
 
@@ -72,7 +94,7 @@ public interface LongRange extends Sequence<Long> {
         return filter(predicate::test).maxOf(It::asLong);
     }
 
-    default double average() {
+    default @NotNull Double average() {
         return average(It::noFilter);
     }
 
@@ -80,7 +102,7 @@ public interface LongRange extends Sequence<Long> {
         return filter(predicate::test).averageOfLongs(It::asLong);
     }
 
-    default long sum() {
+    default @NotNull Long sum() {
         return sum(It::noFilter);
     }
 
@@ -88,7 +110,7 @@ public interface LongRange extends Sequence<Long> {
         return filter(predicate::test).sumOfLongs(It::asLong);
     }
 
-    default double stdDev() {
+    default @NotNull Double stdDev() {
         return stdDev(It::noFilter);
     }
 
@@ -96,8 +118,14 @@ public interface LongRange extends Sequence<Long> {
         return filter(predicate::test).statsOfLongs(It::asLong).getStandardDeviation();
     }
 
-    default LongStatistics stats() {
+    default @NotNull LongStatistics stats() {
         return stats(It::noFilter);
+    }
+
+    @Override
+    @NotNull
+    default LongRange onEach(@NotNull Consumer<? super Long> consumer) {
+        return LongRange.of(Sequence.super.onEach(consumer));
     }
 
     default LongStatistics stats(LongPredicate predicate) {

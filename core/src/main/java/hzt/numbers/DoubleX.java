@@ -1,6 +1,7 @@
 package hzt.numbers;
 
 import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
 public final class DoubleX extends Number implements NumberX, Transformable<DoubleX> {
 
@@ -147,7 +148,7 @@ public final class DoubleX extends Number implements NumberX, Transformable<Doub
     }
 
     @Override
-    public DoubleX get() {
+    public @NotNull DoubleX get() {
         return this;
     }
 }

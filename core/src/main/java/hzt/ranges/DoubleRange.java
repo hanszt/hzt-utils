@@ -4,17 +4,33 @@ import hzt.numbers.DoubleX;
 import hzt.sequences.Sequence;
 import hzt.statistics.DoubleStatistics;
 import hzt.utils.It;
+import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
+import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
 
-public interface DoubleRange extends Sequence<Double>    {
+public interface DoubleRange extends NumberRange<Double>, Sequence<Double>, Transformable<DoubleRange> {
 
     static DoubleRange empty() {
         return DoubleRange.of(Sequence.empty());
     }
 
     static DoubleRange of(Iterable<Double> doubleIterable) {
-        return doubleIterable::iterator;
+        return new DoubleRange() {
+            @NotNull
+            @Override
+            public Iterator<Double> iterator() {
+                return doubleIterable.iterator();
+            }
+
+            @NotNull
+            @Override
+            public DoubleRange get() {
+                return this;
+            }
+        };
     }
 
     static DoubleRange of(double start, double end) {
@@ -43,15 +59,15 @@ public interface DoubleRange extends Sequence<Double>    {
                 .takeWhile(d -> start < endInclusive ? (d <= endInclusive) : (d >= endInclusive)));
     }
 
-    default double min() {
+    default @NotNull Double min() {
         return min(It::noFilter);
     }
 
-    default double min(DoublePredicate predicate) {
+    default Double min(DoublePredicate predicate) {
         return filter(predicate::test).minOf(It::asDouble);
     }
 
-    default double max() {
+    default @NotNull Double max() {
         return max(It::noFilter);
     }
 
@@ -59,7 +75,7 @@ public interface DoubleRange extends Sequence<Double>    {
         return filter(predicate::test).maxOf(It::asDouble);
     }
 
-    default double average() {
+    default @NotNull Double average() {
         return average(It::noFilter);
     }
 
@@ -67,7 +83,7 @@ public interface DoubleRange extends Sequence<Double>    {
         return filter(predicate::test).averageOfDoubles(It::asDouble);
     }
 
-    default double sum() {
+    default @NotNull Double sum() {
         return sum(It::noFilter);
     }
 
@@ -75,7 +91,7 @@ public interface DoubleRange extends Sequence<Double>    {
         return filter(predicate::test).sumOfDoubles(It::asDouble);
     }
 
-    default double stdDev() {
+    default @NotNull Double stdDev() {
         return stdDev(It::noFilter);
     }
 
@@ -83,8 +99,14 @@ public interface DoubleRange extends Sequence<Double>    {
         return filter(predicate::test).statsOfDoubles(It::asDouble).getStandardDeviation();
     }
 
-    default DoubleStatistics stats() {
+    default @NotNull DoubleStatistics stats() {
         return stats(It::noFilter);
+    }
+
+    @Override
+    @NotNull
+    default DoubleRange onEach(@NotNull Consumer<? super Double> consumer) {
+        return DoubleRange.of(Sequence.super.onEach(consumer));
     }
 
     default DoubleStatistics stats(DoublePredicate doublePredicate) {

@@ -1,6 +1,7 @@
 package hzt.tuples;
 
 import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -60,7 +61,7 @@ public final class Triple<A, B, C> implements Transformable<Triple<A, B, C>> {
     }
 
     @Override
-    public Triple<A, B, C> get() {
+    public @NotNull Triple<A, B, C> get() {
         return this;
     }
 }

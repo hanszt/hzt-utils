@@ -1,6 +1,7 @@
 package hzt.tuples;
 
 import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Objects;
@@ -79,7 +80,7 @@ public final class Pair<A, B> implements Transformable<Pair<A, B>> {
     }
 
     @Override
-    public Pair<A, B> get() {
+    public @NotNull Pair<A, B> get() {
         return this;
     }
 }

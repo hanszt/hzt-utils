@@ -88,17 +88,17 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default <R> Sequence<R> map(@NotNull Function<T, R> mapper) {
+    default <R> Sequence<R> map(@NotNull Function<? super T, ? extends R> mapper) {
         return new TransformingSequence<>(this, mapper);
     }
 
     @Override
-    default <R> Sequence<StringX> mapToStringX(Function<T, R> function) {
+    default <R> Sequence<StringX> mapToStringX(@NotNull Function<? super T, ? extends R> function) {
         return mapNotNull(t -> StringX.of((t != null ? function.apply(t) : "").toString()));
     }
 
     @Override
-    default <R> Sequence<R> mapNotNull(Function<? super T, ? extends R> mapper) {
+    default <R> Sequence<R> mapNotNull(@NotNull Function<? super T, ? extends R> mapper) {
         return new FilteringSequence<>(
                 new TransformingSequence<>(
                         new FilteringSequence<>(this,
@@ -106,7 +106,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default <R> Sequence<R> mapIndexed(BiFunction<Integer, ? super T, ? extends R> mapper) {
+    default <R> Sequence<R> mapIndexed(@NotNull BiFunction<Integer, ? super T, ? extends R> mapper) {
         return new TransformingIndexedSequence<>(this, mapper);
     }
 
@@ -115,18 +115,18 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default IntRange asIntRange(ToIntFunction<T> keyMapper) {
-        return IntRange.of(map(keyMapper::applyAsInt));
+    default IntRange asIntRange(@NotNull ToIntFunction<T> toIntMapper) {
+        return IntRange.of(map(toIntMapper::applyAsInt));
     }
 
     @Override
-    default LongRange asLongRange(ToLongFunction<T> keyMapper) {
-        return LongRange.of(map(keyMapper::applyAsLong));
+    default LongRange asLongRange(@NotNull ToLongFunction<T> toLongMapper) {
+        return LongRange.of(map(toLongMapper::applyAsLong));
     }
 
     @Override
-    default DoubleRange asDoubleRange(ToDoubleFunction<T> keyMapper) {
-        return DoubleRange.of(map(keyMapper::applyAsDouble));
+    default DoubleRange asDoubleRange(@NotNull ToDoubleFunction<T> toDoubleMapper) {
+        return DoubleRange.of(map(toDoubleMapper::applyAsDouble));
     }
 
     @Override
@@ -147,12 +147,12 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default <R, I extends Iterable<R>> Sequence<R> flatMap(@NotNull Function<T, I> transform) {
-        return new FlatteningSequence<>(this, transform, Iterable::iterator);
+    default <R> Sequence<R> flatMap(@NotNull Function<T, Iterable<R>> transform) {
+        return new FlatteningSequence<>(this, t -> transform.apply(t).iterator());
     }
 
     default <R> Sequence<R> flatMapStream(@NotNull Function<T, Stream<R>> transform) {
-        return new FlatteningSequence<>(this, transform, Stream::iterator);
+        return new FlatteningSequence<>(this, t -> transform.apply(t).iterator());
     }
 
     @Override
@@ -183,7 +183,7 @@ public interface Sequence<T> extends IterableX<T> {
 
     @NotNull
     @Override
-    default <R> Sequence<T> distinctBy(Function<T, R> selector) {
+    default <R> Sequence<T> distinctBy(@NotNull Function<T, ? extends R> selector) {
         return new DistinctSequence<>(this, selector);
     }
 
@@ -221,7 +221,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default <A, R> Sequence<R> zipWith(Iterable<A> iterable, BiFunction<T, A, R> function) {
+    default <A, R> Sequence<R> zipWith(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super T, ? super A, ? extends R> function) {
         return Sequence.of(zipToMutableListWith(iterable, function));
     }
 
@@ -238,22 +238,22 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default Sequence<T> takeWhile(Predicate<T> predicate) {
+    default Sequence<T> takeWhile(@NotNull Predicate<T> predicate) {
         return new TakeWhileSequence<>(this, predicate, false);
     }
 
     @Override
-    default Sequence<T> takeWhileInclusive(Predicate<T> predicate) {
+    default Sequence<T> takeWhileInclusive(@NotNull Predicate<T> predicate) {
         return new TakeWhileSequence<>(this, predicate, true);
     }
 
     @Override
-    default Sequence<T> skipWhile(Predicate<T> predicate) {
+    default Sequence<T> skipWhile(@NotNull Predicate<T> predicate) {
         return new SkipWhileSequence<>(this, predicate, false);
     }
 
     @Override
-    default Sequence<T> skipWhileInclusive(Predicate<T> predicate) {
+    default Sequence<T> skipWhileInclusive(@NotNull Predicate<T> predicate) {
         return new SkipWhileSequence<>(this, predicate, true);
     }
 
@@ -270,7 +270,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default <R extends Comparable<R>> Sequence<T> sortedBy(@NotNull Function<T, R> selector) {
+    default <R extends Comparable<R>> Sequence<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
         return Sequence.of(toMutableListSortedBy(selector));
     }
 
@@ -309,6 +309,10 @@ public interface Sequence<T> extends IterableX<T> {
 
     default long count() {
         return count(It::noFilter);
+    }
+
+    default <R> R transform(@NotNull Function<? super Sequence<T>, ? extends R> resultMapper) {
+        return resultMapper.apply(this);
     }
 
     default <R1, R2, R> R toTwo(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,

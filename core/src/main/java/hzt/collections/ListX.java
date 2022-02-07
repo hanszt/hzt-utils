@@ -85,22 +85,26 @@ public interface ListX<E> extends CollectionView<E> {
     }
 
     @Override
-    default <R> ListX<R> castIfInstanceOf(Class<R> aClass) {
+    default <R> ListX<R> castIfInstanceOf(@NotNull Class<R> aClass) {
         return castToMutableListIfInstanceOf(aClass);
     }
 
     @Override
-    default <R> ListX<R> mapFiltering(Function<? super E, ? extends R> mapper, Predicate<R> resultFilter) {
+    default <R> ListX<R> mapFiltering(@NotNull Function<? super E, ? extends R> mapper,
+                                      @NotNull Predicate<R> resultFilter) {
         return mapFiltering(It::noFilter, mapper, resultFilter);
     }
 
     @Override
-    default <R> ListX<R> filterMapping(Predicate<E> predicate, Function<E, R> mapper) {
+    default <R> ListX<R> filterMapping(@NotNull Predicate<? super E> predicate,
+                                       @NotNull Function<? super E, ? extends R> mapper) {
         return mapFiltering(predicate, mapper, It::noFilter);
     }
 
     @Override
-    default <R> ListX<R> mapFiltering(Predicate<E> predicate, Function<? super E, ? extends R> mapper, Predicate<R> resultFilter) {
+    default <R> ListX<R> mapFiltering(@NotNull Predicate<? super E> predicate,
+                                      @NotNull Function<? super E, ? extends R> mapper,
+                                      @NotNull Predicate<R> resultFilter) {
         return mapFilteringToCollection(MutableListX::of, predicate, mapper, resultFilter);
     }
 
@@ -130,12 +134,12 @@ public interface ListX<E> extends CollectionView<E> {
     }
 
     @Override
-    default ListX<E> plus(E value) {
+    default ListX<E> plus(E... value) {
         return toMutableListPlus(value);
     }
 
     @Override
-    default <R> ListX<R> map(Function<E, R> mapper) {
+    default <R> ListX<R> map(@NotNull Function<? super E, ? extends R> mapper) {
         return toMutableListOf(mapper);
     }
 
@@ -144,17 +148,17 @@ public interface ListX<E> extends CollectionView<E> {
     }
 
     @Override
-    default ListX<E> filter(Predicate<E> predicate) {
+    default ListX<E> filter(@NotNull Predicate<E> predicate) {
         return filterToMutableList(predicate);
     }
 
     @Override
-    default ListX<E> filterNot(Predicate<E> predicate) {
+    default ListX<E> filterNot(@NotNull Predicate<E> predicate) {
         return filterToListX(predicate.negate());
     }
 
     @Override
-    default ListX<E> takeWhile(Predicate<E> predicate) {
+    default ListX<E> takeWhile(@NotNull Predicate<E> predicate) {
         return takeToListXWhile(predicate);
     }
 
@@ -199,7 +203,7 @@ public interface ListX<E> extends CollectionView<E> {
     }
 
     @Override
-    default <R> ListX<E> distinctBy(Function<E, R> selector) {
+    default <R> ListX<E> distinctBy(@NotNull Function<E, ? extends R> selector) {
         return distinctToMutableListBy(selector);
     }
 

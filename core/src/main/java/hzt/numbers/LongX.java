@@ -2,6 +2,7 @@ package hzt.numbers;
 
 import hzt.ranges.LongRange;
 import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -225,7 +226,7 @@ public final class LongX extends Number implements NumberX, Transformable<LongX>
     }
 
     @Override
-    public LongX get() {
+    public @NotNull LongX get() {
         return this;
     }
 }

@@ -1,6 +1,7 @@
 package hzt.test.model;
 
-import hzt.iterables.IterableX;
+import hzt.sequences.Sequence;
+import hzt.utils.Transformable;
 import org.hzt.test.model.Painting;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public final class PaintingAuction implements Comparable<PaintingAuction>, IterableX<Painting> {
+public final class PaintingAuction implements
+        Comparable<PaintingAuction>, Sequence<Painting>, Transformable<PaintingAuction> {
 
     private final String name;
     private final LocalDate dateOfOpening;
@@ -96,5 +98,10 @@ public final class PaintingAuction implements Comparable<PaintingAuction>, Itera
                 ", dateOfOpening=" + dateOfOpening +
                 ", mostPopularPainting=" + mostPopularPainting +
                 '}';
+    }
+
+    @Override
+    public @NotNull PaintingAuction get() {
+        return this;
     }
 }

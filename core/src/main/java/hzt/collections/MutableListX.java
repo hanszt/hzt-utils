@@ -38,46 +38,50 @@ public interface MutableListX<E> extends List<E>, ListX<E>, Transformable<Mutabl
     }
 
     @Override
-    default <R> MutableListX<R> map(Function<E, R> mapper) {
+    default <R> MutableListX<R> map(@NotNull Function<? super E, ? extends R> mapper) {
         return toMutableListOf(mapper);
     }
 
     @Override
-    default MutableListX<E> filter(Predicate<E> predicate) {
+    default MutableListX<E> filter(@NotNull Predicate<E> predicate) {
         return filterToMutableList(predicate);
     }
 
     @Override
-    default <R> MutableListX<E> filterNotNullBy(Function<? super E, ? extends R> function, Predicate<? super R> predicate) {
+    default <R> MutableListX<E> filterNotNullBy(@NotNull Function<? super E, ? extends R> function,
+                                                @NotNull Predicate<? super R> predicate) {
         return filterNotNullToMutableListBy(function, predicate);
     }
 
     @Override
-    default MutableListX<E> filterNot(Predicate<E> predicate) {return filter(predicate.negate());
+    default MutableListX<E> filterNot(@NotNull Predicate<E> predicate) {return filter(predicate.negate());
     }
 
     @Override
-    default MutableListX<E> takeWhile(Predicate<E> predicate) {
+    default MutableListX<E> takeWhile(@NotNull Predicate<E> predicate) {
         return takeToMutableListWhile(predicate);
     }
 
     @Override
-    default <R> MutableListX<R> castIfInstanceOf(Class<R> aClass) {
+    default <R> MutableListX<R> castIfInstanceOf(@NotNull Class<R> aClass) {
         return castToMutableListIfInstanceOf(aClass);
     }
 
     @Override
-    default <R> MutableListX<R> mapFiltering(Function<? super E, ? extends R> mapper, Predicate<R> resultFilter) {
+    default <R> MutableListX<R> mapFiltering(@NotNull Function<? super E, ? extends R> mapper, @NotNull Predicate<R> resultFilter) {
         return mapFiltering(It::noFilter, mapper, resultFilter);
     }
 
     @Override
-    default <R> MutableListX<R> filterMapping(Predicate<E> predicate, Function<E, R> mapper) {
+    default <R> MutableListX<R> filterMapping(@NotNull Predicate<? super E> predicate,
+                                              @NotNull Function<? super E, ? extends R> mapper) {
         return mapFiltering(predicate, mapper, It::noFilter);
     }
 
     @Override
-    default <R> MutableListX<R> mapFiltering(Predicate<E> predicate, Function<? super E, ? extends R> mapper, Predicate<R> resultFilter) {
+    default <R> MutableListX<R> mapFiltering(@NotNull Predicate<? super E> predicate,
+                                             @NotNull Function<? super E, ? extends R> mapper,
+                                             @NotNull Predicate<R> resultFilter) {
         return mapFilteringToCollection(MutableListX::of, predicate, mapper, resultFilter);
     }
     /**
@@ -100,7 +104,7 @@ public interface MutableListX<E> extends List<E>, ListX<E>, Transformable<Mutabl
     MutableListX<E> subList(int fromIndex, int toIndex);
 
     @Override
-    default MutableListX<E> get() {
+    default @NotNull MutableListX<E> get() {
         return this;
     }
 }

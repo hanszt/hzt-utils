@@ -24,10 +24,10 @@ public final class IterableReductions {
     private IterableReductions() {
     }
 
-    public static <T> T reduce(Iterator<T> iterator, T initial, BinaryOperator<T> operator) {
+    public static <T> T reduce(Iterable<T> iterable, T initial, BinaryOperator<T> operator) {
         T accumulator = initial;
-        while (iterator.hasNext()) {
-            accumulator = operator.apply(accumulator, iterator.next());
+        for (T t : iterable) {
+            accumulator = operator.apply(accumulator, t);
         }
         return initial;
     }
@@ -51,9 +51,9 @@ public final class IterableReductions {
     }
 
     public static <T, R, K> MapX<K, MutableListX<R>> groupMapping(
-            Iterable<T> iterable,
-            Function<T, K> classifier,
-            Function<T, R> valueMapper) {
+            @NotNull Iterable<T> iterable,
+            @NotNull Function<? super T, ? extends K> classifier,
+            @NotNull Function<? super T, ? extends R> valueMapper) {
         MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
         for (T t : iterable) {
             groupedMap.computeIfAbsent(classifier.apply(t), key -> MutableListX.empty()).add(valueMapper.apply(t));
@@ -64,7 +64,7 @@ public final class IterableReductions {
     public static <T, R> Pair<ListX<R>, ListX<R>> partitionMapping(
             @NotNull Iterable<T> iterable,
             @NotNull Predicate<T> predicate,
-            @NotNull Function<T, R> resultMapper) {
+            @NotNull Function<? super T, ? extends R> resultMapper) {
         Pair<MutableListX<R>, MutableListX<R>> pair = Pair.of(MutableListX.empty(), MutableListX.empty());
         for (T t : iterable) {
             if (t != null) {
@@ -81,7 +81,8 @@ public final class IterableReductions {
 
     public static <T, S, C extends Collection<S>, R> SetX<R> intersectionOf(
             @NotNull Iterable<T> iterable,
-            @NotNull Function<T, C> toCollectionMapper, Function<S, R> selector) {
+            @NotNull Function<? super T, ? extends C> toCollectionMapper,
+            @NotNull Function<? super S, ? extends R> selector) {
         MutableSetX<R> common = MutableSetX.empty();
         for (T t : iterable) {
             final C collection = toCollectionMapper.apply(t);

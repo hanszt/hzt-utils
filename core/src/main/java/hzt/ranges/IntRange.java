@@ -61,7 +61,7 @@ public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Trans
     }
 
     default IntRange step(int step) {
-        return IntRange.of(filter(i -> i % step == 0));
+        return IntRange.of(filter(IntX.multipleOf(step)));
     }
 
     default int random() {

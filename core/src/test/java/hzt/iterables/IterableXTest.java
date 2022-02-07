@@ -6,15 +6,16 @@ import hzt.collections.MutableListX;
 import hzt.collections.MutableMapX;
 import hzt.collections.SetX;
 import hzt.collectors.BigDecimalCollectors;
+import hzt.numbers.IntX;
 import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
-import hzt.utils.It;
 import hzt.statistics.BigDecimalSummaryStatistics;
 import hzt.strings.StringX;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
+import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Book;
@@ -52,7 +53,6 @@ import java.util.stream.IntStream;
 import static hzt.collectors.CollectorsX.branching;
 import static hzt.collectors.CollectorsX.intersectingBy;
 import static hzt.collectors.CollectorsX.toListX;
-import static hzt.collectors.CollectorsX.toMapX;
 import static java.util.stream.Collectors.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -845,15 +845,18 @@ public class IterableXTest {
                 .map(Painting::painter)
                 .collect(Collectors.toMap(Painter::getDateOfBirth, Painter::getLastname, (a, b) -> a));
 
-//        final Set<LocalDate> expectedLocalDates = expected.keySet().stream()
-//                .flatMap(date -> date.datesUntil(LocalDate.of(2000, Month.JANUARY, 1)))
-//                .collect(toSet());
+        final Set<LocalDate> expectedLocalDates = expected.keySet().stream()
+                .flatMap(date -> date.datesUntil(LocalDate.of(2000, Month.JANUARY, 1)))
+                .collect(toSet());
 
-        final MapX<LocalDate, String> actual = ListX.of(paintingList)
+        final MapX<LocalDate, String> actual = Sequence.of(paintingList)
                 .map(Painting::painter)
-                .collect(toMapX(Painter::getDateOfBirth, Painter::getLastname, (a, b) -> a));
+                .toMapX(Painter::getDateOfBirth, Painter::getLastname);
 
-        assertEquals(expected, actual);
+        assertAll(
+                () -> assertEquals(expected, actual),
+                () -> assertTrue(expectedLocalDates.containsAll(actual.keySet()))
+        );
     }
 
     @Test
@@ -1057,7 +1060,7 @@ public class IterableXTest {
         final ListX<Integer> range = IntRange.of(0, 20).toListX();
 
         final ListX<String> strings = range/*.asSequence()*/
-                .filter(i -> i % 2 == 0)
+                .filter(IntX::isEven)
                 .map(Generator::toStringIn100Millis)
                 .onEach(String::length, It::println)
                 .takeToMutableListWhileInclusive(s -> s.length() < 6);

@@ -5,6 +5,8 @@ import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.collections.SetX;
 import hzt.iterables.IterableX;
+import hzt.numbers.IntX;
+import hzt.numbers.LongX;
 import hzt.ranges.IntRange;
 import hzt.strings.StringX;
 import hzt.test.Generator;
@@ -185,7 +187,7 @@ class SequenceTest {
     void testGenerateSequence() {
         final var strings = Sequence.generate(0, i -> ++i)
                 .map(Generator::fib)
-                .filter(i -> i % 2 == 0)
+                .filter(LongX::isOdd)
                 .take(12)
                 .map(Long::intValue)
                 .map(Generator::toStringIn100Millis)
@@ -208,7 +210,7 @@ class SequenceTest {
     void testTakeWhile() {
         final ListX<String> strings = Sequence.generate(0, i -> ++i)
                 .takeWhile(i -> i < 10)
-                .filter(i -> i % 2 == 0)
+                .filter(LongX::isEven)
                 .onEach(It::println)
                 .map(Generator::toStringIn100Millis)
                 .map(String::trim)
@@ -265,8 +267,8 @@ class SequenceTest {
     @Test
     void testRangeWithInterval() {
         assertArrayEquals(
-                IntStream.range(5, 10).filter(i -> i % 2 == 0).toArray(),
-                IntRange.of(5, 10).filter(i -> i % 2 == 0).toIntArrayOf(Integer::intValue));
+                IntStream.range(5, 10).filter(IntX::isEven).toArray(),
+                IntRange.of(5, 10).filter(IntX::isEven).toIntArrayOf(Integer::intValue));
     }
 
     @Test
@@ -406,7 +408,7 @@ class SequenceTest {
     @Test
     void testSequenceWindowedTransformed() {
         final var sizes = IntRange.of(0, 1_000)
-                .filter(i -> i % 5 == 0)
+                .filter(IntX.multipleOf(5))
                 .windowed(51, 7, ListX::size)
                 .toListX();
 
@@ -421,7 +423,7 @@ class SequenceTest {
     @Test
     void testZipWithNext() {
         final var sums = IntRange.of(0, 1_000)
-                .filter(i -> i % 10 == 0)
+                .filter(IntX.multipleOf(10))
                 .onEach(i -> It.print(i + ", "))
                 .zipWithNext(Integer::sum)
                 .toListX();
@@ -441,7 +443,7 @@ class SequenceTest {
         final var mapX = Sequence.of(map)
                 .mapValues(s -> StringX.of(s).first())
                 .filterByValues(Character::isLetter)
-                .filterByKeys(i -> i % 2 == 0)
+                .filterByKeys(IntX::isEven)
                 .toMapX();
 
         assertEquals(2, mapX.size());
@@ -458,7 +460,7 @@ class SequenceTest {
         final var stream = IntStream.range(0, 100).boxed();
 
         final var list = Sequence.of(stream)
-                .filter(i -> i % 2 == 0)
+                .filter(IntX::isEven)
                 .sorted()
                 .windowed(3, true)
                 .flatMap(It::self)
@@ -549,7 +551,7 @@ class SequenceTest {
     @Test
     void testBranchSequenceToThree() {
         final var triple = IntRange.from(0).until(100)
-                .toThree(Sequence::toList, s -> s.filter(i -> i % 2 == 0), s -> s.statsOfInts(It::self));
+                .toThree(Sequence::toList, s -> s.filter(IntX::isEven), s -> s.statsOfInts(It::self));
 
         assertAll(
                 () -> assertEquals(100, triple.first().size()),
@@ -578,7 +580,7 @@ class SequenceTest {
     @Test
     void testStreamCanOnlyBeConsumedOnce() {
         final var yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
-                .filter(i -> i % 2 == 0)
+                .filter(IntX::isEven)
                 .map(Year::of);
 
         final var years = yearStream.collect(Collectors.toList());
@@ -586,6 +588,20 @@ class SequenceTest {
         assertAll(
                 () -> assertEquals(4, years.size()),
                 () -> assertStreamCanOnlyBeConsumedOnce(yearStream)
+        );
+    }
+
+    @Test
+    void sequenceOfStreamCanOnlyBeConsumedOnce() {
+        final var yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
+                .filter(IntX::isEven)
+                .map(Year::of);
+
+        final var yearSequence = Sequence.of(yearStream);
+
+        assertAll(
+                () -> assertEquals(4, yearSequence.count()),
+                () -> assertThrows(IllegalStateException.class, yearSequence::toList)
         );
     }
 

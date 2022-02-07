@@ -1,6 +1,7 @@
 package hzt.strings;
 
 import hzt.collections.ListX;
+import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -66,6 +67,21 @@ class StringXTest {
         final var characters = List.of('H', 'e', 'y', '!', '1', '2', '3');
 
         assertEquals("Hey!123", StringX.of(characters).toString());
+    }
+
+    @Test
+    void testStringChainingX() {
+        final var characters = List.of('H', 'e', 'y', '!', '1', '2', '3');
+
+        final var actual = StringX.of(characters)
+                .concat("Hallo")
+                .replaceFirst("lo", "asd")
+                .linesAsSequence()
+                .toTwo(Sequence::count, s -> s.joinToString(""));
+
+        assertAll(
+                () -> assertEquals("Hey!123Halasd", actual.second()),
+                () -> assertEquals(1, actual.first()));
     }
 
     @ParameterizedTest

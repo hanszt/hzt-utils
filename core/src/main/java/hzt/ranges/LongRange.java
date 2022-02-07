@@ -7,10 +7,8 @@ import hzt.utils.It;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.LongPredicate;
-import java.util.function.Supplier;
 import java.util.stream.LongStream;
 
 public interface LongRange extends NumberRange<Long>, Sequence<Long>, Transformable<LongRange> {
@@ -20,28 +18,11 @@ public interface LongRange extends NumberRange<Long>, Sequence<Long>, Transforma
     }
 
     static LongRange of(Iterable<Long> longIterable) {
-        return toLongRange(longIterable::iterator);
+        return RangeHelper.toLongRange(longIterable::iterator);
     }
 
     static LongRange of(LongStream longStream) {
-        return toLongRange(longStream::iterator);
-    }
-
-    @NotNull
-    private static LongRange toLongRange(Supplier<Iterator<Long>> iteratorSupplier) {
-        return new LongRange() {
-            @NotNull
-            @Override
-            public Iterator<Long> iterator() {
-                // needs to be fetched for every iteration. That's why this is a supplier
-                return iteratorSupplier.get();
-            }
-
-            @Override
-            public @NotNull LongRange get() {
-                return this;
-            }
-        };
+        return RangeHelper.toLongRange(longStream::iterator);
     }
 
     static LongRange of(long start, long end) {

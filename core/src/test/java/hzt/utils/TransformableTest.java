@@ -7,10 +7,10 @@ import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
 import hzt.tuples.Pair;
 import org.hzt.test.model.Painting;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -40,20 +40,21 @@ class TransformableTest {
 
         final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
 
-        final var nijntje = "Nijntje";
+        final String nijntje = "Nijntje";
 
-        vanGoghAuction
+        final String name = vanGoghAuction
                 .apply(auction -> auction.setMostPopularPainting(Painting.of(nijntje)))
                 .run(PaintingAuction::getMostPopularPainting)
                 .apply(It::println)
                 .alsoUnless(Painting::isInMuseum, list::add)
                 .takeIf(Objects::nonNull)
                 .map(Painting::name)
-                .ifPresentOrElse(name -> assertAll(
-                        () -> assertTrue(list::isNotEmpty),
-                        () -> assertEquals(nijntje, name)
-                ), Assertions::fail);
+                .orElseThrow(NoSuchElementException::new);
 
+        assertAll(
+                () -> assertTrue(list::isNotEmpty),
+                () -> assertEquals(nijntje, name)
+        );
     }
 
     @Test

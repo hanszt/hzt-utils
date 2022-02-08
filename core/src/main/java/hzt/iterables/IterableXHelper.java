@@ -1,7 +1,6 @@
 package hzt.iterables;
 
 import hzt.collections.IndexedValue;
-import hzt.collections.MutableListX;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -9,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Random;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
@@ -16,22 +16,9 @@ import java.util.function.Predicate;
 
 public final class IterableXHelper {
 
+    public static final Random RANDOM = new Random();
+
     private IterableXHelper() {
-    }
-    static <T, R> MutableListX<T> filterToMutableListBy(Iterable<T> iterable,
-                                                        Function<? super T, ? extends R> function,
-                                                        Predicate<R> predicate,
-                                                        Predicate<R> nullPredicate) {
-        MutableListX<T> list = MutableListX.empty();
-        for (T t : iterable) {
-            if (t != null) {
-                final R r = function.apply(t);
-                if (nullPredicate.test(r) && predicate.test(r)) {
-                    list.add(t);
-                }
-            }
-        }
-        return list;
     }
 
     @NotNull
@@ -61,28 +48,8 @@ public final class IterableXHelper {
             Comparable<?> c = (Comparable<?>) key;
             //noinspection unchecked
             return (K) c;
-        } else {
-            throw new IllegalStateException(key.getClass().getSimpleName() + " is not of a comparable type");
         }
-    }
-
-    static <T> Iterator<Integer> indexIterator(Iterator<T> iterator) {
-        return new Iterator<>() {
-            private int index = 0;
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-            @Override
-            public Integer next() {
-                int prevIndex = index;
-                if (prevIndex < 0) {
-                    throw new IllegalStateException("indexed iterator index overflow");
-                }
-                iterator.next();
-                return index++;
-            }
-        };
+        throw new IllegalStateException(key.getClass().getSimpleName() + " is not of a comparable type");
     }
 
     @NotNull
@@ -140,25 +107,8 @@ public final class IterableXHelper {
         return Optional.empty();
     }
 
-    static <T> MutableListX<T> skipToMutableListWhile(
-            Iterable<T> iterable,
-            Predicate<? super T> predicate,
-            boolean exclusive) {
-        boolean yielding = false;
-        MutableListX<T> list = MutableListX.empty();
-        for (T item : iterable) {
-            if (yielding) {
-                list.add(item);
-                continue;
-            }
-            if (!predicate.test(item)) {
-                if (!exclusive) {
-                    list.add(item);
-                }
-                yielding = true;
-            }
-        }
-        return list;
+    public static double nextRandomDouble() {
+        return RANDOM.nextDouble();
     }
 
     static <T> int collectionSizeOrElse(Iterable<T> iterable, @SuppressWarnings("SameParameterValue") int defaultSize) {

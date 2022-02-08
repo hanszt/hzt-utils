@@ -27,7 +27,7 @@ class NavigableSetXTest {
                 .sorted()
                 .collect(Collectors.toCollection(TreeSet::new));
 
-        final NavigableSetX<String> names = museumListContainingNulls.toNavigableSetOf(Museum::getName);
+        final NavigableSetX<String> names = museumListContainingNulls.toSortedSetOf(Museum::getName);
 
         MutableListX<Integer> list = MutableListX.empty();
 
@@ -57,7 +57,7 @@ class NavigableSetXTest {
                 .sorted(Comparator.comparing(Museum::getName))
                 .collect(Collectors.toCollection(TreeSet::new));
 
-        final NavigableSetX<Museum> sortedMuseums = museumListContainingNulls.toSetSortedBy(Museum::getName);
+        final NavigableSetX<Museum> sortedMuseums = museumListContainingNulls.toSortedSet(Museum::getName);
 
         sortedMuseums.forEach(It::println);
 

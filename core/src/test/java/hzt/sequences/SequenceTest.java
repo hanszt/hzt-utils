@@ -1,5 +1,6 @@
 package hzt.sequences;
 
+import hzt.collections.ArrayX;
 import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableListX;
@@ -125,6 +126,18 @@ class SequenceTest {
     }
 
     @Test
+    void testMapFilterReduceToArrayX() {
+        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+
+        final ArrayX<Integer> result = list.asSequence()
+                .map(String::length)
+                .filter(l -> l > 3)
+                .toArrayX(Integer[]::new);
+
+        assertEquals(ArrayX.of(5, 4), result);
+    }
+
+    @Test
     void testMapFilterReduceToList() {
         ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
         final ListX<Integer> result = list.asSequence()
@@ -199,9 +212,10 @@ class SequenceTest {
 
     @Test
     void testLargeSequence() {
-        final MutableListX<BigDecimal> bigDecimals = IntRange.of(0, 100_000)
+        final ListX<BigDecimal> bigDecimals = IntRange.of(0, 100_000)
                 .filter(integer -> integer % 2 == 0)
-                .toDescendingSortedMutableListOf(BigDecimal::valueOf);
+                .map(BigDecimal::valueOf)
+                .sortedDescending();
 
         assertEquals(50_000, bigDecimals.size());
     }
@@ -387,7 +401,7 @@ class SequenceTest {
     }
 
     @Test
-    void testWindowedLargeSequence() {
+    void testLargeWindowedSequence() {
         final var windows = IntRange.of(0, 1_000_000)
                 .windowed(2_001, 23, true)
                 .toListX();

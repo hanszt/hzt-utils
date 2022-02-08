@@ -7,14 +7,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public final class IntX extends Number implements NumberX, Transformable<IntX> {
+@SuppressWarnings("unused")
+public final class IntX extends Number implements NumberX<Integer>, Transformable<IntX> {
 
     private static final long serialVersionUID = 20;
 
     private final Integer integer;
 
-    private IntX(Integer integer) {
+    private IntX(int integer) {
         this.integer = integer;
+    }
+
+    public static IntX of(Number number) {
+        return new IntX(number.intValue());
     }
 
     public IntRange downTo(int target) {
@@ -261,7 +266,8 @@ public final class IntX extends Number implements NumberX, Transformable<IntX> {
         return Integer.min(a, b);
     }
 
-    public DoubleX toDoubleX() {
-        return DoubleX.of(doubleValue());
+    @Override
+    public @NotNull Integer getValue() {
+        return integer;
     }
 }

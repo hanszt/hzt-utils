@@ -47,6 +47,6 @@ public interface NavigableSetX<E> extends NavigableSet<E>, MutableSetX<E> {
     }
 
     default NavigableSetX<E> toNavigableSet() {
-        return getNavigableSetOrElseThrow();
+        return this;
     }
 }

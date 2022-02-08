@@ -41,7 +41,7 @@ class CollectorsXTest {
 
         final var actual = Sequence.of(sampleBankAccountListContainingNulls).toFour(
                 Sequence::count,
-                s -> s.sumOf(BankAccount::getBalance),
+                s -> s.bigDecimalSum(BankAccount::getBalance),
                 s -> s.minOf(BankAccount::getBalance),
                 s -> s.maxOf(BankAccount::getBalance),
                 BigDecimalStatistics::new

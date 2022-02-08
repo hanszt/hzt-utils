@@ -6,6 +6,7 @@ import org.hzt.test.model.Museum;
 import org.junit.jupiter.api.Test;
 
 import java.util.NavigableMap;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -17,14 +18,14 @@ class NavigableMapXTest {
     @Test
     void testGetNavigableMap() {
         final var museumListContainingNulls = ListX.of(TestSampleGenerator.getMuseumListContainingNulls())
-                .sortedBy(e -> Math.random());
+                .toSortedListX(e -> Math.random());
 
         final NavigableMap<String, Museum> expected = new TreeMap<>(museumListContainingNulls.stream()
                 .filter(m -> m != null && m.getName() != null)
                 .collect(Collectors.toMap(Museum::getName, It::self)));
 
         final NavigableMapX<String, Museum> actual = museumListContainingNulls
-                .toNavigableMapAssociatedBy(Museum::getName);
+                .toSortedMapAssociatedBy(Museum::getName);
 
         actual.keySet().forEach(It::println);
 
@@ -44,8 +45,8 @@ class NavigableMapXTest {
                 .collect(Collectors.toMap(It::self, Museum::getName)));
 
         final NavigableMapX<Museum, String> actual = museumSetContainingNulls
-                .notNullBy(Museum::getName)
-                .toNavigableMapAssociatedWith(Museum::getName);
+                .filterBy(Museum::getName, Objects::nonNull)
+                .toSortedMapAssociatedWith(Museum::getName);
 
         final Museum firstMuseum = actual.first().getKey();
 

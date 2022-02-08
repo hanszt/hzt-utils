@@ -1,5 +1,6 @@
 package hzt.ranges;
 
+import hzt.collections.ArrayX;
 import hzt.numbers.DoubleX;
 import hzt.sequences.Sequence;
 import hzt.statistics.DoubleStatistics;
@@ -107,6 +108,21 @@ public interface DoubleRange extends NumberRange<Double>, Sequence<Double>, Tran
     @NotNull
     default DoubleRange onEach(@NotNull Consumer<? super Double> consumer) {
         return DoubleRange.of(Sequence.super.onEach(consumer));
+    }
+
+    @Override
+    default @NotNull ArrayX<Double> toArrayX() {
+        return toArrayX(Double[]::new);
+    }
+
+    @Override
+    @NotNull
+    default Double[] toArray() {
+        return toArray(Double[]::new);
+    }
+
+    default double[] toDoubleArray() {
+        return stream().mapToDouble(It::asDouble).toArray();
     }
 
     default DoubleStatistics stats(DoublePredicate doublePredicate) {

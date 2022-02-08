@@ -1,11 +1,11 @@
 package hzt.collections;
 
-import hzt.utils.It;
+import hzt.utils.Transformable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Set;
 
-public interface SetX<E> extends CollectionView<E> {
+public interface SetX<E> extends CollectionView<E>, Transformable<SetX<E>> {
 
     static <E> SetX<E> empty() {
         return new HashSetX<>();
@@ -26,17 +26,13 @@ public interface SetX<E> extends CollectionView<E> {
         return new HashSetX<>(iterable);
     }
 
-    default Set<E> toSet() {
-        return toSetOf(It::self);
-    }
-
     @Override
     int size();
 
     @Override
     boolean contains(Object value);
 
-    default MutableListX<E> toMutableList() {
-        return CollectionView.super.getListOrElseCompute();
+    default @NotNull SetX<E> get() {
+        return this;
     }
 }

@@ -1,5 +1,6 @@
 package hzt.ranges;
 
+import hzt.collections.ArrayX;
 import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
 import hzt.statistics.LongStatistics;
@@ -126,6 +127,21 @@ public interface LongRange extends NumberRange<Long>, Sequence<Long>, Transforma
     @NotNull
     default LongRange onEach(@NotNull Consumer<? super Long> consumer) {
         return LongRange.of(Sequence.super.onEach(consumer));
+    }
+
+    @Override
+    default @NotNull ArrayX<Long> toArrayX() {
+        return toArrayX(Long[]::new);
+    }
+
+    @Override
+    @NotNull
+    default Long[] toArray() {
+        return toArray(Long[]::new);
+    }
+
+    default long[] toLongArray() {
+        return stream().mapToLong(It::asLong).toArray();
     }
 
     default LongStatistics stats(LongPredicate predicate) {

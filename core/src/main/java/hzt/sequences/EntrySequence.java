@@ -109,7 +109,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     default <R> ListX<R> toListXOf(BiFunction<K, V, R> transform) {
-        return toListXOf(e -> transform.apply(e.getKey(), e.getValue()));
+        return map(e -> transform.apply(e.getKey(), e.getValue())).toListX();
     }
 
     default <R> SetX<R> toSetXOf(BiFunction<K, V, R> transform) {

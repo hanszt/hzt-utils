@@ -7,7 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public final class LongX extends Number implements NumberX, Transformable<LongX> {
+@SuppressWarnings("unused")
+public final class LongX extends Number implements NumberX<Long>, Transformable<LongX> {
 
     private static final long serialVersionUID = 2;
 
@@ -19,6 +20,10 @@ public final class LongX extends Number implements NumberX, Transformable<LongX>
     
     public static LongX of(long aLong) {
         return new LongX(aLong);
+    }
+
+    public static LongX of(Number number) {
+        return new LongX(number.longValue());
     }
 
     public static String toString(long i, int radix) {
@@ -253,5 +258,10 @@ public final class LongX extends Number implements NumberX, Transformable<LongX>
     @Override
     public @NotNull LongX get() {
         return this;
+    }
+
+    @Override
+    public @NotNull Long getValue() {
+        return thisLong;
     }
 }

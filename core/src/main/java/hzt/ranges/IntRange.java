@@ -1,5 +1,6 @@
 package hzt.ranges;
 
+import hzt.collections.ArrayX;
 import hzt.numbers.IntX;
 import hzt.sequences.Sequence;
 import hzt.statistics.IntStatistics;
@@ -128,6 +129,21 @@ public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Trans
     @NotNull
     default IntRange onEach(@NotNull Consumer<? super Integer> consumer) {
         return IntRange.of(Sequence.super.onEach(consumer));
+    }
+
+    @Override
+    default @NotNull ArrayX<Integer> toArrayX() {
+        return toArrayX(Integer[]::new);
+    }
+
+    @Override
+    @NotNull
+    default Integer[] toArray() {
+        return toArray(Integer[]::new);
+    }
+
+    default int[] toIntArray() {
+        return stream().mapToInt(It::asInt).toArray();
     }
 
     default IntStatistics stats(IntPredicate predicate) {

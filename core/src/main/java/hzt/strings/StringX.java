@@ -2,14 +2,17 @@ package hzt.strings;
 
 import hzt.collections.ArrayX;
 import hzt.collections.ListX;
+import hzt.numbers.BigDecimalX;
 import hzt.numbers.DoubleX;
 import hzt.numbers.IntX;
 import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
+import hzt.utils.It;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
@@ -17,6 +20,7 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
@@ -87,6 +91,16 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return new StringX(s, charset);
     }
 
+    @SafeVarargs
+    public static <T> StringX of(T... values) {
+        return Sequence.of(values).joinToStringX();
+    }
+
+    @SafeVarargs
+    public static <T> StringX of(CharSequence delimiter, T... values) {
+        return Sequence.of(values).joinToStringX(delimiter);
+    }
+
     public static StringX of(Object obj) {
         return StringX.of(String.valueOf(obj));
     }
@@ -116,7 +130,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public StringX plus(String s) {
-        return plus(StringX.of(s)).joinToStringX();
+        return plus(StringX.of(s)).joinToStringX("");
     }
 
     public StringX reversed() {
@@ -312,6 +326,11 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return StringX.of(string.concat(StringX.of(charSequence).toString()));
     }
 
+    @Override
+    public StringX filter(@NotNull Predicate<Character> predicate) {
+        return StringX.of(Sequence.super.filter(predicate));
+    }
+
     public StringX replace(char oldChar, char newChar) {
         return StringX.of(string.replace(oldChar, newChar));
     }
@@ -393,6 +412,10 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return DoubleX.of(Double.parseDouble(string));
     }
 
+    public BigDecimalX toBigDecimalX() {
+        return BigDecimalX.of(new BigDecimal(string));
+    }
+
     @Override
     public @NotNull String toString() {
         return string;
@@ -408,8 +431,12 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return string.toCharArray();
     }
 
-    public ArrayX<Character> toCharacterArrayX() {
-        return ArrayX.of(string.chars().mapToObj(i -> (char) i).toArray(Character[]::new));
+    public ArrayX<Character> toArrayX() {
+        return ArrayX.of(toArray());
+    }
+
+    Character[] toArray() {
+        return Sequence.super.toArrayOf(It::self, Character[]::new);
     }
 
     public static StringX format(@NotNull String format, Object... args) {
@@ -504,12 +531,12 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return StringX.of(string.stripTrailing());
     }
 
-    public Stream<StringX> lines() {
+    public Stream<StringX> linesAsStream() {
         return string.lines().map(StringX::of);
     }
 
-    public Sequence<StringX> linesAsSequence() {
-        return Sequence.of(lines().collect(Collectors.toList()));
+    public Sequence<StringX> lines() {
+        return Sequence.of(linesAsStream().collect(Collectors.toList()));
     }
 
     public <R> R transformString(Function<? super String, ? extends R> f) {

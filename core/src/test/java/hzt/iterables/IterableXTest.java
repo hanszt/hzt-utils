@@ -3,7 +3,6 @@ package hzt.iterables;
 import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableListX;
-import hzt.collections.MutableMapX;
 import hzt.collections.SetX;
 import hzt.collectors.BigDecimalCollectors;
 import hzt.numbers.IntX;
@@ -82,7 +81,7 @@ public class IterableXTest {
                 .filter(Objects::nonNull)
                 .collect(toSet());
 
-        final SetX<Painting> actual = museumList.flatMapToSetXOf(Museum::getPaintings);
+        final SetX<Painting> actual = museumList.flatMap(Museum::getPaintings).toSetX();
 
         assertEquals(expected, actual);
     }
@@ -107,7 +106,7 @@ public class IterableXTest {
         final Map<Museum, Painting> expectedMap = museumList.stream()
                 .collect(toMap(It::self, Museum::getMostPopularPainting));
 
-        final MutableMapX<Museum, Painting> actualMap = museumList.associateWith(Museum::getMostPopularPainting);
+        final MapX<Museum, Painting> actualMap = museumList.associateWith(Museum::getMostPopularPainting);
 
         assertEquals(expectedMap, actualMap);
     }
@@ -116,42 +115,43 @@ public class IterableXTest {
     void testWithIndicesZipWithNext2() {
         final ListX<Museum> museums = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        final ListX<Integer> sumsOfThree = museums
+        final var sumsOfThree = museums
                 .flatMap(Museum::getPaintings)
                 .indices()
-                .zipWithNext2(IntStream::of)
-                .toListXOf(IntStream::sum);
+                .windowed(3, IntRange::of)
+                .onEach(System.out::println)
+                .toListXOf(IntRange::sum);
 
         It.println("sumsOfThree = " + sumsOfThree);
 
-        assertEquals(Arrays.asList(3, 6, 9, 12, 15, 18, 21), sumsOfThree);
+        assertEquals(Arrays.asList(3L, 6L, 9L, 12L, 15L, 18L, 21L), sumsOfThree);
     }
 
     @Test
     void testMapIndexed() {
         final ListX<Museum> museums = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        final ListX<Integer> sumsOfThree = museums
+        final ListX<Long> sumsOfThree = museums
                 .mapIndexed((index, value) -> index)
-                .zipWithNext2(IntStream::of)
-                .toListXOf(IntStream::sum);
+                .windowed(3, IntRange::of)
+                .toListXOf(IntRange::sum);
 
         It.println("sumsOfThree = " + sumsOfThree);
 
-        assertEquals(Arrays.asList(3, 6), sumsOfThree);
+        assertEquals(Arrays.asList(3L, 6L), sumsOfThree);
     }
 
     @Test
     void testSortedIfOfComparableType() {
         MutableListX<Integer> list = MutableListX.of(1, 3, 5, 4, 2, 7, 214, 5, 8, 3, 4, 123);
-        final var sorted = list.sorted();
+        final var sorted = list.toSortedListX();
         assertIterableEquals(ListX.of(1, 2, 3, 3, 4, 4, 5, 5, 7, 8, 123, 214), sorted);
     }
 
     @Test
     void testSortedThrowsExceptionWhenNotOfComparableType() {
         ListX<BankAccount> bankAccountList = ListX.of(TestSampleGenerator.createSampleBankAccountList());
-        assertThrows(IllegalStateException.class, bankAccountList::sorted);
+        assertThrows(IllegalStateException.class, bankAccountList::toSortedListX);
     }
 
     @Test
@@ -415,7 +415,7 @@ public class IterableXTest {
 
         final List<Museum> expected = museumList.stream().skip(3).collect(Collectors.toList());
 
-        final IterableX<Museum> actual = museumList.skip(3);
+        final ListX<Museum> actual = museumList.skip(3);
 
         It.println("actual = " + actual);
 
@@ -511,7 +511,7 @@ public class IterableXTest {
                 .map(BankAccount::getBalance)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        final BigDecimal actual = list.sumOf(BankAccount::getBalance);
+        final BigDecimal actual = list.bigDecimalSum(BankAccount::getBalance);
 
         assertEquals(expected, actual);
     }
@@ -549,7 +549,7 @@ public class IterableXTest {
 
         list.forEach(It::println);
 
-        final MutableListX<Integer> integers = list.skipLastToMutableListWhile(i -> i != 10);
+        final ListX<Integer> integers = list.skipLastWhile(i -> i != 10);
 
         It.println("integers = " + integers);
 
@@ -608,7 +608,7 @@ public class IterableXTest {
 
         final long expected = bankAccounts.stream().filter(BankAccount::isDutchAccount).count();
 
-        final int actual = bankAccounts.countNotNullBy(BankAccount::isDutchAccount);
+        final long actual = bankAccounts.filter(Objects::nonNull).count(BankAccount::isDutchAccount);
 
         It.println("actual = " + actual);
 
@@ -623,7 +623,7 @@ public class IterableXTest {
                 .map(BankAccount::getBalance)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        final BigDecimal actual = list.sumOf(BankAccount::getBalance);
+        final BigDecimal actual = list.bigDecimalSum(BankAccount::getBalance);
 
         It.println("actual = " + actual);
 
@@ -664,7 +664,7 @@ public class IterableXTest {
                 .map(BankAccount::getBalance)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        final BigDecimal actual = ListX.of(listX).sumOf(BankAccount::getBalance);
+        final BigDecimal actual = ListX.of(listX).bigDecimalSum(BankAccount::getBalance);
 
         It.println("actual = " + actual);
 
@@ -767,7 +767,7 @@ public class IterableXTest {
                 .filter(book -> !book.isAboutProgramming())
                 .collect(Collectors.toSet());
 
-        final SetX<Book> actual = bookList.toSetXSkipping(Book::isAboutProgramming);
+        final SetX<Book> actual = bookList.filterNot(Book::isAboutProgramming).toSetX();
 
         It.println("actual = " + actual);
 
@@ -783,7 +783,7 @@ public class IterableXTest {
                 .filter(Objects::nonNull)
                 .count();
 
-        final int actual = bookList.countNotNullOf(Book::getCategory);
+        final long actual = bookList.filterBy(Book::getCategory, Objects::nonNull).count();
 
         It.println("actual = " + actual);
 
@@ -884,9 +884,9 @@ public class IterableXTest {
     void testZipWithNext() {
         ListX<Painting> museumList = ListX.of(TestSampleGenerator.createPaintingList());
 
-        final List<Integer> integers = museumList
+        final ListX<Integer> integers = museumList
                 .mapNotNull(Painting::name)
-                .zipWithNextToListOf(String::compareTo);
+                .zipWithNext(String::compareTo);
 
         assertEquals(Arrays.asList(-5, 83, -1, 5, -5, 1, 8), integers);
     }
@@ -896,7 +896,7 @@ public class IterableXTest {
         ListX<Integer> values = ListX.of(0, 1, 2, 3, 4, 5, 6, 7);
         List<Integer> others = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
 
-        final List<Integer> integers = values.zipToListWith(others, Integer::compareTo);
+        final ListX<Integer> integers = values.zipWith(others, Integer::compareTo);
 
         assertIterableEquals(Arrays.asList(-1, -1, -1, 0, 1, 1, 1), integers);
     }
@@ -922,9 +922,9 @@ public class IterableXTest {
                 .collect(toList());
 
 
-        final MutableListX<Character> actual = bookList
+        final ListX<Character> actual = bookList
                 .mapToStringX(Book::getCategory)
-                .flatMapToMutableListOf(StringX::toMutableList);
+                .flatMap(StringX::toListX);
 
         It.println("stringXES = " + actual);
 
@@ -979,9 +979,9 @@ public class IterableXTest {
 
     @Test
     void testCreateAnEmptyIterableX() {
-        final ArrayDeque<String> strings = ListX.<String>empty()
-                .toCollectionNotNullOf(ArrayDeque::new, It::self);
+        final ArrayDeque<String> strings = ListX.<String>empty().toCollection(ArrayDeque::new);
 
+        IntRange.empty();
         assertTrue(strings.isEmpty());
     }
 
@@ -1063,7 +1063,7 @@ public class IterableXTest {
                 .filter(IntX::isEven)
                 .map(Generator::toStringIn100Millis)
                 .onEach(String::length, It::println)
-                .takeToMutableListWhileInclusive(s -> s.length() < 6);
+                .takeWhileInclusive(s -> s.length() < 6);
 
         assertEquals(6, strings.size());
     }

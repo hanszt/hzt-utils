@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -18,7 +17,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public interface CollectionView<E> extends IterableX<E> {
 
@@ -69,10 +67,6 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> mapIndexed(@NotNull BiFunction<Integer, ? super E, ? extends R> mapper) {
-        return mapIndexedToMutableList(mapper);
-    }
-
-    private  <R> MutableListX<R> mapIndexedToMutableList(@NotNull BiFunction<Integer, ? super E, ? extends R> mapper) {
         return withIndex().mapTo(MutableListX::empty, indexedValue -> mapper.apply(indexedValue.index(), indexedValue.value()));
     }
 
@@ -97,23 +91,7 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> flatMap(@NotNull Function<E, Iterable<R>> mapper) {
-        return flatMapToMutableListOf(mapper);
-    }
-
-    private <R, I extends Iterable<R>> MutableListX<R> flatMapToMutableListOf(@NotNull Function<? super E, ? extends I> mapper) {
-        final MutableListX<R> list = MutableListX.empty();
-        for (E t : this) {
-            final I c = mapper.apply(t);
-            if (c == null) {
-                continue;
-            }
-            for (R r : c) {
-                if (r != null) {
-                    list.add(r);
-                }
-            }
-        }
-        return list;
+        return CollectionsHelper.flatMapToMutableListOf(this, mapper);
     }
 
     default <R> ListX<R> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<R>> mapper) {
@@ -138,26 +116,7 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     default IntRange indices() {
-        return Sequence.of(() -> indexIterator(iterator())).asIntRange(It::asInt);
-    }
-
-    static <T> Iterator<Integer> indexIterator(Iterator<T> iterator) {
-        return new Iterator<>() {
-            private int index = 0;
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-            @Override
-            public Integer next() {
-                int prevIndex = index;
-                if (prevIndex < 0) {
-                    throw new IllegalStateException("indexed iterator index overflow");
-                }
-                iterator.next();
-                return index++;
-            }
-        };
+        return Sequence.of(() -> CollectionsHelper.indexIterator(iterator())).asIntRange(It::asInt);
     }
 
     default ListX<E> sorted() {
@@ -178,21 +137,7 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     default <R> ListX<E> distinctBy(@NotNull Function<E, ? extends R> selector) {
-        return distinctToMutableListBy(selector);
-    }
-
-    private  <R> MutableListX<E> distinctToMutableListBy(@NotNull Function<? super E, ? extends R> selector) {
-        MutableListX<E> result = MutableListX.empty();
-        MutableSetX<R> set = MutableLinkedSetX.empty();
-        for (E t : this) {
-            if (t != null) {
-                final R r = selector.apply(t);
-                if (set.add(r)) {
-                    result.add(t);
-                }
-            }
-        }
-        return result;
+        return CollectionsHelper.distinctToMutableListBy(this, selector);
     }
 
     default ListX<ListX<E>> chunked(int size) {
@@ -237,68 +182,21 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> zipWithNext(BiFunction<E, E, R> function) {
-        return zipWithNextToMutableListOf(function);
-    }
-
-    private <R> MutableListX<R> zipWithNextToMutableListOf(BiFunction<E, E, R> function) {
-        final Iterator<E> iterator = iterator();
-        if (!iterator.hasNext()) {
-            return MutableListX.empty();
-        }
-        final MutableListX<R> list = MutableListX.empty();
-        E current = iterator.next();
-        while (iterator.hasNext()) {
-            final E next = iterator.next();
-            list.add(function.apply(current, next));
-            current = next;
-        }
-        return list;
+        return CollectionsHelper.zipWithNextToMutableListOf(this.iterator(), function);
     }
 
     default ListX<E> skip(long count) {
-        return filterIndexedToCollection(MutableListX::empty, (i, t) -> i >= count);
-    }
-
-    private <C extends Collection<E>> C filterIndexedToCollection(@NotNull Supplier<C> collectionFactory,
-                                                                   @NotNull BiPredicate<Integer, E> predicate) {
-        C collection = collectionFactory.get();
-        for (IndexedValue<E> item : withIndex()) {
-            if (item != null && predicate.test(item.index(), item.value())) {
-                collection.add(item.value());
-            }
-        }
-        return collection;
+        return CollectionsHelper.filterIndexedToCollection(withIndex(), MutableListX::empty, (i, t) -> i >= count);
     }
 
     @Override
     default ListX<E> skipWhile(@NotNull Predicate<E> predicate) {
-        return skipToMutableListWhile(this, predicate, false);
+        return CollectionsHelper.skipToMutableListWhile(this, predicate, false);
     }
 
     @Override
     default ListX<E> skipWhileInclusive(@NotNull Predicate<E> predicate) {
-        return skipToMutableListWhile(this, predicate, true);
-    }
-
-    private static <T> MutableListX<T> skipToMutableListWhile(
-            Iterable<T> iterable,
-            Predicate<? super T> predicate,
-            boolean inclusive) {
-        boolean yielding = false;
-        MutableListX<T> list = MutableListX.empty();
-        for (T item : iterable) {
-            if (yielding) {
-                list.add(item);
-                continue;
-            }
-            if (!predicate.test(item)) {
-                if (!inclusive) {
-                    list.add(item);
-                }
-                yielding = true;
-            }
-        }
-        return list;
+        return CollectionsHelper.skipToMutableListWhile(this, predicate, true);
     }
 
     @Override

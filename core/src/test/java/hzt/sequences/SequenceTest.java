@@ -612,11 +612,11 @@ class SequenceTest {
 
     @Test
     void sequenceOfStreamCanOnlyBeConsumedOnce() {
-        final var yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
+        final Stream<Year> yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
                 .filter(IntX::isEven)
                 .map(Year::of);
 
-        final var yearSequence = Sequence.of(yearStream);
+        final Sequence<Year> yearSequence = Sequence.of(yearStream);
 
         assertAll(
                 () -> assertEquals(4, yearSequence.count()),

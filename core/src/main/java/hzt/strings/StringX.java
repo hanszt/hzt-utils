@@ -511,36 +511,12 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return string.replaceAll(regex, replacement);
     }
 
-    public StringX strip() {
-        return StringX.of(string.strip());
-    }
-
-    public StringX stripLeading() {
-        return StringX.of(string.stripLeading());
-    }
-
-    public StringX stripTrailing() {
-        return StringX.of(string.stripTrailing());
-    }
-
-    public Stream<StringX> linesAsStream() {
-        return string.lines().map(StringX::of);
-    }
-
-    public Sequence<StringX> lines() {
-        return Sequence.of(linesAsStream().collect(Collectors.toList()));
-    }
-
     public <R> R transformString(Function<? super String, ? extends R> f) {
         return f.apply(string);
     }
 
     public StringX formatted(Object... args) {
         return StringX.of(String.format(string, args));
-    }
-
-    public StringX repeat(int count) {
-        return StringX.of(string.repeat(count));
     }
 
     @Override

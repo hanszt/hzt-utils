@@ -1,18 +1,23 @@
 package hzt.iterables;
 
 import hzt.collections.IndexedValue;
+import hzt.collections.MutableListX;
+import hzt.collections.MutableSetX;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public final class IterableXHelper {
 
@@ -50,25 +55,6 @@ public final class IterableXHelper {
             return (K) c;
         }
         throw new IllegalStateException(key.getClass().getSimpleName() + " is not of a comparable type");
-    }
-
-    static <T> Iterator<Integer> indexIterator(Iterator<T> iterator) {
-        return new Iterator<Integer>() {
-            private int index = 0;
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-            @Override
-            public Integer next() {
-                int prevIndex = index;
-                if (prevIndex < 0) {
-                    throw new IllegalStateException("indexed iterator index overflow");
-                }
-                iterator.next();
-                return index++;
-            }
-        };
     }
 
     @NotNull
@@ -161,5 +147,42 @@ public final class IterableXHelper {
                 return new IndexedValue<>(index++, iterator.next());
             }
         };
+    }
+
+    static <T, R extends Comparable<R>> MutableListX<T> toMutableListSortedBy(
+            @NotNull Function<? super T, ? extends R> selector, MutableListX<T> list) {
+        list.sort(Comparator.comparing(selector));
+        return list;
+    }
+
+    static  <T, R, C extends Collection<R>> C mapFilteringToCollection(
+            @NotNull Iterable<T> iterable,
+            @NotNull Supplier<C> collectionFactory,
+            @NotNull Predicate<? super T> predicate,
+            @NotNull Function<? super T, ? extends R> mapper,
+            @NotNull Predicate<R> resultFilter) {
+        C collection = collectionFactory.get();
+        for (T t : iterable) {
+            if (t != null && predicate.test(t)) {
+                final R r = mapper.apply(t);
+                if (resultFilter.test(r)) {
+                    collection.add(r);
+                }
+            }
+        }
+        return collection;
+    }
+
+    static <T, R> MutableSetX<R> toMutableSetNotNullOf(Iterable<T> iterable, @NotNull Function<? super T, ? extends R> transform) {
+        return toCollectionNotNullOf(iterable, MutableSetX::empty, transform);
+    }
+
+    static <T, R, C extends Collection<R>> C toCollectionNotNullOf(Iterable<T> iterable,@NotNull Supplier<C> collectionFactory,
+                                                                 @NotNull Function<? super T, ? extends R> mapper) {
+        return mapFilteringToCollection(iterable, collectionFactory, Objects::nonNull, mapper, Objects::nonNull);
+    }
+
+    static <T, R> MutableListX<R> toMutableListNotNullOf(Iterable<T> iterable, @NotNull Function<? super T, ? extends R> transform) {
+        return IterableXHelper.toCollectionNotNullOf(iterable, MutableListX::empty, transform);
     }
 }

@@ -117,7 +117,7 @@ public class IterableXTest {
     void testWithIndicesZipWithNext2() {
         final ListX<Museum> museums = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        final var sumsOfThree = museums
+        final ListX<Long> sumsOfThree = museums
                 .flatMap(Museum::getPaintings)
                 .indices()
                 .windowed(3, IntRange::of)

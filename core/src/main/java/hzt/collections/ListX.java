@@ -98,28 +98,8 @@ public interface ListX<E> extends CollectionView<E>, Transformable<ListX<E>> {
         return accumulator;
     }
 
-    private MutableListX<E> takeLastToMutableList(int n) {
-        PreConditions.requireGreaterThanOrEqualToZero(n);
-        if (n == 0) {
-            return MutableListX.empty();
-        }
-        MutableListX<E> list = MutableListX.of(this);
-        int size = list.size();
-        if (n >= size) {
-            return list;
-        }
-        if (n == 1) {
-            return MutableListX.of(last());
-        }
-        MutableListX<E> resultList = MutableListX.withInitCapacity(n);
-        for (int index = size - n; index < size; index++) {
-            resultList.add(list.get(index));
-        }
-        return resultList;
-    }
-
     default ListX<E> takeLast(int n) {
-        return takeLastToMutableList(n);
+        return CollectionsHelper.takeLastToMutableList(this, n);
     }
 
     Optional<E> findRandom();

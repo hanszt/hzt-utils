@@ -2,7 +2,7 @@ package hzt.collections;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,13 +12,13 @@ class MutableListXTest {
 
     @Test
     void testMutableListRemoveLast() {
-        final var integers = MutableListX.of(1, 2, 3, 4, 5);
+        final MutableListX<Integer> integers = MutableListX.of(1, 2, 3, 4, 5);
 
-        final var removed = integers.removeLast();
+        final boolean removed = integers.removeLast();
 
         assertAll(
                 () -> assertTrue(removed),
-                () -> assertEquals(List.of(1,2,3,4), integers)
+                () -> assertEquals(Arrays.asList(1, 2, 3, 4), integers)
         );
     }
 }

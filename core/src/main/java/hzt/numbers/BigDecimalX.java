@@ -196,11 +196,6 @@ public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>
     }
 
     @Override
-    public @NotNull BigDecimalX sqrt(MathContext mc) {
-        return of(super.sqrt(mc));
-    }
-
-    @Override
     public @NotNull BigDecimalX min(BigDecimal val) {
         return of(super.min(val));
     }

@@ -33,8 +33,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableSet;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -97,31 +95,23 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     IterableX<T> filterNot(@NotNull Predicate<T> predicate);
 
     default <R> ListX<R> toListXOf(@NotNull Function<? super T, ? extends R> transform) {
-        return toMutableListNotNullOf(transform);
+        return IterableXHelper.toMutableListNotNullOf(this, transform);
     }
 
     default <R> List<R> toListOf(@NotNull Function<? super T, ? extends R> transform) {
-        return List.copyOf(toMutableListNotNullOf(transform));
+        return Collections.unmodifiableList(IterableXHelper.toMutableListNotNullOf(this, transform));
     }
 
     default <R> SetX<R> toSetXOf(@NotNull Function<? super T, ? extends R> transform) {
-        return toMutableSetNotNullOf(transform);
+        return IterableXHelper.toMutableSetNotNullOf(this, transform);
     }
 
     default <R> Set<R> toSetOf(@NotNull Function<? super T, ? extends R> transform) {
-        return Collections.unmodifiableSet(toMutableSetNotNullOf(transform));
-    }
-
-    private <R> MutableSetX<R> toMutableSetNotNullOf(@NotNull Function<? super T, ? extends R> transform) {
-        return toCollectionNotNullOf(MutableSetX::empty, transform);
+        return Collections.unmodifiableSet(IterableXHelper.toMutableSetNotNullOf(this, transform));
     }
 
     default <R> MutableListX<R> toMutableListOf(@NotNull Function<? super T, ? extends R> transform) {
         return mapTo(MutableListX::empty, transform);
-    }
-
-    private <R> MutableListX<R> toMutableListNotNullOf(@NotNull Function<? super T, ? extends R> transform) {
-        return toCollectionNotNullOf(MutableListX::empty, transform);
     }
 
     default <R> MutableSetX<R> toMutableSetOf(@NotNull Function<? super T, ? extends R> transform) {
@@ -130,44 +120,16 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
 
     default <R, C extends Collection<R>> C mapTo(@NotNull Supplier<C> collectionFactory,
                                                  @NotNull Function<? super T, ? extends R> mapper) {
-        return mapFilteringToCollection(collectionFactory, Objects::nonNull, mapper, It::noFilter);
+        return IterableXHelper.mapFilteringToCollection(this, collectionFactory, Objects::nonNull, mapper, It::noFilter);
     }
 
     default <C extends Collection<T>> C toCollection(Supplier<C> collectionFactory) {
-        return mapFilteringToCollection(collectionFactory, It::noFilter, It::self, It::noFilter);
-    }
-
-    private <R, C extends Collection<R>> C mapFilteringToCollection(
-            @NotNull Supplier<C> collectionFactory,
-            @NotNull Predicate<? super T> predicate,
-            @NotNull Function<? super T, ? extends R> mapper,
-            @NotNull Predicate<R> resultFilter) {
-        C collection = collectionFactory.get();
-        for (T t : this) {
-            if (t != null && predicate.test(t)) {
-                final R r = mapper.apply(t);
-                if (resultFilter.test(r)) {
-                    collection.add(r);
-                }
-            }
-        }
-        return collection;
-    }
-
-    private  <R, C extends Collection<R>> C toCollectionNotNullOf(@NotNull Supplier<C> collectionFactory,
-                                                                 @NotNull Function<? super T, ? extends R> mapper) {
-        return mapFilteringToCollection(collectionFactory, Objects::nonNull, mapper, Objects::nonNull);
+        return IterableXHelper.mapFilteringToCollection(this, collectionFactory, It::noFilter, It::self, It::noFilter);
     }
 
     IterableX<T> filterIndexed(@NotNull BiPredicate<Integer, T> predicate);
 
     <R> IterableX<R> castIfInstanceOf(@NotNull Class<R> aClass);
-
-    private <R extends Comparable<R>> MutableListX<T> toMutableListSortedBy(@NotNull Function<? super T, ? extends R> selector) {
-        final MutableListX<T> list = toMutableListOf(It::self);
-        list.sort(Comparator.comparing(selector));
-        return list;
-    }
 
     default <R extends Comparable<R>> NavigableSetX<T> toSortedSet(@NotNull Function<? super T, ? extends R> selector) {
         NavigableSetX<T> navigableSetX = NavigableSetX.comparingBy(selector);
@@ -176,7 +138,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default <R extends Comparable<R>> NavigableSetX<R> toSortedSetOf(@NotNull Function<? super T, ? extends R> selector) {
-        return NavigableSetX.of(toMutableListNotNullOf(selector), It::self);
+        return NavigableSetX.of(IterableXHelper.toMutableListNotNullOf(this, selector), It::self);
     }
 
     default <R> R[] toArrayOf(@NotNull Function<? super T, ? extends R> mapper, @NotNull IntFunction<R[]> generator) {
@@ -278,32 +240,6 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
         return toMutableMap(keyMapper, valueMapper);
     }
 
-    private MutableListX<T> getListOrElseCompute() {
-        final Iterable<T> iterable = this;
-        return iterable instanceof List ? MutableListX.of((List<T>) iterable) : MutableListX.of(this);
-    }
-
-    private MutableSetX<T> getSetOrElseCompute() {
-        final Iterable<T> iterable = this;
-        return iterable instanceof Set ? MutableSetX.of((Set<T>) iterable) : MutableSetX.of(this);
-    }
-
-    private MutableListX<T> getListOrElseThrow() {
-        final Iterable<T> iterable = this;
-        if (iterable instanceof List) {
-            return MutableListX.of((List<T>) iterable);
-        }
-        throw new IllegalArgumentException(iterable.getClass().getSimpleName() + " is not an instance of List");
-    }
-
-    private MutableSetX<T> getSetOrElseThrow() {
-        final Iterable<T> iterable = this;
-        if (iterable instanceof Set) {
-            return MutableSetX.of(((Set<T>) iterable));
-        }
-        throw new IllegalArgumentException(iterable.getClass().getSimpleName() + " is not an instance of Set");
-    }
-
     default <K> MapX<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper) {
         return toMutableMap(keyMapper, It::self);
     }
@@ -325,7 +261,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default <R extends Comparable<R>> ListX<T> toSortedListX(@NotNull Function<? super T, ? extends R> selector) {
-        return toMutableListSortedBy(selector);
+        return IterableXHelper.toMutableListSortedBy(selector, toMutableListOf(It::self));
     }
 
     default <R extends Comparable<R>> ListX<T> toSortedListX() {
@@ -333,7 +269,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default <R extends Comparable<R>> ListX<T> shuffled() {
-        return toMutableListSortedBy(s -> IterableXHelper.nextRandomDouble());
+        return IterableXHelper.toMutableListSortedBy(s -> IterableXHelper.nextRandomDouble(), toMutableListOf(It::self));
     }
 
     IterableX<T> sorted();
@@ -853,11 +789,11 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default List<T> toList() {
-        return List.copyOf(toMutableList());
+        return Collections.unmodifiableList(toMutableList());
     }
 
     default MutableSetX<T> toMutableSet() {
-        return toCollectionNotNullOf(MutableSetX::empty, It::self);
+        return IterableXHelper.toCollectionNotNullOf(this, MutableSetX::empty, It::self);
     }
 
     default SetX<T> toSetX() {
@@ -865,7 +801,7 @@ public interface IterableX<T> extends Iterable<T>, IndexedIterable<T> {
     }
 
     default Set<T> toSet() {
-        return Set.copyOf(toMutableSet());
+        return Collections.unmodifiableSet(toMutableSet());
     }
 
     default long count() {

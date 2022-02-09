@@ -290,11 +290,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     default <K, V> EntrySequence<K, V> asEntrySequence(Function<T, K> keyMapper, Function<T, V> valueMapper) {
-        return EntrySequence.of(map(value -> Map.entry(keyMapper.apply(value), valueMapper.apply(value))));
-    }
-
-    default List<T> toList() {
-        return Collections.unmodifiableList(toMutableList());
+        return EntrySequence.of(map(value -> new AbstractMap.SimpleEntry<>(keyMapper.apply(value), valueMapper.apply(value))));
     }
 
     @Override
@@ -310,10 +306,6 @@ public interface Sequence<T> extends IterableX<T> {
     @Override
     default DoubleRange asDoubleRange(@NotNull ToDoubleFunction<T> toDoubleMapper) {
         return DoubleRange.of(map(toDoubleMapper::applyAsDouble));
-    }
-
-    default Set<T> toSet() {
-        return Collections.unmodifiableSet(toMutableSet());
     }
 
     default T[] toArray(IntFunction<T[]> generator) {

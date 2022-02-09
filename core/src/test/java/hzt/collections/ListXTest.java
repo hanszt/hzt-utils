@@ -24,7 +24,7 @@ class ListXTest {
 
     @Test
     void testGetElement() {
-        final var strings = ListX.of("hallo", "asffasf", "string", "test");
+        final ListX<String> strings = ListX.of("hallo", "asffasf", "string", "test");
 
         assertAll(
                 () -> assertEquals("test", strings.get(3)),
@@ -42,7 +42,7 @@ class ListXTest {
 
         expected.add(LocalDate.MIN);
 
-        final var dates = museums.toMutableListOf(PaintingAuction::getDateOfOpening);
+        final MutableListX<LocalDate> dates = museums.toMutableListOf(PaintingAuction::getDateOfOpening);
 
         dates.add(LocalDate.MIN);
 
@@ -52,10 +52,6 @@ class ListXTest {
     @Test
     void testTakeWhile() {
         final List<Museum> museumList = TestSampleGenerator.getMuseumListContainingNulls();
-
-        final List<Museum> expected = museumList.stream()
-                .takeWhile(museum -> museum.getPaintings().size() < 3)
-                .collect(Collectors.toList());
 
         final MutableListX<Museum> actual = Sequence.of(museumList)
                 .takeWhile(museum -> museum.getPaintings().size() < 3)

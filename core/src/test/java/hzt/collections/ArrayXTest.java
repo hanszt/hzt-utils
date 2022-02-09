@@ -4,6 +4,7 @@ import hzt.test.Generator;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertAll;

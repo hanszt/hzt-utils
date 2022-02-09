@@ -1,5 +1,6 @@
 package hzt.statistics;
 
+import hzt.numbers.BigDecimalX;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +34,7 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
         return this;
     }
 
-    public BigDecimal getSumOfSquare() {
+    private BigDecimal getSumOfSquare() {
         return sumOfSquare;
     }
 
@@ -41,15 +42,15 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
         return this;
     }
 
-    public BigDecimal getStandardDeviation() {
+    public BigDecimalX getStandardDeviation() {
         return getStandardDeviation(2, RoundingMode.HALF_UP, MathContext.DECIMAL32);
     }
 
-    public BigDecimal getStandardDeviation(int scale, RoundingMode roundingMode) {
+    public BigDecimalX getStandardDeviation(int scale, RoundingMode roundingMode) {
         return getStandardDeviation(scale, roundingMode, MathContext.DECIMAL128);
     }
 
-    public BigDecimal getStandardDeviation(int scale, RoundingMode roundingMode, MathContext mathContext) {
+    public BigDecimalX getStandardDeviation(int scale, RoundingMode roundingMode, MathContext mathContext) {
 //        final BigDecimal average = getAverage(scale, roundingMode);
 //        final BigDecimal subtract = (getSumOfSquare().divide(BigDecimal.valueOf(getCount()), scale, roundingMode))
 //                .subtract(average.multiply(average));
@@ -62,7 +63,7 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
     @Override
     public String toString() {
         return String.format(
-                "%s{count=%d, sum=%f, min=%f, average=%f, max=%f, standard deviation=%f}",
+                "%s{count=%d, sum=%s, min=%s, average=%s, max=%s, standard deviation=%s}",
                 this.getClass().getSimpleName(),
                 getCount(),
                 getSum(),

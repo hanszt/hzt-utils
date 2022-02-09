@@ -99,7 +99,7 @@ class MapXTest {
 
     @Test
     void testComputeIfAbsent() {
-        final MutableMapX<String, Museum> museumMap = ListX.of(TestSampleGenerator.createMuseumList())
+        final MapX<String, Museum> museumMap = ListX.of(TestSampleGenerator.createMuseumList())
                 .associateBy(Museum::getName);
 
         Museum expected = museumMap.get("Van Gogh Museum");
@@ -128,7 +128,7 @@ class MapXTest {
     void testFlatMapToList() {
         final MapX<String, Museum> museumMapX = MapX.of(TestSampleGenerator.createMuseumMap());
 
-        final ListX<Painting> pairs = museumMapX.flatMapToListXOf(e -> e.getValue().getPaintings());
+        final ListX<Painting> pairs = museumMapX.flatMap(e -> e.getValue().getPaintings());
 
         final String expected = "Meisje met de rode hoed";
 

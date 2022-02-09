@@ -3,29 +3,27 @@ package hzt.numbers;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
-public final class DoubleX extends Number implements NumberX, Transformable<DoubleX> {
+@SuppressWarnings("unused")
+public final class DoubleX extends Number implements NumberX<Double>, Transformable<DoubleX> {
 
-    private final Double aDouble;
+    private static final long serialVersionUID = 45;
 
-    private DoubleX(double aDouble) {
-        this.aDouble = aDouble;
+    private final Double thisDouble;
+
+    private DoubleX(double thisDouble) {
+        this.thisDouble = thisDouble;
     }
 
-    public static String toString(double d) {
-        return Double.toString(d);
+    public static DoubleX of(double aDouble) {
+        return new DoubleX(aDouble);
     }
 
-    public static String toHexString(double d) {
-        return Double.toHexString(d);
+    public static DoubleX of(Number number) {
+        return new DoubleX(number.doubleValue());
     }
 
-    public static Double valueOf(String s) throws NumberFormatException {
-        return Double.valueOf(s);
-    }
-
-    
-    public static Double valueOf(double d) {
-        return d;
+    public static DoubleX of(String s) throws NumberFormatException {
+        return DoubleX.of(Double.valueOf(s));
     }
 
     public static double parseDouble(String s) throws NumberFormatException {
@@ -44,57 +42,57 @@ public final class DoubleX extends Number implements NumberX, Transformable<Doub
         return Double.isFinite(d);
     }
 
+    public String toHexString() {
+        return Double.toHexString(thisDouble);
+    }
+
     public boolean isNaN() {
-        return aDouble.isNaN();
+        return thisDouble.isNaN();
     }
 
     public boolean isInfinite() {
-        return aDouble.isInfinite();
+        return thisDouble.isInfinite();
     }
 
     @Override
     public String toString() {
-        return aDouble.toString();
+        return thisDouble.toString();
     }
 
     @Override
     public byte byteValue() {
-        return aDouble.byteValue();
+        return thisDouble.byteValue();
     }
 
     @Override
     public short shortValue() {
-        return aDouble.shortValue();
-    }
-
-    public static DoubleX of(double aDouble) {
-        return new DoubleX(aDouble);
+        return thisDouble.shortValue();
     }
 
     @Override
     public int intValue() {
-        return aDouble.intValue();
+        return thisDouble.intValue();
     }
 
     @Override
     public long longValue() {
-        return aDouble.longValue();
+        return thisDouble.longValue();
     }
 
     @Override
     public float floatValue() {
-        return aDouble.floatValue();
+        return thisDouble.floatValue();
     }
 
-    
+
     @Override
     public double doubleValue() {
-        return aDouble;
+        return thisDouble;
     }
 
     @Override
     public int hashCode() {
-        return aDouble.hashCode();
+        return thisDouble.hashCode();
     }
 
     @Override
@@ -106,7 +104,7 @@ public final class DoubleX extends Number implements NumberX, Transformable<Doub
             return false;
         }
         DoubleX doubleX = (DoubleX) o;
-        return aDouble.equals(doubleX.aDouble);
+        return thisDouble.equals(doubleX.thisDouble);
     }
 
     public static long doubleToLongBits(double value) {
@@ -124,7 +122,7 @@ public final class DoubleX extends Number implements NumberX, Transformable<Doub
     }
 
     public int compareTo(Double anotherDouble) {
-        return aDouble.compareTo(anotherDouble);
+        return thisDouble.compareTo(anotherDouble);
     }
 
     public static int compare(double d1, double d2) {
@@ -143,12 +141,13 @@ public final class DoubleX extends Number implements NumberX, Transformable<Doub
         return Double.min(a, b);
     }
 
-    public IntX toIntX() {
-        return IntX.of(intValue());
-    }
-
     @Override
     public @NotNull DoubleX get() {
         return this;
+    }
+
+    @Override
+    public @NotNull Double getValue() {
+        return thisDouble;
     }
 }

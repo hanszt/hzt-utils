@@ -8,7 +8,8 @@ class IntXTest {
 
     @Test
     void testToDouble() {
-        final DoubleX doubleX = IntX.of(10).toDoubleX();
+        final DoubleX doubleX = IntX.of(10).toDoubleX()
+                .toStringX().toDoubleX();
 
         assertEquals(DoubleX.of(10), doubleX);
     }

@@ -5,15 +5,21 @@ import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
-public final class IntX extends Number implements NumberX, Transformable<IntX> {
+@SuppressWarnings("unused")
+public final class IntX extends Number implements NumberX<Integer>, Transformable<IntX> {
 
     private static final long serialVersionUID = 20;
 
     private final Integer integer;
 
-    private IntX(Integer integer) {
+    private IntX(int integer) {
         this.integer = integer;
+    }
+
+    public static IntX of(Number number) {
+        return new IntX(number.intValue());
     }
 
     public IntRange downTo(int target) {
@@ -58,6 +64,30 @@ public final class IntX extends Number implements NumberX, Transformable<IntX> {
 
     public static int parseInt(String s, int radix) throws NumberFormatException {
         return Integer.parseInt(s, radix);
+    }
+
+    public static Predicate<Integer> multipleOf(int multiple) {
+        return i -> i % multiple == 0;
+    }
+
+    public boolean isMultipleOf(int multiple) {
+        return multipleOf(multiple).test(integer);
+    }
+
+    public static boolean isEven(int i) {
+        return multipleOf(2).test(i);
+    }
+
+    public boolean isEven() {
+        return isEven(integer);
+    }
+
+    public static boolean isOdd(int i) {
+        return i % 2 != 0;
+    }
+
+    public boolean isOdd() {
+        return isOdd(integer);
     }
 
     public static int parseInt(String s) throws NumberFormatException {
@@ -236,7 +266,8 @@ public final class IntX extends Number implements NumberX, Transformable<IntX> {
         return Integer.min(a, b);
     }
 
-    public DoubleX toDoubleX() {
-        return DoubleX.of(doubleValue());
+    @Override
+    public @NotNull Integer getValue() {
+        return integer;
     }
 }

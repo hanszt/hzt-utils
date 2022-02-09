@@ -3,12 +3,12 @@ package hzt.collections;
 import hzt.iterables.EntryIterable;
 import hzt.iterables.IterableX;
 import hzt.sequences.EntrySequence;
+import hzt.sequences.Sequence;
 import hzt.tuples.Pair;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,7 +30,7 @@ public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterab
     }
 
     static <K, V> MapX<K, V> of(Map<K, V> map) {
-        return MutableMapX.of(map);
+        return MutableMapX.ofMap(map);
     }
 
     static <K, V> MapX<K, V> of(Iterable<Map.Entry<K, V>> entries) {
@@ -159,9 +159,6 @@ public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterab
         return MutableListX.of(this).toListXOf(e -> mapper.apply(e.getKey(), e.getValue()));
     }
 
-    default <R> MutableListX<R> valuesToMutableListOf(Function<V, R> mapper) {
-        return MutableListX.of(this::valueIterator).toMutableListOf(mapper);
-    }
 
     @NotNull
     default Iterator<V> valueIterator() {
@@ -180,11 +177,11 @@ public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterab
     }
 
     default <R> ListX<R> valuesToListXOf(Function<V, R> mapper) {
-        return valuesToMutableListOf(mapper);
+        return Sequence.of(this::valueIterator).toListXOf(mapper);
     }
 
     default <R> List<R> valuesToListOf(Function<V, R> mapper) {
-        return Collections.unmodifiableList(valuesToMutableListOf(mapper));
+        return Sequence.of(this::valueIterator).toListOf(mapper);
     }
 
     default <R> SetX<R> toSetOf(BiFunction<K, V, R> mapper) {

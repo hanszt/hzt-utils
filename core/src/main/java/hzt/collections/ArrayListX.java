@@ -1,6 +1,6 @@
 package hzt.collections;
 
-import hzt.utils.It;
+import hzt.iterables.IterableXHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -11,12 +11,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.ToIntFunction;
 
 final class ArrayListX<T> implements MutableListX<T> {
-
-    private static final Random RANDOM = new Random();
 
     private final List<T> list;
 
@@ -52,7 +49,7 @@ final class ArrayListX<T> implements MutableListX<T> {
 
     @Override
     public Optional<T> findRandom() {
-        return isNotEmpty() ? Optional.of(get(RANDOM.nextInt(size()))) : Optional.empty();
+        return isNotEmpty() ? Optional.of(get(IterableXHelper.RANDOM.nextInt(size()))) : Optional.empty();
     }
 
     @Override
@@ -197,11 +194,6 @@ final class ArrayListX<T> implements MutableListX<T> {
     @Override
     public MutableListX<T> subList(int fromIndex, int toIndex) {
         return MutableListX.of(list.subList(fromIndex, toIndex));
-    }
-
-    @Override
-    public ListX<T> toListX() {
-        return toListXOf(It::self);
     }
 
     @Override

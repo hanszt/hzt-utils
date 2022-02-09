@@ -2,6 +2,7 @@ package hzt.strings;
 
 import hzt.collections.ArrayX;
 import hzt.collections.ListX;
+import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -55,7 +56,7 @@ class StringXTest {
 
     @Test
     void testStringXToCharArrayX() {
-        final ArrayX<Character> characters = StringX.of("Hello").toCharacterArrayX();
+        final ArrayX<Character> characters = StringX.of("Hello").toArrayX();
 
         assertAll(
                 () -> assertEquals('H', characters.first()),
@@ -68,6 +69,42 @@ class StringXTest {
         final List<Character> characters = Arrays.asList('H', 'e', 'y', '!', '1', '2', '3');
 
         assertEquals("Hey!123", StringX.of(characters).toString());
+    }
+
+    @Test
+    void testStringChainingX() {
+        final var characters = List.of('H', 'e', 'y', '!', '1', '2', '3');
+
+        final var actual = StringX.of(characters)
+                .concat("\nHallo")
+                .replaceFirst("lo", "asd")
+                .lines()
+                .toTwo(Sequence::count, s -> s.joinToString(""));
+
+        assertAll(
+                () -> assertEquals("Hey!123Halasd", actual.second()),
+                () -> assertEquals(2, actual.first()));
+    }
+
+    @Test
+    void testIfEmpty() {
+        assertEquals("Test", StringX.of("").ifEmpty(() -> "Test").toString());
+    }
+
+    @Test
+    void testIfBlank() {
+        assertEquals("Test", StringX.of("  ").ifBlank(() -> "Test").toString());
+    }
+
+    @Test
+    void flatMapToCharArrayAndFromCharArrayToStringX() {
+        final var characters = Sequence.of("hallo", "Wat is dat?", "Een test")
+                .joinToStringX("")
+                .toArray();
+
+        final var stringX = StringX.of("", characters);
+
+        assertEquals("halloWat is dat?Een test", stringX.toString());
     }
 
     @ParameterizedTest

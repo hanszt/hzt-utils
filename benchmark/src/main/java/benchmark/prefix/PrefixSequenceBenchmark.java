@@ -1,6 +1,7 @@
 package benchmark.prefix;
 
 import hzt.collections.ListX;
+import hzt.numbers.IntX;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
@@ -31,7 +32,7 @@ public class PrefixSequenceBenchmark {
     public ListX<Integer> mapFilterToList() {
         return list.asSequence()
                 .map(String::length)
-                .filter(i -> i % 2 == 0)
+                .filter(IntX::isEven)
                 .toListX();
     }
 

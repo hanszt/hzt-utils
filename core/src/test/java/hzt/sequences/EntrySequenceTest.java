@@ -1,9 +1,7 @@
 package hzt.sequences;
 
 import hzt.collections.MapX;
-import hzt.tuples.Pair;
 import hzt.utils.It;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -23,20 +21,14 @@ class EntrySequenceTest {
         final var mapX = MapX.of("1", 1, "2", 2, "3", 3, "4", 4);
 
         final var resultMap = mapX.asSequence()
-                .map(this::reversed)
-                .filterByKeys(value -> value <= 3)
-                .mapKeys(day -> LocalDate.of(2000, Month.JANUARY, day))
+                .filterValues(value -> value <= 3)
+                .mapValues(day -> LocalDate.of(2000, Month.JANUARY, day))
                 .toMapX();
 
         assertAll(
                 () -> assertEquals(3, resultMap.size()),
                 () -> assertFalse(resultMap.containsKey(LocalDate.of(2000, Month.JANUARY, 4)))
         );
-    }
-
-    @NotNull
-    private Pair<Integer, String> reversed(String k, Integer v) {
-        return Pair.of(v, k);
     }
 
     @Test

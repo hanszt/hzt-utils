@@ -14,6 +14,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
+import static hzt.PreConditions.require;
+
 /**
  * This class represents an immutable non-null list. When a list of this interface is created, all null values are filtered out
  *
@@ -203,6 +205,11 @@ public interface ListX<E> extends CollectionView<E>, Transformable<ListX<E>> {
     ListX<E> tailFrom(int fromIndex);
 
     ListX<E> subList(int fromIndex, int toIndex);
+
+    default ListX<E> skipLast(int n) {
+        require(n >= 0, () -> "Requested element count " + n + " is less than zero.");
+        return take(Math.max((size() - n), 0));
+    }
 
     default ListX<E> skipLastWhile(@NotNull Predicate<E> predicate) {
         if (isEmpty()) {

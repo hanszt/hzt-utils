@@ -1,10 +1,10 @@
 package hzt.collections;
 
+import hzt.sequences.Sequence;
 import hzt.test.Generator;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
-import java.util.Iterator;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -66,6 +66,20 @@ class ArrayXTest {
         final long index = array.binarySearchFrom(10, aLong -> aLong.compareTo(34L));
 
         assertEquals(-11, index);
+    }
+
+    @Test
+    void mapToArrayX() {
+        ListX<Long> list = Sequence.generate(0L, n -> ++n)
+                .map(Generator::fib)
+                .take(40)
+                .toListX();
+
+        list.forEach(It::println);
+
+        final var arrayX = list.toArrayX(Long[]::new);
+
+        assertTrue(arrayX.isNotEmpty());
     }
 
 }

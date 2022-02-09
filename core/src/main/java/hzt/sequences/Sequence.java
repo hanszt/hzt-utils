@@ -1,7 +1,6 @@
 package hzt.sequences;
 
 import hzt.PreConditions;
-import hzt.collections.ArrayX;
 import hzt.collections.IndexedValue;
 import hzt.collections.ListX;
 import hzt.collections.MutableListX;
@@ -18,6 +17,7 @@ import hzt.tuples.Triple;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -283,6 +283,53 @@ public interface Sequence<T> extends IterableX<T> {
         return EntrySequence.of(map(value -> Map.entry(keyMapper.apply(value), valueMapper.apply(value))));
     }
 
+    default <K, V> EntrySequence<K, V> asEntrySequence(Function<T, Pair<K, V>> toPairMapper) {
+        return EntrySequence.ofPairs(map(toPairMapper));
+    }
+
+    @Override
+    default <K> EntrySequence<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper) {
+        return EntrySequence.ofPairs(() -> associateByIterator(keyMapper));
+    }
+
+    @NotNull
+    private <K> Iterator<Pair<K, T>> associateByIterator(@NotNull Function<? super T, ? extends K> valueMapper) {
+        return new Iterator<>() {
+            final Iterator<T> iterator = iterator();
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+            @Override
+            public Pair<K, T> next() {
+                final var value = iterator.next();
+                final var key = valueMapper.apply(value);
+                return Pair.of(key, value);
+            }
+        };
+    }
+
+    default <V> EntrySequence<T, V> associateWith(@NotNull Function<? super T, ? extends V> valueMapper) {
+        return EntrySequence.ofPairs(() -> associateWithIterator(valueMapper));
+    }
+
+    @NotNull
+    private <V> Iterator<Pair<T, V>> associateWithIterator(@NotNull Function<? super T, ? extends V> valueMapper) {
+        return new Iterator<>() {
+            final Iterator<T> iterator = iterator();
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+            @Override
+            public Pair<T, V> next() {
+                final var key = iterator.next();
+                final var value = valueMapper.apply(key);
+                return Pair.of(key, value);
+            }
+        };
+    }
+
     @Override
     default IntRange asIntRange(@NotNull ToIntFunction<T> toIntMapper) {
         return IntRange.of(map(toIntMapper::applyAsInt));
@@ -300,10 +347,6 @@ public interface Sequence<T> extends IterableX<T> {
 
     default T[] toArray(IntFunction<T[]> generator) {
         return toArrayOf(It::self, generator);
-    }
-
-    default ArrayX<T> toArrayX(IntFunction<T[]> generator) {
-        return toArrayXOf(It::self, generator);
     }
 
     default <R> R transform(@NotNull Function<? super Sequence<T>, ? extends R> resultMapper) {

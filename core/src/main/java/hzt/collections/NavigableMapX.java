@@ -55,7 +55,7 @@ public interface NavigableMapX<K, V> extends NavigableMap<K, V>, MutableMapX<K, 
     MutableSetX<K> keySet();
 
     @Override
-    MutableListX<V> values();
+    MutableCollection<V> values();
 
     @Override
     MutableSetX<Entry<K, V>> entrySet();

@@ -42,7 +42,7 @@ class ListXTest {
 
         expected.add(LocalDate.MIN);
 
-        final var dates = museums.toMutableListOf(PaintingAuction::getDateOfOpening);
+        final var dates = museums.mapTo(MutableListX::of, PaintingAuction::getDateOfOpening);
 
         dates.add(LocalDate.MIN);
 
@@ -139,6 +139,15 @@ class ListXTest {
     }
 
     @Test
+    void testSkipLast() {
+        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+
+        final var integers = list.skipLast(2);
+
+        assertEquals(ListX.ofInts(1, 2, 3, 4, 5), integers);
+    }
+
+    @Test
     void testAlso() {
         final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
 
@@ -147,7 +156,7 @@ class ListXTest {
                 .collect(Collectors.toList());
 
         final CollectionView<LocalDate> dates = museums
-                .toMutableListOf(PaintingAuction::getDateOfOpening)
+                .mapTo(MutableListX::of, PaintingAuction::getDateOfOpening)
                 .also(System.out::println);
 
         It.println("dates = " + dates);

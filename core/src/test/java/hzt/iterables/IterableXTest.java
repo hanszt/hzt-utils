@@ -106,7 +106,14 @@ public class IterableXTest {
         final Map<Museum, Painting> expectedMap = museumList.stream()
                 .collect(toMap(It::self, Museum::getMostPopularPainting));
 
-        final MapX<Museum, Painting> actualMap = museumList.associateWith(Museum::getMostPopularPainting);
+        final Map<Museum, Painting> actualMap = museumList.asSequence()
+                .onEach(System.out::println)
+                .associateWith(Museum::getMostPopularPainting)
+                .onEach(System.out::println)
+                .toMutableMap();
+
+        System.out.println("expectedMap.size() = " + expectedMap.size());
+        System.out.println("actualMap.size() = " + actualMap.size());
 
         assertEquals(expectedMap, actualMap);
     }
@@ -120,7 +127,7 @@ public class IterableXTest {
                 .indices()
                 .windowed(3, IntRange::of)
                 .onEach(System.out::println)
-                .toListXOf(IntRange::sum);
+                .map(IntRange::sum).toListX();
 
         It.println("sumsOfThree = " + sumsOfThree);
 
@@ -134,7 +141,7 @@ public class IterableXTest {
         final ListX<Long> sumsOfThree = museums
                 .mapIndexed((index, value) -> index)
                 .windowed(3, IntRange::of)
-                .toListXOf(IntRange::sum);
+                .map(IntRange::sum);
 
         It.println("sumsOfThree = " + sumsOfThree);
 
@@ -331,25 +338,9 @@ public class IterableXTest {
         final ListX<Painter> actualPainters = museumList
                 .flatMap(Museum::getPaintings)
                 .filter(Painting::isInMuseum)
-                .toListXOf(Painting::painter);
+                .map(Painting::painter);
 
         assertIterableEquals(actualPainters, expectedPainters);
-    }
-
-    @Test
-    void testFilterAndMapToCollection() {
-        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
-
-        final Deque<LocalDate> expectedLocalDates = museumList.stream()
-                .filter(museum -> museum.getPaintings().size() > 3)
-                .map(Museum::getDateOfOpening)
-                .collect(toCollection(ArrayDeque::new));
-
-        final Deque<LocalDate> actualLocalDates = museumList
-                .filterBy(Museum::getPaintings, paintings -> paintings.size() > 3)
-                .mapTo(ArrayDeque::new, Museum::getDateOfOpening);
-
-        assertIterableEquals(expectedLocalDates, actualLocalDates);
     }
 
     @Test

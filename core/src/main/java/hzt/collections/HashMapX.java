@@ -96,7 +96,7 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
     }
 
     @Override
-    public @NotNull MutableListX<V> values() {
+    public @NotNull MutableCollection<V> values() {
         return MutableListX.of(map.values());
     }
 

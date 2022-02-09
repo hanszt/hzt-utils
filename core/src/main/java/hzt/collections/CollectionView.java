@@ -65,19 +65,15 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> map(@NotNull Function<? super E, ? extends R> mapper) {
-        return toMutableListOf(mapper);
+        return mapTo(MutableListX::empty, mapper);
     }
 
     default <R> ListX<R> mapIndexed(@NotNull BiFunction<Integer, ? super E, ? extends R> mapper) {
-        return mapIndexedToMutableList(mapper);
-    }
-
-    private  <R> MutableListX<R> mapIndexedToMutableList(@NotNull BiFunction<Integer, ? super E, ? extends R> mapper) {
-        return withIndex().mapTo(MutableListX::empty, indexedValue -> mapper.apply(indexedValue.index(), indexedValue.value()));
+        return mapIndexedTo(MutableListX::of, mapper);
     }
 
     default ListX<E> filter(@NotNull Predicate<E> predicate) {
-        return asSequence().filter(predicate).toListX();
+        return filterTo(MutableListX::of, predicate);
     }
 
     default <R> ListX<E> filterBy(@NotNull Function<? super E, ? extends R> selector, @NotNull Predicate<R> predicate) {
@@ -85,7 +81,7 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     default ListX<E> filterIndexed(@NotNull BiPredicate<Integer, E> predicate) {
-        return asSequence().filterIndexed(predicate).toListX();
+        return filterIndexedTo(MutableListX::of, predicate);
     }
 
     default ListX<E> filterNot(@NotNull Predicate<E> predicate) {
@@ -97,35 +93,15 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> flatMap(@NotNull Function<E, Iterable<R>> mapper) {
-        return flatMapToMutableListOf(mapper);
-    }
-
-    private <R, I extends Iterable<R>> MutableListX<R> flatMapToMutableListOf(@NotNull Function<? super E, ? extends I> mapper) {
-        final MutableListX<R> list = MutableListX.empty();
-        for (E t : this) {
-            final I c = mapper.apply(t);
-            if (c == null) {
-                continue;
-            }
-            for (R r : c) {
-                if (r != null) {
-                    list.add(r);
-                }
-            }
-        }
-        return list;
+        return flatMapTo(MutableListX::of, mapper);
     }
 
     default <R> ListX<R> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<R>> mapper) {
-        MutableListX<R> list = MutableListX.empty();
-        for (E t : this) {
-            mapper.accept(t, (Consumer<R>) list::add);
-        }
-        return list;
+        return mapMultiTo(MutableListX::of, mapper);
     }
 
     default <R> ListX<R> mapNotNull(@NotNull Function<? super E, ? extends R> mapper) {
-        return toListXOf(mapper);
+        return ListX.of(toListOf(mapper));
     }
 
     @Override
@@ -138,10 +114,11 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     default IntRange indices() {
-        return Sequence.of(() -> indexIterator(iterator())).asIntRange(It::asInt);
+        return Sequence.of(this::indexIterator).asIntRange(It::asInt);
     }
 
-    static <T> Iterator<Integer> indexIterator(Iterator<T> iterator) {
+    private @NotNull Iterator<Integer> indexIterator() {
+        Iterator<E> iterator = iterator();
         return new Iterator<>() {
             private int index = 0;
             @Override
@@ -238,6 +215,14 @@ public interface CollectionView<E> extends IterableX<E> {
 
     default <R> ListX<R> zipWithNext(BiFunction<E, E, R> function) {
         return zipWithNextToMutableListOf(function);
+    }
+
+    default <K> MapX<K, E> associateBy(@NotNull Function<? super E, ? extends K> keyMapper) {
+        return toMutableMap(keyMapper, It::self);
+    }
+
+    default <V> MapX<E, V> associateWith(@NotNull Function<? super E, ? extends V> valueMapper) {
+        return toMutableMap(It::self, valueMapper);
     }
 
     private <R> MutableListX<R> zipWithNextToMutableListOf(BiFunction<E, E, R> function) {

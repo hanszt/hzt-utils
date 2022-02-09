@@ -456,8 +456,23 @@ class SequenceTest {
 
         final var mapX = Sequence.of(map)
                 .mapValues(s -> StringX.of(s).first())
-                .filterByValues(Character::isLetter)
-                .filterByKeys(IntX::isEven)
+                .filterValues(Character::isLetter)
+                .filterKeys(IntX::isEven)
+                .toMapX();
+
+        assertEquals(2, mapX.size());
+    }
+
+    @Test
+    void testSequenceAssociateWith() {
+        final var listX = ListX.of(1, 2, 3, 4);
+
+        final var mapX = Sequence.of(listX)
+                .associateWith(String::valueOf)
+                .onEach(System.out::println)
+                .mapValues(s -> StringX.of(s).first())
+                .filterKeys(IntX::isEven)
+                .onEachKey(System.out::println)
                 .toMapX();
 
         assertEquals(2, mapX.size());
@@ -569,7 +584,7 @@ class SequenceTest {
 
         assertAll(
                 () -> assertEquals(100, triple.first().size()),
-                () -> assertEquals(Year.of(0), triple.second().toListXOf(Year::of).first()),
+                () -> assertEquals(Year.of(0), triple.second().map(Year::of).first()),
                 () -> assertEquals(49.5, triple.third().getAverage())
         );
     }

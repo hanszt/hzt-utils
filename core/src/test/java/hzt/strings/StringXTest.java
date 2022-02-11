@@ -33,7 +33,7 @@ class StringXTest {
         final ListX<Integer> characterCounts = StringX.of(hallo)
                 .group()
                 .values()
-                .map(MutableListX::size);
+                .map(ListX::size);
 
         It.println("hallo = " + characterCounts);
 

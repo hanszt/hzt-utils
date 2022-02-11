@@ -12,6 +12,7 @@ import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -19,12 +20,12 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -540,103 +541,11 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public Sequence<StringX> lines() {
-        return Sequence.of(linesAsStream().collect(Collectors.toList()));
+        return Sequence.of(linesAsStream().toList());
     }
 
     public <R> R transformString(Function<? super String, ? extends R> f) {
         return f.apply(string);
-    }
-
-    public StringX formatted(Object... args) {
-        return StringX.of(String.format(string, args));
-    }
-
-    public StringX repeat(int count) {
-        return StringX.of(string.repeat(count));
-    }
-
-    public byte[] getBytes(@NotNull String charsetName) throws UnsupportedEncodingException {
-        return string.getBytes(charsetName);
-    }
-
-    public boolean contentEquals(@NotNull StringBuffer sb) {
-        return string.contentEquals(sb);
-    }
-
-    public boolean equalsIgnoreCase(String anotherString) {
-        return string.equalsIgnoreCase(anotherString);
-    }
-
-    public int compareTo(@NotNull String anotherString) {
-        return string.compareTo(anotherString);
-    }
-
-    public int compareToIgnoreCase(@NotNull String str) {
-        return string.compareToIgnoreCase(str);
-    }
-
-    public boolean startsWith(@NotNull String prefix, int toffset) {
-        return string.startsWith(prefix, toffset);
-    }
-
-    public boolean startsWith(@NotNull String prefix) {
-        return string.startsWith(prefix);
-    }
-
-    public boolean endsWith(@NotNull String suffix) {
-        return string.endsWith(suffix);
-    }
-
-    public int indexOf(@NotNull String str) {
-        return string.indexOf(str);
-    }
-
-    public int indexOf(@NotNull String str, int fromIndex) {
-        return string.indexOf(str, fromIndex);
-    }
-
-    public int lastIndexOf(@NotNull String str) {
-        return string.lastIndexOf(str);
-    }
-
-    public int lastIndexOf(@NotNull String str, int fromIndex) {
-        return string.lastIndexOf(str, fromIndex);
-    }
-
-    public StringX concat(@NotNull String str) {
-        return StringX.of(string.concat(str));
-    }
-
-    public boolean matches(@NotNull String regex) {
-        return string.matches(regex);
-    }
-
-    public StringX replaceFirst(@NotNull String regex, @NotNull String replacement) {
-        return StringX.of(string.replaceFirst(regex, replacement));
-    }
-
-    public String replaceAll(@NotNull String regex, @NotNull String replacement) {
-        return string.replaceAll(regex, replacement);
-    }
-
-    public StringX strip() {
-        return StringX.of(string.strip());
-    }
-
-    public StringX stripLeading() {
-        return StringX.of(string.stripLeading());
-    }
-
-    public StringX stripTrailing() {
-        return StringX.of(string.stripTrailing());
-    }
-
-    public Stream<StringX> lines() {
-        return string.lines().map(StringX::of);
-    }
-
-    public Sequence<StringX> linesAsSequence() {
-        return Sequence.of(lines().toList());
     }
 
     public StringX indent(int n) {
@@ -649,10 +558,6 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     public StringX translateEscapes() {
         return StringX.of(string.translateEscapes());
-    }
-
-    public <R> R transformString(Function<? super String, ? extends R> f) {
-        return f.apply(string);
     }
 
     public StringX formatted(Object... args) {

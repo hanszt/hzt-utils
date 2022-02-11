@@ -2,14 +2,17 @@ package hzt.collections;
 
 import hzt.PreConditions;
 import hzt.iterables.IterableX;
+import hzt.iterables.IterableXHelper;
 import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
 import hzt.strings.StringX;
+import hzt.tuples.IndexedValue;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -137,17 +140,34 @@ public interface CollectionView<E> extends IterableX<E> {
         };
     }
 
-    default ListX<E> sorted() {
-        return IterableX.super.toSortedListX();
+    @Override
+    default ListX<E> shuffled() {
+        return sortedBy(s -> IterableXHelper.nextRandomDouble());
     }
 
+    @Override
+    default <R extends Comparable<R>> ListX<E> sorted() {
+        return ListX.of(IterableX.super.sorted());
+    }
+
+    @Override
     default <R extends Comparable<R>> ListX<E> sortedBy(@NotNull Function<? super E, ? extends R> selector) {
-        return toSortedListX(selector);
+        return MutableListX.of(IterableX.super.sortedBy(selector));
+    }
+
+    @Override
+    default <R extends Comparable<R>> ListX<E> sortedBy(Comparator<E> comparator) {
+        return ListX.of(IterableX.super.sortedBy(comparator));
+    }
+
+    @Override
+    default ListX<E> sortedDescending() {
+        return ListX.of(IterableX.super.sortedDescending());
     }
 
     @Override
     default <R extends Comparable<R>> ListX<E> sortedByDescending(@NotNull Function<? super E, ? extends R> selector) {
-        return toSortedListX(selector);
+        return ListX.of(IterableX.super.sortedByDescending(selector));
     }
 
     default IterableX<E> distinct() {
@@ -333,23 +353,5 @@ public interface CollectionView<E> extends IterableX<E> {
             }
         }
         return list;
-    }
-
-    @Override
-    @NotNull
-    default ListX<E> onEach(@NotNull Consumer<? super E> consumer) {
-        return onEach(It::self, consumer);
-    }
-
-    @Override
-    @NotNull
-    default <R> ListX<E> onEach(@NotNull Function<? super E, ? extends R> selector,
-                                    @NotNull Consumer<? super R> consumer) {
-        MutableListX<E> listX = MutableListX.empty();
-        for (E t : this) {
-            consumer.accept(t != null ? selector.apply(t) : null);
-            listX.add(t);
-        }
-        return listX;
     }
 }

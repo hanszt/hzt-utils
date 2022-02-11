@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
@@ -246,4 +247,14 @@ public interface ListX<E> extends CollectionView<E>, Transformable<ListX<E>> {
         return this;
     }
 
+    @Override
+    default @NotNull ListX<E> onEach(@NotNull Consumer<? super E> consumer) {
+        return ListX.of(CollectionView.super.onEach(consumer));
+    }
+
+    @Override
+    @NotNull
+    default <R> ListX<E> onEach(@NotNull Function<? super E, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
+        return ListX.of(CollectionView.super.onEach(selector, consumer));
+    }
 }

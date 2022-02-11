@@ -1,22 +1,23 @@
 package hzt.sequences;
 
 import hzt.PreConditions;
-import hzt.collections.IndexedValue;
 import hzt.collections.ListX;
-import hzt.collections.MutableListX;
 import hzt.function.QuadFunction;
 import hzt.function.TriFunction;
 import hzt.iterables.IterableX;
+import hzt.iterables.IterableXHelper;
 import hzt.iterators.ArrayIterator;
 import hzt.ranges.DoubleRange;
 import hzt.ranges.IntRange;
 import hzt.ranges.LongRange;
 import hzt.strings.StringX;
+import hzt.tuples.IndexedValue;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -44,7 +45,6 @@ import java.util.stream.Stream;
  *
  * @param <T> the type of the items in the Sequence
  */
-@SuppressWarnings("unused")
 @FunctionalInterface
 public interface Sequence<T> extends IterableX<T> {
 
@@ -70,7 +70,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     static <T> Sequence<T> ofNullable(T value) {
-        return value == null ? new EmptySequence<>() : Sequence.of(value);
+        return value != null ? Sequence.of(value) : new EmptySequence<>();
     }
 
     static <T> Sequence<T> generate(T seedValue, UnaryOperator<T> nextFunction) {
@@ -123,11 +123,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     default <R> Sequence<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
-        MutableListX<R> list = MutableListX.empty();
-        for (T t : this) {
-            mapper.accept(t, (Consumer<R>) list::add);
-        }
-        return list.asSequence();
+        return new MultiMappingSequence<>(this, mapper);
     }
 
     @Override
@@ -271,12 +267,34 @@ public interface Sequence<T> extends IterableX<T> {
         }
     }
 
-    default <R extends Comparable<R>> Sequence<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
-        return toSortedListX(selector).asSequence();
+    @Override
+    default <R extends Comparable<R>> Sequence<T> sorted() {
+        return Sequence.of(IterableX.super.sorted());
     }
 
-    default Sequence<T> sorted() {
-        return IterableX.super.toSortedListX().asSequence();
+    @Override
+    default <R extends Comparable<R>> Sequence<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
+        return Sequence.of(IterableX.super.sortedBy(selector));
+    }
+
+    @Override
+    default <R extends Comparable<R>> Sequence<T> sortedBy(Comparator<T> comparator) {
+        return Sequence.of(IterableX.super.sortedBy(comparator));
+    }
+
+    @Override
+    default <R extends Comparable<R>> Sequence<T> sortedDescending() {
+        return Sequence.of(IterableX.super.sortedDescending());
+    }
+
+    @Override
+    default <R extends Comparable<R>> Sequence<T> sortedByDescending(@NotNull Function<? super T, ? extends R> selector) {
+        return Sequence.of(IterableX.super.sortedByDescending(selector));
+    }
+
+    @Override
+    default Sequence<T> shuffled() {
+        return sortedBy(s -> IterableXHelper.nextRandomDouble());
     }
 
     default <K, V> EntrySequence<K, V> asEntrySequence(Function<T, K> keyMapper, Function<T, V> valueMapper) {

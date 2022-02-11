@@ -1,6 +1,5 @@
 package hzt.collections;
 
-import hzt.utils.It;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
@@ -114,16 +113,6 @@ public interface MutableMapX<K, V> extends Map<K, V>, MapX<K, V>, Transformable<
 
     @Override
     int size();
-
-    @Override
-    default <K1> MutableMapX<K1, V> mapKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
-        return map(keyMapper, It::self);
-    }
-
-    @Override
-    default <V1> MutableMapX<K, V1> mapValues(@NotNull Function<V, V1> valueMapper) {
-        return map(It::self, valueMapper);
-    }
 
     @Override
     default V getOrDefault(Object key, V defaultValue) {

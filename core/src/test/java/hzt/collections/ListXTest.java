@@ -1,5 +1,8 @@
 package hzt.collections;
 
+import hzt.numbers.IntX;
+import hzt.ranges.DoubleRange;
+import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
@@ -12,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -24,11 +28,13 @@ class ListXTest {
 
     @Test
     void testGetElement() {
-        final var strings = ListX.of("hallo", "asffasf", "string", "test");
+        final var words = ListX.of("hallo", "asffasf", "string", "test");
+
+        final var list2 = words.stream().map(String::length).collect(Collectors.toList());
 
         assertAll(
-                () -> assertEquals("test", strings.get(3)),
-                () -> assertEquals(4, strings.size())
+                () -> assertEquals("test", words.get(3)),
+                () -> assertEquals(4, words.size())
         );
     }
 
@@ -177,7 +183,7 @@ class ListXTest {
                 .when(ListX::isNotEmpty, System.out::println)
                 .when(list -> list.size() > 3, System.out::println)
                 .takeIf(ListX::isNotEmpty)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         It.println("dates = " + dates);
 

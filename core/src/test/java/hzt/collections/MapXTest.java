@@ -3,6 +3,7 @@ package hzt.collections;
 import hzt.ranges.IntRange;
 import hzt.sequences.EntrySequence;
 import hzt.strings.StringX;
+import hzt.tuples.IndexedValue;
 import hzt.tuples.Pair;
 import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;

@@ -97,9 +97,25 @@ public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterab
         return MutableListX.of(this).mapNotNull(e -> mapper.apply(e.getKey(), e.getValue()));
     }
 
-    <K1> MapX<K1, V> mapKeys(@NotNull Function<? super K, ? extends K1> keyMapper);
+    @Override
+    default <K1> MapX<K1, V> mapKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
+        return map(keyMapper, It::self);
+    }
 
-    <V1> MapX<K, V1> mapValues(@NotNull Function<V, V1> valueMapper);
+    @Override
+    default <K1> MapX<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, K1> toKeyMapper) {
+        return asSequence().mapKeys(toKeyMapper).toMapX();
+    }
+
+    @Override
+    default <V1> MapX<K, V1> mapValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
+        return map(It::self, valueMapper);
+    }
+
+    @Override
+    default <V1> MapX<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, V1> toValueMapper) {
+        return asSequence().mapValues(toValueMapper).toMutableMap();
+    }
 
     default MapX<K, V> filterKeys(@NotNull Predicate<K> predicate) {
         return asSequence().filterKeys(predicate).toMapX();
@@ -120,8 +136,14 @@ public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterab
     }
 
     @Override
+    @NotNull
+    default MapX<K, V> onEach(@NotNull Consumer<? super Map.Entry<K, V>> consumer) {
+        return MapX.of(onEach(It::self, consumer));
+    }
+
+    @Override
     default MapX<K, V> onEach(@NotNull BiConsumer<? super K, ? super V> biConsumer) {
-        throw new UnsupportedOperationException();
+        return MapX.of(CollectionView.super.onEach(c -> biConsumer.accept(c.getKey(), c.getValue())));
     }
 
     default <K1, V1> MapX<K1, V1> inverted(Function<K, V1> toValueMapper, Function<V, K1> toKeyMapper) {
@@ -147,17 +169,13 @@ public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterab
 
     MutableSetX<K> keySet();
 
-    MutableCollection<V> values();
+    MutableListX<V> values();
 
     MutableSetX<Map.Entry<K, V>> entrySet();
 
     default V getOrDefault(Object key, V defaultValue) {
         V value = get(key);
         return (value != null || containsKey(key)) ? value : defaultValue;
-    }
-
-    default MutableMapX<K, V> toMutableMap() {
-        return MutableMapX.ofEntries(this);
     }
 
     default void forEach(@NotNull BiConsumer<? super K, ? super V> action) {

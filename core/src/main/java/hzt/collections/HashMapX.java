@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
     }
 
     HashMapX(Iterable<Entry<K, V>> iterable) {
-        map = new HashMap<>();
+        map = new LinkedHashMap<>();
         for (Map.Entry<K, V> entry : iterable) {
             map.put(entry.getKey(), entry.getValue());
         }
@@ -96,7 +97,7 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
     }
 
     @Override
-    public @NotNull MutableCollection<V> values() {
+    public @NotNull MutableListX<V> values() {
         return MutableListX.of(map.values());
     }
 

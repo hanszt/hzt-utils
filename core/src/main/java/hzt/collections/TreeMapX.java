@@ -139,7 +139,7 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements NavigableMapX<K, 
     }
 
     @Override
-    public @NotNull MutableCollection<V> values() {
+    public @NotNull MutableListX<V> values() {
         return MutableListX.of(map.values());
     }
 

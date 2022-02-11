@@ -13,7 +13,7 @@ class NumberRangeTest {
     void testLongRangeToArray() {
         final var longs = LongRange.of(0, 1000).toArrayX();
 
-        final var average = longs.toBigDecimalAverage(BigDecimalX::of);
+        final var average = longs.toBigDecimalXAverage(BigDecimalX::of);
 
         System.out.println("average = " + average);
 

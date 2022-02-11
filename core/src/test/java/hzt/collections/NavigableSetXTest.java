@@ -36,7 +36,7 @@ class NavigableSetXTest {
                         .<Consumer<Integer>>self(It::println)
                         .andThen(list::add))
                 .filterBy(String::length, length -> length > 14)
-                .averageOfInts(String::length);
+                .averageOf(String::length);
 
         It.println("average = " + average);
 

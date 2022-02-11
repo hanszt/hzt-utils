@@ -8,16 +8,16 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EntrySequenceTest {
 
     @Test
-    void testEntrySequence() {
+    void testfilterValuesAndMapValues() {
         final var mapX = MapX.of("1", 1, "2", 2, "3", 3, "4", 4);
 
         final var resultMap = mapX.asSequence()
@@ -27,7 +27,22 @@ class EntrySequenceTest {
 
         assertAll(
                 () -> assertEquals(3, resultMap.size()),
-                () -> assertFalse(resultMap.containsKey(LocalDate.of(2000, Month.JANUARY, 4)))
+                () -> assertEquals(Set.of("1", "2", "3"), resultMap.keySet())
+        );
+    }
+
+    @Test
+    void testMapValuesBothByKeyAndValue() {
+        final var map = MapX.of("1", 1, "2", 2, "3", 3, "4", 4);
+
+        final var resultMap = map.asSequence()
+                .filterValues(value -> value <= 3)
+                .mapValues((month, day) -> LocalDate.of(2000, Month.of(Integer.parseInt(month)), day))
+                .toMapX();
+
+        assertAll(
+                () -> assertEquals(3, resultMap.size()),
+                () -> assertTrue(resultMap.containsValue(LocalDate.of(2000, Month.MARCH, 3)))
         );
     }
 

@@ -1,5 +1,10 @@
 package hzt.iterables;
 
+import hzt.collections.ListX;
+import hzt.collections.MapX;
+import hzt.collections.MutableMapX;
+import hzt.collections.NavigableMapX;
+import hzt.collections.SetX;
 import hzt.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +18,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
+public interface EntryIterable<K, V> extends IterableX<Map.Entry<K, V>> {
 
     <R> IterableX<R> map(@NotNull BiFunction<K, V, R> biFunction);
 
@@ -26,7 +31,11 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
 
     <K1> EntryIterable<K1, V> mapKeys(@NotNull Function<? super K, ? extends K1> keyMapper);
 
-    <V1> EntryIterable<K, V1> mapValues(@NotNull Function<V, V1> valueMapper);
+    <K1> EntryIterable<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, K1> toKeyMapper);
+
+    <V1> EntryIterable<K, V1> mapValues(@NotNull Function<? super V, ? extends V1> valueMapper);
+
+    <V1> EntryIterable<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, V1> toValueMapper);
 
     EntryIterable<K, V> filterKeys(@NotNull Predicate<K> predicate);
 
@@ -96,5 +105,29 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
                 return iterator.next().getKey();
             }
         };
+    }
+
+    default MapX<K, V> toMapX() {
+        return MutableMapX.ofEntries(this);
+    }
+
+    default MutableMapX<K, V> toMutableMap() {
+        return MutableMapX.ofEntries(this);
+    }
+
+    default Map<K, V> toMap() {
+        return Map.copyOf(MutableMapX.ofEntries(this));
+    }
+
+    default <R extends Comparable<R>> NavigableMapX<K, V> toSortedMapX(Function<K, R> selector) {
+        return NavigableMapX.of(this, selector);
+    }
+
+    default <R> ListX<R> toListXOf(BiFunction<K, V, R> transform) {
+        return map(e -> transform.apply(e.getKey(), e.getValue())).toListX();
+    }
+
+    default <R> SetX<R> toSetXOf(BiFunction<K, V, R> transform) {
+        return toSetXOf(e -> transform.apply(e.getKey(), e.getValue()));
     }
 }

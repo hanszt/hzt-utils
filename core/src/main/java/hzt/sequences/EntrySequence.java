@@ -1,9 +1,5 @@
 package hzt.sequences;
 
-import hzt.collections.ListX;
-import hzt.collections.MapX;
-import hzt.collections.MutableMapX;
-import hzt.collections.SetX;
 import hzt.iterables.EntryIterable;
 import hzt.tuples.Pair;
 import hzt.utils.It;
@@ -29,7 +25,6 @@ import java.util.function.Predicate;
  * @param <K> the key type of the items in the Sequence
  * @param <V> the value type of the items in the Sequence
  */
-@SuppressWarnings("unused")
 public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIterable<K, V> {
 
     static <K, V> EntrySequence<K, V> of(Iterable<Map.Entry<K, V>> iterable) {
@@ -87,12 +82,28 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return EntrySequence.of(map(e -> Map.entry(keyMapper.apply(e.getKey()), e.getValue())));
     }
 
-    default <V1> EntrySequence<K, V1> mapValues(@NotNull Function<V, V1> valueMapper) {
+    @Override
+    default <K1> EntryIterable<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, K1> toKeyMapper) {
+        return EntrySequence.of(map(e -> Map.entry(toKeyMapper.apply(e.getKey(), e.getValue()), e.getValue())));
+    }
+
+    default <V1> EntrySequence<K, V1> mapValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
         return EntrySequence.of(map(e -> Map.entry(e.getKey(), valueMapper.apply(e.getValue()))));
+    }
+
+    @Override
+    default <V1> EntryIterable<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, V1> toValueMapper) {
+        return EntrySequence.of(map(e -> Map.entry(e.getKey(), toValueMapper.apply(e.getKey(), e.getValue()))));
     }
 
     default EntrySequence<K, V> filter(@NotNull BiPredicate<K, V> biPredicate) {
         return EntrySequence.of(Sequence.super.filter(e -> biPredicate.test(e.getKey(), e.getValue())));
+    }
+
+    @Override
+    default <R> EntrySequence<K, V> filterBy(@NotNull Function<? super Map.Entry<K, V>, ? extends R> selector,
+                                             @NotNull Predicate<R> predicate) {
+        return EntrySequence.of(Sequence.super.filterBy(selector, predicate));
     }
 
     default EntrySequence<K, V> filterKeys(@NotNull Predicate<K> predicate) {
@@ -157,21 +168,5 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     @Override
     default EntrySequence<K, V> take(long n) {
         return EntrySequence.of(Sequence.super.take(n));
-    }
-
-    default MutableMapX<K, V> toMutableMap() {
-        return MutableMapX.ofEntries(this);
-    }
-
-    default <R> ListX<R> toListXOf(BiFunction<K, V, R> transform) {
-        return map(e -> transform.apply(e.getKey(), e.getValue())).toListX();
-    }
-
-    default <R> SetX<R> toSetXOf(BiFunction<K, V, R> transform) {
-        return toSetXOf(e -> transform.apply(e.getKey(), e.getValue()));
-    }
-
-    default MapX<K, V> toMapX() {
-        return MutableMapX.ofEntries(this);
     }
 }

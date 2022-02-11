@@ -84,5 +84,4 @@ public interface NavigableMapX<K, V> extends NavigableMap<K, V>, MutableMapX<K, 
 
     @Override
     Entry<K, V> last();
-
 }

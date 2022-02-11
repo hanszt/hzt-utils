@@ -28,11 +28,11 @@ public interface ArrayX<E> extends CollectionView<E>, Transformable<ArrayX<E>> {
     @Override
     int size();
 
-    default  int binarySearchTo(int toIndex, ToIntFunction<E> comparison) {
+    default  int binarySearch(ToIntFunction<E> comparison, int toIndex) {
         return binarySearch(0, toIndex, comparison);
     }
 
-    default  int binarySearchFrom(int fromIndex, ToIntFunction<E> comparison) {
+    default  int binarySearch(int fromIndex, ToIntFunction<E> comparison) {
         return binarySearch(fromIndex, size(), comparison);
     }
 

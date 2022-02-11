@@ -1,5 +1,9 @@
 package hzt.collections;
 
+import hzt.numbers.IntX;
+import hzt.ranges.DoubleRange;
+import hzt.ranges.IntRange;
+import hzt.sequences.Sequence;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
 import hzt.utils.It;
@@ -11,7 +15,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -22,15 +27,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ListXTest {
 
     @Test
-    void testMutableListX() {
+    void testGetElement() {
+        final var words = ListX.of("hallo", "asffasf", "string", "test");
+
+        final var list2 = words.stream().map(String::length).collect(Collectors.toList());
+
+        assertAll(
+                () -> assertEquals("test", words.get(3)),
+                () -> assertEquals(4, words.size())
+        );
+    }
+
+    @Test
+    void testToMutableListX() {
         final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
 
         final List<LocalDate> expected = museums.stream()
                 .map(PaintingAuction::getDateOfOpening)
-                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        final ListX<LocalDate> dates = museums.map(PaintingAuction::getDateOfOpening).toListX();
+        expected.add(LocalDate.MIN);
+
+        final var dates = museums.mapTo(MutableListX::of, PaintingAuction::getDateOfOpening);
+
+        dates.add(LocalDate.MIN);
 
         assertEquals(expected, dates);
     }
@@ -40,10 +60,12 @@ class ListXTest {
         final List<Museum> museumList = TestSampleGenerator.getMuseumListContainingNulls();
 
         final List<Museum> expected = museumList.stream()
-                .takeWhile(museum -> museum.getPaintings().size() < 3).collect(Collectors.toList());
+                .takeWhile(museum -> museum.getPaintings().size() < 3)
+                .collect(Collectors.toList());
 
-        final MutableListX<Museum> actual = ListX.of(museumList)
-                .takeToListXWhile(museum -> museum.getPaintings().size() < 3).toMutableList();
+        final MutableListX<Museum> actual = Sequence.of(museumList)
+                .takeWhile(museum -> museum.getPaintings().size() < 3)
+                .toMutableList();
 
         It.println("actual = " + actual);
 
@@ -101,5 +123,70 @@ class ListXTest {
             list.add(String.valueOf(i));
         }
         list.add(1, "Hallo");
+    }
+
+    @Test
+    void testListWithAll() {
+        final MutableListX<PaintingAuction> auctions = Generator.createAuctions().toMutableList();
+
+        final List<LocalDate> expected = auctions.stream()
+                .map(PaintingAuction::getDateOfOpening)
+                .collect(Collectors.toList());
+        expected.add(LocalDate.MIN);
+        expected.add(LocalDate.MAX);
+
+        final ListX<LocalDate> dates = auctions
+                .map(PaintingAuction::getDateOfOpening)
+                .plus(ListX.of(LocalDate.MIN, LocalDate.MAX));
+
+        It.println("dates = " + dates);
+
+        assertEquals(expected, dates);
+    }
+
+    @Test
+    void testSkipLast() {
+        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+
+        final var integers = list.skipLast(2);
+
+        assertEquals(ListX.ofInts(1, 2, 3, 4, 5), integers);
+    }
+
+    @Test
+    void testAlso() {
+        final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
+
+        final List<LocalDate> expected = museums.stream()
+                .map(PaintingAuction::getDateOfOpening)
+                .collect(Collectors.toList());
+
+        final CollectionView<LocalDate> dates = museums
+                .mapTo(MutableListX::of, PaintingAuction::getDateOfOpening)
+                .also(System.out::println);
+
+        It.println("dates = " + dates);
+
+        assertEquals(expected, dates);
+    }
+
+    @Test
+    void testWhen() {
+        final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
+
+        final List<LocalDate> expected = museums.stream()
+                .map(PaintingAuction::getDateOfOpening)
+                .collect(Collectors.toList());
+
+        final ListX<LocalDate> dates = museums
+                .map(PaintingAuction::getDateOfOpening)
+                .when(ListX::isNotEmpty, System.out::println)
+                .when(list -> list.size() > 3, System.out::println)
+                .takeIf(ListX::isNotEmpty)
+                .orElseThrow();
+
+        It.println("dates = " + dates);
+
+        assertEquals(expected, dates);
     }
 }

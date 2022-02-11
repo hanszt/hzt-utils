@@ -1,5 +1,6 @@
 package hzt.iterators;
 
+import hzt.numbers.IntX;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +35,7 @@ class IteratorTests {
                 TakeWhileIterator.of(
                         FilteringIterator.of(
                                 GeneratorIterator.of(() -> "|", s -> s + "\\"),
-                                s -> s.length() % 2 == 0),
+                                s -> IntX.of(s.length()).isEven()),
                         s -> s.length() < 100);
 
         Iterable<String> strings = () -> iterator;

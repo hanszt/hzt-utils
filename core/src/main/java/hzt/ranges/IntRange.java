@@ -1,5 +1,6 @@
 package hzt.ranges;
 
+import hzt.collections.ArrayX;
 import hzt.numbers.IntX;
 import hzt.sequences.Sequence;
 import hzt.statistics.IntStatistics;
@@ -7,13 +8,14 @@ import hzt.utils.It;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
+import java.util.function.Predicate;
 
+@FunctionalInterface
 public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Transformable<IntRange> {
 
     static IntRange empty() {
@@ -21,18 +23,7 @@ public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Trans
     }
 
     static IntRange of(Iterable<Integer> integers) {
-        return new IntRange() {
-            @NotNull
-            @Override
-            public Iterator<Integer> iterator() {
-                return integers.iterator();
-            }
-
-            @Override
-            public @NotNull IntRange get() {
-                return this;
-            }
-        };
+        return integers::iterator;
     }
 
     static IntRange of (int start, int end) {
@@ -61,7 +52,7 @@ public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Trans
     }
 
     default IntRange step(int step) {
-        return IntRange.of(filter(i -> i % step == 0));
+        return IntRange.of(filter(IntX.multipleOf(step)));
     }
 
     default int random() {
@@ -101,7 +92,7 @@ public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Trans
     }
 
     default double average(IntPredicate predicate) {
-        return filter(predicate::test).averageOfLongs(It::asLong);
+        return filter(predicate::test).averageOf(It::asLong);
     }
 
     default @NotNull Long sum() {
@@ -125,12 +116,38 @@ public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Trans
     }
 
     @Override
+    default @NotNull IntRange filter(@NotNull Predicate<Integer> predicate) {
+        return IntRange.of(Sequence.super.filter(predicate));
+    }
+
+    @Override
     @NotNull
     default IntRange onEach(@NotNull Consumer<? super Integer> consumer) {
         return IntRange.of(Sequence.super.onEach(consumer));
     }
 
+    @Override
+    default @NotNull ArrayX<Integer> toArrayX() {
+        return toArrayX(Integer[]::new);
+    }
+
+    @Override
+    @NotNull
+    default Integer[] toArray() {
+        return toArray(Integer[]::new);
+    }
+
+    default int[] toIntArray() {
+        return stream().mapToInt(It::asInt).toArray();
+    }
+
     default IntStatistics stats(IntPredicate predicate) {
         return filter(predicate::test).statsOfInts(It::asInt);
+    }
+
+    @Override
+    @NotNull
+    default IntRange get() {
+        return this;
     }
 }

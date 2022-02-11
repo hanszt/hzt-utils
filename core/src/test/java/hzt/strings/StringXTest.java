@@ -32,7 +32,8 @@ class StringXTest {
 
         final ListX<Integer> characterCounts = StringX.of(hallo)
                 .group()
-                .valuesToListXOf(List::size);
+                .values()
+                .map(MutableListX::size);
 
         It.println("hallo = " + characterCounts);
 
@@ -54,7 +55,7 @@ class StringXTest {
 
     @Test
     void testStringXToCharArrayX() {
-        final var characters = StringX.of("Hello").toCharacterArrayX();
+        final var characters = StringX.of("Hello").toArrayX();
 
         assertAll(
                 () -> assertEquals('H', characters.first()),
@@ -74,14 +75,35 @@ class StringXTest {
         final var characters = List.of('H', 'e', 'y', '!', '1', '2', '3');
 
         final var actual = StringX.of(characters)
-                .concat("Hallo")
+                .concat("\nHallo")
                 .replaceFirst("lo", "asd")
-                .linesAsSequence()
+                .lines()
                 .toTwo(Sequence::count, s -> s.joinToString(""));
 
         assertAll(
                 () -> assertEquals("Hey!123Halasd", actual.second()),
-                () -> assertEquals(1, actual.first()));
+                () -> assertEquals(2, actual.first()));
+    }
+
+    @Test
+    void testIfEmpty() {
+        assertEquals("Test", StringX.of("").ifEmpty(() -> "Test").toString());
+    }
+
+    @Test
+    void testIfBlank() {
+        assertEquals("Test", StringX.of("  ").ifBlank(() -> "Test").toString());
+    }
+
+    @Test
+    void flatMapToCharArrayAndFromCharArrayToStringX() {
+        final var characters = Sequence.of("hallo", "Wat is dat?", "Een test")
+                .joinToStringX("")
+                .toArray();
+
+        final var stringX = StringX.of("", characters);
+
+        assertEquals("halloWat is dat?Een test", stringX.toString());
     }
 
     @ParameterizedTest

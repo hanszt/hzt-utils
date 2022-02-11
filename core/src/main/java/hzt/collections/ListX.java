@@ -1,8 +1,7 @@
 package hzt.collections;
 
 import hzt.PreConditions;
-import hzt.utils.It;
-import hzt.strings.StringX;
+import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -10,12 +9,13 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
+
+import static hzt.PreConditions.require;
 
 /**
  * This class represents an immutable non-null list. When a list of this interface is created, all null values are filtered out
@@ -23,7 +23,7 @@ import java.util.function.ToIntFunction;
  * @param <E> the type of the elements
  * @author Hans Zuidervaart
  */
-public interface ListX<E> extends CollectionView<E> {
+public interface ListX<E> extends CollectionView<E>, Transformable<ListX<E>> {
 
     static <E> ListX<E> empty() {
         return new ArrayListX<>();
@@ -84,90 +84,12 @@ public interface ListX<E> extends CollectionView<E> {
         return list;
     }
 
-    @Override
-    default <R> ListX<R> castIfInstanceOf(@NotNull Class<R> aClass) {
-        return castToMutableListIfInstanceOf(aClass);
-    }
-
-    @Override
-    default <R> ListX<R> mapFiltering(@NotNull Function<? super E, ? extends R> mapper,
-                                      @NotNull Predicate<R> resultFilter) {
-        return mapFiltering(It::noFilter, mapper, resultFilter);
-    }
-
-    @Override
-    default <R> ListX<R> filterMapping(@NotNull Predicate<? super E> predicate,
-                                       @NotNull Function<? super E, ? extends R> mapper) {
-        return mapFiltering(predicate, mapper, It::noFilter);
-    }
-
-    @Override
-    default <R> ListX<R> mapFiltering(@NotNull Predicate<? super E> predicate,
-                                      @NotNull Function<? super E, ? extends R> mapper,
-                                      @NotNull Predicate<R> resultFilter) {
-        return mapFilteringToCollection(MutableListX::of, predicate, mapper, resultFilter);
-    }
-
-    default MutableListX<E> toMutableList() {
-        return MutableListX.of(this);
-    }
-
-    default List<E> toList() {
-        return toListOf(It::self);
-    }
-
-    default MutableSetX<E> toMutableSet() {
-        return toMutableSetOf(It::self);
-    }
-
-    default SetX<E> toSetX() {
-        return toMutableSetNotNullOf(It::self);
-    }
-
-    default Set<E> toSet() {
-        return toMutableSetNotNullOf(It::self);
-    }
-
-    @Override
-    default ListX<E> plus(@NotNull Iterable<E> values) {
-        return toMutableListPlus(values);
-    }
-
-    @Override
-    default ListX<E> plus(E... value) {
-        return toMutableListPlus(value);
-    }
-
-    @Override
-    default <R> ListX<R> map(@NotNull Function<? super E, ? extends R> mapper) {
-        return toMutableListOf(mapper);
-    }
-
-    default ListX<StringX> toStringXList(Function<E, CharSequence> mapper) {
-        return map(s -> StringX.of(mapper.apply(s)));
-    }
-
-    @Override
-    default ListX<E> filter(@NotNull Predicate<E> predicate) {
-        return filterToMutableList(predicate);
-    }
-
-    @Override
-    default ListX<E> filterNot(@NotNull Predicate<E> predicate) {
-        return filterToListX(predicate.negate());
-    }
-
-    @Override
-    default ListX<E> takeWhile(@NotNull Predicate<E> predicate) {
-        return takeToListXWhile(predicate);
-    }
-
     static <E> ListX<E> copyOf(Iterable<E> iterable) {
         return new ArrayListX<>(iterable);
     }
 
     default <R> R foldRight(@NotNull R initial, @NotNull BiFunction<E, R, R> operation) {
-        ListX<E> list = getListOrElseCompute();
+        ListX<E> list = this;
         R accumulator = initial;
         if (list.isNotEmpty()) {
             final ListIterator<E> listIterator = list.listIterator(list.size());
@@ -178,12 +100,12 @@ public interface ListX<E> extends CollectionView<E> {
         return accumulator;
     }
 
-    default MutableListX<E> takeLastToMutableList(int n) {
+    private MutableListX<E> takeLastToMutableList(int n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
             return MutableListX.empty();
         }
-        MutableListX<E> list = getListOrElseCompute();
+        MutableListX<E> list = MutableListX.of(this);
         int size = list.size();
         if (n >= size) {
             return list;
@@ -200,11 +122,6 @@ public interface ListX<E> extends CollectionView<E> {
 
     default ListX<E> takeLast(int n) {
         return takeLastToMutableList(n);
-    }
-
-    @Override
-    default <R> ListX<E> distinctBy(@NotNull Function<E, ? extends R> selector) {
-        return distinctToMutableListBy(selector);
     }
 
     Optional<E> findRandom();
@@ -289,4 +206,55 @@ public interface ListX<E> extends CollectionView<E> {
     ListX<E> tailFrom(int fromIndex);
 
     ListX<E> subList(int fromIndex, int toIndex);
+
+    default ListX<E> skipLast(int n) {
+        require(n >= 0, () -> "Requested element count " + n + " is less than zero.");
+        return take(Math.max((size() - n), 0));
+    }
+
+    default ListX<E> skipLastWhile(@NotNull Predicate<E> predicate) {
+        if (isEmpty()) {
+            return MutableListX.empty();
+        }
+        ListIterator<E> iterator = listIterator(size());
+        while (iterator.hasPrevious()) {
+            if (!predicate.test(iterator.previous())) {
+                return take(iterator.nextIndex() + 1L);
+            }
+        }
+        return MutableListX.empty();
+    }
+
+    default ListX<E> takeLastWhile(@NotNull Predicate<E> predicate) {
+        if (isEmpty()) {
+            return MutableListX.empty();
+        }
+        ListIterator<E> iterator = listIterator(size());
+        while (iterator.hasPrevious()) {
+            if (!predicate.test(iterator.previous())) {
+                iterator.next();
+                int expectedSize = size() - iterator.nextIndex();
+                if (expectedSize == 0) {
+                    return MutableListX.empty();
+                }
+                MutableListX<E> result = MutableListX.withInitCapacity(expectedSize);
+                while (iterator.hasNext()) {
+                    result.add(iterator.next());
+                }
+                return result;
+            }
+        }
+        return this;
+    }
+
+    @Override
+    default @NotNull ListX<E> onEach(@NotNull Consumer<? super E> consumer) {
+        return ListX.of(CollectionView.super.onEach(consumer));
+    }
+
+    @Override
+    @NotNull
+    default <R> ListX<E> onEach(@NotNull Function<? super E, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
+        return ListX.of(CollectionView.super.onEach(selector, consumer));
+    }
 }

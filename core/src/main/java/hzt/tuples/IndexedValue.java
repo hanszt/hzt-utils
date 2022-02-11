@@ -1,4 +1,4 @@
-package hzt.collections;
+package hzt.tuples;
 
 import java.util.Objects;
 

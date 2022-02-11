@@ -1,5 +1,6 @@
 package hzt.ranges;
 
+import hzt.collections.ArrayX;
 import hzt.numbers.DoubleX;
 import hzt.sequences.Sequence;
 import hzt.statistics.DoubleStatistics;
@@ -7,10 +8,11 @@ import hzt.utils.It;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
+import java.util.function.Predicate;
 
+@FunctionalInterface
 public interface DoubleRange extends NumberRange<Double>, Sequence<Double>, Transformable<DoubleRange> {
 
     static DoubleRange empty() {
@@ -18,19 +20,7 @@ public interface DoubleRange extends NumberRange<Double>, Sequence<Double>, Tran
     }
 
     static DoubleRange of(Iterable<Double> doubleIterable) {
-        return new DoubleRange() {
-            @NotNull
-            @Override
-            public Iterator<Double> iterator() {
-                return doubleIterable.iterator();
-            }
-
-            @NotNull
-            @Override
-            public DoubleRange get() {
-                return this;
-            }
-        };
+        return doubleIterable::iterator;
     }
 
     static DoubleRange of(double start, double end) {
@@ -80,7 +70,7 @@ public interface DoubleRange extends NumberRange<Double>, Sequence<Double>, Tran
     }
 
     default double average(DoublePredicate predicate) {
-        return filter(predicate::test).averageOfDoubles(It::asDouble);
+        return filter(predicate::test).averageOf(It::asDouble);
     }
 
     default @NotNull Double sum() {
@@ -104,12 +94,38 @@ public interface DoubleRange extends NumberRange<Double>, Sequence<Double>, Tran
     }
 
     @Override
+    default @NotNull DoubleRange filter(@NotNull Predicate<Double> predicate) {
+        return DoubleRange.of(Sequence.super.filter(predicate));
+    }
+
+    @Override
     @NotNull
     default DoubleRange onEach(@NotNull Consumer<? super Double> consumer) {
         return DoubleRange.of(Sequence.super.onEach(consumer));
     }
 
+    @Override
+    default @NotNull ArrayX<Double> toArrayX() {
+        return toArrayX(Double[]::new);
+    }
+
+    @Override
+    @NotNull
+    default Double[] toArray() {
+        return toArray(Double[]::new);
+    }
+
+    default double[] toDoubleArray() {
+        return stream().mapToDouble(It::asDouble).toArray();
+    }
+
     default DoubleStatistics stats(DoublePredicate doublePredicate) {
         return filter(doublePredicate::test).statsOfDoubles(It::asDouble);
+    }
+
+    @Override
+    @NotNull
+    default DoubleRange get() {
+        return this;
     }
 }

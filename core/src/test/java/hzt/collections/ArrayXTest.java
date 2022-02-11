@@ -1,5 +1,6 @@
 package hzt.collections;
 
+import hzt.sequences.Sequence;
 import hzt.test.Generator;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
@@ -62,9 +63,21 @@ class ArrayXTest {
         array.forEach(It::println);
 
         // the inverted insertion point (-insertion point - 1)
-        final long index = array.binarySearchFrom(10, aLong -> aLong.compareTo(34L));
+        final long index = array.binarySearch(10, val -> val.compareTo(34L));
 
         assertEquals(-11, index);
+    }
+
+    @Test
+    void mapToArrayX() {
+        final var arrayX = Sequence.generate(0L, n -> ++n)
+                .map(Generator::fib)
+                .take(40)
+                .toArrayX(Long[]::new);
+
+        arrayX.forEach(It::println);
+
+        assertTrue(arrayX.isNotEmpty());
     }
 
 }

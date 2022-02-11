@@ -5,8 +5,10 @@ import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
-public final class LongX extends Number implements NumberX, Transformable<LongX> {
+@SuppressWarnings("unused")
+public final class LongX extends Number implements NumberX<Long>, Transformable<LongX> {
 
     private static final long serialVersionUID = 2;
 
@@ -18,6 +20,10 @@ public final class LongX extends Number implements NumberX, Transformable<LongX>
     
     public static LongX of(long aLong) {
         return new LongX(aLong);
+    }
+
+    public static LongX of(Number number) {
+        return new LongX(number.longValue());
     }
 
     public static String toString(long i, int radix) {
@@ -54,6 +60,30 @@ public final class LongX extends Number implements NumberX, Transformable<LongX>
 
     public static long parseLong(String s) throws NumberFormatException {
         return Long.parseLong(s);
+    }
+
+    public static Predicate<Long> multipleOf(long multiple) {
+        return l -> l % multiple == 0;
+    }
+
+    public boolean isMultipleOf(long multiple) {
+        return multipleOf(multiple).test(thisLong);
+    }
+
+    public static boolean isEven(long i) {
+        return multipleOf(2).test(i);
+    }
+
+    public boolean isEven() {
+        return isEven(thisLong);
+    }
+
+    public static boolean isOdd(long l) {
+        return l % 2 != 0;
+    }
+
+    public boolean isOdd() {
+        return isOdd(thisLong);
     }
 
     public static long parseUnsignedLong(String s, int radix) throws NumberFormatException {
@@ -228,5 +258,10 @@ public final class LongX extends Number implements NumberX, Transformable<LongX>
     @Override
     public @NotNull LongX get() {
         return this;
+    }
+
+    @Override
+    public @NotNull Long getValue() {
+        return thisLong;
     }
 }

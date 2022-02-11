@@ -1,5 +1,6 @@
 package hzt.ranges;
 
+import hzt.collections.ArrayX;
 import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
 import hzt.statistics.LongStatistics;
@@ -7,12 +8,12 @@ import hzt.utils.It;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.LongPredicate;
-import java.util.function.Supplier;
+import java.util.function.Predicate;
 import java.util.stream.LongStream;
 
+@FunctionalInterface
 public interface LongRange extends NumberRange<Long>, Sequence<Long>, Transformable<LongRange> {
 
     static LongRange empty() {
@@ -20,28 +21,11 @@ public interface LongRange extends NumberRange<Long>, Sequence<Long>, Transforma
     }
 
     static LongRange of(Iterable<Long> longIterable) {
-        return toLongRange(longIterable::iterator);
+        return longIterable::iterator;
     }
 
     static LongRange of(LongStream longStream) {
-        return toLongRange(longStream::iterator);
-    }
-
-    @NotNull
-    private static LongRange toLongRange(Supplier<Iterator<Long>> iteratorSupplier) {
-        return new LongRange() {
-            @NotNull
-            @Override
-            public Iterator<Long> iterator() {
-                // needs to be fetched for every iteration. That's why this is a supplier
-                return iteratorSupplier.get();
-            }
-
-            @Override
-            public @NotNull LongRange get() {
-                return this;
-            }
-        };
+        return longStream::iterator;
     }
 
     static LongRange of(long start, long end) {
@@ -99,7 +83,7 @@ public interface LongRange extends NumberRange<Long>, Sequence<Long>, Transforma
     }
 
     default double average(LongPredicate predicate) {
-        return filter(predicate::test).averageOfLongs(It::asLong);
+        return filter(predicate::test).averageOf(It::asLong);
     }
 
     default @NotNull Long sum() {
@@ -123,12 +107,38 @@ public interface LongRange extends NumberRange<Long>, Sequence<Long>, Transforma
     }
 
     @Override
+    default @NotNull LongRange filter(@NotNull Predicate<Long> predicate) {
+        return LongRange.of(Sequence.super.filter(predicate));
+    }
+
+    @Override
     @NotNull
     default LongRange onEach(@NotNull Consumer<? super Long> consumer) {
         return LongRange.of(Sequence.super.onEach(consumer));
     }
 
+    @Override
+    default @NotNull ArrayX<Long> toArrayX() {
+        return toArrayX(Long[]::new);
+    }
+
+    @Override
+    @NotNull
+    default Long[] toArray() {
+        return toArray(Long[]::new);
+    }
+
+    default long[] toLongArray() {
+        return stream().mapToLong(It::asLong).toArray();
+    }
+
     default LongStatistics stats(LongPredicate predicate) {
         return filter(predicate::test).statsOfLongs(It::asLong);
+    }
+
+    @Override
+    @NotNull
+    default LongRange get() {
+        return this;
     }
 }

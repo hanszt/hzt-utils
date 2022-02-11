@@ -2,26 +2,29 @@ package hzt.strings;
 
 import hzt.collections.ArrayX;
 import hzt.collections.ListX;
+import hzt.numbers.BigDecimalX;
 import hzt.numbers.DoubleX;
 import hzt.numbers.IntX;
 import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
+import hzt.utils.It;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -88,6 +91,16 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return new StringX(s, charset);
     }
 
+    @SafeVarargs
+    public static <T> StringX of(T... values) {
+        return Sequence.of(values).joinToStringX();
+    }
+
+    @SafeVarargs
+    public static <T> StringX of(CharSequence delimiter, T... values) {
+        return Sequence.of(values).joinToStringX(delimiter);
+    }
+
     public static StringX of(Object obj) {
         return StringX.of(String.valueOf(obj));
     }
@@ -117,7 +130,11 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public StringX plus(String s) {
-        return plus(StringX.of(s)).joinToStringX();
+        return plus(StringX.of(s)).joinToStringX("");
+    }
+
+    public StringX plus(Object s) {
+        return plus(StringX.of(s)).joinToStringX("");
     }
 
     public StringX reversed() {
@@ -313,6 +330,11 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return StringX.of(string.concat(StringX.of(charSequence).toString()));
     }
 
+    @Override
+    public StringX filter(@NotNull Predicate<Character> predicate) {
+        return StringX.of(Sequence.super.filter(predicate));
+    }
+
     public StringX replace(char oldChar, char newChar) {
         return StringX.of(string.replace(oldChar, newChar));
     }
@@ -394,6 +416,10 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return DoubleX.of(Double.parseDouble(string));
     }
 
+    public BigDecimalX toBigDecimalX() {
+        return BigDecimalX.of(new BigDecimal(string));
+    }
+
     @Override
     public @NotNull String toString() {
         return string;
@@ -409,8 +435,12 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return string.toCharArray();
     }
 
-    public ArrayX<Character> toCharacterArrayX() {
-        return ArrayX.of(string.chars().mapToObj(i -> (char) i).toArray(Character[]::new));
+    public ArrayX<Character> toArrayX() {
+        return ArrayX.of(toArray());
+    }
+
+    Character[] toArray() {
+        return Sequence.super.toArrayOf(It::self, Character[]::new);
     }
 
     public static StringX format(@NotNull String format, Object... args) {
@@ -427,6 +457,102 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     public static StringX copyOf(@NotNull char[] data) {
         return StringX.of(String.copyValueOf(data));
+    }
+
+    public byte[] getBytes(@NotNull String charsetName) throws UnsupportedEncodingException {
+        return string.getBytes(charsetName);
+    }
+
+    public boolean contentEquals(@NotNull StringBuffer sb) {
+        return string.contentEquals(sb);
+    }
+
+    public boolean equalsIgnoreCase(String anotherString) {
+        return string.equalsIgnoreCase(anotherString);
+    }
+
+    public int compareTo(@NotNull String anotherString) {
+        return string.compareTo(anotherString);
+    }
+
+    public int compareToIgnoreCase(@NotNull String str) {
+        return string.compareToIgnoreCase(str);
+    }
+
+    public boolean startsWith(@NotNull String prefix, int toffset) {
+        return string.startsWith(prefix, toffset);
+    }
+
+    public boolean startsWith(@NotNull String prefix) {
+        return string.startsWith(prefix);
+    }
+
+    public boolean endsWith(@NotNull String suffix) {
+        return string.endsWith(suffix);
+    }
+
+    public int indexOf(@NotNull String str) {
+        return string.indexOf(str);
+    }
+
+    public int indexOf(@NotNull String str, int fromIndex) {
+        return string.indexOf(str, fromIndex);
+    }
+
+    public int lastIndexOf(@NotNull String str) {
+        return string.lastIndexOf(str);
+    }
+
+    public int lastIndexOf(@NotNull String str, int fromIndex) {
+        return string.lastIndexOf(str, fromIndex);
+    }
+
+    public StringX concat(@NotNull String str) {
+        return StringX.of(string.concat(str));
+    }
+
+    public boolean matches(@NotNull String regex) {
+        return string.matches(regex);
+    }
+
+    public StringX replaceFirst(@NotNull String regex, @NotNull String replacement) {
+        return StringX.of(string.replaceFirst(regex, replacement));
+    }
+
+    public String replaceAll(@NotNull String regex, @NotNull String replacement) {
+        return string.replaceAll(regex, replacement);
+    }
+
+    public StringX strip() {
+        return StringX.of(string.strip());
+    }
+
+    public StringX stripLeading() {
+        return StringX.of(string.stripLeading());
+    }
+
+    public StringX stripTrailing() {
+        return StringX.of(string.stripTrailing());
+    }
+
+    public Stream<StringX> linesAsStream() {
+        return string.lines().map(StringX::of);
+    }
+
+    public Sequence<StringX> lines() {
+        return Sequence.of(linesAsStream().collect(Collectors.toList()));
+    }
+
+    public <R> R transformString(Function<? super String, ? extends R> f) {
+        return f.apply(string);
+    }
+
+    public StringX formatted(Object... args) {
+        return StringX.of(String.format(string, args));
+    }
+
+    public StringX repeat(int count) {
+        return StringX.of(string.repeat(count));
     }
 
     public byte[] getBytes(@NotNull String charsetName) throws UnsupportedEncodingException {

@@ -1,5 +1,7 @@
 package hzt.statistics;
 
+import hzt.numbers.BigDecimalX;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.function.Consumer;
@@ -49,34 +51,34 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
         return other;
     }
 
-    public BigDecimal getAverage() {
+    public BigDecimalX getAverage() {
         final int SCALE = 2;
         return getAverage(SCALE);
     }
 
-    public BigDecimal getAverage(int scale) {
+    public BigDecimalX getAverage(int scale) {
         return getAverage(scale, RoundingMode.HALF_UP);
     }
 
-    public BigDecimal getAverage(int scale, RoundingMode roundingMode) {
+    public BigDecimalX getAverage(int scale, RoundingMode roundingMode) {
         BigDecimal countAsBD = BigDecimal.valueOf(this.count);
-        return BigDecimal.ZERO.compareTo(countAsBD) == 0 ? BigDecimal.ZERO : sum.divide(countAsBD, scale, roundingMode);
+        return BigDecimalX.of(BigDecimal.ZERO.compareTo(countAsBD) == 0 ? BigDecimal.ZERO : sum.divide(countAsBD, scale, roundingMode));
     }
 
     public long getCount() {
         return count;
     }
 
-    public BigDecimal getSum() {
-        return sum;
+    public BigDecimalX getSum() {
+        return BigDecimalX.of(sum);
     }
 
-    public BigDecimal getMin() {
-        return min;
+    public BigDecimalX getMin() {
+        return BigDecimalX.of(min);
     }
 
-    public BigDecimal getMax() {
-        return max;
+    public BigDecimalX getMax() {
+        return BigDecimalX.of(max);
     }
 
     @Override

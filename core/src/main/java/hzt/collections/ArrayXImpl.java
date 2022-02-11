@@ -43,6 +43,23 @@ final class ArrayXImpl<E> implements ArrayX<E> {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ArrayXImpl<?> arrayX = (ArrayXImpl<?>) o;
+        return Arrays.equals(array, arrayX.array);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(array);
+    }
+
+    @Override
     public E[] toArray() {
         return Arrays.copyOf(array, array.length);
     }

@@ -1,7 +1,6 @@
 package hzt.iterables;
 
-import hzt.collections.IndexedValue;
-import hzt.collections.MutableListX;
+import hzt.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -9,29 +8,48 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Random;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public final class IterableXHelper {
 
+    public static final Random RANDOM = new Random();
+
     private IterableXHelper() {
     }
-    static <T, R> MutableListX<T> filterToMutableListBy(Iterable<T> iterable,
-                                                        Function<? super T, ? extends R> function,
-                                                        Predicate<R> predicate,
-                                                        Predicate<R> nullPredicate) {
-        MutableListX<T> list = MutableListX.empty();
+
+    static <T> long count(Iterable<T> iterable, @NotNull Predicate<T> predicate) {
+        long counter = 0;
         for (T t : iterable) {
-            if (t != null) {
-                final R r = function.apply(t);
-                if (nullPredicate.test(r) && predicate.test(r)) {
-                    list.add(t);
+            if (predicate.test(t)) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
+    static <T, R, C extends Collection<R>> C mapFilteringTo(
+            @NotNull Iterable<T> iterable,
+            @NotNull Supplier<C> collectionFactory,
+            @NotNull Predicate<? super T> predicate,
+            @NotNull Function<? super T, ? extends R> mapper,
+            @NotNull Predicate<R> resultFilter) {
+        C collection = collectionFactory.get();
+        for (T t : iterable) {
+            if (t != null && predicate.test(t)) {
+                final R r = mapper.apply(t);
+                if (resultFilter.test(r)) {
+                    collection.add(r);
                 }
             }
         }
-        return list;
+        return collection;
     }
 
     @NotNull
@@ -60,28 +78,8 @@ public final class IterableXHelper {
         if (key instanceof Comparable<?> c) {
             //noinspection unchecked
             return (K) c;
-        } else {
-            throw new IllegalStateException(key.getClass().getSimpleName() + " is not of a comparable type");
         }
-    }
-
-    static <T> Iterator<Integer> indexIterator(Iterator<T> iterator) {
-        return new Iterator<>() {
-            private int index = 0;
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-            @Override
-            public Integer next() {
-                int prevIndex = index;
-                if (prevIndex < 0) {
-                    throw new IllegalStateException("indexed iterator index overflow");
-                }
-                iterator.next();
-                return index++;
-            }
-        };
+        throw new IllegalStateException(key.getClass().getSimpleName() + " is not of a comparable type");
     }
 
     @NotNull
@@ -139,25 +137,8 @@ public final class IterableXHelper {
         return Optional.empty();
     }
 
-    static <T> MutableListX<T> skipToMutableListWhile(
-            Iterable<T> iterable,
-            Predicate<? super T> predicate,
-            boolean exclusive) {
-        boolean yielding = false;
-        MutableListX<T> list = MutableListX.empty();
-        for (T item : iterable) {
-            if (yielding) {
-                list.add(item);
-                continue;
-            }
-            if (!predicate.test(item)) {
-                if (!exclusive) {
-                    list.add(item);
-                }
-                yielding = true;
-            }
-        }
-        return list;
+    public static double nextRandomDouble() {
+        return RANDOM.nextDouble();
     }
 
     static <T> int collectionSizeOrElse(Iterable<T> iterable, @SuppressWarnings("SameParameterValue") int defaultSize) {
@@ -171,6 +152,20 @@ public final class IterableXHelper {
     @NotNull
     static NoSuchElementException noValuePresentException() {
         return new NoSuchElementException("No value present");
+    }
+
+    static <T> void exposeIndexedNonNullVal(@NotNull Iterable<T> iterable, @NotNull BiConsumer<Integer, T> consumer) {
+        int counter = 0;
+        for (T value : iterable) {
+            if (value != null) {
+                consumer.accept(counter, value);
+                counter++;
+            }
+        }
+    }
+
+    static <T> void exposeNonNullVal(@NotNull Iterable<T> iterable, @NotNull Consumer<T> consumer) {
+        exposeIndexedNonNullVal(iterable, (i, v) -> consumer.accept(v));
     }
 
     public static <T> Iterator<IndexedValue<T>> indexedIterator(Iterator<T> iterator) {

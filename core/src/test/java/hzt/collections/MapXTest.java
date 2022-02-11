@@ -1,7 +1,9 @@
 package hzt.collections;
 
 import hzt.ranges.IntRange;
+import hzt.sequences.EntrySequence;
 import hzt.strings.StringX;
+import hzt.tuples.IndexedValue;
 import hzt.tuples.Pair;
 import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
@@ -10,9 +12,11 @@ import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.Year;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -31,7 +35,7 @@ class MapXTest {
                 .map(e -> new AbstractMap.SimpleEntry<>(e.getValue(), e.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        final MapX<Museum, String> actual = MapX.of(museumMap).toInvertedMap();
+        final MapX<Museum, String> actual = MapX.of(museumMap).inverted();
 
         It.println("actual = " + actual);
 
@@ -48,7 +52,7 @@ class MapXTest {
                 .sum();
 
         final long actual = MapX.of(museumMap)
-                .valuesToIterX(Museum::getDateOfOpening)
+                .mapValuesTo(MutableListX::of, Museum::getDateOfOpening)
                 .sumOfInts(LocalDate::getDayOfMonth);
 
         It.println("actual = " + actual);
@@ -78,11 +82,23 @@ class MapXTest {
                 .flatMap(e -> e.getValue().getPaintings().stream())
                 .collect(Collectors.toList());
 
-        final List<Painting> actual = MapX.of(museumMap).flatMapValuesToListOf(Museum::getPaintings);
+        final List<Painting> actual = MapX.of(museumMap).flatMapValuesTo(MutableListX::of, Museum::getPaintings);
 
         It.println("actual = " + actual);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void entrySequenceOfMap() {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("1", 1);
+        map.put("2", 2);
+        map.put("3", 3);
+
+        final var result = EntrySequence.of(map).mapValues(Year::of).toMapX();
+
+        assertEquals(MapX.of("1", Year.of(1), "2", Year.of(2), "3", Year.of(3)), result);
     }
 
     @Test
@@ -99,7 +115,7 @@ class MapXTest {
 
     @Test
     void testComputeIfAbsent() {
-        final MutableMapX<String, Museum> museumMap = ListX.of(TestSampleGenerator.createMuseumList())
+        final MapX<String, Museum> museumMap = ListX.of(TestSampleGenerator.createMuseumList())
                 .associateBy(Museum::getName);
 
         Museum expected = museumMap.get("Van Gogh Museum");
@@ -119,7 +135,7 @@ class MapXTest {
     void testMapXToList() {
         final MapX<String, Museum> museumMapX = MapX.of(TestSampleGenerator.createMuseumMap());
 
-        final ListX<Pair<String, Museum>> pairs = museumMapX.toListXOf(Pair::ofEntry);
+        final ListX<Pair<String, Museum>> pairs = museumMapX.map(Pair::ofEntry);
 
         assertEquals(new HashSetX<>(Arrays.asList("Picasso Museum", "Van Gogh Museum", "Vermeer Museum")), pairs.toSetXOf(Pair::first));
     }
@@ -128,7 +144,7 @@ class MapXTest {
     void testFlatMapToList() {
         final MapX<String, Museum> museumMapX = MapX.of(TestSampleGenerator.createMuseumMap());
 
-        final ListX<Painting> pairs = museumMapX.flatMapToListXOf(e -> e.getValue().getPaintings());
+        final ListX<Painting> pairs = museumMapX.flatMap(e -> e.getValue().getPaintings());
 
         final String expected = "Meisje met de rode hoed";
 

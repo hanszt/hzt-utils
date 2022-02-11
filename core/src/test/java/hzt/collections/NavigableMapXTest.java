@@ -24,7 +24,7 @@ class NavigableMapXTest {
         map.put("Hi", 2);
         map.put("greetings", 3);
 
-        final var mapX = MapX.of("hallo", 1, "greetings", 3, "Hi", 2);
+        final MapX<String, Integer> mapX = MapX.of("hallo", 1, "greetings", 3, "Hi", 2);
         final NavigableMapX<String, Integer> expected = NavigableMapX.of(mapX, String::length);
 
         map.forEach(It::println);

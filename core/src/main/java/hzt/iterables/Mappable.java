@@ -79,7 +79,8 @@ public interface Mappable<T> extends IndexedIterable<T> {
     Mappable<IndexedValue<T>> withIndex();
 
     default <R> List<R> toListOf(@NotNull Function<? super T, ? extends R> transform) {
-        return List.copyOf(mapNotNullTo(MutableListX::empty, transform));
+        final MutableListX<? extends R> list = mapNotNullTo(MutableListX::empty, transform);
+        return Collections.unmodifiableList(list);
     }
 
     default <R> SetX<R> toSetXOf(@NotNull Function<? super T, ? extends R> transform) {

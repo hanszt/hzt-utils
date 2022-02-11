@@ -1,6 +1,5 @@
 package hzt.iterables;
 
-import hzt.collections.ListX;
 import hzt.collections.MutableListX;
 import hzt.collections.NavigableSetX;
 import hzt.utils.It;
@@ -11,20 +10,16 @@ import java.util.function.Function;
 
 public interface Sortable<T> extends Iterable<T> {
 
-    private <R extends Comparable<R>> ListX<T> toSortedListX(@NotNull Function<? super T, ? extends R> selector) {
-        return toMutableListSortedBy(selector);
-    }
-
     default Sortable<T> shuffled() {
-        return toSortedListX(s -> IterableXHelper.nextRandomDouble());
+        return IterableXHelper.toSortedListX(this, s -> IterableXHelper.nextRandomDouble());
     }
 
     default <R extends Comparable<R>> Sortable<T> sorted() {
-        return toSortedListX((Function<T, R>) IterableXHelper::asComparableOrThrow);
+        return IterableXHelper.toSortedListX(this, (Function<T, R>) IterableXHelper::asComparableOrThrow);
     }
 
     default <R extends Comparable<R>> Sortable<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
-        return toSortedListX(selector);
+        return IterableXHelper.toSortedListX(this, selector);
     }
 
     default <R extends Comparable<R>> Sortable<T> sortedBy(Comparator<T> comparator) {
@@ -40,12 +35,6 @@ public interface Sortable<T> extends Iterable<T> {
     default <R extends Comparable<R>> Sortable<T> sortedByDescending(@NotNull Function<? super T, ? extends R> selector) {
         final MutableListX<T> list = MutableListX.of(this);
         list.sort(Comparator.comparing(selector).reversed());
-        return list;
-    }
-
-    private <R extends Comparable<R>> MutableListX<T> toMutableListSortedBy(@NotNull Function<? super T, ? extends R> selector) {
-        final MutableListX<T> list = MutableListX.of(this);
-        list.sort(Comparator.comparing(selector));
         return list;
     }
 

@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -62,7 +63,7 @@ class SequenceTest {
                 .map(String::length)
                 .map(Double::valueOf)
                 .reduce(Double::sum)
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         assertEquals(17, sum);
     }
@@ -88,7 +89,7 @@ class SequenceTest {
                 .map(String::length)
                 .filter(l -> l > 3)
                 .reduce(Integer::sum)
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         assertEquals(9, sum);
     }
@@ -100,7 +101,7 @@ class SequenceTest {
                 .map(String::length)
                 .map(Double::valueOf)
                 .reduce(Double::sum)
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         assertEquals(17, sum);
     }
@@ -182,7 +183,7 @@ class SequenceTest {
         final ListX<Iterable<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
                 new ArrayDeque<>(Collections.singleton("test")));
 
-        final var result = list.asSequence()
+        final ListX<String> result = list.asSequence()
                 .<String>mapMulti(Iterable::forEach)
                 .filter(s -> s.length() > 3)
                 .filterNot(String::isEmpty)
@@ -197,7 +198,7 @@ class SequenceTest {
     void testGenerateWindowedThenMapMultiToList() {
         MutableListX<ListX<Integer>> windows = MutableListX.empty();
 
-        final var result = Sequence.generate(0, i -> ++i)
+        final ListX<Integer> result = Sequence.generate(0, i -> ++i)
                 .windowed(8, 3)
                 .onEach(windows::add)
                 .takeWhile(s -> s.sumOfInts(It::asInt) < 1_000_000)
@@ -235,17 +236,17 @@ class SequenceTest {
 
     @Test
     void testFlatMapStream() {
-        final var charInts = Sequence.of("hallo", "test")
+        final List<Integer> charInts = Sequence.of("hallo", "test")
                 .map(String::chars)
                 .flatMapStream(IntStream::boxed)
                 .toList();
 
-        assertEquals(List.of(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
+        assertEquals(Arrays.asList(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
     }
 
     @Test
     void testTransform() {
-        final var map = Sequence.of("hallo", "test")
+        final MapX<Integer, String> map = Sequence.of("hallo", "test")
                 .map(String::chars)
                 .flatMapStream(IntStream::boxed)
                 .transform(this::toFilteredMapX);
@@ -530,9 +531,9 @@ class SequenceTest {
 
     @Test
     void testSequenceAssociateWith() {
-        final var listX = ListX.of(1, 2, 3, 4);
+        final ListX<Integer> listX = ListX.of(1, 2, 3, 4);
 
-        final var mapX = listX.asSequence()
+        final MapX<Integer, Character> mapX = listX.asSequence()
                 .associateWith(String::valueOf)
                 .onEach(System.out::println)
                 .mapValues(s -> StringX.of(s).first())

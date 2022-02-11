@@ -9,6 +9,7 @@ import hzt.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -78,7 +79,7 @@ public interface EntryIterable<K, V> extends IterableX<Map.Entry<K, V>> {
     @NotNull
     default Iterator<V> valueIterator() {
         Iterator<Map.Entry<K, V>> iterator = iterator();
-        return new Iterator<>() {
+        return new Iterator<V>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -94,7 +95,7 @@ public interface EntryIterable<K, V> extends IterableX<Map.Entry<K, V>> {
     @NotNull
     default Iterator<K> keyIterator() {
         Iterator<Map.Entry<K, V>> iterator = iterator();
-        return new Iterator<>() {
+        return new Iterator<K>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -116,7 +117,7 @@ public interface EntryIterable<K, V> extends IterableX<Map.Entry<K, V>> {
     }
 
     default Map<K, V> toMap() {
-        return Map.copyOf(MutableMapX.ofEntries(this));
+        return Collections.unmodifiableMap(MutableMapX.ofEntries(this));
     }
 
     default <R extends Comparable<R>> NavigableMapX<K, V> toSortedMapX(Function<K, R> selector) {

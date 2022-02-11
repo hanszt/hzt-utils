@@ -96,7 +96,7 @@ class MapXTest {
         map.put("2", 2);
         map.put("3", 3);
 
-        final var result = EntrySequence.of(map).mapValues(Year::of).toMapX();
+        final MapX<String, Year> result = EntrySequence.of(map).mapValues(Year::of).toMapX();
 
         assertEquals(MapX.of("1", Year.of(1), "2", Year.of(2), "3", Year.of(3)), result);
     }
@@ -163,7 +163,7 @@ class MapXTest {
 
     @Test
     void testBuildMap() {
-        final MapX<Integer, LocalDate> mapX = MapX.<Integer, LocalDate>build(map ->
+        final MapX<Integer, LocalDate> mapX = MapX.build(map ->
                 IntRange.of(1990, 2022).forEach(year -> map.put(year, LocalDate.of(year, 1, 1))));
 
         mapX.forEach(It::println);

@@ -4,7 +4,6 @@ import hzt.PreConditions;
 import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableListX;
-import hzt.collections.MutableSetX;
 import hzt.collections.SetX;
 import hzt.function.QuadFunction;
 import hzt.function.QuintFunction;
@@ -35,10 +34,6 @@ import java.util.function.ToDoubleFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toUnmodifiableList;
-import static java.util.stream.Collectors.toUnmodifiableMap;
-import static java.util.stream.Collectors.toUnmodifiableSet;
 
 @SuppressWarnings({"DuplicatedCode", "unused"})
 public final class CollectorsX {
@@ -133,6 +128,20 @@ public final class CollectorsX {
     public static <T, A, K> Collector<T, ?, Map<K, List<T>>> groupingBy(Function<? super T, ? extends A> classifierPart1,
                                                                         Function<? super A, ? extends K> classifierPart2) {
         return Collectors.groupingBy(StreamUtils.function(classifierPart1).andThen(classifierPart2));
+    }
+
+    public static <T> Collector<T, ?, List<T>> toUnmodifiableList() {
+        return Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList);
+    }
+
+    public static <T> Collector<T, ?, Set<T>> toUnmodifiableSet() {
+        return Collectors.collectingAndThen(Collectors.toSet(), Collections::unmodifiableSet);
+    }
+
+    @SuppressWarnings("all")
+    public static <T, K, V> Collector<T, ?, Map<K, V>> toUnmodifiableMap(
+            Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper), Collections::unmodifiableMap);
     }
 
     public static <T> Collector<T, ?, ListX<T>> toListX() {

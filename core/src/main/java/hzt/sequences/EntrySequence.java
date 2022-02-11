@@ -6,7 +6,6 @@ import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -33,23 +32,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     static <K, V> EntrySequence<K, V> ofPairs(Iterable<Pair<K, V>> pairIterable) {
-        return () -> toEntryIterator(pairIterable.iterator());
-    }
-
-    @NotNull
-    private static <K, V> Iterator<Map.Entry<K, V>> toEntryIterator(final Iterator<Pair<K, V>> iterator) {
-        return new Iterator<>() {
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public Map.Entry<K, V> next() {
-                final var next = iterator.next();
-                return Map.entry(next.first(), next.second());
-            }
-        };
+        return () -> SequenceHelper.toEntryIterator(pairIterable.iterator());
     }
 
     static <K, V> EntrySequence<K, V> of(Map<K, V> map) {
@@ -62,7 +45,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
 
     @Override
     default <K1, V1> EntrySequence<K1, V1> inverted(Function<K, V1> toValueMapper, Function<V, K1> toKeyMapper) {
-        return EntrySequence.of(map(e -> Map.entry(toKeyMapper.apply(e.getValue()), toValueMapper.apply(e.getKey()))));
+        return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(toKeyMapper.apply(e.getValue()), toValueMapper.apply(e.getKey()))));
     }
 
     @Override
@@ -76,12 +59,11 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
 
     default <K1, V1> EntrySequence<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper,
                                                @NotNull Function<? super V, ? extends V1> valueMapper) {
-        return EntrySequence.of(map(e -> Map.entry(keyMapper.apply(e.getKey()), valueMapper.apply(e.getValue()))));
+        return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(keyMapper.apply(e.getKey()), valueMapper.apply(e.getValue()))));
     }
 
-    default <K1, V1> EntrySequence<K1, V1> map(@NotNull BiFunction<K, V, Pair<K1, V1>> biFunction) {
-        return EntrySequence.of(Sequence.super.map(e -> biFunction.apply(e.getKey(), e.getValue())
-                .to(AbstractMap.SimpleEntry::new)));
+    default <K1> EntrySequence<K1, V> mapKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
+        return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(keyMapper.apply(e.getKey()), e.getValue())));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package hzt.collections;
 
 import hzt.PreConditions;
+import hzt.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

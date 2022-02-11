@@ -170,7 +170,7 @@ public class IterableXTest {
         final BigDecimal expected = bankAccountList.stream()
                 .max(Comparator.comparing(BankAccount::getBalance))
                 .map(BankAccount::getBalance)
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         final BigDecimal actual = bankAccountList.maxOf(BankAccount::getBalance);
 
@@ -186,7 +186,7 @@ public class IterableXTest {
         final BigDecimal expected = list.stream()
                 .min(Comparator.comparing(BankAccount::getBalance))
                 .map(BankAccount::getBalance)
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         final BigDecimal actual = list.minOf(BankAccount::getBalance);
 
@@ -204,7 +204,7 @@ public class IterableXTest {
         final Painting expected = auction.getPaintings().stream()
                 .filter(painting -> !painting.isInMuseum())
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         final Painting firstPaintingNotInMuseum = auction.firstNot(Painting::isInMuseum);
 
@@ -406,7 +406,7 @@ public class IterableXTest {
     void testUnion() {
         ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
-        final var union = list.union(List.of(2, 3, 4, 5, 7));
+        final SetX<Integer> union = list.union(Arrays.asList(2, 3, 4, 5, 7));
 
         assertEquals(SetX.of(1, 2, 3, 4, 5, 6, 7, 10), union);
     }
@@ -649,7 +649,7 @@ public class IterableXTest {
     void testAverageOf() {
         ListX<Painting> list = ListX.of(TestSampleGenerator.createPaintingList());
 
-        final double expected = list.stream().mapToInt(Painting::ageInYears).average().orElseThrow();
+        final double expected = list.stream().mapToInt(Painting::ageInYears).average().orElseThrow(NoSuchElementException::new);
 
         final double actual = list.averageOf(Painting::ageInYears);
 
@@ -691,7 +691,7 @@ public class IterableXTest {
 
         final Painting actual = paintings.stream()
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         assertEquals(expected, actual);
     }
@@ -717,7 +717,7 @@ public class IterableXTest {
 
         assertEquals("Lentetuin, de pastorietuin te Nuenen in het voorjaar", actual
                 .map(Painting::name)
-                .orElseThrow());
+                .orElseThrow(NoSuchElementException::new));
     }
 
     @Test
@@ -822,7 +822,7 @@ public class IterableXTest {
                 .map(Painting::painter)
                 .map(Painter::getDateOfBirth)
                 .max(Comparator.naturalOrder())
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         final ChronoLocalDate max = paintingList.stream()
                 .map(Painting::painter)
@@ -866,7 +866,7 @@ public class IterableXTest {
                 .map(Customer::getId)
                 .filter(Objects::nonNull)
                 .max(Comparator.naturalOrder())
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         final String actual = bankAccounts
                 .mapNotNull(BankAccount::getCustomer)

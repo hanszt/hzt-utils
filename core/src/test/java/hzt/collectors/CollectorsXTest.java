@@ -73,7 +73,7 @@ class CollectorsXTest {
 
         assertAll(
                 () -> assertEquals(standardDeviationAge, summarizingAges.getStandardDeviation()),
-                () -> assertEquals(optionalAverage.orElseThrow(), summarizingAges.getAverage())
+                () -> assertEquals(optionalAverage.orElseThrow(NoSuchElementException::new), summarizingAges.getAverage())
         );
     }
 

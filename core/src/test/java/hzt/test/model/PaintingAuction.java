@@ -44,7 +44,7 @@ public final class PaintingAuction implements
     public Painting getOldestPainting() {
         return paintingList.stream()
                 .min(Comparator.comparing(Painting::getYearOfCreation))
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public Painting getMostPopularPainting() {

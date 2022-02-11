@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -72,7 +71,6 @@ public interface CollectionView<E> extends IterableX<E> {
 
     default <R> ListX<R> mapIndexed(@NotNull BiFunction<Integer, ? super E, ? extends R> mapper) {
         return mapIndexedTo(MutableListX::of, mapper);
-        return withIndex().mapTo(MutableListX::empty, indexedValue -> mapper.apply(indexedValue.index(), indexedValue.value()));
     }
 
     default ListX<E> filter(@NotNull Predicate<E> predicate) {
@@ -117,27 +115,6 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     default IntRange indices() {
-        return Sequence.of(this::indexIterator).asIntRange(It::asInt);
-    }
-
-    private @NotNull Iterator<Integer> indexIterator() {
-        Iterator<E> iterator = iterator();
-        return new Iterator<>() {
-            private int index = 0;
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-            @Override
-            public Integer next() {
-                int prevIndex = index;
-                if (prevIndex < 0) {
-                    throw new IllegalStateException("indexed iterator index overflow");
-                }
-                iterator.next();
-                return index++;
-            }
-        };
         return Sequence.of(() -> CollectionsHelper.indexIterator(iterator())).asIntRange(It::asInt);
     }
 
@@ -222,6 +199,14 @@ public interface CollectionView<E> extends IterableX<E> {
 
     default <R> ListX<R> zipWithNext(BiFunction<E, E, R> function) {
         return CollectionsHelper.zipWithNextToMutableListOf(this.iterator(), function);
+    }
+
+    default <K> MapX<K, E> associateBy(@NotNull Function<? super E, ? extends K> keyMapper) {
+        return toMutableMap(keyMapper, It::self);
+    }
+
+    default <V> MapX<E, V> associateWith(@NotNull Function<? super E, ? extends V> valueMapper) {
+        return toMutableMap(It::self, valueMapper);
     }
 
     default ListX<E> skip(long count) {

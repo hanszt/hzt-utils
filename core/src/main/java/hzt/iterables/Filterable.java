@@ -34,7 +34,7 @@ public interface Filterable<T> extends IndexedIterable<T> {
                                                         @NotNull BiPredicate<Integer, T> predicate) {
         C collection = collectionFactory.get();
         for (IndexedValue<T> indexedValue : withIndex()) {
-            final var value = indexedValue.value();
+            final T value = indexedValue.value();
             if (predicate.test(indexedValue.index(), value)) {
                 collection.add(value);
             }

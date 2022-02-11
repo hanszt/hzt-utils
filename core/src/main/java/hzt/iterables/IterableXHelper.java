@@ -1,8 +1,9 @@
 package hzt.iterables;
 
-import hzt.collections.IndexedValue;
+import hzt.collections.ListX;
 import hzt.collections.MutableListX;
 import hzt.collections.MutableSetX;
+import hzt.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -26,6 +27,11 @@ public final class IterableXHelper {
     public static final Random RANDOM = new Random();
 
     private IterableXHelper() {
+    }
+
+    static <T, R extends Comparable<R>> ListX<T> toSortedListX(@NotNull Iterable<T> iterable,
+                                                               @NotNull Function<? super T, ? extends R> selector) {
+        return toMutableListSortedBy(selector, iterable);
     }
 
     static <T> long count(Iterable<T> iterable, @NotNull Predicate<T> predicate) {
@@ -194,27 +200,10 @@ public final class IterableXHelper {
     }
 
     static <T, R extends Comparable<R>> MutableListX<T> toMutableListSortedBy(
-            @NotNull Function<? super T, ? extends R> selector, MutableListX<T> list) {
+            @NotNull Function<? super T, ? extends R> selector, Iterable<T> iterable) {
+        MutableListX<T> list = MutableListX.of(iterable);
         list.sort(Comparator.comparing(selector));
         return list;
-    }
-
-    static  <T, R, C extends Collection<R>> C mapFilteringToCollection(
-            @NotNull Iterable<T> iterable,
-            @NotNull Supplier<C> collectionFactory,
-            @NotNull Predicate<? super T> predicate,
-            @NotNull Function<? super T, ? extends R> mapper,
-            @NotNull Predicate<R> resultFilter) {
-        C collection = collectionFactory.get();
-        for (T t : iterable) {
-            if (t != null && predicate.test(t)) {
-                final R r = mapper.apply(t);
-                if (resultFilter.test(r)) {
-                    collection.add(r);
-                }
-            }
-        }
-        return collection;
     }
 
     static <T, R> MutableSetX<R> toMutableSetNotNullOf(Iterable<T> iterable, @NotNull Function<? super T, ? extends R> transform) {
@@ -223,7 +212,7 @@ public final class IterableXHelper {
 
     static <T, R, C extends Collection<R>> C toCollectionNotNullOf(Iterable<T> iterable,@NotNull Supplier<C> collectionFactory,
                                                                  @NotNull Function<? super T, ? extends R> mapper) {
-        return mapFilteringToCollection(iterable, collectionFactory, Objects::nonNull, mapper, Objects::nonNull);
+        return mapFilteringTo(iterable, collectionFactory, Objects::nonNull, mapper, Objects::nonNull);
     }
 
     static <T, R> MutableListX<R> toMutableListNotNullOf(Iterable<T> iterable, @NotNull Function<? super T, ? extends R> transform) {

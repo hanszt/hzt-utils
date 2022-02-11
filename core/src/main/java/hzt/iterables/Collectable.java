@@ -11,6 +11,7 @@ import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -140,7 +141,7 @@ public interface Collectable<T> extends Iterable<T> {
     }
 
     default List<T> toList() {
-        return List.copyOf(toMutableList());
+        return Collections.unmodifiableList(toMutableList());
     }
 
     default MutableSetX<T> toMutableSet() {
@@ -152,6 +153,6 @@ public interface Collectable<T> extends Iterable<T> {
     }
 
     default Set<T> toSet() {
-        return Set.copyOf(toMutableSet());
+        return Collections.unmodifiableSet(toMutableSet());
     }
 }

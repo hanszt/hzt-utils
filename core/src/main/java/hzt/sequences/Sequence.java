@@ -3,7 +3,6 @@ package hzt.sequences;
 import hzt.PreConditions;
 import hzt.collections.ListX;
 import hzt.collections.MapX;
-import hzt.collections.MutableListX;
 import hzt.function.QuadFunction;
 import hzt.function.TriFunction;
 import hzt.iterables.IterableX;
@@ -20,13 +19,8 @@ import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -318,45 +312,11 @@ public interface Sequence<T> extends IterableX<T> {
 
     @Override
     default <K> EntrySequence<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper) {
-        return EntrySequence.ofPairs(() -> associateByIterator(keyMapper));
-    }
-
-    @NotNull
-    private <K> Iterator<Pair<K, T>> associateByIterator(@NotNull Function<? super T, ? extends K> valueMapper) {
-        return new Iterator<>() {
-            final Iterator<T> iterator = iterator();
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-            @Override
-            public Pair<K, T> next() {
-                final var value = iterator.next();
-                final var key = valueMapper.apply(value);
-                return Pair.of(key, value);
-            }
-        };
+        return EntrySequence.ofPairs(() -> SequenceHelper.associateByIterator(iterator(), keyMapper));
     }
 
     default <V> EntrySequence<T, V> associateWith(@NotNull Function<? super T, ? extends V> valueMapper) {
-        return EntrySequence.ofPairs(() -> associateWithIterator(valueMapper));
-    }
-
-    @NotNull
-    private <V> Iterator<Pair<T, V>> associateWithIterator(@NotNull Function<? super T, ? extends V> valueMapper) {
-        return new Iterator<>() {
-            final Iterator<T> iterator = iterator();
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-            @Override
-            public Pair<T, V> next() {
-                final var key = iterator.next();
-                final var value = valueMapper.apply(key);
-                return Pair.of(key, value);
-            }
-        };
+        return EntrySequence.ofPairs(() -> SequenceHelper.associateWithIterator(iterator(), valueMapper));
     }
 
     @Override

@@ -70,7 +70,7 @@ class ArrayXTest {
 
     @Test
     void mapToArrayX() {
-        final var arrayX = Sequence.generate(0L, n -> ++n)
+        final ArrayX<Long> arrayX = Sequence.generate(0L, n -> ++n)
                 .map(Generator::fib)
                 .take(40)
                 .toArrayX(Long[]::new);

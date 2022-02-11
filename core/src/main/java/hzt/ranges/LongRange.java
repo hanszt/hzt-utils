@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 import java.util.function.LongPredicate;
+import java.util.function.Predicate;
 import java.util.stream.LongStream;
 
 @FunctionalInterface

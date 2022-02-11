@@ -48,9 +48,9 @@ class CollectionViewTest {
 
     @Test
     void testMapMulti() {
-        final var input = ListX.of(ListX.of("a", "b", "c"), ListX.of("d", "e", "f", "g"));
+        final ListX<ListX<String>> input = ListX.of(ListX.of("a", "b", "c"), ListX.of("d", "e", "f", "g"));
 
-        final var strings = input.<String>mapMulti(Iterable::forEach);
+        final ListX<String> strings = input.mapMulti(Iterable::forEach);
 
         strings.forEach(It::println);
 

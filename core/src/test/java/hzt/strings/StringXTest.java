@@ -2,6 +2,7 @@ package hzt.strings;
 
 import hzt.collections.ArrayX;
 import hzt.collections.ListX;
+import hzt.collections.MutableListX;
 import hzt.sequences.Sequence;
 import hzt.tuples.Pair;
 import hzt.utils.It;
@@ -35,7 +36,8 @@ class StringXTest {
 
         final ListX<Integer> characterCounts = StringX.of(hallo)
                 .group()
-                .valuesToListXOf(List::size);
+                .values()
+                .map(MutableListX::size);
 
         It.println("hallo = " + characterCounts);
 

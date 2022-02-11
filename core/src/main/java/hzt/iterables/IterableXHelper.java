@@ -13,7 +13,9 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
@@ -24,6 +26,34 @@ public final class IterableXHelper {
     public static final Random RANDOM = new Random();
 
     private IterableXHelper() {
+    }
+
+    static <T> long count(Iterable<T> iterable, @NotNull Predicate<T> predicate) {
+        long counter = 0;
+        for (T t : iterable) {
+            if (predicate.test(t)) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
+    static <T, R, C extends Collection<R>> C mapFilteringTo(
+            @NotNull Iterable<T> iterable,
+            @NotNull Supplier<C> collectionFactory,
+            @NotNull Predicate<? super T> predicate,
+            @NotNull Function<? super T, ? extends R> mapper,
+            @NotNull Predicate<R> resultFilter) {
+        C collection = collectionFactory.get();
+        for (T t : iterable) {
+            if (t != null && predicate.test(t)) {
+                final R r = mapper.apply(t);
+                if (resultFilter.test(r)) {
+                    collection.add(r);
+                }
+            }
+        }
+        return collection;
     }
 
     @NotNull
@@ -127,6 +157,20 @@ public final class IterableXHelper {
     @NotNull
     static NoSuchElementException noValuePresentException() {
         return new NoSuchElementException("No value present");
+    }
+
+    static <T> void exposeIndexedNonNullVal(@NotNull Iterable<T> iterable, @NotNull BiConsumer<Integer, T> consumer) {
+        int counter = 0;
+        for (T value : iterable) {
+            if (value != null) {
+                consumer.accept(counter, value);
+                counter++;
+            }
+        }
+    }
+
+    static <T> void exposeNonNullVal(@NotNull Iterable<T> iterable, @NotNull Consumer<T> consumer) {
+        exposeIndexedNonNullVal(iterable, (i, v) -> consumer.accept(v));
     }
 
     public static <T> Iterator<IndexedValue<T>> indexedIterator(Iterator<T> iterator) {

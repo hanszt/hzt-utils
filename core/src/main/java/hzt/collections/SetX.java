@@ -4,6 +4,8 @@ import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public interface SetX<E> extends CollectionView<E>, Transformable<SetX<E>> {
 
@@ -34,5 +36,16 @@ public interface SetX<E> extends CollectionView<E>, Transformable<SetX<E>> {
 
     default @NotNull SetX<E> get() {
         return this;
+    }
+
+    @Override
+    default @NotNull SetX<E> onEach(@NotNull Consumer<? super E> consumer) {
+        return SetX.of(CollectionView.super.onEach(consumer));
+    }
+
+    @Override
+    @NotNull
+    default <R> SetX<E> onEach(@NotNull Function<? super E, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
+        return SetX.of(CollectionView.super.onEach(selector, consumer));
     }
 }

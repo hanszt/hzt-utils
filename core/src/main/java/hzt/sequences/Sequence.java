@@ -1,19 +1,19 @@
 package hzt.sequences;
 
 import hzt.PreConditions;
-import hzt.collections.ArrayX;
-import hzt.collections.IndexedValue;
 import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.function.QuadFunction;
 import hzt.function.TriFunction;
 import hzt.iterables.IterableX;
+import hzt.iterables.IterableXHelper;
 import hzt.iterators.ArrayIterator;
 import hzt.ranges.DoubleRange;
 import hzt.ranges.IntRange;
 import hzt.ranges.LongRange;
 import hzt.strings.StringX;
+import hzt.tuples.IndexedValue;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
@@ -23,6 +23,8 @@ import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Objects;
@@ -50,7 +52,6 @@ import java.util.stream.Stream;
  *
  * @param <T> the type of the items in the Sequence
  */
-@SuppressWarnings("unused")
 @FunctionalInterface
 public interface Sequence<T> extends IterableX<T> {
 
@@ -80,7 +81,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     static <T> Sequence<T> ofNullable(T value) {
-        return value == null ? new EmptySequence<>() : Sequence.of(value);
+        return value != null ? Sequence.of(value) : new EmptySequence<>();
     }
 
     static <T> Sequence<T> generate(T seedValue, UnaryOperator<T> nextFunction) {
@@ -133,11 +134,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     default <R> Sequence<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
-        MutableListX<R> list = MutableListX.empty();
-        for (T t : this) {
-            mapper.accept(t, (Consumer<R>) list::add);
-        }
-        return list.asSequence();
+        return new MultiMappingSequence<>(this, mapper);
     }
 
     @Override
@@ -281,16 +278,85 @@ public interface Sequence<T> extends IterableX<T> {
         }
     }
 
-    default <R extends Comparable<R>> Sequence<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
-        return toSortedListX(selector).asSequence();
+    @Override
+    default <R extends Comparable<R>> Sequence<T> sorted() {
+        return Sequence.of(IterableX.super.sorted());
     }
 
-    default Sequence<T> sorted() {
-        return IterableX.super.toSortedListX().asSequence();
+    @Override
+    default <R extends Comparable<R>> Sequence<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
+        return Sequence.of(IterableX.super.sortedBy(selector));
+    }
+
+    @Override
+    default <R extends Comparable<R>> Sequence<T> sortedBy(Comparator<T> comparator) {
+        return Sequence.of(IterableX.super.sortedBy(comparator));
+    }
+
+    @Override
+    default <R extends Comparable<R>> Sequence<T> sortedDescending() {
+        return Sequence.of(IterableX.super.sortedDescending());
+    }
+
+    @Override
+    default <R extends Comparable<R>> Sequence<T> sortedByDescending(@NotNull Function<? super T, ? extends R> selector) {
+        return Sequence.of(IterableX.super.sortedByDescending(selector));
+    }
+
+    @Override
+    default Sequence<T> shuffled() {
+        return sortedBy(s -> IterableXHelper.nextRandomDouble());
     }
 
     default <K, V> EntrySequence<K, V> asEntrySequence(Function<T, K> keyMapper, Function<T, V> valueMapper) {
         return EntrySequence.of(map(value -> new AbstractMap.SimpleEntry<>(keyMapper.apply(value), valueMapper.apply(value))));
+    }
+
+    default <K, V> EntrySequence<K, V> asEntrySequence(Function<T, Pair<K, V>> toPairMapper) {
+        return EntrySequence.ofPairs(map(toPairMapper));
+    }
+
+    @Override
+    default <K> EntrySequence<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper) {
+        return EntrySequence.ofPairs(() -> associateByIterator(keyMapper));
+    }
+
+    @NotNull
+    private <K> Iterator<Pair<K, T>> associateByIterator(@NotNull Function<? super T, ? extends K> valueMapper) {
+        return new Iterator<>() {
+            final Iterator<T> iterator = iterator();
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+            @Override
+            public Pair<K, T> next() {
+                final var value = iterator.next();
+                final var key = valueMapper.apply(value);
+                return Pair.of(key, value);
+            }
+        };
+    }
+
+    default <V> EntrySequence<T, V> associateWith(@NotNull Function<? super T, ? extends V> valueMapper) {
+        return EntrySequence.ofPairs(() -> associateWithIterator(valueMapper));
+    }
+
+    @NotNull
+    private <V> Iterator<Pair<T, V>> associateWithIterator(@NotNull Function<? super T, ? extends V> valueMapper) {
+        return new Iterator<>() {
+            final Iterator<T> iterator = iterator();
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+            @Override
+            public Pair<T, V> next() {
+                final var key = iterator.next();
+                final var value = valueMapper.apply(key);
+                return Pair.of(key, value);
+            }
+        };
     }
 
     @Override
@@ -310,10 +376,6 @@ public interface Sequence<T> extends IterableX<T> {
 
     default T[] toArray(IntFunction<T[]> generator) {
         return toArrayOf(It::self, generator);
-    }
-
-    default ArrayX<T> toArrayX(IntFunction<T[]> generator) {
-        return toArrayXOf(It::self, generator);
     }
 
     default <R> R transform(@NotNull Function<? super Sequence<T>, ? extends R> resultMapper) {

@@ -1,6 +1,7 @@
 package hzt.sequences;
 
 import hzt.collections.ArrayX;
+import hzt.collections.LinkedSetX;
 import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableListX;
@@ -32,7 +33,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -62,7 +62,7 @@ class SequenceTest {
                 .map(String::length)
                 .map(Double::valueOf)
                 .reduce(Double::sum)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         assertEquals(17, sum);
     }
@@ -88,7 +88,7 @@ class SequenceTest {
                 .map(String::length)
                 .filter(l -> l > 3)
                 .reduce(Integer::sum)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         assertEquals(9, sum);
     }
@@ -100,7 +100,7 @@ class SequenceTest {
                 .map(String::length)
                 .map(Double::valueOf)
                 .reduce(Double::sum)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         assertEquals(17, sum);
     }
@@ -111,7 +111,7 @@ class SequenceTest {
 
         final long sum = Sequence.of(list)
                 .map(String::length)
-                .filterIndexed((index, length) -> length > 2 && index % 2 == 1)
+                .filterIndexed((index, length) -> length > 2 && IntX.isOdd(index))
                 .sumOfLongs(It::self);
 
         assertEquals(6, sum);
@@ -178,6 +178,40 @@ class SequenceTest {
     }
 
     @Test
+    void testMapMultiToList() {
+        final ListX<Iterable<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
+                new ArrayDeque<>(Collections.singleton("test")));
+
+        final var result = list.asSequence()
+                .<String>mapMulti(Iterable::forEach)
+                .filter(s -> s.length() > 3)
+                .filterNot(String::isEmpty)
+                .toListX();
+
+        It.println("result = " + result);
+
+        assertEquals(ListX.of("Hallo", "test"), result);
+    }
+
+    @Test
+    void testGenerateWindowedThenMapMultiToList() {
+        MutableListX<ListX<Integer>> windows = MutableListX.empty();
+
+        final var result = Sequence.generate(0, i -> ++i)
+                .windowed(8, 3)
+                .onEach(windows::add)
+                .takeWhile(s -> s.sumOfInts(It::asInt) < 1_000_000)
+                .<Integer>mapMulti(Iterable::forEach)
+                .toListX();
+
+        windows.filterIndexed((i, v) -> IntX.multipleOf(10_000).test(i)).forEach(It::println);
+
+        System.out.println("windows.last() = " + windows.last());
+
+        assertEquals(333328, result.size());
+    }
+
+    @Test
     void testCollectGroupingBy() {
         final List<Museum> museumList = TestSampleGenerator.getMuseumListContainingNulls();
 
@@ -200,6 +234,32 @@ class SequenceTest {
     }
 
     @Test
+    void testFlatMapStream() {
+        final var charInts = Sequence.of("hallo", "test")
+                .map(String::chars)
+                .flatMapStream(IntStream::boxed)
+                .toList();
+
+        assertEquals(List.of(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
+    }
+
+    @Test
+    void testTransform() {
+        final var map = Sequence.of("hallo", "test")
+                .map(String::chars)
+                .flatMapStream(IntStream::boxed)
+                .transform(this::toFilteredMapX);
+
+        assertEquals(LinkedSetX.of(115, 116, 101, 104, 108, 111), map.keySet());
+    }
+
+    private MapX<Integer, String> toFilteredMapX(Sequence<Integer> sequence) {
+        return sequence.associateWith(String::valueOf)
+                .filterValues(s -> s.startsWith("1"))
+                .toMapX();
+    }
+
+    @Test
     void testGenerateSequence() {
         final ListX<String> strings = Sequence.generate(0, i -> ++i)
                 .map(Generator::fib)
@@ -216,9 +276,10 @@ class SequenceTest {
     @Test
     void testLargeSequence() {
         final ListX<BigDecimal> bigDecimals = IntRange.of(0, 100_000)
-                .filter(integer -> integer % 2 == 0)
+                .filter(IntX::isEven)
                 .map(BigDecimal::valueOf)
-                .sortedDescending();
+                .sortedDescending()
+                .toListX();
 
         assertEquals(50_000, bigDecimals.size());
     }
@@ -278,21 +339,21 @@ class SequenceTest {
     void testRange() {
         assertArrayEquals(
                 IntStream.range(5, 10).toArray(),
-                IntRange.of(5, 10).toIntArrayOf(Integer::intValue));
+                IntRange.of(5, 10).toIntArray(It::asInt));
     }
 
     @Test
     void testRangeWithInterval() {
         assertArrayEquals(
                 IntStream.range(5, 10).filter(IntX::isEven).toArray(),
-                IntRange.of(5, 10).filter(IntX::isEven).toIntArrayOf(Integer::intValue));
+                IntRange.of(5, 10).filter(IntX::isEven).toIntArray(It::asInt));
     }
 
     @Test
     void testRangeClosed() {
         assertArrayEquals(
                 IntStream.rangeClosed(5, 10).toArray(),
-                IntRange.closed(5, 10).toIntArrayOf(Integer::intValue));
+                IntRange.closed(5, 10).toIntArray(It::asInt));
     }
 
     @Test
@@ -440,6 +501,7 @@ class SequenceTest {
     @Test
     void testZipWithNext() {
         final ListX<Integer> sums = IntRange.of(0, 1_000)
+                .shuffled()
                 .filter(IntX.multipleOf(10))
                 .onEach(i -> It.print(i + ", "))
                 .zipWithNext(Integer::sum)
@@ -459,8 +521,23 @@ class SequenceTest {
 
         final MapX<Integer, Character> mapX = Sequence.of(map)
                 .mapValues(s -> StringX.of(s).first())
-                .filterByValues(Character::isLetter)
-                .filterByKeys(IntX::isEven)
+                .filterValues(Character::isLetter)
+                .filterKeys(IntX::isEven)
+                .toMapX();
+
+        assertEquals(2, mapX.size());
+    }
+
+    @Test
+    void testSequenceAssociateWith() {
+        final var listX = ListX.of(1, 2, 3, 4);
+
+        final var mapX = listX.asSequence()
+                .associateWith(String::valueOf)
+                .onEach(System.out::println)
+                .mapValues(s -> StringX.of(s).first())
+                .filterKeys(IntX::isEven)
+                .onEachKey(System.out::println)
                 .toMapX();
 
         assertEquals(2, mapX.size());
@@ -470,6 +547,11 @@ class SequenceTest {
     void testEmpty() {
         final List<Object> list = Sequence.empty().toList();
         assertTrue(list.isEmpty());
+    }
+
+    @Test
+    void testSequenceOfNullable() {
+        assertTrue(Sequence.ofNullable(null).toList().isEmpty());
     }
 
     @Test
@@ -572,7 +654,7 @@ class SequenceTest {
 
         assertAll(
                 () -> assertEquals(100, triple.first().size()),
-                () -> assertEquals(Year.of(0), triple.second().toListXOf(Year::of).first()),
+                () -> assertEquals(Year.of(0), triple.second().map(Year::of).first()),
                 () -> assertEquals(49.5, triple.third().getAverage())
         );
     }

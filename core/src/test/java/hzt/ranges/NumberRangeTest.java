@@ -14,7 +14,7 @@ class NumberRangeTest {
     void testLongRangeToArray() {
         final ArrayX<Long> longs = LongRange.of(0, 1000).toArrayX();
 
-        final BigDecimalX average = longs.toBigDecimalAverage(BigDecimalX::of);
+        final BigDecimalX average = longs.toBigDecimalXAverage(BigDecimalX::of);
 
         System.out.println("average = " + average);
 

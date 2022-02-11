@@ -12,8 +12,11 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
+
+import static hzt.PreConditions.require;
 
 /**
  * This class represents an immutable non-null list. When a list of this interface is created, all null values are filtered out
@@ -185,6 +188,11 @@ public interface ListX<E> extends CollectionView<E>, Transformable<ListX<E>> {
 
     ListX<E> subList(int fromIndex, int toIndex);
 
+    default ListX<E> skipLast(int n) {
+        require(n >= 0, () -> "Requested element count " + n + " is less than zero.");
+        return take(Math.max((size() - n), 0));
+    }
+
     default ListX<E> skipLastWhile(@NotNull Predicate<E> predicate) {
         if (isEmpty()) {
             return MutableListX.empty();
@@ -220,4 +228,14 @@ public interface ListX<E> extends CollectionView<E>, Transformable<ListX<E>> {
         return this;
     }
 
+    @Override
+    default @NotNull ListX<E> onEach(@NotNull Consumer<? super E> consumer) {
+        return ListX.of(CollectionView.super.onEach(consumer));
+    }
+
+    @Override
+    @NotNull
+    default <R> ListX<E> onEach(@NotNull Function<? super E, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
+        return ListX.of(CollectionView.super.onEach(selector, consumer));
+    }
 }

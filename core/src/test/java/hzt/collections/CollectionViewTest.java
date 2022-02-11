@@ -1,5 +1,6 @@
 package hzt.collections;
 
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -43,6 +44,17 @@ class CollectionViewTest {
         Iterable<String> iterable = Arrays.asList("string", "tesst", "not");
 
         assertFalse(strings.containsAll(iterable));
+    }
+
+    @Test
+    void testMapMulti() {
+        final var input = ListX.of(ListX.of("a", "b", "c"), ListX.of("d", "e", "f", "g"));
+
+        final var strings = input.<String>mapMulti(Iterable::forEach);
+
+        strings.forEach(It::println);
+
+        assertEquals(ListX.of("a", "b", "c", "d", "e", "f", "g"), strings);
     }
 
 }

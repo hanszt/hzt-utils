@@ -57,6 +57,12 @@ public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>
         return BigDecimalX.of(BigDecimal.valueOf(s));
     }
 
+    @NotNull
+    @Override
+    public BigDecimalX add(BigDecimal augend) {
+        return BigDecimalX.of(super.add(augend));
+    }
+
     @Override
     public @NotNull BigDecimalX add(BigDecimal augend, MathContext mc) {
         return of(super.add(augend, mc));

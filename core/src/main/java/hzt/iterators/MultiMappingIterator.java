@@ -1,23 +1,22 @@
 package hzt.iterators;
 
+import hzt.collections.MutableListX;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.Function;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public final class FlatteningIterator<T, R> implements Iterator<R> {
+public class MultiMappingIterator<T, R> implements Iterator<R> {
 
     private final Iterator<T> iterator;
-    private final Function<T, Iterator<R>> toIteratorFunction;
+    private final BiConsumer<? super T, ? super Consumer<R>> mapper;
 
     private Iterator<R> itemIterator = null;
 
-    private FlatteningIterator(Iterator<T> iterator, Function<T, Iterator<R>> toIteratorFunction) {
+    public MultiMappingIterator(Iterator<T> iterator, BiConsumer<? super T, ? super Consumer<R>> mapper) {
         this.iterator = iterator;
-        this.toIteratorFunction = toIteratorFunction;
-    }
-
-    public static <T, R> FlatteningIterator<T, R> of(Iterator<T> iterator, Function<T, Iterator<R>> toIteratorFunction) {
-        return new FlatteningIterator<>(iterator, toIteratorFunction);
+        this.mapper = mapper;
     }
 
     @Override
@@ -41,7 +40,9 @@ public final class FlatteningIterator<T, R> implements Iterator<R> {
             if (!iterator.hasNext()) {
                 return false;
             } else {
-                final Iterator<R> nextItemIterator = toIteratorFunction.apply(iterator.next());
+                MutableListX<R> list = MutableListX.empty();
+                mapper.accept(iterator.next(), (Consumer<R>) list::add);
+                final Iterator<R> nextItemIterator = list.iterator();
                 if (nextItemIterator.hasNext()) {
                     itemIterator = nextItemIterator;
                     return true;

@@ -1,5 +1,8 @@
 package hzt.collections;
 
+import hzt.numbers.IntX;
+import hzt.ranges.DoubleRange;
+import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
@@ -12,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -27,8 +31,8 @@ class ListXTest {
         final ListX<String> strings = ListX.of("hallo", "asffasf", "string", "test");
 
         assertAll(
-                () -> assertEquals("test", strings.get(3)),
-                () -> assertEquals(4, strings.size())
+                () -> assertEquals("test", words.get(3)),
+                () -> assertEquals(4, words.size())
         );
     }
 
@@ -42,7 +46,7 @@ class ListXTest {
 
         expected.add(LocalDate.MIN);
 
-        final MutableListX<LocalDate> dates = museums.toMutableListOf(PaintingAuction::getDateOfOpening);
+        final MutableListX<LocalDate> dates = museums.mapTo(MutableListX::of, PaintingAuction::getDateOfOpening);
 
         dates.add(LocalDate.MIN);
 
@@ -135,6 +139,15 @@ class ListXTest {
     }
 
     @Test
+    void testSkipLast() {
+        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+
+        final var integers = list.skipLast(2);
+
+        assertEquals(ListX.ofInts(1, 2, 3, 4, 5), integers);
+    }
+
+    @Test
     void testAlso() {
         final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
 
@@ -143,7 +156,7 @@ class ListXTest {
                 .collect(Collectors.toList());
 
         final CollectionView<LocalDate> dates = museums
-                .toMutableListOf(PaintingAuction::getDateOfOpening)
+                .mapTo(MutableListX::of, PaintingAuction::getDateOfOpening)
                 .also(System.out::println);
 
         It.println("dates = " + dates);
@@ -164,7 +177,7 @@ class ListXTest {
                 .when(ListX::isNotEmpty, System.out::println)
                 .when(list -> list.size() > 3, System.out::println)
                 .takeIf(ListX::isNotEmpty)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         It.println("dates = " + dates);
 

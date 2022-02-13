@@ -1,5 +1,6 @@
 package hzt.iterables;
 
+import hzt.iterators.IndexedIterator;
 import hzt.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,12 +12,8 @@ import java.util.function.Consumer;
 @FunctionalInterface
 public interface IndexedIterable<T> extends Iterable<T> {
 
-    default IndexedIterable<IndexedValue<T>> withIndex() {
-        return this::indexedIterator;
-    }
-
     default @NotNull Iterator<IndexedValue<T>> indexedIterator() {
-        return IterableXHelper.indexedIterator(iterator());
+        return IndexedIterator.of(iterator());
     }
 
     default void forEachIndexed(BiConsumer<Integer, T> action) {

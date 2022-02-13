@@ -1,7 +1,6 @@
 package hzt.iterables;
 
 import hzt.collections.ListX;
-import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.collections.MutableSetX;
 import hzt.collections.SetX;
@@ -14,8 +13,6 @@ import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -45,14 +42,11 @@ import java.util.stream.StreamSupport;
  * @author Hans Zuidervaart
  */
 public interface IterableX<T> extends Mappable<T>, Filterable<T>,
-        Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>, Collectable<T> {
+        Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>, Collectable<T>, Groupable<T> {
 
-    IterableX<T> plus(@NotNull T... values);
+    IterableX<T> plus(@NotNull T value);
 
     IterableX<T> plus(@NotNull Iterable<T> values);
-
-    @Override
-     <R> IterableX<R> map(@NotNull Function<? super T, ? extends R> mapper);
 
     default <C extends Collection<T>> C to(Supplier<C> collectionFactory) {
         return IterableXHelper.mapFilteringTo(this, collectionFactory, It::noFilter, It::self, It::noFilter);
@@ -80,6 +74,10 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>,
         return DoubleRange.of(asSequence().map(keyMapper::applyAsDouble));
     }
 
+    <K> EntryIterable<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper);
+
+    <V> EntryIterable<T, V> associateWith(@NotNull Function<? super T, ? extends V> valueMapper);
+
     default <R> void forEach(@NotNull Function<? super T, ? extends R> selector,
                              @NotNull Consumer<? super R> consumer) {
         onEach(selector, consumer);
@@ -99,56 +97,27 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>,
         return this;
     }
 
-    default MapX<T, MutableListX<T>> group() {
-        return groupBy(It::self);
+    default SetX<T> intersect(@NotNull Iterable<T> other) {
+        final var intersection = toMutableSet();
+        final var otherCollection = other instanceof Collectable<?> ? (Collection<T>) other : MutableListX.of(other);
+        intersection.retainAll(otherCollection);
+        return intersection;
     }
 
-    default <K> MapX<K, MutableListX<T>> groupBy(@NotNull Function<? super T, ? extends K> classifier) {
-        return groupMapping(classifier, It::self);
-    }
-
-    default <K, R> MapX<K, MutableListX<R>> groupMapping(@NotNull Function<? super T, ? extends K> classifier,
-                                                         @NotNull Function<? super T, ? extends R> valueMapper) {
-        return IterableReductions.groupMapping(this, classifier, valueMapper);
-    }
-
-    default Pair<ListX<T>, ListX<T>> partition(@NotNull Predicate<T> predicate) {
-        return partitionMapping(predicate, It::self);
-    }
-
-    default <R> Pair<ListX<R>, ListX<R>> partitionMapping(@NotNull Predicate<T> predicate,
-                                                          @NotNull Function<? super T, ? extends R> resultMapper) {
-        return IterableReductions.partitionMapping(this, predicate, resultMapper);
-    }
-
-    default <S, C extends Collection<S>, R> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends C> toCollectionMapper,
+    default <S, I extends Iterable<S>, R> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper,
                                                                    @NotNull Function<? super S, ? extends R> selector) {
-        return IterableReductions.intersectionOf(this, toCollectionMapper, selector);
+        return IterableReductions.intersectionOf(this, toIterableMapper, selector);
     }
 
-    default <R, C extends Collection<R>> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends C> toCollectionMapper) {
-        return intersectionOf(toCollectionMapper, It::self);
+    default <R, I extends Iterable<R>> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper) {
+        return intersectionOf(toIterableMapper, It::self);
     }
 
-    <A, R> IterableX<R> zipWith(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super T, ? super A, ? extends R> function);
+    <A, R> IterableX<R> zip(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super T, ? super A, ? extends R> function);
+
+    IterableX<Pair<T, T>> zipWithNext();
 
     <R> IterableX<R> zipWithNext(BiFunction<T, T, R> function);
-
-    default <A, R> List<R> zipToListWith(@NotNull Iterable<A> otherIterable,
-                                          @NotNull BiFunction<? super T, ? super A, ? extends R> function) {
-        final Iterator<A> otherIterator = otherIterable.iterator();
-        final Iterator<T> iterator = iterator();
-        final int resultListSize = Math.min(IterableXHelper.collectionSizeOrElse(this, 10),
-                IterableXHelper.collectionSizeOrElse(otherIterable, 10));
-
-        final MutableListX<R> list = MutableListX.withInitCapacity(resultListSize);
-        while (iterator.hasNext() && otherIterator.hasNext()) {
-            final T next = iterator.next();
-            final A otherNext = otherIterator.next();
-            list.add(function.apply(next, otherNext));
-        }
-        return list;
-    }
 
     IterableX<ListX<T>> chunked(int size);
 
@@ -171,9 +140,9 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>,
 
     IterableX<T> skip(long count);
 
-    IterableX<T> skipWhileInclusive(@NotNull Predicate<T> predicate);
-
     IterableX<T> skipWhile(@NotNull Predicate<T> predicate);
+
+    IterableX<T> skipWhileInclusive(@NotNull Predicate<T> predicate);
 
     IterableX<T> take(long n);
 

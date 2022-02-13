@@ -7,7 +7,11 @@ import hzt.collections.MutableListX;
 import hzt.collections.MutableMapX;
 import hzt.collections.MutableSetX;
 import hzt.collections.SetX;
-import hzt.sequences.Sequence;
+import hzt.collectors.CollectorsX;
+import hzt.function.QuadFunction;
+import hzt.function.TriFunction;
+import hzt.tuples.Pair;
+import hzt.tuples.Triple;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
@@ -25,6 +30,7 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.stream.Collector;
 
+@FunctionalInterface
 public interface Collectable<T> extends Iterable<T> {
 
     default T[] toTypedArray(IntFunction<T[]> generator) {
@@ -51,19 +57,19 @@ public interface Collectable<T> extends Iterable<T> {
 
     default int[] toIntArray(@NotNull ToIntFunction<? super T> mapper) {
         int[] array = new int[(int) IterableXHelper.count(this, Objects::nonNull)];
-        IterableXHelper.exposeIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsInt(t));
+        IterableXHelper.exposeIntIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsInt(t));
         return array;
     }
 
     default long[] toLongArray(@NotNull ToLongFunction<? super T> mapper) {
         long[] array = new long[(int) IterableXHelper.count(this, Objects::nonNull)];
-        IterableXHelper.exposeIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsLong(t));
+        IterableXHelper.exposeIntIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsLong(t));
         return array;
     }
 
     default double[] toDoubleArray(@NotNull ToDoubleFunction<? super T> mapper) {
         double[] array = new double[(int) IterableXHelper.count(this, Objects::nonNull)];
-        IterableXHelper.exposeIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsDouble(t));
+        IterableXHelper.exposeIntIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsDouble(t));
         return array;
     }
 
@@ -89,14 +95,14 @@ public interface Collectable<T> extends Iterable<T> {
         return toMutableMap(keyMapper, valueMapper);
     }
 
-    <K> EntryIterable<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper);
-
-    <V> EntryIterable<T, V> associateWith(@NotNull Function<? super T, ? extends V> valueMapper);
-
     default <A, R> R collect(@NotNull Collector<T, A, R> collector) {
         A result = collector.supplier().get();
         final BiConsumer<A, T> accumulator = collector.accumulator();
-        Sequence.of(this).filter(Objects::nonNull).forEach(t -> accumulator.accept(result, t));
+        for (T t : this) {
+            if (t != null) {
+                accumulator.accept(result, t);
+            }
+        }
         return collector.finisher().apply(result);
     }
 
@@ -129,6 +135,38 @@ public interface Collectable<T> extends Iterable<T> {
             }
         }
         return finisher.apply(result);
+    }
+
+    default <R1, R2, R> R teeing(@NotNull Collector<? super T, ?, R1> downstream1,
+                                 @NotNull Collector<? super T, ?, R2> downstream2,
+                                 @NotNull BiFunction<? super R1, ? super R2, R> merger) {
+        return collect(CollectorsX.teeing(downstream1, downstream2, merger));
+    }
+
+    default <R1, R2> Pair<R1, R2> teeing(@NotNull Collector<? super T, ?, R1> downstream1,
+                                         @NotNull Collector<? super T, ?, R2> downstream2) {
+        return teeing(downstream1, downstream2, Pair::of);
+    }
+
+    default <R1, R2, R3, R> R branching(@NotNull Collector<? super T, ?, R1> downstream1,
+                                        @NotNull Collector<? super T, ?, R2> downstream2,
+                                        @NotNull Collector<? super T, ?, R3> downstream3,
+                                        @NotNull TriFunction<? super R1, ? super R2, ? super R3, R> merger) {
+        return collect(CollectorsX.branching(downstream1, downstream2, downstream3, merger));
+    }
+
+    default <R1, R2, R3> Triple<R1, R2, R3> branching(@NotNull Collector<? super T, ?, R1> downstream1,
+                                                      @NotNull Collector<? super T, ?, R2> downstream2,
+                                                      @NotNull Collector<? super T, ?, R3> downstream3) {
+        return branching(downstream1, downstream2, downstream3, Triple::of);
+    }
+
+    default <R1, R2, R3, R4, R> R branching(@NotNull Collector<? super T, ?, R1> downstream1,
+                                            @NotNull Collector<? super T, ?, R2> downstream2,
+                                            @NotNull Collector<? super T, ?, R3> downstream3,
+                                            @NotNull Collector<? super T, ?, R4> downstream4,
+                                            @NotNull QuadFunction<? super R1, ? super R2, ? super R3, ? super R4, R> merger) {
+        return collect(CollectorsX.branching(downstream1, downstream2, downstream3, downstream4, merger));
     }
 
     default MutableListX<T> toMutableList() {

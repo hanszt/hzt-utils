@@ -26,18 +26,18 @@ class StatisticsTest {
 
         final var stats = intRange.stats();
 
-        System.out.println("stats = " + stats);
+        It.println("stats = " + stats);
         final var standardDeviationIntRange = stats.getStandardDeviation();
 
-        System.out.println("longRange.count() = " + longRange.count());
-        System.out.println(longRange.sum());
+        It.println("longRange.count() = " + longRange.count());
+        It.println(longRange.sum());
         It.println(intRange.joinToString());
         It.println(longRange.joinToString());
         It.println(doubleRange.joinToString());
         It.println(standardDeviationIntRange);
 
         assertAll(
-                () -> assertEquals(standardDeviationIntRange, longRange.stats().also(System.out::println).getStandardDeviation()),
+                () -> assertEquals(standardDeviationIntRange, longRange.stats().also(It::println).getStandardDeviation()),
                 () -> assertEquals(standardDeviationIntRange, doubleRange.stats().getStandardDeviation())
         );
 

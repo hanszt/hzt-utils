@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Comparator;
 import java.util.function.Function;
 
+@FunctionalInterface
 public interface Sortable<T> extends Iterable<T> {
 
     private <R extends Comparable<R>> ListX<T> toSortedListX(@NotNull Function<? super T, ? extends R> selector) {
@@ -27,7 +28,7 @@ public interface Sortable<T> extends Iterable<T> {
         return toSortedListX(selector);
     }
 
-    default <R extends Comparable<R>> Sortable<T> sortedBy(Comparator<T> comparator) {
+    default Sortable<T> sortedBy(Comparator<T> comparator) {
         final MutableListX<T> list = MutableListX.of(this);
         list.sort(comparator);
         return list;

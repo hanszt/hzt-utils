@@ -10,22 +10,16 @@ final class FilteringSequence<T> implements Sequence<T> {
 
     private final Sequence<T> upstream;
     private final Predicate<T> predicate;
-    private final boolean sendWhen;
 
     FilteringSequence(Sequence<T> upstream, Predicate<T> predicate) {
-        this(upstream, predicate, true);
-    }
-
-    FilteringSequence(Sequence<T> upstream, Predicate<T> predicate, boolean sendWhen) {
         this.upstream = upstream;
         this.predicate = predicate;
-        this.sendWhen = sendWhen;
     }
 
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return FilteringIterator.of(upstream.iterator(), predicate, sendWhen);
+        return FilteringIterator.of(upstream.iterator(), predicate, true);
     }
 
     @Override
@@ -33,7 +27,6 @@ final class FilteringSequence<T> implements Sequence<T> {
         return "FilteringSequence{" +
                 "upStream=" + upstream +
                 ", predicate=" + predicate +
-                ", sendWhen=" + sendWhen +
                 '}';
     }
 }

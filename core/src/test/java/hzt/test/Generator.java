@@ -45,9 +45,9 @@ public final class Generator {
         return new PaintingAuction("Van Gogh Auction", LocalDate.of(1992, Month.APRIL, 2), vanGoghPaintings);
     }
 
-    public static String toStringIn100Millis(int integer) {
+    public static String toStringIn50Millis(int integer) {
         try {
-            Thread.sleep(100);
+            Thread.sleep(50);
             return "val " + integer;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

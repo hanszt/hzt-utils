@@ -61,4 +61,20 @@ class EntrySequenceTest {
         );
     }
 
+    @Test
+    void testToEntrySequenceFromPairSequence() {
+        final var yearStringMapX = Sequence.generate(0, i -> ++i)
+                .map(Year::of)
+                .takeWhileInclusive(year -> year.isBefore(Year.of(2000)))
+                .zipWithNext()
+                .asEntrySequence(It::self)
+                .skip(20)
+                .toMutableMap();
+
+        assertAll(
+                () -> assertEquals(1980, yearStringMapX.size()),
+                () -> assertTrue(yearStringMapX.last().getValue().isLeap())
+        );
+    }
+
 }

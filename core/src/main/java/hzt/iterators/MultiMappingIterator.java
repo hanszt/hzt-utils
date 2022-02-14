@@ -1,22 +1,29 @@
 package hzt.iterators;
 
 import hzt.collections.MutableListX;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class MultiMappingIterator<T, R> implements Iterator<R> {
+public final class MultiMappingIterator<T, R> implements Iterator<R> {
 
     private final Iterator<T> iterator;
     private final BiConsumer<? super T, ? super Consumer<R>> mapper;
 
     private Iterator<R> itemIterator = null;
 
-    public MultiMappingIterator(Iterator<T> iterator, BiConsumer<? super T, ? super Consumer<R>> mapper) {
+    private MultiMappingIterator(@NotNull Iterator<T> iterator,
+                                 @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
         this.iterator = iterator;
         this.mapper = mapper;
+    }
+
+    public static <T, R> MultiMappingIterator<T, R> of(@NotNull Iterator<T> iterator,
+                                                       @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
+        return new MultiMappingIterator<>(iterator, mapper);
     }
 
     @Override

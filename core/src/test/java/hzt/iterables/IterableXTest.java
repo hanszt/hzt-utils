@@ -13,7 +13,6 @@ import hzt.strings.StringX;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
 import hzt.tuples.Pair;
-import hzt.tuples.Triple;
 import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
@@ -49,7 +48,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static hzt.collectors.CollectorsX.branching;
 import static hzt.collectors.CollectorsX.intersectingBy;
 import static hzt.collectors.CollectorsX.toListX;
 import static java.util.stream.Collectors.*;
@@ -107,13 +105,13 @@ public class IterableXTest {
                 .collect(toMap(It::self, Museum::getMostPopularPainting));
 
         final Map<Museum, Painting> actualMap = museumList.asSequence()
-                .onEach(System.out::println)
+                .onEach(It::println)
                 .associateWith(Museum::getMostPopularPainting)
-                .onEach(System.out::println)
+                .onEach(It::println)
                 .toMutableMap();
 
-        System.out.println("expectedMap.size() = " + expectedMap.size());
-        System.out.println("actualMap.size() = " + actualMap.size());
+        It.println("expectedMap.size() = " + expectedMap.size());
+        It.println("actualMap.size() = " + actualMap.size());
 
         assertEquals(expectedMap, actualMap);
     }
@@ -126,7 +124,7 @@ public class IterableXTest {
                 .flatMap(Museum::getPaintings)
                 .indices()
                 .windowed(3, IntRange::of)
-                .onEach(System.out::println)
+                .onEach(It::println)
                 .map(IntRange::sum).toListX();
 
         It.println("sumsOfThree = " + sumsOfThree);
@@ -476,7 +474,7 @@ public class IterableXTest {
     }
 
     @Test
-    void testIntersect() {
+    void testIntersectionOf() {
         final ListX<Collection<Integer>> collections = ListX.of(
                 Arrays.asList(1, 2, 3, 4, 5, 7),
                 Arrays.asList(2, 4, 5),
@@ -486,6 +484,16 @@ public class IterableXTest {
         final SetX<Integer> intersect = collections.intersectionOf(It::self);
 
         assertIterableEquals(Arrays.asList(4, 5), intersect);
+    }
+
+    @Test
+    void testIntersect() {
+        final var integers = ListX.of(1, 2, 3, 4, 5, 7);
+        final var otherInts = Arrays.asList(1, 4, 5, 6);
+
+        final var intersect = integers.intersect(otherInts);
+
+        assertEquals(SetX.of(1, 4, 5), intersect);
     }
 
     @Test
@@ -896,7 +904,7 @@ public class IterableXTest {
         ListX<Integer> values = ListX.of(0, 1, 2, 3, 4, 5, 6, 7);
         List<Integer> others = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
 
-        final ListX<Integer> integers = values.zipWith(others, Integer::compareTo);
+        final ListX<Integer> integers = values.zip(others, Integer::compareTo);
 
         assertIterableEquals(Arrays.asList(-1, -1, -1, 0, 1, 1, 1), integers);
     }
@@ -967,6 +975,15 @@ public class IterableXTest {
     }
 
     @Test
+    void testDistinct() {
+        final var integers = ListX.of(1, 1, 2, 3, 2, 4, 5, 3, 5, 6);
+
+        final var distinct = integers.distinct();
+
+        assertEquals(ListX.of(1, 2, 3, 4, 5, 6), distinct);
+    }
+
+    @Test
     void castIfInstanceOf() {
         final ListX<Comparable<?>> list = ListX.of(3.0, 2, 4, 3, BigDecimal.valueOf(10), 5L, 'a', "String");
 
@@ -981,28 +998,6 @@ public class IterableXTest {
     void testCreateAnEmptyIterableX() {
         final ArrayDeque<String> strings = ListX.<String>empty().to(ArrayDeque::new);
         assertTrue(strings.isEmpty());
-    }
-
-    @Test
-    void testStreamCollectingAndThenEquivalent() {
-        final MutableListX<Integer> integers = MutableListX.of(1, 4, 5, 3, 7, 4, 2);
-
-        final int expected = integers.stream()
-                .filter(n -> n > 4)
-                .collect(collectingAndThen(toListX(), IterableXTest::calculateProduct));
-
-        final int product = integers
-                .filter(n -> n > 4)
-                .let(IterableXTest::calculateProduct);
-
-        It.println("product = " + product);
-
-        assertEquals(expected, product, () -> "Something went wrong. Did you know, you can also crate dates from ints? " +
-                integers.toListOf(day -> LocalDate.of(2020, Month.JANUARY, day)));
-    }
-
-    private static int calculateProduct(ListX<Integer> list) {
-        return list.reduce((acc, i) -> acc * i).orElse(0);
     }
 
     @Test
@@ -1027,39 +1022,12 @@ public class IterableXTest {
     }
 
     @Test
-    void testBranchingPaintingDataToThreeValues() {
-        //arrange
-        final ListX<Painting> paintingList = ListX.of(TestSampleGenerator.createPaintingList());
-
-        final Triple<Map<Boolean, List<Painter>>, IntSummaryStatistics, Long> expected = paintingList.stream()
-                .collect(branching(
-                        partitioningBy(Painting::isInMuseum, mapping(Painting::painter, toList())),
-                        summarizingInt(Painting::ageInYears),
-                        counting()));
-
-        final var actual = paintingList.asSequence()
-                .toThree(s -> s.partitionMapping(Painting::isInMuseum, Painting::painter),
-                        s -> s.statsOfInts(Painting::ageInYears),
-                        Sequence::count);
-
-        final IntSummaryStatistics expectedStats = expected.second();
-        final IntSummaryStatistics actualStats = actual.second();
-
-        assertAll(
-                () -> assertEquals(expected.first().get(true), actual.first().first()),
-                () -> assertEquals(expectedStats.getAverage(), actualStats.getAverage()),
-                () -> assertEquals(expectedStats.getMax(), actualStats.getMax()),
-                () -> assertEquals(expected.third().intValue(), actual.third())
-        );
-    }
-
-    @Test
     void testDifferenceBetweenIterableXAndSequence() {
         final ListX<Integer> range = IntRange.of(0, 20).toListX();
 
         final ListX<String> strings = range.asSequence()
                 .filter(IntX::isEven)
-                .map(Generator::toStringIn100Millis)
+                .map(Generator::toStringIn50Millis)
                 .onEach(String::length, It::println)
                 .takeWhileInclusive(s -> s.length() < 6)
                 .toListX();

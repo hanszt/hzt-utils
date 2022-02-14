@@ -9,7 +9,6 @@ import hzt.collections.SetX;
 import hzt.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -79,15 +78,15 @@ public final class IterableReductions {
         return Pair.of(pair.first().toListX(), pair.second().toListX());
     }
 
-    public static <T, S, C extends Collection<S>, R> SetX<R> intersectionOf(
+    public static <T, S, I extends Iterable<S>, R> SetX<R> intersectionOf(
             @NotNull Iterable<T> iterable,
-            @NotNull Function<? super T, ? extends C> toCollectionMapper,
+            @NotNull Function<? super T, ? extends I> toCollectionMapper,
             @NotNull Function<? super S, ? extends R> selector) {
         MutableSetX<R> common = MutableSetX.empty();
         for (T t : iterable) {
-            final C collection = toCollectionMapper.apply(t);
+            final I otherIterable = toCollectionMapper.apply(t);
             final MutableListX<R> resultList = MutableListX.empty();
-            for (S s : collection) {
+            for (S s : otherIterable) {
                 final R r = selector.apply(s);
                 resultList.add(r);
             }

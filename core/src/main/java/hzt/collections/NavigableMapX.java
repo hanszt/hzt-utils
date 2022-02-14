@@ -83,5 +83,6 @@ public interface NavigableMapX<K, V> extends NavigableMap<K, V>, MutableMapX<K, 
     Entry<K, V> first();
 
     @Override
+    @NotNull
     Entry<K, V> last();
 }

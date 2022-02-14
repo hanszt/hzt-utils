@@ -7,6 +7,12 @@ import hzt.function.TriFunction;
 import hzt.iterables.IterableX;
 import hzt.iterables.IterableXHelper;
 import hzt.iterators.ArrayIterator;
+import hzt.iterators.FilteringIterator;
+import hzt.iterators.FlatteningIterator;
+import hzt.iterators.GeneratorIterator;
+import hzt.iterators.MultiMappingIterator;
+import hzt.iterators.SkipWhileIterator;
+import hzt.iterators.TakeWhileIterator;
 import hzt.ranges.DoubleRange;
 import hzt.ranges.IntRange;
 import hzt.ranges.LongRange;
@@ -74,19 +80,19 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     static <T> Sequence<T> generate(T seedValue, UnaryOperator<T> nextFunction) {
-        return seedValue == null ? new EmptySequence<>() : new GeneratorSequence<>(() -> seedValue, nextFunction);
+        return seedValue == null ? new EmptySequence<>() : (() -> GeneratorIterator.of(() -> seedValue, nextFunction));
     }
 
     static <T> Sequence<T> generate(Supplier<T> nextFunction) {
-        return new GeneratorSequence<>(nextFunction, t -> nextFunction.get());
+        return () -> GeneratorIterator.of(nextFunction, t -> nextFunction.get());
     }
 
     static <T> Sequence<T> generate(Supplier<T> seedFunction, UnaryOperator<T> nextFunction) {
-        return new GeneratorSequence<>(seedFunction, nextFunction);
+        return () -> GeneratorIterator.of(seedFunction, nextFunction);
     }
 
-    default Sequence<T> plus(@NotNull T... values) {
-        return Sequence.of(this, Sequence.of(values)).flatMap(It::self);
+    default Sequence<T> plus(@NotNull T value) {
+        return Sequence.of(this, Sequence.of(value)).flatMap(It::self);
     }
 
     default Sequence<T> plus(@NotNull Iterable<T> values) {
@@ -115,15 +121,15 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     default <R> Sequence<R> flatMap(@NotNull Function<T, Iterable<R>> transform) {
-        return new FlatteningSequence<>(this, t -> transform.apply(t).iterator());
+        return () -> FlatteningIterator.of(iterator(), t -> transform.apply(t).iterator());
     }
 
     default <R> Sequence<R> flatMapStream(@NotNull Function<T, Stream<R>> transform) {
-        return new FlatteningSequence<>(this, t -> transform.apply(t).iterator());
+        return () -> FlatteningIterator.of(iterator(), t -> transform.apply(t).iterator());
     }
 
     default <R> Sequence<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
-        return new MultiMappingSequence<>(this, mapper);
+        return () -> MultiMappingIterator.of(iterator(), mapper);
     }
 
     @Override
@@ -132,7 +138,11 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     default Sequence<T> filter(@NotNull Predicate<T> predicate) {
-        return new FilteringSequence<>(this, predicate);
+        return () -> FilteringIterator.of(iterator(), predicate);
+    }
+
+    default Sequence<T> filterNot(@NotNull Predicate<T> predicate) {
+        return () -> FilteringIterator.of(iterator(), predicate, false);
     }
 
     default <R> Sequence<T> filterBy(@NotNull Function<? super T, ? extends R> selector, @NotNull Predicate<R> predicate) {
@@ -142,12 +152,8 @@ public interface Sequence<T> extends IterableX<T> {
     @Override
     default Sequence<T> filterIndexed(@NotNull BiPredicate<Integer, T> predicate) {
         return new TransformingSequence<>(
-                new FilteringSequence<>(withIndex(),
+                () -> FilteringIterator.of(indexedIterator(),
                         val -> predicate.test(val.index(), val.value())), IndexedValue::value);
-    }
-
-    default Sequence<T> filterNot(@NotNull Predicate<T> predicate) {
-        return new FilteringSequence<>(this, predicate, false);
     }
 
     default Sequence<IndexedValue<T>> withIndex() {
@@ -169,6 +175,7 @@ public interface Sequence<T> extends IterableX<T> {
         });
     }
 
+    @Override
     @NotNull
     default Sequence<T> distinct() {
         return distinctBy(It::self);
@@ -216,12 +223,31 @@ public interface Sequence<T> extends IterableX<T> {
         return new WindowedSequence<>(this, size, step, partialWindows).map(transform);
     }
 
+    default Sequence<Pair<T, T>> zipWithNext() {
+        return zipWithNext(Pair::of);
+    }
+
     default <R> Sequence<R> zipWithNext(BiFunction<T, T, R> function) {
         return windowed(2, listX -> function.apply(listX.first(), listX.get(1)));
     }
 
-    default <A, R> Sequence<R> zipWith(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super T, ? super A, ? extends R> function) {
-        return Sequence.of(zipToListWith(iterable, function));
+    default <A, R> Sequence<R> zip(@NotNull Iterable<A> other, @NotNull BiFunction<? super T, ? super A, ? extends R> function) {
+        return () -> mergingIterator(other.iterator(), function);
+    }
+
+    private  <A, R> Iterator<R> mergingIterator(@NotNull Iterator<A> otherIterator,
+                                                @NotNull BiFunction<? super T, ? super A, ? extends R> transform) {
+        return new Iterator<>() {
+            private final Iterator<T> thisIterator = iterator();
+            @Override
+            public boolean hasNext() {
+                return thisIterator.hasNext() && otherIterator.hasNext();
+            }
+            @Override
+            public R next() {
+                return transform.apply(thisIterator.next(), otherIterator.next());
+            }
+        };
     }
 
     @Override
@@ -237,21 +263,21 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     default Sequence<T> takeWhile(@NotNull Predicate<T> predicate) {
-        return new TakeWhileSequence<>(this, predicate, false);
+        return () -> TakeWhileIterator.of(iterator(), predicate, false);
     }
 
     default Sequence<T> takeWhileInclusive(@NotNull Predicate<T> predicate) {
-        return new TakeWhileSequence<>(this, predicate, true);
+        return () -> TakeWhileIterator.of(iterator(), predicate, true);
     }
 
     @Override
     default Sequence<T> skipWhile(@NotNull Predicate<T> predicate) {
-        return new SkipWhileSequence<>(this, predicate, false);
+        return () -> SkipWhileIterator.of(iterator(), predicate, false);
     }
 
     @Override
     default Sequence<T> skipWhileInclusive(@NotNull Predicate<T> predicate) {
-        return new SkipWhileSequence<>(this, predicate, true);
+        return () -> SkipWhileIterator.of(iterator(), predicate, true);
     }
 
     default Sequence<T> skip(long n) {
@@ -266,7 +292,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default <R extends Comparable<R>> Sequence<T> sorted() {
+    default Sequence<T> sorted() {
         return Sequence.of(IterableX.super.sorted());
     }
 
@@ -276,12 +302,12 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default <R extends Comparable<R>> Sequence<T> sortedBy(Comparator<T> comparator) {
+    default Sequence<T> sortedBy(Comparator<T> comparator) {
         return Sequence.of(IterableX.super.sortedBy(comparator));
     }
 
     @Override
-    default <R extends Comparable<R>> Sequence<T> sortedDescending() {
+    default Sequence<T> sortedDescending() {
         return Sequence.of(IterableX.super.sortedDescending());
     }
 
@@ -309,7 +335,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @NotNull
-    private <K> Iterator<Pair<K, T>> associateByIterator(@NotNull Function<? super T, ? extends K> valueMapper) {
+    private <K> Iterator<Pair<K, T>> associateByIterator(@NotNull Function<? super T, ? extends K> keyMapper) {
         return new Iterator<>() {
             final Iterator<T> iterator = iterator();
             @Override
@@ -319,8 +345,7 @@ public interface Sequence<T> extends IterableX<T> {
             @Override
             public Pair<K, T> next() {
                 final var value = iterator.next();
-                final var key = valueMapper.apply(value);
-                return Pair.of(key, value);
+                return Pair.of(keyMapper.apply(value), value);
             }
         };
     }
@@ -340,8 +365,7 @@ public interface Sequence<T> extends IterableX<T> {
             @Override
             public Pair<T, V> next() {
                 final var key = iterator.next();
-                final var value = valueMapper.apply(key);
-                return Pair.of(key, value);
+                return Pair.of(key, valueMapper.apply(key));
             }
         };
     }

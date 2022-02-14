@@ -1,5 +1,6 @@
 package hzt.numbers;
 
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -54,7 +55,7 @@ class BigDecimalXTest {
         final BigDecimalX bigDecimalX = BigDecimalX.of(val)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        System.out.println("bigDecimalX = " + bigDecimalX);
+        It.println("bigDecimalX = " + bigDecimalX);
 
         assertEquals(bigDecimal, bigDecimalX);
     }

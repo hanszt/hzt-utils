@@ -1,6 +1,5 @@
 package hzt.iterables;
 
-import hzt.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -13,7 +12,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -141,20 +139,12 @@ public final class IterableXHelper {
         return RANDOM.nextDouble();
     }
 
-    static <T> int collectionSizeOrElse(Iterable<T> iterable, @SuppressWarnings("SameParameterValue") int defaultSize) {
-        return collectionSizeOrElseGet(iterable, () -> defaultSize);
-    }
-
-    static <T> int collectionSizeOrElseGet(Iterable<T> iterable, IntSupplier supplier) {
-        return iterable instanceof Collection<T> c ? c.size() : supplier.getAsInt();
-    }
-
     @NotNull
     static NoSuchElementException noValuePresentException() {
         return new NoSuchElementException("No value present");
     }
 
-    static <T> void exposeIndexedNonNullVal(@NotNull Iterable<T> iterable, @NotNull BiConsumer<Integer, T> consumer) {
+    static <T> void exposeIntIndexedNonNullVal(@NotNull Iterable<T> iterable, @NotNull BiConsumer<Integer, T> consumer) {
         int counter = 0;
         for (T value : iterable) {
             if (value != null) {
@@ -165,26 +155,6 @@ public final class IterableXHelper {
     }
 
     static <T> void exposeNonNullVal(@NotNull Iterable<T> iterable, @NotNull Consumer<T> consumer) {
-        exposeIndexedNonNullVal(iterable, (i, v) -> consumer.accept(v));
-    }
-
-    public static <T> Iterator<IndexedValue<T>> indexedIterator(Iterator<T> iterator) {
-        return new Iterator<>() {
-            private int index = 0;
-
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public IndexedValue<T> next() {
-                int prevIndex = index;
-                if (prevIndex < 0) {
-                    throw new IllegalStateException("indexed iterator index overflow");
-                }
-                return new IndexedValue<>(index++, iterator.next());
-            }
-        };
+        exposeIntIndexedNonNullVal(iterable, (i, v) -> consumer.accept(v));
     }
 }

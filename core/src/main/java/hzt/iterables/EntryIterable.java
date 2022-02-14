@@ -124,7 +124,7 @@ public interface EntryIterable<K, V> extends IterableX<Map.Entry<K, V>> {
     }
 
     default <R> ListX<R> toListXOf(BiFunction<K, V, R> transform) {
-        return map(e -> transform.apply(e.getKey(), e.getValue())).toListX();
+        return ListX.of(map(e -> transform.apply(e.getKey(), e.getValue())));
     }
 
     default <R> SetX<R> toSetXOf(BiFunction<K, V, R> transform) {

@@ -10,6 +10,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class CollectionViewTest {
 
     @Test
+    void testContainsNot() {
+        final var strings = ListX.of("hallo", "asffasf", "string", "test");
+
+        assertTrue(strings.containsNot("strings"));
+    }
+
+    @Test
     void testContainsAll() {
         final var strings = ListX.of("hallo", "asffasf", "string", "test");
 

@@ -237,22 +237,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     default <A, R> Sequence<R> zip(@NotNull Iterable<A> other, @NotNull BiFunction<? super T, ? super A, ? extends R> function) {
-        return () -> mergingIterator(other.iterator(), function);
-    }
-
-    private  <A, R> Iterator<R> mergingIterator(@NotNull Iterator<A> otherIterator,
-                                                @NotNull BiFunction<? super T, ? super A, ? extends R> transform) {
-        return new Iterator<>() {
-            private final Iterator<T> thisIterator = iterator();
-            @Override
-            public boolean hasNext() {
-                return thisIterator.hasNext() && otherIterator.hasNext();
-            }
-            @Override
-            public R next() {
-                return transform.apply(thisIterator.next(), otherIterator.next());
-            }
-        };
+        return () -> SequenceHelper.mergingIterator(iterator(), other.iterator(), function);
     }
 
     @Override

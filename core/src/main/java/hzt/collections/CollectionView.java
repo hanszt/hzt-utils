@@ -19,7 +19,6 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 
 @FunctionalInterface
@@ -197,35 +196,11 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     default <A, R> ListX<R> zip(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super E, ? super A, ? extends R> function) {
-        return zipToListXWith(iterable, function);
-    }
-
-    private <A, R> ListX<R> zipToListXWith(@NotNull Iterable<A> otherIterable,
-                                          @NotNull BiFunction<? super E, ? super A, ? extends R> function) {
-        final Iterator<A> otherIterator = otherIterable.iterator();
-        final Iterator<E> iterator = iterator();
-        final int resultListSize = Math.min(collectionSizeOrElse(this, 10),
-                collectionSizeOrElse(otherIterable, 10));
-
-        final MutableListX<R> list = MutableListX.withInitCapacity(resultListSize);
-        while (iterator.hasNext() && otherIterator.hasNext()) {
-            final E next = iterator.next();
-            final A otherNext = otherIterator.next();
-            list.add(function.apply(next, otherNext));
-        }
-        return list;
-    }
-
-    static <T> int collectionSizeOrElse(Iterable<T> iterable, @SuppressWarnings("SameParameterValue") int defaultSize) {
-        return collectionSizeOrElseGet(iterable, () -> defaultSize);
-    }
-
-    static <T> int collectionSizeOrElseGet(Iterable<T> iterable, IntSupplier supplier) {
-        return iterable instanceof Collection ? ((Collection<T>) iterable).size() : supplier.getAsInt();
+        return CollectionsHelper.zipToListXWith(this, iterable, function);
     }
 
     default ListX<Pair<E, E>> zipWithNext() {
-        return zipWithNextToMutableListOf(Pair::of);
+        return CollectionsHelper.zipWithNextToMutableListOf(iterator(), Pair::of);
     }
 
     default <R> ListX<R> zipWithNext(BiFunction<E, E, R> function) {

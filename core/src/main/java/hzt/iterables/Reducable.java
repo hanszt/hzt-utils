@@ -43,7 +43,7 @@ public interface Reducable<T> extends Iterable<T> {
     }
 
     default @NotNull T single() {
-        final var iterator = iterator();
+        final Iterator<T> iterator = iterator();
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }

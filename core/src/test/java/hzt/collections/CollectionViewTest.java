@@ -13,7 +13,7 @@ class CollectionViewTest {
 
     @Test
     void testContainsNot() {
-        final var strings = ListX.of("hallo", "asffasf", "string", "test");
+        final ListX<String> strings = ListX.of("hallo", "asffasf", "string", "test");
 
         assertTrue(strings.containsNot("strings"));
     }

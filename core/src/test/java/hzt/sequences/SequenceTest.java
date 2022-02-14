@@ -6,15 +6,13 @@ import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.collections.SetX;
-import hzt.iterables.IterableX;
 import hzt.numbers.IntX;
 import hzt.numbers.LongX;
 import hzt.ranges.IntRange;
 import hzt.statistics.IntStatistics;
 import hzt.strings.StringX;
 import hzt.test.Generator;
-import hzt.tuples.Pair;
-import hzt.tuples.Triple;
+import hzt.tuples.IndexedValue;
 import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
@@ -262,7 +260,7 @@ class SequenceTest {
 
     @Test
     void testGenerateSequence() {
-        final ListX<String> strings = Sequence.generate(0, i -> ++i)
+        final ListX<Integer> strings = Sequence.generate(0, i -> ++i)
                 .map(Generator::fib)
                 .filter(LongX::isOdd)
                 .take(12)
@@ -568,7 +566,7 @@ class SequenceTest {
     void testSequenceFromStream() {
         final Stream<Integer> stream = IntStream.range(0, 100).boxed();
 
-        final List<Integer> list = Sequence.of(stream)
+        final List<IndexedValue<Integer>> list = Sequence.of(stream)
                 .filter(IntX::isEven)
                 .sorted()
                 .windowed(3, true)

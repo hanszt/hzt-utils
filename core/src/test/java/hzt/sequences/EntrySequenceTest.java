@@ -65,7 +65,7 @@ class EntrySequenceTest {
 
     @Test
     void testToEntrySequenceFromPairSequence() {
-        final var yearStringMapX = Sequence.generate(0, i -> ++i)
+        final MutableMapX<Year, Year> yearStringMapX = Sequence.generate(0, i -> ++i)
                 .map(Year::of)
                 .takeWhileInclusive(year -> year.isBefore(Year.of(2000)))
                 .zipWithNext()

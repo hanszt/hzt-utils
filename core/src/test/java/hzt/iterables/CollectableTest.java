@@ -5,6 +5,8 @@ import hzt.collectors.CollectorsX;
 import hzt.numbers.IntX;
 import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
+import hzt.statistics.IntStatistics;
+import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
@@ -36,18 +38,18 @@ class CollectableTest {
 
     @Test
     void testTeeingYieldsTwoValuesWhileOnlyGoingThroughPipelineOnce() {
-        final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
 
-        final var toTwoCounter = new AtomicInteger();
+        final AtomicInteger toTwoCounter = new AtomicInteger();
 
-        final var pair = integers.asSequence()
+        final Pair<Long, Double> pair = integers.asSequence()
                 .onEach(i -> toTwoCounter.incrementAndGet())
                 .asIntRange(It::asInt)
                 .intsToTwo(IntRange::sum, IntRange::average);
 
-        final var collectorCounter = new AtomicInteger();
+        final AtomicInteger collectorCounter = new AtomicInteger();
 
-        final var collectedPair = integers.asSequence()
+        final Pair<Long, Double> collectedPair = integers.asSequence()
                 .onEach(i -> collectorCounter.incrementAndGet())
                 .teeing(Collectors.summingLong(It::asInt), Collectors.averagingInt(It::asInt));
 
@@ -60,18 +62,18 @@ class CollectableTest {
 
     @Test
     void testBranchingYieldsThreeValuesWhileOnlyGoingThroughPipelineOnce() {
-        final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
 
-        final var toThreeCounter = new AtomicInteger();
+        final AtomicInteger toThreeCounter = new AtomicInteger();
 
-        final var triple = integers.asSequence()
+        final Triple<Long, Double, Double> triple = integers.asSequence()
                 .onEach(i -> toThreeCounter.incrementAndGet())
                 .asIntRange(It::asInt)
                 .intsToThree(IntRange::sum, IntRange::average, IntRange::stdDev);
 
-        final var branchingCounter = new AtomicInteger();
+        final AtomicInteger branchingCounter = new AtomicInteger();
 
-        final var collectedTriple = integers.asSequence()
+        final Triple<Long, Double, Double> collectedTriple = integers.asSequence()
                 .onEach(i -> branchingCounter.incrementAndGet())
                 .branching(
                         Collectors.summingLong(It::asInt),
@@ -87,7 +89,7 @@ class CollectableTest {
 
     @Test
     void testBranchSequence() {
-        final var leepYearResult = Sequence
+        final Pair<List<LocalDate>, LocalDate> leepYearResult = Sequence
                 .generate(LocalDate.of(1950, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhileInclusive(date -> date.getYear() <= 2000)
                 .filter(LocalDate::isLeapYear)
@@ -110,7 +112,7 @@ class CollectableTest {
                         summarizingInt(Painting::ageInYears),
                         counting()));
 
-        final var actual = paintingList.asSequence()
+        final Triple<Pair<ListX<Painter>, ListX<Painter>>, IntStatistics, Long> actual = paintingList.asSequence()
                 .toThree(s -> s.partitionMapping(Painting::isInMuseum, Painting::painter),
                         s -> s.statsOfInts(Painting::ageInYears),
                         Sequence::count);
@@ -128,7 +130,7 @@ class CollectableTest {
 
     @Test
     void testBranchSequenceToThree() {
-        final var triple = IntRange.from(0).until(100)
+        final Triple<List<Integer>, Sequence<Integer>, IntStatistics> triple = IntRange.from(0).until(100)
                 .toThree(Sequence::toList, s -> s.filter(IntX::isEven), s -> s.statsOfInts(It::self));
 
         assertAll(
@@ -139,30 +141,12 @@ class CollectableTest {
     }
 
     @Test
-    void testBranchSequenceToFour() {
-        final var actual = IntRange.from(0).until(100)
-                .filter(It::noFilter)
-                .toFour(Sequence::count,
-                        s -> s.minOf(It::self),
-                        s -> s.maxOf(It::self),
-                        s -> s.sumOfInts(It::self),
-                        IntSummaryStatistics::new);
-
-        assertAll(
-                () -> assertEquals(100, actual.getCount()),
-                () -> assertEquals(4950, actual.getSum()),
-                () -> assertEquals(49.5, actual.getAverage()),
-                () -> assertEquals(99, actual.getMax())
-        );
-    }
-
-    @Test
     void testStreamCanOnlyBeConsumedOnce() {
-        final var yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
+        final Stream<Year> yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
                 .filter(IntX::isEven)
                 .map(Year::of);
 
-        final var years = yearStream.collect(Collectors.toList());
+        final List<Year> years = yearStream.collect(Collectors.toList());
 
         assertAll(
                 () -> assertEquals(4, years.size()),
@@ -172,11 +156,11 @@ class CollectableTest {
 
     @Test
     void sequenceOfStreamCanOnlyBeConsumedOnce() {
-        final var yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
+        final Stream<Year> yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
                 .filter(IntX::isEven)
                 .map(Year::of);
 
-        final var yearSequence = Sequence.of(yearStream);
+        final Sequence<Year> yearSequence = Sequence.of(yearStream);
 
         assertAll(
                 () -> assertEquals(4, yearSequence.count()),
@@ -186,7 +170,7 @@ class CollectableTest {
 
     private void assertStreamCanOnlyBeConsumedOnce(Stream<Year> yearStream) {
         //noinspection ResultOfMethodCallIgnored
-        final var exception = assertThrows(IllegalStateException.class, yearStream::findFirst);
+        final IllegalStateException exception = assertThrows(IllegalStateException.class, yearStream::findFirst);
         assertEquals("stream has already been operated upon or closed", exception.getMessage());
     }
 }

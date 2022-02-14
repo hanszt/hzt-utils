@@ -58,19 +58,19 @@ public interface Collectable<T> extends Iterable<T> {
 
     default int[] toIntArray(@NotNull ToIntFunction<? super T> mapper) {
         int[] array = new int[(int) IterableXHelper.count(this, Objects::nonNull)];
-        IterableXHelper.exposeIntIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsInt(t));
+        IterableXHelper.exposeIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsInt(t));
         return array;
     }
 
     default long[] toLongArray(@NotNull ToLongFunction<? super T> mapper) {
         long[] array = new long[(int) IterableXHelper.count(this, Objects::nonNull)];
-        IterableXHelper.exposeIntIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsLong(t));
+        IterableXHelper.exposeIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsLong(t));
         return array;
     }
 
     default double[] toDoubleArray(@NotNull ToDoubleFunction<? super T> mapper) {
         double[] array = new double[(int) IterableXHelper.count(this, Objects::nonNull)];
-        IterableXHelper.exposeIntIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsDouble(t));
+        IterableXHelper.exposeIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsDouble(t));
         return array;
     }
 

@@ -16,7 +16,7 @@ class IntRangeTest {
 
     @Test
     void testSteppedIntRange() {
-        MutableListX<Integer> list = MutableListX.<Integer>empty();
+        MutableListX<Integer> list = MutableListX.empty();
         for (int i : IntRange.until(15).step(4)) {
             It.println(i);
             list.add(i);
@@ -26,7 +26,7 @@ class IntRangeTest {
 
     @Test
     void testDescendingSteppedIntRange() {
-        MutableListX<Integer> list = MutableListX.<Integer>empty();
+        MutableListX<Integer> list = MutableListX.empty();
         for (int i : IntRange.from(100).downTo(20).step(5)) {
             It.println(i);
             list.add(i);
@@ -69,9 +69,9 @@ class IntRangeTest {
 
     @Test
     void testIntRangeFromIntStream() {
-        final var expected = IntStream.range(0, 100).summaryStatistics();
+        final IntSummaryStatistics expected = IntStream.range(0, 100).summaryStatistics();
 
-        final var actual = IntRange.of(IntStream.range(0, 100)).stats();
+        final IntStatistics actual = IntRange.of(IntStream.range(0, 100)).stats();
 
         It.println("actual = " + actual);
 

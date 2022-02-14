@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 final class SequenceHelper {
@@ -26,6 +27,22 @@ final class SequenceHelper {
                 final T value = iterator.next();
                 final K key = valueMapper.apply(value);
                 return Pair.of(key, value);
+            }
+        };
+    }
+
+    static <T, A, R> Iterator<R> mergingIterator(@NotNull Iterator<T> iterator,
+                                                 @NotNull Iterator<A> otherIterator,
+                                                 @NotNull BiFunction<? super T, ? super A, ? extends R> transform) {
+        return new Iterator<R>() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext() && otherIterator.hasNext();
+            }
+
+            @Override
+            public R next() {
+                return transform.apply(iterator.next(), otherIterator.next());
             }
         };
     }

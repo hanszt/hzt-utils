@@ -490,10 +490,10 @@ public class IterableXTest {
 
     @Test
     void testIntersect() {
-        final var integers = ListX.of(1, 2, 3, 4, 5, 7);
-        final var otherInts = Arrays.asList(1, 4, 5, 6);
+        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 7);
+        final List<Integer> otherInts = Arrays.asList(1, 4, 5, 6);
 
-        final var intersect = integers.intersect(otherInts);
+        final SetX<Integer> intersect = integers.intersect(otherInts);
 
         assertEquals(SetX.of(1, 4, 5), intersect);
     }
@@ -971,9 +971,9 @@ public class IterableXTest {
 
     @Test
     void testDistinct() {
-        final var integers = ListX.of(1, 1, 2, 3, 2, 4, 5, 3, 5, 6);
+        final ListX<Integer> integers = ListX.of(1, 1, 2, 3, 2, 4, 5, 3, 5, 6);
 
-        final var distinct = integers.distinct();
+        final ListX<Integer> distinct = integers.distinct();
 
         assertEquals(ListX.of(1, 2, 3, 4, 5, 6), distinct);
     }

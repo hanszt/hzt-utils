@@ -156,7 +156,7 @@ public final class IterableXHelper {
         return new NoSuchElementException("No value present");
     }
 
-    static <T> void exposeIntIndexedNonNullVal(@NotNull Iterable<T> iterable, @NotNull BiConsumer<Integer, T> consumer) {
+    static <T> void exposeIndexedNonNullVal(@NotNull Iterable<T> iterable, @NotNull BiConsumer<Integer, T> consumer) {
         int counter = 0;
         for (T value : iterable) {
             if (value != null) {

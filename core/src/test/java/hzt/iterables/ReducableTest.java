@@ -12,20 +12,20 @@ class ReducableTest {
 
     @Test
     void testSingle() {
-        final var singleton = SetX.of(10);
-        final var single = singleton.single();
+        final SetX<Integer> singleton = SetX.of(10);
+        final Integer single = singleton.single();
         assertEquals(10, single);
     }
 
     @Test
     void testSingleCallOnEmptyIterableYieldsNoSuchElementException() {
-        final var set = SetX.empty();
+        final SetX<Object> set = SetX.empty();
         assertThrows(NoSuchElementException.class, set::single);
     }
 
     @Test
     void testSingleCallOnIterableHavingMoreThanOneElementYieldsIllegalArgumentException() {
-        final var set = SetX.of(10, 9);
+        final SetX<Integer> set = SetX.of(10, 9);
         assertThrows(IllegalArgumentException.class, set::single);
     }
 

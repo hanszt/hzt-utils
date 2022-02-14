@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -81,6 +82,31 @@ final class CollectionsHelper {
             current = next;
         }
         return list;
+    }
+
+    static <E, A, R> ListX<R> zipToListXWith(@NotNull Iterable<E> iterable,
+                                             @NotNull Iterable<A> otherIterable,
+                                             @NotNull BiFunction<? super E, ? super A, ? extends R> function) {
+        final Iterator<A> otherIterator = otherIterable.iterator();
+        final Iterator<E> iterator = iterable.iterator();
+        final int resultListSize = Math.min(collectionSizeOrElse(iterable, 10),
+                collectionSizeOrElse(otherIterable, 10));
+
+        final MutableListX<R> list = MutableListX.withInitCapacity(resultListSize);
+        while (iterator.hasNext() && otherIterator.hasNext()) {
+            final E next = iterator.next();
+            final A otherNext = otherIterator.next();
+            list.add(function.apply(next, otherNext));
+        }
+        return list;
+    }
+
+    static <T> int collectionSizeOrElse(Iterable<T> iterable, @SuppressWarnings("SameParameterValue") int defaultSize) {
+        return collectionSizeOrElseGet(iterable, () -> defaultSize);
+    }
+
+    static <T> int collectionSizeOrElseGet(Iterable<T> iterable, IntSupplier supplier) {
+        return iterable instanceof Collection ? ((Collection<T>) iterable).size() : supplier.getAsInt();
     }
 
     static <E, C extends Collection<E>> C filterIndexedToCollection(

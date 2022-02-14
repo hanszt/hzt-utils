@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -13,7 +14,7 @@ class WindowedSequenceTest {
 
     @Test
     void testChunkedSequence() {
-        final var sumDays = Sequence
+        final List<Pair<Long, Long>> sumDays = Sequence
                 .generate(LocalDate.of(1900, Month.JANUARY, 1), date -> date.plusMonths(1))
                 .chunked(12)
                 .map(dates -> dates.sumOfInts(LocalDate::getDayOfYear))
@@ -28,7 +29,7 @@ class WindowedSequenceTest {
 
     @Test
     void testChunkedMappingSequence() {
-        final var sumDays = Sequence
+        final List<Pair<Long, Long>> sumDays = Sequence
                 .generate(LocalDate.of(1900, Month.JANUARY, 1), date -> date.plusMonths(1))
                 .chunked(12, dates -> dates.sumOfInts(LocalDate::getDayOfYear))
                 .zipWithNext(Pair::of)

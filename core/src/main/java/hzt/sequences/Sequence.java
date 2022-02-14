@@ -134,7 +134,7 @@ public interface Sequence<T> extends IterableX<T> {
 
     @Override
     default <R> Sequence<R> castIfInstanceOf(@NotNull Class<R> aClass) {
-        throw new UnsupportedOperationException();
+        return filter(aClass::isInstance).map(aClass::cast);
     }
 
     default Sequence<T> filter(@NotNull Predicate<T> predicate) {
@@ -151,9 +151,9 @@ public interface Sequence<T> extends IterableX<T> {
 
     @Override
     default Sequence<T> filterIndexed(@NotNull BiPredicate<Integer, T> predicate) {
-        return new TransformingSequence<>(
-                () -> FilteringIterator.of(indexedIterator(),
-                        val -> predicate.test(val.index(), val.value())), IndexedValue::value);
+        return withIndex()
+                .filter(indexedValue -> predicate.test(indexedValue.index(), indexedValue.value()))
+                .map(IndexedValue::value);
     }
 
     default Sequence<IndexedValue<T>> withIndex() {

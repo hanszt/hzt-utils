@@ -1,5 +1,6 @@
 package hzt.io;
 
+import hzt.collections.ListX;
 import hzt.sequences.Sequence;
 import hzt.strings.StringX;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ class FileXTest {
 
     @Test
     void testReadLines() {
-        final var lines = FileX.of("input/test.txt").readLines();
+        final ListX<StringX> lines = FileX.of("input/test.txt").readLines();
 
         assertAll(
                 () -> assertEquals("Hello, this is a test, Second line", lines.joinToString()),
@@ -21,21 +22,21 @@ class FileXTest {
 
     @Test
     void testReadText() {
-        final var string = FileX.of("input/test.txt").readText();
+        final String string = FileX.of("input/test.txt").readText();
 
         assertEquals("Hello, this is a test\nSecond line", string);
     }
 
     @Test
     void testReadTextX() {
-        final var string = FileX.of("input/test.txt").readTextX();
+        final StringX string = FileX.of("input/test.txt").readTextX();
 
         assertEquals(StringX.of(String.format("Hello, this is a test%nSecond line")), string);
     }
 
     @Test
     void useLines() {
-        final var string = FileX.of("input/test.txt").useLines(Sequence::joinToString);
+        final String string = FileX.of("input/test.txt").useLines(Sequence::joinToString);
 
         assertEquals("Hello, this is a test, Second line", string);
     }

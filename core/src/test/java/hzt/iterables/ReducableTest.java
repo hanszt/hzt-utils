@@ -36,13 +36,13 @@ class ReducableTest {
 
     @Test
     void foldYearDayAddition() {
-        final var initDate = LocalDate.of(2000, Month.JANUARY, 1);
+        final LocalDate initDate = LocalDate.of(2000, Month.JANUARY, 1);
 
-        final var localDate = Sequence.generate(1, It::self)
+        final LocalDate localDate = Sequence.generate(1, It::self)
                 .take(100)
                 .fold(initDate, LocalDate::plusDays);
 
-        final var expected = initDate.plusDays(100);
+        final LocalDate expected = initDate.plusDays(100);
 
         assertAll(
                 () -> assertEquals(LocalDate.of(2000, Month.APRIL, 10), localDate),

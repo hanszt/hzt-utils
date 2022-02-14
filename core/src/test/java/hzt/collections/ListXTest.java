@@ -1,5 +1,9 @@
 package hzt.collections;
 
+import hzt.iterables.IterableXTest;
+import hzt.numbers.IntX;
+import hzt.ranges.DoubleRange;
+import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
@@ -10,11 +14,14 @@ import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.Year;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import static hzt.collectors.CollectorsX.toListX;
+import static java.util.stream.Collectors.collectingAndThen;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -153,7 +160,7 @@ class ListXTest {
 
         final CollectionView<LocalDate> dates = museums
                 .mapTo(MutableListX::of, PaintingAuction::getDateOfOpening)
-                .also(System.out::println);
+                .also(It::println);
 
         It.println("dates = " + dates);
 
@@ -170,13 +177,35 @@ class ListXTest {
 
         final ListX<LocalDate> dates = museums
                 .map(PaintingAuction::getDateOfOpening)
-                .when(ListX::isNotEmpty, System.out::println)
-                .when(list -> list.size() > 3, System.out::println)
+                .when(ListX::isNotEmpty, It::println)
+                .when(list -> list.size() > 3, It::println)
                 .takeIf(ListX::isNotEmpty)
                 .orElseThrow(NoSuchElementException::new);
 
         It.println("dates = " + dates);
 
         assertEquals(expected, dates);
+    }
+
+    @Test
+    void testStreamCollectingAndThenEquivalent() {
+        final MutableListX<Integer> integers = MutableListX.of(1, 4, 5, 3, 7, 4, 2);
+
+        final int expected = integers.stream()
+                .filter(n -> n > 4)
+                .collect(collectingAndThen(toListX(), ListXTest::calculateProduct));
+
+        final int product = integers.asSequence()
+                .filter(n -> n > 4)
+                .toListX().let(ListXTest::calculateProduct);
+
+        It.println("product = " + product);
+
+        assertEquals(expected, product, () -> "Something went wrong. Did you know, you can also crate dates from ints? " +
+                integers.toListOf(day -> LocalDate.of(2020, Month.JANUARY, day)));
+    }
+
+    private static int calculateProduct(ListX<Integer> list) {
+        return list.reduce((acc, i) -> acc * i).orElse(0);
     }
 }

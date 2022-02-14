@@ -42,7 +42,7 @@ public interface NavigableSetX<E> extends NavigableSet<E>, MutableSetX<E> {
     }
 
     @Override
-    default E last() {
+    default @NotNull E last() {
         return MutableSetX.super.last();
     }
 

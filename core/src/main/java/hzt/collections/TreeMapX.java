@@ -119,7 +119,7 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements NavigableMapX<K, 
     }
 
     @Override
-    public Entry<K, V> last() {
+    public @NotNull Entry<K, V> last() {
         return lastEntry();
     }
 

@@ -1,19 +1,23 @@
 package hzt.ranges;
 
 import hzt.collections.ArrayX;
+import hzt.function.TriFunction;
 import hzt.numbers.IntX;
 import hzt.sequences.Sequence;
 import hzt.statistics.IntStatistics;
+import hzt.tuples.Pair;
+import hzt.tuples.Triple;
 import hzt.utils.It;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.IntPredicate;
-import java.util.function.LongPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 
 @FunctionalInterface
 public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Transformable<IntRange> {
@@ -24,6 +28,10 @@ public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Trans
 
     static IntRange of(Iterable<Integer> integers) {
         return integers::iterator;
+    }
+
+    static IntRange of(IntStream stream) {
+        return stream::iterator;
     }
 
     static IntRange of (int start, int end) {
@@ -75,40 +83,40 @@ public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Trans
         return min(It::noFilter);
     }
 
-    default int min(IntPredicate predicate) {
-        return filter(predicate::test).minOf(It::asInt);
+    default @NotNull Integer min(Predicate<Integer> predicate) {
+        return filter(predicate).minOf(It::asInt);
     }
 
     default @NotNull Integer max() {
         return max(It::noFilter);
     }
 
-    default int max(IntPredicate predicate) {
-        return filter(predicate::test).maxOf(It::asInt);
+    default @NotNull Integer max(Predicate<Integer> predicate) {
+        return filter(predicate).maxOf(It::asInt);
     }
 
     default @NotNull Double average() {
         return average(It::noFilter);
     }
 
-    default double average(IntPredicate predicate) {
-        return filter(predicate::test).averageOf(It::asLong);
+    default @NotNull Double average(Predicate<Integer> predicate) {
+        return filter(predicate).averageOf(It::asLong);
     }
 
     default @NotNull Long sum() {
         return sum(It::noFilter);
     }
 
-    default long sum(IntPredicate predicate) {
-        return filter(predicate::test).sumOfInts(It::asInt);
+    default @NotNull Long sum(Predicate<Integer> predicate) {
+        return filter(predicate).sumOfInts(It::asInt);
     }
 
     default @NotNull Double stdDev() {
         return stdDev(It::noFilter);
     }
 
-    default double stdDev(LongPredicate predicate) {
-        return filter(predicate::test).statsOfLongs(It::asLong).getStandardDeviation();
+    default @NotNull Double stdDev(Predicate<Integer> predicate) {
+        return filter(predicate).statsOfLongs(It::asLong).getStandardDeviation();
     }
 
     default @NotNull IntStatistics stats() {
@@ -126,6 +134,10 @@ public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Trans
         return IntRange.of(Sequence.super.onEach(consumer));
     }
 
+    default IntStream intStream() {
+        return stream().mapToInt(It::asInt);
+    }
+
     @Override
     default @NotNull ArrayX<Integer> toArrayX() {
         return toArrayX(Integer[]::new);
@@ -141,8 +153,33 @@ public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Trans
         return stream().mapToInt(It::asInt).toArray();
     }
 
-    default IntStatistics stats(IntPredicate predicate) {
-        return filter(predicate::test).statsOfInts(It::asInt);
+    @Override
+    default @NotNull IntStatistics stats(Predicate<Integer> predicate) {
+        return filter(predicate).statsOfInts(It::asInt);
+    }
+
+    default <R1, R2, R> R intsToTwo(@NotNull Function<? super IntRange, ? extends R1> resultMapper1,
+                                @NotNull Function<? super IntRange, ? extends R2> resultMapper2,
+                                @NotNull BiFunction<R1, R2, R> merger) {
+        return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
+    }
+
+    default <R1, R2> Pair<R1, R2> intsToTwo(@NotNull Function<? super IntRange, ? extends R1> resultMapper1,
+                                        @NotNull Function<? super IntRange, ? extends R2> resultMapper2) {
+        return intsToTwo(resultMapper1, resultMapper2, Pair::of);
+    }
+
+    default <R1, R2, R3, R> R intsToThree(@NotNull Function<? super IntRange, ? extends R1> resultMapper1,
+                                      @NotNull Function<? super IntRange, ? extends R2> resultMapper2,
+                                      @NotNull Function<? super IntRange, ? extends R3> resultMapper3,
+                                      @NotNull TriFunction<R1, R2, R3, R> merger) {
+        return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this), resultMapper3.apply(this));
+    }
+
+    default <R1, R2, R3> Triple<R1, R2, R3> intsToThree(@NotNull Function<? super IntRange, ? extends R1> resultMapper1,
+                                                    @NotNull Function<? super IntRange, ? extends R2> resultMapper2,
+                                                    @NotNull Function<? super IntRange, ? extends R3> resultMapper3) {
+        return intsToThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
     }
 
     @Override

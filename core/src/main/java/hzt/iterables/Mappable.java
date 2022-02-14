@@ -3,8 +3,8 @@ package hzt.iterables;
 import hzt.collections.MutableListX;
 import hzt.collections.MutableSetX;
 import hzt.collections.SetX;
+import hzt.sequences.Sequence;
 import hzt.strings.StringX;
-import hzt.tuples.IndexedValue;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +39,8 @@ public interface Mappable<T> extends IndexedIterable<T> {
 
     default <R, C extends Collection<R>> C mapIndexedTo(@NotNull Supplier<C> collectionFactory,
                                                         @NotNull BiFunction<Integer, ? super T, ? extends R> mapper) {
-        return withIndex().mapTo(collectionFactory, indexedValue -> mapper.apply(indexedValue.index(), indexedValue.value()));
+        return Sequence.of(this::indexedIterator)
+                .mapTo(collectionFactory, indexedValue -> mapper.apply(indexedValue.index(), indexedValue.value()));
     }
 
     <R> Mappable<R> flatMap(@NotNull Function<T, Iterable<R>> mapper);
@@ -74,9 +75,6 @@ public interface Mappable<T> extends IndexedIterable<T> {
     }
 
     <R> Mappable<StringX> mapToStringX(@NotNull Function<? super T, ? extends R> function);
-
-    @Override
-    Mappable<IndexedValue<T>> withIndex();
 
     default <R> List<R> toListOf(@NotNull Function<? super T, ? extends R> transform) {
         final MutableListX<? extends R> list = mapNotNullTo(MutableListX::empty, transform);

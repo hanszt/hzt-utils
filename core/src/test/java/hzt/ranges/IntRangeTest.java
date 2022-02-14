@@ -67,4 +67,20 @@ class IntRangeTest {
         );
     }
 
+    @Test
+    void testIntRangeFromIntStream() {
+        final var expected = IntStream.range(0, 100).summaryStatistics();
+
+        final var actual = IntRange.of(IntStream.range(0, 100)).stats();
+
+        It.println("actual = " + actual);
+
+        assertAll(
+                () -> assertEquals(expected.getCount(), actual.getCount()),
+                () -> assertEquals(expected.getSum(), actual.getSum()),
+                () -> assertEquals(expected.getAverage(), actual.getAverage()),
+                () -> assertEquals(expected.getMax(), actual.getMax())
+        );
+    }
+
 }

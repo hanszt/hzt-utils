@@ -17,6 +17,7 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
+@FunctionalInterface
 public interface Numerable<T> extends Iterable<T> {
 
     default long count(@NotNull Predicate<T> predicate) {

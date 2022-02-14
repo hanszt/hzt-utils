@@ -133,10 +133,6 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return plus(StringX.of(s)).joinToStringX("");
     }
 
-    public StringX plus(Object s) {
-        return plus(StringX.of(s)).joinToStringX("");
-    }
-
     public StringX reversed() {
         return StringX.of(new StringBuilder(string).reverse());
     }

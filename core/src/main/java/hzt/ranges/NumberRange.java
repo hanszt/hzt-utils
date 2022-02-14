@@ -11,15 +11,27 @@ public interface NumberRange<T extends Number> {
 
     @NotNull T min();
 
+    @NotNull T min(Predicate<T> predicate);
+
     @NotNull T max();
+
+    @NotNull T max(Predicate<T> predicate);
 
     @NotNull Number average();
 
+    @NotNull Number average(Predicate<T> predicate);
+
     @NotNull Number sum();
+
+    @NotNull Number sum(Predicate<T> predicate);
 
     @NotNull Number stdDev();
 
+    @NotNull Number stdDev(Predicate<T> predicate);
+
     @NotNull NumberStatistics stats();
+
+    @NotNull NumberStatistics stats(Predicate<T> predicate);
 
     @NotNull NumberRange<T> filter(Predicate<T> predicate);
 

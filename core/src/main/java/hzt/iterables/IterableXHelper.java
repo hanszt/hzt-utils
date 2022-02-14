@@ -18,7 +18,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -152,20 +151,12 @@ public final class IterableXHelper {
         return RANDOM.nextDouble();
     }
 
-    static <T> int collectionSizeOrElse(Iterable<T> iterable, @SuppressWarnings("SameParameterValue") int defaultSize) {
-        return collectionSizeOrElseGet(iterable, () -> defaultSize);
-    }
-
-    static <T> int collectionSizeOrElseGet(Iterable<T> iterable, IntSupplier supplier) {
-        return iterable instanceof Collection ? ((Collection<T>) iterable).size() : supplier.getAsInt();
-    }
-
     @NotNull
     static NoSuchElementException noValuePresentException() {
         return new NoSuchElementException("No value present");
     }
 
-    static <T> void exposeIndexedNonNullVal(@NotNull Iterable<T> iterable, @NotNull BiConsumer<Integer, T> consumer) {
+    static <T> void exposeIntIndexedNonNullVal(@NotNull Iterable<T> iterable, @NotNull BiConsumer<Integer, T> consumer) {
         int counter = 0;
         for (T value : iterable) {
             if (value != null) {

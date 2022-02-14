@@ -7,11 +7,11 @@ import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
 import hzt.strings.StringX;
 import hzt.tuples.IndexedValue;
+import hzt.tuples.Pair;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -19,8 +19,10 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 
+@FunctionalInterface
 public interface CollectionView<E> extends IterableX<E> {
 
     default int size() {
@@ -47,9 +49,9 @@ public interface CollectionView<E> extends IterableX<E> {
         return Sequence.of(iterable).all(this::contains);
     }
 
-    default ListX<E> plus(@NotNull E... values) {
+    default ListX<E> plus(@NotNull E values) {
         final MutableListX<E> list = MutableListX.of(this);
-        Collections.addAll(list, values);
+        list.add(values);
         return list;
     }
 
@@ -102,7 +104,7 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> mapNotNull(@NotNull Function<? super E, ? extends R> mapper) {
-        return ListX.of(toListOf(mapper));
+        return mapNotNullTo(MutableListX::empty, mapper);
     }
 
     @Override
@@ -124,18 +126,18 @@ public interface CollectionView<E> extends IterableX<E> {
     }
 
     @Override
-    default <R extends Comparable<R>> ListX<E> sorted() {
-        return ListX.of(IterableX.super.sorted());
+    default ListX<E> sorted() {
+        return (ListX<E>) IterableX.super.sorted();
     }
 
     @Override
     default <R extends Comparable<R>> ListX<E> sortedBy(@NotNull Function<? super E, ? extends R> selector) {
-        return MutableListX.of(IterableX.super.sortedBy(selector));
+        return (ListX<E>) IterableX.super.sortedBy(selector);
     }
 
     @Override
-    default <R extends Comparable<R>> ListX<E> sortedBy(Comparator<E> comparator) {
-        return ListX.of(IterableX.super.sortedBy(comparator));
+    default ListX<E> sortedBy(Comparator<E> comparator) {
+        return (ListX<E>) IterableX.super.sortedBy(comparator);
     }
 
     @Override
@@ -148,7 +150,8 @@ public interface CollectionView<E> extends IterableX<E> {
         return ListX.of(IterableX.super.sortedByDescending(selector));
     }
 
-    default IterableX<E> distinct() {
+    @Override
+    default ListX<E> distinct() {
         return distinctBy(It::self);
     }
 
@@ -193,8 +196,36 @@ public interface CollectionView<E> extends IterableX<E> {
         return asSequence().windowed(size, step, partialWindows).map(transform).toListX();
     }
 
-    default <A, R> ListX<R> zipWith(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super E, ? super A, ? extends R> function) {
-        return ListX.of(zipToListWith(iterable, function));
+    default <A, R> ListX<R> zip(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super E, ? super A, ? extends R> function) {
+        return zipToListXWith(iterable, function);
+    }
+
+    private <A, R> ListX<R> zipToListXWith(@NotNull Iterable<A> otherIterable,
+                                          @NotNull BiFunction<? super E, ? super A, ? extends R> function) {
+        final Iterator<A> otherIterator = otherIterable.iterator();
+        final Iterator<E> iterator = iterator();
+        final int resultListSize = Math.min(collectionSizeOrElse(this, 10),
+                collectionSizeOrElse(otherIterable, 10));
+
+        final MutableListX<R> list = MutableListX.withInitCapacity(resultListSize);
+        while (iterator.hasNext() && otherIterator.hasNext()) {
+            final E next = iterator.next();
+            final A otherNext = otherIterator.next();
+            list.add(function.apply(next, otherNext));
+        }
+        return list;
+    }
+
+    static <T> int collectionSizeOrElse(Iterable<T> iterable, @SuppressWarnings("SameParameterValue") int defaultSize) {
+        return collectionSizeOrElseGet(iterable, () -> defaultSize);
+    }
+
+    static <T> int collectionSizeOrElseGet(Iterable<T> iterable, IntSupplier supplier) {
+        return iterable instanceof Collection ? ((Collection<T>) iterable).size() : supplier.getAsInt();
+    }
+
+    default ListX<Pair<E, E>> zipWithNext() {
+        return zipWithNextToMutableListOf(Pair::of);
     }
 
     default <R> ListX<R> zipWithNext(BiFunction<E, E, R> function) {

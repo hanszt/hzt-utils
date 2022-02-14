@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Iterator;
 import java.util.function.Function;
 
+@FunctionalInterface
 public interface Stringable<T> extends Iterable<T> {
 
     default String joinToString() {

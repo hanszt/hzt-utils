@@ -2,11 +2,14 @@ package hzt.ranges;
 
 import hzt.collections.ArrayX;
 import hzt.numbers.BigDecimalX;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NumberRangeTest {
 
@@ -16,7 +19,7 @@ class NumberRangeTest {
 
         final BigDecimalX average = longs.toBigDecimalXAverage(BigDecimalX::of);
 
-        System.out.println("average = " + average);
+        It.println("average = " + average);
 
         Locale defaultLocale = Locale.getDefault();
         Locale.setDefault(Locale.ENGLISH);
@@ -26,6 +29,14 @@ class NumberRangeTest {
         Locale.setDefault(defaultLocale);
 
         assertEquals(5, length);
+    }
+
+    @Test
+    void testRangeFrom10To10YieldsEmptyRange() {
+        assertAll(
+                () -> assertTrue(IntRange.of(10, 10).none()),
+                () -> assertTrue(LongRange.of(10, 10).none()),
+                () -> assertTrue(DoubleRange.of(10, 10).none()));
     }
 
 }

@@ -207,7 +207,7 @@ class SequenceTest {
 
         windows.filterIndexed((i, v) -> IntX.multipleOf(10_000).test(i)).forEach(It::println);
 
-        System.out.println("windows.last() = " + windows.last());
+        It.println("windows.last() = " + windows.last());
 
         assertEquals(333328, result.size());
     }
@@ -267,7 +267,6 @@ class SequenceTest {
                 .filter(LongX::isOdd)
                 .take(12)
                 .map(Long::intValue)
-                .map(Generator::toStringIn100Millis)
                 .onEach(It::println)
                 .toListX();
 
@@ -291,7 +290,7 @@ class SequenceTest {
                 .takeWhile(i -> i < 10)
                 .filter(LongX::isEven)
                 .onEach(It::println)
-                .map(Generator::toStringIn100Millis)
+                .map(String::valueOf)
                 .map(String::trim)
                 .toListX();
 
@@ -500,6 +499,16 @@ class SequenceTest {
     }
 
     @Test
+    void testZipSequenceWithIterable() {
+        Sequence<Integer> values = Sequence.of(0, 1, 2, 3, 4, 5, 6, 7, 4);
+        List<Integer> others = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
+
+        final List<Integer> integers = values.zip(others, Integer::compareTo).toList();
+
+        assertEquals(Arrays.asList(-1, -1, -1, 0, 1, 1, 1), integers);
+    }
+
+    @Test
     void testZipWithNext() {
         final ListX<Integer> sums = IntRange.of(0, 1_000)
                 .shuffled()
@@ -535,10 +544,10 @@ class SequenceTest {
 
         final MapX<Integer, Character> mapX = listX.asSequence()
                 .associateWith(String::valueOf)
-                .onEach(System.out::println)
+                .onEach(It::println)
                 .mapValues(s -> StringX.of(s).first())
                 .filterKeys(IntX::isEven)
-                .onEachKey(System.out::println)
+                .onEachKey(It::println)
                 .toMapX();
 
         assertEquals(2, mapX.size());
@@ -564,6 +573,7 @@ class SequenceTest {
                 .sorted()
                 .windowed(3, true)
                 .flatMap(It::self)
+                .withIndex()
                 .toList();
 
         It.println("list = " + list);
@@ -632,85 +642,6 @@ class SequenceTest {
                 () -> assertEquals(12, daysOfYear.filter(i -> i == 29).count()),
                 () -> assertEquals(366, daysOfYear.count())
         );
-    }
-
-    @Test
-    void testBranchSequence() {
-        final Pair<List<LocalDate>, LocalDate> leepYearResult = Sequence
-                .generate(LocalDate.of(1950, Month.JANUARY, 1), date -> date.plusDays(1))
-                .takeWhileInclusive(date -> date.getYear() <= 2000)
-                .filter(LocalDate::isLeapYear)
-                .toTwo(Sequence::toList, IterableX::last);
-
-        assertAll(
-                () -> assertEquals(4758, leepYearResult.first().size()),
-                () -> assertEquals(LocalDate.of(2000, Month.DECEMBER, 31), leepYearResult.second())
-        );
-    }
-
-    @Test
-    void testBranchSequenceToThree() {
-        final Triple<List<Integer>, Sequence<Integer>, IntStatistics> triple = IntRange.from(0).until(100)
-                .toThree(Sequence::toList, s -> s.filter(IntX::isEven), s -> s.statsOfInts(It::self));
-
-        assertAll(
-                () -> assertEquals(100, triple.first().size()),
-                () -> assertEquals(Year.of(0), triple.second().map(Year::of).first()),
-                () -> assertEquals(49.5, triple.third().getAverage())
-        );
-    }
-
-    @Test
-    void testBranchSequenceToFour() {
-        final ListX<Number> actual = IntRange.from(0).until(100)
-                .toFour(Sequence::count,
-                        s -> s.minOf(It::self),
-                        s -> s.maxOf(It::self),
-                        s -> s.sumOfInts(It::self),
-                        ListX::of);
-
-        System.out.println("actual = " + actual);
-
-        assertAll(
-                () -> assertEquals(100, actual.get(0).intValue()),
-                () -> assertEquals(0, actual.get(1).intValue()),
-                () -> assertEquals(99, actual.get(2).intValue()),
-                () -> assertEquals(4950, actual.get(3).intValue())
-        );
-    }
-
-    @Test
-    void testStreamCanOnlyBeConsumedOnce() {
-        final Stream<Year> yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
-                .filter(IntX::isEven)
-                .map(Year::of);
-
-        final List<Year> years = yearStream.collect(Collectors.toList());
-
-        assertAll(
-                () -> assertEquals(4, years.size()),
-                () -> assertStreamCanOnlyBeConsumedOnce(yearStream)
-        );
-    }
-
-    @Test
-    void sequenceOfStreamCanOnlyBeConsumedOnce() {
-        final Stream<Year> yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
-                .filter(IntX::isEven)
-                .map(Year::of);
-
-        final Sequence<Year> yearSequence = Sequence.of(yearStream);
-
-        assertAll(
-                () -> assertEquals(4, yearSequence.count()),
-                () -> assertThrows(IllegalStateException.class, yearSequence::toList)
-        );
-    }
-
-    private void assertStreamCanOnlyBeConsumedOnce(Stream<Year> yearStream) {
-        //noinspection ResultOfMethodCallIgnored
-        final IllegalStateException exception = assertThrows(IllegalStateException.class, yearStream::findFirst);
-        assertEquals("stream has already been operated upon or closed", exception.getMessage());
     }
 
 }

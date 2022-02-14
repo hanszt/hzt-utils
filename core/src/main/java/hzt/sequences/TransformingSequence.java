@@ -18,27 +18,16 @@ final class TransformingSequence<T, R> implements Sequence<R> {
     @NotNull
     @Override
     public Iterator<R> iterator() {
-        return new Iterator<R>() {
-
+        return new Iterator<>() {
             private final Iterator<T> iterator = upStream.iterator();
-
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
             }
-
             @Override
             public R next() {
                 return mapper.apply(iterator.next());
             }
         };
-    }
-
-    @Override
-    public String toString() {
-        return "TransformingSequence{" +
-                "upStream=" + upStream +
-                ", mapper=" + mapper +
-                '}';
     }
 }

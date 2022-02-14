@@ -33,7 +33,8 @@ public interface Filterable<T> extends IndexedIterable<T> {
     default <C extends Collection<T>> C filterIndexedTo(@NotNull Supplier<C> collectionFactory,
                                                         @NotNull BiPredicate<Integer, T> predicate) {
         C collection = collectionFactory.get();
-        for (IndexedValue<T> indexedValue : withIndex()) {
+        final Iterable<IndexedValue<T>> indexedIterable = this::indexedIterator;
+        for (IndexedValue<T> indexedValue : indexedIterable) {
             final T value = indexedValue.value();
             if (predicate.test(indexedValue.index(), value)) {
                 collection.add(value);

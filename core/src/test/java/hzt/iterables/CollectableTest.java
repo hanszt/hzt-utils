@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.util.Arrays;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import static java.util.stream.Collectors.partitioningBy;
 import static java.util.stream.Collectors.summarizingInt;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -172,5 +174,19 @@ class CollectableTest {
         //noinspection ResultOfMethodCallIgnored
         final IllegalStateException exception = assertThrows(IllegalStateException.class, yearStream::findFirst);
         assertEquals("stream has already been operated upon or closed", exception.getMessage());
+    }
+
+    @Test
+    void testFrom3DStringArrayToTripleIntArray() {
+        String[][][] grid = {{{"1"},{"2"},{"3"}}};
+        final var expected = Arrays.stream(grid).map(g -> Arrays.stream(g).map(row -> Stream.of(row)
+                                .mapToInt(Integer::parseInt).toArray()).toArray(int[][]::new)).toArray(int[][][]::new);
+
+        final var actual = Sequence.of(grid).map(g -> Sequence.of(g).map(row -> Sequence.of(row)
+                                .toIntArray(Integer::parseInt)).toArray(int[][]::new)).toArray(int[][][]::new);
+
+        Sequence.of(actual).map(g -> Sequence.of(g).map(Arrays::toString)).map(Stringable::joinToString).forEach(It::println);
+
+        assertArrayEquals(expected, actual);
     }
 }

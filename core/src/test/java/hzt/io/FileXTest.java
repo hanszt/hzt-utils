@@ -5,7 +5,10 @@ import hzt.sequences.Sequence;
 import hzt.strings.StringX;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FileXTest {
@@ -39,5 +42,16 @@ class FileXTest {
         final String string = FileX.of("input/test.txt").useLines(Sequence::joinToString);
 
         assertEquals("Hello, this is a test, Second line", string);
+    }
+
+    @Test
+    void testGridInFileTo2DIntArray() {
+        final var grid = FileX.of("input/grid.txt").useLines(sequence ->
+                sequence.map(line -> line.split(" ").toIntArray(Integer::parseInt))
+                .toArray(int[][]::new));
+
+        Arrays.stream(grid).map(Arrays::toString).forEach(System.out::println);
+
+        assertArrayEquals(new int[] {1, 1, 0, 0, 0, 0, 0}, grid[0]);
     }
 }

@@ -113,6 +113,8 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>,
         return intersectionOf(toIterableMapper, It::self);
     }
 
+    <R> IterableX<Pair<T, R>> zip(@NotNull Iterable<R> iterable);
+
     <A, R> IterableX<R> zip(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super T, ? super A, ? extends R> function);
 
     IterableX<Pair<T, T>> zipWithNext();

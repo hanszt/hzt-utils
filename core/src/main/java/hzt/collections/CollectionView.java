@@ -7,7 +7,6 @@ import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
 import hzt.strings.StringX;
 import hzt.tuples.IndexedValue;
-import hzt.tuples.Pair;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
@@ -232,11 +231,6 @@ public interface CollectionView<E> extends IterableX<E> {
         return asSequence().windowed(size, step, partialWindows).map(transform).toListX();
     }
 
-    @Override
-    default <R> ListX<Pair<E, R>> zip(@NotNull Iterable<R> iterable) {
-        return zip(iterable, Pair::of);
-    }
-
     default <A, R> ListX<R> zip(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super E, ? super A, ? extends R> function) {
         return zipToListXWith(iterable, function);
     }
@@ -263,10 +257,6 @@ public interface CollectionView<E> extends IterableX<E> {
 
     static <T> int collectionSizeOrElseGet(Iterable<T> iterable, IntSupplier supplier) {
         return iterable instanceof Collection ? ((Collection<T>) iterable).size() : supplier.getAsInt();
-    }
-
-    default ListX<Pair<E, E>> zipWithNext() {
-        return zipWithNextToMutableListOf(Pair::of);
     }
 
     default <R> ListX<R> zipWithNext(BiFunction<E, E, R> function) {

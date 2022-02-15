@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -36,6 +37,8 @@ public interface EntryIterable<K, V> extends IterableX<Map.Entry<K, V>> {
     <V1> EntryIterable<K, V1> mapValues(@NotNull Function<? super V, ? extends V1> valueMapper);
 
     <V1> EntryIterable<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, V1> toValueMapper);
+
+    EntryIterable<K, V> filter(@NotNull BiPredicate<K, V> biPredicate);
 
     EntryIterable<K, V> filterKeys(@NotNull Predicate<K> predicate);
 
@@ -107,16 +110,20 @@ public interface EntryIterable<K, V> extends IterableX<Map.Entry<K, V>> {
         };
     }
 
+    default long count(BiPredicate<K, V> predicate) {
+        return IterableX.super.count(e -> predicate.test(e.getKey(), e.getValue()));
+    }
+
     default MapX<K, V> toMapX() {
-        return MutableMapX.ofEntries(this);
+        return MutableMapX.of(this);
     }
 
     default MutableMapX<K, V> toMutableMap() {
-        return MutableMapX.ofEntries(this);
+        return MutableMapX.of(this);
     }
 
     default Map<K, V> toMap() {
-        return Map.copyOf(MutableMapX.ofEntries(this));
+        return Map.copyOf(MutableMapX.of(this));
     }
 
     default <R extends Comparable<R>> NavigableMapX<K, V> toSortedMapX(Function<K, R> selector) {

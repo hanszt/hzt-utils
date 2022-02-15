@@ -541,6 +541,23 @@ public class IterableXTest {
     }
 
     @Test
+    void zipWithNextCanHandleSameParameterValues() {
+        final var inputList = ListX.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
+        final var inputSequence = Sequence.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
+
+        final var zippedList = inputList.zipWithNext().toMap();
+        final var zippedSequence = inputSequence.zipWithNext().toListXOf(Pair::of);
+
+        zippedSequence.forEach(It::println);
+
+        assertAll(
+                () -> assertEquals(inputList.size() - 1, zippedList.size()),
+                () -> assertEquals(zippedList, zippedSequence)
+        );
+
+    }
+
+    @Test
     void testFoldRight() {
         ListX<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 

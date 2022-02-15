@@ -7,6 +7,7 @@ import hzt.collections.SetX;
 import hzt.ranges.DoubleRange;
 import hzt.ranges.IntRange;
 import hzt.ranges.LongRange;
+import hzt.sequences.EntrySequence;
 import hzt.sequences.Sequence;
 import hzt.tuples.Pair;
 import hzt.utils.It;
@@ -113,11 +114,15 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>,
         return intersectionOf(toIterableMapper, It::self);
     }
 
-    <R> IterableX<Pair<T, R>> zip(@NotNull Iterable<R> iterable);
+    default <R> EntrySequence<T, R> zip(@NotNull Iterable<R> iterable) {
+        return EntrySequence.ofPairs(zip(iterable, Pair::of));
+    }
 
     <A, R> IterableX<R> zip(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super T, ? super A, ? extends R> function);
 
-    IterableX<Pair<T, T>> zipWithNext();
+    default EntrySequence<T, T> zipWithNext() {
+        return EntrySequence.ofPairs(zipWithNext(Pair::of));
+    }
 
     <R> IterableX<R> zipWithNext(BiFunction<T, T, R> function);
 

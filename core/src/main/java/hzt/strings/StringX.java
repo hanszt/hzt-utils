@@ -408,12 +408,27 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return toIntX(10);
     }
 
+    public int toInt(int radix) {
+        return Integer.parseInt(string, radix);
+    }
+    public int toInt() {
+        return Integer.parseInt(string);
+    }
+
     public LongX toLongX() {
         return LongX.of(Long.parseLong(string));
     }
 
+    public long toLong() {
+        return Long.parseLong(string);
+    }
+
     public DoubleX toDoubleX() {
         return DoubleX.of(Double.parseDouble(string));
+    }
+
+    public double toDouble() {
+        return Double.parseDouble(string);
     }
 
     public BigDecimalX toBigDecimalX() {

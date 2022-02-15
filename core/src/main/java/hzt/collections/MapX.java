@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -79,6 +80,10 @@ public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterab
         return new HashMapX<>(entries);
     }
 
+    static <K, V> MapX<K, V> ofPairs(Iterable<Pair<K, V>> pairs) {
+        return new HashMapX<>(EntrySequence.ofPairs(pairs));
+    }
+
     @SafeVarargs
     static <K, V> MapX<K, V> ofPairs(Pair<K, V>... pairs) {
         return new HashMapX<>(pairs);
@@ -115,6 +120,11 @@ public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterab
     @Override
     default <V1> MapX<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, V1> toValueMapper) {
         return asSequence().mapValues(toValueMapper).toMutableMap();
+    }
+
+    @Override
+    default MapX<K, V> filter(@NotNull BiPredicate<K, V> biPredicate) {
+        return asSequence().filter(biPredicate).toMapX();
     }
 
     default MapX<K, V> filterKeys(@NotNull Predicate<K> predicate) {

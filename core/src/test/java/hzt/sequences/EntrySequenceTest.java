@@ -67,7 +67,6 @@ class EntrySequenceTest {
                 .map(Year::of)
                 .takeWhileInclusive(year -> year.isBefore(Year.of(2000)))
                 .zipWithNext()
-                .asEntrySequence(It::self)
                 .skip(20)
                 .toMutableMap();
 

@@ -91,10 +91,6 @@ public interface MutableMapX<K, V> extends Map<K, V>, MapX<K, V>, Transformable<
         return MutableMapX.ofMap(map);
     }
 
-    static <K, V> MutableMapX<K, V> ofEntries(Iterable<Map.Entry<K, V>> entries) {
-        return new HashMapX<>(entries);
-    }
-
     @Override
     default <K1, V1> MutableMapX<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper,
                                              @NotNull Function<? super V, ? extends V1> valueMapper) {

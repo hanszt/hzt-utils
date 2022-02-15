@@ -223,17 +223,8 @@ public interface Sequence<T> extends IterableX<T> {
         return new WindowedSequence<>(this, size, step, partialWindows).map(transform);
     }
 
-    default Sequence<Pair<T, T>> zipWithNext() {
-        return zipWithNext(Pair::of);
-    }
-
     default <R> Sequence<R> zipWithNext(BiFunction<T, T, R> function) {
         return windowed(2, listX -> function.apply(listX.first(), listX.get(1)));
-    }
-
-    @Override
-    default <R> Sequence<Pair<T, R>> zip(@NotNull Iterable<R> iterable) {
-        return zip(iterable, Pair::of);
     }
 
     default <A, R> Sequence<R> zip(@NotNull Iterable<A> other, @NotNull BiFunction<? super T, ? super A, ? extends R> function) {

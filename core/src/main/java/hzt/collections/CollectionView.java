@@ -164,12 +164,12 @@ public interface CollectionView<E> extends IterableX<E> {
 
     @Override
     default ListX<E> sortedDescending() {
-        return ListX.of(IterableX.super.sortedDescending());
+        return (ListX<E>) IterableX.super.sortedDescending();
     }
 
     @Override
     default <R extends Comparable<R>> ListX<E> sortedByDescending(@NotNull Function<? super E, ? extends R> selector) {
-        return ListX.of(IterableX.super.sortedByDescending(selector));
+        return (ListX<E>) IterableX.super.sortedByDescending(selector);
     }
 
     @Override
@@ -230,6 +230,11 @@ public interface CollectionView<E> extends IterableX<E> {
     default <R> ListX<R> windowed(int size, int step, boolean partialWindows,
                                   @NotNull Function<? super ListX<E>, R> transform) {
         return asSequence().windowed(size, step, partialWindows).map(transform).toListX();
+    }
+
+    @Override
+    default <R> ListX<Pair<E, R>> zip(@NotNull Iterable<R> iterable) {
+        return zip(iterable, Pair::of);
     }
 
     default <A, R> ListX<R> zip(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super E, ? super A, ? extends R> function) {

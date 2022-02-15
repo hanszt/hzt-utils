@@ -134,7 +134,7 @@ public interface Sequence<T> extends IterableX<T> {
 
     @Override
     default <R> Sequence<R> castIfInstanceOf(@NotNull Class<R> aClass) {
-        throw new UnsupportedOperationException();
+        return filter(aClass::isInstance).map(aClass::cast);
     }
 
     default Sequence<T> filter(@NotNull Predicate<T> predicate) {
@@ -151,9 +151,9 @@ public interface Sequence<T> extends IterableX<T> {
 
     @Override
     default Sequence<T> filterIndexed(@NotNull BiPredicate<Integer, T> predicate) {
-        return new TransformingSequence<>(
-                () -> FilteringIterator.of(indexedIterator(),
-                        val -> predicate.test(val.index(), val.value())), IndexedValue::value);
+        return withIndex()
+                .filter(indexedValue -> predicate.test(indexedValue.index(), indexedValue.value()))
+                .map(IndexedValue::value);
     }
 
     default Sequence<IndexedValue<T>> withIndex() {
@@ -231,6 +231,11 @@ public interface Sequence<T> extends IterableX<T> {
         return windowed(2, listX -> function.apply(listX.first(), listX.get(1)));
     }
 
+    @Override
+    default <R> Sequence<Pair<T, R>> zip(@NotNull Iterable<R> iterable) {
+        return zip(iterable, Pair::of);
+    }
+
     default <A, R> Sequence<R> zip(@NotNull Iterable<A> other, @NotNull BiFunction<? super T, ? super A, ? extends R> function) {
         return () -> mergingIterator(other.iterator(), function);
     }
@@ -270,16 +275,6 @@ public interface Sequence<T> extends IterableX<T> {
         return () -> TakeWhileIterator.of(iterator(), predicate, true);
     }
 
-    @Override
-    default Sequence<T> skipWhile(@NotNull Predicate<T> predicate) {
-        return () -> SkipWhileIterator.of(iterator(), predicate, false);
-    }
-
-    @Override
-    default Sequence<T> skipWhileInclusive(@NotNull Predicate<T> predicate) {
-        return () -> SkipWhileIterator.of(iterator(), predicate, true);
-    }
-
     default Sequence<T> skip(long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
@@ -289,6 +284,16 @@ public interface Sequence<T> extends IterableX<T> {
         } else {
             return new SkipSequence<>(this, n);
         }
+    }
+
+    @Override
+    default Sequence<T> skipWhile(@NotNull Predicate<T> predicate) {
+        return () -> SkipWhileIterator.of(iterator(), predicate, false);
+    }
+
+    @Override
+    default Sequence<T> skipWhileInclusive(@NotNull Predicate<T> predicate) {
+        return () -> SkipWhileIterator.of(iterator(), predicate, true);
     }
 
     @Override

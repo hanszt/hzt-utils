@@ -6,7 +6,6 @@ import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.collections.SetX;
-import hzt.iterables.IterableX;
 import hzt.numbers.IntX;
 import hzt.numbers.LongX;
 import hzt.ranges.IntRange;
@@ -28,12 +27,10 @@ import java.time.Year;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 

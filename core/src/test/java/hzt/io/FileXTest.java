@@ -46,7 +46,7 @@ class FileXTest {
 
     @Test
     void testGridInFileTo2DIntArray() {
-        final var grid = FileX.of("input/grid.txt").useLines(sequence ->
+        final int[][] grid = FileX.of("input/grid.txt").useLines(sequence ->
                 sequence.map(line -> line.split(" ").toIntArray(Integer::parseInt))
                 .toArray(int[][]::new));
 

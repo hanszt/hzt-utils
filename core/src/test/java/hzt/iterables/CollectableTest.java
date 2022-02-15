@@ -179,10 +179,10 @@ class CollectableTest {
     @Test
     void testFrom3DStringArrayToTripleIntArray() {
         String[][][] grid = {{{"1"},{"2"},{"3"}}};
-        final var expected = Arrays.stream(grid).map(g -> Arrays.stream(g).map(row -> Stream.of(row)
+        final int[][][] expected = Arrays.stream(grid).map(g -> Arrays.stream(g).map(row -> Stream.of(row)
                                 .mapToInt(Integer::parseInt).toArray()).toArray(int[][]::new)).toArray(int[][][]::new);
 
-        final var actual = Sequence.of(grid).map(g -> Sequence.of(g).map(row -> Sequence.of(row)
+        final int[][][] actual = Sequence.of(grid).map(g -> Sequence.of(g).map(row -> Sequence.of(row)
                                 .toIntArray(Integer::parseInt)).toArray(int[][]::new)).toArray(int[][][]::new);
 
         Sequence.of(actual).map(g -> Sequence.of(g).map(Arrays::toString)).map(Stringable::joinToString).forEach(It::println);

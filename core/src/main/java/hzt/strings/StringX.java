@@ -355,12 +355,16 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return StringX.of(string.replace(target, replacement));
     }
 
+    public ListX<String> split(@NotNull Pattern regex) {
+        return ListX.of(string.split(regex.toString()));
+    }
+
     public ListX<String> split(@NotNull Pattern regex, int limit) {
         return ListX.of(string.split(regex.toString(), limit));
     }
 
-    public ListX<String> split(@NotNull CharSequence charSequence) {
-        return ListX.of(this.string.split(StringX.of(charSequence).toString()));
+    public ListX<String> split(@NotNull CharSequence delimiter) {
+        return ListX.of(this.string.split(StringX.of(delimiter).toString()));
     }
 
     public static StringX join(CharSequence delimiter, CharSequence... elements) {

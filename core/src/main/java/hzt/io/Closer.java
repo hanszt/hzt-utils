@@ -35,16 +35,34 @@ public final class Closer<T> implements AutoCloseable {
         }
     }
 
-    public void execute(@NotNull ThrowingConsumer<T> function) {
+    public <R> R applyAndClose(@NotNull ThrowingFunction<T, R> function) {
+        try (this) {
+            return apply(function);
+        }
+    }
+
+    public void execute(@NotNull ThrowingConsumer<T> consumer) {
         try {
-            function.accept(resource);
+            consumer.accept(resource);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
+    public void executeAndClose(@NotNull ThrowingConsumer<T> consumer) {
+        try (this) {
+            execute(consumer);
+        }
+    }
+
     public boolean test(@NotNull Predicate<T> predicate) {
         return predicate.test(resource);
+    }
+
+    public boolean testAndClose(@NotNull Predicate<T> predicate) {
+        try (this) {
+            return predicate.test(resource);
+        }
     }
 
     public T getResource() {

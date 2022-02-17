@@ -136,8 +136,8 @@ public interface Collectable<T> extends Iterable<T> {
                 accumulator2.accept(result2, t);
             }
         }
-        final var r1 = downstream1.finisher().apply(result1);
-        final var r2 = downstream2.finisher().apply(result2);
+        final R1 r1 = downstream1.finisher().apply(result1);
+        final R2 r2 = downstream2.finisher().apply(result2);
         return merger.apply(r1, r2);
     }
 
@@ -163,9 +163,9 @@ public interface Collectable<T> extends Iterable<T> {
                 accumulator3.accept(result3, t);
             }
         }
-        final var r1 = downstream1.finisher().apply(result1);
-        final var r2 = downstream2.finisher().apply(result2);
-        final var r3 = downstream3.finisher().apply(result3);
+        final R1 r1 = downstream1.finisher().apply(result1);
+        final R2 r2 = downstream2.finisher().apply(result2);
+        final R3 r3 = downstream3.finisher().apply(result3);
         return merger.apply(r1, r2, r3);
     }
 
@@ -196,10 +196,10 @@ public interface Collectable<T> extends Iterable<T> {
                 accumulator4.accept(result4, t);
             }
         }
-        final var r1 = downstream1.finisher().apply(result1);
-        final var r2 = downstream2.finisher().apply(result2);
-        final var r3 = downstream3.finisher().apply(result3);
-        final var r4 = downstream4.finisher().apply(result4);
+        final R1 r1 = downstream1.finisher().apply(result1);
+        final R2 r2 = downstream2.finisher().apply(result2);
+        final R3 r3 = downstream3.finisher().apply(result3);
+        final R4 r4 = downstream4.finisher().apply(result4);
         return merger.apply(r1, r2, r3, r4);
     }
 

@@ -96,7 +96,7 @@ class MapViewTest {
         map.put("2", 2);
         map.put("3", 3);
 
-        final MapX<String, Year> result = EntrySequence.of(map).mapValues(Year::of).toMapView();
+        final MapView<String, Year> result = EntrySequence.of(map).mapValues(Year::of).toMapView();
 
         assertEquals(MapView.of("1", Year.of(1), "2", Year.of(2), "3", Year.of(3)), result);
     }
@@ -156,14 +156,14 @@ class MapViewTest {
     @Test
     void testMapOfPairs() {
         final StringX hallo = StringX.of("Hallo");
-        final MapX<StringX, String> map = MapView.ofPairs(hallo.to("s"), StringX.of("asd").to("asdd"));
+        final MapView<StringX, String> map = MapView.ofPairs(hallo.to("s"), StringX.of("asd").to("asdd"));
         assertEquals(2, map.size());
         assertTrue(map.containsValue("asdd"));
     }
 
     @Test
     void testBuildMap() {
-        final var map = MapView.<Integer, LocalDate>build(m ->
+        final MapView<Integer, LocalDate> map = MapView.<Integer, LocalDate>build(m ->
                 IntRange.of(1990, 2022).forEach(year -> m.put(year, LocalDate.of(year, 1, 1))));
 
         map.forEach(It::println);

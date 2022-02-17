@@ -1,6 +1,6 @@
 package hzt.utils;
 
-import hzt.collections.ListX;
+import hzt.collections.ListView;
 import hzt.collections.MutableList;
 import hzt.strings.StringX;
 import hzt.test.Generator;
@@ -70,7 +70,7 @@ class TransformableTest {
     void testAsList() {
         final StringX hallo = StringX.of("Hallo");
 
-        final ListX<StringX> actual = hallo.asListView();
+        final ListView<StringX> actual = hallo.asListView();
 
         assertEquals(1, actual.size());
     }

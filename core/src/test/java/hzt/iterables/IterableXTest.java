@@ -8,8 +8,6 @@ import hzt.collectors.BigDecimalCollectors;
 import hzt.numbers.IntX;
 import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
-import hzt.statistics.IntStatistics;
-import hzt.utils.It;
 import hzt.statistics.BigDecimalSummaryStatistics;
 import hzt.strings.StringX;
 import hzt.test.Generator;
@@ -27,7 +25,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.Period;
 import java.time.Year;
 import java.time.chrono.ChronoLocalDate;
@@ -121,7 +118,7 @@ public class IterableXTest {
     void testWithIndicesZipWithNext2() {
         final ListView<Museum> museums = ListView.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        final ListX<Long> sumsOfThree = museums
+        final ListView<Long> sumsOfThree = museums
                 .flatMap(Museum::getPaintings)
                 .indices()
                 .windowed(3, IntRange::of)
@@ -367,7 +364,7 @@ public class IterableXTest {
     void testUnion() {
         ListView<Integer> list = ListView.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
-        final SetX<Integer> union = list.union(Arrays.asList(2, 3, 4, 5, 7));
+        final SetView<Integer> union = list.union(Arrays.asList(2, 3, 4, 5, 7));
 
         assertEquals(SetView.of(1, 2, 3, 4, 5, 6, 7, 10), union);
     }
@@ -409,10 +406,10 @@ public class IterableXTest {
 
     @Test
     void testIntersect() {
-        final ListX<Integer> integers = ListView.of(1, 2, 3, 4, 5, 7);
+        final ListView<Integer> integers = ListView.of(1, 2, 3, 4, 5, 7);
         final List<Integer> otherInts = Arrays.asList(1, 4, 5, 6);
 
-        final SetX<Integer> intersect = integers.intersect(otherInts);
+        final SetView<Integer> intersect = integers.intersect(otherInts);
 
         assertEquals(SetView.of(1, 4, 5), intersect);
     }
@@ -463,11 +460,11 @@ public class IterableXTest {
 
     @Test
     void zipWithNextCanHandleSameParameterValues() {
-        final var inputList = ListView.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
-        final var inputSequence = Sequence.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
+        final ListView<Integer> inputList = ListView.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
+        final Sequence<Integer> inputSequence = Sequence.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
 
         final var zippedList = inputList.zipWithNext().toListViewOf(Pair::of);
-        final var zippedSequence = inputSequence.zipWithNext().toListViewOf(Pair::of);
+        final ListView<Pair<Integer, Integer>> zippedSequence = inputSequence.zipWithNext().toListViewOf(Pair::of);
 
         zippedSequence.forEach(It::println);
 
@@ -791,7 +788,7 @@ public class IterableXTest {
                 .map(Painting::painter)
                 .collect(Collectors.toMap(Painter::getDateOfBirth, Painter::getLastname, (a, b) -> a));
 
-        final MapView<LocalDate, String> actual = ListX.of(paintingList)
+        final MapView<LocalDate, String> actual = ListView.of(paintingList)
                 .map(Painting::painter)
                 .toMapView(Painter::getDateOfBirth, Painter::getLastname);
 
@@ -907,9 +904,9 @@ public class IterableXTest {
 
     @Test
     void testDistinct() {
-        final ListX<Integer> integers = ListView.of(1, 1, 2, 3, 2, 4, 5, 3, 5, 6);
+        final ListView<Integer> integers = ListView.of(1, 1, 2, 3, 2, 4, 5, 3, 5, 6);
 
-        final ListX<Integer> distinct = integers.distinct();
+        final ListView<Integer> distinct = integers.distinct();
 
         assertEquals(ListView.of(1, 2, 3, 4, 5, 6), distinct);
     }
@@ -939,7 +936,7 @@ public class IterableXTest {
     // causes compiler error on java 11 and older:
     // java: Compilation failed: internal java compiler error
     public static <T> IterableX<T> empty() {
-        return ListView.of(() -> new Iterator<T>() {
+        return ListView.of(() -> new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return false;

@@ -1,10 +1,10 @@
 package hzt.collectors;
 
 import hzt.PreConditions;
-import hzt.collections.ListX;
-import hzt.collections.MapX;
-import hzt.collections.MutableListX;
-import hzt.collections.SetX;
+import hzt.collections.ListView;
+import hzt.collections.MapView;
+import hzt.collections.MutableList;
+import hzt.collections.SetView;
 import hzt.function.QuadFunction;
 import hzt.function.QuintFunction;
 import hzt.function.TriFunction;

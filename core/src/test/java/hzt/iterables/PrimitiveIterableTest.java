@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.PrimitiveIterator;
 import java.util.function.LongFunction;
 import java.util.function.LongUnaryOperator;
+import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -22,13 +23,13 @@ class PrimitiveIterableTest {
     void longStreamFromPrimitiveIterable() {
         LongIterable longSequence = LongSequence.of(1, 2, 3, 4, 5).map(l -> l * 3);
 
-        final var count = LongRange.of(longSequence).count();
+        final long count = LongRange.of(longSequence).count();
 
         System.out.println("count = " + count);
 
-        final var longStream = StreamSupport.longStream(longSequence.spliterator(), false);
+        final LongStream longStream = StreamSupport.longStream(longSequence.spliterator(), false);
 
-        final var longs = longStream.toArray();
+        final long[] longs = longStream.toArray();
 
         It.println(Arrays.toString(longs));
 

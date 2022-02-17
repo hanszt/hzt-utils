@@ -27,13 +27,13 @@ class DoubleRangeTest {
     void doubleRangeFromDoubleArray() {
         double[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
-        final var expected = DoubleStream.of(array)
+        final long[] expected = DoubleStream.of(array)
                 .mapToLong(d -> (long) d)
                 .filter(l -> l > 3)
                 .toArray();
 
 
-        final var longs = DoubleRange.of(array)
+        final long[] longs = DoubleRange.of(array)
                 .asLongRange(Double::longValue)
                 .filter(l -> l > 3)
                 .toArray();

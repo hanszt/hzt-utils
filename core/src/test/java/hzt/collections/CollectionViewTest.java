@@ -13,14 +13,14 @@ class CollectionViewTest {
 
     @Test
     void testContainsNot() {
-        final ListX<String> strings = ListView.of("hallo", "asffasf", "string", "test");
+        final ListView<String> strings = ListView.of("hallo", "asffasf", "string", "test");
 
         assertTrue(strings.containsNot("strings"));
     }
 
     @Test
     void testContainsAll() {
-        final ListX<String> strings = ListView.of("hallo", "asffasf", "string", "test");
+        final ListView<String> strings = ListView.of("hallo", "asffasf", "string", "test");
 
         Iterable<String> iterable = Arrays.asList("string", "test");
 
@@ -29,7 +29,7 @@ class CollectionViewTest {
 
     @Test
     void testDoesNotContainsAll() {
-        final ListX<String> strings = ListView.of("hallo", "asffasf", "string", "test");
+        final ListView<String> strings = ListView.of("hallo", "asffasf", "string", "test");
 
         Iterable<String> iterable = Arrays.asList("string", "test", "not");
 
@@ -38,7 +38,7 @@ class CollectionViewTest {
 
     @Test
     void testContainsNoneOf() {
-        final ListX<String> strings = ListView.of("hallo", "asffasf", "string", "test");
+        final ListView<String> strings = ListView.of("hallo", "asffasf", "string", "test");
 
         Iterable<String> iterable = Arrays.asList("strings", "testa");
 
@@ -47,7 +47,7 @@ class CollectionViewTest {
 
     @Test
     void testDoesContainSome() {
-        final ListX<String> strings = ListView.of("hallo", "asffasf", "string", "test");
+        final ListView<String> strings = ListView.of("hallo", "asffasf", "string", "test");
 
         Iterable<String> iterable = Arrays.asList("string", "tesst", "not");
 
@@ -56,9 +56,9 @@ class CollectionViewTest {
 
     @Test
     void testMapMulti() {
-        final ListX<ListX<String>> input = ListView.of(ListView.of("a", "b", "c"), ListView.of("d", "e", "f", "g"));
+        final ListView<ListView<String>> input = ListView.of(ListView.of("a", "b", "c"), ListView.of("d", "e", "f", "g"));
 
-        final ListX<String> strings = input.mapMulti(Iterable::forEach);
+        final ListView<String> strings = input.mapMulti(Iterable::forEach);
 
         strings.forEach(It::println);
 
@@ -67,8 +67,8 @@ class CollectionViewTest {
 
     @Test
     void testShuffled() {
-        final var integers = ListView.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        final var shuffled = integers.shuffled();
+        final ListView<Integer> integers = ListView.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        final ListView<Integer> shuffled = integers.shuffled();
 
         shuffled.forEach(It::println);
 

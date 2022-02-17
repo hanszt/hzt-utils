@@ -1,7 +1,7 @@
 package hzt.iterables;
 
-import hzt.collections.MutableListX;
-import hzt.collections.NavigableSetX;
+import hzt.collections.MutableList;
+import hzt.collections.SortedMutableSet;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 

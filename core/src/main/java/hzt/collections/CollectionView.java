@@ -188,46 +188,17 @@ public interface CollectionView<E> extends IterableX<E> {
         return windowed(size, step, partialWindows, It::self);
     }
 
-    default <R> ListX<R> windowed(int size, int step, boolean partialWindows,
-                                  @NotNull Function<? super ListX<E>, R> transform) {
-        return asSequence().windowed(size, step, partialWindows).map(transform).toListX();
+    default <R> ListView<R> windowed(int size, int step, boolean partialWindows,
+                                     @NotNull Function<? super ListView<E>, R> transform) {
+        return asSequence().windowed(size, step, partialWindows).map(transform).toListView();
     }
 
-    @Override
-    default <R> ListX<Pair<E, R>> zip(@NotNull Iterable<R> iterable) {
-        return zip(iterable, Pair::of);
+    default <A, R> ListView<R> zip(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super E, ? super A, ? extends R> function) {
+        return zipTo(MutableList::empty, iterable, function);
     }
 
-    default <A, R> ListX<R> zip(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super E, ? super A, ? extends R> function) {
-        return zipToListXWith(iterable, function);
-    }
-
-    private <A, R> ListX<R> zipToListXWith(@NotNull Iterable<A> otherIterable,
-                                          @NotNull BiFunction<? super E, ? super A, ? extends R> function) {
-        final Iterator<A> otherIterator = otherIterable.iterator();
-        final Iterator<E> iterator = iterator();
-        final int resultListSize = Math.min(collectionSizeOrElse(this, 10),
-                collectionSizeOrElse(otherIterable, 10));
-
-        final MutableListX<R> list = MutableListX.withInitCapacity(resultListSize);
-        while (iterator.hasNext() && otherIterator.hasNext()) {
-            final E next = iterator.next();
-            final A otherNext = otherIterator.next();
-            list.add(function.apply(next, otherNext));
-        }
-        return list;
-    }
-
-    static <T> int collectionSizeOrElse(Iterable<T> iterable, @SuppressWarnings("SameParameterValue") int defaultSize) {
-        return collectionSizeOrElseGet(iterable, () -> defaultSize);
-    }
-
-    static <T> int collectionSizeOrElseGet(Iterable<T> iterable, IntSupplier supplier) {
-        return iterable instanceof Collection ? ((Collection<T>) iterable).size() : supplier.getAsInt();
-    }
-
-    default ListX<Pair<E, E>> zipWithNext() {
-        return zipWithNextToMutableListOf(Pair::of);
+    default <R> ListView<R> zipWithNext(BiFunction<E, E, R> function) {
+        return zipWithNextTo(MutableList::empty, function);
     }
 
     default <K> MapView<K, E> associateBy(@NotNull Function<? super E, ? extends K> keyMapper) {

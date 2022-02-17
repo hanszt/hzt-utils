@@ -1,6 +1,7 @@
 package hzt.ranges;
 
 import hzt.statistics.LongStatistics;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.LongSummaryStatistics;
@@ -35,11 +36,11 @@ class LongRangeTest {
     void longRangeFromLongArray() {
         long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
-        final var expected = LongStream.of(array)
+        final long[] expected = LongStream.of(array)
                 .filter(l -> l > 3)
                 .toArray();
 
-        final var longs = LongRange.of(array)
+        final long[] longs = LongRange.of(array)
                 .filter(l -> l > 3)
                 .toArray();
 

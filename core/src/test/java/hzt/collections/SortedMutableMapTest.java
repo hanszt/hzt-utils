@@ -24,7 +24,7 @@ class SortedMutableMapTest {
         map.put("Hi", 2);
         map.put("greetings", 3);
 
-        final var mapView = MapView.of("hallo", 1, "greetings", 3, "Hi", 2);
+        final MapView<String, Integer> mapView = MapView.of("hallo", 1, "greetings", 3, "Hi", 2);
         final SortedMutableMap<String, Integer> expected = SortedMutableMap.of(mapView, String::length);
 
         map.forEach(It::println);

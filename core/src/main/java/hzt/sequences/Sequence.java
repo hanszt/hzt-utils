@@ -2,7 +2,7 @@ package hzt.sequences;
 
 import hzt.PreConditions;
 import hzt.collections.ListView;
-import hzt.collections.MapX;
+import hzt.collections.MapView;
 import hzt.function.QuadFunction;
 import hzt.function.TriFunction;
 import hzt.iterables.IterableX;
@@ -69,7 +69,7 @@ public interface Sequence<T> extends IterableX<T> {
         return map.entrySet()::iterator;
     }
 
-    static <K, V> EntrySequence<K, V> of(MapX<K, V> map) {
+    static <K, V> EntrySequence<K, V> of(MapView<K, V> map) {
         return map.entrySet()::iterator;
     }
 

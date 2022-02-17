@@ -1,6 +1,6 @@
 package hzt.io;
 
-import hzt.collections.ListX;
+import hzt.collections.ListView;
 import hzt.sequences.Sequence;
 import hzt.strings.StringX;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ class FileXTest {
 
     @Test
     void testReadLines() {
-        final ListX<StringX> lines = FileX.of("input/test.txt").readLines();
+        final ListView<StringX> lines = FileX.of("input/test.txt").readLines();
 
         assertAll(
                 () -> assertEquals("Hello, this is a test, Second line", lines.joinToString()),

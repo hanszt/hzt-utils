@@ -1,6 +1,6 @@
 package hzt.statistics;
 
-import hzt.collections.ListX;
+import hzt.collections.ListView;
 import hzt.ranges.DoubleRange;
 import hzt.ranges.LongRange;
 import hzt.sequences.Sequence;
@@ -18,7 +18,7 @@ class StatisticsTest {
 
     @Test
     void testStatisticsStandardDeviation() {
-        final ListX<Integer> list = Sequence.generate(RANDOM::nextGaussian)
+        final ListView<Integer> list = Sequence.generate(RANDOM::nextGaussian)
                 .take(1_000)
                 .map(d -> (int) (d * 100))
                 .toListView();

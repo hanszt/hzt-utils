@@ -9,9 +9,9 @@ class TransformingIndexedSequenceTest {
 
     @Test
     void testSequenceMapIndexed() {
-        final ListX<String> strings = ListView.of("test", "map", "filter", "reduce");
+        final ListView<String> strings = ListView.of("test", "map", "filter", "reduce");
 
-        final ListX<String> result = strings.asSequence()
+        final ListView<String> result = strings.asSequence()
                 .mapIndexed((index, value) -> value + index)
                 .toListView();
 

@@ -17,20 +17,20 @@ class ReducableTest {
 
     @Test
     void testSingle() {
-        final SetX<Integer> singleton = SetView.of(10);
+        final SetView<Integer> singleton = SetView.of(10);
         final Integer single = singleton.single();
         assertEquals(10, single);
     }
 
     @Test
     void testSingleCallOnEmptyIterableYieldsNoSuchElementException() {
-        final SetX<Object> set = SetView.empty();
+        final SetView<Object> set = SetView.empty();
         assertThrows(NoSuchElementException.class, set::single);
     }
 
     @Test
     void testSingleCallOnIterableHavingMoreThanOneElementYieldsIllegalArgumentException() {
-        final SetX<Integer> set = SetView.of(10, 9);
+        final SetView<Integer> set = SetView.of(10, 9);
         assertThrows(IllegalArgumentException.class, set::single);
     }
 

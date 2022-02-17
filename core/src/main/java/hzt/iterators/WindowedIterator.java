@@ -97,7 +97,7 @@ public final class WindowedIterator<T> extends AbstractIterator<ListView<T>> {
 
     @Override
     protected void computeNext() {
-        final ListX<T> next = computeNextWindow();
+        final ListView<T> next = computeNextWindow();
         if (next.isEmpty()) {
             done();
         } else {

@@ -27,9 +27,9 @@ class CloserTest {
 
     @Test
     void testCloserForResourceApplyAndClose() {
-        final var resource = new Resource("Resource 1");
+        final Resource resource = new Resource("Resource 1");
 
-        final var result = Closer.forResource(resource, Resource::close).applyAndClose(Resource::read);
+        final String result = Closer.forResource(resource, Resource::close).applyAndClose(Resource::read);
 
         assertAll(
                 () -> assertEquals("Read result", result),
@@ -41,7 +41,7 @@ class CloserTest {
     void testExecuteAndClose() {
         List<String> list = new ArrayList<>();
 
-        final var resource = new Resource("Resource 1");
+        final Resource resource = new Resource("Resource 1");
 
         Closer.forResource(resource, Resource::close).executeAndClose(l -> list.add(l.read()));
 

@@ -20,7 +20,7 @@ class MutableLinkedSetTest {
     void testMutableLinkedSetOfIterableMaintainsOrder() {
         final List<Book> bookList = TestSampleGenerator.createBookList();
 
-        MutableLinkedSetX<Book> set = MutableLinkedSet.of(bookList);
+        MutableLinkedSet<Book> set = MutableLinkedSet.of(bookList);
 
         assertEquals(bookList.get(0), set.first());
     }

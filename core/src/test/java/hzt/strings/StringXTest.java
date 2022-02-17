@@ -1,6 +1,5 @@
 package hzt.strings;
 
-import hzt.collections.ArrayX;
 import hzt.collections.ListView;
 import hzt.collections.MutableList;
 import hzt.sequences.Sequence;
@@ -59,7 +58,7 @@ class StringXTest {
 
     @Test
     void testStringXToListViewThenFirstAndLast() {
-        final ArrayX<Character> characters = StringX.of("Hello").toListView();
+        final ListView<Character> characters = StringX.of("Hello").toListView();
 
         assertAll(
                 () -> assertEquals('H', characters.first()),
@@ -95,7 +94,7 @@ class StringXTest {
 
     @Test
     void flatMapToCharArrayAndFromCharArrayToStringX() {
-        final Character[] characters = Sequence.of("hallo", "Wat is dat?", "Een test")
+        final char[] characters = Sequence.of("hallo", "Wat is dat?", "Een test")
                 .joinToStringX("")
                 .toCharArray();
 

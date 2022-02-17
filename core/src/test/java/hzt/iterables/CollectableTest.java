@@ -38,7 +38,7 @@ class CollectableTest {
 
     @Test
     void testTeeingYieldsTwoValuesWhileOnlyGoingThroughPipelineOnce() {
-        final ListX<Integer> integers = ListView.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final ListView<Integer> integers = ListView.of(1, 2, 3, 4, 5, 6, 7, 8);
 
         final AtomicInteger toTwoCounter = new AtomicInteger();
 
@@ -62,7 +62,7 @@ class CollectableTest {
 
     @Test
     void testBranchingYieldsThreeValuesWhileOnlyGoingThroughPipelineOnce() {
-        final ListX<Integer> integers = ListView.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final ListView<Integer> integers = ListView.of(1, 2, 3, 4, 5, 6, 7, 8);
 
         final AtomicInteger toThreeCounter = new AtomicInteger();
 
@@ -112,7 +112,7 @@ class CollectableTest {
                         summarizingInt(Painting::ageInYears),
                         counting()));
 
-        final Triple<Pair<ListX<Painter>, ListX<Painter>>, IntStatistics, Long> actual = paintingList.asSequence()
+        final Triple<Pair<ListView<Painter>, ListView<Painter>>, IntStatistics, Long> actual = paintingList.asSequence()
                 .toThree(s -> s.partitionMapping(Painting::isInMuseum, Painting::painter),
                         s -> s.statsOfInts(Painting::ageInYears),
                         Sequence::count);
@@ -190,16 +190,16 @@ class CollectableTest {
 
     @Test
     void testBranchToFour() {
-        final var sequence = Sequence.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        final Sequence<Integer> sequence = Sequence.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        final var statistics = sequence.branching(
+        final IntSummaryStatistics statistics = sequence.branching(
                 counting(),
                 collectingAndThen(minBy(comparing(It::asInt)), Optional::orElseThrow),
                 collectingAndThen(maxBy(comparing(It::asInt)), Optional::orElseThrow),
                 summingInt(It::asInt),
                 IntSummaryStatistics::new);
 
-        final var stats = sequence.statsOfInts(It::asInt);
+        final IntStatistics stats = sequence.statsOfInts(It::asInt);
 
         assertAll(
                 () -> assertEquals(statistics.getCount(), stats.getCount()),
@@ -211,9 +211,9 @@ class CollectableTest {
 
     @Test
     void testToDoubleArray() {
-        final var museums = TestSampleGenerator.getMuseumListContainingNulls();
+        final List<Museum> museums = TestSampleGenerator.getMuseumListContainingNulls();
 
-        final var averages = Sequence.of(museums)
+        final double[] averages = Sequence.of(museums)
                 .map(Museum::getPaintings)
                 .map(Sequence::of)
                 .map(s -> s.asIntRange(Painting::ageInYears))
@@ -224,13 +224,13 @@ class CollectableTest {
 
     @Test
     void testToTypedArray() {
-        final var museums = TestSampleGenerator.getMuseumListContainingNulls();
+        final List<Museum> museums = TestSampleGenerator.getMuseumListContainingNulls();
 
-        final var expected = museums.stream()
+        final Painting[] expected = museums.stream()
                 .map(Museum::getMostPopularPainting)
                 .toArray(Painting[]::new);
 
-        final var museumArray = Sequence.of(museums)
+        final Painting[] museumArray = Sequence.of(museums)
                 .map(Museum::getMostPopularPainting)
                 .toTypedArray(Painting[]::new);
 

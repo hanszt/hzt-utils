@@ -12,8 +12,10 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
 import static hzt.collectors.CollectorsX.toListView;
@@ -28,7 +30,7 @@ class ListViewTest {
 
     @Test
     void testGetElement() {
-        final ListX<String> words = ListView.of("hallo", "asffasf", "string", "test");
+        final ListView<String> words = ListView.of("hallo", "asffasf", "string", "test");
 
         assertAll(
                 () -> assertEquals("test", words.get(3)),
@@ -46,7 +48,7 @@ class ListViewTest {
 
         expected.add(LocalDate.MIN);
 
-        final MutableListX<LocalDate> dates = museums.mapTo(MutableList::empty, PaintingAuction::getDateOfOpening);
+        final MutableList<LocalDate> dates = museums.mapTo(MutableList::empty, PaintingAuction::getDateOfOpening);
 
         dates.add(LocalDate.MIN);
 
@@ -142,7 +144,7 @@ class ListViewTest {
     void testSkipLast() {
         ListView<Integer> list = ListView.of(1, 2, 3, 4, 5, 6, 5);
 
-        final ListX<Integer> integers = list.skipLast(2);
+        final ListView<Integer> integers = list.skipLast(2);
 
         assertEquals(ListView.of(1, 2, 3, 4, 5), integers);
     }
@@ -151,7 +153,7 @@ class ListViewTest {
     void testTakeLast() {
         ListView<Integer> list = ListView.of(1, 2, 3, 4, 5, 6, 5);
 
-        final var integers = list.takeLast(2);
+        final ListView<Integer> integers = list.takeLast(2);
 
         assertEquals(ListView.of(6, 5), integers);
     }
@@ -160,7 +162,7 @@ class ListViewTest {
     void testTakeLastTo() {
         ListView<Integer> list = ListView.of(1, 2, 3, 4, 5, 6, 5);
 
-        final var integers = list.takeLastTo(size -> new LinkedTransferQueue<>(), 5);
+        final Collection<Integer> integers = list.takeLastTo(size -> new LinkedTransferQueue<>(), 5);
 
         assertIterableEquals(new LinkedTransferQueue<>(List.of(3, 4, 5, 6, 5)), integers);
     }

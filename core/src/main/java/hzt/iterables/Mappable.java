@@ -77,7 +77,7 @@ public interface Mappable<T> extends IndexedIterable<T> {
     <R> Mappable<StringX> mapToStringX(@NotNull Function<? super T, ? extends R> function);
 
     default <R> List<R> toListOf(@NotNull Function<? super T, ? extends R> transform) {
-        final MutableListX<? extends R> list = mapNotNullTo(MutableList::empty, transform);
+        final MutableList<? extends R> list = mapNotNullTo(MutableList::empty, transform);
         return Collections.unmodifiableList(list);
     }
 

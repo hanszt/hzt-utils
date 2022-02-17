@@ -74,7 +74,7 @@ public interface ListView<E> extends CollectionView<E>, Transformable<ListView<E
 
     default <C extends Collection<E>> C takeLastTo(IntFunction<C> collectionFactory, int n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
-        final var emptyCollection = collectionFactory.apply(0);
+        final C emptyCollection = collectionFactory.apply(0);
         if (n == 0) {
             return emptyCollection;
         }

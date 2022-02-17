@@ -1,6 +1,6 @@
 package hzt.ranges;
 
-import hzt.collections.ArrayX;
+import hzt.collections.ListView;
 import hzt.numbers.BigDecimalX;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ class NumberRangeTest {
 
     @Test
     void testLongRangeToListGetBigDecimalAverage() {
-        final ArrayX<Long> longs = LongRange.of(0, 1000).toListView();
+        final ListView<Long> longs = LongRange.of(0, 1000).toListView();
 
         final BigDecimalX average = longs.toBigDecimalXAverage(BigDecimalX::of);
 

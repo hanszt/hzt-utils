@@ -48,7 +48,7 @@ class FileXTest {
     void testGridInFileTo2DIntArray() {
         final int[][] grid = FileX.of("input/grid.txt").useLines(sequence ->
                 sequence.map(line -> line.split(" ").toIntArray(Integer::parseInt))
-                .toArray(int[][]::new));
+                .toTypedArray(int[][]::new));
 
         Arrays.stream(grid).map(Arrays::toString).forEach(System.out::println);
 

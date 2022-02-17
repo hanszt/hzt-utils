@@ -1,22 +1,20 @@
 package hzt.iterables;
 
-import hzt.collections.ListX;
-import hzt.collections.MapX;
-import hzt.collections.MutableListX;
-import hzt.collections.MutableMapX;
-import hzt.collections.MutableSetX;
-import hzt.collections.SetX;
+import hzt.collections.ListView;
+import hzt.collections.MapView;
+import hzt.collections.MutableList;
+import hzt.collections.MutableMap;
+import hzt.collections.MutableSet;
+import hzt.collections.SetView;
 import hzt.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 
 public final class IterableReductions {
 
@@ -42,50 +40,44 @@ public final class IterableReductions {
         return Optional.empty();
     }
 
-    public static <T, A, R> R collect(Iterable<T> iterable, Collector<T, A, R> collector) {
-        A result = collector.supplier().get();
-        final BiConsumer<A, T> accumulator = collector.accumulator();
-        iterable.forEach(t -> accumulator.accept(result, t));
-        return collector.finisher().apply(result);
-    }
-
-    public static <T, R, K> MapX<K, MutableListX<R>> groupMapping(
+    public static <T, R, K> MapView<K, MutableList<R>> groupMapping(
             @NotNull Iterable<T> iterable,
             @NotNull Function<? super T, ? extends K> classifier,
             @NotNull Function<? super T, ? extends R> valueMapper) {
-        MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
+        MutableMap<K, MutableList<R>> groupedMap = MutableMap.empty();
         for (T t : iterable) {
-            groupedMap.computeIfAbsent(classifier.apply(t), key -> MutableListX.empty()).add(valueMapper.apply(t));
+            groupedMap.computeIfAbsent(classifier.apply(t), key -> MutableList.empty()).add(valueMapper.apply(t));
         }
         return groupedMap;
     }
 
-    public static <T, R> Pair<ListX<R>, ListX<R>> partitionMapping(
+    public static <T, R> Pair<ListView<R>, ListView<R>> partitionMapping(
             @NotNull Iterable<T> iterable,
             @NotNull Predicate<T> predicate,
             @NotNull Function<? super T, ? extends R> resultMapper) {
-        Pair<MutableListX<R>, MutableListX<R>> pair = Pair.of(MutableListX.empty(), MutableListX.empty());
+        MutableList<R> matchingList = MutableList.empty();
+        MutableList<R> nonMatchingList = MutableList.empty();
         for (T t : iterable) {
             if (t != null) {
                 R r = resultMapper.apply(t);
                 if (predicate.test(t)) {
-                    pair.first().add(r);
+                    matchingList.add(r);
                 } else {
-                    pair.second().add(r);
+                    nonMatchingList.add(r);
                 }
             }
         }
-        return Pair.of(pair.first().toListX(), pair.second().toListX());
+        return Pair.of(matchingList, nonMatchingList);
     }
 
-    public static <T, S, I extends Iterable<S>, R> SetX<R> intersectionOf(
+    public static <T, S, I extends Iterable<S>, R> SetView<R> intersectionOf(
             @NotNull Iterable<T> iterable,
             @NotNull Function<? super T, ? extends I> toCollectionMapper,
             @NotNull Function<? super S, ? extends R> selector) {
-        MutableSetX<R> common = MutableSetX.empty();
+        MutableSet<R> common = MutableSet.empty();
         for (T t : iterable) {
             final I otherIterable = toCollectionMapper.apply(t);
-            final MutableListX<R> resultList = MutableListX.empty();
+            final MutableList<R> resultList = MutableList.empty();
             for (S s : otherIterable) {
                 final R r = selector.apply(s);
                 resultList.add(r);

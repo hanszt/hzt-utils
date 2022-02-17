@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.ToIntFunction;
 
-final class ArrayListX<T> implements MutableListX<T> {
+final class ArrayListX<T> implements MutableList<T> {
 
     private final List<T> list;
 
@@ -54,7 +54,7 @@ final class ArrayListX<T> implements MutableListX<T> {
 
     @Override
     public int binarySearch(int fromIndex, int toIndex, ToIntFunction<T> comparison) {
-        return ArrayHelper.binarySearch(size(), list::get, fromIndex, toIndex, comparison);
+        return ListHelper.binarySearch(size(), list::get, fromIndex, toIndex, comparison);
     }
 
     @Override
@@ -180,20 +180,20 @@ final class ArrayListX<T> implements MutableListX<T> {
 
     @NotNull
     @Override
-    public MutableListX<T> headTo(int toIndex) {
+    public MutableList<T> headTo(int toIndex) {
         return subList(0, toIndex);
     }
 
     @NotNull
     @Override
-    public MutableListX<T> tailFrom(int fromIndex) {
+    public MutableList<T> tailFrom(int fromIndex) {
         return subList(fromIndex, size());
     }
 
     @NotNull
     @Override
-    public MutableListX<T> subList(int fromIndex, int toIndex) {
-        return MutableListX.of(list.subList(fromIndex, toIndex));
+    public MutableList<T> subList(int fromIndex, int toIndex) {
+        return MutableList.of(list.subList(fromIndex, toIndex));
     }
 
     @Override

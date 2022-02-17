@@ -1,6 +1,5 @@
 package hzt.ranges;
 
-import hzt.collections.ArrayX;
 import hzt.statistics.NumberStatistics;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,8 +35,4 @@ public interface NumberRange<T extends Number> {
     @NotNull NumberRange<T> filter(Predicate<T> predicate);
 
     @NotNull NumberRange<T> onEach(Consumer<? super T> numberSupplier);
-
-    @NotNull ArrayX<T> toArrayX();
-
-    @NotNull T[] toArray();
 }

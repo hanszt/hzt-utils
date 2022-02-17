@@ -4,7 +4,10 @@ import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,6 +23,32 @@ class CloserTest {
             final String result = closer.apply(Resource::read);
             assertEquals("Read result", result);
         }
+    }
+
+    @Test
+    void testCloserForResourceApplyAndClose() {
+        final var resource = new Resource("Resource 1");
+
+        final var result = Closer.forResource(resource, Resource::close).applyAndClose(Resource::read);
+
+        assertAll(
+                () -> assertEquals("Read result", result),
+                () -> assertTrue(resource.closed)
+        );
+    }
+
+    @Test
+    void testExecuteAndClose() {
+        List<String> list = new ArrayList<>();
+
+        final var resource = new Resource("Resource 1");
+
+        Closer.forResource(resource, Resource::close).executeAndClose(l -> list.add(l.read()));
+
+        assertAll(
+                () -> assertEquals("Read result", list.get(0)),
+                () -> assertTrue(resource.closed)
+        );
     }
 
     @Test

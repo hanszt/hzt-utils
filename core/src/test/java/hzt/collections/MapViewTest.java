@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MapXTest {
+class MapViewTest {
 
     @Test
     void testInvertMap() {
@@ -35,7 +35,7 @@ class MapXTest {
                 .map(e -> new AbstractMap.SimpleEntry<>(e.getValue(), e.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        final MapX<Museum, String> actual = MapX.of(museumMap).inverted();
+        final MapView<Museum, String> actual = MapView.of(museumMap).inverted();
 
         It.println("actual = " + actual);
 
@@ -51,8 +51,8 @@ class MapXTest {
                 .mapToInt(LocalDate::getDayOfMonth)
                 .sum();
 
-        final long actual = MapX.of(museumMap)
-                .mapValuesTo(MutableListX::of, Museum::getDateOfOpening)
+        final long actual = MapView.of(museumMap)
+                .mapValuesTo(MutableList::empty, Museum::getDateOfOpening)
                 .sumOfInts(LocalDate::getDayOfMonth);
 
         It.println("actual = " + actual);
@@ -67,7 +67,7 @@ class MapXTest {
 
         final List<Museum> museumListContainingNulls = TestSampleGenerator.getMuseumListContainingNulls();
 
-        ListX.of(museumListContainingNulls).associateBy(Museum::getName).forEachIndexed(biConsumer);
+        ListView.of(museumListContainingNulls).associateBy(Museum::getName).forEachIndexed(biConsumer);
 
         list.forEach(It::println);
 
@@ -82,7 +82,7 @@ class MapXTest {
                 .flatMap(e -> e.getValue().getPaintings().stream())
                 .collect(Collectors.toList());
 
-        final List<Painting> actual = MapX.of(museumMap).flatMapValuesTo(MutableListX::of, Museum::getPaintings);
+        final List<Painting> actual = MapView.of(museumMap).flatMapValuesTo(MutableList::empty, Museum::getPaintings);
 
         It.println("actual = " + actual);
 
@@ -96,33 +96,33 @@ class MapXTest {
         map.put("2", 2);
         map.put("3", 3);
 
-        final MapX<String, Year> result = EntrySequence.of(map).mapValues(Year::of).toMapX();
+        final MapX<String, Year> result = EntrySequence.of(map).mapValues(Year::of).toMapView();
 
-        assertEquals(MapX.of("1", Year.of(1), "2", Year.of(2), "3", Year.of(3)), result);
+        assertEquals(MapView.of("1", Year.of(1), "2", Year.of(2), "3", Year.of(3)), result);
     }
 
     @Test
-    void testMapOfMapXSameAsInputMap() {
+    void testMapViewOfMapSameAsInputMap() {
         final Map<String, Museum> museumMap = TestSampleGenerator.createMuseumMap();
 
-        final MapX<String, Museum> mapX = MapX.of(museumMap);
-        MapX.of(mapX).entrySet().forEach(It::println);
+        final MapView<String, Museum> mapView = MapView.of(museumMap);
+        MapView.of(mapView).entrySet().forEach(It::println);
 
-        It.println("mapX = " + mapX);
+        It.println("map = " + mapView);
 
-        assertEquals(museumMap, mapX);
+        assertEquals(museumMap, mapView);
     }
 
     @Test
     void testComputeIfAbsent() {
-        final MapX<String, Museum> museumMap = ListX.of(TestSampleGenerator.createMuseumList())
+        final MapView<String, Museum> museumMap = ListView.of(TestSampleGenerator.createMuseumList())
                 .associateBy(Museum::getName);
 
         Museum expected = museumMap.get("Van Gogh Museum");
 
-        final MutableMapX<String, Museum> mapX = MutableMapX.of(museumMap);
+        final MutableMap<String, Museum> map = MutableMap.of(museumMap);
 
-        final Museum van_gogh = mapX.computeIfAbsent("Van Gogh Museum", key -> {
+        final Museum van_gogh = map.computeIfAbsent("Van Gogh Museum", key -> {
             throw new IllegalStateException();
         });
 
@@ -132,23 +132,23 @@ class MapXTest {
     }
 
     @Test
-    void testMapXToList() {
-        final MapX<String, Museum> museumMapX = MapX.of(TestSampleGenerator.createMuseumMap());
+    void testMapToList() {
+        final MapView<String, Museum> museumMapView = MapView.of(TestSampleGenerator.createMuseumMap());
 
-        final ListX<Pair<String, Museum>> pairs = museumMapX.map(Pair::ofEntry);
+        final ListView<Pair<String, Museum>> pairs = museumMapView.map(Pair::ofEntry);
 
-        assertEquals(new HashSetX<>(Arrays.asList("Picasso Museum", "Van Gogh Museum", "Vermeer Museum")), pairs.toSetXOf(Pair::first));
+        assertEquals(new HashSetX<>(Arrays.asList("Picasso Museum", "Van Gogh Museum", "Vermeer Museum")), pairs.toSetViewOf(Pair::first));
     }
 
     @Test
     void testFlatMapToList() {
-        final MapX<String, Museum> museumMapX = MapX.of(TestSampleGenerator.createMuseumMap());
+        final MapView<String, Museum> museumMapView = MapView.of(TestSampleGenerator.createMuseumMap());
 
-        final ListX<Painting> pairs = museumMapX.flatMap(e -> e.getValue().getPaintings());
+        final ListView<Painting> pairs = museumMapView.flatMap(e -> e.getValue().getPaintings());
 
         final String expected = "Meisje met de rode hoed";
 
-        final String actual = ListX.of(pairs).maxOf(Painting::name);
+        final String actual = ListView.of(pairs).maxOf(Painting::name);
 
         assertEquals(expected, actual);
     }
@@ -156,20 +156,20 @@ class MapXTest {
     @Test
     void testMapOfPairs() {
         final StringX hallo = StringX.of("Hallo");
-        final MapX<StringX, String> map = MapX.ofPairs(hallo.to("s"), StringX.of("asd").to("asdd"));
+        final MapX<StringX, String> map = MapView.ofPairs(hallo.to("s"), StringX.of("asd").to("asdd"));
         assertEquals(2, map.size());
         assertTrue(map.containsValue("asdd"));
     }
 
     @Test
     void testBuildMap() {
-        final MapX<Integer, LocalDate> mapX = MapX.build(map ->
-                IntRange.of(1990, 2022).forEach(year -> map.put(year, LocalDate.of(year, 1, 1))));
+        final var map = MapView.<Integer, LocalDate>build(m ->
+                IntRange.of(1990, 2022).forEach(year -> m.put(year, LocalDate.of(year, 1, 1))));
 
-        mapX.forEach(It::println);
+        map.forEach(It::println);
 
-        It.println("mapX = " + mapX);
+        It.println("map = " + map);
 
-        assertEquals(32, mapX.size());
+        assertEquals(32, map.size());
     }
 }

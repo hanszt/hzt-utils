@@ -9,18 +9,18 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MutableLinkedSetXTest {
+class MutableLinkedSetTest {
 
     @Test
     void testMutableLinkedEmptySetIsEmpty() {
-        assertTrue(MutableLinkedSetX.empty()::isEmpty);
+        assertTrue(MutableLinkedSet.empty()::isEmpty);
     }
 
     @Test
     void testMutableLinkedSetOfIterableMaintainsOrder() {
         final List<Book> bookList = TestSampleGenerator.createBookList();
 
-        MutableLinkedSetX<Book> set = MutableLinkedSetX.of(bookList);
+        MutableLinkedSetX<Book> set = MutableLinkedSet.of(bookList);
 
         assertEquals(bookList.get(0), set.first());
     }

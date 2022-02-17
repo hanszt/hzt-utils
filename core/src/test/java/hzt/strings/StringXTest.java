@@ -1,8 +1,8 @@
 package hzt.strings;
 
 import hzt.collections.ArrayX;
-import hzt.collections.ListX;
-import hzt.collections.MutableListX;
+import hzt.collections.ListView;
+import hzt.collections.MutableList;
 import hzt.sequences.Sequence;
 import hzt.tuples.Pair;
 import hzt.utils.It;
@@ -34,10 +34,10 @@ class StringXTest {
                 .map(List::size)
                 .collect(Collectors.toList());
 
-        final ListX<Integer> characterCounts = StringX.of(hallo)
+        final ListView<Integer> characterCounts = StringX.of(hallo)
                 .group()
                 .values()
-                .map(MutableListX::size);
+                .map(MutableList::size);
 
         It.println("hallo = " + characterCounts);
 
@@ -58,8 +58,8 @@ class StringXTest {
     }
 
     @Test
-    void testStringXToCharArrayX() {
-        final ArrayX<Character> characters = StringX.of("Hello").toArrayX();
+    void testStringXToListViewThenFirstAndLast() {
+        final ArrayX<Character> characters = StringX.of("Hello").toListView();
 
         assertAll(
                 () -> assertEquals('H', characters.first()),
@@ -97,9 +97,9 @@ class StringXTest {
     void flatMapToCharArrayAndFromCharArrayToStringX() {
         final Character[] characters = Sequence.of("hallo", "Wat is dat?", "Een test")
                 .joinToStringX("")
-                .toArray();
+                .toCharArray();
 
-        final StringX stringX = StringX.of("", characters);
+        final StringX stringX = StringX.of(characters);
 
         assertEquals("halloWat is dat?Een test", stringX.toString());
     }
@@ -111,7 +111,7 @@ class StringXTest {
             "Avida Dollars ->  Salvador Dali",
             "Altissimvm planetam tergeminvm observavi -> Salve vmbistinevm geminatvm Martia proles"})
     void testStringIsAnagram(String string) {
-        final ListX<String> split = StringX.of(string).split(" -> ");
+        final ListView<String> split = StringX.of(string).split(" -> ");
         final String string1 = split.first();
         final String string2 = split.last();
 
@@ -126,7 +126,7 @@ class StringXTest {
             "Avida Dollars ->  Salvador Dalis",
             "Altissimum planetam tergeminum observavi -> Salve umbistineum geminatum Martia proles"})
     void testStringIsNotAnagram(String string) {
-        final ListX<String> split = StringX.of(string).split(" -> ");
+        final ListView<String> split = StringX.of(string).split(" -> ");
         final String string1 = split.first();
         final String string2 = split.last();
 

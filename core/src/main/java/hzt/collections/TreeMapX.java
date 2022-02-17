@@ -12,7 +12,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
 
-final class TreeMapX<K, V, R extends Comparable<R>> implements NavigableMapX<K, V> {
+final class TreeMapX<K, V, R extends Comparable<R>> implements SortedMutableMap<K, V> {
 
     private final NavigableMap<K, V> map;
 
@@ -97,25 +97,25 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements NavigableMapX<K, 
 
     @NotNull
     @Override
-    public NavigableMapX<K, V> subMap(K fromKey, K toKey) {
-        return NavigableMapX.ofSortedMap(map.subMap(fromKey, toKey));
+    public SortedMutableMap<K, V> subMap(K fromKey, K toKey) {
+        return SortedMutableMap.ofSortedMap(map.subMap(fromKey, toKey));
     }
 
     @NotNull
     @Override
-    public NavigableMapX<K, V> headMap(K toKey) {
-        return NavigableMapX.ofSortedMap(map.headMap(toKey));
+    public SortedMutableMap<K, V> headMap(K toKey) {
+        return SortedMutableMap.ofSortedMap(map.headMap(toKey));
     }
 
     @NotNull
     @Override
-    public NavigableMapX<K, V> tailMap(K fromKey) {
-        return NavigableMapX.ofSortedMap(map.tailMap(fromKey));
+    public SortedMutableMap<K, V> tailMap(K fromKey) {
+        return SortedMutableMap.ofSortedMap(map.tailMap(fromKey));
     }
 
     @Override
     public @NotNull Entry<K, V> first() {
-        return map.firstEntry();
+        return firstEntry();
     }
 
     @Override
@@ -134,18 +134,18 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements NavigableMapX<K, 
     }
 
     @Override
-    public @NotNull MutableSetX<K> keySet() {
-        return MutableLinkedSetX.of(map.keySet());
+    public @NotNull MutableSet<K> keySet() {
+        return MutableLinkedSet.of(map.keySet());
     }
 
     @Override
-    public @NotNull MutableListX<V> values() {
-        return MutableListX.of(map.values());
+    public @NotNull MutableList<V> values() {
+        return MutableList.of(map.values());
     }
 
     @Override
-    public @NotNull MutableSetX<Entry<K, V>> entrySet() {
-        return MutableSetX.of(map.entrySet());
+    public @NotNull MutableSet<Entry<K, V>> entrySet() {
+        return MutableSet.of(map.entrySet());
     }
     
     @Override
@@ -209,33 +209,33 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements NavigableMapX<K, 
     }
 
     @Override
-    public NavigableMapX<K, V> descendingMap() {
-        return NavigableMapX.ofSortedMap(map.descendingMap());
+    public SortedMutableMap<K, V> descendingMap() {
+        return SortedMutableMap.ofSortedMap(map.descendingMap());
     }
 
     @Override
-    public NavigableSetX<K> navigableKeySet() {
-        return NavigableSetX.of(map.navigableKeySet());
+    public SortedMutableSet<K> navigableKeySet() {
+        return SortedMutableSet.of(map.navigableKeySet());
     }
 
     @Override
-    public NavigableSetX<K> descendingKeySet() {
-        return NavigableSetX.of(map.descendingKeySet());
+    public SortedMutableSet<K> descendingKeySet() {
+        return SortedMutableSet.of(map.descendingKeySet());
     }
 
     @Override
-    public NavigableMapX<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
-        return NavigableMapX.ofSortedMap(map.subMap(fromKey, fromInclusive, toKey, toInclusive));
+    public SortedMutableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
+        return SortedMutableMap.ofSortedMap(map.subMap(fromKey, fromInclusive, toKey, toInclusive));
     }
 
     @Override
-    public NavigableMapX<K, V> headMap(K toKey, boolean inclusive) {
-        return NavigableMapX.ofSortedMap(map.headMap(toKey, inclusive));
+    public SortedMutableMap<K, V> headMap(K toKey, boolean inclusive) {
+        return SortedMutableMap.ofSortedMap(map.headMap(toKey, inclusive));
     }
 
     @Override
-    public NavigableMapX<K, V> tailMap(K fromKey, boolean inclusive) {
-        return NavigableMapX.ofSortedMap(map.tailMap(fromKey, inclusive));
+    public SortedMutableMap<K, V> tailMap(K fromKey, boolean inclusive) {
+        return SortedMutableMap.ofSortedMap(map.tailMap(fromKey, inclusive));
     }
 
     @Override
@@ -246,8 +246,8 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements NavigableMapX<K, 
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TreeMapX<?, ?, ?> mapX = (TreeMapX<?, ?, ?>) o;
-        return map.equals(mapX.map);
+        TreeMapX<?, ?, ?> treeMapX = (TreeMapX<?, ?, ?>) o;
+        return this.map.equals(treeMapX.map);
     }
 
     @Override

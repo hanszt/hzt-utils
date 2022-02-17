@@ -144,35 +144,35 @@ public final class CollectorsX {
         return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper), Collections::unmodifiableMap);
     }
 
-    public static <T> Collector<T, ?, ListX<T>> toListX() {
-        return Collector.of((Supplier<MutableListX<T>>) MutableListX::of, List::add, CollectorsX::accumulate, ListX::of);
+    public static <T> Collector<T, ?, ListView<T>> toListView() {
+        return Collector.of((Supplier<MutableList<T>>) MutableList::empty, List::add, CollectorsX::accumulate, ListView::of);
     }
 
-    public static <T, R> Collector<T, ?, ListX<R>> toListXOf(Function<T, R> mapper) {
-        return Collectors.mapping(mapper, toListX());
+    public static <T, R> Collector<T, ?, ListView<R>> toListViewOf(Function<T, R> mapper) {
+        return Collectors.mapping(mapper, toListView());
     }
 
-    public static <T> Collector<T, ?, SetX<T>> toSetX() {
+    public static <T> Collector<T, ?, SetView<T>> toSetView() {
         return Collector
-                .of((Supplier<MutableListX<T>>) MutableListX::of, List::add, CollectorsX::accumulate, SetX::of);
+                .of((Supplier<MutableList<T>>) MutableList::empty, List::add, CollectorsX::accumulate, SetView::of);
     }
 
-    public static <T, R> Collector<T, ?, SetX<R>> toSetXOf(Function<T, R> mapper) {
-        return Collectors.mapping(mapper, toSetX());
+    public static <T, R> Collector<T, ?, SetView<R>> toSetViewOf(Function<T, R> mapper) {
+        return Collectors.mapping(mapper, toSetView());
     }
 
-    private static <T> MutableListX<T> accumulate(MutableListX<T> left, MutableListX<T> right) {
+    private static <T> MutableList<T> accumulate(MutableList<T> left, MutableList<T> right) {
         left.addAll(right);
         return left;
     }
 
-    public static <T, K, V> Collector<T, ?, MapX<K, V>> toMapX(Function<T, K> keyMapper, Function<T, V> valueMapper) {
-        return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper), MapX::of);
+    public static <T, K, V> Collector<T, ?, MapView<K, V>> toMapView(Function<T, K> keyMapper, Function<T, V> valueMapper) {
+        return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper), MapView::of);
     }
 
-    public static <T, K, V> Collector<T, ?, MapX<K, V>> toMapX(
+    public static <T, K, V> Collector<T, ?, MapView<K, V>> toMapView(
             Function<T, K> keyMapper, Function<T, V> valueMapper, BinaryOperator<V> mergeFunction) {
-        return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper, mergeFunction), MapX::of);
+        return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper, mergeFunction), MapView::of);
     }
 
     private static <K, V> Map<K, V> accumulateMap(Map<K, V> left, Map<K, V> right) {

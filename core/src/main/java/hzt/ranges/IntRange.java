@@ -1,7 +1,8 @@
 package hzt.ranges;
 
-import hzt.collections.ArrayX;
 import hzt.function.TriFunction;
+import hzt.iterables.primitive.IntIterable;
+import hzt.iterators.PrimitiveIterators;
 import hzt.numbers.IntX;
 import hzt.sequences.Sequence;
 import hzt.statistics.IntStatistics;
@@ -17,17 +18,27 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 @FunctionalInterface
-public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Transformable<IntRange> {
+public interface IntRange extends IntIterable, NumberRange<Integer>, Sequence<Integer>, Transformable<IntRange> {
 
     static IntRange empty() {
         return IntRange.of(Sequence.empty());
     }
 
     static IntRange of(Iterable<Integer> integers) {
-        return integers::iterator;
+        return of(integers, It::asInt);
+    }
+
+    static <T> IntRange of(Iterable<T> iterable, ToIntFunction<T> mapper) {
+        return () -> PrimitiveIterators.intIteratorOf(iterable.iterator(), mapper);
+    }
+
+    static IntRange of(int... array) {
+        return () -> PrimitiveIterators.intArrayIterator(array);
     }
 
     static IntRange of(IntStream stream) {
@@ -60,23 +71,23 @@ public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Trans
     }
 
     default IntRange step(int step) {
-        return IntRange.of(filter(IntX.multipleOf(step)));
+        return filter(IntX.multipleOf(step));
     }
 
     default int random() {
-        return toListX().random();
+        return toListView().random();
     }
 
     default Optional<Integer> findRandom() {
-        return toListX().findRandom();
+        return toListView().findRandom();
     }
 
     default int random(Random random) {
-        return toListX().random(random);
+        return toListView().random(random);
     }
 
     default Optional<Integer> findRandom(Random random) {
-        return toListX().findRandom(random);
+        return toListView().findRandom(random);
     }
 
     default @NotNull Integer min() {
@@ -135,22 +146,11 @@ public interface IntRange extends NumberRange<Integer>, Sequence<Integer>, Trans
     }
 
     default IntStream intStream() {
-        return stream().mapToInt(It::asInt);
+        return StreamSupport.intStream(spliterator(), false);
     }
 
-    @Override
-    default @NotNull ArrayX<Integer> toArrayX() {
-        return toArrayX(Integer[]::new);
-    }
-
-    @Override
-    @NotNull
-    default Integer[] toArray() {
-        return toArray(Integer[]::new);
-    }
-
-    default int[] toIntArray() {
-        return stream().mapToInt(It::asInt).toArray();
+    default int[] toArray() {
+        return intStream().toArray();
     }
 
     @Override

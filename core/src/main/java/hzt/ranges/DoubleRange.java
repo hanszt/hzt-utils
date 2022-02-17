@@ -1,7 +1,8 @@
 package hzt.ranges;
 
-import hzt.collections.ArrayX;
 import hzt.function.TriFunction;
+import hzt.iterables.primitive.DoubleIterable;
+import hzt.iterators.PrimitiveIterators;
 import hzt.numbers.DoubleX;
 import hzt.sequences.Sequence;
 import hzt.statistics.DoubleStatistics;
@@ -15,17 +16,27 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
 import java.util.stream.DoubleStream;
+import java.util.stream.StreamSupport;
 
 @FunctionalInterface
-public interface DoubleRange extends NumberRange<Double>, Sequence<Double>, Transformable<DoubleRange> {
+public interface DoubleRange extends DoubleIterable, NumberRange<Double>, Sequence<Double>, Transformable<DoubleRange> {
 
     static DoubleRange empty() {
         return DoubleRange.of(Sequence.empty());
     }
 
     static DoubleRange of(Iterable<Double> doubleIterable) {
-        return doubleIterable::iterator;
+        return of(doubleIterable, It::asDouble);
+    }
+
+    static <T> DoubleRange of(Iterable<T> iterable, ToDoubleFunction<T> mapper) {
+        return () -> PrimitiveIterators.doubleIteratorOf(iterable.iterator(), mapper);
+    }
+
+    static DoubleRange of(double... doubles) {
+        return () -> PrimitiveIterators.doubleArrayIterator(doubles);
     }
 
     static DoubleRange of (DoubleStream stream) {
@@ -114,22 +125,11 @@ public interface DoubleRange extends NumberRange<Double>, Sequence<Double>, Tran
     }
 
     default DoubleStream doubleStream() {
-        return stream().mapToDouble(It::asDouble);
+        return StreamSupport.doubleStream(spliterator(), false);
     }
 
-    @Override
-    default @NotNull ArrayX<Double> toArrayX() {
-        return toArrayX(Double[]::new);
-    }
-
-    @Override
-    @NotNull
-    default Double[] toArray() {
-        return toArray(Double[]::new);
-    }
-
-    default double[] toDoubleArray() {
-        return stream().mapToDouble(It::asDouble).toArray();
+    default double[] toArray() {
+        return doubleStream().toArray();
     }
 
     @Override

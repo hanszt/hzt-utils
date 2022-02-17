@@ -15,17 +15,17 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
-class NavigableMapXTest {
+class SortedMutableMapTest {
 
     @Test
     void testNavigableMapComparingByKey() {
-        NavigableMapX<String, Integer> map = NavigableMapX.comparingByKey(String::length);
+        SortedMutableMap<String, Integer> map = SortedMutableMap.comparingByKey(String::length);
         map.put("hallo", 1);
         map.put("Hi", 2);
         map.put("greetings", 3);
 
-        final MapX<String, Integer> mapX = MapX.of("hallo", 1, "greetings", 3, "Hi", 2);
-        final NavigableMapX<String, Integer> expected = NavigableMapX.of(mapX, String::length);
+        final var mapView = MapView.of("hallo", 1, "greetings", 3, "Hi", 2);
+        final SortedMutableMap<String, Integer> expected = SortedMutableMap.of(mapView, String::length);
 
         map.forEach(It::println);
 
@@ -34,16 +34,16 @@ class NavigableMapXTest {
 
     @Test
     void testGetNavigableMap() {
-        final IterableX<Museum> museumListContainingNulls = ListX.of(TestSampleGenerator.getMuseumListContainingNulls())
+        final IterableX<Museum> museumListContainingNulls = ListView.of(TestSampleGenerator.getMuseumListContainingNulls())
                 .sortedBy(e -> Math.random());
 
         final NavigableMap<String, Museum> expected = new TreeMap<>(museumListContainingNulls.stream()
                 .filter(m -> m != null && m.getName() != null)
                 .collect(Collectors.toMap(Museum::getName, It::self)));
 
-        final NavigableMapX<String, Museum> actual = museumListContainingNulls
+        final SortedMutableMap<String, Museum> actual = museumListContainingNulls
                 .associateBy(Museum::getName)
-                .toSortedMapX(It::self);
+                .toSortedMap(It::self);
 
         actual.keySet().forEach(It::println);
 
@@ -55,17 +55,17 @@ class NavigableMapXTest {
 
     @Test
     void testGetNavigableMapAssociatedWith() {
-        final MutableSetX<Museum> museumSetContainingNulls = MutableSetX
+        final MutableSet<Museum> museumSetContainingNulls = MutableSet
                 .of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final NavigableMap<Museum, String> expected = new TreeMap<>(museumSetContainingNulls.stream()
                 .filter(m -> m != null && m.getName() != null)
                 .collect(Collectors.toMap(It::self, Museum::getName)));
 
-        final NavigableMapX<Museum, String> actual = museumSetContainingNulls
+        final SortedMutableMap<Museum, String> actual = museumSetContainingNulls
                 .filterBy(Museum::getName, Objects::nonNull)
                 .associateWith(Museum::getName)
-                .toSortedMapX(Museum::getName);
+                .toSortedMap(Museum::getName);
 
         final Museum firstMuseum = actual.first().getKey();
 

@@ -1,6 +1,6 @@
 package hzt.test;
 
-import hzt.collections.MutableListX;
+import hzt.collections.MutableList;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
@@ -19,7 +19,7 @@ public final class Generator {
     private Generator() {
     }
 
-    public static MutableListX<PaintingAuction> createAuctions() {
+    public static MutableList<PaintingAuction> createAuctions() {
 
         final Map<String, List<Painting>> groupedByLastName = paintingsByName();
         final List<Painting> vanGoghPaintings = groupedByLastName.get("van Gogh");
@@ -27,7 +27,7 @@ public final class Generator {
         final List<Painting> picassoPaintings = groupedByLastName.get("Picasso");
 
         final Painter painter = new Painter("Hans", "Zuidervaart", LocalDate.of(1989, 10, 18));
-        return MutableListX.of(
+        return MutableList.of(
                 new PaintingAuction("Van Gogh Auction", LocalDate.of(1992, Month.APRIL, 2), vanGoghPaintings),
                 new PaintingAuction("Vermeer Auction", LocalDate.of(1940, Month.JANUARY, 23), vermeerPaintings),
                 new PaintingAuction("Picasso Auction", LocalDate.of(1965, Month.AUGUST, 4), picassoPaintings),

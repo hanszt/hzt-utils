@@ -9,7 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
-final class LinkedHashSetX<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
+final class LinkedHashSetX<E> implements MutableLinkedSet<E>, LinkedSet<E> {
 
     private final Set<E> set;
 

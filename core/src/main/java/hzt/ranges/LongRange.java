@@ -1,7 +1,8 @@
 package hzt.ranges;
 
-import hzt.collections.ArrayX;
 import hzt.function.TriFunction;
+import hzt.iterables.primitive.LongIterable;
+import hzt.iterators.PrimitiveIterators;
 import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
 import hzt.statistics.LongStatistics;
@@ -15,17 +16,27 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToLongFunction;
 import java.util.stream.LongStream;
+import java.util.stream.StreamSupport;
 
 @FunctionalInterface
-public interface LongRange extends NumberRange<Long>, Sequence<Long>, Transformable<LongRange> {
+public interface LongRange extends LongIterable, NumberRange<Long>, Sequence<Long>, Transformable<LongRange> {
 
     static LongRange empty() {
         return LongRange.of(Sequence.empty());
     }
 
     static LongRange of(Iterable<Long> longIterable) {
-        return longIterable::iterator;
+        return of(longIterable, It::asLong);
+    }
+
+    static <T> LongRange of(Iterable<T> iterable, ToLongFunction<T> mapper) {
+        return () -> PrimitiveIterators.longIteratorOf(iterable.iterator(), mapper);
+    }
+
+    static LongRange of(long... longs) {
+        return () -> PrimitiveIterators.longArrayIterator(longs);
     }
 
     static LongRange of(LongStream longStream) {
@@ -63,7 +74,7 @@ public interface LongRange extends NumberRange<Long>, Sequence<Long>, Transforma
     }
 
     default LongRange step(long step) {
-        return LongRange.of(filter(i -> i % step == 0));
+        return filter(i -> i % step == 0);
     }
 
     default @NotNull Long min() {
@@ -115,6 +126,10 @@ public interface LongRange extends NumberRange<Long>, Sequence<Long>, Transforma
         return LongRange.of(Sequence.super.filter(predicate));
     }
 
+    default @NotNull LongRange filterLong(@NotNull Predicate<Long> predicate) {
+        return LongRange.of(Sequence.super.filter(predicate));
+    }
+
     @Override
     @NotNull
     default LongRange onEach(@NotNull Consumer<? super Long> consumer) {
@@ -122,22 +137,11 @@ public interface LongRange extends NumberRange<Long>, Sequence<Long>, Transforma
     }
 
     default LongStream longStream() {
-        return stream().mapToLong(It::asLong);
+        return StreamSupport.longStream(spliterator(), false);
     }
 
-    @Override
-    default @NotNull ArrayX<Long> toArrayX() {
-        return toArrayX(Long[]::new);
-    }
-
-    @Override
-    @NotNull
-    default Long[] toArray() {
-        return toArray(Long[]::new);
-    }
-
-    default long[] toLongArray() {
-        return stream().mapToLong(It::asLong).toArray();
+    default long[] toArray() {
+        return longStream().toArray();
     }
 
     @Override

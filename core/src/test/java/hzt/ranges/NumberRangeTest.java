@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class NumberRangeTest {
 
     @Test
-    void testLongRangeToArray() {
-        final ArrayX<Long> longs = LongRange.of(0, 1000).toArrayX();
+    void testLongRangeToListGetBigDecimalAverage() {
+        final ArrayX<Long> longs = LongRange.of(0, 1000).toListView();
 
         final BigDecimalX average = longs.toBigDecimalXAverage(BigDecimalX::of);
 

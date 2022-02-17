@@ -3,26 +3,26 @@ package hzt.collections;
 import java.util.Collection;
 import java.util.Set;
 
-public interface LinkedSetX<E> extends SetX<E> {
+public interface LinkedSet<E> extends SetView<E> {
 
-    static <E> LinkedSetX<E> empty() {
+    static <E> LinkedSet<E> empty() {
         return new LinkedHashSetX<>();
     }
 
-    static <E> LinkedSetX<E> of(Set<E> set) {
+    static <E> LinkedSet<E> of(Set<E> set) {
         return new LinkedHashSetX<>(set);
     }
 
-    static <E> LinkedSetX<E> of(Iterable<E> set) {
+    static <E> LinkedSet<E> of(Iterable<E> set) {
         return new LinkedHashSetX<>(set);
     }
 
-    static <E> LinkedSetX<E> of(Collection<E> collection) {
+    static <E> LinkedSet<E> of(Collection<E> collection) {
         return new LinkedHashSetX<>(collection);
     }
 
     @SafeVarargs
-    static <E> LinkedSetX<E> of(E first, E... others) {
+    static <E> LinkedSet<E> of(E first, E... others) {
         return new LinkedHashSetX<>(first, others);
     }
 }

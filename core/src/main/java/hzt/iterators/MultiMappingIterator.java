@@ -1,6 +1,6 @@
 package hzt.iterators;
 
-import hzt.collections.MutableListX;
+import hzt.collections.MutableList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -47,7 +47,7 @@ public final class MultiMappingIterator<T, R> implements Iterator<R> {
             if (!iterator.hasNext()) {
                 return false;
             } else {
-                MutableListX<R> list = MutableListX.empty();
+                MutableList<R> list = MutableList.empty();
                 mapper.accept(iterator.next(), (Consumer<R>) list::add);
                 final Iterator<R> nextItemIterator = list.iterator();
                 if (nextItemIterator.hasNext()) {

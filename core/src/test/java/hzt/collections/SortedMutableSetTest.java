@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
-class NavigableSetXTest {
+class SortedMutableSetTest {
 
     @Test
     void testGetNavigableSet() {
-        final SetX<Museum> museumListContainingNulls = SetX.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final SetView<Museum> museumListContainingNulls = SetView.of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final TreeSet<String> expected = museumListContainingNulls.stream()
                 .map(Museum::getName)
@@ -27,9 +27,9 @@ class NavigableSetXTest {
                 .sorted()
                 .collect(Collectors.toCollection(TreeSet::new));
 
-        final NavigableSetX<String> names = museumListContainingNulls.toSortedSetOf(Museum::getName);
+        final SortedMutableSet<String> names = museumListContainingNulls.toSortedSetOf(Museum::getName);
 
-        MutableListX<Integer> list = MutableListX.empty();
+        MutableList<Integer> list = MutableList.empty();
 
         final double average = names
                 .onEach(String::length, It
@@ -43,21 +43,21 @@ class NavigableSetXTest {
         names.forEach(It::println);
 
         assertAll(
-                () -> assertIterableEquals(ListX.of(14, 15, 14), list),
+                () -> assertIterableEquals(ListView.of(14, 15, 14), list),
                 () -> assertIterableEquals(names, expected)
         );
     }
 
     @Test
     void testToSetSortedBy() {
-        final SetX<Museum> museumListContainingNulls = SetX.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final SetView<Museum> museumListContainingNulls = SetView.of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final NavigableSet<Museum> expected = museumListContainingNulls.stream()
                 .filter(i -> i != null && i.getName() != null)
                 .sorted(Comparator.comparing(Museum::getName))
                 .collect(Collectors.toCollection(TreeSet::new));
 
-        final NavigableSetX<Museum> sortedMuseums = museumListContainingNulls.toSortedSet(Museum::getName);
+        final SortedMutableSet<Museum> sortedMuseums = museumListContainingNulls.toSortedSet(Museum::getName);
 
         sortedMuseums.forEach(It::println);
 

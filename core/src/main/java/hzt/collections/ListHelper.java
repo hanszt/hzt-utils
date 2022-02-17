@@ -4,9 +4,9 @@ import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ToIntFunction;
 
-final class ArrayHelper {
+final class ListHelper {
 
-    private ArrayHelper() {
+    private ListHelper() {
     }
 
     static <T> int binarySearch(

@@ -1,22 +1,19 @@
 package hzt.iterables;
 
-import hzt.collections.ListX;
-import hzt.collections.MutableListX;
-import hzt.collections.MutableSetX;
-import hzt.collections.SetX;
+import hzt.collections.ListView;
+import hzt.collections.MutableList;
+import hzt.collections.MutableSet;
+import hzt.collections.SetView;
 import hzt.ranges.DoubleRange;
 import hzt.ranges.IntRange;
 import hzt.ranges.LongRange;
 import hzt.sequences.Sequence;
-import hzt.tuples.Pair;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
@@ -41,7 +38,7 @@ import java.util.stream.StreamSupport;
  * @param <T> The Type of the Iterable in the Transform object
  * @author Hans Zuidervaart
  */
-public interface IterableX<T> extends Mappable<T>, Filterable<T>,
+public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, Takeable<T>, Zippable<T>, Windowable<T>,
         Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>, Collectable<T>, Groupable<T> {
 
     IterableX<T> plus(@NotNull T value);
@@ -97,72 +94,33 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>,
         return this;
     }
 
-    default SetX<T> intersect(@NotNull Iterable<T> other) {
+    default SetView<T> intersect(@NotNull Iterable<T> other) {
         final MutableSetX<T> intersection = toMutableSet();
-        final Collection<T> otherCollection = other instanceof Collectable<?> ? (Collection<T>) other : MutableListX.of(other);
+        final Collection<T> otherCollection = other instanceof Collectable<?> ? (Collection<T>) other : MutableList.of(other);
         intersection.retainAll(otherCollection);
         return intersection;
     }
 
-    default <S, I extends Iterable<S>, R> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper,
-                                                                   @NotNull Function<? super S, ? extends R> selector) {
+    default <S, I extends Iterable<S>, R> SetView<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper,
+                                                                    @NotNull Function<? super S, ? extends R> selector) {
         return IterableReductions.intersectionOf(this, toIterableMapper, selector);
     }
 
-    default <R, I extends Iterable<R>> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper) {
+    default <R, I extends Iterable<R>> SetView<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper) {
         return intersectionOf(toIterableMapper, It::self);
     }
 
-    <R> IterableX<Pair<T, R>> zip(@NotNull Iterable<R> iterable);
-
-    <A, R> IterableX<R> zip(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super T, ? super A, ? extends R> function);
-
-    IterableX<Pair<T, T>> zipWithNext();
-
-    <R> IterableX<R> zipWithNext(BiFunction<T, T, R> function);
-
-    IterableX<ListX<T>> chunked(int size);
-
-    <R>IterableX<R> chunked(int size, @NotNull Function<? super ListX<T>, ? extends R> transform);
-
-    IterableX<ListX<T>> windowed(int size);
-
-    <R> IterableX<R> windowed(int size, @NotNull Function<? super ListX<T>, ? extends R> transform);
-
-    IterableX<ListX<T>> windowed(int size, int step);
-
-    <R> IterableX<R> windowed(int size, int step, @NotNull Function<? super ListX<T>, ? extends R> transform);
-
-    IterableX<ListX<T>> windowed(int size, boolean partialWindows);
-
-    IterableX<ListX<T>> windowed(int size, int step, boolean partialWindows);
-
-    <R> IterableX<R> windowed(int size, int step, boolean partialWindows,
-                              @NotNull Function<? super ListX<T>, R> transform);
-
-    IterableX<T> skip(long count);
-
-    IterableX<T> skipWhile(@NotNull Predicate<T> predicate);
-
-    IterableX<T> skipWhileInclusive(@NotNull Predicate<T> predicate);
-
-    IterableX<T> take(long n);
-
-    IterableX<T> takeWhile(@NotNull Predicate<T> predicate);
-
-    IterableX<T> takeWhileInclusive(@NotNull Predicate<T> predicate);
-
-    default SetX<T> union(@NotNull Iterable<T> other) {
-        MutableSetX<T> union = MutableSetX.empty();
+    default SetView<T> union(@NotNull Iterable<T> other) {
+        MutableSet<T> union = MutableSet.empty();
         forEach(union::add);
         other.forEach(union::add);
         return union;
     }
 
-    default <R> SetX<R> union(@NotNull Iterable<T> other, @NotNull Function<? super T, ? extends R> mapper) {
-        MutableSetX<R> union = mapTo(MutableSetX::empty, mapper);
-        final SetX<R> setX = ListX.of(other).toSetXOf(mapper);
-        setX.forEach(union::add);
+    default <R> SetView<R> union(@NotNull Iterable<T> other, @NotNull Function<? super T, ? extends R> mapper) {
+        MutableSet<R> union = mapTo(MutableSet::empty, mapper);
+        final SetView<R> setView = ListView.of(other).toSetViewOf(mapper);
+        setView.forEach(union::add);
         return union;
     }
 }

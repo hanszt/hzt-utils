@@ -1,6 +1,7 @@
 package hzt.collections;
 
 import hzt.PreConditions;
+import hzt.sequences.Sequence;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +14,9 @@ import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
 import static hzt.PreConditions.require;
@@ -24,73 +27,41 @@ import static hzt.PreConditions.require;
  * @param <E> the type of the elements
  * @author Hans Zuidervaart
  */
-public interface ListX<E> extends CollectionView<E>, Transformable<ListX<E>> {
+public interface ListView<E> extends CollectionView<E>, Transformable<ListView<E>> {
 
-    static <E> ListX<E> empty() {
+    static <E> ListView<E> empty() {
         return new ArrayListX<>();
     }
 
-    static <E> ListX<E> of(Iterable<E> iterable) {
+    static <E> ListView<E> of(Iterable<E> iterable) {
         return new ArrayListX<>(iterable);
     }
 
-    static <E> ListX<E> of(Collection<E> iterable) {
+    static <E> ListView<E> of(Collection<E> iterable) {
         return new ArrayListX<>(iterable);
     }
 
-    static <E> ListX<E> of(List<E> list) {
+    static <E> ListView<E> of(List<E> list) {
         return new ArrayListX<>(list);
     }
 
     @SafeVarargs
-    static <E> ListX<E> of(E... values) {
+    static <E> ListView<E> of(E... values) {
         return new ArrayListX<>(values);
     }
 
-    static ListX<Boolean> ofBools(boolean... values) {
-        MutableListX<Boolean> valueList = MutableListX.empty();
-        for (boolean value : values) {
-            valueList.add(value);
-        }
-        return valueList;
-    }
-
-    static ListX<Integer> ofInts(int... values) {
-        MutableListX<Integer> valueList = MutableListX.empty();
-        for (int value : values) {
-            valueList.add(value);
-        }
-        return valueList;
-    }
-
-    static ListX<Long> ofLongs(long... values) {
-        MutableListX<Long> valueList = MutableListX.empty();
-        for (long value : values) {
-            valueList.add(value);
-        }
-        return valueList;
-    }
-
-    static ListX<Double> ofDoubles(double... values) {
-        MutableListX<Double> valueList = MutableListX.empty();
-        for (double value : values) {
-            valueList.add(value);
-        }
-        return valueList;
-    }
-
-    static <E> ListX<E> build(Consumer<MutableListX<E>> listXConsumer) {
-        MutableListX<E> list = MutableListX.empty();
-        listXConsumer.accept(list);
+    static <E> ListView<E> build(Consumer<MutableList<E>> mutableListConsumer) {
+        MutableList<E> list = MutableList.empty();
+        mutableListConsumer.accept(list);
         return list;
     }
 
-    static <E> ListX<E> copyOf(Iterable<E> iterable) {
+    static <E> ListView<E> copyOf(Iterable<E> iterable) {
         return new ArrayListX<>(iterable);
     }
 
     default <R> R foldRight(@NotNull R initial, @NotNull BiFunction<E, R, R> operation) {
-        ListX<E> list = this;
+        ListView<E> list = this;
         R accumulator = initial;
         if (list.isNotEmpty()) {
             final ListIterator<E> listIterator = list.listIterator(list.size());
@@ -101,8 +72,29 @@ public interface ListX<E> extends CollectionView<E>, Transformable<ListX<E>> {
         return accumulator;
     }
 
-    default ListX<E> takeLast(int n) {
-        return CollectionsHelper.takeLastToMutableList(this, n);
+    default <C extends Collection<E>> C takeLastTo(IntFunction<C> collectionFactory, int n) {
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        final var emptyCollection = collectionFactory.apply(0);
+        if (n == 0) {
+            return emptyCollection;
+        }
+        C collection = Sequence.of(this).to(() -> emptyCollection);
+        int size = collection.size();
+        if (n >= size) {
+            return collection;
+        }
+        if (n == 1) {
+            return Sequence.of(last()).to(() -> emptyCollection);
+        }
+        C result = collectionFactory.apply(n);
+        for (int index = size - n; index < size; index++) {
+            result.add(get(index));
+        }
+        return result;
+    }
+
+    default ListView<E> takeLast(int n) {
+        return takeLastTo(MutableList::withInitCapacity, n);
     }
 
     Optional<E> findRandom();
@@ -182,20 +174,24 @@ public interface ListX<E> extends CollectionView<E>, Transformable<ListX<E>> {
 
     ListIterator<E> listIterator(int index);
 
-    ListX<E> headTo(int toIndex);
+    ListView<E> headTo(int toIndex);
 
-    ListX<E> tailFrom(int fromIndex);
+    ListView<E> tailFrom(int fromIndex);
 
-    ListX<E> subList(int fromIndex, int toIndex);
+    ListView<E> subList(int fromIndex, int toIndex);
 
-    default ListX<E> skipLast(int n) {
+    default <C extends Collection<E>> C skipLastTo(Supplier<C> collectionFactory, int n) {
         require(n >= 0, () -> "Requested element count " + n + " is less than zero.");
-        return take(Math.max((size() - n), 0));
+        return takeTo(collectionFactory, Math.max((size() - n), 0));
     }
 
-    default ListX<E> skipLastWhile(@NotNull Predicate<E> predicate) {
+    default ListView<E> skipLast(int n) {
+        return takeTo(MutableList::empty, Math.max((size() - n), 0));
+    }
+
+    default ListView<E> skipLastWhile(@NotNull Predicate<E> predicate) {
         if (isEmpty()) {
-            return MutableListX.empty();
+            return MutableList.empty();
         }
         ListIterator<E> iterator = listIterator(size());
         while (iterator.hasPrevious()) {
@@ -203,12 +199,17 @@ public interface ListX<E> extends CollectionView<E>, Transformable<ListX<E>> {
                 return take(iterator.nextIndex() + 1L);
             }
         }
-        return MutableListX.empty();
+        return MutableList.empty();
     }
 
-    default ListX<E> takeLastWhile(@NotNull Predicate<E> predicate) {
+    default ListView<E> takeLastWhile(@NotNull Predicate<E> predicate) {
+        return takeLastWhileTo(MutableList::withInitCapacity, predicate);
+    }
+
+    default <C extends Collection<E>> C takeLastWhileTo(@NotNull IntFunction<C> collectionFactory, @NotNull Predicate<E> predicate) {
+        C collection = collectionFactory.apply(0);
         if (isEmpty()) {
-            return MutableListX.empty();
+            return collection;
         }
         ListIterator<E> iterator = listIterator(size());
         while (iterator.hasPrevious()) {
@@ -216,26 +217,26 @@ public interface ListX<E> extends CollectionView<E>, Transformable<ListX<E>> {
                 iterator.next();
                 int expectedSize = size() - iterator.nextIndex();
                 if (expectedSize == 0) {
-                    return MutableListX.empty();
+                    return collection;
                 }
-                MutableListX<E> result = MutableListX.withInitCapacity(expectedSize);
+                C result = collectionFactory.apply(expectedSize);
                 while (iterator.hasNext()) {
                     result.add(iterator.next());
                 }
                 return result;
             }
         }
-        return this;
+        return Sequence.of(this).to(() -> collection);
     }
 
     @Override
-    default @NotNull ListX<E> onEach(@NotNull Consumer<? super E> consumer) {
-        return ListX.of(CollectionView.super.onEach(consumer));
+    default @NotNull ListView<E> onEach(@NotNull Consumer<? super E> consumer) {
+        return ListView.of(CollectionView.super.onEach(consumer));
     }
 
     @Override
     @NotNull
-    default <R> ListX<E> onEach(@NotNull Function<? super E, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
-        return ListX.of(CollectionView.super.onEach(selector, consumer));
+    default <R> ListView<E> onEach(@NotNull Function<? super E, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
+        return ListView.of(CollectionView.super.onEach(selector, consumer));
     }
 }

@@ -5,45 +5,45 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollection<E> {
+public interface MutableList<E> extends List<E>, ListView<E>, MutableCollection<E> {
 
-    static <E> MutableListX<E> empty() {
+    static <E> MutableList<E> empty() {
         return new ArrayListX<>();
     }
 
-    static <E> MutableListX<E> withInitCapacity(int capacity) {
+    static <E> MutableList<E> withInitCapacity(int capacity) {
         return new ArrayListX<>(capacity);
     }
 
-    static <E> MutableListX<E> of(@NotNull Iterable<E> iterable) {
+    static <E> MutableList<E> of(@NotNull Iterable<E> iterable) {
         return new ArrayListX<>(iterable);
     }
 
-    static <E> MutableListX<E> of(@NotNull Collection<E> collection) {
+    static <E> MutableList<E> of(@NotNull Collection<E> collection) {
         return new ArrayListX<>(collection);
     }
 
     @SafeVarargs
-    static <E> MutableListX<E> of(@NotNull E... values) {
+    static <E> MutableList<E> of(@NotNull E... values) {
         return new ArrayListX<>(values);
     }
 
-    static <E> MutableListX<E> of(@NotNull E value) {
+    static <E> MutableList<E> of(@NotNull E value) {
         return new ArrayListX<>(value);
     }
 
-    MutableListX<E> headTo(int toIndex);
+    MutableList<E> headTo(int toIndex);
 
-    MutableListX<E> tailFrom(int fromIndex);
+    MutableList<E> tailFrom(int fromIndex);
 
-    MutableListX<E> subList(int fromIndex, int toIndex);
+    MutableList<E> subList(int fromIndex, int toIndex);
 
     @Override
     int size();
 
     @Override
     default boolean containsAll(@NotNull Iterable<E> iterable) {
-        return ListX.super.containsAll(iterable);
+        return ListView.super.containsAll(iterable);
     }
 
     @Override
@@ -53,7 +53,7 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollection<E>
     boolean isEmpty();
 
     @Override
-    default @NotNull MutableListX<E> get() {
+    default @NotNull MutableList<E> get() {
         return this;
     }
 }

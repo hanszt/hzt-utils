@@ -84,12 +84,6 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return EntrySequence.of(Sequence.super.filter(e -> biPredicate.test(e.getKey(), e.getValue())));
     }
 
-    @Override
-    default <R> EntrySequence<K, V> filterBy(@NotNull Function<? super Map.Entry<K, V>, ? extends R> selector,
-                                             @NotNull Predicate<R> predicate) {
-        return EntrySequence.of(Sequence.super.filterBy(selector, predicate));
-    }
-
     default EntrySequence<K, V> filterKeys(@NotNull Predicate<K> predicate) {
         return EntrySequence.of(Sequence.super.filter(e -> predicate.test(e.getKey())));
     }

@@ -1,6 +1,6 @@
 package hzt.utils;
 
-import hzt.collections.MutableListX;
+import hzt.collections.MutableList;
 import hzt.strings.StringX;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
@@ -35,7 +35,7 @@ class TransformableTest {
 
     @Test
     void testTransformablePipeline() {
-        final MutableListX<Painting> list = MutableListX.empty();
+        final MutableList<Painting> list = MutableList.empty();
 
         final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
 
@@ -68,7 +68,7 @@ class TransformableTest {
     void testAsList() {
         final var hallo = StringX.of("Hallo");
 
-        final var actual = hallo.asListX();
+        final var actual = hallo.asListView();
 
         assertEquals(1, actual.size());
     }

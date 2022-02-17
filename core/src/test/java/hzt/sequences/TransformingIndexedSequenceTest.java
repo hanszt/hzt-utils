@@ -1,6 +1,6 @@
 package hzt.sequences;
 
-import hzt.collections.ListX;
+import hzt.collections.ListView;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,12 +9,12 @@ class TransformingIndexedSequenceTest {
 
     @Test
     void testSequenceMapIndexed() {
-        final var strings = ListX.of("test", "map", "filter", "reduce");
+        final var strings = ListView.of("test", "map", "filter", "reduce");
 
         final var result = strings.asSequence()
                 .mapIndexed((index, value) -> value + index)
-                .toListX();
+                .toListView();
 
-        assertEquals(ListX.of("test0", "map1", "filter2", "reduce3"), result);
+        assertEquals(ListView.of("test0", "map1", "filter2", "reduce3"), result);
     }
 }

@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class MutableMapXTest {
+class MutableMapTest {
 
 
     @Test
     void testComputeIfPresent() {
-        final var map = MutableMapX.of("1", 1, "2", 2);
+        final var map = MutableMap.of("1", 1, "2", 2);
 
         final var result = map.computeIfPresent("1", (k, v) -> Integer.parseInt(k) + v);
 

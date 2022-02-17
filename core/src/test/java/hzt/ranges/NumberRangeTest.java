@@ -13,8 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class NumberRangeTest {
 
     @Test
-    void testLongRangeToArray() {
-        final var longs = LongRange.of(0, 1000).toArrayX();
+    void testLongRangeToListGetBigDecimalAverage() {
+        final var longs = LongRange.of(0, 1000).toListView();
 
         final var average = longs.toBigDecimalXAverage(BigDecimalX::of);
 

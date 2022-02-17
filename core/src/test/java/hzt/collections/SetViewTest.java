@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class SetXTest {
+class SetViewTest {
 
     @Test
     void testToSetYieldsUnModifiableSet() {

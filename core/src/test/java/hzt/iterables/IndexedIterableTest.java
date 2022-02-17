@@ -1,4 +1,4 @@
-package hzt.collections;
+package hzt.iterables;
 
 import hzt.numbers.IntX;
 import hzt.ranges.IntRange;

@@ -1,6 +1,6 @@
 package hzt.ranges;
 
-import hzt.collections.MutableListX;
+import hzt.collections.MutableList;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IntRangeTest {
 
     @Test
     void testSteppedIntRange() {
-        var list = MutableListX.<Integer>empty();
+        var list = MutableList.<Integer>empty();
         for (int i : IntRange.until(15).step(4)) {
             It.println(i);
             list.add(i);
@@ -24,7 +25,7 @@ class IntRangeTest {
 
     @Test
     void testDescendingSteppedIntRange() {
-        var list = MutableListX.<Integer>empty();
+        var list = MutableList.<Integer>empty();
         for (int i : IntRange.from(100).downTo(20).step(5)) {
             It.println(i);
             list.add(i);
@@ -81,4 +82,24 @@ class IntRangeTest {
         );
     }
 
+    @Test
+    void intRangeFromIntArray() {
+        int[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+
+        final var expected = IntStream.of(array)
+                .mapToLong(It::asLong)
+                .filter(l -> l > 3)
+                .toArray();
+
+
+        final var longs = IntRange.of(array)
+                .asLongRange(It::asLong)
+                .filter(l -> l > 3)
+                .toArray();
+
+        assertAll(
+                () -> assertArrayEquals(new long[]{4, 5, 4, 6, 4, 4}, longs),
+                () -> assertArrayEquals(expected, longs)
+        );
+    }
 }

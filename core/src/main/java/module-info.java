@@ -5,6 +5,7 @@ open module core {
 
     exports hzt.collections;
     exports hzt.function;
+    exports hzt.function.predicates;
     exports hzt.stream;
     exports hzt.sequences;
     exports hzt.statistics;
@@ -16,4 +17,5 @@ open module core {
     exports hzt.tuples;
     exports hzt.utils;
     exports hzt.collectors;
+    exports hzt.iterables.primitive;
 }

@@ -1,6 +1,6 @@
 package benchmark.prefix;
 
-import hzt.collections.ListX;
+import hzt.collections.ListView;
 import hzt.numbers.IntX;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Param;
@@ -17,7 +17,7 @@ public class PrefixSequenceBenchmark {
     @Param({"100000"})
     private int nrOfIterations;
 
-    private final ListX<String> list = ListX.build(strings -> {
+    private final ListView<String> list = ListView.build(strings -> {
                 for (int i = 0; i < 100_000; i++) {
                     strings.add(String.valueOf(i));
                 }
@@ -29,11 +29,11 @@ public class PrefixSequenceBenchmark {
     }
 
     @Benchmark
-    public ListX<Integer> mapFilterToList() {
+    public ListView<Integer> mapFilterToList() {
         return list.asSequence()
                 .map(String::length)
                 .filter(IntX::isEven)
-                .toListX();
+                .toListView();
     }
 
     public static void main(String[] args) {

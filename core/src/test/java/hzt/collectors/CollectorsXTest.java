@@ -15,7 +15,6 @@ import java.time.Period;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.Set;

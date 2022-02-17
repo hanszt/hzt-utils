@@ -1,9 +1,5 @@
 package hzt.collections;
 
-import hzt.iterables.IterableXTest;
-import hzt.numbers.IntX;
-import hzt.ranges.DoubleRange;
-import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
@@ -17,24 +13,22 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.List;
-import java.util.Locale;
-import java.util.NoSuchElementException;
+import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
-import static hzt.collectors.CollectorsX.toListX;
+import static hzt.collectors.CollectorsX.toListView;
 import static java.util.stream.Collectors.collectingAndThen;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ListXTest {
+class ListViewTest {
 
     @Test
     void testGetElement() {
-        final var words = ListX.of("hallo", "asffasf", "string", "test");
-
-        final var list2 = words.stream().map(String::length).collect(Collectors.toList());
+        final var words = ListView.of("hallo", "asffasf", "string", "test");
 
         assertAll(
                 () -> assertEquals("test", words.get(3)),
@@ -43,8 +37,8 @@ class ListXTest {
     }
 
     @Test
-    void testToMutableListX() {
-        final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
+    void testToMutableList() {
+        final MutableList<PaintingAuction> museums = Generator.createAuctions().toMutableList();
 
         final List<LocalDate> expected = museums.stream()
                 .map(PaintingAuction::getDateOfOpening)
@@ -52,7 +46,7 @@ class ListXTest {
 
         expected.add(LocalDate.MIN);
 
-        final var dates = museums.mapTo(MutableListX::of, PaintingAuction::getDateOfOpening);
+        final var dates = museums.mapTo(MutableList::empty, PaintingAuction::getDateOfOpening);
 
         dates.add(LocalDate.MIN);
 
@@ -67,7 +61,7 @@ class ListXTest {
                 .takeWhile(museum -> museum.getPaintings().size() < 3)
                 .collect(Collectors.toList());
 
-        final MutableListX<Museum> actual = Sequence.of(museumList)
+        final MutableList<Museum> actual = Sequence.of(museumList)
                 .takeWhile(museum -> museum.getPaintings().size() < 3)
                 .toMutableList();
 
@@ -78,7 +72,7 @@ class ListXTest {
 
     @Test
     void testBinarySearch() {
-        final ListX<Integer> sortedList = ListX.of(-1, 0, 1, 2, 3, 4, 5);
+        final ListView<Integer> sortedList = ListView.of(-1, 0, 1, 2, 3, 4, 5);
 
         int valueToSearchFor = 2;
 
@@ -89,7 +83,7 @@ class ListXTest {
 
     @Test
     void testBinaryOfStringSearch() {
-        final MutableListX<String> sortedList = MutableListX.of("adi", "hans", "huib", "sophie", "ted");
+        final MutableList<String> sortedList = MutableList.of("adi", "hans", "huib", "sophie", "ted");
 
         final int indexInSortedList = sortedList.binarySearch(string -> string.compareTo("sophie"));
         final int invertedInsertionPoint = sortedList.binarySearch(string -> string.compareTo("matthijs"));
@@ -114,7 +108,7 @@ class ListXTest {
 
     @Test
     void buildList() {
-        final ListX<String> strings = ListX.build(this::getStringList);
+        final ListView<String> strings = ListView.build(this::getStringList);
 
         assertAll(
                 () -> assertEquals(101, strings.size()),
@@ -122,7 +116,7 @@ class ListXTest {
         );
     }
 
-    private void getStringList(MutableListX<String> list) {
+    private void getStringList(MutableList<String> list) {
         for (int i = 0; i < 100; i++) {
             list.add(String.valueOf(i));
         }
@@ -131,7 +125,7 @@ class ListXTest {
 
     @Test
     void testListWithAll() {
-        final MutableListX<PaintingAuction> auctions = Generator.createAuctions().toMutableList();
+        final MutableList<PaintingAuction> auctions = Generator.createAuctions().toMutableList();
 
         final List<LocalDate> expected = auctions.stream()
                 .map(PaintingAuction::getDateOfOpening)
@@ -139,9 +133,9 @@ class ListXTest {
         expected.add(LocalDate.MIN);
         expected.add(LocalDate.MAX);
 
-        final ListX<LocalDate> dates = auctions
+        final ListView<LocalDate> dates = auctions
                 .map(PaintingAuction::getDateOfOpening)
-                .plus(ListX.of(LocalDate.MIN, LocalDate.MAX));
+                .plus(ListView.of(LocalDate.MIN, LocalDate.MAX));
 
         It.println("dates = " + dates);
 
@@ -150,23 +144,41 @@ class ListXTest {
 
     @Test
     void testSkipLast() {
-        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+        ListView<Integer> list = ListView.of(1, 2, 3, 4, 5, 6, 5);
 
         final var integers = list.skipLast(2);
 
-        assertEquals(ListX.ofInts(1, 2, 3, 4, 5), integers);
+        assertEquals(ListView.of(1, 2, 3, 4, 5), integers);
+    }
+
+    @Test
+    void testTakeLast() {
+        ListView<Integer> list = ListView.of(1, 2, 3, 4, 5, 6, 5);
+
+        final var integers = list.takeLast(2);
+
+        assertEquals(ListView.of(6, 5), integers);
+    }
+
+    @Test
+    void testTakeLastTo() {
+        ListView<Integer> list = ListView.of(1, 2, 3, 4, 5, 6, 5);
+
+        final var integers = list.takeLastTo(size -> new LinkedTransferQueue<>(), 5);
+
+        assertIterableEquals(new LinkedTransferQueue<>(List.of(3, 4, 5, 6, 5)), integers);
     }
 
     @Test
     void testAlso() {
-        final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
+        final MutableList<PaintingAuction> museums = Generator.createAuctions().toMutableList();
 
         final List<LocalDate> expected = museums.stream()
                 .map(PaintingAuction::getDateOfOpening)
                 .collect(Collectors.toList());
 
         final CollectionView<LocalDate> dates = museums
-                .mapTo(MutableListX::of, PaintingAuction::getDateOfOpening)
+                .mapTo(MutableList::empty, PaintingAuction::getDateOfOpening)
                 .also(It::println);
 
         It.println("dates = " + dates);
@@ -176,17 +188,17 @@ class ListXTest {
 
     @Test
     void testWhen() {
-        final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
+        final MutableList<PaintingAuction> museums = Generator.createAuctions().toMutableList();
 
         final List<LocalDate> expected = museums.stream()
                 .map(PaintingAuction::getDateOfOpening)
                 .collect(Collectors.toList());
 
-        final ListX<LocalDate> dates = museums
+        final ListView<LocalDate> dates = museums
                 .map(PaintingAuction::getDateOfOpening)
-                .when(ListX::isNotEmpty, It::println)
+                .when(ListView::isNotEmpty, It::println)
                 .when(list -> list.size() > 3, It::println)
-                .takeIf(ListX::isNotEmpty)
+                .takeIf(ListView::isNotEmpty)
                 .orElseThrow();
 
         It.println("dates = " + dates);
@@ -196,15 +208,15 @@ class ListXTest {
 
     @Test
     void testStreamCollectingAndThenEquivalent() {
-        final MutableListX<Integer> integers = MutableListX.of(1, 4, 5, 3, 7, 4, 2);
+        final MutableList<Integer> integers = MutableList.of(1, 4, 5, 3, 7, 4, 2);
 
         final int expected = integers.stream()
                 .filter(n -> n > 4)
-                .collect(collectingAndThen(toListX(), ListXTest::calculateProduct));
+                .collect(collectingAndThen(toListView(), ListViewTest::calculateProduct));
 
         final int product = integers.asSequence()
                 .filter(n -> n > 4)
-                .toListX().let(ListXTest::calculateProduct);
+                .toListView().let(ListViewTest::calculateProduct);
 
         It.println("product = " + product);
 
@@ -212,7 +224,7 @@ class ListXTest {
                 integers.toListOf(day -> LocalDate.of(2020, Month.JANUARY, day)));
     }
 
-    private static int calculateProduct(ListX<Integer> list) {
+    private static int calculateProduct(ListView<Integer> list) {
         return list.reduce((acc, i) -> acc * i).orElse(0);
     }
 }

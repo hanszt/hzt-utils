@@ -1,19 +1,19 @@
 package hzt.iterators;
 
-import hzt.collections.ListX;
-import hzt.collections.MutableListX;
+import hzt.collections.ListView;
+import hzt.collections.MutableList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
-public final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
+public final class WindowedIterator<T> extends AbstractIterator<ListView<T>> {
 
     private final Iterator<T> iterator;
     private final int size;
     private final int step;
     private final boolean partialWindows;
 
-    private MutableListX<T> nextWindow = MutableListX.empty();
+    private MutableList<T> nextWindow = MutableList.empty();
     private int skip = 0;
 
     private WindowedIterator(
@@ -34,7 +34,7 @@ public final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
         return new WindowedIterator<>(iterator, size, step, partialWindows);
     }
 
-    private ListX<T> computeNextWindow() {
+    private ListView<T> computeNextWindow() {
         int windowInitCapacity = Math.min(size, 1024);
         final int gap = step - size;
         if (gap >= 0) {
@@ -42,11 +42,11 @@ public final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
         } else {
             computeNextForWindowedSequenceOverlapping(windowInitCapacity);
         }
-        return ListX.of(nextWindow);
+        return ListView.of(nextWindow);
     }
 
     private void computeNextForWindowedSequenceOverlapping(int windowInitCapacity) {
-        nextWindow = nextWindow.isEmpty() ? MutableListX.withInitCapacity(windowInitCapacity) : MutableListX.of(nextWindow);
+        nextWindow = nextWindow.isEmpty() ? MutableList.withInitCapacity(windowInitCapacity) : MutableList.of(nextWindow);
         if (nextWindow.isEmpty()) {
             fillIfWindowEmpty();
         } else {
@@ -77,7 +77,7 @@ public final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
     }
 
     private void computeNextForWindowedSequenceNoOverlap(int bufferInitCapacity, int gap) {
-        nextWindow = MutableListX.withInitCapacity(bufferInitCapacity);
+        nextWindow = MutableList.withInitCapacity(bufferInitCapacity);
         while (iterator.hasNext()) {
             T item = iterator.next();
             if (skip > 0) {

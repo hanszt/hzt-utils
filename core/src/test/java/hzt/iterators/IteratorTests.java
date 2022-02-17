@@ -35,7 +35,7 @@ class IteratorTests {
                 TakeWhileIterator.of(
                         FilteringIterator.of(
                                 GeneratorIterator.of(() -> "|", s -> s + "\\"),
-                                s -> IntX.of(s.length()).isEven()),
+                                s -> IntX.of(s.length()).isEven(), true),
                         s -> s.length() < 100);
 
         Iterable<String> strings = () -> iterator;

@@ -1,13 +1,11 @@
 package hzt.strings;
 
-import hzt.collections.ArrayX;
-import hzt.collections.ListX;
+import hzt.collections.ListView;
 import hzt.numbers.BigDecimalX;
 import hzt.numbers.DoubleX;
 import hzt.numbers.IntX;
 import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
-import hzt.utils.It;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
@@ -355,16 +353,16 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return StringX.of(string.replace(target, replacement));
     }
 
-    public ListX<String> split(@NotNull Pattern regex) {
-        return ListX.of(string.split(regex.toString()));
+    public ListView<String> split(@NotNull Pattern regex) {
+        return ListView.of(string.split(regex.toString()));
     }
 
-    public ListX<String> split(@NotNull Pattern regex, int limit) {
-        return ListX.of(string.split(regex.toString(), limit));
+    public ListView<String> split(@NotNull Pattern regex, int limit) {
+        return ListView.of(string.split(regex.toString(), limit));
     }
 
-    public ListX<String> split(@NotNull CharSequence delimiter) {
-        return ListX.of(this.string.split(StringX.of(delimiter).toString()));
+    public ListView<String> split(@NotNull CharSequence delimiter) {
+        return ListView.of(this.string.split(StringX.of(delimiter).toString()));
     }
 
     public static StringX join(CharSequence delimiter, CharSequence... elements) {
@@ -448,14 +446,6 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     public char[] toCharArray() {
         return string.toCharArray();
-    }
-
-    public ArrayX<Character> toArrayX() {
-        return ArrayX.of(toArray());
-    }
-
-    Character[] toArray() {
-        return Sequence.super.toArrayOf(It::self, Character[]::new);
     }
 
     public static StringX format(@NotNull String format, Object... args) {

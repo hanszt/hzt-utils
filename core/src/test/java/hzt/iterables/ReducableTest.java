@@ -1,6 +1,6 @@
 package hzt.iterables;
 
-import hzt.collections.SetX;
+import hzt.collections.SetView;
 import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
@@ -17,20 +17,20 @@ class ReducableTest {
 
     @Test
     void testSingle() {
-        final var singleton = SetX.of(10);
+        final var singleton = SetView.of(10);
         final var single = singleton.single();
         assertEquals(10, single);
     }
 
     @Test
     void testSingleCallOnEmptyIterableYieldsNoSuchElementException() {
-        final var set = SetX.empty();
+        final var set = SetView.empty();
         assertThrows(NoSuchElementException.class, set::single);
     }
 
     @Test
     void testSingleCallOnIterableHavingMoreThanOneElementYieldsIllegalArgumentException() {
-        final var set = SetX.of(10, 9);
+        final var set = SetView.of(10, 9);
         assertThrows(IllegalArgumentException.class, set::single);
     }
 

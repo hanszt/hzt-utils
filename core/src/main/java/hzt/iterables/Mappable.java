@@ -1,8 +1,8 @@
 package hzt.iterables;
 
-import hzt.collections.MutableListX;
-import hzt.collections.MutableSetX;
-import hzt.collections.SetX;
+import hzt.collections.MutableList;
+import hzt.collections.MutableSet;
+import hzt.collections.SetView;
 import hzt.sequences.Sequence;
 import hzt.strings.StringX;
 import hzt.utils.It;
@@ -77,14 +77,14 @@ public interface Mappable<T> extends IndexedIterable<T> {
     <R> Mappable<StringX> mapToStringX(@NotNull Function<? super T, ? extends R> function);
 
     default <R> List<R> toListOf(@NotNull Function<? super T, ? extends R> transform) {
-        return List.copyOf(mapNotNullTo(MutableListX::empty, transform));
+        return List.copyOf(mapNotNullTo(MutableList::empty, transform));
     }
 
-    default <R> SetX<R> toSetXOf(@NotNull Function<? super T, ? extends R> transform) {
-        return mapNotNullTo(MutableSetX::empty, transform);
+    default <R> SetView<R> toSetViewOf(@NotNull Function<? super T, ? extends R> transform) {
+        return mapNotNullTo(MutableSet::empty, transform);
     }
 
     default <R> Set<R> toSetOf(@NotNull Function<? super T, ? extends R> transform) {
-        return Collections.unmodifiableSet(this.<R, MutableSetX<R>>mapNotNullTo(MutableSetX::empty, transform));
+        return Collections.unmodifiableSet(this.<R, MutableSet<R>>mapNotNullTo(MutableSet::empty, transform));
     }
 }

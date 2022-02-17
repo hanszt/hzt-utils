@@ -11,14 +11,14 @@ class CollectionViewTest {
 
     @Test
     void testContainsNot() {
-        final var strings = ListX.of("hallo", "asffasf", "string", "test");
+        final var strings = ListView.of("hallo", "asffasf", "string", "test");
 
         assertTrue(strings.containsNot("strings"));
     }
 
     @Test
     void testContainsAll() {
-        final var strings = ListX.of("hallo", "asffasf", "string", "test");
+        final var strings = ListView.of("hallo", "asffasf", "string", "test");
 
         Iterable<String> iterable = List.of("string", "test");
 
@@ -27,7 +27,7 @@ class CollectionViewTest {
 
     @Test
     void testDoesNotContainsAll() {
-        final var strings = ListX.of("hallo", "asffasf", "string", "test");
+        final var strings = ListView.of("hallo", "asffasf", "string", "test");
 
         Iterable<String> iterable = List.of("string", "test", "not");
 
@@ -36,7 +36,7 @@ class CollectionViewTest {
 
     @Test
     void testContainsNoneOf() {
-        final var strings = ListX.of("hallo", "asffasf", "string", "test");
+        final var strings = ListView.of("hallo", "asffasf", "string", "test");
 
         Iterable<String> iterable = List.of("strings", "testa");
 
@@ -45,7 +45,7 @@ class CollectionViewTest {
 
     @Test
     void testDoesContainSome() {
-        final var strings = ListX.of("hallo", "asffasf", "string", "test");
+        final var strings = ListView.of("hallo", "asffasf", "string", "test");
 
         Iterable<String> iterable = List.of("string", "tesst", "not");
 
@@ -54,13 +54,23 @@ class CollectionViewTest {
 
     @Test
     void testMapMulti() {
-        final var input = ListX.of(ListX.of("a", "b", "c"), ListX.of("d", "e", "f", "g"));
+        final var input = ListView.of(ListView.of("a", "b", "c"), ListView.of("d", "e", "f", "g"));
 
         final var strings = input.<String>mapMulti(Iterable::forEach);
 
         strings.forEach(It::println);
 
-        assertEquals(ListX.of("a", "b", "c", "d", "e", "f", "g"), strings);
+        assertEquals(ListView.of("a", "b", "c", "d", "e", "f", "g"), strings);
+    }
+
+    @Test
+    void testShuffled() {
+        final var integers = ListView.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        final var shuffled = integers.shuffled();
+
+        shuffled.forEach(It::println);
+
+        assertTrue(shuffled.containsAll(integers));
     }
 
 }

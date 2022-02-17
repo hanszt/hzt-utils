@@ -16,7 +16,7 @@ class MutableCollectionTest {
 
     @Test
     void testFilterAndMapToArrayDeque() {
-        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final ListView<Museum> museumList = ListView.of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final Deque<LocalDate> expectedLocalDates = museumList.stream()
                 .filter(museum -> museum.getPaintings().size() > 3)
@@ -31,15 +31,15 @@ class MutableCollectionTest {
     }
 
     @Test
-    void testMapToMutableListX() {
-        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
+    void testMapToListView() {
+        final ListView<Museum> museumList = ListView.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        final ListX<LocalDate> expectedLocalDates = museumList.stream()
+        final ListView<LocalDate> expectedLocalDates = museumList.stream()
                 .map(Museum::getDateOfOpening)
-                .collect(CollectorsX.toListX());
+                .collect(CollectorsX.toListView());
 
-        final MutableListX<LocalDate> actualLocalDates = museumList
-                .mapTo(MutableListX::of, Museum::getDateOfOpening);
+        final ListView<LocalDate> actualLocalDates = museumList
+                .mapTo(MutableList::empty, Museum::getDateOfOpening);
 
         assertIterableEquals(expectedLocalDates, actualLocalDates);
     }

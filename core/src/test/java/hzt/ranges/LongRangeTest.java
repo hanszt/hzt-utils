@@ -1,11 +1,11 @@
 package hzt.ranges;
 
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.LongStream;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class LongRangeTest {
 
@@ -28,6 +28,34 @@ class LongRangeTest {
                 () -> assertEquals(Integer.MAX_VALUE + 99_999L, stats.getMax()),
                 () -> assertEquals(1.073791823E9, stats.getAverage())
         );
+    }
+
+    @Test
+    void longRangeFromLongArray() {
+        long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+
+        final var expected = LongStream.of(array)
+                .filter(l -> l > 3)
+                .toArray();
+        
+        final var longs = LongRange.of(array)
+                .filter(l -> l > 3)
+                .toArray();
+
+        assertAll(
+                () -> assertArrayEquals(new long[]{4, 5, 4, 6, 4, 4}, longs),
+                () -> assertArrayEquals(expected, longs)
+        );
+    }
+
+    @Test
+    void longRangeForEachLong() {
+        long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+
+        LongRange.of(array)
+                .filter(l -> l > 3)
+                .onEach(It::println)
+                .forEachLong(l -> assertTrue(l > 3));
     }
 
 }

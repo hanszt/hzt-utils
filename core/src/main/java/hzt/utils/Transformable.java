@@ -1,6 +1,6 @@
 package hzt.utils;
 
-import hzt.collections.ListX;
+import hzt.collections.ListView;
 import hzt.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,8 +74,8 @@ public interface Transformable<T> extends Supplier<T> {
         return Pair.of(get(), other);
     }
 
-    default ListX<T> asListX() {
-        return ListX.of(get());
+    default ListView<T> asListView() {
+        return ListView.of(get());
     }
 
     default List<T> asList() {

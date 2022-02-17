@@ -1,6 +1,6 @@
 package hzt.iterables;
 
-import hzt.collections.ListX;
+import hzt.collections.ListView;
 import hzt.collectors.CollectorsX;
 import hzt.numbers.IntX;
 import hzt.ranges.IntRange;
@@ -8,6 +8,7 @@ import hzt.sequences.Sequence;
 import hzt.tuples.Triple;
 import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
+import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
@@ -19,16 +20,13 @@ import java.util.Arrays;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static hzt.collectors.CollectorsX.branching;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.partitioningBy;
-import static java.util.stream.Collectors.summarizingInt;
-import static java.util.stream.Collectors.toList;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,7 +36,7 @@ class CollectableTest {
 
     @Test
     void testTeeingYieldsTwoValuesWhileOnlyGoingThroughPipelineOnce() {
-        final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final var integers = ListView.of(1, 2, 3, 4, 5, 6, 7, 8);
 
         final var toTwoCounter = new AtomicInteger();
 
@@ -51,7 +49,7 @@ class CollectableTest {
 
         final var collectedPair = integers.asSequence()
                 .onEach(i -> collectorCounter.incrementAndGet())
-                .teeing(Collectors.summingLong(It::asInt), Collectors.averagingInt(It::asInt));
+                .teeing(summingLong(It::asInt), averagingInt(It::asInt));
 
         assertAll(
                 () -> assertEquals(pair, collectedPair),
@@ -62,7 +60,7 @@ class CollectableTest {
 
     @Test
     void testBranchingYieldsThreeValuesWhileOnlyGoingThroughPipelineOnce() {
-        final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final var integers = ListView.of(1, 2, 3, 4, 5, 6, 7, 8);
 
         final var toThreeCounter = new AtomicInteger();
 
@@ -76,8 +74,8 @@ class CollectableTest {
         final var collectedTriple = integers.asSequence()
                 .onEach(i -> branchingCounter.incrementAndGet())
                 .branching(
-                        Collectors.summingLong(It::asInt),
-                        Collectors.averagingInt(It::asInt),
+                        summingLong(It::asInt),
+                        averagingInt(It::asInt),
                         CollectorsX.standardDeviatingDouble(It::asInt));
 
         assertAll(
@@ -104,7 +102,7 @@ class CollectableTest {
     @Test
     void testBranchingPaintingDataToThreeValues() {
         //arrange
-        final ListX<Painting> paintingList = ListX.of(TestSampleGenerator.createPaintingList());
+        final ListView<Painting> paintingList = ListView.of(TestSampleGenerator.createPaintingList());
 
         final Triple<Map<Boolean, List<Painter>>, IntSummaryStatistics, Long> expected = paintingList.stream()
                 .collect(branching(
@@ -164,7 +162,7 @@ class CollectableTest {
                 .filter(IntX::isEven)
                 .map(Year::of);
 
-        final var years = yearStream.collect(Collectors.toList());
+        final var years = yearStream.collect(toList());
 
         assertAll(
                 () -> assertEquals(4, years.size()),
@@ -194,15 +192,64 @@ class CollectableTest {
 
     @Test
     void testFrom3DStringArrayToTripleIntArray() {
-        String[][][] grid = {{{"1"},{"2"},{"3"}}};
+        String[][][] grid = {{{"1"}, {"2"}, {"3"}}};
         final var expected = Arrays.stream(grid).map(g -> Arrays.stream(g).map(row -> Stream.of(row)
-                                .mapToInt(Integer::parseInt).toArray()).toArray(int[][]::new)).toArray(int[][][]::new);
+                .mapToInt(Integer::parseInt).toArray()).toArray(int[][]::new)).toArray(int[][][]::new);
 
         final var actual = Sequence.of(grid).map(g -> Sequence.of(g).map(row -> Sequence.of(row)
-                                .toIntArray(Integer::parseInt)).toArray(int[][]::new)).toArray(int[][][]::new);
+                .toIntArray(Integer::parseInt)).toTypedArray(int[][]::new)).toTypedArray(int[][][]::new);
 
         Sequence.of(actual).map(g -> Sequence.of(g).map(Arrays::toString)).map(Stringable::joinToString).forEach(It::println);
 
         assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    void testBranchToFour() {
+        final var sequence = Sequence.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+        final var statistics = sequence.branching(
+                counting(),
+                collectingAndThen(minBy(comparing(It::asInt)), Optional::orElseThrow),
+                collectingAndThen(maxBy(comparing(It::asInt)), Optional::orElseThrow),
+                summingInt(It::asInt),
+                IntSummaryStatistics::new);
+
+        final var stats = sequence.statsOfInts(It::asInt);
+
+        assertAll(
+                () -> assertEquals(statistics.getCount(), stats.getCount()),
+                () -> assertEquals(statistics.getMin(), stats.getMin()),
+                () -> assertEquals(statistics.getMax(), stats.getMax()),
+                () -> assertEquals(statistics.getSum(), stats.getSum())
+        );
+    }
+
+    @Test
+    void testToDoubleArray() {
+        final var museums = TestSampleGenerator.getMuseumListContainingNulls();
+
+        final var averages = Sequence.of(museums)
+                .map(Museum::getPaintings)
+                .map(Sequence::of)
+                .map(s -> s.asIntRange(Painting::ageInYears))
+                .toDoubleArray(IntRange::average);
+
+        assertArrayEquals(new double[]{25.0, 135.5, 359.3333333333333, 96.66666666666667}, averages);
+    }
+
+    @Test
+    void testToTypedArray() {
+        final var museums = TestSampleGenerator.getMuseumListContainingNulls();
+
+        final var expected = museums.stream()
+                .map(Museum::getMostPopularPainting)
+                .toArray(Painting[]::new);
+
+        final var museumArray = Sequence.of(museums)
+                .map(Museum::getMostPopularPainting)
+                .toTypedArray(Painting[]::new);
+
+        assertArrayEquals(expected, museumArray);
     }
 }

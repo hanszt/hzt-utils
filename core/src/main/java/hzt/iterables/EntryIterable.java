@@ -1,10 +1,10 @@
 package hzt.iterables;
 
-import hzt.collections.ListX;
-import hzt.collections.MapX;
-import hzt.collections.MutableMapX;
-import hzt.collections.NavigableMapX;
-import hzt.collections.SetX;
+import hzt.collections.ListView;
+import hzt.collections.MapView;
+import hzt.collections.MutableMap;
+import hzt.collections.SortedMutableMap;
+import hzt.collections.SetView;
 import hzt.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
@@ -114,27 +114,27 @@ public interface EntryIterable<K, V> extends IterableX<Map.Entry<K, V>> {
         return IterableX.super.count(e -> predicate.test(e.getKey(), e.getValue()));
     }
 
-    default MapX<K, V> toMapX() {
-        return MutableMapX.of(this);
+    default MapView<K, V> toMapView() {
+        return MutableMap.of(this);
     }
 
-    default MutableMapX<K, V> toMutableMap() {
-        return MutableMapX.of(this);
+    default MutableMap<K, V> toMutableMap() {
+        return MutableMap.of(this);
     }
 
     default Map<K, V> toMap() {
-        return Map.copyOf(MutableMapX.of(this));
+        return Map.copyOf(MutableMap.of(this));
     }
 
-    default <R extends Comparable<R>> NavigableMapX<K, V> toSortedMapX(Function<K, R> selector) {
-        return NavigableMapX.of(this, selector);
+    default <R extends Comparable<R>> SortedMutableMap<K, V> toSortedMap(Function<K, R> selector) {
+        return SortedMutableMap.of(this, selector);
     }
 
-    default <R> ListX<R> toListXOf(BiFunction<K, V, R> transform) {
-        return ListX.of(map(e -> transform.apply(e.getKey(), e.getValue())));
+    default <R> ListView<R> toListViewOf(BiFunction<K, V, R> transform) {
+        return ListView.of(map(e -> transform.apply(e.getKey(), e.getValue())));
     }
 
-    default <R> SetX<R> toSetXOf(BiFunction<K, V, R> transform) {
-        return toSetXOf(e -> transform.apply(e.getKey(), e.getValue()));
+    default <R> SetView<R> toSetViewOf(BiFunction<K, V, R> transform) {
+        return toSetViewOf(e -> transform.apply(e.getKey(), e.getValue()));
     }
 }

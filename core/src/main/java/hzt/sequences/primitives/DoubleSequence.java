@@ -3,12 +3,13 @@ package hzt.sequences.primitives;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.DoubleIterable;
 import hzt.iterables.primitives.DoubleReducable;
-import hzt.iterators.primitives.PrimitiveIterators;
+import hzt.iterables.primitives.PrimitiveStreamable;
 import hzt.iterators.primitives.DoubleFilteringIterator;
 import hzt.iterators.primitives.DoubleGeneratorIterator;
 import hzt.iterators.primitives.DoubleMultiMappingIterator;
 import hzt.iterators.primitives.DoubleSkipWhileIterator;
 import hzt.iterators.primitives.DoubleTakeWhileIterator;
+import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.numbers.DoubleX;
 import hzt.sequences.Sequence;
 import hzt.statistics.DoubleStatistics;
@@ -32,7 +33,6 @@ import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
-import java.util.function.IntConsumer;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
@@ -40,6 +40,7 @@ import java.util.stream.StreamSupport;
 @FunctionalInterface
 public interface DoubleSequence extends DoubleReducable,
         PrimitiveSequence<Double, DoubleConsumer, DoubleUnaryOperator, DoublePredicate, DoubleBinaryOperator>,
+        PrimitiveStreamable<DoubleStream>,
         Transformable<DoubleSequence> {
 
     static DoubleSequence empty() {
@@ -62,7 +63,7 @@ public interface DoubleSequence extends DoubleReducable,
         return () -> PrimitiveIterators.doubleArrayIterator(doubles);
     }
 
-    static DoubleSequence of (DoubleStream stream) {
+    static DoubleSequence of(DoubleStream stream) {
         return stream::iterator;
     }
 
@@ -146,11 +147,6 @@ public interface DoubleSequence extends DoubleReducable,
         return Sequence.of(this);
     }
 
-    @FunctionalInterface
-    interface IntMapMultiConsumer {
-        void accept(int value, IntConsumer intConsumer);
-    }
-
     @Override
     default DoubleSequence take(long n) {
         return DoubleSequence.of(stream().limit(n));
@@ -163,7 +159,7 @@ public interface DoubleSequence extends DoubleReducable,
 
     @Override
     default DoubleSequence takeWhileInclusive(@NotNull DoublePredicate predicate) {
-       return  () -> DoubleTakeWhileIterator.of(iterator(), predicate, true);
+        return () -> DoubleTakeWhileIterator.of(iterator(), predicate, true);
     }
 
     @Override
@@ -309,7 +305,7 @@ public interface DoubleSequence extends DoubleReducable,
     }
 
     default DoubleSequence windowed(int size, int step, boolean partialWindows,
-                                  @NotNull ToDoubleFunction<DoubleSequence> reducer) {
+                                    @NotNull ToDoubleFunction<DoubleSequence> reducer) {
         return windowed(size, step, partialWindows).mapToDouble(reducer);
     }
 
@@ -342,26 +338,26 @@ public interface DoubleSequence extends DoubleReducable,
     }
 
     default <R1, R2, R> R doublesToTwo(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,
-                                    @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2,
-                                    @NotNull BiFunction<R1, R2, R> merger) {
+                                       @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2,
+                                       @NotNull BiFunction<R1, R2, R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
     }
 
     default <R1, R2> Pair<R1, R2> doublesToTwo(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,
-                                            @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2) {
+                                               @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2) {
         return doublesToTwo(resultMapper1, resultMapper2, Pair::of);
     }
 
     default <R1, R2, R3, R> R doublesToThree(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,
-                                          @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2,
-                                          @NotNull Function<? super DoubleSequence, ? extends R3> resultMapper3,
-                                          @NotNull TriFunction<R1, R2, R3, R> merger) {
+                                             @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2,
+                                             @NotNull Function<? super DoubleSequence, ? extends R3> resultMapper3,
+                                             @NotNull TriFunction<R1, R2, R3, R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this), resultMapper3.apply(this));
     }
 
     default <R1, R2, R3> Triple<R1, R2, R3> doublesToThree(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,
-                                                        @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2,
-                                                        @NotNull Function<? super DoubleSequence, ? extends R3> resultMapper3) {
+                                                           @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2,
+                                                           @NotNull Function<? super DoubleSequence, ? extends R3> resultMapper3) {
         return doublesToThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
     }
 

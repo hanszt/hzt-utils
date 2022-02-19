@@ -18,5 +18,5 @@ public interface Zippable<T> extends Iterable<T> {
         return EntrySequence.ofPairs(zipWithNext(Pair::of));
     }
 
-    <R> Zippable<R> zipWithNext(BiFunction<T, T, R> function);
+    <R> Zippable<R> zipWithNext(@NotNull BiFunction<? super T, ? super T, ? extends R> function);
 }

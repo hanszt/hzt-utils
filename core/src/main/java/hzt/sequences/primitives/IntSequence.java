@@ -3,6 +3,7 @@ package hzt.sequences.primitives;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.IntIterable;
 import hzt.iterables.primitives.IntReducable;
+import hzt.iterables.primitives.PrimitiveStreamable;
 import hzt.iterators.primitives.IntFilteringIterator;
 import hzt.iterators.primitives.IntGeneratorIterator;
 import hzt.iterators.primitives.IntMultiMappingIterator;
@@ -40,6 +41,7 @@ import java.util.stream.StreamSupport;
 @FunctionalInterface
 public interface IntSequence extends IntReducable,
         PrimitiveSequence<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator>,
+        PrimitiveStreamable<IntStream>,
         Transformable<IntSequence> {
 
     static IntSequence empty() {

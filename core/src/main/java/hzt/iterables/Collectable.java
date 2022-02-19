@@ -405,7 +405,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <R, C extends Collection<R>> C zipWithNextTo(@NotNull Supplier<C> collectionFactory,
-                                                         @NotNull BiFunction<T, T, R> function) {
+                                                         @NotNull BiFunction<? super T, ? super T, ? extends R> function) {
         final Iterator<T> iterator = iterator();
         if (!iterator.hasNext()) {
             return collectionFactory.get();

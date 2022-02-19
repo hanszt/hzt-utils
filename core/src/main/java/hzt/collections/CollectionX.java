@@ -197,7 +197,7 @@ public interface CollectionX<E> extends IterableX<E> {
         return zipTo(MutableListX::empty, iterable, function);
     }
 
-    default <R> ListX<R> zipWithNext(BiFunction<E, E, R> function) {
+    default <R> ListX<R> zipWithNext(@NotNull BiFunction<? super E, ? super E, ? extends R> function) {
         return zipWithNextTo(MutableListX::empty, function);
     }
 

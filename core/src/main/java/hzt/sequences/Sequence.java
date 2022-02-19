@@ -221,7 +221,7 @@ public interface Sequence<T> extends IterableX<T> {
         return new WindowedSequence<>(this, size, step, partialWindows).map(transform);
     }
 
-    default <R> Sequence<R> zipWithNext(BiFunction<T, T, R> function) {
+    default <R> Sequence<R> zipWithNext(@NotNull BiFunction<? super T, ? super T, ? extends R> function) {
         return windowed(2, list -> function.apply(list.first(), list.last()));
     }
 

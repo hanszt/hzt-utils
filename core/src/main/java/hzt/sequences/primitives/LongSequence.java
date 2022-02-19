@@ -3,6 +3,7 @@ package hzt.sequences.primitives;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.LongIterable;
 import hzt.iterables.primitives.LongReducable;
+import hzt.iterables.primitives.PrimitiveStreamable;
 import hzt.iterators.primitives.LongFilteringIterator;
 import hzt.iterators.primitives.LongGeneratorIterator;
 import hzt.iterators.primitives.LongMultiMappingIterator;
@@ -40,6 +41,7 @@ import java.util.stream.StreamSupport;
 @FunctionalInterface
 public interface LongSequence extends LongReducable,
         PrimitiveSequence<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator>,
+        PrimitiveStreamable<LongStream>,
         Transformable<LongSequence> {
 
     static LongSequence empty() {

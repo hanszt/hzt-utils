@@ -528,8 +528,8 @@ class SequenceTest {
 
         It.println("\nsums = " + sums);
 
-        It.println("windows.first() = " + sums.findFirst());
-        It.println("windows.last() = " + sums.findLast());
+        It.println("sums.first() = " + sums.findFirst());
+        It.println("sums.last() = " + sums.findLast());
 
         assertEquals(99, sums.size());
     }

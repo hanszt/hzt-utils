@@ -1,4 +1,4 @@
-package hzt.iterators;
+package hzt.iterators.primitives;
 
 import hzt.iterables.primitives.IntIterable;
 import hzt.sequences.primitives.IntSequence;
@@ -70,9 +70,9 @@ public final class IntMultiMappingIterator implements PrimitiveIterator.OfInt {
         }
 
         @Override
-        public OfInt iterator() {
+        public @NotNull OfInt iterator() {
             return new OfInt() {
-                int counter = 0;
+                private int counter = 0;
 
                 @Override
                 public boolean hasNext() {

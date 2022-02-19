@@ -1,44 +1,44 @@
-package hzt.iterators;
+package hzt.iterators.primitives;
 
-import hzt.iterables.primitives.DoubleIterable;
+import hzt.iterables.primitives.LongIterable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.PrimitiveIterator;
 
-final class DoubleBuffer implements DoubleIterable {
+final class LongBuffer implements LongIterable {
 
     private int size = 0;
-    private double[] elementData;
+    private long[] elementData;
 
-    DoubleBuffer(int initCapacity) {
-        elementData = new double[initCapacity];
+    LongBuffer(int initCapacity) {
+        elementData = new long[initCapacity];
     }
 
-    DoubleBuffer(DoubleBuffer longBuffer) {
+    LongBuffer(LongBuffer longBuffer) {
         size = longBuffer.size;
         final var otherArray = longBuffer.elementData;
         this.elementData = Arrays.copyOf(otherArray, otherArray.length);
     }
 
-    DoubleBuffer() {
-        elementData = new double[]{};
+    LongBuffer() {
+        elementData = new long[]{};
     }
 
-    boolean add(double value) {
+    boolean add(long l) {
         if (size == elementData.length) {
             final var isInitEmptyArray = elementData.length == 0;
             elementData = PrimitiveArraysSupport.growArray(elementData, size, isInitEmptyArray);
         }
-        elementData[size] = value;
+        elementData[size] = l;
         size++;
         return true;
     }
 
     void clear() {
         size = 0;
-        elementData = new double[PrimitiveArraysSupport.DEFAULT_CAPACITY];
+        elementData = new long[PrimitiveArraysSupport.DEFAULT_CAPACITY];
     }
 
     boolean isEmpty() {
@@ -49,10 +49,10 @@ final class DoubleBuffer implements DoubleIterable {
         return size;
     }
 
-    double remove(int index) {
+    long remove(int index) {
         Objects.checkIndex(index, size);
-        double oldValue = elementData[index];
-        size = PrimitiveArraysSupport.fastRemoveDouble(elementData, size, index);
+        long oldValue = elementData[index];
+        size = PrimitiveArraysSupport.fastRemoveLong(elementData, size, index);
         return oldValue;
     }
 
@@ -64,7 +64,7 @@ final class DoubleBuffer implements DoubleIterable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DoubleBuffer longs = (DoubleBuffer) o;
+        LongBuffer longs = (LongBuffer) o;
         return size == longs.size && Arrays.equals(elementData, longs.elementData);
     }
 
@@ -76,9 +76,9 @@ final class DoubleBuffer implements DoubleIterable {
     }
 
     @Override
-    public @NotNull PrimitiveIterator.OfDouble iterator() {
-        return new PrimitiveIterator.OfDouble() {
-            int counter = 0;
+    public @NotNull PrimitiveIterator.OfLong iterator() {
+        return new PrimitiveIterator.OfLong() {
+            private int counter = 0;
 
             @Override
             public boolean hasNext() {
@@ -86,7 +86,7 @@ final class DoubleBuffer implements DoubleIterable {
             }
 
             @Override
-            public double nextDouble() {
+            public long nextLong() {
                 return elementData[counter++];
             }
         };

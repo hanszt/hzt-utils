@@ -1,4 +1,4 @@
-package hzt.iterators;
+package hzt.iterators.primitives;
 
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;

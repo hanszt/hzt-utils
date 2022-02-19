@@ -1,10 +1,8 @@
-package hzt.iterators;
+package hzt.iterators.primitives;
 
-import hzt.iterables.primitives.DoubleIterable;
 import hzt.sequences.primitives.DoubleSequence;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 
@@ -55,35 +53,5 @@ public final class DoubleMultiMappingIterator implements PrimitiveIterator.OfDou
             }
         }
         return true;
-    }
-
-    private static final class DoubleBuffer implements DoubleIterable {
-        private int index = 0;
-        private double[] array = new double[10];
-
-        private void add(double aDouble) {
-            if (index >= array.length) {
-                array = Arrays.copyOf(array, array.length + 10);
-            }
-            array[index] = aDouble;
-            index++;
-        }
-
-        @Override
-        public OfDouble iterator() {
-            return new OfDouble() {
-                int counter = 0;
-
-                @Override
-                public boolean hasNext() {
-                    return counter < index;
-                }
-
-                @Override
-                public double nextDouble() {
-                    return array[counter++];
-                }
-            };
-        }
     }
 }

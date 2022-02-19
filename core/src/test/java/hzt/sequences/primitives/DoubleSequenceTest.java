@@ -1,9 +1,12 @@
 package hzt.sequences.primitives;
 
+import hzt.collections.MutableListX;
+import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.DoubleStream;
 
@@ -60,6 +63,107 @@ class DoubleSequenceTest {
         assertAll(
                 () -> assertArrayEquals(expected, sorted)
         );
+    }
+
+    @Test
+    void testZipDoubleSequenceWithDoubleArray() {
+        double[] array = {1, 2, 3, 4, 5, 6};
+
+        final var zipped = DoubleSequence.of(array)
+                .zip(Double::sum, 1, 2, 3, 4)
+                .toArray();
+
+        System.out.println("Arrays.toString(array) = " + Arrays.toString(zipped));
+
+        assertArrayEquals(new double[]{2, 4, 6, 8}, zipped);
+    }
+
+    @Test
+    void testZipDoubleSequenceWithIterableOfDouble() {
+        List<Double> list = MutableListX.of(1., 2., 3., 4., 5., 6.);
+        double[] array = {1, 2, 3, 4, 5, 6, 7};
+
+        final var zipped = DoubleSequence.of(array)
+                .zip(Double::sum, list)
+                .toArray();
+
+        System.out.println("Arrays.toString(array) = " + Arrays.toString(zipped));
+
+        assertArrayEquals(new double[]{2, 4, 6, 8, 10, 12}, zipped);
+    }
+
+    @Test
+    void testWindowedDoubleSequence() {
+        double[] array = {1, 2, 3, 4, 5, 6, 7};
+
+        final var windowed = DoubleSequence.of(array)
+                .windowed(5)
+                .map(DoubleSequence::toArray)
+                .toTypedArray(double[][]::new);
+
+        Sequence.of(windowed).map(Arrays::toString).forEach(It::println);
+
+        assertEquals(3, windowed.length);
+    }
+
+    @Test
+    void testWindowedDoubleSequenceWindowReduced() {
+        double[] array = {1, 2, 3, 4, 5, 6, 7};
+
+        final var sums = DoubleSequence.of(array)
+                .windowed(3, DoubleSequence::sum)
+                .toArray();
+
+        DoubleSequence.of(sums).forEachDouble(It::println);
+
+        assertArrayEquals(new double[] {6, 9, 12, 15, 18}, sums);
+    }
+
+    @Test
+    void testPartialWindowedDoubleSequence() {
+        double[] array = {1, 2, 3, 4, 5, 6, 7};
+
+        final var windows = DoubleSequence.of(array)
+                .windowed(3, 2, true)
+                .map(DoubleSequence::toArray)
+                .toTypedArray(double[][]::new);
+
+        Sequence.of(windows).map(Arrays::toString).forEach(It::println);
+
+        assertEquals(4, windows.length);
+    }
+
+    @Test
+    void testPartialWindowedDoubleSequenceWindowReduced() {
+        double[] array = {1, 2, 3, 4, 5, 6, 7};
+
+        final var sums = DoubleSequence.of(array)
+                .windowed(3, 2, true, DoubleSequence::sum)
+                .toArray();
+
+        DoubleSequence.of(sums).forEachDouble(It::println);
+
+        assertArrayEquals(new double[] {6, 12, 18, 7}, sums);
+    }
+
+    @Test
+    void testWindowedLargeDoubleSequence() {
+        final var sums = DoubleSequence.generate(0, l -> ++l)
+                .take(1_000_000)
+                .windowed(1_000, 50, DoubleSequence::sum)
+                .toArray();
+
+        final var sums2 = Sequence.generate(0, l -> ++l)
+                .take(1_000_000)
+                .windowed(1_000, 50, s -> s.sumOfDoubles(It::asDouble))
+                .mapToDouble(It::asDouble)
+                .toArray();
+
+        assertAll(
+                () -> assertEquals(19981, sums.length),
+                () -> assertArrayEquals(sums, sums2)
+        );
+
     }
 
 }

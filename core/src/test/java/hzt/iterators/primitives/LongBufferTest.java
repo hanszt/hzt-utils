@@ -1,4 +1,4 @@
-package hzt.iterators;
+package hzt.iterators.primitives;
 
 import hzt.sequences.primitives.LongSequence;
 import org.junit.jupiter.api.Test;

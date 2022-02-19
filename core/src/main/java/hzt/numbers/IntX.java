@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.IntPredicate;
-import java.util.function.Predicate;
 
 @SuppressWarnings("unused")
 public final class IntX extends Number implements NumberX<Integer>, Transformable<IntX> {

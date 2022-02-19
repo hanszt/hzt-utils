@@ -21,6 +21,8 @@ public interface PrimitiveSequence<T extends Number, C, F, P, B> extends Stringa
 
     <R> Sequence<R> mapToObj(@NotNull Function<T, R> function);
 
+    PrimitiveSequence<T, C, F, P, B> plus(@NotNull Iterable<T> values);
+
     PrimitiveSequence<T, C, F, P, B> filter(@NotNull P predicate);
 
     PrimitiveSequence<T, C, F, P, B> filterNot(@NotNull P predicate);

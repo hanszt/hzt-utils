@@ -28,6 +28,42 @@ class IntSequenceTest {
     }
 
     @Test
+    void testIntSequencePlusArray() {
+        int[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+
+        final int[] result = IntSequence.of(1, 3, 2, 5, 4, 2)
+                .filter(IntX::isEven)
+                .plus(35, 76, 5)
+                .plus(array)
+                .toArray();
+
+        System.out.println(Arrays.toString(result));
+
+        assertAll(
+                () -> assertEquals(18, result.length),
+                () -> assertArrayEquals(new int[] {2, 4, 2, 35, 76, 5, 1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2}, result)
+        );
+    }
+
+    @Test
+    void testIntSequencePlusIterable() {
+        final IntSequence ints = IntSequence.of(1, 2, 3, 4, 5, 6, 7, 6);
+
+        final int[] result = IntSequence.of(1, 3, 2, 5, 4, 2)
+                .filter(IntX::isEven)
+                .plus(35, 76, 5)
+                .plus(ints)
+                .toArray();
+
+        System.out.println(Arrays.toString(result));
+
+        assertAll(
+                () -> assertEquals(14, result.length),
+                () -> assertArrayEquals(new int[] {2, 4, 2, 35, 76, 5, 1, 2, 3, 4, 5, 6, 7, 6}, result)
+        );
+    }
+
+    @Test
     void testDescendingSteppedIntRange() {
         var list = MutableListX.<Integer>empty();
         for (int i : IntSequence.from(100).downTo(20).step(5)) {

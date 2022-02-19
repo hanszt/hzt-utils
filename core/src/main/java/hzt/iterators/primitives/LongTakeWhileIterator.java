@@ -1,36 +1,38 @@
-package hzt.iterators;
+package hzt.iterators.primitives;
+
+import hzt.iterators.State;
 
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
-import java.util.function.IntPredicate;
+import java.util.function.LongPredicate;
 
-public final class IntTakeWhileIterator implements PrimitiveIterator.OfInt {
+public final class LongTakeWhileIterator implements PrimitiveIterator.OfLong {
 
-    private final OfInt iterator;
-    private final IntPredicate predicate;
+    private final OfLong iterator;
+    private final LongPredicate predicate;
     private final boolean inclusive;
 
     private boolean inclusiveConsumed = false;
-    private int nextLong;
+    private long nextLong;
     private State nextState = State.INIT_UNKNOWN;
 
-    private IntTakeWhileIterator(OfInt iterator, IntPredicate predicate, boolean inclusive) {
+    private LongTakeWhileIterator(OfLong iterator, LongPredicate predicate, boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
     }
 
-    public static IntTakeWhileIterator of(OfInt iterator, IntPredicate predicate, boolean inclusive) {
-        return new IntTakeWhileIterator(iterator, predicate, inclusive);
+    public static LongTakeWhileIterator of(OfLong iterator, LongPredicate predicate, boolean inclusive) {
+        return new LongTakeWhileIterator(iterator, predicate, inclusive);
     }
 
-    public static IntTakeWhileIterator of(OfInt iterator, IntPredicate predicate) {
-        return new IntTakeWhileIterator(iterator, predicate, false);
+    public static LongTakeWhileIterator of(OfLong iterator, LongPredicate predicate) {
+        return new LongTakeWhileIterator(iterator, predicate, false);
     }
 
     private void calculateNext() {
         if (iterator.hasNext()) {
-            final int item = iterator.nextInt();
+            final long item = iterator.nextLong();
             if (predicate.test(item) && !inclusiveConsumed) {
                 nextState = State.CONTINUE;
                 nextLong = item;
@@ -55,14 +57,14 @@ public final class IntTakeWhileIterator implements PrimitiveIterator.OfInt {
     }
 
     @Override
-    public int nextInt() {
+    public long nextLong() {
         if (nextState.isUnknown()) {
             calculateNext();
         }
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        int result = nextLong;
+        long result = nextLong;
         nextState = State.NEXT_UNKNOWN;
         return result;
     }

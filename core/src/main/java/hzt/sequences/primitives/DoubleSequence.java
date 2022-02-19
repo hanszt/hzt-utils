@@ -3,11 +3,12 @@ package hzt.sequences.primitives;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.DoubleIterable;
 import hzt.iterables.primitives.DoubleReducable;
-import hzt.iterators.DoubleFilteringIterator;
-import hzt.iterators.DoubleGeneratorIterator;
-import hzt.iterators.DoubleMultiMappingIterator;
-import hzt.iterators.DoubleTakeWhileIterator;
-import hzt.iterators.PrimitiveIterators;
+import hzt.iterators.primitives.PrimitiveIterators;
+import hzt.iterators.primitives.DoubleFilteringIterator;
+import hzt.iterators.primitives.DoubleGeneratorIterator;
+import hzt.iterators.primitives.DoubleMultiMappingIterator;
+import hzt.iterators.primitives.DoubleSkipWhileIterator;
+import hzt.iterators.primitives.DoubleTakeWhileIterator;
 import hzt.numbers.DoubleX;
 import hzt.sequences.Sequence;
 import hzt.statistics.DoubleStatistics;
@@ -45,12 +46,12 @@ public interface DoubleSequence extends DoubleReducable,
         return DoubleSequence.of(Sequence.empty());
     }
 
-    static DoubleSequence of(Iterable<Double> doubleIterable) {
-        return of(doubleIterable, It::asDouble);
-    }
-
-    static DoubleSequence of(DoubleIterable doubleIterable) {
-        return doubleIterable::iterator;
+    static DoubleSequence of(Iterable<Double> iterable) {
+        if (iterable instanceof DoubleIterable) {
+            final var doubleIterable = (DoubleIterable) iterable;
+            return doubleIterable::iterator;
+        }
+        return of(iterable, It::asDouble);
     }
 
     static <T> DoubleSequence of(Iterable<T> iterable, ToDoubleFunction<T> mapper) {
@@ -99,6 +100,14 @@ public interface DoubleSequence extends DoubleReducable,
 
     static DoubleSequence closed(double start, double endInclusive, double step) {
         return generate(start, d -> d + (start < endInclusive ? step : -step)).takeWhile(d -> (start < endInclusive) == (d < endInclusive));
+    }
+
+    default DoubleSequence plus(@NotNull double... values) {
+        return Sequence.of(this, DoubleSequence.of(values)).flatMap(It::self).mapToDouble(It::asDouble);
+    }
+
+    default DoubleSequence plus(@NotNull Iterable<Double> values) {
+        return Sequence.of(this, DoubleSequence.of(values)).flatMap(It::self).mapToDouble(It::asDouble);
     }
 
     @Override
@@ -164,12 +173,12 @@ public interface DoubleSequence extends DoubleReducable,
 
     @Override
     default DoubleSequence skipWhile(@NotNull DoublePredicate predicate) {
-        return DoubleSequence.of(stream().dropWhile(predicate));
+        return () -> DoubleSkipWhileIterator.of(iterator(), predicate, false);
     }
 
     @Override
     default DoubleSequence skipWhileInclusive(@NotNull DoublePredicate predicate) {
-        throw new UnsupportedOperationException();
+        return () -> DoubleSkipWhileIterator.of(iterator(), predicate, true);
     }
 
     @Override
@@ -259,18 +268,61 @@ public interface DoubleSequence extends DoubleReducable,
         });
     }
 
+    default DoubleSequence zip(@NotNull DoubleBinaryOperator merger, double... array) {
+        final var iterator = PrimitiveIterators.doubleArrayIterator(array);
+        return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
+    }
+
     @Override
     default DoubleSequence zip(@NotNull DoubleBinaryOperator merger, @NotNull Iterable<Double> other) {
-        return DoubleSequence.of(boxed().zip(other, merger::applyAsDouble));
+        final var iterator = PrimitiveIterators.doubleIteratorOf(other.iterator(), It::asDouble);
+        return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
     default DoubleSequence zipWithNext(@NotNull DoubleBinaryOperator merger) {
-        throw new UnsupportedOperationException();
+        return windowed(2, s -> merger.applyAsDouble(s.first(), s.last()));
+    }
+
+    default Sequence<DoubleSequence> chunked(int size) {
+        return windowed(size, size, true);
+    }
+
+    default DoubleSequence chunked(int size, @NotNull ToDoubleFunction<DoubleSequence> transform) {
+        return windowed(size, size, true).mapToDouble(transform);
+    }
+
+    default Sequence<DoubleSequence> windowed(int size, int step, boolean partialWindows) {
+        return new DoubleWindowedSequence(this, size, step, partialWindows);
     }
 
     default Sequence<DoubleSequence> windowed(int size, int step) {
-        throw new UnsupportedOperationException();
+        return windowed(size, step, false);
+    }
+
+    default Sequence<DoubleSequence> windowed(int size) {
+        return windowed(size, 1);
+    }
+
+    default Sequence<DoubleSequence> windowed(int size, boolean partialWindows) {
+        return windowed(size, 1, partialWindows);
+    }
+
+    default DoubleSequence windowed(int size, int step, boolean partialWindows,
+                                  @NotNull ToDoubleFunction<DoubleSequence> reducer) {
+        return windowed(size, step, partialWindows).mapToDouble(reducer);
+    }
+
+    default DoubleSequence windowed(int size, int step, @NotNull ToDoubleFunction<DoubleSequence> reducer) {
+        return windowed(size, step, false, reducer);
+    }
+
+    default DoubleSequence windowed(int size, @NotNull ToDoubleFunction<DoubleSequence> reducer) {
+        return windowed(size, 1, reducer);
+    }
+
+    default DoubleSequence windowed(int size, boolean partialWindows, @NotNull ToDoubleFunction<DoubleSequence> reducer) {
+        return windowed(size, 1, partialWindows, reducer);
     }
 
     default DoubleStream stream() {

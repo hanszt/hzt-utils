@@ -1,25 +1,27 @@
-package hzt.iterators;
+package hzt.iterators.primitives;
+
+import hzt.iterators.State;
 
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
-import java.util.function.IntPredicate;
+import java.util.function.DoublePredicate;
 
-public final class IntFilteringIterator implements PrimitiveIterator.OfInt {
+public final class DoubleFilteringIterator implements PrimitiveIterator.OfDouble {
 
-    private final OfInt iterator;
-    private final IntPredicate predicate;
+    private final OfDouble iterator;
+    private final DoublePredicate predicate;
     private final boolean sendWhen;
     private State nextState = State.NEXT_UNKNOWN;
-    private int nextInt = 0;
+    private double nextDouble = 0.0;
 
-    private IntFilteringIterator(OfInt iterator, IntPredicate predicate, boolean sendWhen) {
+    private DoubleFilteringIterator(OfDouble iterator, DoublePredicate predicate, boolean sendWhen) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.sendWhen = sendWhen;
     }
 
-    public static IntFilteringIterator of(OfInt iterator, IntPredicate predicate, boolean sendWhen) {
-        return new IntFilteringIterator(iterator, predicate, sendWhen);
+    public static DoubleFilteringIterator of(OfDouble iterator, DoublePredicate predicate, boolean sendWhen) {
+        return new DoubleFilteringIterator(iterator, predicate, sendWhen);
     }
 
     @Override
@@ -31,24 +33,24 @@ public final class IntFilteringIterator implements PrimitiveIterator.OfInt {
     }
 
     @Override
-    public int nextInt() {
+    public double nextDouble() {
         if (nextState == State.NEXT_UNKNOWN) {
             calculateNext();
         }
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        final int result = nextInt;
-        nextInt = 0;
+        final double result = nextDouble;
+        nextDouble = 0L;
         nextState = State.NEXT_UNKNOWN;
         return result;
     }
 
     private void calculateNext() {
         while (iterator.hasNext()) {
-            int next = iterator.nextInt();
+            double next = iterator.nextDouble();
             if (predicate.test(next) == sendWhen) {
-                this.nextInt = next;
+                this.nextDouble = next;
                 nextState = State.CONTINUE;
                 return;
             }

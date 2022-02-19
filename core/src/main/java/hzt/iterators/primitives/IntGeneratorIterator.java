@@ -1,26 +1,28 @@
-package hzt.iterators;
+package hzt.iterators.primitives;
+
+import hzt.iterators.State;
 
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
-import java.util.function.LongSupplier;
-import java.util.function.LongUnaryOperator;
+import java.util.function.IntSupplier;
+import java.util.function.IntUnaryOperator;
 
-public final class LongGeneratorIterator implements PrimitiveIterator.OfLong {
+public final class IntGeneratorIterator implements PrimitiveIterator.OfInt {
 
-    private final LongSupplier initSupplier;
-    private final LongUnaryOperator nextValueSupplier;
+    private final IntSupplier initSupplier;
+    private final IntUnaryOperator nextValueSupplier;
 
-    private long nextLong;
+    private int nextInt;
     private State nextState = State.INIT_UNKNOWN;
 
-    private LongGeneratorIterator(LongSupplier initSupplier, LongUnaryOperator nextValueSupplier) {
+    private IntGeneratorIterator(IntSupplier initSupplier, IntUnaryOperator nextValueSupplier) {
         this.initSupplier = initSupplier;
         this.nextValueSupplier = nextValueSupplier;
-        this.nextLong = initSupplier.getAsLong();
+        this.nextInt = initSupplier.getAsInt();
     }
 
-    public static OfLong of(LongSupplier initSupplier, LongUnaryOperator nextValueSupplier) {
-        return new LongGeneratorIterator(initSupplier, nextValueSupplier);
+    public static PrimitiveIterator.OfInt of(IntSupplier initSupplier, IntUnaryOperator nextValueSupplier) {
+        return new IntGeneratorIterator(initSupplier, nextValueSupplier);
     }
 
     @Override
@@ -32,14 +34,14 @@ public final class LongGeneratorIterator implements PrimitiveIterator.OfLong {
     }
 
     @Override
-    public long nextLong() {
+    public int nextInt() {
         if (nextState.isUnknown()) {
             calculateNext();
         }
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        final long result = nextLong;
+        final int result = nextInt;
         // Do not clean nextItem (set item to 'null' to avoid keeping reference on yielded instance)
         // -- need to keep state for getNextValue
         nextState = State.NEXT_UNKNOWN;
@@ -47,7 +49,7 @@ public final class LongGeneratorIterator implements PrimitiveIterator.OfLong {
     }
 
     private void calculateNext() {
-        nextLong = nextState == State.INIT_UNKNOWN ? initSupplier.getAsLong() : nextValueSupplier.applyAsLong(nextLong);
+        nextInt = nextState == State.INIT_UNKNOWN ? initSupplier.getAsInt() : nextValueSupplier.applyAsInt(nextInt);
         nextState = State.CONTINUE;
     }
 }

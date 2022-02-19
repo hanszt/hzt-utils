@@ -1,5 +1,6 @@
-package hzt.iterators;
+package hzt.iterators.primitives;
 
+import hzt.iterators.AbstractIterator;
 import hzt.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 

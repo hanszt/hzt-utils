@@ -1,4 +1,4 @@
-package hzt.iterators;
+package hzt.iterators.primitives;
 
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
@@ -6,12 +6,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
+import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
+import java.util.function.IntBinaryOperator;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
+import java.util.function.LongBinaryOperator;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
@@ -275,6 +278,54 @@ public final class PrimitiveIterators {
             @Override
             public boolean hasNext() {
                 return doubleIterator.hasNext();
+            }
+        };
+    }
+
+    public static PrimitiveIterator.OfInt mergingIterator(
+            @NotNull PrimitiveIterator.OfInt iterator,
+            @NotNull PrimitiveIterator.OfInt otherIterator,
+            @NotNull IntBinaryOperator merger) {
+        return new PrimitiveIterator.OfInt() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext() && otherIterator.hasNext();
+            }
+            @Override
+            public int nextInt() {
+                return merger.applyAsInt(iterator.nextInt(), otherIterator.nextInt());
+            }
+        };
+    }
+
+    public static PrimitiveIterator.OfLong mergingIterator(
+            @NotNull PrimitiveIterator.OfLong iterator,
+            @NotNull PrimitiveIterator.OfLong otherIterator,
+                                                     @NotNull LongBinaryOperator merger) {
+        return new PrimitiveIterator.OfLong() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext() && otherIterator.hasNext();
+            }
+            @Override
+            public long nextLong() {
+                return merger.applyAsLong(iterator.nextLong(), otherIterator.nextLong());
+            }
+        };
+    }
+
+    public static PrimitiveIterator.OfDouble mergingIterator(
+            @NotNull PrimitiveIterator.OfDouble iterator,
+            @NotNull PrimitiveIterator.OfDouble otherIterator,
+            @NotNull DoubleBinaryOperator merger) {
+        return new PrimitiveIterator.OfDouble() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext() && otherIterator.hasNext();
+            }
+            @Override
+            public double nextDouble() {
+                return merger.applyAsDouble(iterator.nextDouble(), otherIterator.nextDouble());
             }
         };
     }

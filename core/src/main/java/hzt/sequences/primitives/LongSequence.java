@@ -3,12 +3,13 @@ package hzt.sequences.primitives;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.LongIterable;
 import hzt.iterables.primitives.LongReducable;
-import hzt.iterators.LongFilteringIterator;
-import hzt.iterators.LongGeneratorIterator;
-import hzt.iterators.LongMultiMappingIterator;
-import hzt.iterators.LongRangeIterator;
-import hzt.iterators.LongTakeWhileIterator;
-import hzt.iterators.PrimitiveIterators;
+import hzt.iterators.primitives.LongFilteringIterator;
+import hzt.iterators.primitives.LongGeneratorIterator;
+import hzt.iterators.primitives.LongMultiMappingIterator;
+import hzt.iterators.primitives.LongRangeIterator;
+import hzt.iterators.primitives.LongSkipWhileIterator;
+import hzt.iterators.primitives.LongTakeWhileIterator;
+import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
 import hzt.statistics.LongStatistics;
@@ -45,16 +46,16 @@ public interface LongSequence extends LongReducable,
         return LongSequence.of(Sequence.empty());
     }
 
-    static LongSequence of(Iterable<Long> longIterable) {
-        return of(longIterable, It::asLong);
+    static LongSequence of(Iterable<Long> iterable) {
+        if (iterable instanceof LongIterable) {
+            final var longIterable = (LongIterable) iterable;
+            return longIterable::iterator;
+        }
+        return of(iterable, It::asLong);
     }
 
     static <T> LongSequence of(Iterable<T> iterable, ToLongFunction<T> mapper) {
         return () -> PrimitiveIterators.longIteratorOf(iterable.iterator(), mapper);
-    }
-
-    static LongSequence of(LongIterable doubleIterable) {
-        return doubleIterable::iterator;
     }
 
     static LongSequence of(long... longs) {
@@ -115,6 +116,14 @@ public interface LongSequence extends LongReducable,
         return filter(l -> l % step == 0);
     }
 
+    default LongSequence plus(@NotNull long... values) {
+        return Sequence.of(this, LongSequence.of(values)).flatMap(It::self).mapToLong(It::asLong);
+    }
+
+    default LongSequence plus(@NotNull Iterable<Long> values) {
+        return Sequence.of(this, LongSequence.of(values)).flatMap(It::self).mapToLong(It::asLong);
+    }
+
     default LongSequence map(@NotNull LongUnaryOperator unaryOperator) {
         return () -> PrimitiveIterators.longTransformingIterator(iterator(), unaryOperator);
     }
@@ -132,7 +141,7 @@ public interface LongSequence extends LongReducable,
         void accept(long value, LongConsumer lc);
     }
 
-    default IntSequence maptToInt(LongToIntFunction mapper) {
+    default IntSequence mapToInt(LongToIntFunction mapper) {
         return () -> PrimitiveIterators.longToIntIterator(iterator(), mapper);
     }
 
@@ -182,12 +191,12 @@ public interface LongSequence extends LongReducable,
     }
 
     default LongSequence skipWhile(@NotNull LongPredicate longPredicate) {
-        return LongSequence.of(stream().dropWhile(longPredicate));
+        return () -> LongSkipWhileIterator.of(iterator(), longPredicate, false);
     }
 
     @Override
-    default LongSequence skipWhileInclusive(@NotNull LongPredicate predicate) {
-        return null;
+    default LongSequence skipWhileInclusive(@NotNull LongPredicate longPredicate) {
+        return () -> LongSkipWhileIterator.of(iterator(), longPredicate, true);
     }
 
     @Override
@@ -217,21 +226,26 @@ public interface LongSequence extends LongReducable,
 
     default LongSequence zip(@NotNull LongBinaryOperator merger, long... array) {
         final var iterator = PrimitiveIterators.longArrayIterator(array);
-        return () -> mergingIterator(iterator, merger);
+        return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
     default LongSequence zip(@NotNull LongBinaryOperator merger, @NotNull Iterable<Long> other) {
         final var iterator = PrimitiveIterators.longIteratorOf(other.iterator(), It::asLong);
-        return () -> mergingIterator(iterator, merger);
+        return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
     default LongSequence zipWithNext(@NotNull LongBinaryOperator merger) {
-        return windowed(2, s -> {
-            long[] array = s.toArray();
-            return merger.applyAsLong(array[0], array[1]);
-        });
+        return windowed(2, s -> merger.applyAsLong(s.first(), s.last()));
+    }
+
+    default Sequence<LongSequence> chunked(int size) {
+        return windowed(size, size, true);
+    }
+
+    default LongSequence chunked(int size, @NotNull ToLongFunction<LongSequence> transform) {
+        return windowed(size, size, true).mapToLong(transform);
     }
 
     default Sequence<LongSequence> windowed(int size, int step, boolean partialWindows) {
@@ -250,7 +264,8 @@ public interface LongSequence extends LongReducable,
         return windowed(size, 1, partialWindows);
     }
 
-    default LongSequence windowed(int size, int step, boolean partialWindows, @NotNull ToLongFunction<LongSequence> reducer) {
+    default LongSequence windowed(int size, int step, boolean partialWindows,
+                                  @NotNull ToLongFunction<LongSequence> reducer) {
         return windowed(size, step, partialWindows).mapToLong(reducer);
     }
 
@@ -264,21 +279,6 @@ public interface LongSequence extends LongReducable,
 
     default LongSequence windowed(int size, boolean partialWindows, @NotNull ToLongFunction<LongSequence> reducer) {
         return windowed(size, 1, partialWindows, reducer);
-    }
-
-    private PrimitiveIterator.OfLong mergingIterator(@NotNull PrimitiveIterator.OfLong otherIterator,
-                                                     @NotNull LongBinaryOperator merger) {
-        return new PrimitiveIterator.OfLong() {
-            private final PrimitiveIterator.OfLong thisIterator = iterator();
-            @Override
-            public boolean hasNext() {
-                return thisIterator.hasNext() && otherIterator.hasNext();
-            }
-            @Override
-            public long nextLong() {
-                return merger.applyAsLong(thisIterator.nextLong(), otherIterator.nextLong());
-            }
-        };
     }
 
     default long min() {

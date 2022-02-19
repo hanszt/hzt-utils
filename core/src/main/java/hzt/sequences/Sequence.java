@@ -9,7 +9,7 @@ import hzt.iterators.ArrayIterator;
 import hzt.iterators.FlatteningIterator;
 import hzt.iterators.GeneratorIterator;
 import hzt.iterators.MultiMappingIterator;
-import hzt.iterators.PrimitiveIterators;
+import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.iterators.SkipWhileIterator;
 import hzt.iterators.TakeWhileIterator;
 import hzt.sequences.primitives.DoubleSequence;
@@ -222,7 +222,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     default <R> Sequence<R> zipWithNext(BiFunction<T, T, R> function) {
-        return windowed(2, list -> function.apply(list.first(), list.get(1)));
+        return windowed(2, list -> function.apply(list.first(), list.last()));
     }
 
     default <A, R> Sequence<R> zip(@NotNull Iterable<A> other, @NotNull BiFunction<? super T, ? super A, ? extends R> function) {

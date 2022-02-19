@@ -1,4 +1,4 @@
-package hzt.iterators;
+package hzt.iterators.primitives;
 
 import hzt.PreConditions;
 import org.jetbrains.annotations.NotNull;

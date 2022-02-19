@@ -3,12 +3,13 @@ package hzt.sequences.primitives;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.IntIterable;
 import hzt.iterables.primitives.IntReducable;
-import hzt.iterators.IntFilteringIterator;
-import hzt.iterators.IntGeneratorIterator;
-import hzt.iterators.IntMultiMappingIterator;
-import hzt.iterators.IntRangeIterator;
-import hzt.iterators.IntTakeWhileIterator;
-import hzt.iterators.PrimitiveIterators;
+import hzt.iterators.primitives.IntFilteringIterator;
+import hzt.iterators.primitives.IntGeneratorIterator;
+import hzt.iterators.primitives.IntMultiMappingIterator;
+import hzt.iterators.primitives.IntRangeIterator;
+import hzt.iterators.primitives.IntSkipWhileIterator;
+import hzt.iterators.primitives.IntTakeWhileIterator;
+import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.numbers.IntX;
 import hzt.sequences.Sequence;
 import hzt.statistics.IntStatistics;
@@ -45,12 +46,12 @@ public interface IntSequence extends IntReducable,
         return IntSequence.of(Sequence.empty());
     }
 
-    static IntSequence of(Iterable<Integer> integers) {
-        return of(integers, It::asInt);
-    }
-
-    static IntSequence of(IntIterable intIterable) {
-        return intIterable::iterator;
+    static IntSequence of(Iterable<Integer> iterable) {
+        if (iterable instanceof IntIterable) {
+            final var intIterable = (IntIterable) iterable;
+            return intIterable::iterator;
+        }
+        return of(iterable, It::asInt);
     }
 
     static <T> IntSequence of(Iterable<T> iterable, ToIntFunction<T> mapper) {
@@ -113,6 +114,14 @@ public interface IntSequence extends IntReducable,
 
     default IntSequence step(int step) {
         return filter(i -> i % step == 0);
+    }
+
+    default IntSequence plus(@NotNull int... values) {
+        return Sequence.of(this, IntSequence.of(values)).flatMap(It::self).mapToInt(It::asInt);
+    }
+
+    default IntSequence plus(@NotNull Iterable<Integer> values) {
+        return Sequence.of(this, IntSequence.of(values)).flatMap(It::self).mapToInt(It::asInt);
     }
 
     @Override
@@ -179,12 +188,12 @@ public interface IntSequence extends IntReducable,
 
     @Override
     default IntSequence skipWhile(@NotNull IntPredicate predicate) {
-        return  IntSequence.of(stream().dropWhile(predicate));
+        return () -> IntSkipWhileIterator.of(iterator(), predicate, false);
     }
 
     @Override
     default IntSequence skipWhileInclusive(@NotNull IntPredicate predicate) {
-        return null;
+        return () -> IntSkipWhileIterator.of(iterator(), predicate, true);
     }
 
     @Override
@@ -281,16 +290,22 @@ public interface IntSequence extends IntReducable,
         });
     }
 
+    default IntSequence zip(@NotNull IntBinaryOperator merger, int... array) {
+        final var iterator = PrimitiveIterators.intArrayIterator(array);
+        return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
+    }
+
     @Override
     default IntSequence zip(@NotNull IntBinaryOperator merger, @NotNull Iterable<Integer> other) {
-        return IntSequence.of(boxed().zip(other, merger::applyAsInt));
+        final var iterator = PrimitiveIterators.intIteratorOf(other.iterator(), It::asInt);
+        return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
     default IntSequence zipWithNext(@NotNull IntBinaryOperator merger) {
         return mapToLong(It::asLong)
                 .zipWithNext((cur, next) -> merger.applyAsInt((int) cur, (int) next))
-                .maptToInt(It::longAsInt);
+                .mapToInt(It::longAsInt);
     }
 
     default int[] toArray() {

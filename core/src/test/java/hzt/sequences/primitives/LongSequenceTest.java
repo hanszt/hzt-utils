@@ -216,6 +216,28 @@ class LongSequenceTest {
     }
 
     @Test
+    void testChunkedTo3DArray() {
+        final var cube = LongSequence.generate(0, l -> l + 2)
+                .take(1_000)
+                .chunked(10)
+                .chunked(10)
+                .map(chunk -> chunk
+                        .map(LongSequence::toArray)
+                        .toTypedArray(long[][]::new))
+                .toTypedArray(long[][][]::new);
+
+        final String cubeAsString = Sequence.of(cube)
+                .map(plane -> Sequence.of(plane)
+                        .map(Arrays::toString))
+                .map(s -> s.joinToString(System.lineSeparator()))
+                        .joinToString(String.format("%n%n"));
+
+        System.out.println(cubeAsString);
+
+        assertEquals(10, cube.length);
+    }
+
+    @Test
     void testWindowedLargeLongSequence() {
         final var sums = LongSequence.generate(0, l -> ++l)
                 .take(1_000_000)

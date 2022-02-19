@@ -1,6 +1,8 @@
 package hzt.sequences.primitives;
 
 import hzt.collections.MutableListX;
+import hzt.numbers.IntX;
+import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
@@ -130,5 +132,21 @@ class IntSequenceTest {
         System.out.println("Arrays.toString(array) = " + Arrays.toString(sorted));
 
         assertArrayEquals(new int[]{3, 4, 7, 8, 9, -6, -5, -5, -4, -4, -1}, sorted);
+    }
+
+    @Test
+    void testParallelStreamFromIntSequence() {
+        // a parallel stream does not maintain the sorted nature of the sequence
+        // when going to sequential stream, then the order is maintained
+        final var doubles = IntSequence.generate(0, i -> i + 2)
+                .filter(IntX.multipleOf(4))
+                .take(10000)
+                .sortedDescending()
+                .parallelStream()
+                .mapToDouble(i -> i * Math.E)
+                .peek(It::println)
+                .toArray();
+
+        assertEquals(10_000, doubles.length);
     }
 }

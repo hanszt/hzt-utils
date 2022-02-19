@@ -7,6 +7,7 @@ import hzt.iterators.IntFilteringIterator;
 import hzt.iterators.IntGeneratorIterator;
 import hzt.iterators.IntMultiMappingIterator;
 import hzt.iterators.IntRangeIterator;
+import hzt.iterators.IntTakeWhileIterator;
 import hzt.iterators.PrimitiveIterators;
 import hzt.numbers.IntX;
 import hzt.sequences.Sequence;
@@ -120,7 +121,7 @@ public interface IntSequence extends IntReducable,
     }
 
     default IntSequence flatMap(IntFunction<? extends IntSequence> flatMapper) {
-        return IntSequence.of(intStream().flatMap(s -> flatMapper.apply(s).intStream()));
+        return IntSequence.of(stream().flatMap(s -> flatMapper.apply(s).stream()));
     }
 
     default IntSequence mapMulti(IntMapMultiConsumer intMapMultiConsumer) {
@@ -144,8 +145,12 @@ public interface IntSequence extends IntReducable,
         return boxed().map(function);
     }
 
-    default IntStream intStream() {
+    default IntStream stream() {
         return StreamSupport.intStream(spliterator(), false);
+    }
+
+    default IntStream parallelStream() {
+        return StreamSupport.intStream(spliterator(), true);
     }
 
     default Sequence<Integer> boxed() {
@@ -154,27 +159,27 @@ public interface IntSequence extends IntReducable,
 
     @Override
     default IntSequence take(long n) {
-        return IntSequence.of(intStream().limit(n));
+        return IntSequence.of(stream().limit(n));
     }
 
     @Override
     default IntSequence takeWhile(@NotNull IntPredicate predicate) {
-        return IntSequence.of(intStream().takeWhile(predicate));
+        return () -> IntTakeWhileIterator.of(iterator(), predicate);
     }
 
     @Override
     default IntSequence takeWhileInclusive(@NotNull IntPredicate predicate) {
-        return null;
+        return  () -> IntTakeWhileIterator.of(iterator(), predicate, true);
     }
 
     @Override
     default IntSequence skip(long n) {
-        return IntSequence.of(intStream().skip(n));
+        return IntSequence.of(stream().skip(n));
     }
 
     @Override
     default IntSequence skipWhile(@NotNull IntPredicate predicate) {
-        return  IntSequence.of(intStream().dropWhile(predicate));
+        return  IntSequence.of(stream().dropWhile(predicate));
     }
 
     @Override
@@ -281,8 +286,15 @@ public interface IntSequence extends IntReducable,
         return IntSequence.of(boxed().zip(other, merger::applyAsInt));
     }
 
+    @Override
+    default IntSequence zipWithNext(@NotNull IntBinaryOperator merger) {
+        return mapToLong(It::asLong)
+                .zipWithNext((cur, next) -> merger.applyAsInt((int) cur, (int) next))
+                .maptToInt(It::longAsInt);
+    }
+
     default int[] toArray() {
-        return intStream().toArray();
+        return stream().toArray();
     }
 
     default <R1, R2, R> R intsToTwo(@NotNull Function<? super IntSequence, ? extends R1> resultMapper1,

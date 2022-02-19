@@ -519,7 +519,7 @@ class SequenceTest {
     @Test
     void testZipWithNext() {
         final var sums = IntSequence.of(0, 1_000)
-                .filter(i -> IntX.multipleOf(10).test(i))
+                .filter(IntX.multipleOf(10))
                 .onEach(i -> It.print(i + ", "))
                 .boxed()
                 .zipWithNext(Integer::sum)

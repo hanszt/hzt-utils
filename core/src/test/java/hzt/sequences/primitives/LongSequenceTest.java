@@ -1,6 +1,7 @@
 package hzt.sequences.primitives;
 
 import hzt.collections.MutableListX;
+import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
@@ -16,9 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class LongSequenceTest {
 
     @Test
-    void longRangeStatsGreaterThanIntegerMax() {
-        final var stats = LongSequence.of(0, Integer.MAX_VALUE + 100_000L)
-                .filter(l -> l % 1_000 == 0)
+    void longRangeStatsGreaterThanIntegerMaxFasterThanSequentialStream() {
+        final var stats = LongSequence.of(0, Integer.MAX_VALUE + 100_000L, 1000)
                 .map(l -> l + 2 * l)
                 .stats();
 
@@ -29,7 +29,7 @@ class LongSequenceTest {
     }
 
     @Test
-    void longStreamRangeStatsGreaterThanIntegerMax() {
+    void longStreamParallelStatsGreaterThanIntegerMax() {
         final var stats = LongStream.range(0, Integer.MAX_VALUE + 100_000L)
                 .parallel()
                 .filter(l -> l % 1_000 == 0)
@@ -159,6 +159,80 @@ class LongSequenceTest {
         System.out.println("Arrays.toString(array) = " + Arrays.toString(zipped));
 
         assertArrayEquals(new long[]{2, 4, 6, 8, 10, 12}, zipped);
+    }
+
+    @Test
+    void testWindowedLongSequence() {
+        long[] array = {1, 2, 3, 4, 5, 6, 7};
+
+        final var windowed = LongSequence.of(array)
+                .windowed(5)
+                .map(LongSequence::toArray)
+                .toTypedArray(long[][]::new);
+
+       Sequence.of(windowed).map(Arrays::toString).forEach(It::println);
+
+        assertEquals(3, windowed.length);
+    }
+
+    @Test
+    void testWindowedLongSequenceWindowReduced() {
+        long[] array = {1, 2, 3, 4, 5, 6, 7};
+
+        final var sums = LongSequence.of(array)
+                .windowed(3, LongSequence::sum)
+                .toArray();
+
+        LongSequence.of(sums).forEachLong(It::println);
+
+        assertArrayEquals(new long[] {6, 9, 12, 15, 18}, sums);
+    }
+
+    @Test
+    void testPartialWindowedLongSequence() {
+        long[] array = {1, 2, 3, 4, 5, 6, 7};
+
+        final var windows = LongSequence.of(array)
+                .windowed(3, 2, true)
+                .map(LongSequence::toArray)
+                .toTypedArray(long[][]::new);
+
+        Sequence.of(windows).map(Arrays::toString).forEach(It::println);
+
+        assertEquals(4, windows.length);
+    }
+
+    @Test
+    void testPartialWindowedLongSequenceWindowReduced() {
+        long[] array = {1, 2, 3, 4, 5, 6, 7};
+
+        final var sums = LongSequence.of(array)
+                .windowed(3, 2, true, LongSequence::sum)
+                .toArray();
+
+        LongSequence.of(sums).forEachLong(It::println);
+
+        assertArrayEquals(new long[] {6, 12, 18, 7}, sums);
+    }
+
+    @Test
+    void testWindowedLargeLongSequence() {
+        final var sums = LongSequence.generate(0, l -> ++l)
+                .take(1_000_000)
+                .windowed(1_000, 50, LongSequence::sum)
+                .toArray();
+
+        final var sums2 = Sequence.generate(0, l -> ++l)
+                .take(1_000_000)
+                .windowed(1_000, 50, s -> s.sumOfLongs(It::asLong))
+                .mapToLong(It::asLong)
+                .toArray();
+
+        assertAll(
+                () -> assertEquals(19981, sums.length),
+                () -> assertArrayEquals(sums, sums2)
+        );
+
     }
 
 }

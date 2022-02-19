@@ -47,6 +47,8 @@ public interface PrimitiveSequence<T extends Number, C, F, P, B> extends Stringa
 
     PrimitiveSequence<T, C, F, P, B> zip(@NotNull B merger, @NotNull Iterable<T> other);
 
+    PrimitiveSequence<T, C, F, P, B> zipWithNext(@NotNull B merger);
+
     @NotNull NumberStatistics stats();
 
     @NotNull NumberStatistics stats(@NotNull P predicate);

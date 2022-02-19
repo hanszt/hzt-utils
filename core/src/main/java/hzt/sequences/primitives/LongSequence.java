@@ -7,6 +7,7 @@ import hzt.iterators.LongFilteringIterator;
 import hzt.iterators.LongGeneratorIterator;
 import hzt.iterators.LongMultiMappingIterator;
 import hzt.iterators.LongRangeIterator;
+import hzt.iterators.LongTakeWhileIterator;
 import hzt.iterators.PrimitiveIterators;
 import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
@@ -119,7 +120,7 @@ public interface LongSequence extends LongReducable,
     }
 
     default LongSequence flatMap(LongFunction<? extends LongSequence> flatMapper) {
-        return LongSequence.of(longStream().flatMap(s -> flatMapper.apply(s).longStream()));
+        return LongSequence.of(stream().flatMap(s -> flatMapper.apply(s).stream()));
     }
 
     default LongSequence mapMulti(LongMapMultiConsumer longMapMultiConsumer) {
@@ -147,8 +148,12 @@ public interface LongSequence extends LongReducable,
         return Sequence.of(this);
     }
 
-    default LongStream longStream() {
+    default LongStream stream() {
         return StreamSupport.longStream(spliterator(), false);
+    }
+
+    default LongStream parallelStream() {
+        return StreamSupport.longStream(spliterator(), true);
     }
 
     default LongSequence filter(@NotNull LongPredicate predicate) {
@@ -160,24 +165,24 @@ public interface LongSequence extends LongReducable,
     }
 
     default LongSequence take(long n) {
-        return LongSequence.of(longStream().limit(n));
+        return LongSequence.of(stream().limit(n));
     }
 
     default LongSequence takeWhile(@NotNull LongPredicate predicate) {
-        return LongSequence.of(longStream().takeWhile(predicate));
+        return () -> LongTakeWhileIterator.of(iterator(), predicate);
     }
 
     @Override
     default LongSequence takeWhileInclusive(@NotNull LongPredicate predicate) {
-        return null;
+        return () -> LongTakeWhileIterator.of(iterator(), predicate, true);
     }
 
     default LongSequence skip(long n) {
-        return LongSequence.of(longStream().skip(n));
+        return LongSequence.of(stream().skip(n));
     }
 
     default LongSequence skipWhile(@NotNull LongPredicate longPredicate) {
-        return LongSequence.of(longStream().dropWhile(longPredicate));
+        return LongSequence.of(stream().dropWhile(longPredicate));
     }
 
     @Override
@@ -219,6 +224,46 @@ public interface LongSequence extends LongReducable,
     default LongSequence zip(@NotNull LongBinaryOperator merger, @NotNull Iterable<Long> other) {
         final var iterator = PrimitiveIterators.longIteratorOf(other.iterator(), It::asLong);
         return () -> mergingIterator(iterator, merger);
+    }
+
+    @Override
+    default LongSequence zipWithNext(@NotNull LongBinaryOperator merger) {
+        return windowed(2, s -> {
+            long[] array = s.toArray();
+            return merger.applyAsLong(array[0], array[1]);
+        });
+    }
+
+    default Sequence<LongSequence> windowed(int size, int step, boolean partialWindows) {
+        return new LongWindowedSequence(this, size, step, partialWindows);
+    }
+
+    default Sequence<LongSequence> windowed(int size, int step) {
+        return windowed(size, step, false);
+    }
+
+    default Sequence<LongSequence> windowed(int size) {
+        return windowed(size, 1);
+    }
+
+    default Sequence<LongSequence> windowed(int size, boolean partialWindows) {
+        return windowed(size, 1, partialWindows);
+    }
+
+    default LongSequence windowed(int size, int step, boolean partialWindows, @NotNull ToLongFunction<LongSequence> reducer) {
+        return windowed(size, step, partialWindows).mapToLong(reducer);
+    }
+
+    default LongSequence windowed(int size, int step, @NotNull ToLongFunction<LongSequence> reducer) {
+        return windowed(size, step, false, reducer);
+    }
+
+    default LongSequence windowed(int size, @NotNull ToLongFunction<LongSequence> reducer) {
+        return windowed(size, 1, reducer);
+    }
+
+    default LongSequence windowed(int size, boolean partialWindows, @NotNull ToLongFunction<LongSequence> reducer) {
+        return windowed(size, 1, partialWindows, reducer);
     }
 
     private PrimitiveIterator.OfLong mergingIterator(@NotNull PrimitiveIterator.OfLong otherIterator,
@@ -297,7 +342,7 @@ public interface LongSequence extends LongReducable,
     }
 
     default long[] toArray() {
-        return longStream().toArray();
+        return stream().toArray();
     }
 
     default <R1, R2, R> R longsToTwo(@NotNull Function<? super LongSequence, ? extends R1> resultMapper1,

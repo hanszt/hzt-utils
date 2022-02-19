@@ -1,10 +1,8 @@
 package hzt.iterators;
 
-import hzt.iterables.primitives.LongIterable;
 import hzt.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 
@@ -55,35 +53,5 @@ public final class LongMultiMappingIterator implements PrimitiveIterator.OfLong 
             }
         }
         return true;
-    }
-
-    private static final class LongBuffer implements LongIterable {
-        private int index = 0;
-        private long[] array = new long[10];
-
-        private void add(long l) {
-            if (index >= array.length) {
-                array = Arrays.copyOf(array, array.length + 10);
-            }
-            array[index] = l;
-            index++;
-        }
-
-        @Override
-        public OfLong iterator() {
-            return new PrimitiveIterator.OfLong() {
-                int counter = 0;
-
-                @Override
-                public boolean hasNext() {
-                    return counter < index;
-                }
-
-                @Override
-                public long nextLong() {
-                    return array[counter++];
-                }
-            };
-        }
     }
 }

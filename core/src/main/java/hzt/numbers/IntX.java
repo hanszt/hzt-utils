@@ -5,6 +5,7 @@ import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unused")
@@ -66,7 +67,7 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return Integer.parseInt(s, radix);
     }
 
-    public static Predicate<Integer> multipleOf(int multiple) {
+    public static IntPredicate multipleOf(int multiple) {
         return i -> i % multiple == 0;
     }
 

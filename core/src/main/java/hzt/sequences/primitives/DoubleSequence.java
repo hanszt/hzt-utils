@@ -6,6 +6,7 @@ import hzt.iterables.primitives.DoubleReducable;
 import hzt.iterators.DoubleFilteringIterator;
 import hzt.iterators.DoubleGeneratorIterator;
 import hzt.iterators.DoubleMultiMappingIterator;
+import hzt.iterators.DoubleTakeWhileIterator;
 import hzt.iterators.PrimitiveIterators;
 import hzt.numbers.DoubleX;
 import hzt.sequences.Sequence;
@@ -106,7 +107,7 @@ public interface DoubleSequence extends DoubleReducable,
     }
 
     default DoubleSequence flatMap(DoubleFunction<? extends DoubleSequence> flatMapper) {
-        return DoubleSequence.of(doubleStream().flatMap(s -> flatMapper.apply(s).doubleStream()));
+        return DoubleSequence.of(stream().flatMap(s -> flatMapper.apply(s).stream()));
     }
 
     default DoubleSequence mapMulti(DoubleMapMultiConsumer mapMultiConsumer) {
@@ -143,27 +144,27 @@ public interface DoubleSequence extends DoubleReducable,
 
     @Override
     default DoubleSequence take(long n) {
-        return DoubleSequence.of(doubleStream().limit(n));
+        return DoubleSequence.of(stream().limit(n));
     }
 
     @Override
     default DoubleSequence takeWhile(@NotNull DoublePredicate predicate) {
-        return DoubleSequence.of(doubleStream().takeWhile(predicate));
+        return () -> DoubleTakeWhileIterator.of(iterator(), predicate);
     }
 
     @Override
     default DoubleSequence takeWhileInclusive(@NotNull DoublePredicate predicate) {
-       throw new UnsupportedOperationException();
+       return  () -> DoubleTakeWhileIterator.of(iterator(), predicate, true);
     }
 
     @Override
     default DoubleSequence skip(long n) {
-        return DoubleSequence.of(doubleStream().skip(n));
+        return DoubleSequence.of(stream().skip(n));
     }
 
     @Override
     default DoubleSequence skipWhile(@NotNull DoublePredicate predicate) {
-        return DoubleSequence.of(doubleStream().dropWhile(predicate));
+        return DoubleSequence.of(stream().dropWhile(predicate));
     }
 
     @Override
@@ -263,12 +264,25 @@ public interface DoubleSequence extends DoubleReducable,
         return DoubleSequence.of(boxed().zip(other, merger::applyAsDouble));
     }
 
-    default DoubleStream doubleStream() {
+    @Override
+    default DoubleSequence zipWithNext(@NotNull DoubleBinaryOperator merger) {
+        throw new UnsupportedOperationException();
+    }
+
+    default Sequence<DoubleSequence> windowed(int size, int step) {
+        throw new UnsupportedOperationException();
+    }
+
+    default DoubleStream stream() {
         return StreamSupport.doubleStream(spliterator(), false);
     }
 
+    default DoubleStream parallelStream() {
+        return StreamSupport.doubleStream(spliterator(), true);
+    }
+
     default double[] toArray() {
-        return doubleStream().toArray();
+        return stream().toArray();
     }
 
     default @NotNull DoubleStatistics stats(@NotNull DoublePredicate doublePredicate) {

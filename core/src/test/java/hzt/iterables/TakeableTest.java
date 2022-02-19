@@ -1,7 +1,7 @@
 package hzt.iterables;
 
-import hzt.collections.ListView;
-import hzt.collections.SetView;
+import hzt.collections.ListX;
+import hzt.collections.SetX;
 import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
@@ -19,7 +19,7 @@ class TakeableTest {
 
     @Test
     void testTake() {
-        final ListView<Museum> museumList = ListView.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final List<Museum> expected = museumList.stream().limit(3).collect(Collectors.toList());
 
@@ -32,7 +32,7 @@ class TakeableTest {
 
     @Test
     void testTakeWhile() {
-        final ListView<Museum> museumList = ListView.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final List<Museum> expected = new ArrayList<>();
         for (Museum m : museumList) {
@@ -42,7 +42,7 @@ class TakeableTest {
             expected.add(m);
         }
 
-        final ListView<Museum> actual = museumList.takeWhile(museum -> museum.getPaintings().size() < 3);
+        final ListX<Museum> actual = museumList.takeWhile(museum -> museum.getPaintings().size() < 3);
 
         It.println("actual = " + actual);
 
@@ -51,16 +51,16 @@ class TakeableTest {
 
     @Test
     void testTakeLastWhile() {
-        final ListView<Museum> museumList = ListView.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final String[] strings = "De sterrennacht, Het melkmeisje, Les Demoiselles d'Avignon, Meisje met de parel, Le Rêve, Meisje met de rode hoed, Guernica ".split(",");
 
-        final SetView<String> expected = ListView.of(strings).toSetViewOf(String::trim);
+        final SetX<String> expected = ListX.of(strings).toSetXOf(String::trim);
 
-        final SetView<String> actual = museumList
+        final SetX<String> actual = museumList
                 .flatMap(Museum::getPaintings)
                 .takeLastWhile(Painting::isInMuseum)
-                .toSetViewOf(Painting::name);
+                .toSetXOf(Painting::name);
 
         It.println("actual = " + actual);
 
@@ -69,12 +69,12 @@ class TakeableTest {
 
     @Test
     void testTakeWhileInclusive() {
-        ListView<Integer> list = ListView.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         list.forEach(It::println);
 
         final IterableX<Integer> takeWhileInclusive = list.takeWhileInclusive(i -> i != 5);
-        final ListView<Integer> takeWhile = list.takeWhile(i -> i != 5);
+        final ListX<Integer> takeWhile = list.takeWhile(i -> i != 5);
 
         It.println("integers = " + takeWhileInclusive);
 

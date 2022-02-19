@@ -18,11 +18,11 @@ class StatisticsTest {
         final var list = Sequence.generate(RANDOM::nextGaussian)
                 .take(1_000)
                 .map(d -> (int) (d * 100))
-                .toListView();
+                .toListX();
 
-        final var intRange = list.asIntRange(It::asInt);
-        final var longRange = intRange.asLongRange(It::asLong);
-        final var doubleRange = intRange.asDoubleRange(It::asDouble);
+        final var intRange = list.mapToInt(It::asInt);
+        final var longRange = intRange.mapToLong(It::asLong);
+        final var doubleRange = intRange.mapToDouble(It::asDouble);
 
         final var stats = intRange.stats();
 

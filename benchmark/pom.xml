@@ -33,6 +33,10 @@
       <artifactId>jmh-generator-annprocess</artifactId>
       <version>${jmh.version}</version>
     </dependency>
+    <dependency>
+      <groupId>net.mintern</groupId>
+      <artifactId>primitive</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

@@ -1,13 +1,13 @@
 package hzt.sequences;
 
 import hzt.PreConditions;
-import hzt.collections.ListView;
+import hzt.collections.ListX;
 import hzt.iterators.WindowedIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
-public class WindowedSequence<T> implements Sequence<ListView<T>> {
+public class WindowedSequence<T> implements Sequence<ListX<T>> {
 
     private final Sequence<T> upstream;
     private final int size;
@@ -36,7 +36,7 @@ public class WindowedSequence<T> implements Sequence<ListView<T>> {
 
     @NotNull
     @Override
-    public Iterator<ListView<T>> iterator() {
+    public Iterator<ListX<T>> iterator() {
         return WindowedIterator.of(upstream.iterator(), size, step, partialWindows);
     }
 }

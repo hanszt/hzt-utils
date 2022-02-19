@@ -1,6 +1,6 @@
 package hzt.numbers;
 
-import hzt.collections.ListView;
+import hzt.collections.ListX;
 import hzt.sequences.Sequence;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
@@ -123,12 +123,12 @@ public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>
         return of(super.remainder(divisor, mc));
     }
 
-    public ListView<BigDecimalX> divideAndRemainderX(BigDecimal divisor) {
-        return Sequence.of(super.divideAndRemainder(divisor)).map(BigDecimalX::of).toListView();
+    public ListX<BigDecimalX> divideAndRemainderX(BigDecimal divisor) {
+        return Sequence.of(super.divideAndRemainder(divisor)).map(BigDecimalX::of).toListX();
     }
 
-    public ListView<BigDecimalX> divideAndRemainderX(BigDecimal divisor, MathContext mc) {
-        return Sequence.of(super.divideAndRemainder(divisor, mc)).map(BigDecimalX::of).toListView();
+    public ListX<BigDecimalX> divideAndRemainderX(BigDecimal divisor, MathContext mc) {
+        return Sequence.of(super.divideAndRemainder(divisor, mc)).map(BigDecimalX::of).toListX();
     }
 
     @Override

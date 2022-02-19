@@ -1,6 +1,6 @@
 package hzt.numbers;
 
-import hzt.ranges.IntRange;
+import hzt.sequences.primitives.IntSequence;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,16 +22,16 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return new IntX(number.intValue());
     }
 
-    public IntRange downTo(int target) {
-        return target > integer ? IntRange.empty() : IntRange.of(integer, target - 1);
+    public IntSequence downTo(int target) {
+        return target > integer ? IntSequence.empty() : IntSequence.of(integer, target - 1);
     }
 
-    public IntRange upTo(int target) {
-        return target < integer ? IntRange.empty() : IntRange.closed(integer, target);
+    public IntSequence upTo(int target) {
+        return target < integer ? IntSequence.empty() : IntSequence.closed(integer, target);
     }
 
-    public IntRange until(int bound) {
-        return bound < integer ? IntRange.empty() : IntRange.of(integer, bound);
+    public IntSequence until(int bound) {
+        return bound < integer ? IntSequence.empty() : IntSequence.of(integer, bound);
     }
 
     public static String toString(int i, int radix) {
@@ -196,6 +196,10 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
 
     public static int compare(int x, int y) {
         return Integer.compare(x, y);
+    }
+
+    public static int compareReversed(int x, int y) {
+        return Integer.compare(y, x);
     }
 
     public static int compareUnsigned(int x, int y) {

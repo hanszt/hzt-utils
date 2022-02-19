@@ -1,190 +1,28 @@
 package hzt.ranges;
 
-import hzt.function.TriFunction;
-import hzt.iterables.primitive.IntIterable;
-import hzt.iterators.PrimitiveIterators;
-import hzt.numbers.IntX;
-import hzt.sequences.Sequence;
-import hzt.statistics.IntStatistics;
-import hzt.tuples.Pair;
-import hzt.tuples.Triple;
-import hzt.utils.It;
-import hzt.utils.Transformable;
-import org.jetbrains.annotations.NotNull;
+import hzt.progressions.IntProgression;
 
-import java.util.Optional;
-import java.util.Random;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
-import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
+public final class IntRange extends IntProgression implements ClosedRange<Integer> {
 
-@FunctionalInterface
-public interface IntRange extends IntIterable, NumberRange<Integer>, Sequence<Integer>, Transformable<IntRange> {
-
-    static IntRange empty() {
-        return IntRange.of(Sequence.empty());
+    private IntRange(int start, int endInclusive) {
+        super(start, endInclusive, 1);
     }
 
-    static IntRange of(Iterable<Integer> integers) {
-        return of(integers, It::asInt);
+    public static IntRange closed(int start, int endExclusive) {
+        return new IntRange(start, endExclusive - 1);
     }
 
-    static <T> IntRange of(Iterable<T> iterable, ToIntFunction<T> mapper) {
-        return () -> PrimitiveIterators.intIteratorOf(iterable.iterator(), mapper);
-    }
-
-    static IntRange of(int... array) {
-        return () -> PrimitiveIterators.intArrayIterator(array);
-    }
-
-    static IntRange of(IntStream stream) {
-        return stream::iterator;
-    }
-
-    static IntRange of (int start, int end) {
-        return of(start, end, 1);
-    }
-
-    static IntRange of(int start, int end, int step) {
-        return IntRange.of(Sequence.generate(start, i -> i + (start < end ? step : -step)).take(Math.abs(end - start)));
-    }
-
-    static IntX from(int start) {
-        return IntX.of(start);
-    }
-
-    static IntRange until(int end) {
-        return of(0, end);
-    }
-
-    static IntRange closed(int endInclusive) {
-        return closed(0, endInclusive);
-    }
-
-    static IntRange closed(int start, int endInclusive) {
-        return IntRange.of(Sequence.generate(start, i -> i + (start < endInclusive ? 1 : -1))
-                .take(Math.abs(endInclusive - start) + 1L));
-    }
-
-    default IntRange step(int step) {
-        return filter(IntX.multipleOf(step));
-    }
-
-    default int random() {
-        return toListView().random();
-    }
-
-    default Optional<Integer> findRandom() {
-        return toListView().findRandom();
-    }
-
-    default int random(Random random) {
-        return toListView().random(random);
-    }
-
-    default Optional<Integer> findRandom(Random random) {
-        return toListView().findRandom(random);
-    }
-
-    default @NotNull Integer min() {
-        return min(It::noFilter);
-    }
-
-    default @NotNull Integer min(Predicate<Integer> predicate) {
-        return filter(predicate).minOf(It::asInt);
-    }
-
-    default @NotNull Integer max() {
-        return max(It::noFilter);
-    }
-
-    default @NotNull Integer max(Predicate<Integer> predicate) {
-        return filter(predicate).maxOf(It::asInt);
-    }
-
-    default @NotNull Double average() {
-        return average(It::noFilter);
-    }
-
-    default @NotNull Double average(Predicate<Integer> predicate) {
-        return filter(predicate).averageOf(It::asLong);
-    }
-
-    default @NotNull Long sum() {
-        return sum(It::noFilter);
-    }
-
-    default @NotNull Long sum(Predicate<Integer> predicate) {
-        return filter(predicate).sumOfInts(It::asInt);
-    }
-
-    default @NotNull Double stdDev() {
-        return stdDev(It::noFilter);
-    }
-
-    default @NotNull Double stdDev(Predicate<Integer> predicate) {
-        return filter(predicate).statsOfLongs(It::asLong).getStandardDeviation();
-    }
-
-    default @NotNull IntStatistics stats() {
-        return stats(It::noFilter);
+    public static IntRange of(int start, int endInclusive) {
+        return new IntRange(start, endInclusive);
     }
 
     @Override
-    default @NotNull IntRange filter(@NotNull Predicate<Integer> predicate) {
-        return IntRange.of(Sequence.super.filter(predicate));
+    public Integer start() {
+        return getStart();
     }
 
     @Override
-    @NotNull
-    default IntRange onEach(@NotNull Consumer<? super Integer> consumer) {
-        return IntRange.of(Sequence.super.onEach(consumer));
-    }
-
-    default IntStream intStream() {
-        return StreamSupport.intStream(spliterator(), false);
-    }
-
-    default int[] toArray() {
-        return intStream().toArray();
-    }
-
-    @Override
-    default @NotNull IntStatistics stats(Predicate<Integer> predicate) {
-        return filter(predicate).statsOfInts(It::asInt);
-    }
-
-    default <R1, R2, R> R intsToTwo(@NotNull Function<? super IntRange, ? extends R1> resultMapper1,
-                                @NotNull Function<? super IntRange, ? extends R2> resultMapper2,
-                                @NotNull BiFunction<R1, R2, R> merger) {
-        return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
-    }
-
-    default <R1, R2> Pair<R1, R2> intsToTwo(@NotNull Function<? super IntRange, ? extends R1> resultMapper1,
-                                        @NotNull Function<? super IntRange, ? extends R2> resultMapper2) {
-        return intsToTwo(resultMapper1, resultMapper2, Pair::of);
-    }
-
-    default <R1, R2, R3, R> R intsToThree(@NotNull Function<? super IntRange, ? extends R1> resultMapper1,
-                                      @NotNull Function<? super IntRange, ? extends R2> resultMapper2,
-                                      @NotNull Function<? super IntRange, ? extends R3> resultMapper3,
-                                      @NotNull TriFunction<R1, R2, R3, R> merger) {
-        return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this), resultMapper3.apply(this));
-    }
-
-    default <R1, R2, R3> Triple<R1, R2, R3> intsToThree(@NotNull Function<? super IntRange, ? extends R1> resultMapper1,
-                                                    @NotNull Function<? super IntRange, ? extends R2> resultMapper2,
-                                                    @NotNull Function<? super IntRange, ? extends R3> resultMapper3) {
-        return intsToThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
-    }
-
-    @Override
-    @NotNull
-    default IntRange get() {
-        return this;
+    public Integer endInclusive() {
+        return getEndInclusive();
     }
 }

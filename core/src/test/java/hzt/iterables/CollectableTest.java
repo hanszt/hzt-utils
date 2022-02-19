@@ -1,9 +1,9 @@
 package hzt.iterables;
 
-import hzt.collections.ListView;
+import hzt.collections.ListX;
 import hzt.collectors.CollectorsX;
 import hzt.numbers.IntX;
-import hzt.ranges.IntRange;
+import hzt.sequences.primitives.IntSequence;
 import hzt.sequences.Sequence;
 import hzt.tuples.Triple;
 import hzt.utils.It;
@@ -36,14 +36,14 @@ class CollectableTest {
 
     @Test
     void testTeeingYieldsTwoValuesWhileOnlyGoingThroughPipelineOnce() {
-        final var integers = ListView.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
 
         final var toTwoCounter = new AtomicInteger();
 
         final var pair = integers.asSequence()
                 .onEach(i -> toTwoCounter.incrementAndGet())
-                .asIntRange(It::asInt)
-                .intsToTwo(IntRange::sum, IntRange::average);
+                .mapToInt(It::asInt)
+                .intsToTwo(IntSequence::sum, IntSequence::average);
 
         final var collectorCounter = new AtomicInteger();
 
@@ -60,14 +60,14 @@ class CollectableTest {
 
     @Test
     void testBranchingYieldsThreeValuesWhileOnlyGoingThroughPipelineOnce() {
-        final var integers = ListView.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
 
         final var toThreeCounter = new AtomicInteger();
 
         final var triple = integers.asSequence()
                 .onEach(i -> toThreeCounter.incrementAndGet())
-                .asIntRange(It::asInt)
-                .intsToThree(IntRange::sum, IntRange::average, IntRange::stdDev);
+                .mapToInt(It::asInt)
+                .intsToThree(IntSequence::sum, IntSequence::average, IntSequence::stdDev);
 
         final var branchingCounter = new AtomicInteger();
 
@@ -102,7 +102,7 @@ class CollectableTest {
     @Test
     void testBranchingPaintingDataToThreeValues() {
         //arrange
-        final ListView<Painting> paintingList = ListView.of(TestSampleGenerator.createPaintingList());
+        final ListX<Painting> paintingList = ListX.of(TestSampleGenerator.createPaintingList());
 
         final Triple<Map<Boolean, List<Painter>>, IntSummaryStatistics, Long> expected = paintingList.stream()
                 .collect(branching(
@@ -128,20 +128,21 @@ class CollectableTest {
 
     @Test
     void testBranchSequenceToThree() {
-        final var triple = IntRange.from(0).until(100)
-                .toThree(Sequence::toList, s -> s.filter(IntX::isEven), s -> s.statsOfInts(It::self));
+        final var triple = IntSequence.from(0).until(100)
+                .intsToThree(IntSequence::toArray, s -> s.filter(IntX::isEven), IntSequence::stats);
 
         assertAll(
-                () -> assertEquals(100, triple.first().size()),
-                () -> assertEquals(Year.of(0), triple.second().map(Year::of).first()),
+                () -> assertEquals(100, triple.first().length),
+                () -> assertEquals(Year.of(0), triple.second().boxed().map(Year::of).first()),
                 () -> assertEquals(49.5, triple.third().getAverage())
         );
     }
 
     @Test
     void testBranchSequenceToFour() {
-        final var actual = IntRange.from(0).until(100)
+        final var actual = IntSequence.from(0).until(100)
                 .filter(It::noFilter)
+                .boxed()
                 .toFour(Sequence::count,
                         s -> s.minOf(It::self),
                         s -> s.maxOf(It::self),
@@ -232,8 +233,8 @@ class CollectableTest {
         final var averages = Sequence.of(museums)
                 .map(Museum::getPaintings)
                 .map(Sequence::of)
-                .map(s -> s.asIntRange(Painting::ageInYears))
-                .toDoubleArray(IntRange::average);
+                .map(s -> s.mapToInt(Painting::ageInYears))
+                .toDoubleArray(IntSequence::average);
 
         assertArrayEquals(new double[]{25.0, 135.5, 359.3333333333333, 96.66666666666667}, averages);
     }

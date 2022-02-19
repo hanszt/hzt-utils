@@ -12,7 +12,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
 
-final class TreeMapX<K, V, R extends Comparable<R>> implements SortedMutableMap<K, V> {
+final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMutableMapX<K, V> {
 
     private final NavigableMap<K, V> map;
 
@@ -97,20 +97,20 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements SortedMutableMap<
 
     @NotNull
     @Override
-    public SortedMutableMap<K, V> subMap(K fromKey, K toKey) {
-        return SortedMutableMap.ofSortedMap(map.subMap(fromKey, toKey));
+    public SortedMutableMapX<K, V> subMap(K fromKey, K toKey) {
+        return SortedMutableMapX.ofSortedMap(map.subMap(fromKey, toKey));
     }
 
     @NotNull
     @Override
-    public SortedMutableMap<K, V> headMap(K toKey) {
-        return SortedMutableMap.ofSortedMap(map.headMap(toKey));
+    public SortedMutableMapX<K, V> headMap(K toKey) {
+        return SortedMutableMapX.ofSortedMap(map.headMap(toKey));
     }
 
     @NotNull
     @Override
-    public SortedMutableMap<K, V> tailMap(K fromKey) {
-        return SortedMutableMap.ofSortedMap(map.tailMap(fromKey));
+    public SortedMutableMapX<K, V> tailMap(K fromKey) {
+        return SortedMutableMapX.ofSortedMap(map.tailMap(fromKey));
     }
 
     @Override
@@ -134,18 +134,18 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements SortedMutableMap<
     }
 
     @Override
-    public @NotNull MutableSet<K> keySet() {
-        return MutableLinkedSet.of(map.keySet());
+    public @NotNull MutableSetX<K> keySet() {
+        return MutableLinkedSetX.of(map.keySet());
     }
 
     @Override
-    public @NotNull MutableList<V> values() {
-        return MutableList.of(map.values());
+    public @NotNull MutableListX<V> values() {
+        return MutableListX.of(map.values());
     }
 
     @Override
-    public @NotNull MutableSet<Entry<K, V>> entrySet() {
-        return MutableSet.of(map.entrySet());
+    public @NotNull MutableSetX<Entry<K, V>> entrySet() {
+        return MutableSetX.of(map.entrySet());
     }
     
     @Override
@@ -209,33 +209,33 @@ final class TreeMapX<K, V, R extends Comparable<R>> implements SortedMutableMap<
     }
 
     @Override
-    public SortedMutableMap<K, V> descendingMap() {
-        return SortedMutableMap.ofSortedMap(map.descendingMap());
+    public SortedMutableMapX<K, V> descendingMap() {
+        return SortedMutableMapX.ofSortedMap(map.descendingMap());
     }
 
     @Override
-    public SortedMutableSet<K> navigableKeySet() {
-        return SortedMutableSet.of(map.navigableKeySet());
+    public SortedMutableSetX<K> navigableKeySet() {
+        return SortedMutableSetX.of(map.navigableKeySet());
     }
 
     @Override
-    public SortedMutableSet<K> descendingKeySet() {
-        return SortedMutableSet.of(map.descendingKeySet());
+    public SortedMutableSetX<K> descendingKeySet() {
+        return SortedMutableSetX.of(map.descendingKeySet());
     }
 
     @Override
-    public SortedMutableMap<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
-        return SortedMutableMap.ofSortedMap(map.subMap(fromKey, fromInclusive, toKey, toInclusive));
+    public SortedMutableMapX<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
+        return SortedMutableMapX.ofSortedMap(map.subMap(fromKey, fromInclusive, toKey, toInclusive));
     }
 
     @Override
-    public SortedMutableMap<K, V> headMap(K toKey, boolean inclusive) {
-        return SortedMutableMap.ofSortedMap(map.headMap(toKey, inclusive));
+    public SortedMutableMapX<K, V> headMap(K toKey, boolean inclusive) {
+        return SortedMutableMapX.ofSortedMap(map.headMap(toKey, inclusive));
     }
 
     @Override
-    public SortedMutableMap<K, V> tailMap(K fromKey, boolean inclusive) {
-        return SortedMutableMap.ofSortedMap(map.tailMap(fromKey, inclusive));
+    public SortedMutableMapX<K, V> tailMap(K fromKey, boolean inclusive) {
+        return SortedMutableMapX.ofSortedMap(map.tailMap(fromKey, inclusive));
     }
 
     @Override

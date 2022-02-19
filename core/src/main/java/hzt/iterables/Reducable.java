@@ -3,10 +3,7 @@ package hzt.iterables;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
@@ -133,18 +130,12 @@ public interface Reducable<T> extends Iterable<T> {
         return lastOf(It::self);
     }
 
-    default <R> @NotNull R lastOf(@NotNull Function<? super T, ? extends R> mapper) {
-        final Iterator<T> iterator = iterator();
-        if (!iterator.hasNext()) {
-            throw IterableXHelper.noValuePresentException();
-        } else if (this instanceof List) {
-            //noinspection unchecked
-            return IterableXHelper.findLastIfInstanceOfList(Objects::nonNull, (List<T>) this).map(mapper)
-                    .orElseThrow(IllegalStateException::new);
-        } else {
-            return IterableXHelper.findLastIfUnknownIterable(Objects::nonNull, iterator).map(mapper)
-                    .orElseThrow(IllegalStateException::new);
-        }
+    default @NotNull T last(Predicate<T> predicate) {
+        return lastOf(It::self);
+    }
+
+    default <R> @NotNull R lastOf(@NotNull Function<? super T, ? extends R> mapper) {;
+        return findLastOf(mapper).orElseThrow();
     }
 
     default Optional<T> findLast() {
@@ -163,8 +154,8 @@ public interface Reducable<T> extends Iterable<T> {
         return IterableReductions.findLast(this, predicate);
     }
 
-    default <R> @NotNull Optional<R> findLastOf(@NotNull Function<T, R> mapper) {
-        return IterableReductions.findLastOf(this, mapper);
+    default <R> @NotNull Optional<R> findLastOf(@NotNull Function<? super T, ? extends R> mapper) {
+        return IterableReductions.findLastOf(this).map(mapper);
     }
 
     default boolean any(@NotNull Predicate<T> predicate) {

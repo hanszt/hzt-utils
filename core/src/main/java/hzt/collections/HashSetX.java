@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 
-final class HashSetX<E> implements MutableSet<E> {
+final class HashSetX<E> implements MutableSetX<E> {
 
     private final Set<E> set;
 

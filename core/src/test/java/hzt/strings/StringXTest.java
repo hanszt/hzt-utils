@@ -1,7 +1,7 @@
 package hzt.strings;
 
-import hzt.collections.ListView;
-import hzt.collections.MutableList;
+import hzt.collections.ListX;
+import hzt.collections.MutableListX;
 import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
@@ -31,10 +31,10 @@ class StringXTest {
                 .map(List::size)
                 .collect(Collectors.toList());
 
-        final ListView<Integer> characterCounts = StringX.of(hallo)
+        final ListX<Integer> characterCounts = StringX.of(hallo)
                 .group()
                 .values()
-                .map(MutableList::size);
+                .map(MutableListX::size);
 
         It.println("hallo = " + characterCounts);
 
@@ -55,8 +55,8 @@ class StringXTest {
     }
 
     @Test
-    void testStringXToListViewThenFirstAndLast() {
-        final var characters = StringX.of("Hello").toListView();
+    void testStringXToListXThenFirstAndLast() {
+        final var characters = StringX.of("Hello").toListX();
 
         assertAll(
                 () -> assertEquals('H', characters.first()),
@@ -114,7 +114,7 @@ class StringXTest {
             "Avida Dollars ->  Salvador Dali",
             "Altissimvm planetam tergeminvm observavi -> Salve vmbistinevm geminatvm Martia proles"})
     void testStringIsAnagram(String string) {
-        final ListView<String> split = StringX.of(string).split(" -> ");
+        final ListX<String> split = StringX.of(string).split(" -> ");
         final String string1 = split.first();
         final String string2 = split.last();
 
@@ -129,7 +129,7 @@ class StringXTest {
             "Avida Dollars ->  Salvador Dalis",
             "Altissimum planetam tergeminum observavi -> Salve umbistineum geminatum Martia proles"})
     void testStringIsNotAnagram(String string) {
-        final ListView<String> split = StringX.of(string).split(" -> ");
+        final ListX<String> split = StringX.of(string).split(" -> ");
         final String string1 = split.first();
         final String string2 = split.last();
 

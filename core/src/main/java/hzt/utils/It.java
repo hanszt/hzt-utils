@@ -39,6 +39,18 @@ public final class It {
         return i;
     }
 
+    public static int doubleAsInt(double d) {
+        return (int) d;
+    }
+
+    public static int longAsInt(long l) {
+        return (int) l;
+    }
+
+    public static long doubleAsLong(double d) {
+        return (long) d;
+    }
+
     public static long asLong(long l) {
         return l;
     }
@@ -47,11 +59,23 @@ public final class It {
         return d;
     }
 
-    public static <T> boolean noFilter(@SuppressWarnings("all") T t) {
+    public static <T> boolean noFilter(@SuppressWarnings("unused") T t) {
         return true;
     }
 
-    public static <T> boolean blockingFilter(@SuppressWarnings("all") T t) {
+    public static boolean noIntFilter(@SuppressWarnings("unused") int t) {
+        return true;
+    }
+
+    public static boolean noLongFilter(@SuppressWarnings("unused") long t) {
+        return true;
+    }
+
+    public static boolean noDoubleFilter(@SuppressWarnings("unused") double t) {
+        return true;
+    }
+
+    public static <T> boolean blockingFilter(@SuppressWarnings("unused") T t) {
         return false;
     }
 

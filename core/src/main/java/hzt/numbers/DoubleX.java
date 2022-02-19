@@ -129,6 +129,10 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
         return Double.compare(d1, d2);
     }
 
+    public static int compareReversed(double d1, double d2) {
+        return Double.compare(d2, d1);
+    }
+
     public static double sum(double a, double b) {
         return Double.sum(a, b);
     }

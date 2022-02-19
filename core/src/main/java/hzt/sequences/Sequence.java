@@ -1,7 +1,7 @@
 package hzt.sequences;
 
 import hzt.PreConditions;
-import hzt.collections.ListView;
+import hzt.collections.ListX;
 import hzt.function.QuadFunction;
 import hzt.function.TriFunction;
 import hzt.iterables.IterableX;
@@ -12,15 +12,16 @@ import hzt.iterators.MultiMappingIterator;
 import hzt.iterators.PrimitiveIterators;
 import hzt.iterators.SkipWhileIterator;
 import hzt.iterators.TakeWhileIterator;
-import hzt.ranges.DoubleRange;
-import hzt.ranges.IntRange;
-import hzt.ranges.LongRange;
+import hzt.sequences.primitives.DoubleSequence;
+import hzt.sequences.primitives.IntSequence;
+import hzt.sequences.primitives.LongSequence;
 import hzt.strings.StringX;
 import hzt.tuples.IndexedValue;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -73,23 +74,19 @@ public interface Sequence<T> extends IterableX<T> {
         return () -> ArrayIterator.of(values);
     }
 
-    static Sequence<Boolean> ofBools(boolean... values) {
-        return () -> PrimitiveIterators.booleanArrayIterator(values);
-    }
-
-    static <T> Sequence<T> ofNullable(T value) {
+    static <T> Sequence<T> ofNullable(@Nullable T value) {
         return value != null ? Sequence.of(value) : new EmptySequence<>();
     }
 
-    static <T> Sequence<T> generate(T seedValue, UnaryOperator<T> nextFunction) {
+    static <T> Sequence<T> generate(@Nullable T seedValue, @NotNull UnaryOperator<T> nextFunction) {
         return seedValue == null ? new EmptySequence<>() : (() -> GeneratorIterator.of(() -> seedValue, nextFunction));
     }
 
-    static <T> Sequence<T> generate(Supplier<T> nextFunction) {
+    static <T> Sequence<T> generate(@NotNull Supplier<T> nextFunction) {
         return () -> GeneratorIterator.of(nextFunction, t -> nextFunction.get());
     }
 
-    static <T> Sequence<T> generate(Supplier<T> seedFunction, UnaryOperator<T> nextFunction) {
+    static <T> Sequence<T> generate(@NotNull Supplier<T> seedFunction, @NotNull UnaryOperator<T> nextFunction) {
         return () -> GeneratorIterator.of(seedFunction, nextFunction);
     }
 
@@ -187,40 +184,40 @@ public interface Sequence<T> extends IterableX<T> {
         return new DistinctSequence<>(this, selector);
     }
 
-    default Sequence<ListView<T>> chunked(int size) {
+    default Sequence<ListX<T>> chunked(int size) {
         return windowed(size, size, true);
     }
 
-    default <R> Sequence<R> chunked(int size, @NotNull Function<? super ListView<T>, ? extends R> transform) {
+    default <R> Sequence<R> chunked(int size, @NotNull Function<? super ListX<T>, ? extends R> transform) {
         return windowed(size, size, true).map(transform);
     }
 
-    default Sequence<ListView<T>> windowed(int size) {
+    default Sequence<ListX<T>> windowed(int size) {
         return windowed(size, 1);
     }
 
-    default <R> Sequence<R> windowed(int size, @NotNull Function<? super ListView<T>, ? extends R> transform) {
+    default <R> Sequence<R> windowed(int size, @NotNull Function<? super ListX<T>, ? extends R> transform) {
         return windowed(size, 1).map(transform);
     }
 
-    default Sequence<ListView<T>> windowed(int size, int step) {
+    default Sequence<ListX<T>> windowed(int size, int step) {
         return windowed(size, step, false);
     }
 
-    default <R> Sequence<R> windowed(int size, int step, @NotNull Function<? super ListView<T>, ? extends R> transform) {
+    default <R> Sequence<R> windowed(int size, int step, @NotNull Function<? super ListX<T>, ? extends R> transform) {
         return windowed(size, step, false).map(transform);
     }
 
-    default Sequence<ListView<T>> windowed(int size, boolean partialWindows) {
+    default Sequence<ListX<T>> windowed(int size, boolean partialWindows) {
         return windowed(size, 1, partialWindows);
     }
 
-    default Sequence<ListView<T>> windowed(int size, int step, boolean partialWindows) {
+    default Sequence<ListX<T>> windowed(int size, int step, boolean partialWindows) {
         return windowed(size, step, partialWindows, It::self);
     }
 
     default <R> Sequence<R> windowed(int size, int step, boolean partialWindows,
-                                     @NotNull Function<? super ListView<T>, R> transform) {
+                                     @NotNull Function<? super ListX<T>, R> transform) {
         return new WindowedSequence<>(this, size, step, partialWindows).map(transform);
     }
 
@@ -296,7 +293,7 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default <R extends Comparable<R>> Sequence<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Sequence<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
         return Sequence.of(IterableX.super.sortedBy(selector));
     }
 
@@ -311,13 +308,8 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default <R extends Comparable<R>> Sequence<T> sortedByDescending(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Sequence<T> sortedByDescending(@NotNull Function<? super T, ? extends R> selector) {
         return Sequence.of(IterableX.super.sortedByDescending(selector));
-    }
-
-    @Override
-    default Sequence<T> shuffled() {
-        return Sequence.of(IterableX.super.shuffled());
     }
 
     default <K, V> EntrySequence<K, V> asEntrySequence(Function<T, K> keyMapper, Function<T, V> valueMapper) {
@@ -370,17 +362,17 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default IntRange asIntRange(@NotNull ToIntFunction<T> toIntMapper) {
+    default IntSequence mapToInt(@NotNull ToIntFunction<T> toIntMapper) {
         return () -> PrimitiveIterators.intIteratorOf(iterator(), toIntMapper);
     }
 
     @Override
-    default LongRange asLongRange(@NotNull ToLongFunction<T> toLongMapper) {
+    default LongSequence mapToLong(@NotNull ToLongFunction<T> toLongMapper) {
         return () -> PrimitiveIterators.longIteratorOf(iterator(), toLongMapper);
     }
 
     @Override
-    default DoubleRange asDoubleRange(@NotNull ToDoubleFunction<T> toDoubleMapper) {
+    default DoubleSequence mapToDouble(@NotNull ToDoubleFunction<T> toDoubleMapper) {
         return () -> PrimitiveIterators.doubleIteratorOf(iterator(), toDoubleMapper);
     }
 

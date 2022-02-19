@@ -1,14 +1,15 @@
 package hzt.sequences;
 
-import hzt.collections.LinkedSet;
-import hzt.collections.ListView;
-import hzt.collections.MapView;
-import hzt.collections.MutableList;
-import hzt.collections.SetView;
+import hzt.collections.LinkedSetX;
+import hzt.collections.ListX;
+import hzt.collections.MapX;
+import hzt.collections.MutableListX;
+import hzt.collections.SetX;
 import hzt.numbers.IntX;
 import hzt.numbers.LongX;
 import hzt.ranges.IntRange;
-import hzt.ranges.LongRange;
+import hzt.sequences.primitives.IntSequence;
+import hzt.sequences.primitives.LongSequence;
 import hzt.strings.StringX;
 import hzt.test.Generator;
 import hzt.utils.It;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
 import java.util.ArrayDeque;
@@ -40,7 +42,7 @@ class SequenceTest {
 
     @Test
     void testSimpleStreamWithMapYieldsIteratorWithNext() {
-        ListView<String> list = ListView.of("Hallo", "dit", "is", "een", "test");
+        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
         final Sequence<Integer> sequence = Sequence.of(list)
                 .map(SequenceTest::lengthMappingNotCalledWhenNotConsumed);
 
@@ -54,7 +56,7 @@ class SequenceTest {
 
     @Test
     void testMapReduce() {
-        ListView<String> list = ListView.of("Hallo", "dit", "is", "een", "test");
+        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
         final double sum = Sequence.of(list)
                 .map(String::length)
                 .map(Double::valueOf)
@@ -66,7 +68,7 @@ class SequenceTest {
 
     @Test
     void testSimpleStreamWithFilterYieldsIteratorWithNext() {
-        final ListView<Integer> list = ListView.of(1, 2, 3, 4, 5, 6);
+        final ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6);
         final Sequence<Integer> sequence = Sequence.of(list)
                 .filter(SequenceTest::filterNotCalledWhenNotConsumed);
 
@@ -80,7 +82,7 @@ class SequenceTest {
 
     @Test
     void testFilterReduce() {
-        ListView<String> list = ListView.of("Hallo", "dit", "is", "een", "test");
+        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
         final int sum = Sequence.of(list)
                 .map(String::length)
                 .filter(l -> l > 3)
@@ -92,7 +94,7 @@ class SequenceTest {
 
     @Test
     void testMapFilterReduce() {
-        ListView<String> list = ListView.of("Hallo", "dit", "is", "een", "test");
+        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
         final double sum = Sequence.of(list)
                 .map(String::length)
                 .map(Double::valueOf)
@@ -104,7 +106,7 @@ class SequenceTest {
 
     @Test
     void testFilterIndexed() {
-        ListView<String> list = ListView.of("Hallo", "dit", "is", "een", "test");
+        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
 
         final var sum = Sequence.of(list)
                 .map(String::length)
@@ -116,21 +118,21 @@ class SequenceTest {
 
     @Test
     void testMapNotNull() {
-        var list = ListView.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
+        var list = ListX.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
 
         final var sum = Sequence.of(list)
                 .mapNotNull(BankAccount::getBalance)
-                .toListView();
+                .toListX();
 
         assertFalse(sum.contains(null));
     }
 
     @Test
     void testMapFilterReduceToIntArray() {
-        ListView<String> list = ListView.of("Hallo", "dit", "is", "een", "test");
+        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
 
         final int[] result = list
-                .asIntRange(String::length)
+                .mapToInt(String::length)
                 .filter(l -> l > 3)
                 .toArray();
 
@@ -139,67 +141,67 @@ class SequenceTest {
 
     @Test
     void testMapFilterReduceToList() {
-        ListView<String> list = ListView.of("Hallo", "dit", "is", "een", "test");
-        final ListView<Integer> result = list.asSequence()
+        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final ListX<Integer> result = list.asSequence()
                 .map(String::length)
                 .filter(l -> l > 3)
-                .toListView();
+                .toListX();
 
-        assertEquals(ListView.of(5, 4), result);
+        assertEquals(ListX.of(5, 4), result);
     }
 
     @Test
     void testMapFilterReduceToSet() {
-        var list = ListView.of("Hallo", "dit", "is", "een", "test");
+        var list = ListX.of("Hallo", "dit", "is", "een", "test");
         final var result = list.asSequence()
                 .map(String::length)
-                .toSetView();
+                .toSetX();
 
-        assertEquals(SetView.of(2, 3, 4, 5), result);
+        assertEquals(SetX.of(2, 3, 4, 5), result);
     }
 
     @Test
     void testFlatMapToList() {
-        final ListView<Iterable<String>> list = ListView.of(ListView.of("Hallo", "dit"), SetView.of("is", "een"),
+        final ListX<Iterable<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
                 new ArrayDeque<>(Collections.singleton("test")));
 
         final var result = list.asSequence()
                 .flatMap(It::self)
                 .filter(s -> s.length() > 3)
                 .filterNot(String::isEmpty)
-                .toListView();
+                .toListX();
 
         It.println("result = " + result);
 
-        assertIterableEquals(ListView.of("Hallo", "test"), result);
+        assertIterableEquals(ListX.of("Hallo", "test"), result);
     }
 
     @Test
     void testMapMultiToList() {
-        final ListView<Iterable<String>> list = ListView.of(ListView.of("Hallo", "dit"), SetView.of("is", "een"),
+        final ListX<Iterable<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
                 new ArrayDeque<>(Collections.singleton("test")));
 
         final var result = list.asSequence()
                 .<String>mapMulti(Iterable::forEach)
                 .filter(s -> s.length() > 3)
                 .filterNot(String::isEmpty)
-                .toListView();
+                .toListX();
 
         It.println("result = " + result);
 
-        assertEquals(ListView.of("Hallo", "test"), result);
+        assertEquals(ListX.of("Hallo", "test"), result);
     }
 
     @Test
     void testGenerateWindowedThenMapMultiToList() {
-        MutableList<ListView<Integer>> windows = MutableList.empty();
+        MutableListX<ListX<Integer>> windows = MutableListX.empty();
 
         final var result = Sequence.generate(0, i -> ++i)
                 .windowed(8, 3)
                 .onEach(windows::add)
                 .takeWhile(s -> s.sumOfInts(It::asInt) < 1_000_000)
                 .<Integer>mapMulti(Iterable::forEach)
-                .toListView();
+                .toListX();
 
         windows.filterIndexed((i, v) -> IntX.multipleOf(10_000).test(i)).forEach(It::println);
 
@@ -220,7 +222,7 @@ class SequenceTest {
                 .flatMap(Museum::getPaintings)
                 .collect(Collectors.groupingBy(Painting::painter));
 
-        final MapView<Painter, MutableList<Painting>> actual2 = Sequence.of(museumList)
+        final MapX<Painter, MutableListX<Painting>> actual2 = Sequence.of(museumList)
                 .flatMap(Museum::getPaintings)
                 .groupBy(Painting::painter);
 
@@ -245,15 +247,15 @@ class SequenceTest {
         final var map = Sequence.of("hallo", "test")
                 .map(String::chars)
                 .flatMapStream(IntStream::boxed)
-                .transform(this::toFilteredMapView);
+                .transform(this::toFilteredMapX);
 
-        assertEquals(LinkedSet.of(115, 116, 101, 104, 108, 111), map.keySet());
+        assertEquals(LinkedSetX.of(115, 116, 101, 104, 108, 111), map.keySet());
     }
 
-    private MapView<Integer, String> toFilteredMapView(Sequence<Integer> sequence) {
+    private MapX<Integer, String> toFilteredMapX(Sequence<Integer> sequence) {
         return sequence.associateWith(String::valueOf)
                 .filterValues(s -> s.startsWith("1"))
-                .toMapView();
+                .toMapX();
     }
 
     @Test
@@ -264,50 +266,51 @@ class SequenceTest {
                 .take(12)
                 .map(Long::intValue)
                 .onEach(It::println)
-                .toListView();
+                .toListX();
 
         assertEquals(12, strings.size());
     }
 
     @Test
     void testLargeSequence() {
-        final ListView<BigDecimal> bigDecimals = IntRange.of(0, 100_000)
+        final ListX<BigDecimal> bigDecimals = IntSequence.of(0, 100_000)
                 .filter(IntX::isEven)
+                .boxed()
                 .map(BigDecimal::valueOf)
                 .sortedDescending()
-                .toListView();
+                .toListX();
 
         assertEquals(50_000, bigDecimals.size());
     }
 
     @Test
     void testTakeWhile() {
-        final ListView<String> strings = Sequence.generate(0, i -> ++i)
+        final ListX<String> strings = Sequence.generate(0, i -> ++i)
                 .takeWhile(i -> i < 10)
                 .filter(LongX::isEven)
                 .onEach(It::println)
                 .map(String::valueOf)
                 .map(String::trim)
-                .toListView();
+                .toListX();
 
         assertEquals(5, strings.size());
     }
 
     @Test
     void testTakeWhileInclusive() {
-        final ListView<String> strings = Sequence.generate(1, i -> i + 2)
+        final ListX<String> strings = Sequence.generate(1, i -> i + 2)
                 .map(String::valueOf)
                 .takeWhileInclusive(s -> !s.contains("0"))
                 .onEach(It::println)
                 .map(String::trim)
-                .toListView();
+                .toListX();
 
         assertEquals(51, strings.size());
     }
 
     @Test
     void testSkipWhile() {
-        ListView<Integer> list = ListView.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         final var integers = list.asSequence()
                 .skipWhile(i -> i != 5)
@@ -320,7 +323,7 @@ class SequenceTest {
 
     @Test
     void testSkipWhileInclusive() {
-        ListView<Integer> list = ListView.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         final var integers = list.asSequence()
                 .skipWhileInclusive(i -> i != 5)
@@ -335,28 +338,28 @@ class SequenceTest {
     void testRange() {
         assertArrayEquals(
                 IntStream.range(5, 10).toArray(),
-                IntRange.of(5, 10).toIntArray(It::asInt));
+                IntSequence.of(5, 10).toArray());
     }
 
     @Test
     void testRangeWithInterval() {
         assertArrayEquals(
                 LongStream.range(5, 10).filter(LongX::isOdd).toArray(),
-                LongRange.of(5, 10, 2).toLongArray(It::asLong));
+                LongSequence.of(5, 10, 2).toArray());
     }
 
     @Test
     void testRangeClosed() {
         assertArrayEquals(
                 IntStream.rangeClosed(5, 10).toArray(),
-                IntRange.closed(5, 10).toIntArray(It::asInt));
+                IntSequence.closed(5, 10).toArray());
     }
 
     @Test
     void testIterateRandomWithinBound() {
-        final ListView<Integer> integers = ListView.of(1, 2, 3, 4, 5);
+        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5);
 
-        final MapView<Integer, MutableList<Integer>> group = Sequence
+        final MapX<Integer, MutableListX<Integer>> group = Sequence
                 .generate(integers::random)
                 .take(10_000_000)
                 .group();
@@ -365,7 +368,7 @@ class SequenceTest {
 
         assertAll(
                 () -> assertEquals(integers.size(), group.size()),
-                () -> group.values().forEach(ListView::isNotEmpty, Assertions::assertTrue)
+                () -> group.values().forEach(ListX::isNotEmpty, Assertions::assertTrue)
         );
     }
 
@@ -386,76 +389,81 @@ class SequenceTest {
 
     @Test
     void testWindowedThrowsExceptionWhenStepSizeNegative() {
-        final var range = IntRange.of(0, 9);
-        assertThrows(IllegalArgumentException.class, () -> range.windowed(-4));
+        final var integers = IntSequence.of(0, 9).boxed();
+        assertThrows(IllegalArgumentException.class, () -> integers.windowed(-4));
     }
 
     @Test
     void testWindowedStepGreaterThanWindowSizeWithPartialWindow() {
-        final var windows = IntRange.of(0, 98)
+        final var windows = IntSequence.of(0, 98)
+                .boxed()
                 .windowed(5, 6, true)
-                .toListView();
+                .toListX();
 
         It.println("windows = " + windows);
 
         new HashMap<>(0);
 
         assertAll(
-                () -> assertEquals(ListView.of(0, 1, 2, 3, 4), windows.first()),
-                () -> assertEquals(ListView.of(96, 97), windows.last())
+                () -> assertEquals(ListX.of(0, 1, 2, 3, 4), windows.first()),
+                () -> assertEquals(ListX.of(96, 97), windows.last())
         );
     }
 
     @Test
     void testWindowedStepGreaterThanWindowSizeNoPartialWindow() {
-        final var windows = IntRange.of(0, 98)
+        final var windows = IntSequence.of(0, 98)
+                .boxed()
                 .windowed(5, 6)
-                .toListView();
+                .toListX();
 
         It.println("windows = " + windows);
 
         assertAll(
                 () -> assertEquals(16, windows.size()),
-                () -> assertEquals(ListView.of(0, 1, 2, 3, 4), windows.first()),
-                () -> assertEquals(ListView.of(90, 91, 92, 93, 94), windows.last())
+                () -> assertEquals(ListX.of(0, 1, 2, 3, 4), windows.first()),
+                () -> assertEquals(ListX.of(90, 91, 92, 93, 94), windows.last())
         );
     }
 
     @Test
     void testWindowedStepSmallerThanWindowSizeWithPartialWindow() {
-        final var windows = IntRange.closed(0, 10)
+        final var windows = IntSequence.closed(0, 10)
+                .boxed()
                 .windowed(5, 2, true)
-                .toListView();
+                .toListX();
 
         It.println("windows = " + windows);
 
         assertAll(
                 () -> assertEquals(6, windows.size()),
-                () -> assertEquals(ListView.of(0, 1, 2, 3, 4), windows.first()),
-                () -> assertEquals(ListView.of(10), windows.last())
+                () -> assertEquals(ListX.of(0, 1, 2, 3, 4), windows.first()),
+                () -> assertEquals(ListX.of(10), windows.last())
         );
     }
 
     @Test
     void testWindowedStepSmallerThanWindowSizeNoPartialWindow() {
-        final var windows = IntRange.of(0, 9)
+        final var windows = IntSequence.of(0, 9)
+                .boxed()
                 .windowed(4, 2)
-                .toListView();
+                .toListX();
 
         It.println("windows = " + windows);
 
         assertAll(
                 () -> assertEquals(3, windows.size()),
-                () -> assertEquals(ListView.of(0, 1, 2, 3), windows.first()),
-                () -> assertEquals(ListView.of(4, 5, 6, 7), windows.last())
+                () -> assertEquals(ListX.of(0, 1, 2, 3), windows.first()),
+                () -> assertEquals(ListX.of(4, 5, 6, 7), windows.last())
         );
     }
 
     @Test
     void testWindowedSizeGreaterThanSequenceSizeNoPartialWindowGivesEmptyList() {
-        final var windows = IntRange.of(0, 8)
+        final var windows = IntSequence.of(0, 8)
+                .boxed()
                 .windowed(10)
-                .toListView();
+                .toListX();
 
         It.println("windows = " + windows);
 
@@ -464,9 +472,10 @@ class SequenceTest {
 
     @Test
     void testLargeWindowedSequence() {
-        final var windows = IntRange.of(0, 1_000_000)
+        final var windows = IntSequence.of(0, 1_000_000)
+                .boxed()
                 .windowed(2_001, 23, true)
-                .toListView();
+                .toListX();
 
         final var lastWindow = windows.last();
 
@@ -483,10 +492,11 @@ class SequenceTest {
 
     @Test
     void testSequenceWindowedTransformed() {
-        final var sizes = IntRange.of(0, 1_000)
-                .filter(IntX.multipleOf(5))
-                .windowed(51, 7, ListView::size)
-                .toListView();
+        final var sizes = IntSequence.of(0, 1_000)
+                .filter(i -> IntX.multipleOf(5).test(i))
+                .boxed()
+                .windowed(51, 7, ListX::size)
+                .toListX();
 
         It.println("sizes = " + sizes);
 
@@ -508,12 +518,13 @@ class SequenceTest {
 
     @Test
     void testZipWithNext() {
-        final var sums = IntRange.of(0, 1_000)
-                .shuffled()
-                .filter(IntX.multipleOf(10))
+        final var sums = IntSequence.of(0, 1_000)
+                .filter(i -> IntX.multipleOf(10).test(i))
                 .onEach(i -> It.print(i + ", "))
+                .boxed()
                 .zipWithNext(Integer::sum)
-                .toListView();
+                .toListX()
+                .shuffled();
 
         It.println("\nsums = " + sums);
 
@@ -527,18 +538,18 @@ class SequenceTest {
     void testSequenceOfMap() {
         final var map = Map.of(1, "a", 2, "b", 3, "c", 4, "d");
 
-        final var mapView = Sequence.of(map)
+        final var mapX = Sequence.of(map)
                 .mapValues(s -> StringX.of(s).first())
                 .filterValues(Character::isLetter)
                 .filterKeys(IntX::isEven)
-                .toMapView();
+                .toMapX();
 
-        assertEquals(2, mapView.size());
+        assertEquals(2, mapX.size());
     }
 
     @Test
     void testSequenceAssociateWith() {
-        final var list = ListView.of(1, 2, 3, 4);
+        final var list = ListX.of(1, 2, 3, 4);
 
         final var map = list.asSequence()
                 .associateWith(String::valueOf)
@@ -546,7 +557,7 @@ class SequenceTest {
                 .mapValues(s -> StringX.of(s).first())
                 .filterKeys(IntX::isEven)
                 .onEachKey(It::println)
-                .toMapView();
+                .toMapX();
 
         assertEquals(2, map.size());
     }
@@ -581,7 +592,8 @@ class SequenceTest {
 
     @Test
     void testGeneratedSequenceCanBeConsumedMultipleTimes() {
-        var leapYears = IntRange.from(1900).upTo(2000).step(2)
+        var leapYears = IntSequence.from(1900).upTo(2000).step(2)
+                .boxed()
                 .map(Year::of)
                 .filter(Year::isLeap);
 
@@ -630,7 +642,7 @@ class SequenceTest {
         final var daysOfYear = Sequence
                 .generate(LocalDate.of(year, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhile(date -> date.getYear() < year + 1)
-                .asIntRange(LocalDate::getDayOfMonth);
+                .mapToInt(LocalDate::getDayOfMonth);
 
         It.println(daysOfYear.joinToString());
 
@@ -639,6 +651,21 @@ class SequenceTest {
                 () -> assertEquals(7, daysOfYear.filter(i -> i == 31).count()),
                 () -> assertEquals(12, daysOfYear.filter(i -> i == 29).count()),
                 () -> assertEquals(366, daysOfYear.count())
+        );
+    }
+
+    @Test
+    void testToSortedLocalDateTime() {
+        final LocalDateTime initDateTime = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0, 0);
+
+        final var sorted = IntRange.closed(0, 1_000)
+                .mapToObj(initDateTime::plusDays)
+                .sorted()
+                .toListX();
+
+        assertAll(
+                () -> assertEquals(initDateTime, sorted.first()),
+                () -> assertEquals(1_000, sorted.size())
         );
     }
 

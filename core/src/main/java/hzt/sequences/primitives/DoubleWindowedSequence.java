@@ -1,13 +1,14 @@
 package hzt.sequences.primitives;
 
 import hzt.PreConditions;
+import hzt.collections.primitives.DoubleListX;
 import hzt.iterators.primitives.DoubleWindowedIterator;
 import hzt.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
-public final class DoubleWindowedSequence implements Sequence<DoubleSequence> {
+public final class DoubleWindowedSequence implements Sequence<DoubleListX> {
 
     private final DoubleSequence upstream;
     private final int size;
@@ -36,7 +37,7 @@ public final class DoubleWindowedSequence implements Sequence<DoubleSequence> {
 
     @NotNull
     @Override
-    public Iterator<DoubleSequence> iterator() {
+    public Iterator<DoubleListX> iterator() {
         return DoubleWindowedIterator.of(upstream.iterator(), size, step, partialWindows);
     }
 }

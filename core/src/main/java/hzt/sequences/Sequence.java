@@ -9,9 +9,9 @@ import hzt.iterators.ArrayIterator;
 import hzt.iterators.FlatteningIterator;
 import hzt.iterators.GeneratorIterator;
 import hzt.iterators.MultiMappingIterator;
-import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.iterators.SkipWhileIterator;
 import hzt.iterators.TakeWhileIterator;
+import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.sequences.primitives.DoubleSequence;
 import hzt.sequences.primitives.IntSequence;
 import hzt.sequences.primitives.LongSequence;
@@ -362,17 +362,17 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default IntSequence mapToInt(@NotNull ToIntFunction<T> toIntMapper) {
+    default IntSequence mapToInt(@NotNull ToIntFunction<? super T> toIntMapper) {
         return () -> PrimitiveIterators.intIteratorOf(iterator(), toIntMapper);
     }
 
     @Override
-    default LongSequence mapToLong(@NotNull ToLongFunction<T> toLongMapper) {
+    default LongSequence mapToLong(@NotNull ToLongFunction<? super T> toLongMapper) {
         return () -> PrimitiveIterators.longIteratorOf(iterator(), toLongMapper);
     }
 
     @Override
-    default DoubleSequence mapToDouble(@NotNull ToDoubleFunction<T> toDoubleMapper) {
+    default DoubleSequence mapToDouble(@NotNull ToDoubleFunction<? super T> toDoubleMapper) {
         return () -> PrimitiveIterators.doubleIteratorOf(iterator(), toDoubleMapper);
     }
 

@@ -1,16 +1,16 @@
-package hzt.iterators.primitives;
+package hzt.collections.primitives;
 
 import hzt.PreConditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-final class PrimitiveArraysSupport {
+final class PrimitiveListHelper {
 
     static final int SOFT_MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
     static final int DEFAULT_CAPACITY = 10;
 
-    private PrimitiveArraysSupport() {
+    private PrimitiveListHelper() {
     }
 
     /**
@@ -27,7 +27,7 @@ final class PrimitiveArraysSupport {
         }
         final var minGrowth = minCapacity - oldCapacity;
         final var prefGrowth = oldCapacity >> 1;
-        int newCapacity = PrimitiveArraysSupport.newLength(oldCapacity, minGrowth, prefGrowth);
+        int newCapacity = PrimitiveListHelper.newLength(oldCapacity, minGrowth, prefGrowth);
         return copyElementData(newCapacity, array);
     }
 
@@ -58,6 +58,25 @@ final class PrimitiveArraysSupport {
         }
     }
 
+    static int newLength(int oldLength, int minGrowth, int prefGrowth) {
+        PreConditions.require(oldLength >= 0);
+        PreConditions.require(minGrowth > 0);
+
+        int prefLength = oldLength + Math.max(minGrowth, prefGrowth); // might overflow
+        if (0 < prefLength && prefLength <= SOFT_MAX_ARRAY_LENGTH) {
+            return prefLength;
+        }
+        return hugeLength(oldLength, minGrowth);
+    }
+
+    private static int hugeLength(int oldLength, int minGrowth) {
+        int minLength = oldLength + minGrowth;
+        if (minLength < 0) { // overflow
+            throw new OutOfMemoryError("Required array length " + oldLength + " + " + minGrowth + " is too large");
+        }
+        return Math.max(minLength, SOFT_MAX_ARRAY_LENGTH);
+    }
+
     static int fastRemoveInt(int[] array, int size, int index) {
         final int newSize = size - 1;
         if (newSize > index) {
@@ -83,24 +102,5 @@ final class PrimitiveArraysSupport {
         }
         array[newSize] = 0.0;
         return newSize;
-    }
-
-    static int newLength(int oldLength, int minGrowth, int prefGrowth) {
-        PreConditions.require(oldLength >= 0);
-        PreConditions.require(minGrowth > 0);
-
-        int prefLength = oldLength + Math.max(minGrowth, prefGrowth); // might overflow
-        if (0 < prefLength && prefLength <= SOFT_MAX_ARRAY_LENGTH) {
-            return prefLength;
-        }
-        return hugeLength(oldLength, minGrowth);
-    }
-
-    private static int hugeLength(int oldLength, int minGrowth) {
-        int minLength = oldLength + minGrowth;
-        if (minLength < 0) { // overflow
-            throw new OutOfMemoryError("Required array length " + oldLength + " + " + minGrowth + " is too large");
-        }
-        return Math.max(minLength, SOFT_MAX_ARRAY_LENGTH);
     }
 }

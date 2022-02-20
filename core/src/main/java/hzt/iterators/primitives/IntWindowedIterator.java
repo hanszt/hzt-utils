@@ -1,24 +1,24 @@
 package hzt.iterators.primitives;
 
-import hzt.collections.primitives.LongListX;
-import hzt.collections.primitives.LongMutableListX;
+import hzt.collections.primitives.IntListX;
+import hzt.collections.primitives.IntMutableListX;
 import hzt.iterators.AbstractIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 
-public final class LongWindowedIterator extends AbstractIterator<LongListX> {
+public final class IntWindowedIterator extends AbstractIterator<IntListX> {
 
-    private final PrimitiveIterator.OfLong iterator;
+    private final PrimitiveIterator.OfInt iterator;
     private final int size;
     private final int step;
     private final boolean partialWindows;
 
-    private LongMutableListX nextWindow = LongMutableListX.empty();
+    private IntMutableListX nextWindow = IntMutableListX.empty();
     private int skip = 0;
 
-    private LongWindowedIterator(
-            @NotNull PrimitiveIterator.OfLong iterator,
+    private IntWindowedIterator(
+            @NotNull PrimitiveIterator.OfInt iterator,
             int size,
             int step,
             boolean partialWindows) {
@@ -28,14 +28,14 @@ public final class LongWindowedIterator extends AbstractIterator<LongListX> {
         this.partialWindows = partialWindows;
     }
 
-    public static LongWindowedIterator of(@NotNull PrimitiveIterator.OfLong iterator,
-                                              int size,
-                                              int step,
-                                              boolean partialWindows) {
-        return new LongWindowedIterator(iterator, size, step, partialWindows);
+    public static IntWindowedIterator of(@NotNull PrimitiveIterator.OfInt iterator,
+                                         int size,
+                                         int step,
+                                         boolean partialWindows) {
+        return new IntWindowedIterator(iterator, size, step, partialWindows);
     }
 
-    private LongMutableListX computeNextWindow() {
+    private IntMutableListX computeNextWindow() {
         int windowInitCapacity = Math.min(size, 1024);
         final int gap = step - size;
         if (gap >= 0) {
@@ -47,14 +47,14 @@ public final class LongWindowedIterator extends AbstractIterator<LongListX> {
     }
 
     private void computeNextForWindowedSequenceOverlapping(int windowInitCapacity) {
-        nextWindow = nextWindow.isEmpty() ? LongMutableListX.withInitCapacity(windowInitCapacity) : LongMutableListX.of(nextWindow);
+        nextWindow = nextWindow.isEmpty() ? IntMutableListX.withInitCapacity(windowInitCapacity) : IntMutableListX.of(nextWindow);
         if (nextWindow.isEmpty()) {
             fillIfWindowEmpty();
         } else {
             calculateNextWindow();
         }
         if (!partialWindows && nextWindow.size() < size) {
-            nextWindow = LongMutableListX.empty();
+            nextWindow = IntMutableListX.empty();
         }
     }
 
@@ -78,9 +78,9 @@ public final class LongWindowedIterator extends AbstractIterator<LongListX> {
     }
 
     private void computeNextForWindowedSequenceNoOverlap(int bufferInitCapacity, int gap) {
-        nextWindow = LongMutableListX.withInitCapacity(bufferInitCapacity);
+        nextWindow = IntMutableListX.withInitCapacity(bufferInitCapacity);
         while (iterator.hasNext()) {
-            long item = iterator.nextLong();
+            int item = iterator.nextInt();
             if (skip > 0) {
                 skip -= 1;
                 continue;

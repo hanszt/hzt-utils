@@ -49,7 +49,7 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static <T> PrimitiveIterator.OfInt intIteratorOf(Iterator<T> iterator, ToIntFunction<T> mapper) {
+    public static <T> PrimitiveIterator.OfInt intIteratorOf(Iterator<T> iterator, ToIntFunction<? super T> mapper) {
         return new PrimitiveIterator.OfInt() {
             @Override
             public int nextInt() {
@@ -133,7 +133,7 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static <T> PrimitiveIterator.OfLong longIteratorOf(Iterator<T> iterator, ToLongFunction<T> mapper) {
+    public static <T> PrimitiveIterator.OfLong longIteratorOf(Iterator<T> iterator, ToLongFunction<? super T> mapper) {
         return new PrimitiveIterator.OfLong() {
             @Override
             public long nextLong() {
@@ -217,7 +217,7 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static <T> PrimitiveIterator.OfDouble doubleIteratorOf(Iterator<T> iterator, ToDoubleFunction<T> mapper) {
+    public static <T> PrimitiveIterator.OfDouble doubleIteratorOf(Iterator<T> iterator, ToDoubleFunction<? super T> mapper) {
         return new PrimitiveIterator.OfDouble() {
             @Override
             public double nextDouble() {

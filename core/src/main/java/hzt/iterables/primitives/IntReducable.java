@@ -54,11 +54,11 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
         return accumulator;
     }
 
-    default long first() {
+    default int first() {
         return findFirst().orElseThrow();
     }
 
-    default long first(@NotNull IntPredicate predicate) {
+    default int first(@NotNull IntPredicate predicate) {
         PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {
             int next = iterator.nextInt();
@@ -69,7 +69,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
         throw new NoSuchElementException();
     }
 
-    default long firstNot(@NotNull IntPredicate predicate) {
+    default int firstNot(@NotNull IntPredicate predicate) {
         return first(predicate.negate());
     }
 
@@ -89,7 +89,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
         return OptionalInt.empty();
     }
 
-    default long last() {
+    default int last() {
         return findLast().orElseThrow();
     }
 

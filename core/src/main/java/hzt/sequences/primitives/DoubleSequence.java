@@ -1,9 +1,10 @@
 package hzt.sequences.primitives;
 
+import hzt.collections.primitives.DoubleListX;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.DoubleIterable;
 import hzt.iterables.primitives.DoubleReducable;
-import hzt.iterables.primitives.PrimitiveStreamable;
+import hzt.iterables.Streamable;
 import hzt.iterators.primitives.DoubleFilteringIterator;
 import hzt.iterators.primitives.DoubleGeneratorIterator;
 import hzt.iterators.primitives.DoubleMultiMappingIterator;
@@ -40,7 +41,7 @@ import java.util.stream.StreamSupport;
 @FunctionalInterface
 public interface DoubleSequence extends DoubleReducable,
         PrimitiveSequence<Double, DoubleConsumer, DoubleUnaryOperator, DoublePredicate, DoubleBinaryOperator>,
-        PrimitiveStreamable<DoubleStream>,
+        Streamable<DoubleStream>,
         Transformable<DoubleSequence> {
 
     static DoubleSequence empty() {
@@ -280,7 +281,7 @@ public interface DoubleSequence extends DoubleReducable,
         return windowed(2, s -> merger.applyAsDouble(s.first(), s.last()));
     }
 
-    default Sequence<DoubleSequence> chunked(int size) {
+    default Sequence<DoubleListX> chunked(int size) {
         return windowed(size, size, true);
     }
 
@@ -288,19 +289,19 @@ public interface DoubleSequence extends DoubleReducable,
         return windowed(size, size, true).mapToDouble(transform);
     }
 
-    default Sequence<DoubleSequence> windowed(int size, int step, boolean partialWindows) {
+    default Sequence<DoubleListX> windowed(int size, int step, boolean partialWindows) {
         return new DoubleWindowedSequence(this, size, step, partialWindows);
     }
 
-    default Sequence<DoubleSequence> windowed(int size, int step) {
+    default Sequence<DoubleListX> windowed(int size, int step) {
         return windowed(size, step, false);
     }
 
-    default Sequence<DoubleSequence> windowed(int size) {
+    default Sequence<DoubleListX> windowed(int size) {
         return windowed(size, 1);
     }
 
-    default Sequence<DoubleSequence> windowed(int size, boolean partialWindows) {
+    default Sequence<DoubleListX> windowed(int size, boolean partialWindows) {
         return windowed(size, 1, partialWindows);
     }
 

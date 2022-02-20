@@ -1,5 +1,6 @@
 package hzt.iterators.primitives;
 
+import hzt.collections.primitives.LongMutableListX;
 import hzt.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,7 +44,7 @@ public final class LongMultiMappingIterator implements PrimitiveIterator.OfLong 
             if (!iterator.hasNext()) {
                 return false;
             } else {
-                LongBuffer longBuffer = new LongBuffer();
+                LongMutableListX longBuffer = LongMutableListX.empty();
                 mapper.accept(iterator.nextLong(), longBuffer::add);
                 final OfLong nextItemIterator = longBuffer.iterator();
                 if (nextItemIterator.hasNext()) {

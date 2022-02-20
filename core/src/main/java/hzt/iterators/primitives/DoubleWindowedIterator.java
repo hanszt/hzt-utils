@@ -1,19 +1,20 @@
 package hzt.iterators.primitives;
 
+import hzt.collections.primitives.DoubleListX;
+import hzt.collections.primitives.DoubleMutableListX;
 import hzt.iterators.AbstractIterator;
-import hzt.sequences.primitives.DoubleSequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 
-public final class DoubleWindowedIterator extends AbstractIterator<DoubleSequence> {
+public final class DoubleWindowedIterator extends AbstractIterator<DoubleListX> {
 
     private final PrimitiveIterator.OfDouble iterator;
     private final int size;
     private final int step;
     private final boolean partialWindows;
 
-    private DoubleBuffer nextWindow = new DoubleBuffer();
+    private DoubleMutableListX nextWindow = DoubleMutableListX.empty();
     private int skip = 0;
 
     private DoubleWindowedIterator(
@@ -34,7 +35,7 @@ public final class DoubleWindowedIterator extends AbstractIterator<DoubleSequenc
         return new DoubleWindowedIterator(iterator, size, step, partialWindows);
     }
 
-    private DoubleBuffer computeNextWindow() {
+    private DoubleMutableListX computeNextWindow() {
         int windowInitCapacity = Math.min(size, 1024);
         final int gap = step - size;
         if (gap >= 0) {
@@ -46,14 +47,14 @@ public final class DoubleWindowedIterator extends AbstractIterator<DoubleSequenc
     }
 
     private void computeNextForWindowedSequenceOverlapping(int windowInitCapacity) {
-        nextWindow = nextWindow.isEmpty() ? new DoubleBuffer(windowInitCapacity) : new DoubleBuffer(nextWindow);
+        nextWindow = nextWindow.isEmpty() ? DoubleMutableListX.withInitCapacity(windowInitCapacity) : DoubleMutableListX.of(nextWindow);
         if (nextWindow.isEmpty()) {
             fillIfWindowEmpty();
         } else {
             calculateNextWindow();
         }
         if (!partialWindows && nextWindow.size() < size) {
-            nextWindow = new DoubleBuffer();
+            nextWindow = DoubleMutableListX.empty();
         }
     }
 
@@ -67,7 +68,7 @@ public final class DoubleWindowedIterator extends AbstractIterator<DoubleSequenc
         int stepCount = step;
         while (stepCount > 0) {
             if (!nextWindow.isEmpty()) {
-                nextWindow.remove(0);
+                nextWindow.removeAt(0);
             }
             if (iterator.hasNext()) {
                 nextWindow.add(iterator.next());
@@ -77,7 +78,7 @@ public final class DoubleWindowedIterator extends AbstractIterator<DoubleSequenc
     }
 
     private void computeNextForWindowedSequenceNoOverlap(int bufferInitCapacity, int gap) {
-        nextWindow = new DoubleBuffer(bufferInitCapacity);
+        nextWindow = DoubleMutableListX.withInitCapacity(bufferInitCapacity);
         while (iterator.hasNext()) {
             double item = iterator.nextDouble();
             if (skip > 0) {
@@ -101,7 +102,7 @@ public final class DoubleWindowedIterator extends AbstractIterator<DoubleSequenc
         if (next.isEmpty()) {
             done();
         } else {
-            setNext(DoubleSequence.of(next));
+            setNext(next);
         }
     }
 }

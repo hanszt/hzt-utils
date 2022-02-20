@@ -5,6 +5,7 @@ open module core {
     requires primitive;
 
     exports hzt.collections;
+    exports hzt.collections.primitives;
     exports hzt.function;
     exports hzt.function.predicates;
     exports hzt.stream;
@@ -21,4 +22,5 @@ open module core {
     exports hzt.collectors;
     exports hzt.ranges;
     exports hzt.progressions;
+    exports hzt.iterators.primitives;
 }

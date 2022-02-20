@@ -1,21 +1,21 @@
 package hzt.sequences.primitives;
 
 import hzt.PreConditions;
-import hzt.collections.primitives.LongListX;
-import hzt.iterators.primitives.LongWindowedIterator;
+import hzt.collections.primitives.IntListX;
+import hzt.iterators.primitives.IntWindowedIterator;
 import hzt.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
-public final class LongWindowedSequence implements Sequence<LongListX> {
+public final class IntWindowedSequence implements Sequence<IntListX> {
 
-    private final LongSequence upstream;
+    private final IntSequence upstream;
     private final int size;
     private final int step;
     private final boolean partialWindows;
 
-    public LongWindowedSequence(LongSequence upstream, int size, int step, boolean partialWindows) {
+    public IntWindowedSequence(IntSequence upstream, int size, int step, boolean partialWindows) {
         checkWindowSizeAndStep(size, step);
         this.upstream = upstream;
         this.size = size;
@@ -37,7 +37,7 @@ public final class LongWindowedSequence implements Sequence<LongListX> {
 
     @NotNull
     @Override
-    public Iterator<LongListX> iterator() {
-        return LongWindowedIterator.of(upstream.iterator(), size, step, partialWindows);
+    public Iterator<IntListX> iterator() {
+        return IntWindowedIterator.of(upstream.iterator(), size, step, partialWindows);
     }
 }

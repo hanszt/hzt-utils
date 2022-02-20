@@ -1,5 +1,6 @@
 package hzt.iterators.primitives;
 
+import hzt.collections.primitives.DoubleMutableListX;
 import hzt.sequences.primitives.DoubleSequence;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,7 +44,7 @@ public final class DoubleMultiMappingIterator implements PrimitiveIterator.OfDou
             if (!iterator.hasNext()) {
                 return false;
             } else {
-                DoubleBuffer doubleBuffer = new DoubleBuffer();
+                DoubleMutableListX doubleBuffer = DoubleMutableListX.empty();
                 mapper.accept(iterator.nextDouble(), doubleBuffer::add);
                 final OfDouble nextItemIterator = doubleBuffer.iterator();
                 if (nextItemIterator.hasNext()) {

@@ -1,9 +1,10 @@
 package hzt.sequences.primitives;
 
+import hzt.collections.primitives.IntListX;
 import hzt.function.TriFunction;
+import hzt.iterables.Streamable;
 import hzt.iterables.primitives.IntIterable;
 import hzt.iterables.primitives.IntReducable;
-import hzt.iterables.primitives.PrimitiveStreamable;
 import hzt.iterators.primitives.IntFilteringIterator;
 import hzt.iterators.primitives.IntGeneratorIterator;
 import hzt.iterators.primitives.IntMultiMappingIterator;
@@ -41,7 +42,7 @@ import java.util.stream.StreamSupport;
 @FunctionalInterface
 public interface IntSequence extends IntReducable,
         PrimitiveSequence<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator>,
-        PrimitiveStreamable<IntStream>,
+        Streamable<IntStream>,
         Transformable<IntSequence> {
 
     static IntSequence empty() {
@@ -305,9 +306,48 @@ public interface IntSequence extends IntReducable,
 
     @Override
     default IntSequence zipWithNext(@NotNull IntBinaryOperator merger) {
-        return mapToLong(It::asLong)
-                .zipWithNext((cur, next) -> merger.applyAsInt((int) cur, (int) next))
-                .mapToInt(It::longAsInt);
+        return windowed(2, s -> merger.applyAsInt(s.first(), s.last()));
+    }
+
+    default Sequence<IntListX> chunked(int size) {
+        return windowed(size, size, true);
+    }
+
+    default IntSequence chunked(int size, @NotNull ToIntFunction<IntSequence> transform) {
+        return windowed(size, size, true).mapToInt(transform);
+    }
+
+    default Sequence<IntListX> windowed(int size, int step, boolean partialWindows) {
+        return new IntWindowedSequence(this, size, step, partialWindows);
+    }
+
+    default Sequence<IntListX> windowed(int size, int step) {
+        return windowed(size, step, false);
+    }
+
+    default Sequence<IntListX> windowed(int size) {
+        return windowed(size, 1);
+    }
+
+    default Sequence<IntListX> windowed(int size, boolean partialWindows) {
+        return windowed(size, 1, partialWindows);
+    }
+
+    default IntSequence windowed(int size, int step, boolean partialWindows,
+                                  @NotNull ToIntFunction<IntSequence> reducer) {
+        return windowed(size, step, partialWindows).mapToInt(reducer);
+    }
+
+    default IntSequence windowed(int size, int step, @NotNull ToIntFunction<IntSequence> reducer) {
+        return windowed(size, step, false, reducer);
+    }
+
+    default IntSequence windowed(int size, @NotNull ToIntFunction<IntSequence> reducer) {
+        return windowed(size, 1, reducer);
+    }
+
+    default IntSequence windowed(int size, boolean partialWindows, @NotNull ToIntFunction<IntSequence> reducer) {
+        return windowed(size, 1, partialWindows, reducer);
     }
 
     default int[] toArray() {

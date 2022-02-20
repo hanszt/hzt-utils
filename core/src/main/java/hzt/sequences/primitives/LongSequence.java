@@ -1,9 +1,10 @@
 package hzt.sequences.primitives;
 
+import hzt.collections.primitives.LongListX;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.LongIterable;
 import hzt.iterables.primitives.LongReducable;
-import hzt.iterables.primitives.PrimitiveStreamable;
+import hzt.iterables.Streamable;
 import hzt.iterators.primitives.LongFilteringIterator;
 import hzt.iterators.primitives.LongGeneratorIterator;
 import hzt.iterators.primitives.LongMultiMappingIterator;
@@ -41,7 +42,7 @@ import java.util.stream.StreamSupport;
 @FunctionalInterface
 public interface LongSequence extends LongReducable,
         PrimitiveSequence<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator>,
-        PrimitiveStreamable<LongStream>,
+        Streamable<LongStream>,
         Transformable<LongSequence> {
 
     static LongSequence empty() {
@@ -242,7 +243,7 @@ public interface LongSequence extends LongReducable,
         return windowed(2, s -> merger.applyAsLong(s.first(), s.last()));
     }
 
-    default Sequence<LongSequence> chunked(int size) {
+    default Sequence<LongListX> chunked(int size) {
         return windowed(size, size, true);
     }
 
@@ -250,19 +251,19 @@ public interface LongSequence extends LongReducable,
         return windowed(size, size, true).mapToLong(transform);
     }
 
-    default Sequence<LongSequence> windowed(int size, int step, boolean partialWindows) {
+    default Sequence<LongListX> windowed(int size, int step, boolean partialWindows) {
         return new LongWindowedSequence(this, size, step, partialWindows);
     }
 
-    default Sequence<LongSequence> windowed(int size, int step) {
+    default Sequence<LongListX> windowed(int size, int step) {
         return windowed(size, step, false);
     }
 
-    default Sequence<LongSequence> windowed(int size) {
+    default Sequence<LongListX> windowed(int size) {
         return windowed(size, 1);
     }
 
-    default Sequence<LongSequence> windowed(int size, boolean partialWindows) {
+    default Sequence<LongListX> windowed(int size, boolean partialWindows) {
         return windowed(size, 1, partialWindows);
     }
 

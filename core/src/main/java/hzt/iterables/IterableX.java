@@ -38,7 +38,8 @@ import java.util.stream.StreamSupport;
  * @author Hans Zuidervaart
  */
 public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, Takeable<T>, Zippable<T>, Windowable<T>,
-        Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>, Collectable<T>, Groupable<T> {
+        Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>,
+        Collectable<T>, Groupable<T>, Streamable<Stream<T>> {
 
     IterableX<T> plus(@NotNull T value);
 
@@ -50,19 +51,23 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         return StreamSupport.stream(spliterator(), false);
     }
 
+    default Stream<T> parallelStream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+
     default Sequence<T> asSequence() {
         return Sequence.of(this);
     }
 
-    default IntSequence mapToInt(@NotNull ToIntFunction<T> keyMapper) {
+    default IntSequence mapToInt(@NotNull ToIntFunction<? super T> keyMapper) {
         return IntSequence.of(asSequence().map(keyMapper::applyAsInt));
     }
 
-    default LongSequence mapToLong(@NotNull ToLongFunction<T> keyMapper) {
+    default LongSequence mapToLong(@NotNull ToLongFunction<? super T> keyMapper) {
         return LongSequence.of(asSequence().map(keyMapper::applyAsLong));
     }
 
-    default DoubleSequence mapToDouble(@NotNull ToDoubleFunction<T> keyMapper) {
+    default DoubleSequence mapToDouble(@NotNull ToDoubleFunction<? super T> keyMapper) {
         return DoubleSequence.of(asSequence().map(keyMapper::applyAsDouble));
     }
 
@@ -120,14 +125,14 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
     }
 
     default int[] toIntArray(@NotNull ToIntFunction<? super T> mapper) {
-        return StreamSupport.stream(spliterator(), false).mapToInt(mapper).toArray();
+        return mapToInt(mapper).toArray();
     }
 
     default long[] toLongArray(@NotNull ToLongFunction<? super T> mapper) {
-        return StreamSupport.stream(spliterator(), false).mapToLong(mapper).toArray();
+        return mapToLong(mapper).toArray();
     }
 
     default double[] toDoubleArray(@NotNull ToDoubleFunction<? super T> mapper) {
-        return StreamSupport.stream(spliterator(), false).mapToDouble(mapper).toArray();
+        return mapToDouble(mapper).toArray();
     }
 }

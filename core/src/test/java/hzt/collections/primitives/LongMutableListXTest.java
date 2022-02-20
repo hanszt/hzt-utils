@@ -1,15 +1,15 @@
-package hzt.iterators.primitives;
+package hzt.collections.primitives;
 
 import hzt.sequences.primitives.LongSequence;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LongBufferTest {
+class LongMutableListXTest {
 
     @Test
     void testDifferentMethods() {
-        final var longs = new LongBuffer();
+        final var longs = LongMutableListX.empty();
         assertTrue(longs.isEmpty());
         longs.add(1);
         assertAll(
@@ -20,13 +20,14 @@ class LongBufferTest {
         longs.add(2);
         longs.add(5);
         longs.add(7);
-        final var l = longs.remove(0);
+        final var l = longs.removeFirst();
         assertAll(
                 () -> assertFalse(longs.isEmpty()),
                 () -> assertEquals(2L, l),
                 () -> assertEquals(2, longs.size())
         );
-        final var l2 = longs.remove(0);
+        System.out.println("longs = " + longs);
+        final var l2 = longs.removeAt(0);
         assertAll(
                 () -> assertFalse(longs.isEmpty()),
                 () -> assertEquals(5L, l2),
@@ -36,7 +37,7 @@ class LongBufferTest {
 
     @Test
     void testCopyConstructor() {
-        final var longs = new LongBuffer();
+        final var longs = LongMutableListX.empty();
         longs.add(2);
         longs.add(-43);
         longs.add(1231);
@@ -44,7 +45,7 @@ class LongBufferTest {
                 .take(10_000_000)
                 .forEachLong(longs::add);
 
-        final var longsCopy = new LongBuffer(longs);
+        final var longsCopy = LongMutableListX.of(longs);
 
         assertAll(
                 () -> assertEquals(10_000_003, longs.size()),

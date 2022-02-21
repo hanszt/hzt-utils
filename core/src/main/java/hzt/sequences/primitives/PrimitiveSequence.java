@@ -3,7 +3,6 @@ package hzt.sequences.primitives;
 import hzt.iterables.Groupable;
 import hzt.iterables.Stringable;
 import hzt.sequences.Sequence;
-import hzt.statistics.NumberStatistics;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
@@ -50,9 +49,5 @@ public interface PrimitiveSequence<T extends Number, C, F, P, B> extends Stringa
     PrimitiveSequence<T, C, F, P, B> zip(@NotNull B merger, @NotNull Iterable<T> other);
 
     PrimitiveSequence<T, C, F, P, B> zipWithNext(@NotNull B merger);
-
-    @NotNull NumberStatistics stats();
-
-    @NotNull NumberStatistics stats(@NotNull P predicate);
 
 }

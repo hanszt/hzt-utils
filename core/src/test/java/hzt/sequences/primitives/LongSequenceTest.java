@@ -1,6 +1,7 @@
 package hzt.sequences.primitives;
 
 import hzt.collections.MutableListX;
+import hzt.collections.primitives.LongListX;
 import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
@@ -167,7 +168,7 @@ class LongSequenceTest {
 
         final var windowed = LongSequence.of(array)
                 .windowed(5)
-                .map(LongSequence::toArray)
+                .map(LongListX::toArray)
                 .toTypedArray(long[][]::new);
 
        Sequence.of(windowed).map(Arrays::toString).forEach(It::println);
@@ -180,7 +181,7 @@ class LongSequenceTest {
         long[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final var sums = LongSequence.of(array)
-                .windowed(3, LongSequence::sum)
+                .windowed(3, LongListX::sum)
                 .toArray();
 
         LongSequence.of(sums).forEachLong(It::println);
@@ -194,7 +195,7 @@ class LongSequenceTest {
 
         final var windows = LongSequence.of(array)
                 .windowed(3, 2, true)
-                .map(LongSequence::toArray)
+                .map(LongListX::toArray)
                 .toTypedArray(long[][]::new);
 
         Sequence.of(windows).map(Arrays::toString).forEach(It::println);
@@ -207,7 +208,7 @@ class LongSequenceTest {
         long[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final var sums = LongSequence.of(array)
-                .windowed(3, 2, true, LongSequence::sum)
+                .windowed(3, 2, true, LongListX::sum)
                 .toArray();
 
         LongSequence.of(sums).forEachLong(It::println);
@@ -222,7 +223,7 @@ class LongSequenceTest {
                 .chunked(10)
                 .chunked(10)
                 .map(chunk -> chunk
-                        .map(LongSequence::toArray)
+                        .map(LongListX::toArray)
                         .toTypedArray(long[][]::new))
                 .toTypedArray(long[][][]::new);
 
@@ -241,7 +242,7 @@ class LongSequenceTest {
     void testWindowedLargeLongSequence() {
         final var sums = LongSequence.generate(0, l -> ++l)
                 .take(1_000_000)
-                .windowed(1_000, 50, LongSequence::sum)
+                .windowed(1_000, 50, LongListX::sum)
                 .toArray();
 
         final var sums2 = Sequence.generate(0, l -> ++l)

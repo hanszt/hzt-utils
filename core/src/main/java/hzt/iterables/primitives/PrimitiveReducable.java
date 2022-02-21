@@ -18,10 +18,6 @@ public interface PrimitiveReducable<T, B, P, O> extends Iterable<T> {
 
     boolean none(@NotNull P predicate);
 
-    long count();
-
-    long count(@NotNull P predicate);
-
     O findFirst();
 
     O findFirst(P predicate);

@@ -1,11 +1,8 @@
 package hzt.collections.primitives;
 
-import hzt.sequences.primitives.DoubleSequence;
-import org.jetbrains.annotations.NotNull;
+import hzt.collections.ListX;
 
-import java.util.function.DoubleConsumer;
-
-public interface DoubleListX extends PrimitiveCollectionX<Double, DoubleConsumer, double[]>, DoubleSequence {
+public interface DoubleListX extends DoubleCollection {
 
     static DoubleListX empty() {
         return new DoubleArrayList();
@@ -22,28 +19,6 @@ public interface DoubleListX extends PrimitiveCollectionX<Double, DoubleConsumer
     static DoubleListX of(double... array) {
         return new DoubleArrayList(array);
     }
-    
-    default int size() {
-        return (int) count();
-    }
-
-    default boolean isEmpty() {
-        return none();
-    }
-
-    default boolean isNotEmpty() {
-        return any();
-    }
-
-    @Override
-    default boolean contains(Double o) {
-        return contains((double) o);
-    }
-
-    @Override
-    default boolean containsAll(@NotNull Iterable<Double> iterable) {
-        return DoubleSequence.of(iterable).all(this::contains);
-    }
 
     default boolean contains(double o) {
         return indexOf(o) >= 0;
@@ -53,4 +28,9 @@ public interface DoubleListX extends PrimitiveCollectionX<Double, DoubleConsumer
 
     @Override
     double[] toArray();
+
+    @Override
+    default ListX<Double> boxed() {
+        return asSequence().boxed().toListX();
+    }
 }

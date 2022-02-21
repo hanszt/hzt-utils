@@ -380,15 +380,15 @@ public interface Sequence<T> extends IterableX<T> {
         return resultMapper.apply(this);
     }
 
-    default <R1, R2, R> R toTwo(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,
+    default <R1, R2, R> R split(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,
                                 @NotNull Function<? super Sequence<T>, ? extends R2> resultMapper2,
-                                @NotNull BiFunction<R1, R2, R> merger) {
+                                @NotNull BiFunction<? super R1, ? super R2, ? extends R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
     }
 
-    default <R1, R2> Pair<R1, R2> toTwo(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,
+    default <R1, R2> Pair<R1, R2> split(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,
                                         @NotNull Function<? super Sequence<T>, ? extends R2> resultMapper2) {
-        return toTwo(resultMapper1, resultMapper2, Pair::of);
+        return split(resultMapper1, resultMapper2, Pair::of);
     }
 
     default <R1, R2, R3, R> R toThree(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,

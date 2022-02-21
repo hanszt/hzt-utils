@@ -1,5 +1,6 @@
 package hzt.collections.primitives;
 
+import hzt.collections.MutableListX;
 import hzt.iterators.primitives.PrimitiveListIterator;
 
 import java.util.PrimitiveIterator;
@@ -21,6 +22,11 @@ public interface IntMutableListX extends IntListX, IntMutableCollection,
 
     static IntMutableListX of(int... array) {
         return new IntArrayList(array);
+    }
+
+    @Override
+    default MutableListX<Integer> boxed() {
+        return asSequence().boxed().toMutableList();
     }
 
     static IntMutableListX withInitCapacity(int capacity) {

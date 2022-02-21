@@ -25,18 +25,20 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
     }
 
     IntArrayList() {
-        elementData = new int[]{};
+        elementData = new int[PrimitiveListHelper.DEFAULT_CAPACITY];
     }
 
-    IntArrayList(int[] array) {
-        elementData = Arrays.copyOf(array, array.length);
+    IntArrayList(int... array) {
+        size = array.length;
+        elementData = Arrays.copyOf(array, size);
     }
 
     IntArrayList(Iterable<Integer> iterable) {
+        this();
         if (iterable instanceof IntIterable) {
             final var iterator = ((IntIterable) iterable).iterator();
             while (iterator.hasNext()) {
-                add(iterator().nextInt());
+                add(iterator.nextInt());
             }
             return;
         }
@@ -69,9 +71,9 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
         return indexOfRange(o, 0, size);
     }
 
-    int indexOfRange(int o, int start, int end) {
+    int indexOfRange(int value, int start, int end) {
         for (int i = start; i < end; i++) {
-            if (o == elementData[i]) {
+            if (value == elementData[i]) {
                 return i;
             }
         }

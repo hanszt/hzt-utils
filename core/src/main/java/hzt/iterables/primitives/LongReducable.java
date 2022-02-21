@@ -108,18 +108,6 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
         return OptionalLong.of(result);
     }
 
-    default long count(@NotNull LongPredicate predicate) {
-        long count = 0;
-        PrimitiveIterator.OfLong iterator = this.iterator();
-        while (iterator.hasNext()) {
-            long l = iterator.nextLong();
-            if (predicate.test(l)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     default boolean any(@NotNull LongPredicate predicate) {
         PrimitiveIterator.OfLong iterator = this.iterator();
         while (iterator.hasNext()) {
@@ -151,16 +139,5 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
             }
         }
         return true;
-    }
-
-    @Override
-    default long count() {
-        long counter = 0;
-        final var iterator = iterator();
-        while (iterator.hasNext()) {
-            iterator.nextLong();
-            counter++;
-        }
-        return counter;
     }
 }

@@ -5,8 +5,10 @@ import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
+import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
@@ -19,10 +21,44 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
         int accumulator = initial;
         PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {
-            int t = iterator.nextInt();
-            accumulator = operator.applyAsInt(accumulator, t);
+            int nextInt = iterator.nextInt();
+            accumulator = operator.applyAsInt(accumulator, nextInt);
         }
         return initial;
+    }
+
+    default <R> R reduceTwo(
+            int initial1, @NotNull IntBinaryOperator operator1,
+            int initial2, @NotNull IntBinaryOperator operator2,
+            @NotNull BiFunction<Integer, Integer, R> finisher) {
+        PrimitiveIterator.OfInt iterator = iterator();
+        int accumulator1 = initial1;
+        int accumulator2 = initial2;
+        while (iterator.hasNext()) {
+            int nextInt = iterator.nextInt();
+            accumulator1 = operator1.applyAsInt(accumulator1, nextInt);
+            accumulator2 = operator2.applyAsInt(accumulator2, nextInt);
+        }
+        return finisher.apply(accumulator1, accumulator2);
+    }
+
+    default <R> Optional<R> reduceTwo(
+            @NotNull IntBinaryOperator operator1,
+            @NotNull IntBinaryOperator operator2,
+            @NotNull BiFunction<Integer, Integer, R> finisher) {
+        PrimitiveIterator.OfInt iterator = iterator();
+        if (iterator.hasNext()) {
+            final var first = iterator.nextInt();
+            int accumulator1 = first;
+            int accumulator2 = first;
+            while (iterator.hasNext()) {
+                final var nextInt = iterator.nextInt();
+                accumulator1 = operator1.applyAsInt(accumulator1, nextInt);
+                accumulator2 = operator2.applyAsInt(accumulator2, nextInt);
+            }
+            return Optional.of(finisher.apply(accumulator1, accumulator2));
+        }
+        return Optional.empty();
     }
 
     default @NotNull OptionalInt reduce(@NotNull IntBinaryOperator operator) {
@@ -112,18 +148,6 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
         return OptionalInt.of(result);
     }
 
-    default long count(@NotNull IntPredicate predicate) {
-        long count = 0;
-        PrimitiveIterator.OfInt iterator = this.iterator();
-        while (iterator.hasNext()) {
-            int i = iterator.nextInt();
-            if (predicate.test(i)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     default boolean any(@NotNull IntPredicate predicate) {
         PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {
@@ -155,16 +179,5 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
             }
         }
         return true;
-    }
-
-    @Override
-    default long count() {
-        long counter = 0;
-        final var iterator = iterator();
-        while (iterator.hasNext()) {
-            iterator.nextInt();
-            counter++;
-        }
-        return counter;
     }
 }

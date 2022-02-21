@@ -63,13 +63,4 @@ class TransformableTest {
 
         assertEquals(Pair.of(hallo, "Joepie"), pair);
     }
-
-    @Test
-    void testAsList() {
-        final var hallo = StringX.of("Hallo");
-
-        final var actual = hallo.asListX();
-
-        assertEquals(1, actual.size());
-    }
 }

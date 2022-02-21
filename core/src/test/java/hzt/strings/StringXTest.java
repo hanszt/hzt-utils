@@ -79,7 +79,7 @@ class StringXTest {
                 .concat("\nHallo")
                 .replaceFirst("lo", "asd")
                 .lines()
-                .toTwo(Sequence::count, s -> s.joinToString(""));
+                .split(Sequence::count, s -> s.joinToString(""));
 
         assertAll(
                 () -> assertEquals("Hey!123Halasd", actual.second()),

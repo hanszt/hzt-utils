@@ -3,6 +3,7 @@ package hzt.collectors;
 import hzt.PreConditions;
 import hzt.collections.ListX;
 import hzt.collections.MapX;
+import hzt.collections.MutableCollectionX;
 import hzt.collections.MutableListX;
 import hzt.collections.SetX;
 import hzt.function.QuadFunction;
@@ -141,26 +142,20 @@ public final class CollectorsX {
         return Collectors.groupingBy(StreamUtils.function(classifierPart1).andThen(classifierPart2));
     }
 
-    public static <T> Collector<T, ?, ListX<T>> toListX() {
-        return Collector.of((Supplier<MutableListX<T>>) MutableListX::empty, List::add, CollectorsX::accumulate, ListX::of);
+    public static <T> Collector<T, MutableListX<T>, ListX<T>> toListX() {
+        return Collector.of(MutableListX::empty, List::add, MutableListX::plus, ListX::of);
     }
 
     public static <T, R> Collector<T, ?, ListX<R>> toListXOf(Function<T, R> mapper) {
         return Collectors.mapping(mapper, toListX());
     }
 
-    public static <T> Collector<T, ?, SetX<T>> toSetX() {
-        return Collector
-                .of((Supplier<MutableListX<T>>) MutableListX::empty, List::add, CollectorsX::accumulate, SetX::of);
+    public static <T> Collector<T, MutableListX<T>, SetX<T>> toSetX() {
+        return Collector.of(MutableListX::empty, List::add, MutableCollectionX::plus, SetX::of);
     }
 
     public static <T, R> Collector<T, ?, SetX<R>> toSetXOf(Function<T, R> mapper) {
         return Collectors.mapping(mapper, toSetX());
-    }
-
-    private static <T> MutableListX<T> accumulate(MutableListX<T> left, MutableListX<T> right) {
-        left.addAll(right);
-        return left;
     }
 
     public static <T, K, V> Collector<T, ?, MapX<K, V>> toMapX(Function<T, K> keyMapper, Function<T, V> valueMapper) {
@@ -231,8 +226,8 @@ public final class CollectorsX {
      */
     public static <T, R1, R2, R>
     Collector<T, ?, R> teeing(Collector<? super T, ?, R1> downstream1,
-                                 Collector<? super T, ?, R2> downstream2,
-                                 BiFunction<? super R1, ? super R2, R> merger) {
+                              Collector<? super T, ?, R2> downstream2,
+                              BiFunction<? super R1, ? super R2, R> merger) {
         return teeing0(downstream1, downstream2, merger);
     }
 
@@ -244,8 +239,8 @@ public final class CollectorsX {
 
     private static <T, A1, A2, R1, R2, R>
     Collector<T, ?, R> teeing0(Collector<? super T, A1, R1> downstream1,
-                                  Collector<? super T, A2, R2> downstream2,
-                                  BiFunction<? super R1, ? super R2, R> merger) {
+                               Collector<? super T, A2, R2> downstream2,
+                               BiFunction<? super R1, ? super R2, R> merger) {
         PreConditions.requireAllNonNull(downstream1, downstream2, merger);
 
         Supplier<A1> c1Supplier = Objects.requireNonNull(downstream1.supplier());
@@ -328,8 +323,8 @@ public final class CollectorsX {
 
     public static <T, R1, R2, R3>
     Collector<T, ?, Triple<R1, R2, R3>> branching(Collector<? super T, ?, R1> downstream1,
-                                                    Collector<? super T, ?, R2> downstream2,
-                                                    Collector<? super T, ?, R3> downstream3) {
+                                                  Collector<? super T, ?, R2> downstream2,
+                                                  Collector<? super T, ?, R3> downstream3) {
         return branching0(downstream1, downstream2, downstream3, Triple::of);
     }
 

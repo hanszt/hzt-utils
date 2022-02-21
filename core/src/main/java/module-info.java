@@ -20,6 +20,7 @@ open module core {
     exports hzt.tuples;
     exports hzt.utils;
     exports hzt.collectors;
+    exports hzt.collectors.primitves;
     exports hzt.ranges;
     exports hzt.progressions;
     exports hzt.iterators.primitives;

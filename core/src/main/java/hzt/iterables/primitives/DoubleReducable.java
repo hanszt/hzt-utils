@@ -24,19 +24,6 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
         return OptionalDouble.empty();
     }
 
-    @Override
-    default long count(@NotNull DoublePredicate predicate) {
-        long count = 0;
-        PrimitiveIterator.OfDouble iterator = this.iterator();
-        while (iterator.hasNext()) {
-            double d = iterator.nextDouble();
-            if (predicate.test(d)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     default double first() {
         return findFirst().orElseThrow();
     }
@@ -126,16 +113,5 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
             }
         }
         return true;
-    }
-
-    @Override
-    default long count() {
-        long counter = 0;
-        final var iterator = iterator();
-        while (iterator.hasNext()) {
-            iterator.nextDouble();
-            counter++;
-        }
-        return counter;
     }
 }

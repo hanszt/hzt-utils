@@ -1,5 +1,6 @@
 package hzt.collections.primitives;
 
+import hzt.collections.CollectionX;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
@@ -21,7 +22,11 @@ public interface PrimitiveCollectionX<T, C, A> {
 
     boolean containsAll(@NotNull Iterable<T> iterable);
 
+    PrimitiveCollectionX<T, C, A> plus(Iterable<T> iterable);
+
     PrimitiveIterator<T, C> iterator();
+
+    CollectionX<T> boxed();
 
     A toArray();
 }

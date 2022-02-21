@@ -2,9 +2,11 @@ package hzt.sequences.primitives;
 
 import hzt.collections.primitives.DoubleListX;
 import hzt.function.TriFunction;
+import hzt.iterables.primitives.DoubleCollectable;
 import hzt.iterables.primitives.DoubleIterable;
+import hzt.iterables.primitives.DoubleNumerable;
 import hzt.iterables.primitives.DoubleReducable;
-import hzt.iterables.Streamable;
+import hzt.iterables.primitives.DoubleStreamable;
 import hzt.iterators.primitives.DoubleFilteringIterator;
 import hzt.iterators.primitives.DoubleGeneratorIterator;
 import hzt.iterators.primitives.DoubleMultiMappingIterator;
@@ -17,13 +19,11 @@ import hzt.statistics.DoubleStatistics;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
-import hzt.utils.Transformable;
 import net.mintern.primitive.Primitive;
 import net.mintern.primitive.comparators.DoubleComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -36,13 +36,10 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.DoubleStream;
-import java.util.stream.StreamSupport;
 
 @FunctionalInterface
-public interface DoubleSequence extends DoubleReducable,
-        PrimitiveSequence<Double, DoubleConsumer, DoubleUnaryOperator, DoublePredicate, DoubleBinaryOperator>,
-        Streamable<DoubleStream>,
-        Transformable<DoubleSequence> {
+public interface DoubleSequence extends DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable,
+        PrimitiveSequence<Double, DoubleConsumer, DoubleUnaryOperator, DoublePredicate, DoubleBinaryOperator> {
 
     static DoubleSequence empty() {
         return DoubleSequence.of(Sequence.empty());
@@ -196,56 +193,6 @@ public interface DoubleSequence extends DoubleReducable,
         return sorted(DoubleX::compareReversed);
     }
 
-    default double min() {
-        return min(It::noFilter);
-    }
-
-    default double min(DoublePredicate predicate) {
-        return filter(predicate).min();
-    }
-
-    default double max() {
-        return stats().getMax();
-    }
-
-    default double max(DoublePredicate predicate) {
-        return filter(predicate).max();
-    }
-
-    default double average() {
-        return stats().getAverage();
-    }
-
-    default double average(DoublePredicate predicate) {
-        return filter(predicate).average();
-    }
-
-    default double sum() {
-        return stats().getSum();
-    }
-
-    default double sum(DoublePredicate predicate) {
-        return filter(predicate).sum();
-    }
-
-    default double stdDev() {
-        return stats().getStandardDeviation();
-    }
-
-    default double stdDev(DoublePredicate predicate) {
-        return filter(predicate).stdDev();
-    }
-
-    default @NotNull DoubleStatistics stats() {
-        DoubleStatistics doubleStatistics = new DoubleStatistics();
-        PrimitiveIterator.OfDouble iterator = this.iterator();
-        while (iterator.hasNext()) {
-            double d = iterator.nextDouble();
-            doubleStatistics.accept(d);
-        }
-        return doubleStatistics;
-    }
-
     @Override
     default @NotNull DoubleSequence filter(@NotNull DoublePredicate predicate) {
         return () -> DoubleFilteringIterator.of(iterator(), predicate, true);
@@ -285,7 +232,7 @@ public interface DoubleSequence extends DoubleReducable,
         return windowed(size, size, true);
     }
 
-    default DoubleSequence chunked(int size, @NotNull ToDoubleFunction<DoubleSequence> transform) {
+    default DoubleSequence chunked(int size, @NotNull ToDoubleFunction<DoubleListX> transform) {
         return windowed(size, size, true).mapToDouble(transform);
     }
 
@@ -306,36 +253,24 @@ public interface DoubleSequence extends DoubleReducable,
     }
 
     default DoubleSequence windowed(int size, int step, boolean partialWindows,
-                                    @NotNull ToDoubleFunction<DoubleSequence> reducer) {
+                                    @NotNull ToDoubleFunction<DoubleListX> reducer) {
         return windowed(size, step, partialWindows).mapToDouble(reducer);
     }
 
-    default DoubleSequence windowed(int size, int step, @NotNull ToDoubleFunction<DoubleSequence> reducer) {
+    default DoubleSequence windowed(int size, int step, @NotNull ToDoubleFunction<DoubleListX> reducer) {
         return windowed(size, step, false, reducer);
     }
 
-    default DoubleSequence windowed(int size, @NotNull ToDoubleFunction<DoubleSequence> reducer) {
+    default DoubleSequence windowed(int size, @NotNull ToDoubleFunction<DoubleListX> reducer) {
         return windowed(size, 1, reducer);
     }
 
-    default DoubleSequence windowed(int size, boolean partialWindows, @NotNull ToDoubleFunction<DoubleSequence> reducer) {
+    default DoubleSequence windowed(int size, boolean partialWindows, @NotNull ToDoubleFunction<DoubleListX> reducer) {
         return windowed(size, 1, partialWindows, reducer);
-    }
-
-    default DoubleStream stream() {
-        return StreamSupport.doubleStream(spliterator(), false);
-    }
-
-    default DoubleStream parallelStream() {
-        return StreamSupport.doubleStream(spliterator(), true);
     }
 
     default double[] toArray() {
         return stream().toArray();
-    }
-
-    default @NotNull DoubleStatistics stats(@NotNull DoublePredicate doublePredicate) {
-        return filter(doublePredicate).stats();
     }
 
     default <R1, R2, R> R doublesToTwo(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,
@@ -360,11 +295,5 @@ public interface DoubleSequence extends DoubleReducable,
                                                            @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2,
                                                            @NotNull Function<? super DoubleSequence, ? extends R3> resultMapper3) {
         return doublesToThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
-    }
-
-    @Override
-    @NotNull
-    default DoubleSequence get() {
-        return this;
     }
 }

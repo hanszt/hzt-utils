@@ -25,14 +25,15 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
     }
 
     DoubleArrayList() {
-        elementData = new double[]{};
+        elementData = new double[PrimitiveListHelper.DEFAULT_CAPACITY];
     }
 
     DoubleArrayList(Iterable<Double> iterable) {
+        this();
         if (iterable instanceof DoubleIterable) {
             final var iterator = ((DoubleIterable) iterable).iterator();
             while (iterator.hasNext()) {
-                add(iterator().nextDouble());
+                add(iterator.nextDouble());
             }
             return;
         }
@@ -41,8 +42,9 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
         }
     }
 
-    public DoubleArrayList(double... array) {
-        elementData = Arrays.copyOf(array, array.length);
+    DoubleArrayList(double... array) {
+        size = array.length;
+        elementData = Arrays.copyOf(array, size);
     }
 
     @Override

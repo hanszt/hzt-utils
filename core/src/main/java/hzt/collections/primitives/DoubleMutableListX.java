@@ -1,5 +1,6 @@
 package hzt.collections.primitives;
 
+import hzt.collections.MutableListX;
 import hzt.iterators.primitives.PrimitiveListIterator;
 
 import java.util.PrimitiveIterator;
@@ -31,6 +32,11 @@ public interface DoubleMutableListX extends DoubleListX, DoubleMutableCollection
 
     default PrimitiveIterator.OfDouble iterator() {
         return listIterator();
+    }
+
+    @Override
+    default MutableListX<Double> boxed() {
+        return asSequence().boxed().toMutableList();
     }
 
     boolean add(double d);

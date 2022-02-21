@@ -33,6 +33,8 @@ class IntMutableListXTest {
                 () -> assertEquals(5L, l2),
                 () -> assertEquals(1, ints.size())
         );
+
+        ints.forEach(System.out::println);
     }
 
     @Test

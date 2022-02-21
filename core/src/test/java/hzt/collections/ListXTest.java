@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
@@ -126,6 +127,7 @@ class ListXTest {
 
         final List<LocalDate> expected = auctions.stream()
                 .map(PaintingAuction::getDateOfOpening)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         expected.add(LocalDate.MIN);
         expected.add(LocalDate.MAX);

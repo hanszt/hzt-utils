@@ -91,7 +91,7 @@ class CollectableTest {
                 .generate(LocalDate.of(1950, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhileInclusive(date -> date.getYear() <= 2000)
                 .filter(LocalDate::isLeapYear)
-                .toTwo(Sequence::toList, IterableX::last);
+                .split(Sequence::toList, IterableX::last);
 
         assertAll(
                 () -> assertEquals(4758, leepYearResult.first().size()),

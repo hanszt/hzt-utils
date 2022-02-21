@@ -1,11 +1,8 @@
 package hzt.collections.primitives;
 
-import hzt.sequences.primitives.LongSequence;
-import org.jetbrains.annotations.NotNull;
+import hzt.collections.ListX;
 
-import java.util.function.LongConsumer;
-
-public interface LongListX extends PrimitiveCollectionX<Long, LongConsumer, long[]>, LongSequence {
+public interface LongListX extends LongCollection {
 
     static LongListX empty() {
         return new LongArrayList();
@@ -22,28 +19,6 @@ public interface LongListX extends PrimitiveCollectionX<Long, LongConsumer, long
     static LongListX of(long... array) {
         return new LongArrayList(array);
     }
-    
-    default int size() {
-        return (int) count();
-    }
-
-    default boolean isEmpty() {
-        return none();
-    }
-
-    default boolean isNotEmpty() {
-        return any();
-    }
-
-    @Override
-    default boolean contains(Long l) {
-        return contains((long) l);
-    }
-
-    @Override
-    default boolean containsAll(@NotNull Iterable<Long> iterable) {
-        return LongSequence.of(iterable).all(this::contains);
-    }
 
     default boolean contains(long l) {
         return indexOf(l) >= 0;
@@ -55,5 +30,7 @@ public interface LongListX extends PrimitiveCollectionX<Long, LongConsumer, long
     long[] toArray();
 
     @Override
-    String toString();
+    default ListX<Long> boxed() {
+        return asSequence().boxed().toListX();
+    }
 }

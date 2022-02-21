@@ -1,6 +1,7 @@
 package hzt.sequences.primitives;
 
 import hzt.collections.MutableListX;
+import hzt.collections.primitives.DoubleListX;
 import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
@@ -98,7 +99,7 @@ class DoubleSequenceTest {
 
         final var windowed = DoubleSequence.of(array)
                 .windowed(5)
-                .map(DoubleSequence::toArray)
+                .map(DoubleListX::toArray)
                 .toTypedArray(double[][]::new);
 
         Sequence.of(windowed).map(Arrays::toString).forEach(It::println);
@@ -111,7 +112,7 @@ class DoubleSequenceTest {
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final var sums = DoubleSequence.of(array)
-                .windowed(3, DoubleSequence::sum)
+                .windowed(3, DoubleListX::sum)
                 .toArray();
 
         DoubleSequence.of(sums).forEachDouble(It::println);
@@ -125,7 +126,7 @@ class DoubleSequenceTest {
 
         final var windows = DoubleSequence.of(array)
                 .windowed(3, 2, true)
-                .map(DoubleSequence::toArray)
+                .map(DoubleListX::toArray)
                 .toTypedArray(double[][]::new);
 
         Sequence.of(windows).map(Arrays::toString).forEach(It::println);
@@ -138,7 +139,7 @@ class DoubleSequenceTest {
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final var sums = DoubleSequence.of(array)
-                .windowed(3, 2, true, DoubleSequence::sum)
+                .windowed(3, 2, true, DoubleListX::sum)
                 .toArray();
 
         DoubleSequence.of(sums).forEachDouble(It::println);
@@ -150,7 +151,7 @@ class DoubleSequenceTest {
     void testWindowedLargeDoubleSequence() {
         final var sums = DoubleSequence.generate(0, l -> ++l)
                 .take(1_000_000)
-                .windowed(1_000, 50, DoubleSequence::sum)
+                .windowed(1_000, 50, DoubleListX::sum)
                 .toArray();
 
         final var sums2 = Sequence.generate(0, l -> ++l)

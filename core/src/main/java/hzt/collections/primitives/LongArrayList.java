@@ -25,18 +25,20 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long, LongC
     }
 
     LongArrayList() {
-        elementData = new long[]{};
+        elementData = new long[PrimitiveListHelper.DEFAULT_CAPACITY];
     }
 
-    LongArrayList(long[] array) {
-        elementData = Arrays.copyOf(array, array.length);
+    LongArrayList(long... array) {
+        size = array.length;
+        elementData = Arrays.copyOf(array, size);
     }
 
     LongArrayList(Iterable<Long> iterable) {
+        this();
         if (iterable instanceof LongIterable) {
             final var iterator = ((LongIterable) iterable).iterator();
             while (iterator.hasNext()) {
-                add(iterator().nextLong());
+                add(iterator.nextLong());
             }
             return;
         }

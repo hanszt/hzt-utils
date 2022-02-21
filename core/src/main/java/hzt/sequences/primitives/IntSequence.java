@@ -2,9 +2,11 @@ package hzt.sequences.primitives;
 
 import hzt.collections.primitives.IntListX;
 import hzt.function.TriFunction;
-import hzt.iterables.Streamable;
+import hzt.iterables.primitives.IntCollectable;
 import hzt.iterables.primitives.IntIterable;
+import hzt.iterables.primitives.IntNumerable;
 import hzt.iterables.primitives.IntReducable;
+import hzt.iterables.primitives.IntStreamable;
 import hzt.iterators.primitives.IntFilteringIterator;
 import hzt.iterators.primitives.IntGeneratorIterator;
 import hzt.iterators.primitives.IntMultiMappingIterator;
@@ -14,17 +16,14 @@ import hzt.iterators.primitives.IntTakeWhileIterator;
 import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.numbers.IntX;
 import hzt.sequences.Sequence;
-import hzt.statistics.IntStatistics;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
-import hzt.utils.Transformable;
 import net.mintern.primitive.Primitive;
 import net.mintern.primitive.comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
@@ -37,13 +36,10 @@ import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ToIntFunction;
 import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
 
 @FunctionalInterface
-public interface IntSequence extends IntReducable,
-        PrimitiveSequence<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator>,
-        Streamable<IntStream>,
-        Transformable<IntSequence> {
+public interface IntSequence extends IntReducable, IntCollectable, IntNumerable, IntStreamable,
+        PrimitiveSequence<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator> {
 
     static IntSequence empty() {
         return IntSequence.of(Sequence.empty());
@@ -157,14 +153,6 @@ public interface IntSequence extends IntReducable,
         return boxed().map(function);
     }
 
-    default IntStream stream() {
-        return StreamSupport.intStream(spliterator(), false);
-    }
-
-    default IntStream parallelStream() {
-        return StreamSupport.intStream(spliterator(), true);
-    }
-
     default Sequence<Integer> boxed() {
         return Sequence.of(this);
     }
@@ -226,66 +214,6 @@ public interface IntSequence extends IntReducable,
         return () -> IntFilteringIterator.of(iterator(), predicate, false);
     }
 
-    default int min() {
-        return stats().getMin();
-    }
-
-    default int min(IntPredicate predicate) {
-        return filter(predicate).min();
-    }
-
-    default int max() {
-        return stats().getMax();
-    }
-
-    default int max(IntPredicate predicate) {
-        return filter(predicate).max();
-    }
-
-    default double average() {
-        return stats().getAverage();
-    }
-
-    default double average(IntPredicate predicate) {
-        return filter(predicate).average();
-    }
-
-    default long sum() {
-        long sum = 0;
-        PrimitiveIterator.OfInt iterator = iterator();
-        while (iterator.hasNext()) {
-            int i = iterator.nextInt();
-            sum += i;
-        }
-        return sum;
-    }
-
-    default long sum(IntPredicate predicate) {
-        return filter(predicate).sum();
-    }
-
-    default double stdDev() {
-        return stats().getStandardDeviation();
-    }
-
-    default double stdDev(IntPredicate predicate) {
-        return filter(predicate).stdDev();
-    }
-
-    default @NotNull IntStatistics stats() {
-        IntStatistics intStatistics = new IntStatistics();
-        PrimitiveIterator.OfInt iterator = this.iterator();
-        while (iterator.hasNext()) {
-            int i = iterator.nextInt();
-            intStatistics.accept(i);
-        }
-        return intStatistics;
-    }
-
-    default @NotNull IntStatistics stats(@NotNull IntPredicate predicate) {
-        return filter(predicate).stats();
-    }
-
     default @NotNull IntSequence onEach(@NotNull IntConsumer consumer) {
         return map(i -> {
             consumer.accept(i);
@@ -313,7 +241,7 @@ public interface IntSequence extends IntReducable,
         return windowed(size, size, true);
     }
 
-    default IntSequence chunked(int size, @NotNull ToIntFunction<IntSequence> transform) {
+    default IntSequence chunked(int size, @NotNull ToIntFunction<IntListX> transform) {
         return windowed(size, size, true).mapToInt(transform);
     }
 
@@ -334,19 +262,19 @@ public interface IntSequence extends IntReducable,
     }
 
     default IntSequence windowed(int size, int step, boolean partialWindows,
-                                  @NotNull ToIntFunction<IntSequence> reducer) {
+                                  @NotNull ToIntFunction<IntListX> reducer) {
         return windowed(size, step, partialWindows).mapToInt(reducer);
     }
 
-    default IntSequence windowed(int size, int step, @NotNull ToIntFunction<IntSequence> reducer) {
+    default IntSequence windowed(int size, int step, @NotNull ToIntFunction<IntListX> reducer) {
         return windowed(size, step, false, reducer);
     }
 
-    default IntSequence windowed(int size, @NotNull ToIntFunction<IntSequence> reducer) {
+    default IntSequence windowed(int size, @NotNull ToIntFunction<IntListX> reducer) {
         return windowed(size, 1, reducer);
     }
 
-    default IntSequence windowed(int size, boolean partialWindows, @NotNull ToIntFunction<IntSequence> reducer) {
+    default IntSequence windowed(int size, boolean partialWindows, @NotNull ToIntFunction<IntListX> reducer) {
         return windowed(size, 1, partialWindows, reducer);
     }
 
@@ -376,11 +304,5 @@ public interface IntSequence extends IntReducable,
                                                         @NotNull Function<? super IntSequence, ? extends R2> resultMapper2,
                                                         @NotNull Function<? super IntSequence, ? extends R3> resultMapper3) {
         return intsToThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
-    }
-
-    @Override
-    @NotNull
-    default IntSequence get() {
-        return this;
     }
 }

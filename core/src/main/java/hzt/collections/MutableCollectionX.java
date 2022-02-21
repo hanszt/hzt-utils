@@ -19,6 +19,11 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E> {
         return Collection.super.stream();
     }
 
+    @Override
+    default MutableListX<E> plus(@NotNull Iterable<E> iterable) {
+        return asSequence().plus(iterable).toMutableList();
+    }
+
     default boolean isEmpty()  {
         return CollectionX.super.isEmpty();
     }

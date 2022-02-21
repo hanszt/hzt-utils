@@ -74,7 +74,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <A, R> R collect(@NotNull Collector<T, A, R> collector) {
-        A result = collector.supplier().get();
+        final A result = collector.supplier().get();
         final BiConsumer<A, T> accumulator = collector.accumulator();
         for (T t : this) {
             if (t != null) {

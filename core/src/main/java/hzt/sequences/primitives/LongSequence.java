@@ -2,9 +2,11 @@ package hzt.sequences.primitives;
 
 import hzt.collections.primitives.LongListX;
 import hzt.function.TriFunction;
+import hzt.iterables.primitives.LongCollectable;
 import hzt.iterables.primitives.LongIterable;
+import hzt.iterables.primitives.LongNumerable;
 import hzt.iterables.primitives.LongReducable;
-import hzt.iterables.Streamable;
+import hzt.iterables.primitives.LongStreamable;
 import hzt.iterators.primitives.LongFilteringIterator;
 import hzt.iterators.primitives.LongGeneratorIterator;
 import hzt.iterators.primitives.LongMultiMappingIterator;
@@ -14,17 +16,14 @@ import hzt.iterators.primitives.LongTakeWhileIterator;
 import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
-import hzt.statistics.LongStatistics;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
-import hzt.utils.Transformable;
 import net.mintern.primitive.Primitive;
 import net.mintern.primitive.comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.LongBinaryOperator;
@@ -37,13 +36,10 @@ import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
 import java.util.function.ToLongFunction;
 import java.util.stream.LongStream;
-import java.util.stream.StreamSupport;
 
 @FunctionalInterface
-public interface LongSequence extends LongReducable,
-        PrimitiveSequence<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator>,
-        Streamable<LongStream>,
-        Transformable<LongSequence> {
+public interface LongSequence extends LongReducable, LongCollectable, LongNumerable, LongStreamable,
+        PrimitiveSequence<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator> {
 
     static LongSequence empty() {
         return LongSequence.of(Sequence.empty());
@@ -160,14 +156,6 @@ public interface LongSequence extends LongReducable,
         return Sequence.of(this);
     }
 
-    default LongStream stream() {
-        return StreamSupport.longStream(spliterator(), false);
-    }
-
-    default LongStream parallelStream() {
-        return StreamSupport.longStream(spliterator(), true);
-    }
-
     default LongSequence filter(@NotNull LongPredicate predicate) {
         return () -> LongFilteringIterator.of(iterator(), predicate, true);
     }
@@ -247,7 +235,7 @@ public interface LongSequence extends LongReducable,
         return windowed(size, size, true);
     }
 
-    default LongSequence chunked(int size, @NotNull ToLongFunction<LongSequence> transform) {
+    default LongSequence chunked(int size, @NotNull ToLongFunction<LongListX> transform) {
         return windowed(size, size, true).mapToLong(transform);
     }
 
@@ -268,80 +256,20 @@ public interface LongSequence extends LongReducable,
     }
 
     default LongSequence windowed(int size, int step, boolean partialWindows,
-                                  @NotNull ToLongFunction<LongSequence> reducer) {
+                                  @NotNull ToLongFunction<LongListX> reducer) {
         return windowed(size, step, partialWindows).mapToLong(reducer);
     }
 
-    default LongSequence windowed(int size, int step, @NotNull ToLongFunction<LongSequence> reducer) {
+    default LongSequence windowed(int size, int step, @NotNull ToLongFunction<LongListX> reducer) {
         return windowed(size, step, false, reducer);
     }
 
-    default LongSequence windowed(int size, @NotNull ToLongFunction<LongSequence> reducer) {
+    default LongSequence windowed(int size, @NotNull ToLongFunction<LongListX> reducer) {
         return windowed(size, 1, reducer);
     }
 
-    default LongSequence windowed(int size, boolean partialWindows, @NotNull ToLongFunction<LongSequence> reducer) {
+    default LongSequence windowed(int size, boolean partialWindows, @NotNull ToLongFunction<LongListX> reducer) {
         return windowed(size, 1, partialWindows, reducer);
-    }
-
-    default long min() {
-        return stats().getMin();
-    }
-
-    default long min(LongPredicate predicate) {
-        return filter(predicate).min();
-    }
-
-    default long max() {
-        return stats().getMax();
-    }
-
-    default long max(LongPredicate predicate) {
-        return filter(predicate).max();
-    }
-
-    default double average() {
-        return stats().getAverage();
-    }
-
-    default double average(LongPredicate predicate) {
-        return filter(predicate).average();
-    }
-
-    default long sum() {
-        long sum = 0;
-        PrimitiveIterator.OfLong iterator = this.iterator();
-        while (iterator.hasNext()) {
-            long value = iterator.nextLong();
-            sum += value;
-        }
-        return sum;
-    }
-
-    default long sum(LongPredicate predicate) {
-        return filter(predicate).sum();
-    }
-
-    default double stdDev() {
-        return stats().getStandardDeviation();
-    }
-
-    default double stdDev(LongPredicate predicate) {
-        return filter(predicate).stats().getStandardDeviation();
-    }
-
-    default @NotNull LongStatistics stats() {
-        var statistics = new LongStatistics();
-        PrimitiveIterator.OfLong iterator = this.iterator();
-        while (iterator.hasNext()) {
-            long value = iterator.nextLong();
-            statistics.accept(value);
-        }
-        return statistics;
-    }
-
-    default @NotNull LongStatistics stats(@NotNull LongPredicate predicate) {
-        return filter(predicate).stats();
     }
 
     default long[] toArray() {
@@ -370,11 +298,5 @@ public interface LongSequence extends LongReducable,
                                                         @NotNull Function<? super LongSequence, ? extends R2> resultMapper2,
                                                         @NotNull Function<? super LongSequence, ? extends R3> resultMapper3) {
         return longsToThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
-    }
-
-    @Override
-    @NotNull
-    default LongSequence get() {
-        return this;
     }
 }

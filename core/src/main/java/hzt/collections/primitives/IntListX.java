@@ -1,11 +1,8 @@
 package hzt.collections.primitives;
 
-import hzt.sequences.primitives.IntSequence;
-import org.jetbrains.annotations.NotNull;
+import hzt.collections.ListX;
 
-import java.util.function.IntConsumer;
-
-public interface IntListX extends PrimitiveCollectionX<Integer, IntConsumer, int[]>, IntSequence {
+public interface IntListX extends IntCollection {
 
     static IntListX empty() {
         return new IntArrayList();
@@ -23,28 +20,6 @@ public interface IntListX extends PrimitiveCollectionX<Integer, IntConsumer, int
         return new IntArrayList(array);
     }
 
-    default int size() {
-        return (int) count();
-    }
-
-    default boolean isEmpty() {
-        return none();
-    }
-
-    default boolean isNotEmpty() {
-        return any();
-    }
-
-    @Override
-    default boolean contains(Integer o) {
-        return contains((int) o);
-    }
-
-    @Override
-    default boolean containsAll(@NotNull Iterable<Integer> iterable) {
-        return IntSequence.of(iterable).all(this::contains);
-    }
-
     default boolean contains(int i) {
         return indexOf(i) >= 0;
     }
@@ -55,5 +30,7 @@ public interface IntListX extends PrimitiveCollectionX<Integer, IntConsumer, int
     int[] toArray();
 
     @Override
-    String toString();
+    default ListX<Integer> boxed() {
+        return asSequence().boxed().toListX();
+    }
 }

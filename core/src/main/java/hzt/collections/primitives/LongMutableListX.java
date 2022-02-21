@@ -1,5 +1,6 @@
 package hzt.collections.primitives;
 
+import hzt.collections.MutableListX;
 import hzt.iterators.primitives.PrimitiveListIterator;
 
 import java.util.PrimitiveIterator;
@@ -29,6 +30,11 @@ public interface LongMutableListX extends LongListX, LongMutableCollection,
 
     default PrimitiveIterator.OfLong iterator() {
         return listIterator();
+    }
+
+    @Override
+    default MutableListX<Long> boxed() {
+        return asSequence().boxed().toMutableList();
     }
 
     boolean add(long l);

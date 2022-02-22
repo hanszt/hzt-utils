@@ -1,8 +1,11 @@
 package hzt.collections.primitives;
 
 import hzt.collections.ListX;
+import hzt.iterables.primitives.PrimitiveSortable;
+import hzt.numbers.IntX;
+import hzt.utils.primitive_comparators.IntComparator;
 
-public interface IntListX extends IntCollection {
+public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator> {
 
     static IntListX empty() {
         return new IntArrayList();
@@ -32,5 +35,20 @@ public interface IntListX extends IntCollection {
     @Override
     default ListX<Integer> boxed() {
         return asSequence().boxed().toListX();
+    }
+
+    @Override
+    default IntListX sorted() {
+        return asSequence().sorted().toListX();
+    }
+
+    @Override
+    default IntListX sorted(IntComparator comparator) {
+        return asSequence().sorted(comparator).toListX();
+    }
+
+    @Override
+    default IntListX sortedDescending() {
+        return sorted(IntX::compareReversed);
     }
 }

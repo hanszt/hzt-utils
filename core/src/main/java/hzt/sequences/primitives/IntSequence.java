@@ -1,12 +1,14 @@
 package hzt.sequences.primitives;
 
 import hzt.collections.primitives.IntListX;
+import hzt.arrays.primitves.IntSort;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.IntCollectable;
 import hzt.iterables.primitives.IntIterable;
 import hzt.iterables.primitives.IntNumerable;
 import hzt.iterables.primitives.IntReducable;
 import hzt.iterables.primitives.IntStreamable;
+import hzt.iterables.primitives.PrimitiveSortable;
 import hzt.iterators.primitives.IntFilteringIterator;
 import hzt.iterators.primitives.IntGeneratorIterator;
 import hzt.iterators.primitives.IntMultiMappingIterator;
@@ -19,8 +21,7 @@ import hzt.sequences.Sequence;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
-import net.mintern.primitive.Primitive;
-import net.mintern.primitive.comparators.IntComparator;
+import hzt.utils.primitive_comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -39,6 +40,7 @@ import java.util.stream.IntStream;
 
 @FunctionalInterface
 public interface IntSequence extends IntReducable, IntCollectable, IntNumerable, IntStreamable,
+        PrimitiveSortable<IntComparator>,
         PrimitiveSequence<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator> {
 
     static IntSequence empty() {
@@ -196,7 +198,7 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
 
     default IntSequence sorted(IntComparator intComparator) {
         final var array = toArray();
-        Primitive.sort(array, intComparator);
+        IntSort.sort(array, intComparator);
         return IntSequence.of(array);
     }
 

@@ -37,7 +37,6 @@ class LongSequenceTest {
                 .map(l -> l + 2 * l)
                 .summaryStatistics();
 
-
         assertAll(
                 () -> assertEquals(6442749000L, stats.getMax()),
                 () -> assertEquals(3.2213745E9, stats.getAverage())

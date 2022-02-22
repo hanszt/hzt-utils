@@ -1,14 +1,11 @@
 open module core {
 
     requires org.jetbrains.annotations;
-    requires java.desktop;
-    requires primitive;
 
     exports hzt.collections;
     exports hzt.collections.primitives;
     exports hzt.function;
     exports hzt.function.predicates;
-    exports hzt.stream;
     exports hzt.sequences;
     exports hzt.sequences.primitives;
     exports hzt.statistics;
@@ -19,9 +16,11 @@ open module core {
     exports hzt.iterables.primitives;
     exports hzt.tuples;
     exports hzt.utils;
+    exports hzt.utils.primitive_comparators;
     exports hzt.collectors;
     exports hzt.collectors.primitves;
     exports hzt.ranges;
     exports hzt.progressions;
     exports hzt.iterators.primitives;
+    exports hzt.arrays.primitves;
 }

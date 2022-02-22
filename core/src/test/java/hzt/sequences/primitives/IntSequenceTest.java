@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import static hzt.utils.primitive_comparators.IntComparatorX.comparing;
+import static hzt.utils.primitive_comparators.IntComparator.comparing;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;

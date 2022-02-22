@@ -1,8 +1,11 @@
 package hzt.collections.primitives;
 
 import hzt.collections.ListX;
+import hzt.iterables.primitives.PrimitiveSortable;
+import hzt.numbers.DoubleX;
+import hzt.utils.primitive_comparators.DoubleComparator;
 
-public interface DoubleListX extends DoubleCollection {
+public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleComparator> {
 
     static DoubleListX empty() {
         return new DoubleArrayList();
@@ -32,5 +35,20 @@ public interface DoubleListX extends DoubleCollection {
     @Override
     default ListX<Double> boxed() {
         return asSequence().boxed().toListX();
+    }
+
+    @Override
+    default DoubleListX sorted() {
+        return asSequence().sorted().toListX();
+    }
+
+    @Override
+    default DoubleListX sorted(DoubleComparator comparator) {
+        return asSequence().sorted(comparator).toListX();
+    }
+
+    @Override
+    default DoubleListX sortedDescending() {
+        return sorted(DoubleX::compareReversed);
     }
 }

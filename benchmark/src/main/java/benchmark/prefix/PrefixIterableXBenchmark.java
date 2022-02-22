@@ -2,8 +2,6 @@ package benchmark.prefix;
 
 import hzt.sequences.primitives.IntSequence;
 import hzt.strings.StringX;
-import net.mintern.primitive.Primitive;
-import net.mintern.primitive.comparators.IntComparator;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;

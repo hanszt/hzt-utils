@@ -10,7 +10,6 @@ import hzt.function.QuadFunction;
 import hzt.function.QuintFunction;
 import hzt.function.TriFunction;
 import hzt.statistics.DoubleStatistics;
-import hzt.stream.StreamUtils;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
@@ -139,7 +138,8 @@ public final class CollectorsX {
 
     public static <T, A, K> Collector<T, ?, Map<K, List<T>>> groupingBy(Function<? super T, ? extends A> classifierPart1,
                                                                         Function<? super A, ? extends K> classifierPart2) {
-        return Collectors.groupingBy(StreamUtils.function(classifierPart1).andThen(classifierPart2));
+
+        return Collectors.groupingBy(classifierPart1.andThen(classifierPart2));
     }
 
     public static <T> Collector<T, MutableListX<T>, ListX<T>> toListX() {

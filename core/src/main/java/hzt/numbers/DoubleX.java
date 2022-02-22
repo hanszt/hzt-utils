@@ -42,6 +42,14 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
         return Double.isFinite(d);
     }
 
+    public static String toRoundedString(double d) {
+        return String.format("%.2f", d);
+    }
+
+    public static String toRoundedString(double d, int scale) {
+        return String.format(String.format("%%.%df", scale), d);
+    }
+
     public String toHexString() {
         return Double.toHexString(thisDouble);
     }

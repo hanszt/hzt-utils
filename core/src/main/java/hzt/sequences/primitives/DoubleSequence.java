@@ -1,5 +1,6 @@
 package hzt.sequences.primitives;
 
+import hzt.arrays.primitves.DoubleSort;
 import hzt.collections.primitives.DoubleListX;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.DoubleCollectable;
@@ -7,6 +8,7 @@ import hzt.iterables.primitives.DoubleIterable;
 import hzt.iterables.primitives.DoubleNumerable;
 import hzt.iterables.primitives.DoubleReducable;
 import hzt.iterables.primitives.DoubleStreamable;
+import hzt.iterables.primitives.PrimitiveSortable;
 import hzt.iterators.primitives.DoubleFilteringIterator;
 import hzt.iterators.primitives.DoubleGeneratorIterator;
 import hzt.iterators.primitives.DoubleMultiMappingIterator;
@@ -18,8 +20,7 @@ import hzt.sequences.Sequence;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
-import net.mintern.primitive.Primitive;
-import net.mintern.primitive.comparators.DoubleComparator;
+import hzt.utils.primitive_comparators.DoubleComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -38,6 +39,7 @@ import java.util.stream.DoubleStream;
 
 @FunctionalInterface
 public interface DoubleSequence extends DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable,
+        PrimitiveSortable<DoubleComparator>,
         PrimitiveSequence<Double, DoubleConsumer, DoubleUnaryOperator, DoublePredicate, DoubleBinaryOperator> {
 
     static DoubleSequence empty() {
@@ -182,7 +184,7 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
 
     default DoubleSequence sorted(DoubleComparator comparator) {
         final var array = toArray();
-        Primitive.sort(array, comparator);
+        DoubleSort.sort(array, comparator);
         return DoubleSequence.of(array);
     }
 

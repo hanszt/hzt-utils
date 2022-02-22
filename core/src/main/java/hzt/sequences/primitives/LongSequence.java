@@ -1,5 +1,6 @@
 package hzt.sequences.primitives;
 
+import hzt.arrays.primitves.LongSort;
 import hzt.collections.primitives.LongListX;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.LongCollectable;
@@ -7,6 +8,7 @@ import hzt.iterables.primitives.LongIterable;
 import hzt.iterables.primitives.LongNumerable;
 import hzt.iterables.primitives.LongReducable;
 import hzt.iterables.primitives.LongStreamable;
+import hzt.iterables.primitives.PrimitiveSortable;
 import hzt.iterators.primitives.LongFilteringIterator;
 import hzt.iterators.primitives.LongGeneratorIterator;
 import hzt.iterators.primitives.LongMultiMappingIterator;
@@ -19,8 +21,7 @@ import hzt.sequences.Sequence;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
-import net.mintern.primitive.Primitive;
-import net.mintern.primitive.comparators.LongComparator;
+import hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -39,6 +40,7 @@ import java.util.stream.LongStream;
 
 @FunctionalInterface
 public interface LongSequence extends LongReducable, LongCollectable, LongNumerable, LongStreamable,
+        PrimitiveSortable<LongComparator>,
         PrimitiveSequence<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator> {
 
     static LongSequence empty() {
@@ -199,7 +201,7 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
 
     default LongSequence sorted(LongComparator longComparator) {
         final var array = toArray();
-        Primitive.sort(array, longComparator);
+        LongSort.sort(array, longComparator);
         return LongSequence.of(array);
     }
 

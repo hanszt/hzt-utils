@@ -254,6 +254,10 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return Sequence.of(IterableX.super.sorted());
     }
 
+    default Sequence<T> shuffled() {
+        return toListX().shuffled().asSequence();
+    }
+
     @Override
     default <R extends Comparable<? super R>> Sequence<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
         return Sequence.of(IterableX.super.sortedBy(selector));

@@ -1,8 +1,12 @@
 package hzt.collections.primitives;
 
+import hzt.arrays.primitves.LongSort;
 import hzt.collections.ListX;
+import hzt.iterables.primitives.PrimitiveSortable;
+import hzt.numbers.LongX;
+import hzt.utils.primitive_comparators.LongComparator;
 
-public interface LongListX extends LongCollection {
+public interface LongListX extends LongCollection, PrimitiveSortable<LongComparator> {
 
     static LongListX empty() {
         return new LongArrayList();
@@ -32,5 +36,22 @@ public interface LongListX extends LongCollection {
     @Override
     default ListX<Long> boxed() {
         return asSequence().boxed().toListX();
+    }
+
+    @Override
+    default LongListX sorted() {
+        return sorted(Long::compare);
+    }
+
+    @Override
+    default LongListX sorted(LongComparator comparator) {
+        final var longs = toArray();
+        LongSort.sort(longs, comparator);
+        return LongListX.of(longs);
+    }
+
+    @Override
+    default LongListX sortedDescending() {
+        return sorted(LongX::compareReversed);
     }
 }

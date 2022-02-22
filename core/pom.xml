@@ -32,10 +32,6 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.mintern</groupId>
-            <artifactId>primitive</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

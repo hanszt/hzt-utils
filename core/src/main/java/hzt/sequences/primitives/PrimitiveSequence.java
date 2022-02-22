@@ -36,10 +36,6 @@ public interface PrimitiveSequence<T extends Number, C, F, P, B> extends Stringa
 
     PrimitiveSequence<T, C, F, P, B> skipWhileInclusive(@NotNull P predicate);
 
-    PrimitiveSequence<T, C, F, P, B> sorted();
-
-    PrimitiveSequence<T, C, F, P, B> sortedDescending();
-
     PrimitiveSequence<T, C, F, P, B> onEach(@NotNull C consumer);
 
     PrimitiveSequence<T, C, F, P, B> zip(@NotNull B merger, @NotNull Iterable<T> other);

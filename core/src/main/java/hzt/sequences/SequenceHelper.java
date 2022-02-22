@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.function.Function;
+import java.util.function.IntConsumer;
 import java.util.function.Predicate;
 
 final class SequenceHelper {
@@ -48,5 +49,17 @@ final class SequenceHelper {
             return "Both size " + size + " and step " + step + " must be greater than zero.";
         }
         return "size " + size + " must be greater than zero.";
+    }
+
+    static class HoldingConsumer implements IntConsumer {
+        private int value = 0;
+        @Override
+        public void accept(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 }

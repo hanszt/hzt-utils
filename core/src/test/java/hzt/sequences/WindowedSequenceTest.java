@@ -48,18 +48,24 @@ class WindowedSequenceTest {
     }
 
     @Test
-    void testVariableSizeChunkedSequence() {
-        var nextNr = new AtomicInteger();
+    void testVariableSizeChunkedSequenceSineShape() {
+        var x = new AtomicInteger(-3);
 
-        final var chunkedMonthsCounts = Sequence
-                .generate(LocalDate.of(1900, Month.JANUARY, 1), date -> date.plusMonths(1))
-                .chunked(1, size -> (int) (8 * (1 + Math.sin(.3 * nextNr.getAndIncrement()))))
-                .take(30)
+        final var chunkedCounts = Sequence
+                .generate(0, value -> ++value)
+                .chunked(1, size -> (int) (8 * (1 + Math.sin(.3 * x.getAndIncrement()))))
+                .take(20)
                 .onEach(It::println)
                 .mapToLong(Numerable::count)
                 .toListX();
 
-        assertEquals(LongListX.of(12, 24, 48, 96, 192, 384, 768, 1536, 3072), chunkedMonthsCounts);
+        assertEquals(LongListX.of(1, 1, 3, 5, 8, 10, 12, 14, 15, 15, 15, 14, 13, 11, 9, 6, 4, 2, 1, 1), chunkedCounts);
+    }
+
+    private int getAnInt(AtomicInteger nextNr) {
+        final var val = (int) (8 * (1 + Math.sin(.3 * nextNr.getAndIncrement())));
+        System.out.println("val = " + val);
+        return val;
     }
 
     @Test

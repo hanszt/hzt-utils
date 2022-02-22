@@ -178,7 +178,7 @@ class IntSequenceTest {
                 .filter(IntX.multipleOf(4))
                 .take(10_000)
                 .sortedDescending()
-                .onEach(e -> It.println(e + Thread.currentThread().getName()))
+//                .onEach(e -> It.println(e + Thread.currentThread().getName()))
                 .parallelStream()
                 .mapToDouble(this::multiplyByPi)
                 .toArray();
@@ -187,7 +187,7 @@ class IntSequenceTest {
     }
 
     private double multiplyByPi(int i) {
-        It.println(Thread.currentThread().getName());
+//        It.println(Thread.currentThread().getName());
         return i * Math.E;
     }
 
@@ -201,6 +201,9 @@ class IntSequenceTest {
                 .take(LENGTH)
                 .forEachInt(i -> array[index.getAndIncrement()] = (byte) i);
 
-        assertEquals(LENGTH, array.length);
+        assertAll(
+                () -> assertEquals(LENGTH, array.length),
+                () -> assertEquals(Byte.MIN_VALUE, array[0])
+        );
     }
 }

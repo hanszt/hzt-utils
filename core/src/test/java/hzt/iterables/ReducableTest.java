@@ -61,7 +61,7 @@ class ReducableTest {
 
         final var expected = dateSequence
                 .onEach(d -> iterations1.incrementAndGet())
-                .split(Numerable::count, Reducable::last);
+                .toTwo(Numerable::count, Reducable::last);
 
         final var iterations2 = new AtomicInteger();
 
@@ -88,7 +88,7 @@ class ReducableTest {
 
         final var expected = dateSequence
                 .onEach(d -> iterations1.incrementAndGet())
-                .split(Reducable::last, Reducable::first);
+                .toTwo(Reducable::last, Reducable::first);
 
         final var iterations2 = new AtomicInteger();
 

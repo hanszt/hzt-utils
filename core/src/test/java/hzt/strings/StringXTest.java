@@ -1,7 +1,6 @@
 package hzt.strings;
 
 import hzt.collections.ListX;
-import hzt.collections.MutableListX;
 import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,7 @@ class StringXTest {
         final ListX<Integer> characterCounts = StringX.of(hallo)
                 .group()
                 .values()
-                .map(MutableListX::size);
+                .map(ListX::size);
 
         It.println("hallo = " + characterCounts);
 
@@ -79,7 +78,7 @@ class StringXTest {
                 .concat("\nHallo")
                 .replaceFirst("lo", "asd")
                 .lines()
-                .split(Sequence::count, s -> s.joinToString(""));
+                .toTwo(Sequence::count, s -> s.joinToString(""));
 
         assertAll(
                 () -> assertEquals("Hey!123Halasd", actual.second()),

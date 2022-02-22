@@ -48,23 +48,22 @@ public final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
         int windowInitCapacity = Math.min(size, 1024);
         final int gap = step - size;
         size = calculateNextSize(size);
-        final var nextStep = calculateNextStep(step);
         if (gap >= 0) {
             computeNextForWindowedSequenceNoOverlap(windowInitCapacity, gap);
         } else {
             computeNextForWindowedSequenceOverlapping(windowInitCapacity);
         }
-        this.step = nextStep;
+        step = calculateNextStep(step);
         return ListX.of(nextWindow);
     }
 
     private int calculateNextSize(int cur) {
-        int next = cur == 0 ? initSize : nextSizeSupplier.applyAsInt(cur);
+        int next = cur <= 0 ? initSize : nextSizeSupplier.applyAsInt(cur);
         return (next > 0) ? next : 1;
     }
 
     private int calculateNextStep(int cur) {
-        int next = cur == 0 ? initStep : nextStepSupplier.applyAsInt(cur);
+        int next = cur <= 0 ? initStep : nextStepSupplier.applyAsInt(cur);
         return (next > 0) ? next : 1;
     }
 

@@ -1,6 +1,7 @@
 package hzt.collections.primitives;
 
 import hzt.sequences.primitives.IntSequence;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +27,7 @@ class IntMutableListXTest {
                 () -> assertEquals(2L, l),
                 () -> assertEquals(2, ints.size())
         );
-        System.out.println("ints = " + ints);
+        It.println("ints = " + ints);
         final var l2 = ints.removeAt(0);
         assertAll(
                 () -> assertFalse(ints.isEmpty()),
@@ -34,7 +35,7 @@ class IntMutableListXTest {
                 () -> assertEquals(1, ints.size())
         );
 
-        ints.forEach(System.out::println);
+        ints.forEach(It::println);
     }
 
     @Test

@@ -10,8 +10,6 @@ public class LongProgression implements LongSequence {
     private final long endInclusive;
     private final long step;
 
-    private int next;
-
     public LongProgression(long start, long endInclusive, long step) {
         if (step == 0) {
             throw new IllegalArgumentException("step must be none-zero");
@@ -27,6 +25,7 @@ public class LongProgression implements LongSequence {
     @Override
     public PrimitiveIterator.OfLong iterator() {
         return new PrimitiveIterator.OfLong() {
+            private long next = start;
             @Override
             public long nextLong() {
                 final long value = next;

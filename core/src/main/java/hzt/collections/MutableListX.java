@@ -53,6 +53,16 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
     boolean isEmpty();
 
     @Override
+    default boolean removeFirst() {
+        return remove(get(0));
+    }
+
+    @Override
+    default boolean removeLast() {
+        return remove(get(lastIndex()));
+    }
+
+    @Override
     default @NotNull MutableListX<E> get() {
         return this;
     }

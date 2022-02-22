@@ -1,6 +1,7 @@
 package hzt.collections.primitives;
 
 import hzt.sequences.primitives.DoubleSequence;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +28,7 @@ class DoubleMutableListXTest {
                 () -> assertEquals(2L, l),
                 () -> assertEquals(2, doubles.size())
         );
-        System.out.println("doubles = " + doubles);
+        It.println("doubles = " + doubles);
         final var l2 = doubles.removeLast();
         assertAll(
                 () -> assertFalse(doubles.isEmpty()),

@@ -7,14 +7,17 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleFunction;
 import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntBinaryOperator;
+import java.util.function.IntFunction;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongBinaryOperator;
+import java.util.function.LongFunction;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
@@ -111,6 +114,20 @@ public final class PrimitiveIterators {
         };
     }
 
+    public static <R> Iterator<R> intToObjIterator(PrimitiveIterator.OfInt iterator, IntFunction<R> mapper) {
+        return new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public R next() {
+                return mapper.apply(iterator.nextInt());
+            }
+        };
+    }
+
     @NotNull
     public static PrimitiveIterator.OfLong longArrayIterator(long[] array) {
         return new PrimitiveIterator.OfLong() {
@@ -191,6 +208,20 @@ public final class PrimitiveIterators {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
+            }
+        };
+    }
+
+    public static <R> Iterator<R> longToObjIterator(PrimitiveIterator.OfLong iterator, LongFunction<R> mapper) {
+        return new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public R next() {
+                return mapper.apply(iterator.nextLong());
             }
         };
     }
@@ -278,6 +309,20 @@ public final class PrimitiveIterators {
             @Override
             public boolean hasNext() {
                 return doubleIterator.hasNext();
+            }
+        };
+    }
+
+    public static <R> Iterator<R> doubleToObjIterator(PrimitiveIterator.OfDouble iterator, DoubleFunction<R> mapper) {
+        return new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public R next() {
+                return mapper.apply(iterator.nextDouble());
             }
         };
     }

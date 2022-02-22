@@ -211,7 +211,7 @@ class ListXTest {
 
         final var shuffled = integers.shuffled();
 
-        System.out.println("shuffled = " + shuffled);
+        It.println("shuffled = " + shuffled);
 
         assertAll(
                 () -> assertNotEquals(integers, shuffled),
@@ -226,7 +226,7 @@ class ListXTest {
 
         final var shuffled = input.shuffled();
 
-        System.out.println("shuffled = " + shuffled);
+        It.println("shuffled = " + shuffled);
 
         assertAll(
                 () -> assertNotEquals(input, shuffled),

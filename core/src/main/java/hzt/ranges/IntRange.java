@@ -1,6 +1,8 @@
 package hzt.ranges;
 
 import hzt.progressions.IntProgression;
+import hzt.sequences.primitives.IntSequence;
+import org.jetbrains.annotations.NotNull;
 
 public final class IntRange extends IntProgression implements ClosedRange<Integer> {
 
@@ -8,12 +10,16 @@ public final class IntRange extends IntProgression implements ClosedRange<Intege
         super(start, endInclusive, 1);
     }
 
-    public static IntRange closed(int start, int endExclusive) {
+    public static IntRange of(int start, int endExclusive) {
         return new IntRange(start, endExclusive - 1);
     }
 
-    public static IntRange of(int start, int endInclusive) {
+    public static IntRange closed(int start, int endInclusive) {
         return new IntRange(start, endInclusive);
+    }
+
+    public boolean containsAll(int @NotNull ... array) {
+        return IntSequence.of(array).all(this::contains);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package hzt.collections.primitives;
 
 import hzt.sequences.primitives.LongSequence;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +27,7 @@ class LongMutableListXTest {
                 () -> assertEquals(2L, l),
                 () -> assertEquals(2, longs.size())
         );
-        System.out.println("longs = " + longs);
+        It.println("longs = " + longs);
         final var l2 = longs.removeAt(0);
         assertAll(
                 () -> assertFalse(longs.isEmpty()),

@@ -18,7 +18,7 @@ class PrimitiveIterableTest {
 
         final var count = LongSequence.of(longSequence).count();
 
-        System.out.println("count = " + count);
+        It.println("count = " + count);
 
         final var longStream = StreamSupport.longStream(longSequence.spliterator(), false);
 

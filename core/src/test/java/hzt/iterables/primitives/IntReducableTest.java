@@ -2,6 +2,7 @@ package hzt.iterables.primitives;
 
 import hzt.collections.primitives.IntListX;
 import hzt.tuples.Pair;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -13,7 +14,7 @@ class IntReducableTest {
     void testReduceTwo() {
         final var integers = IntListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-        integers.forEach(System.out::println);
+        integers.forEach(It::println);
 
         final var pair = integers
                 .reduceTwo(1, (acc, next) -> acc * next,

@@ -15,7 +15,6 @@ import hzt.iterators.primitives.DoubleTakeWhileIterator;
 import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.numbers.DoubleX;
 import hzt.sequences.Sequence;
-import hzt.statistics.DoubleStatistics;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
@@ -101,7 +100,7 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
         return generate(start, d -> d + (start < endInclusive ? step : -step)).takeWhile(d -> (start < endInclusive) == (d < endInclusive));
     }
 
-    default DoubleSequence plus(@NotNull double... values) {
+    default DoubleSequence plus(double @NotNull ... values) {
         return Sequence.of(this, DoubleSequence.of(values)).flatMap(It::self).mapToDouble(It::asDouble);
     }
 
@@ -135,9 +134,8 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
         return () -> PrimitiveIterators.doubleToLongIterator(iterator(), mapper);
     }
 
-    @Override
-    default <R> Sequence<R> mapToObj(@NotNull Function<Double, R> function) {
-        return Sequence.of(this).map(function);
+    default <R> Sequence<R> mapToObj(@NotNull DoubleFunction<R> mapper) {
+        return () -> PrimitiveIterators.doubleToObjIterator(iterator(), mapper);
     }
 
     @Override

@@ -2,12 +2,12 @@ package hzt.sequences.primitives;
 
 import hzt.collections.MutableListX;
 import hzt.numbers.IntX;
-import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static hzt.utils.primitive_comparators.IntComparatorX.comparing;
@@ -37,7 +37,7 @@ class IntSequenceTest {
                 .plus(array)
                 .toArray();
 
-        System.out.println(Arrays.toString(result));
+        It.println(Arrays.toString(result));
 
         assertAll(
                 () -> assertEquals(18, result.length),
@@ -55,7 +55,7 @@ class IntSequenceTest {
                 .plus(ints)
                 .toArray();
 
-        System.out.println(Arrays.toString(result));
+        It.println(Arrays.toString(result));
 
         assertAll(
                 () -> assertEquals(14, result.length),
@@ -151,7 +151,7 @@ class IntSequenceTest {
                 .sortedDescending()
                 .toArray();
 
-        System.out.println("Arrays.toString(array) = " + Arrays.toString(sorted));
+        It.println("Arrays.toString(array) = " + Arrays.toString(sorted));
 
         assertArrayEquals(new int[]{9, 8, 7, 6, 5, 5, 4, 4, 4, 3, 1}, sorted);
     }
@@ -165,7 +165,7 @@ class IntSequenceTest {
                         .thenComparing(Integer::compareUnsigned))
                 .toArray();
 
-        System.out.println("Arrays.toString(array) = " + Arrays.toString(sorted));
+        It.println("Arrays.toString(array) = " + Arrays.toString(sorted));
 
         assertArrayEquals(new int[]{3, 4, 7, 8, 9, -6, -5, -5, -4, -4, -1}, sorted);
     }
@@ -173,16 +173,34 @@ class IntSequenceTest {
     @Test
     void testParallelStreamFromIntSequence() {
         // a parallel stream does not maintain the sorted nature of the sequence
-        // when going to sequential stream, then the order is maintained
+        // when using a sequential stream, then the order is maintained
         final var doubles = IntSequence.generate(0, i -> i + 2)
                 .filter(IntX.multipleOf(4))
-                .take(10000)
+                .take(10_000)
                 .sortedDescending()
+                .onEach(e -> It.println(e + Thread.currentThread().getName()))
                 .parallelStream()
-                .mapToDouble(i -> i * Math.E)
-                .peek(It::println)
+                .mapToDouble(this::multiplyByPi)
                 .toArray();
 
         assertEquals(10_000, doubles.length);
+    }
+
+    private double multiplyByPi(int i) {
+        It.println(Thread.currentThread().getName());
+        return i * Math.E;
+    }
+
+    @Test
+    void testToByteArray() {
+        AtomicInteger index = new AtomicInteger();
+        final var LENGTH = 10_000_000;
+        byte[] array = new byte[LENGTH];
+
+        IntSequence.generate(Byte.MIN_VALUE, i -> (i == Byte.MAX_VALUE) ? Byte.MIN_VALUE : ++i)
+                .take(LENGTH)
+                .forEachInt(i -> array[index.getAndIncrement()] = (byte) i);
+
+        assertEquals(LENGTH, array.length);
     }
 }

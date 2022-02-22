@@ -115,7 +115,7 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
         return filter(i -> i % step == 0);
     }
 
-    default IntSequence plus(@NotNull int... values) {
+    default IntSequence plus(int @NotNull ... values) {
         return Sequence.of(this, IntSequence.of(values)).flatMap(It::self).mapToInt(It::asInt);
     }
 
@@ -149,8 +149,8 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
         return () -> PrimitiveIterators.intToDoubleIterator(iterator(), mapper);
     }
 
-    default <R> Sequence<R> mapToObj(@NotNull Function<Integer, R> function) {
-        return boxed().map(function);
+    default <R> Sequence<R> mapToObj(@NotNull IntFunction<R> function) {
+        return () -> PrimitiveIterators.intToObjIterator(iterator(), function);
     }
 
     default Sequence<Integer> boxed() {
@@ -169,7 +169,7 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
 
     @Override
     default IntSequence takeWhileInclusive(@NotNull IntPredicate predicate) {
-        return  () -> IntTakeWhileIterator.of(iterator(), predicate, true);
+        return () -> IntTakeWhileIterator.of(iterator(), predicate, true);
     }
 
     @Override
@@ -262,7 +262,7 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
     }
 
     default IntSequence windowed(int size, int step, boolean partialWindows,
-                                  @NotNull ToIntFunction<IntListX> reducer) {
+                                 @NotNull ToIntFunction<IntListX> reducer) {
         return windowed(size, step, partialWindows).mapToInt(reducer);
     }
 

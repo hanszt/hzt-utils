@@ -160,10 +160,6 @@ public interface CollectionX<E> extends IterableX<E> {
         return windowed(size, size, true);
     }
 
-    default <R> ListX<R> chunked(int size, @NotNull Function<? super ListX<E>, ? extends R> transform) {
-        return windowed(size, size, true).map(transform);
-    }
-
     default ListX<ListX<E>> windowed(int size) {
         return windowed(size, 1);
     }

@@ -9,8 +9,6 @@ public interface Windowable<T> extends Iterable<T> {
 
     Windowable<ListX<T>> chunked(int size);
 
-    <R> Windowable<R> chunked(int size, @NotNull Function<? super ListX<T>, ? extends R> transform);
-
     Windowable<ListX<T>> windowed(int size);
 
     <R> Windowable<R> windowed(int size, @NotNull Function<? super ListX<T>, ? extends R> transform);

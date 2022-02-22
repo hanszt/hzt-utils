@@ -1,6 +1,8 @@
 package hzt.ranges;
 
 import hzt.progressions.LongProgression;
+import hzt.sequences.primitives.LongSequence;
+import org.jetbrains.annotations.NotNull;
 
 public final class LongRange extends LongProgression implements ClosedRange<Long> {
 
@@ -8,8 +10,16 @@ public final class LongRange extends LongProgression implements ClosedRange<Long
         super(start, endInclusive, 1);
     }
 
-    public static LongRange of(int start, int endInclusive) {
+    public static LongRange of(int start, int endExclusive) {
+        return new LongRange(start, endExclusive - 1L);
+    }
+
+    public static LongRange closed(int start, int endInclusive) {
         return new LongRange(start, endInclusive);
+    }
+
+    public boolean containsAll(long @NotNull ... array) {
+        return LongSequence.of(array).all(this::contains);
     }
 
     @Override

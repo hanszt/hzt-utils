@@ -1,7 +1,6 @@
 package hzt.sequences;
 
 import hzt.PreConditions;
-import hzt.collections.ListX;
 import hzt.function.QuadFunction;
 import hzt.function.TriFunction;
 import hzt.iterables.IterableX;
@@ -51,7 +50,7 @@ import java.util.stream.Stream;
  * @param <T> the type of the items in the Sequence
  */
 @FunctionalInterface
-public interface Sequence<T> extends IterableX<T> {
+public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     static <T> Sequence<T> empty() {
         return new EmptySequence<>();
@@ -182,43 +181,6 @@ public interface Sequence<T> extends IterableX<T> {
     @Override
     default <R> @NotNull Sequence<T> distinctBy(@NotNull Function<T, ? extends R> selector) {
         return new DistinctSequence<>(this, selector);
-    }
-
-    default Sequence<ListX<T>> chunked(int size) {
-        return windowed(size, size, true);
-    }
-
-    default <R> Sequence<R> chunked(int size, @NotNull Function<? super ListX<T>, ? extends R> transform) {
-        return windowed(size, size, true).map(transform);
-    }
-
-    default Sequence<ListX<T>> windowed(int size) {
-        return windowed(size, 1);
-    }
-
-    default <R> Sequence<R> windowed(int size, @NotNull Function<? super ListX<T>, ? extends R> transform) {
-        return windowed(size, 1).map(transform);
-    }
-
-    default Sequence<ListX<T>> windowed(int size, int step) {
-        return windowed(size, step, false);
-    }
-
-    default <R> Sequence<R> windowed(int size, int step, @NotNull Function<? super ListX<T>, ? extends R> transform) {
-        return windowed(size, step, false).map(transform);
-    }
-
-    default Sequence<ListX<T>> windowed(int size, boolean partialWindows) {
-        return windowed(size, 1, partialWindows);
-    }
-
-    default Sequence<ListX<T>> windowed(int size, int step, boolean partialWindows) {
-        return windowed(size, step, partialWindows, It::self);
-    }
-
-    default <R> Sequence<R> windowed(int size, int step, boolean partialWindows,
-                                     @NotNull Function<? super ListX<T>, R> transform) {
-        return new WindowedSequence<>(this, size, step, partialWindows).map(transform);
     }
 
     default <R> Sequence<R> zipWithNext(@NotNull BiFunction<? super T, ? super T, ? extends R> function) {

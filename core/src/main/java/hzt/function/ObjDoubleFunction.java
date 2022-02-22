@@ -1,7 +1,7 @@
 package hzt.function;
 
 @FunctionalInterface
-public interface DoubleFoldFunction<R> {
+public interface ObjDoubleFunction<R> {
 
     R apply(R acc, double value);
 }

@@ -130,7 +130,7 @@ class LongSequenceTest {
                 .sortedDescending()
                 .toArray();
 
-        System.out.println("Arrays.toString(array) = " + Arrays.toString(sorted));
+        It.println("Arrays.toString(array) = " + Arrays.toString(sorted));
 
         assertArrayEquals(new long[]{9, 8, 7, 6, 5, 5, 4, 4, 4, 3, 1}, sorted);
     }
@@ -143,7 +143,7 @@ class LongSequenceTest {
                 .zip(Long::sum, 1, 2, 3, 4)
                 .toArray();
 
-        System.out.println("Arrays.toString(array) = " + Arrays.toString(zipped));
+        It.println("Arrays.toString(array) = " + Arrays.toString(zipped));
 
         assertArrayEquals(new long[]{2, 4, 6, 8}, zipped);
     }
@@ -157,7 +157,7 @@ class LongSequenceTest {
                 .zip(Long::sum, list)
                 .toArray();
 
-        System.out.println("Arrays.toString(array) = " + Arrays.toString(zipped));
+        It.println("Arrays.toString(array) = " + Arrays.toString(zipped));
 
         assertArrayEquals(new long[]{2, 4, 6, 8, 10, 12}, zipped);
     }
@@ -233,7 +233,7 @@ class LongSequenceTest {
                 .map(s -> s.joinToString(System.lineSeparator()))
                         .joinToString(String.format("%n%n"));
 
-        System.out.println(cubeAsString);
+        It.println(cubeAsString);
 
         assertEquals(10, cube.length);
     }
@@ -247,7 +247,8 @@ class LongSequenceTest {
 
         final var sums2 = Sequence.generate(0, l -> ++l)
                 .take(1_000_000)
-                .windowed(1_000, 50, s -> s.sumOfLongs(It::asLong))
+                .windowed(1_000, 50)
+                .map(s -> s.sumOfLongs(It::asLong))
                 .mapToLong(It::asLong)
                 .toArray();
 

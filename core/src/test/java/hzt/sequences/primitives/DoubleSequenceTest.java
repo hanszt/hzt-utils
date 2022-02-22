@@ -9,11 +9,13 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.DoubleConsumer;
 import java.util.stream.DoubleStream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class DoubleSequenceTest {
 
@@ -57,7 +59,7 @@ class DoubleSequenceTest {
                 .take(5)
                 .toArray();
 
-        System.out.println("Arrays.toString(array) = " + Arrays.toString(sorted));
+        It.println("Arrays.toString(array) = " + Arrays.toString(sorted));
 
         final var expected = new double[]{9999.689416376881, 9996.547823723291, 9993.4062310697, 9990.26463841611, 9987.12304576252};
 
@@ -74,7 +76,7 @@ class DoubleSequenceTest {
                 .zip(Double::sum, 1, 2, 3, 4)
                 .toArray();
 
-        System.out.println("Arrays.toString(array) = " + Arrays.toString(zipped));
+        It.println("Arrays.toString(array) = " + Arrays.toString(zipped));
 
         assertArrayEquals(new double[]{2, 4, 6, 8}, zipped);
     }
@@ -88,7 +90,7 @@ class DoubleSequenceTest {
                 .zip(Double::sum, list)
                 .toArray();
 
-        System.out.println("Arrays.toString(array) = " + Arrays.toString(zipped));
+        It.println("Arrays.toString(array) = " + Arrays.toString(zipped));
 
         assertArrayEquals(new double[]{2, 4, 6, 8, 10, 12}, zipped);
     }
@@ -165,6 +167,39 @@ class DoubleSequenceTest {
                 () -> assertArrayEquals(sums, sums2)
         );
 
+    }
+
+    @Test
+    void testMapMulti() {
+        final var doubles = DoubleSequence.generate(Math.PI, d -> d + Math.PI)
+                .takeWhile(d -> d < 1_000 * Math.PI)
+                .mapMulti(this::doWork)
+                .toArray();
+
+        final var firstFour = DoubleSequence.of(doubles).take(4).mapToObj(this::rounded);
+
+        double[] expected = {Math.PI, Math.PI + .1, Math.PI + .2, Math.PI + .3};
+
+        final var expectedFirstFour = DoubleSequence.of(expected).mapToObj(this::rounded);
+
+        assertAll(
+                () -> assertEquals(10000, doubles.length),
+                () -> assertIterableEquals(expectedFirstFour, firstFour)
+        );
+    }
+
+    String rounded(double d) {
+        return String.format("%.8f", d);
+    }
+
+    private void doWork(double input, DoubleConsumer consumer) {
+        double output = input;
+        int counter = 0;
+        while (counter < 10) {
+            consumer.accept(output);
+            output += .1;
+            counter++;
+        }
     }
 
 }

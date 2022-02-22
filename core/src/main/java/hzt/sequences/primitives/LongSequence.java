@@ -115,7 +115,7 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
         return filter(l -> l % step == 0);
     }
 
-    default LongSequence plus(@NotNull long... values) {
+    default LongSequence plus(long @NotNull ... values) {
         return Sequence.of(this, LongSequence.of(values)).flatMap(It::self).mapToLong(It::asLong);
     }
 
@@ -148,8 +148,8 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
         return () -> PrimitiveIterators.longToDoubleIterator(iterator(), mapper);
     }
 
-    default <R> Sequence<R> mapToObj(@NotNull Function<Long, R> mapper) {
-        return Sequence.of(this).map(mapper);
+    default <R> Sequence<R> mapToObj(@NotNull LongFunction<R> mapper) {
+        return () -> PrimitiveIterators.longToObjIterator(iterator(), mapper);
     }
 
     default Sequence<Long> boxed() {
@@ -277,26 +277,26 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
     }
 
     default <R1, R2, R> R longsToTwo(@NotNull Function<? super LongSequence, ? extends R1> resultMapper1,
-                                    @NotNull Function<? super LongSequence, ? extends R2> resultMapper2,
-                                    @NotNull BiFunction<R1, R2, R> merger) {
+                                     @NotNull Function<? super LongSequence, ? extends R2> resultMapper2,
+                                     @NotNull BiFunction<R1, R2, R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
     }
 
     default <R1, R2> Pair<R1, R2> longsToTwo(@NotNull Function<? super LongSequence, ? extends R1> resultMapper1,
-                                            @NotNull Function<? super LongSequence, ? extends R2> resultMapper2) {
+                                             @NotNull Function<? super LongSequence, ? extends R2> resultMapper2) {
         return longsToTwo(resultMapper1, resultMapper2, Pair::of);
     }
 
     default <R1, R2, R3, R> R longsToThree(@NotNull Function<? super LongSequence, ? extends R1> resultMapper1,
-                                          @NotNull Function<? super LongSequence, ? extends R2> resultMapper2,
-                                          @NotNull Function<? super LongSequence, ? extends R3> resultMapper3,
-                                          @NotNull TriFunction<R1, R2, R3, R> merger) {
+                                           @NotNull Function<? super LongSequence, ? extends R2> resultMapper2,
+                                           @NotNull Function<? super LongSequence, ? extends R3> resultMapper3,
+                                           @NotNull TriFunction<R1, R2, R3, R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this), resultMapper3.apply(this));
     }
 
     default <R1, R2, R3> Triple<R1, R2, R3> longsToThree(@NotNull Function<? super LongSequence, ? extends R1> resultMapper1,
-                                                        @NotNull Function<? super LongSequence, ? extends R2> resultMapper2,
-                                                        @NotNull Function<? super LongSequence, ? extends R3> resultMapper3) {
+                                                         @NotNull Function<? super LongSequence, ? extends R2> resultMapper2,
+                                                         @NotNull Function<? super LongSequence, ? extends R3> resultMapper3) {
         return longsToThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
     }
 }

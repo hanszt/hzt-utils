@@ -70,7 +70,7 @@ class ReducableTest {
                 .foldTwo(0L, (acc, date) -> ++acc,
                         LocalDate.EPOCH, (first, second) -> second);
 
-        System.out.println("pair = " + actual);
+        It.println("pair = " + actual);
 
         assertAll(
                 () -> assertEquals(expected, actual),
@@ -97,7 +97,7 @@ class ReducableTest {
                 .reduceTwo((a, last) -> last, (first, b) -> first);
 
         final var pair = actual.orElseThrow();
-        System.out.println("pair = " + pair);
+        It.println("pair = " + pair);
 
         assertAll(
                 () -> assertEquals(expected.first(), pair.first()),

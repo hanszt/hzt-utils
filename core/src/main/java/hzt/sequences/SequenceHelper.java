@@ -1,5 +1,6 @@
 package hzt.sequences;
 
+import hzt.PreConditions;
 import hzt.iterators.FilteringIterator;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,5 +36,17 @@ final class SequenceHelper {
                 return mapper.apply(iterator.next());
             }
         };
+    }
+
+    static void checkInitWindowSizeAndStep(int size, int step) {
+        PreConditions.require(size > 0 && step > 0, () -> getErrorMessage(size, step));
+
+    }
+
+    private static String getErrorMessage(int size, int step) {
+        if (size != step) {
+            return "Both size " + size + " and step " + step + " must be greater than zero.";
+        }
+        return "size " + size + " must be greater than zero.";
     }
 }

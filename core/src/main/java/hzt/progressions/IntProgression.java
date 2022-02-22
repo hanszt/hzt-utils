@@ -10,8 +10,6 @@ public class IntProgression implements IntSequence {
     private final int endInclusive;
     private final int step;
 
-    private int next;
-
     public IntProgression(int start, int endInclusive, int step) {
         if (step == 0) {
             throw new IllegalArgumentException("step must be none-zero");
@@ -27,6 +25,7 @@ public class IntProgression implements IntSequence {
     @Override
     public PrimitiveIterator.OfInt iterator() {
         return new PrimitiveIterator.OfInt() {
+            private int next = start;
             @Override
             public int nextInt() {
                 final int value = next;

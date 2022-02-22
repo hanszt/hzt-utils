@@ -459,6 +459,22 @@ class SequenceTest {
     }
 
     @Test
+    void testWindowedVariableSize() {
+        final var windows = IntSequence.of(0, 40)
+                .boxed()
+                .windowed(1, n -> ++n, 4, true, It::self)
+                .toListX();
+
+        It.println("windows = " + windows);
+
+        assertAll(
+                () -> assertEquals(10, windows.size()),
+                () -> assertEquals(ListX.of(0), windows.first()),
+                () -> assertEquals(ListX.of(36, 37, 38, 39), windows.last())
+        );
+    }
+
+    @Test
     void testWindowedSizeGreaterThanSequenceSizeNoPartialWindowGivesEmptyList() {
         final var windows = IntSequence.of(0, 8)
                 .boxed()
@@ -495,7 +511,8 @@ class SequenceTest {
         final var sizes = IntSequence.of(0, 1_000)
                 .filter(i -> IntX.multipleOf(5).test(i))
                 .boxed()
-                .windowed(51, 7, ListX::size)
+                .windowed(51, 7)
+                .map(ListX::size)
                 .toListX();
 
         It.println("sizes = " + sizes);
@@ -658,7 +675,7 @@ class SequenceTest {
     void testToSortedLocalDateTime() {
         final LocalDateTime initDateTime = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0, 0);
 
-        final var sorted = IntRange.closed(0, 1_000)
+        final var sorted = IntRange.of(0, 1_000)
                 .mapToObj(initDateTime::plusDays)
                 .sorted()
                 .toListX();

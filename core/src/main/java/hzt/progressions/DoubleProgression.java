@@ -10,8 +10,6 @@ public class DoubleProgression implements DoubleSequence {
     private final double endInclusive;
     private final double step;
 
-    private double next;
-
     public DoubleProgression(double start, double endInclusive, double step) {
         if (step == 0) {
             throw new IllegalArgumentException("step must be none-zero");
@@ -24,6 +22,7 @@ public class DoubleProgression implements DoubleSequence {
     @Override
     public PrimitiveIterator.OfDouble iterator() {
         return new PrimitiveIterator.OfDouble() {
+            private double next = start;
             @Override
             public double nextDouble() {
                 final double value = next;

@@ -22,6 +22,8 @@ public interface PrimitiveCollectionX<T, C, A> {
 
     boolean containsAll(@NotNull Iterable<T> iterable);
 
+    boolean containsAll(@NotNull A array);
+
     PrimitiveCollectionX<T, C, A> plus(Iterable<T> iterable);
 
     PrimitiveIterator<T, C> iterator();

@@ -2,6 +2,8 @@ package hzt.sequences.primitives;
 
 import hzt.collections.MutableListX;
 import hzt.collections.primitives.LongListX;
+import hzt.progressions.LongProgression;
+import hzt.ranges.LongRange;
 import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
@@ -16,32 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LongSequenceTest {
-
-    @Test
-    void longRangeStatsGreaterThanIntegerMaxFasterThanSequentialStream() {
-        final var stats = LongSequence.of(0, Integer.MAX_VALUE + 100_000L, 1000)
-                .map(l -> l + 2 * l)
-                .stats();
-
-        assertAll(
-                () -> assertEquals(6442749000L, stats.getMax()),
-                () -> assertEquals(3.2213745E9, stats.getAverage())
-        );
-    }
-
-    @Test
-    void longStreamParallelStatsGreaterThanIntegerMax() {
-        final var stats = LongStream.range(0, Integer.MAX_VALUE + 100_000L)
-                .parallel()
-                .filter(l -> l % 1_000 == 0)
-                .map(l -> l + 2 * l)
-                .summaryStatistics();
-
-        assertAll(
-                () -> assertEquals(6442749000L, stats.getMax()),
-                () -> assertEquals(3.2213745E9, stats.getAverage())
-        );
-    }
 
     @Test
     void longRangeFromLongArray() {
@@ -66,17 +42,7 @@ class LongSequenceTest {
         final var end = 10_000_000;
         final var expected = LongStream.range(0, end).filter(l -> l % 4 == 0).toArray();
 
-        final var longs = LongSequence.until(end).step(4).toArray();
-
-        assertArrayEquals(expected, longs);
-    }
-
-    @Test
-    void negativeLongRangeStepped() {
-        final var end = 10_000_000;
-        final var expected = LongStream.iterate(0, i -> --i).limit(end).filter(l -> l % 4 == 0).toArray();
-
-        final var longs = LongSequence.until(-end).step(4).toArray();
+        final var longs = LongRange.until(end).step(4).toArray();
 
         assertArrayEquals(expected, longs);
     }

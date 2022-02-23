@@ -1,6 +1,6 @@
 package hzt.collections;
 
-import hzt.sequences.primitives.IntSequence;
+import hzt.ranges.IntRange;
 import hzt.sequences.EntrySequence;
 import hzt.strings.StringX;
 import hzt.tuples.IndexedValue;
@@ -164,7 +164,7 @@ class MapXTest {
     @Test
     void testBuildMap() {
         final var map = MapX.<Integer, LocalDate>build(m ->
-                IntSequence.of(1990, 2022).forEach(year -> m.put(year, LocalDate.of(year, 1, 1))));
+                IntRange.of(1990, 2022).forEach(year -> m.put(year, LocalDate.of(year, 1, 1))));
 
         map.forEach(It::println);
 

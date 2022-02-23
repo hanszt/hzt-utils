@@ -1,10 +1,12 @@
 package hzt.ranges;
 
+import org.jetbrains.annotations.NotNull;
+
 public interface ClosedRange<T extends Comparable<? super T>> {
 
-    T start();
+    @NotNull T start();
 
-    T endInclusive();
+    @NotNull T endInclusive();
 
     default boolean contains(T value) {
         return value.compareTo(start()) >= 0 && value.compareTo(endInclusive()) <= 0;

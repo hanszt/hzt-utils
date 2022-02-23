@@ -1,18 +1,18 @@
 package hzt.sequences;
 
 import hzt.collections.ListX;
-import hzt.collections.primitives.LongListX;
-import hzt.iterables.Numerable;
 import hzt.ranges.IntRange;
 import hzt.tuples.Pair;
 import hzt.utils.It;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntSupplier;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class WindowedSequenceTest {
@@ -49,29 +49,32 @@ class WindowedSequenceTest {
 
     @Test
     void testVariableSizeChunkedSequenceSineShape() {
-        var x = new AtomicInteger(-3);
-
-        final var chunkedCounts = Sequence
-                .generate(0, value -> ++value)
-                .chunked(1, size -> (int) (8 * (1 + Math.sin(.3 * x.getAndIncrement()))))
+        final var chunkSizes = Sequence.generate(0, i -> ++i)
+                .chunked(sineWaveGenerator())
                 .take(20)
                 .onEach(It::println)
-                .mapToLong(Numerable::count)
-                .toListX();
+                .mapToLong(ListX::size)
+                .toArray();
 
-        assertEquals(LongListX.of(1, 1, 3, 5, 8, 10, 12, 14, 15, 15, 15, 14, 13, 11, 9, 6, 4, 2, 1, 1), chunkedCounts);
+        assertArrayEquals(new long[] {1, 3, 5, 8, 10, 12, 14, 15, 15, 15, 14, 13, 11, 9, 6, 4, 2, 1, 1, 1}, chunkSizes);
     }
 
-    private int getAnInt(AtomicInteger nextNr) {
-        final var val = (int) (8 * (1 + Math.sin(.3 * nextNr.getAndIncrement())));
-        System.out.println("val = " + val);
-        return val;
+    @NotNull
+    private IntSupplier sineWaveGenerator() {
+        return new IntSupplier() {
+            int x = -3;
+
+            @Override
+            public int getAsInt() {
+                return (int) (8 * (1 + Math.sin(.3 * x++)));
+            }
+        };
     }
 
     @Test
     void testVariableStepAndSizeWindowedSequence() {
         final var windows = IntRange.closed(4, 50).boxed()
-                .windowed(5, nextSize -> ++nextSize, 10, nextStep -> --nextStep, true)
+                .windowed(5, size -> ++size, 10, step -> --step, true)
                 .toListX();
 
         System.out.println("windows = " + windows);

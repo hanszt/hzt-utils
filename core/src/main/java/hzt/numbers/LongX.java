@@ -1,5 +1,6 @@
 package hzt.numbers;
 
+import hzt.ranges.LongRange;
 import hzt.sequences.primitives.LongSequence;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
@@ -111,8 +112,8 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         return Long.decode(nm);
     }
 
-    public LongSequence until(long l) {
-        return LongSequence.of(thisLong, l);
+    public LongRange until(long l) {
+        return LongRange.of(thisLong, l);
     }
 
     @Override

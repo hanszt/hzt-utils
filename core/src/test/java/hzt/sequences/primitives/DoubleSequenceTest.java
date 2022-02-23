@@ -2,6 +2,7 @@ package hzt.sequences.primitives;
 
 import hzt.collections.MutableListX;
 import hzt.collections.primitives.DoubleListX;
+import hzt.ranges.DoubleRange;
 import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
@@ -18,17 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class DoubleSequenceTest {
-
-    @Test
-    void testRange() {
-        final var stats = DoubleSequence.of(0, 100, .01).stats();
-
-        assertAll(
-                () -> assertEquals(10_000, stats.getCount()),
-                () -> assertEquals("49.995", String.format(Locale.ENGLISH, "%.3f", stats.getAverage())),
-                () -> assertEquals("99.99", String.format(Locale.ENGLISH, "%.2f", stats.getMax()))
-        );
-    }
 
     @Test
     void doubleRangeFromDoubleArray() {

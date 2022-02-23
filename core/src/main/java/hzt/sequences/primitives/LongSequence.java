@@ -12,7 +12,6 @@ import hzt.iterables.primitives.PrimitiveSortable;
 import hzt.iterators.primitives.LongFilteringIterator;
 import hzt.iterators.primitives.LongGeneratorIterator;
 import hzt.iterators.primitives.LongMultiMappingIterator;
-import hzt.iterators.primitives.LongRangeIterator;
 import hzt.iterators.primitives.LongSkipWhileIterator;
 import hzt.iterators.primitives.LongTakeWhileIterator;
 import hzt.iterators.primitives.PrimitiveIterators;
@@ -65,40 +64,6 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
 
     static LongSequence of(LongStream longStream) {
         return longStream::iterator;
-    }
-
-    static LongSequence of(long start, long end) {
-        return of(start, end, 1);
-    }
-
-    static LongSequence of(long start, long end, long step) {
-        final var endInclusive = end + (start < end ? -1 : 1);
-        final LongSequence longSequence = () -> LongRangeIterator.of(start, endInclusive, step);
-        return start == end ? LongSequence.empty() : longSequence;
-    }
-
-    static LongX from(long start) {
-        return LongX.of(start);
-    }
-
-    static LongSequence until(long end) {
-        return of(0, end);
-    }
-
-    static LongSequence until(long end, long step) {
-        return of(0, end, step);
-    }
-
-    static LongSequence closed(long endInclusive) {
-        return closed(0, endInclusive);
-    }
-
-    static LongSequence closed(long start, long endInclusive) {
-        return closed(start, endInclusive, 1);
-    }
-
-    static LongSequence closed(long start, long endInclusive, long step) {
-        return () -> LongRangeIterator.of(start, endInclusive, step);
     }
 
     static LongSequence generate(long seedValue, LongUnaryOperator nextFunction) {

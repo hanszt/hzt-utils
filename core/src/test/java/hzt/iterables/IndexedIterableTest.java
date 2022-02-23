@@ -1,6 +1,7 @@
 package hzt.iterables;
 
 import hzt.numbers.IntX;
+import hzt.ranges.IntRange;
 import hzt.sequences.primitives.IntSequence;
 import hzt.tuples.IndexedValue;
 import hzt.utils.It;
@@ -17,7 +18,7 @@ class IndexedIterableTest {
     void testForEachIndexed() {
         List<IndexedValue<Integer>> list = new ArrayList<>();
 
-        IntSequence.closed(1, 100)
+        IntRange.closed(1, 100)
                 .filter(IntX::isEven)
                 .onEach(It::println)
                 .boxed()

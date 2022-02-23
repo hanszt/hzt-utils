@@ -3,6 +3,8 @@ package hzt.iterables;
 import hzt.collections.ListX;
 import hzt.collectors.CollectorsX;
 import hzt.numbers.IntX;
+import hzt.progressions.IntProgression;
+import hzt.ranges.IntRange;
 import hzt.sequences.primitives.IntSequence;
 import hzt.sequences.Sequence;
 import hzt.tuples.Triple;
@@ -128,7 +130,7 @@ class CollectableTest {
 
     @Test
     void testBranchSequenceToThree() {
-        final var triple = IntSequence.from(0).until(100)
+        final var triple = IntRange.from(0).until(100)
                 .intsToThree(IntSequence::toArray, s -> s.filter(IntX::isEven), IntSequence::stats);
 
         assertAll(
@@ -140,7 +142,7 @@ class CollectableTest {
 
     @Test
     void testBranchSequenceToFour() {
-        final var actual = IntSequence.from(0).until(100)
+        final var actual = IntProgression.from(0).until(100)
                 .filter(It::noFilter)
                 .boxed()
                 .toFour(Sequence::count,

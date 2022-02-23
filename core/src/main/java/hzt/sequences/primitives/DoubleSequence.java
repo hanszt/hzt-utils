@@ -66,14 +66,6 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
         return stream::iterator;
     }
 
-    static DoubleSequence of(double start, double end) {
-        return of(start, end, 1);
-    }
-
-    static DoubleSequence of(double start, double end, double step) {
-        return generate(start, d -> d + (start < end ? step : -step)).takeWhile(d -> start < end ? (d < end) : (d > end));
-    }
-
     static DoubleSequence generate(double seedValue, DoubleUnaryOperator nextFunction) {
         return generate(() -> seedValue, nextFunction);
     }
@@ -84,22 +76,6 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
 
     static DoubleSequence generate(@NotNull DoubleSupplier seedFunction, @NotNull DoubleUnaryOperator nextFunction) {
         return () -> DoubleGeneratorIterator.of(seedFunction, nextFunction);
-    }
-
-    static DoubleX from(double start) {
-        return DoubleX.of(start);
-    }
-
-    static DoubleSequence closed(double endInclusive) {
-        return closed(0, endInclusive);
-    }
-
-    static DoubleSequence closed(double start, double endInclusive) {
-        return closed(start, endInclusive, 1);
-    }
-
-    static DoubleSequence closed(double start, double endInclusive, double step) {
-        return generate(start, d -> d + (start < endInclusive ? step : -step)).takeWhile(d -> (start < endInclusive) == (d < endInclusive));
     }
 
     default DoubleSequence plus(double @NotNull ... values) {

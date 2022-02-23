@@ -2,6 +2,7 @@ package hzt.sequences.primitives;
 
 import hzt.collections.MutableListX;
 import hzt.numbers.IntX;
+import hzt.ranges.IntRange;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,7 @@ class IntSequenceTest {
     @Test
     void testSteppedIntRange() {
         var list = MutableListX.<Integer>empty();
-        for (int i : IntSequence.until(15).step(4)) {
+        for (int i : IntRange.until(15).step(4)) {
             It.println(i);
             list.add(i);
         }
@@ -66,7 +67,7 @@ class IntSequenceTest {
     @Test
     void testDescendingSteppedIntRange() {
         var list = MutableListX.<Integer>empty();
-        for (int i : IntSequence.from(100).downTo(20).step(5)) {
+        for (int i : IntRange.from(100).downTo(20).step(5)) {
             It.println(i);
             list.add(i);
         }
@@ -78,7 +79,7 @@ class IntSequenceTest {
 
     @Test
     void testDescendingIntRange() {
-        final var integers = IntSequence.from(100).downTo(20);
+        final var integers = IntRange.from(100).downTo(20);
         assertAll(
                 () -> assertEquals(81, integers.count()),
                 () -> assertEquals(100, integers.first())
@@ -87,14 +88,14 @@ class IntSequenceTest {
 
     @Test
     void testGetEmptyIntRangeWhenFromValueIsGreaterThanUntilValue() {
-        assertEquals(0 , IntSequence.from(100).until(0).count());
+        assertEquals(0 , IntRange.from(100).until(0).count());
     }
 
     @Test
     void testStats() {
         final var expected = IntStream.range(0, 100).summaryStatistics();
 
-        final var actual = IntSequence.of(0, 100).stats();
+        final var actual = IntRange.of(0, 100).stats();
 
         It.println("actual = " + actual);
 

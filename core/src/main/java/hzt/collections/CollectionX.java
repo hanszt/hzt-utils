@@ -132,8 +132,8 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     @Override
-    default ListX<E> sortedBy(Comparator<E> comparator) {
-        return (ListX<E>) IterableX.super.sortedBy(comparator);
+    default ListX<E> sorted(Comparator<E> comparator) {
+        return (ListX<E>) IterableX.super.sorted(comparator);
     }
 
     @Override

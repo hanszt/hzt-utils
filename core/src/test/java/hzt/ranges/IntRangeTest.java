@@ -2,12 +2,12 @@ package hzt.ranges;
 
 import hzt.collections.primitives.IntListX;
 import hzt.collections.primitives.IntMutableListX;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class IntRangeTest {
 
@@ -32,6 +32,52 @@ class IntRangeTest {
             list.add(i);
         }
         assertEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9), list);
+    }
+
+    @Test
+    void testRange() {
+        final var range = IntRange.of(2, 10);
+        assertIterableEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9), range);
+    }
+
+    @Test
+    void testSteppedRange() {
+        final var range = IntRange.of(2, 20, 2);
+
+        System.out.println("range = " + range);
+        range.forEach(It::println);
+
+        assertIterableEquals(IntListX.of(2, 4, 6, 8, 10, 12, 14, 16, 18), range);
+    }
+
+    @Test
+    void testRangeClosed() {
+        final var range = IntRange.closed(2, 10);
+        assertIterableEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9, 10), range);
+    }
+
+    @Test
+    void testSteppedRangeClosed() {
+        final var range = IntRange.closed(2, 20, 2);
+
+        System.out.println("range = " + range);
+        range.forEach(It::println);
+
+        assertIterableEquals(IntListX.of(2, 4, 6, 8, 10, 12, 14, 16, 18, 20), range);
+    }
+
+    @Test
+    void testRangeClosedToArray() {
+        assertArrayEquals(
+                IntStream.rangeClosed(5, 10).toArray(),
+                IntRange.closed(5, 10).toArray());
+    }
+
+    @Test
+    void emptyIntRange() {
+        final var empty = IntRange.empty();
+        empty.forEach(System.out::println);
+        assertTrue(empty.none());
     }
 
 }

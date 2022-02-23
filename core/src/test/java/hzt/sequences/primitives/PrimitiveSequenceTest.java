@@ -1,6 +1,9 @@
 package hzt.sequences.primitives;
 
 import hzt.numbers.BigDecimalX;
+import hzt.ranges.DoubleRange;
+import hzt.ranges.IntRange;
+import hzt.ranges.LongRange;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
@@ -33,9 +36,9 @@ class PrimitiveSequenceTest {
     @Test
     void testRangeFrom10To10YieldsEmptyRange() {
         assertAll(
-                () -> assertTrue(IntSequence.of(10, 10).none()),
-                () -> assertTrue(LongSequence.of(10, 10).none()),
-                () -> assertTrue(DoubleSequence.of(10, 10).none()));
+                () -> assertTrue(IntRange.of(10, 10).none()),
+                () -> assertTrue(LongRange.of(10, 10).none())
+        );
     }
 
 }

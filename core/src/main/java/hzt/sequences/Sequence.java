@@ -254,8 +254,9 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return Sequence.of(IterableX.super.sorted());
     }
 
-    default Sequence<T> shuffled() {
-        return toListX().shuffled().asSequence();
+    @Override
+    default Sequence<T> sorted(Comparator<T> comparator) {
+        return Sequence.of(IterableX.super.sorted(comparator));
     }
 
     @Override
@@ -264,13 +265,12 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default Sequence<T> sortedBy(Comparator<T> comparator) {
-        return Sequence.of(IterableX.super.sortedBy(comparator));
-    }
-
-    @Override
     default Sequence<T> sortedDescending() {
         return Sequence.of(IterableX.super.sortedDescending());
+    }
+
+    default Sequence<T> shuffled() {
+        return toListX().shuffled().asSequence();
     }
 
     @Override

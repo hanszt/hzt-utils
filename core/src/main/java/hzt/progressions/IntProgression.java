@@ -1,6 +1,8 @@
 package hzt.progressions;
 
+import hzt.numbers.IntX;
 import hzt.sequences.primitives.IntSequence;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 
@@ -10,7 +12,7 @@ public class IntProgression implements IntSequence {
     private final int endInclusive;
     private final int step;
 
-    public IntProgression(int start, int endInclusive, int step) {
+    protected IntProgression(int start, int endInclusive, int step) {
         if (step == 0) {
             throw new IllegalArgumentException("step must be none-zero");
         }
@@ -22,12 +24,42 @@ public class IntProgression implements IntSequence {
         this.step = step;
     }
 
+    public static IntProgression empty() {
+        return new IntProgression(0, -1, 1);
+    }
+
+    public static IntX from(int start) {
+        return IntX.of(start);
+    }
+
+    public static IntProgression until(int end) {
+        return new IntProgression(0, end, 1);
+    }
+
+    public static IntProgression until(int end, int step) {
+        return new IntProgression(0, end, step);
+    }
+
+    public static IntProgression downTo(int lower) {
+        if (lower > 0) {
+            return new IntProgression(0, 0, -1);
+        }
+        return new IntProgression(0, lower, -1);
+    }
+
+    public static IntProgression closed(int start, int endInclusive, int step) {
+        return new IntProgression(start, endInclusive, step);
+    }
+
     @Override
     public PrimitiveIterator.OfInt iterator() {
         return new PrimitiveIterator.OfInt() {
             private int next = start;
             @Override
             public int nextInt() {
+                if (step == 0) {
+                    throw new IllegalArgumentException("step may not be zero");
+                }
                 final int value = next;
                 next += step;
                 return value;
@@ -35,16 +67,25 @@ public class IntProgression implements IntSequence {
 
             @Override
             public boolean hasNext() {
-                return (step > 0) ? (next <= endInclusive) : (next >= endInclusive);
+                return step != 0 && (step > 0) ? (next <= endInclusive) : (next >= endInclusive);
             }
         };
     }
 
-    protected int getStart() {
+    protected @NotNull Integer start() {
         return start;
     }
 
-    protected int getEndInclusive() {
+    protected @NotNull Integer endInclusive() {
         return endInclusive;
+    }
+
+    @Override
+    public String toString() {
+        return "IntProgression{" +
+                "start=" + start +
+                ", endInclusive=" + endInclusive +
+                ", step=" + step +
+                '}';
     }
 }

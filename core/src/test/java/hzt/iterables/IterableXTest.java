@@ -6,6 +6,7 @@ import hzt.collections.MutableListX;
 import hzt.collections.SetX;
 import hzt.collectors.BigDecimalCollectors;
 import hzt.numbers.IntX;
+import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
 import hzt.sequences.primitives.IntSequence;
 import hzt.statistics.BigDecimalSummaryStatistics;
@@ -959,7 +960,7 @@ public class IterableXTest {
 
     @Test
     void testDifferenceBetweenIterableXAndSequence() {
-        final ListX<Integer> range = IntSequence.of(0, 20).boxed().toListX();
+        final ListX<Integer> range = IntRange.of(0, 20).boxed().toListX();
 
         final ListX<String> strings = range.asSequence()
                 .filter(IntX::isEven)

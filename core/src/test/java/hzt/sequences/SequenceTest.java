@@ -273,7 +273,7 @@ class SequenceTest {
 
     @Test
     void testLargeSequence() {
-        final ListX<BigDecimal> bigDecimals = IntSequence.of(0, 100_000)
+        final ListX<BigDecimal> bigDecimals = IntRange.of(0, 100_000)
                 .filter(IntX::isEven)
                 .boxed()
                 .map(BigDecimal::valueOf)
@@ -335,27 +335,6 @@ class SequenceTest {
     }
 
     @Test
-    void testRange() {
-        assertArrayEquals(
-                IntStream.range(5, 10).toArray(),
-                IntSequence.of(5, 10).toArray());
-    }
-
-    @Test
-    void testRangeWithInterval() {
-        assertArrayEquals(
-                LongStream.range(5, 10).filter(LongX::isOdd).toArray(),
-                LongSequence.of(5, 10, 2).toArray());
-    }
-
-    @Test
-    void testRangeClosed() {
-        assertArrayEquals(
-                IntStream.rangeClosed(5, 10).toArray(),
-                IntSequence.closed(5, 10).toArray());
-    }
-
-    @Test
     void testIterateRandomWithinBound() {
         final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5);
 
@@ -395,7 +374,7 @@ class SequenceTest {
 
     @Test
     void testWindowedStepGreaterThanWindowSizeWithPartialWindow() {
-        final var windows = IntSequence.of(0, 98)
+        final var windows = IntRange.of(0, 98)
                 .boxed()
                 .windowed(5, 6, true)
                 .toListX();
@@ -412,7 +391,7 @@ class SequenceTest {
 
     @Test
     void testWindowedStepGreaterThanWindowSizeNoPartialWindow() {
-        final var windows = IntSequence.of(0, 98)
+        final var windows = IntRange.of(0, 98)
                 .boxed()
                 .windowed(5, 6)
                 .toListX();
@@ -428,7 +407,7 @@ class SequenceTest {
 
     @Test
     void testWindowedStepSmallerThanWindowSizeWithPartialWindow() {
-        final var windows = IntSequence.closed(0, 10)
+        final var windows = IntRange.closed(0, 10)
                 .boxed()
                 .windowed(5, 2, true)
                 .toListX();
@@ -444,7 +423,7 @@ class SequenceTest {
 
     @Test
     void testWindowedStepSmallerThanWindowSizeNoPartialWindow() {
-        final var windows = IntSequence.of(0, 9)
+        final var windows = IntRange.of(0, 9)
                 .boxed()
                 .windowed(4, 2)
                 .toListX();
@@ -460,7 +439,7 @@ class SequenceTest {
 
     @Test
     void testWindowedVariableSize() {
-        final var windows = IntSequence.of(0, 40)
+        final var windows = IntRange.of(0, 40)
                 .boxed()
                 .windowed(1, n -> ++n, 4, true, It::self)
                 .toListX();
@@ -488,7 +467,7 @@ class SequenceTest {
 
     @Test
     void testLargeWindowedSequence() {
-        final var windows = IntSequence.of(0, 1_000_000)
+        final var windows = IntRange.of(0, 1_000_000)
                 .boxed()
                 .windowed(2_001, 23, true)
                 .toListX();
@@ -508,7 +487,7 @@ class SequenceTest {
 
     @Test
     void testSequenceWindowedTransformed() {
-        final var sizes = IntSequence.of(0, 1_000)
+        final var sizes = IntRange.of(0, 1_000)
                 .filter(i -> IntX.multipleOf(5).test(i))
                 .boxed()
                 .windowed(51, 7)
@@ -535,7 +514,7 @@ class SequenceTest {
 
     @Test
     void testZipWithNext() {
-        final var sums = IntSequence.of(0, 1_000)
+        final var sums = IntRange.of(0, 1_000)
                 .filter(IntX.multipleOf(10))
                 .onEach(i -> It.print(i + ", "))
                 .boxed()
@@ -609,7 +588,7 @@ class SequenceTest {
 
     @Test
     void testGeneratedSequenceCanBeConsumedMultipleTimes() {
-        var leapYears = IntSequence.from(1900).upTo(2000).step(2)
+        var leapYears = IntRange.from(1900).upTo(2000).step(2)
                 .boxed()
                 .map(Year::of)
                 .filter(Year::isLeap);

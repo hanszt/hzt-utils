@@ -1,7 +1,7 @@
 package hzt.sequences.primitives;
 
-import hzt.collections.primitives.IntListX;
 import hzt.arrays.primitves.IntSort;
+import hzt.collections.primitives.IntListX;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.IntCollectable;
 import hzt.iterables.primitives.IntIterable;
@@ -12,7 +12,6 @@ import hzt.iterables.primitives.PrimitiveSortable;
 import hzt.iterators.primitives.IntFilteringIterator;
 import hzt.iterators.primitives.IntGeneratorIterator;
 import hzt.iterators.primitives.IntMultiMappingIterator;
-import hzt.iterators.primitives.IntRangeIterator;
 import hzt.iterators.primitives.IntSkipWhileIterator;
 import hzt.iterators.primitives.IntTakeWhileIterator;
 import hzt.iterators.primitives.PrimitiveIterators;
@@ -65,40 +64,6 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
 
     static IntSequence of(IntStream stream) {
         return stream::iterator;
-    }
-
-    static IntSequence of(int start, int end) {
-        return of(start, end, 1);
-    }
-
-    static IntSequence of(int start, int end, int step) {
-        final var endInclusive = end + (start < end ? -1 : 1);
-        final IntSequence longRange = () -> IntRangeIterator.of(start, endInclusive, step);
-        return start == end ? IntSequence.empty() : longRange;
-    }
-
-    static IntX from(int start) {
-        return IntX.of(start);
-    }
-
-    static IntSequence until(int end) {
-        return of(0, end);
-    }
-
-    static IntSequence until(int end, int step) {
-        return of(0, end, step);
-    }
-
-    static IntSequence closed(int endInclusive) {
-        return closed(0, endInclusive);
-    }
-
-    static IntSequence closed(int start, int endInclusive) {
-        return () -> IntRangeIterator.of(start, endInclusive, 1);
-    }
-
-    static IntSequence closed(int start, int endInclusive, int step) {
-        return () -> IntRangeIterator.of(start, endInclusive, step);
     }
 
     static IntSequence generate(int seedValue, IntUnaryOperator nextFunction) {

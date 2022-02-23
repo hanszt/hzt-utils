@@ -7,6 +7,7 @@ import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
+import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 
 @FunctionalInterface
@@ -14,6 +15,10 @@ public interface WindowedSequence<T> extends Windowable<T> {
 
     default Sequence<ListX<T>> chunked(int size) {
         return windowed(size, size, true);
+    }
+
+    default Sequence<ListX<T>> chunked(IntSupplier nextSizeSupplier) {
+        return chunked(nextSizeSupplier.getAsInt(), size -> nextSizeSupplier.getAsInt());
     }
 
     default Sequence<ListX<T>> chunked(int initSize, IntUnaryOperator nextSizeSupplier) {

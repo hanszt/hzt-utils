@@ -1,5 +1,7 @@
 package hzt.numbers;
 
+import hzt.progressions.IntProgression;
+import hzt.ranges.IntRange;
 import hzt.sequences.primitives.IntSequence;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
@@ -22,16 +24,16 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return new IntX(number.intValue());
     }
 
-    public IntSequence downTo(int target) {
-        return target > integer ? IntSequence.empty() : IntSequence.of(integer, target - 1);
+    public IntProgression downTo(int target) {
+        return target > integer ? IntProgression.empty() : IntProgression.closed(integer, target, -1);
     }
 
     public IntSequence upTo(int target) {
-        return target < integer ? IntSequence.empty() : IntSequence.closed(integer, target);
+        return target < integer ? IntSequence.empty() : IntRange.closed(integer, target);
     }
 
-    public IntSequence until(int bound) {
-        return bound < integer ? IntSequence.empty() : IntSequence.of(integer, bound);
+    public IntRange until(int bound) {
+        return IntRange.of(integer, bound);
     }
 
     public static String toString(int i, int radix) {

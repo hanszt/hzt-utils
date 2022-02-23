@@ -15,14 +15,14 @@ public interface Sortable<T> extends Iterable<T> {
         return toMutableListSortedBy((Function<T, R>) IterableXHelper::asComparableOrThrow);
     }
 
-    default <R extends Comparable<? super R>> Sortable<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
-        return toMutableListSortedBy(selector);
-    }
-
-    default Sortable<T> sortedBy(Comparator<T> comparator) {
+    default Sortable<T> sorted(Comparator<T> comparator) {
         final MutableListX<T> list = MutableListX.of(this);
         list.sort(comparator);
         return list;
+    }
+
+    default <R extends Comparable<? super R>> Sortable<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
+        return toMutableListSortedBy(selector);
     }
 
     default <R extends Comparable<? super R>> Sortable<T> sortedDescending() {

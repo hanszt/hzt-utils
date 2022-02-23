@@ -1,6 +1,8 @@
 package hzt.progressions;
 
+import hzt.numbers.DoubleX;
 import hzt.sequences.primitives.DoubleSequence;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 
@@ -11,12 +13,16 @@ public class DoubleProgression implements DoubleSequence {
     private final double step;
 
     public DoubleProgression(double start, double endInclusive, double step) {
-        if (step == 0) {
+        if (Double.compare(step, 0) == 0) {
             throw new IllegalArgumentException("step must be none-zero");
         }
         this.start = start;
         this.endInclusive = endInclusive;
         this.step = step;
+    }
+
+    static DoubleX from(double start) {
+        return DoubleX.of(start);
     }
 
     @Override
@@ -37,11 +43,11 @@ public class DoubleProgression implements DoubleSequence {
         };
     }
 
-    protected double getStart() {
+    protected @NotNull Double start() {
         return start;
     }
 
-    protected double getEndInclusive() {
+    protected @NotNull Double endInclusive() {
         return endInclusive;
     }
 }

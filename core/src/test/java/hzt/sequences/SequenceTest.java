@@ -9,7 +9,6 @@ import hzt.numbers.IntX;
 import hzt.numbers.LongX;
 import hzt.ranges.IntRange;
 import hzt.sequences.primitives.IntSequence;
-import hzt.sequences.primitives.LongSequence;
 import hzt.strings.StringX;
 import hzt.test.Generator;
 import hzt.utils.It;
@@ -18,23 +17,29 @@ import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -665,4 +670,47 @@ class SequenceTest {
         );
     }
 
+    @Test
+    void testSequenceOfZoneIds() {
+        Instant now = Instant.now();
+        ZonedDateTime current = now.atZone(ZoneId.systemDefault());
+        System.out.printf("Current time is %s%n%n", current);
+
+        final var noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
+
+        noneWholeHourZoneOffsetSummaries.forEach(It::println);
+
+        assertEquals(23, noneWholeHourZoneOffsetSummaries.count());
+    }
+
+    private boolean nonWholeHourOffsets(Instant instant, ZoneId id) {
+        return instant.atZone(id).getOffset().getTotalSeconds() % 3600 != 0;
+    }
+
+    @Test
+    void testTimeZonesAntarctica() {
+        Instant now = Instant.now();
+        ZonedDateTime current = now.atZone(ZoneId.systemDefault());
+        System.out.printf("Current time is %s%n%n", current);
+
+        final Sequence<String> timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.getId().contains("Antarctica"));
+
+        timeZonesAntarctica.forEach(It::println);
+
+        assertEquals(12, timeZonesAntarctica.count());
+    }
+
+    private Sequence<String> getTimeZoneSummaries(Instant now, @NotNull Predicate<ZoneId> predicate) {
+        return Sequence.of(ZoneId.getAvailableZoneIds())
+                .map(ZoneId::of)
+                .filter(predicate)
+                .map(now::atZone)
+                .sorted()
+                .map(this::toZoneSummary);
+    }
+
+    private String toZoneSummary(ZonedDateTime zonedDateTime) {
+        return String.format("%10s %-25s %10s", zonedDateTime.getOffset(), zonedDateTime.getZone(),
+                zonedDateTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+    }
 }

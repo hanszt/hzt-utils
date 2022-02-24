@@ -1,5 +1,6 @@
 package hzt.iterables;
 
+import hzt.collections.ListX;
 import hzt.collections.SetX;
 import hzt.sequences.Sequence;
 import hzt.utils.It;
@@ -23,6 +24,13 @@ class ReducableTest {
         final var singleton = SetX.of(10);
         final var single = singleton.single();
         assertEquals(10, single);
+    }
+
+    @Test
+    void testSingleConditional() {
+        final var set = SetX.of(10, 3, 6, 2);
+        final var single = set.single(i -> i < 3);
+        assertEquals(2, single);
     }
 
     @Test
@@ -126,5 +134,13 @@ class ReducableTest {
                 () -> assertEquals(expected, result),
                 () -> assertEquals(expected2, result)
         );
+    }
+
+    @Test
+    void testFindLast() {
+        var list = ListX.of("hi", "hello", "this", "is", "a", "test");
+        final var last = list.last(s -> s.contains("i"));
+
+        assertEquals("is", last);
     }
 }

@@ -2,14 +2,12 @@ package hzt.sequences.primitives;
 
 import hzt.collections.MutableListX;
 import hzt.collections.primitives.DoubleListX;
-import hzt.ranges.DoubleRange;
 import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.DoubleConsumer;
 import java.util.stream.DoubleStream;
 

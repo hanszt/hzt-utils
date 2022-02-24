@@ -1,6 +1,5 @@
 package hzt.iterables.primitives;
 
-import hzt.collections.primitives.IntListX;
 import hzt.collections.primitives.IntMutableListX;
 import hzt.collectors.primitves.IntCollectors;
 import hzt.sequences.primitives.IntSequence;

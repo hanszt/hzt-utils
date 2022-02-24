@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.NavigableSet;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public interface SortedMutableSetX<E> extends NavigableSet<E>, MutableSetX<E> {
 
@@ -28,11 +27,6 @@ public interface SortedMutableSetX<E> extends NavigableSet<E>, MutableSetX<E> {
     @SafeVarargs
     static <E, R extends Comparable<? super R>> SortedMutableSetX<E> of(Function<E, R> selector, E first, E... others) {
         return new TreeSetX<>(selector, first, others);
-    }
-
-    @Override
-    default Stream<E> stream() {
-        return MutableSetX.super.stream();
     }
 
     @Override

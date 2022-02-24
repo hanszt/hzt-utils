@@ -66,11 +66,11 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return new StringX(characterIterable);
     }
 
-    public static StringX of(@NotNull char[] s) {
+    public static StringX of(char @NotNull [] s) {
         return new StringX(s);
     }
 
-    public static StringX of(@NotNull char[] data, int offset, int count) {
+    public static StringX of(char @NotNull [] data, int offset, int count) {
         return StringX.of(String.valueOf(data, offset, count));
     }
 
@@ -201,7 +201,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return string.offsetByCodePoints(index, codePointOffset);
     }
 
-    public void getChars(int srcBegin, int srcEnd, @NotNull char[] dst, int dstBegin) {
+    public void getChars(int srcBegin, int srcEnd, char @NotNull[] dst, int dstBegin) {
         string.getChars(srcBegin, srcEnd, dst, dstBegin);
     }
 
@@ -448,11 +448,11 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return StringX.of(String.format(l, format, args));
     }
 
-    public static StringX copyOf(@NotNull char[] data, int offset, int count) {
+    public static StringX copyOf(char @NotNull [] data, int offset, int count) {
         return StringX.of(String.copyValueOf(data, offset, count));
     }
 
-    public static StringX copyOf(@NotNull char[] data) {
+    public static StringX copyOf(char @NotNull [] data) {
         return StringX.of(String.copyValueOf(data));
     }
 

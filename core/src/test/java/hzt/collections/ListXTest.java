@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import static hzt.collectors.CollectorsX.toListX;
 import static java.util.stream.Collectors.collectingAndThen;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class ListXTest {
 

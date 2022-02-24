@@ -76,12 +76,12 @@ class CloserTest {
         }
 
 
-        public void load() throws IOException {
+        public void load() {
             It.println(name + " loading...");
             It.println(name + " loaded");
         }
 
-        public String read() throws IOException {
+        public String read() {
             It.println(name + " reading...");
             It.println(name + " read");
             return "Read result";

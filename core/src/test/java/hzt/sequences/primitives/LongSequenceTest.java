@@ -2,7 +2,6 @@ package hzt.sequences.primitives;
 
 import hzt.collections.MutableListX;
 import hzt.collections.primitives.LongListX;
-import hzt.progressions.LongProgression;
 import hzt.ranges.LongRange;
 import hzt.sequences.Sequence;
 import hzt.utils.It;

@@ -5,7 +5,7 @@ public interface DoubleComparator {
     int compare(double var1, double var3);
 
     static DoubleComparator comparing(DoubleComparator comparator) {
-        return comparator::compare;
+        return comparator;
     }
 
     static DoubleComparator reverseOrder() {
@@ -13,7 +13,7 @@ public interface DoubleComparator {
     }
 
     default DoubleComparator thenComparing(DoubleComparator comparator) {
-        return comparator::compare;
+        return comparator;
     }
 
     default DoubleComparator reversed() {

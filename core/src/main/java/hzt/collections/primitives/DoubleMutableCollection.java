@@ -28,9 +28,7 @@ public interface DoubleMutableCollection extends PrimitiveMutableCollectionX<Dou
     }
 
     @Override
-    default MutableCollectionX<Double> boxed() {
-        return asSequence().boxed().toMutableList();
-    }
+    MutableCollectionX<Double> boxed();
 
     boolean add(double d);
 }

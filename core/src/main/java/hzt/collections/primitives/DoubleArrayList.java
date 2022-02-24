@@ -79,7 +79,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
 
     int indexOfRange(double o, int start, int end) {
         for (int i = start; i < end; i++) {
-            if (o == elementData[i]) {
+            if (Double.compare(o, elementData[i]) == 0) {
                 return i;
             }
         }
@@ -108,7 +108,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
         while (iterator1.hasNext() && iterator2.hasNext()) {
             double l1 = iterator1.nextDouble();
             double l2 = iterator2.nextDouble();
-            if (l1 != l2) {
+            if (Double.compare(l1, l2) != 0) {
                 return false;
             }
         }

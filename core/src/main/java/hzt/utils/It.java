@@ -4,7 +4,7 @@ import static java.lang.System.out;
 
 /**
  * <p>
- * 'It' is a class to easely refer to iteself in a method reference and for some other utility functions such as
+ * 'It' is a class to easily refer to itself in a method reference and for some other utility functions such as
  * println()
  * <pre>{@code
  *                final var museumMap = museumList.stream()

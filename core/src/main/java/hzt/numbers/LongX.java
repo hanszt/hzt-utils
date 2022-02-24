@@ -1,7 +1,6 @@
 package hzt.numbers;
 
 import hzt.ranges.LongRange;
-import hzt.sequences.primitives.LongSequence;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 

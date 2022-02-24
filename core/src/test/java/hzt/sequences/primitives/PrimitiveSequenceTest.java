@@ -1,7 +1,6 @@
 package hzt.sequences.primitives;
 
 import hzt.numbers.BigDecimalX;
-import hzt.ranges.DoubleRange;
 import hzt.ranges.IntRange;
 import hzt.ranges.LongRange;
 import hzt.utils.It;

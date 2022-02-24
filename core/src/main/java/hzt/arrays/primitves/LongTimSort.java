@@ -627,8 +627,7 @@ public final class LongTimSort {
                 newSize = Math.min(newSize, this.array.length >>> 1);
             }
 
-            long[] newArray = new long[newSize];
-            this.temporaryArray = newArray;
+            this.temporaryArray = new long[newSize];
             this.tmpLen = newSize;
             this.tmpBase = 0;
         }

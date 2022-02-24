@@ -27,9 +27,7 @@ public interface DoubleMutableCollection extends PrimitiveMutableCollectionX<Dou
     }
 
     @Override
-    default MutableCollectionX<Double> boxed() {
-        return null;
-    }
+    MutableCollectionX<Double> boxed();
 
     boolean add(double d);
 }

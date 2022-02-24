@@ -627,8 +627,7 @@ public final class IntTimSort {
                 newSize = Math.min(newSize, this.array.length >>> 1);
             }
 
-            int[] newArray = new int[newSize];
-            this.temporaryArray = newArray;
+            this.temporaryArray = new int[newSize];
             this.tmpLen = newSize;
             this.tmpBase = 0;
         }

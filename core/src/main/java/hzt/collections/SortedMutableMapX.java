@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.SortedMap;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public interface SortedMutableMapX<K, V> extends NavigableMap<K, V>, MutableMapX<K, V> {
 
@@ -32,11 +31,6 @@ public interface SortedMutableMapX<K, V> extends NavigableMap<K, V>, MutableMapX
     static <K, V, R extends Comparable<? super R>> SortedMutableMapX<K, V> ofEntries(
             Function<K, R> selector, Map.Entry<K, V> first, Map.Entry<K, V>... others) {
         return new TreeMapX<>(selector, first, others);
-    }
-
-    @Override
-    default Stream<Entry<K, V>> stream() {
-        return MutableMapX.super.stream();
     }
 
     @NotNull

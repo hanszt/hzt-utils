@@ -73,15 +73,15 @@ class BigDecimalCollectorsTest {
                 .collect(toBigDecimalStatisticsBy(BankAccount::getBalance));
         final BigDecimal expected = bigDecimalStatistics.getStandardDeviation();
 
-        final BigDecimal standarDeviationBalances = sampleBankAccountList.stream()
+        final BigDecimal standardDeviationBalances = sampleBankAccountList.stream()
                 .collect(standardDeviatingBigDecimal(BankAccount::getBalance));
 
         It.println("bigDecimalStatistics = " + bigDecimalStatistics);
         It.println("doubleStatistics = " + doubleStatistics);
 
         assertAll(
-                () -> assertEquals(expected, standarDeviationBalances),
-                () -> assertEquals(expectedStandardDeviationFromDouble, standarDeviationBalances)
+                () -> assertEquals(expected, standardDeviationBalances),
+                () -> assertEquals(expectedStandardDeviationFromDouble, standardDeviationBalances)
         );
     }
 

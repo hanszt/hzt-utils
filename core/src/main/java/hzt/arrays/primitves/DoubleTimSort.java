@@ -627,8 +627,7 @@ public final class DoubleTimSort {
                 newSize = Math.min(newSize, this.array.length >>> 1);
             }
 
-            double[] newArray = new double[newSize];
-            this.temporaryArray = newArray;
+            this.temporaryArray = new double[newSize];
             this.tmpLen = newSize;
             this.tmpBase = 0;
         }

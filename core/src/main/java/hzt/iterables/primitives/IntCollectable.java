@@ -22,7 +22,7 @@ public interface IntCollectable extends IntIterable, PrimitiveCollectable<IntCol
 
     default <A, R> R collect(Supplier<A> supplier, ObjIntConsumer<A> accumulator, Function<A, R> finisher) {
         PrimitiveIterator.OfInt iterator = iterator();
-        final var result = supplier.get();
+        final A result = supplier.get();
         while (iterator.hasNext()) {
             accumulator.accept(result, iterator.nextInt());
         }
@@ -33,13 +33,13 @@ public interface IntCollectable extends IntIterable, PrimitiveCollectable<IntCol
             @NotNull IntCollector<A1, R1> downStream1,
             @NotNull IntCollector<A2, R2> downStream2,
             @NotNull BiFunction<R1, R2, R> combiner) {
-        final var result1 = downStream1.supplier().get();
-        final var result2 = downStream2.supplier().get();
-        final var accumulator1 = downStream1.accumulator();
-        final var accumulator2 = downStream2.accumulator();
+        final A1 result1 = downStream1.supplier().get();
+        final A2 result2 = downStream2.supplier().get();
+        final ObjIntConsumer<A1> accumulator1 = downStream1.accumulator();
+        final ObjIntConsumer<A2> accumulator2 = downStream2.accumulator();
         PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
-            final var value = iterator.nextInt();
+            final int value = iterator.nextInt();
             accumulator1.accept(result1, value);
             accumulator2.accept(result2, value);
         }

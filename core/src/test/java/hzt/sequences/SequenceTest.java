@@ -43,7 +43,6 @@ import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -128,9 +127,9 @@ class SequenceTest {
 
     @Test
     void testMapNotNull() {
-        ListView<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
+       ListX<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
 
-        final ListView<BigDecimal> sum = Sequence.of(list)
+        final ListX<BigDecimal> sum = Sequence.of(list)
                 .mapNotNull(BankAccount::getBalance)
                 .toListX();
 
@@ -162,8 +161,8 @@ class SequenceTest {
 
     @Test
     void testMapFilterReduceToSet() {
-        ListView<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
-        final SetView<Integer> result = list.asSequence()
+       ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final SetX<Integer> result = list.asSequence()
                 .map(String::length)
                 .toSetX();
 
@@ -175,7 +174,7 @@ class SequenceTest {
         final ListX<Iterable<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
                 new ArrayDeque<>(Collections.singleton("test")));
 
-        final ListView<String> result = list.asSequence()
+        final ListX<String> result = list.asSequence()
                 .flatMap(It::self)
                 .filter(s -> s.length() > 3)
                 .filterNot(String::isEmpty)
@@ -191,7 +190,7 @@ class SequenceTest {
         final ListX<Iterable<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
                 new ArrayDeque<>(Collections.singleton("test")));
 
-        final ListView<String> result = list.asSequence()
+        final ListX<String> result = list.asSequence()
                 .<String>mapMulti(Iterable::forEach)
                 .filter(s -> s.length() > 3)
                 .filterNot(String::isEmpty)
@@ -206,7 +205,7 @@ class SequenceTest {
     void testGenerateWindowedThenMapMultiToList() {
         MutableListX<ListX<Integer>> windows = MutableListX.empty();
 
-        final ListView<Integer> result = Sequence.generate(0, i -> ++i)
+        final ListX<Integer> result = Sequence.generate(0, i -> ++i)
                 .windowed(8, 3)
                 .onEach(windows::add)
                 .takeWhile(s -> s.sumOfInts(It::asInt) < 1_000_000)
@@ -254,7 +253,7 @@ class SequenceTest {
 
     @Test
     void testTransform() {
-        final MapView<Integer, String> map = Sequence.of("hallo", "test")
+        final MapX<Integer, String> map = Sequence.of("hallo", "test")
                 .map(String::chars)
                 .flatMapStream(IntStream::boxed)
                 .transform(this::toFilteredMapX);
@@ -270,7 +269,7 @@ class SequenceTest {
 
     @Test
     void testGenerateSequence() {
-        final ListView<Integer> strings = Sequence.generate(0, i -> ++i)
+        final ListX<Integer> strings = Sequence.generate(0, i -> ++i)
                 .map(Generator::fib)
                 .filter(LongX::isOdd)
                 .take(12)
@@ -384,7 +383,7 @@ class SequenceTest {
 
     @Test
     void testWindowedStepGreaterThanWindowSizeWithPartialWindow() {
-        final ListView<ListView<Integer>> windows = IntRange.of(0, 98)
+        final ListX<ListX<Integer>> windows = IntRange.of(0, 98)
                 .boxed()
                 .windowed(5, 6, true)
                 .toListX();
@@ -401,7 +400,7 @@ class SequenceTest {
 
     @Test
     void testWindowedStepGreaterThanWindowSizeNoPartialWindow() {
-        final ListView<ListView<Integer>> windows = IntRange.of(0, 98)
+        final ListX<ListX<Integer>> windows = IntRange.of(0, 98)
                 .boxed()
                 .windowed(5, 6)
                 .toListX();
@@ -417,7 +416,7 @@ class SequenceTest {
 
     @Test
     void testWindowedStepSmallerThanWindowSizeWithPartialWindow() {
-        final ListView<ListView<Integer>> windows = IntRange.closed(0, 10)
+        final ListX<ListX<Integer>> windows = IntRange.closed(0, 10)
                 .boxed()
                 .windowed(5, 2, true)
                 .toListX();
@@ -433,7 +432,7 @@ class SequenceTest {
 
     @Test
     void testWindowedStepSmallerThanWindowSizeNoPartialWindow() {
-        final ListView<ListView<Integer>> windows = IntRange.of(0, 9)
+        final ListX<ListX<Integer>> windows = IntRange.of(0, 9)
                 .boxed()
                 .windowed(4, 2)
                 .toListX();
@@ -449,7 +448,7 @@ class SequenceTest {
 
     @Test
     void testWindowedVariableSize() {
-        final var windows = IntRange.of(0, 40)
+        final ListX<ListX<Integer>> windows = IntRange.of(0, 40)
                 .boxed()
                 .windowed(1, n -> ++n, 4, true, It::self)
                 .toListX();
@@ -465,7 +464,7 @@ class SequenceTest {
 
     @Test
     void testWindowedSizeGreaterThanSequenceSizeNoPartialWindowGivesEmptyList() {
-        final ListView<ListView<Integer>> windows = IntSequence.of(0, 8)
+        final ListX<ListX<Integer>> windows = IntSequence.of(0, 8)
                 .boxed()
                 .windowed(10)
                 .toListX();
@@ -477,14 +476,14 @@ class SequenceTest {
 
     @Test
     void testWindowedLargeSequence() {
-        final ListView<ListView<Integer>> windows = IntRange.of(0, 1_000_000)
+        final ListX<ListX<Integer>> windows = IntRange.of(0, 1_000_000)
                 .boxed()
                 .windowed(2_001, 23, true)
                 .toListX();
 
-        final ListView<Integer> lastWindow = windows.last();
+        final ListX<Integer> lastWindow = windows.last();
 
-        final ListView<ListView<Integer>> tail = windows.tailFrom(windows.size() - 2);
+        final ListX<ListX<Integer>> tail = windows.tailFrom(windows.size() - 2);
 
         It.println("tail = " + tail);
 
@@ -497,7 +496,7 @@ class SequenceTest {
 
     @Test
     void testSequenceWindowedTransformed() {
-        final ListView<Integer> sizes = IntRange.of(0, 1_000)
+        final ListX<Integer> sizes = IntRange.of(0, 1_000)
                 .filter(i -> IntX.multipleOf(5).test(i))
                 .boxed()
                 .windowed(51, 7)
@@ -524,7 +523,7 @@ class SequenceTest {
 
     @Test
     void testZipWithNext() {
-        final ListView<Integer> sums = IntRange.of(0, 1_000)
+        final ListX<Integer> sums = IntRange.of(0, 1_000)
                 .filter(IntX.multipleOf(10))
                 .onEach(i -> It.print(i + ", "))
                 .boxed()
@@ -542,22 +541,22 @@ class SequenceTest {
 
     @Test
     void testSequenceOfMap() {
-        final MapView<Integer, String> map = MapView.of(1, "a", 2, "b", 3, "c", 4, "d");
+        final MapX<Integer, String> map = MapX.of(1, "a", 2, "b", 3, "c", 4, "d");
 
-        final var mapX = Sequence.of(map)
+        final MapX<Integer, Character> entries = Sequence.of(map)
                 .mapValues(s -> StringX.of(s).first())
                 .filterValues(Character::isLetter)
                 .filterKeys(IntX::isEven)
                 .toMapX();
 
-        assertEquals(2, mapX.size());
+        assertEquals(2, entries.size());
     }
 
     @Test
     void testSequenceAssociateWith() {
-        final ListView<Integer> list = ListX.of(1, 2, 3, 4);
+        final ListX<Integer> list = ListX.of(1, 2, 3, 4);
 
-        final MapView<Integer, Character> map = list.asSequence()
+        final MapX<Integer, Character> map = list.asSequence()
                 .associateWith(String::valueOf)
                 .onEach(It::println)
                 .mapValues(s -> StringX.of(s).first())
@@ -645,7 +644,7 @@ class SequenceTest {
     void testSequenceAsIntRange() {
         final int year = 2020;
 
-        final IntRange daysOfYear = Sequence
+        final IntSequence daysOfYear = Sequence
                 .generate(LocalDate.of(year, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhile(date -> date.getYear() < year + 1)
                 .mapToInt(LocalDate::getDayOfMonth);
@@ -664,7 +663,7 @@ class SequenceTest {
     void testToSortedLocalDateTime() {
         final LocalDateTime initDateTime = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0, 0);
 
-        final var sorted = IntRange.of(0, 1_000)
+        final ListX<LocalDateTime> sorted = IntRange.of(0, 1_000)
                 .mapToObj(initDateTime::plusDays)
                 .sorted()
                 .toListX();
@@ -681,7 +680,7 @@ class SequenceTest {
         ZonedDateTime current = now.atZone(ZoneId.systemDefault());
         System.out.printf("Current time is %s%n%n", current);
 
-        final var noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
+        final Sequence<String> noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
 
         noneWholeHourZoneOffsetSummaries.forEach(It::println);
 

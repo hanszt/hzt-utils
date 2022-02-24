@@ -16,7 +16,7 @@ class LongSortTest {
 
     @Test
     void testTimSort() {
-        final var array = Sequence.generate(1_000, i -> --i)
+        final long[] array = Sequence.generate(1_000, i -> --i)
                 .take(1_000)
                 .shuffled()
                 .mapToLong(It::asLong)
@@ -33,7 +33,7 @@ class LongSortTest {
 
     @Test
     void testTimSortReversed() {
-        final var array = Sequence.generate(0, i -> ++i)
+        final long[] array = Sequence.generate(0, i -> ++i)
                 .take(1_000)
                 .shuffled()
                 .mapToLong(It::asLong)

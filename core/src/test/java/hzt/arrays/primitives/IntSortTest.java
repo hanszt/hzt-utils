@@ -16,7 +16,7 @@ class IntSortTest {
 
     @Test
     void testTimSort() {
-        final var array = Sequence.generate(1_000, i -> --i)
+        final int[] array = Sequence.generate(1_000, i -> --i)
                 .take(1_000)
                 .shuffled()
                 .mapToInt(It::asInt)
@@ -33,7 +33,7 @@ class IntSortTest {
 
     @Test
     void testTimSortReversed() {
-        final var array = Sequence.generate(0, i -> ++i)
+        final int[] array = Sequence.generate(0, i -> ++i)
                 .take(1_000)
                 .shuffled()
                 .mapToInt(It::asInt)

@@ -5,8 +5,8 @@ import hzt.collectors.CollectorsX;
 import hzt.numbers.IntX;
 import hzt.progressions.IntProgression;
 import hzt.ranges.IntRange;
-import hzt.sequences.primitives.IntSequence;
 import hzt.sequences.Sequence;
+import hzt.sequences.primitives.IntSequence;
 import hzt.statistics.IntStatistics;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -40,7 +40,7 @@ class CollectableTest {
 
     @Test
     void testTeeingYieldsTwoValuesWhileOnlyGoingThroughPipelineOnce() {
-        final ListView<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
 
         final AtomicInteger toTwoCounter = new AtomicInteger();
 
@@ -64,7 +64,7 @@ class CollectableTest {
 
     @Test
     void testBranchingYieldsThreeValuesWhileOnlyGoingThroughPipelineOnce() {
-        final ListView<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
 
         final AtomicInteger toThreeCounter = new AtomicInteger();
 
@@ -114,7 +114,7 @@ class CollectableTest {
                         summarizingInt(Painting::ageInYears),
                         counting()));
 
-        final Triple<Pair<ListView<Painter>, ListView<Painter>>, IntStatistics, Long> actual = paintingList.asSequence()
+        final Triple<Pair<ListX<Painter>,ListX<Painter>>, IntStatistics, Long> actual = paintingList.asSequence()
                 .toThree(s -> s.partitionMapping(Painting::isInMuseum, Painting::painter),
                         s -> s.statsOfInts(Painting::ageInYears),
                         Sequence::count);
@@ -132,7 +132,7 @@ class CollectableTest {
 
     @Test
     void testBranchSequenceToThree() {
-        final Triple<List<Integer>, Sequence<Integer>, IntStatistics> triple = IntRange.from(0).until(100)
+        final Triple<int[], IntSequence, IntStatistics> triple = IntRange.from(0).until(100)
                 .intsToThree(IntSequence::toArray, s -> s.filter(IntX::isEven), IntSequence::stats);
 
         assertAll(
@@ -144,20 +144,20 @@ class CollectableTest {
 
     @Test
     void testBranchSequenceToFour() {
-        final var actual = IntProgression.from(0).until(100)
+        final ListX<? extends Number> actual = IntProgression.from(0).until(100)
                 .filter(It::noFilter)
                 .boxed()
                 .toFour(Sequence::count,
                         s -> s.minOf(It::self),
                         s -> s.maxOf(It::self),
                         s -> s.sumOfInts(It::self),
-                        IntSummaryStatistics::new);
+                        ListX::of);
 
         assertAll(
-                () -> assertEquals(100, actual.getCount()),
-                () -> assertEquals(4950, actual.getSum()),
-                () -> assertEquals(49.5, actual.getAverage()),
-                () -> assertEquals(99, actual.getMax())
+                () -> assertEquals(100, actual.first().longValue()),
+                () -> assertEquals(0, actual.get(1).intValue()),
+                () -> assertEquals(99, actual.get(2).intValue()),
+                () -> assertEquals(4950, actual.last().longValue())
         );
     }
 
@@ -213,20 +213,20 @@ class CollectableTest {
     void testBranchToFour() {
         final Sequence<Integer> sequence = Sequence.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        final IntSummaryStatistics statistics = sequence.branching(
+        final ListX<? extends Number> statistics = sequence.branching(
                 counting(),
-                collectingAndThen(minBy(comparing(It::asInt)), Optional::orElseThrow),
-                collectingAndThen(maxBy(comparing(It::asInt)), Optional::orElseThrow),
+                collectingAndThen(minBy(comparing(It::asInt)), integer -> integer.orElseThrow(NoSuchElementException::new)),
+                collectingAndThen(maxBy(comparing(It::asInt)), integer1 -> integer1.orElseThrow(NoSuchElementException::new)),
                 summingInt(It::asInt),
-                IntSummaryStatistics::new);
+                ListX::of);
 
         final IntStatistics stats = sequence.statsOfInts(It::asInt);
 
         assertAll(
-                () -> assertEquals(statistics.getCount(), stats.getCount()),
-                () -> assertEquals(statistics.getMin(), stats.getMin()),
-                () -> assertEquals(statistics.getMax(), stats.getMax()),
-                () -> assertEquals(statistics.getSum(), stats.getSum())
+                () -> assertEquals(statistics.first().longValue(), stats.getCount()),
+                () -> assertEquals(statistics.get(1).intValue(), stats.getMin()),
+                () -> assertEquals(statistics.get(2).intValue(), stats.getMax()),
+                () -> assertEquals(statistics.last().longValue(), stats.getSum())
         );
     }
 

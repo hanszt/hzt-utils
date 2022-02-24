@@ -4,6 +4,7 @@ import hzt.collections.MutableCollectionX;
 import hzt.sequences.primitives.IntSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.PrimitiveIterator;
 import java.util.function.IntConsumer;
 
 public interface IntMutableCollection extends PrimitiveMutableCollectionX<Integer, IntConsumer, int[]>, IntCollection {
@@ -16,7 +17,7 @@ public interface IntMutableCollection extends PrimitiveMutableCollectionX<Intege
 
     @Override
     default boolean addAll(Iterable<Integer> iterable) {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             add(iterator.nextInt());
         }

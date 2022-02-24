@@ -9,6 +9,7 @@ import hzt.iterables.primitives.DoubleStreamable;
 import hzt.sequences.primitives.DoubleSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.PrimitiveIterator;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
@@ -52,9 +53,9 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
 
     default DoubleListX filter(DoublePredicate predicate) {
         DoubleMutableListX doubles = DoubleMutableListX.empty();
-        final var iterator = iterator();
+        final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
-            final var value = iterator.nextDouble();
+            final double value = iterator.nextDouble();
             if (predicate.test(value)) {
                 doubles.add(value);
             }
@@ -64,7 +65,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
 
     default DoubleListX map(DoubleUnaryOperator mapper) {
         DoubleMutableListX doubles = DoubleMutableListX.empty();
-        final var iterator = iterator();
+        final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextDouble()));
         }
@@ -73,7 +74,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
 
     default IntListX mapToInt(DoubleToIntFunction mapper) {
         IntMutableListX ints = IntMutableListX.empty();
-        final var iterator = iterator();
+        final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextDouble()));
         }
@@ -82,7 +83,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
 
     default LongListX mapToLong(DoubleToLongFunction mapper) {
         LongMutableListX longs = LongMutableListX.empty();
-        final var iterator = iterator();
+        final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextDouble()));
         }
@@ -91,7 +92,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
 
     default <R> ListX<R> mapToObj(DoubleFunction<R> mapper) {
         MutableListX<R> doubles = MutableListX.empty();
-        final var iterator = iterator();
+        final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.apply(iterator.nextDouble()));
         }

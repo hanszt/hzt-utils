@@ -1,6 +1,6 @@
 package hzt.io;
 
-import hzt.collections.ListView;
+import hzt.collections.ListX;
 import hzt.sequences.Sequence;
 import hzt.strings.StringX;
 import hzt.utils.It;
@@ -16,7 +16,7 @@ class FileXTest {
 
     @Test
     void testReadLines() {
-        final ListView<StringX> lines = FileX.of("input/test.txt").readLines();
+        final ListX<StringX> lines = FileX.of("input/test.txt").readLines();
 
         assertAll(
                 () -> assertEquals("Hello, this is a test, Second line", lines.joinToString()),

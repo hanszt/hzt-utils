@@ -36,7 +36,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
     IntArrayList(Iterable<Integer> iterable) {
         this();
         if (iterable instanceof IntIterable) {
-            final var iterator = ((IntIterable) iterable).iterator();
+            final PrimitiveIterator.OfInt iterator = ((IntIterable) iterable).iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextInt());
             }
@@ -49,7 +49,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
 
     public boolean add(int l) {
         if (size == elementData.length) {
-            final var isInitEmptyArray = elementData.length == 0;
+            final boolean isInitEmptyArray = elementData.length == 0;
             elementData = PrimitiveListHelper.growArray(elementData, size, isInitEmptyArray);
         }
         elementData[size] = l;
@@ -86,7 +86,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
     }
 
     public int removeAt(int index) {
-        Objects.checkIndex(index, size);
+        PrimitiveListHelper.checkIndex(index, size);
         int oldValue = elementData[index];
         size = PrimitiveListHelper.fastRemoveInt(elementData, size, index);
         return oldValue;

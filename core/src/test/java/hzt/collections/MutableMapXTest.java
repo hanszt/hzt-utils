@@ -10,7 +10,7 @@ class MutableMapXTest {
 
     @Test
     void testComputeIfPresent() {
-        final MutableMap<String, Integer> map = MutableMapX.of("1", 1, "2", 2);
+        final MutableMapX<String, Integer> map = MutableMapX.of("1", 1, "2", 2);
 
         final Integer result = map.computeIfPresent("1", (k, v) -> Integer.parseInt(k) + v);
 

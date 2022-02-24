@@ -31,7 +31,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
     DoubleArrayList(Iterable<Double> iterable) {
         this();
         if (iterable instanceof DoubleIterable) {
-            final var iterator = ((DoubleIterable) iterable).iterator();
+            final PrimitiveIterator.OfDouble iterator = ((DoubleIterable) iterable).iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextDouble());
             }
@@ -50,7 +50,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
     @Override
     public boolean add(double value) {
         if (size == elementData.length) {
-            final var isInitEmptyArray = elementData.length == 0;
+            final boolean isInitEmptyArray = elementData.length == 0;
             elementData = PrimitiveListHelper.growArray(elementData, size, isInitEmptyArray);
         }
         elementData[size] = value;
@@ -88,7 +88,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
 
     @Override
     public double removeAt(int index) {
-        Objects.checkIndex(index, size);
+        PrimitiveListHelper.checkIndex(index, size);
         double oldValue = elementData[index];
         size = PrimitiveListHelper.fastRemoveDouble(elementData, size, index);
         return oldValue;

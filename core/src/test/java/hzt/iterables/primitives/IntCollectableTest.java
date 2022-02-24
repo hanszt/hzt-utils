@@ -14,7 +14,7 @@ class IntCollectableTest {
 
     @Test
     void testCollect() {
-        final var listX = IntSequence.generate(0, i -> ++i)
+        final IntMutableListX listX = IntSequence.generate(0, i -> ++i)
                 .take(1_000)
                 .collect(IntMutableListX::empty, IntMutableListX::add);
 
@@ -23,14 +23,14 @@ class IntCollectableTest {
 
     @Test
     void testTeeing() {
-        final var teeing = IntSequence.generate(0, i -> ++i)
+        final Pair<IntListX, IntMutableListX> teeing = IntSequence.generate(0, i -> ++i)
                 .take(1_000)
                 .teeing(IntCollectors.toList(),
                         IntCollectors.toMutableList(),
                         Pair::of);
 
-        final var integers = teeing.first();
-        final var mutableIntList = teeing.second();
+        final IntListX integers = teeing.first();
+        final IntMutableListX mutableIntList = teeing.second();
 
         assertAll(
                 () -> assertEquals(1_000, integers.size()),

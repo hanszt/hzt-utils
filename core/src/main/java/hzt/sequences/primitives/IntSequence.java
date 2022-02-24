@@ -24,6 +24,7 @@ import hzt.utils.primitive_comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
@@ -48,7 +49,7 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
 
     static IntSequence of(Iterable<Integer> iterable) {
         if (iterable instanceof IntIterable) {
-            final var intIterable = (IntIterable) iterable;
+            final IntIterable intIterable = (IntIterable) iterable;
             return intIterable::iterator;
         }
         return of(iterable, It::asInt);
@@ -156,13 +157,13 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
 
     @Override
     default IntSequence sorted() {
-        final var array = toArray();
+        final int[] array = toArray();
         Arrays.sort(array);
         return IntSequence.of(array);
     }
 
     default IntSequence sorted(IntComparator intComparator) {
-        final var array = toArray();
+        final int[] array = toArray();
         IntSort.sort(array, intComparator);
         return IntSequence.of(array);
     }
@@ -189,13 +190,13 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
     }
 
     default IntSequence zip(@NotNull IntBinaryOperator merger, int... array) {
-        final var iterator = PrimitiveIterators.intArrayIterator(array);
+        final PrimitiveIterator.OfInt iterator = PrimitiveIterators.intArrayIterator(array);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
     default IntSequence zip(@NotNull IntBinaryOperator merger, @NotNull Iterable<Integer> other) {
-        final var iterator = PrimitiveIterators.intIteratorOf(other.iterator(), It::asInt);
+        final PrimitiveIterator.OfInt iterator = PrimitiveIterators.intIteratorOf(other.iterator(), It::asInt);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 

@@ -5,6 +5,7 @@ import hzt.iterators.FilteringIterator;
 import hzt.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -30,7 +31,7 @@ final class SequenceHelper {
     }
 
     private static <T, R> @NotNull Iterator<R> transformingIterator(Iterator<T> iterator, Function<? super T, ? extends R> mapper) {
-        return new Iterator<>() {
+        return new Iterator<R>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -45,7 +46,7 @@ final class SequenceHelper {
     static <T, A, R> Iterator<R> mergingIterator(@NotNull Iterator<T> thisIterator,
                                                  @NotNull Iterator<A> otherIterator,
                                                  @NotNull BiFunction<? super T, ? super A, ? extends R> transform) {
-        return new Iterator<>() {
+        return new Iterator<R>() {
             @Override
             public boolean hasNext() {
                 return thisIterator.hasNext() && otherIterator.hasNext();
@@ -60,7 +61,7 @@ final class SequenceHelper {
 
     @NotNull
     static <K, V> Iterator<Map.Entry<K, V>> toEntryIterator(final Iterator<Pair<K, V>> iterator) {
-        return new Iterator<>() {
+        return new Iterator<Map.Entry<K, V>>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -68,8 +69,8 @@ final class SequenceHelper {
 
             @Override
             public Map.Entry<K, V> next() {
-                final var next = iterator.next();
-                return Map.entry(next.first(), next.second());
+                final Pair<K, V> next = iterator.next();
+                return new AbstractMap.SimpleEntry<>(next.first(), next.second());
             }
         };
     }
@@ -77,14 +78,14 @@ final class SequenceHelper {
     @NotNull
     static  <T, K> Iterator<Pair<K, T>> associateByIterator(@NotNull Iterator<T> iterator,
                                                             @NotNull Function<? super T, ? extends K> keyMapper) {
-        return new Iterator<>() {
+        return new Iterator<Pair<K, T>>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
             }
             @Override
             public Pair<K, T> next() {
-                final var value = iterator.next();
+                final T value = iterator.next();
                 return Pair.of(keyMapper.apply(value), value);
             }
         };
@@ -93,16 +94,40 @@ final class SequenceHelper {
     @NotNull
     static <T, V> Iterator<Pair<T, V>> associateWithIterator(@NotNull Iterator<T> iterator,
                                                               @NotNull Function<? super T, ? extends V> valueMapper) {
-        return new Iterator<>() {
+        return new Iterator<Pair<T, V>>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
             }
             @Override
             public Pair<T, V> next() {
-                final var key = iterator.next();
+                final T key = iterator.next();
                 return Pair.of(key, valueMapper.apply(key));
             }
         };
+    }
+
+    static void checkInitWindowSizeAndStep(int size, int step) {
+        PreConditions.require(size > 0 && step > 0, () -> getErrorMessage(size, step));
+
+    }
+
+    private static String getErrorMessage(int size, int step) {
+        if (size != step) {
+            return "Both size " + size + " and step " + step + " must be greater than zero.";
+        }
+        return "size " + size + " must be greater than zero.";
+    }
+
+    static class HoldingConsumer implements IntConsumer {
+        private int value = 0;
+        @Override
+        public void accept(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 }

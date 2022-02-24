@@ -24,13 +24,13 @@ class DoubleSequenceTest {
     void doubleRangeFromDoubleArray() {
         double[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
-        final var expected = DoubleStream.of(array)
+        final long[] expected = DoubleStream.of(array)
                 .mapToLong(d -> (long) d)
                 .filter(l -> l > 3)
                 .toArray();
 
 
-        final var longs = DoubleSequence.of(array)
+        final long[] longs = DoubleSequence.of(array)
                 .mapToLong(It::doubleAsLong)
                 .filter(l -> l > 3)
                 .toArray();
@@ -43,7 +43,7 @@ class DoubleSequenceTest {
 
     @Test
     void testSortedDescending() {
-        final var sorted = DoubleSequence.generate(0, d -> d + Math.PI)
+        final double[] sorted = DoubleSequence.generate(0, d -> d + Math.PI)
                 .takeWhile(d -> d < 10_000)
                 .sortedDescending()
                 .take(5)
@@ -51,7 +51,7 @@ class DoubleSequenceTest {
 
         It.println("Arrays.toString(array) = " + Arrays.toString(sorted));
 
-        final var expected = new double[]{9999.689416376881, 9996.547823723291, 9993.4062310697, 9990.26463841611, 9987.12304576252};
+        final double[] expected = new double[]{9999.689416376881, 9996.547823723291, 9993.4062310697, 9990.26463841611, 9987.12304576252};
 
         assertAll(
                 () -> assertArrayEquals(expected, sorted)
@@ -62,7 +62,7 @@ class DoubleSequenceTest {
     void testZipDoubleSequenceWithDoubleArray() {
         double[] array = {1, 2, 3, 4, 5, 6};
 
-        final var zipped = DoubleSequence.of(array)
+        final double[] zipped = DoubleSequence.of(array)
                 .zip(Double::sum, 1, 2, 3, 4)
                 .toArray();
 
@@ -76,7 +76,7 @@ class DoubleSequenceTest {
         List<Double> list = MutableListX.of(1., 2., 3., 4., 5., 6.);
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 
-        final var zipped = DoubleSequence.of(array)
+        final double[] zipped = DoubleSequence.of(array)
                 .zip(Double::sum, list)
                 .toArray();
 
@@ -89,7 +89,7 @@ class DoubleSequenceTest {
     void testWindowedDoubleSequence() {
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 
-        final var windowed = DoubleSequence.of(array)
+        final double[][] windowed = DoubleSequence.of(array)
                 .windowed(5)
                 .map(DoubleListX::toArray)
                 .toTypedArray(double[][]::new);
@@ -103,7 +103,7 @@ class DoubleSequenceTest {
     void testWindowedDoubleSequenceWindowReduced() {
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 
-        final var sums = DoubleSequence.of(array)
+        final double[] sums = DoubleSequence.of(array)
                 .windowed(3, DoubleListX::sum)
                 .toArray();
 
@@ -116,7 +116,7 @@ class DoubleSequenceTest {
     void testPartialWindowedDoubleSequence() {
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 
-        final var windows = DoubleSequence.of(array)
+        final double[][] windows = DoubleSequence.of(array)
                 .windowed(3, 2, true)
                 .map(DoubleListX::toArray)
                 .toTypedArray(double[][]::new);
@@ -130,7 +130,7 @@ class DoubleSequenceTest {
     void testPartialWindowedDoubleSequenceWindowReduced() {
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 
-        final var sums = DoubleSequence.of(array)
+        final double[] sums = DoubleSequence.of(array)
                 .windowed(3, 2, true, DoubleListX::sum)
                 .toArray();
 
@@ -141,12 +141,12 @@ class DoubleSequenceTest {
 
     @Test
     void testWindowedLargeDoubleSequence() {
-        final var sums = DoubleSequence.generate(0, l -> ++l)
+        final double[] sums = DoubleSequence.generate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, DoubleListX::sum)
                 .toArray();
 
-        final var sums2 = Sequence.generate(0, l -> ++l)
+        final double[] sums2 = Sequence.generate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, s -> s.sumOfDoubles(It::asDouble))
                 .mapToDouble(It::asDouble)
@@ -161,16 +161,16 @@ class DoubleSequenceTest {
 
     @Test
     void testMapMulti() {
-        final var doubles = DoubleSequence.generate(Math.PI, d -> d + Math.PI)
+        final double[] doubles = DoubleSequence.generate(Math.PI, d -> d + Math.PI)
                 .takeWhile(d -> d < 1_000 * Math.PI)
                 .mapMulti(this::doWork)
                 .toArray();
 
-        final var firstFour = DoubleSequence.of(doubles).take(4).mapToObj(this::rounded);
+        final Sequence<String> firstFour = DoubleSequence.of(doubles).take(4).mapToObj(this::rounded);
 
         double[] expected = {Math.PI, Math.PI + .1, Math.PI + .2, Math.PI + .3};
 
-        final var expectedFirstFour = DoubleSequence.of(expected).mapToObj(this::rounded);
+        final Sequence<String> expectedFirstFour = DoubleSequence.of(expected).mapToObj(this::rounded);
 
         assertAll(
                 () -> assertEquals(10000, doubles.length),

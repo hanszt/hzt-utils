@@ -1,7 +1,7 @@
 package hzt.sequences;
 
 import hzt.PreConditions;
-import hzt.collections.ListView;
+import hzt.collections.MapX;
 import hzt.function.QuadFunction;
 import hzt.function.TriFunction;
 import hzt.iterables.IterableX;
@@ -69,7 +69,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return map.entrySet()::iterator;
     }
 
-    static <K, V> EntrySequence<K, V> of(MapView<K, V> map) {
+    static <K, V> EntrySequence<K, V> of(MapX<K, V> map) {
         return map.entrySet()::iterator;
     }
 
@@ -259,6 +259,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return Sequence.of(IterableX.super.sortedDescending());
     }
 
+    @Override
     default Sequence<T> shuffled() {
         return toListX().shuffled().asSequence();
     }

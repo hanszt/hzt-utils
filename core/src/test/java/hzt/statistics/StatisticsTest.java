@@ -1,9 +1,10 @@
 package hzt.statistics;
 
-import hzt.collections.ListView;
-import hzt.ranges.DoubleRange;
-import hzt.ranges.LongRange;
+import hzt.collections.ListX;
 import hzt.sequences.Sequence;
+import hzt.sequences.primitives.DoubleSequence;
+import hzt.sequences.primitives.IntSequence;
+import hzt.sequences.primitives.LongSequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
@@ -18,14 +19,14 @@ class StatisticsTest {
 
     @Test
     void testStatisticsStandardDeviation() {
-        final ListView<Integer> list = Sequence.generate(RANDOM::nextGaussian)
+        final ListX<Integer> list = Sequence.generate(RANDOM::nextGaussian)
                 .take(1_000)
                 .map(d -> (int) (d * 100))
                 .toListX();
 
-        final LongRange intRange = list.asLongRange(It::asLong);
-        final LongRange longRange = intRange.asLongRange(It::asLong);
-        final DoubleRange doubleRange = intRange.asDoubleRange(It::asDouble);
+        final LongSequence intRange = list.mapToLong(It::asLong);
+        final IntSequence longRange = intRange.mapToInt(It::longAsInt);
+        final DoubleSequence doubleRange = intRange.mapToDouble(It::asDouble);
 
         final Double standardDeviationIntRange = intRange.stats().getStandardDeviation();
 

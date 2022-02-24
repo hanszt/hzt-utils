@@ -98,7 +98,7 @@ public final class DoubleWindowedIterator extends AbstractIterator<DoubleListX> 
 
     @Override
     protected void computeNext() {
-        final var next = computeNextWindow();
+        final DoubleMutableListX next = computeNextWindow();
         if (next.isEmpty()) {
             done();
         } else {

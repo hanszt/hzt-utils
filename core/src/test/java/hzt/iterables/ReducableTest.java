@@ -2,12 +2,14 @@ package hzt.iterables;
 
 import hzt.collections.SetX;
 import hzt.sequences.Sequence;
+import hzt.tuples.Pair;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -18,20 +20,20 @@ class ReducableTest {
 
     @Test
     void testSingle() {
-        final SetView<Integer> singleton = SetX.of(10);
+        final SetX<Integer> singleton = SetX.of(10);
         final Integer single = singleton.single();
         assertEquals(10, single);
     }
 
     @Test
     void testSingleCallOnEmptyIterableYieldsNoSuchElementException() {
-        final SetView<Object> set = SetX.empty();
+        final SetX<Object> set = SetX.empty();
         assertThrows(NoSuchElementException.class, set::single);
     }
 
     @Test
     void testSingleCallOnIterableHavingMoreThanOneElementYieldsIllegalArgumentException() {
-        final SetView<Integer> set = SetX.of(10, 9);
+        final SetX<Integer> set = SetX.of(10, 9);
         assertThrows(IllegalArgumentException.class, set::single);
     }
 
@@ -53,22 +55,22 @@ class ReducableTest {
 
     @Test
     void testFoldTwoInOnePass() {
-        final var dateSequence = Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
+        final Sequence<LocalDate> dateSequence = Sequence.generate(LocalDate.ofEpochDay(0), d -> d.plusDays(1))
                 .takeWhile(d -> d.getYear() <= 1980)
                 .filter(LocalDate::isLeapYear);
 
-        final var iterations1 = new AtomicInteger();
+        final AtomicInteger iterations1 = new AtomicInteger();
 
-        final var expected = dateSequence
+        final Pair<Long, LocalDate> expected = dateSequence
                 .onEach(d -> iterations1.incrementAndGet())
                 .toTwo(Numerable::count, Reducable::last);
 
-        final var iterations2 = new AtomicInteger();
+        final AtomicInteger iterations2 = new AtomicInteger();
 
-        final var actual = dateSequence
+        final Pair<Long, LocalDate> actual = dateSequence
                 .onEach(d -> iterations2.incrementAndGet())
                 .foldTwo(0L, (acc, date) -> ++acc,
-                        LocalDate.EPOCH, (first, second) -> second);
+                        LocalDate.ofEpochDay(0), (first, second) -> second);
 
         It.println("pair = " + actual);
 
@@ -80,23 +82,23 @@ class ReducableTest {
 
     @Test
     void tesReduceTwoInOnePass() {
-        final var dateSequence = Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
+        final Sequence<LocalDate> dateSequence = Sequence.generate(LocalDate.ofEpochDay(0), d -> d.plusDays(1))
                 .takeWhile(d -> d.getYear() <= 1980)
                 .filter(LocalDate::isLeapYear);
 
-        final var iterations1 = new AtomicInteger();
+        final AtomicInteger iterations1 = new AtomicInteger();
 
-        final var expected = dateSequence
+        final Pair<LocalDate, LocalDate> expected = dateSequence
                 .onEach(d -> iterations1.incrementAndGet())
                 .toTwo(Reducable::last, Reducable::first);
 
-        final var iterations2 = new AtomicInteger();
+        final AtomicInteger iterations2 = new AtomicInteger();
 
-        final var actual = dateSequence
+        final Optional<Pair<LocalDate, LocalDate>> actual = dateSequence
                 .onEach(d -> iterations2.incrementAndGet())
                 .reduceTwo((a, last) -> last, (first, b) -> first);
 
-        final var pair = actual.orElseThrow();
+        final Pair<LocalDate, LocalDate> pair = actual.orElseThrow(NoSuchElementException::new);
         It.println("pair = " + pair);
 
         assertAll(

@@ -10,7 +10,7 @@ class IntMutableListXTest {
 
     @Test
     void testDifferentMethods() {
-        final var ints = IntMutableListX.empty();
+        final IntMutableListX ints = IntMutableListX.empty();
         assertTrue(ints.isEmpty());
         ints.add(1);
         assertAll(
@@ -21,14 +21,14 @@ class IntMutableListXTest {
         ints.add(2);
         ints.add(5);
         ints.add(7);
-        final var l = ints.removeFirst();
+        final int l = ints.removeFirst();
         assertAll(
                 () -> assertFalse(ints.isEmpty()),
                 () -> assertEquals(2L, l),
                 () -> assertEquals(2, ints.size())
         );
         It.println("ints = " + ints);
-        final var l2 = ints.removeAt(0);
+        final int l2 = ints.removeAt(0);
         assertAll(
                 () -> assertFalse(ints.isEmpty()),
                 () -> assertEquals(5L, l2),
@@ -40,7 +40,7 @@ class IntMutableListXTest {
 
     @Test
     void testCopyConstructor() {
-        final var ints = IntMutableListX.empty();
+        final IntMutableListX ints = IntMutableListX.empty();
         ints.add(2);
         ints.add(-43);
         ints.add(1231);
@@ -48,7 +48,7 @@ class IntMutableListXTest {
                 .take(10_000_000)
                 .forEachInt(ints::add);
 
-        final var intsCopy = IntMutableListX.of(ints);
+        final IntMutableListX intsCopy = IntMutableListX.of(ints);
 
         assertAll(
                 () -> assertEquals(10_000_003, ints.size()),

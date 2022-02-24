@@ -12,9 +12,11 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
@@ -27,7 +29,7 @@ class ListXTest {
 
     @Test
     void testGetElement() {
-        final ListView<String> words = ListX.of("hallo", "asffasf", "string", "test");
+        final ListX<String> words = ListX.of("hallo", "asffasf", "string", "test");
 
         assertAll(
                 () -> assertEquals("test", words.get(3)),
@@ -45,7 +47,7 @@ class ListXTest {
 
         expected.add(LocalDate.MIN);
 
-        final MutableList<LocalDate> dates = museums.mapTo(MutableListX::empty, PaintingAuction::getDateOfOpening);
+        final MutableListX<LocalDate> dates = museums.mapTo(MutableListX::empty, PaintingAuction::getDateOfOpening);
 
         dates.add(LocalDate.MIN);
 
@@ -142,7 +144,7 @@ class ListXTest {
     void testSkipLast() {
         ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
-        final ListView<Integer> integers = list.skipLast(2);
+        final ListX<Integer> integers = list.skipLast(2);
 
         assertEquals(ListX.of(1, 2, 3, 4, 5), integers);
     }
@@ -151,7 +153,7 @@ class ListXTest {
     void testTakeLast() {
         ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
-        final ListView<Integer> integers = list.takeLast(2);
+        final ListX<Integer> integers = list.takeLast(2);
 
         assertEquals(ListX.of(6, 5), integers);
     }
@@ -162,7 +164,7 @@ class ListXTest {
 
         final Collection<Integer> integers = list.takeLastTo(size -> new LinkedTransferQueue<>(), 5);
 
-        assertIterableEquals(new LinkedTransferQueue<>(List.of(3, 4, 5, 6, 5)), integers);
+        assertIterableEquals(new LinkedTransferQueue<>(Arrays.asList(3, 4, 5, 6, 5)), integers);
     }
 
     @Test
@@ -204,9 +206,9 @@ class ListXTest {
 
     @Test
     void testShuffledInts() {
-        final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        final var shuffled = integers.shuffled();
+        final ListX<Integer> shuffled = integers.shuffled();
 
         It.println("shuffled = " + shuffled);
 
@@ -219,9 +221,9 @@ class ListXTest {
 
     @Test
     void testShuffledObjects() {
-        final var input = ListX.of(TestSampleGenerator.createPaintingList()).map(Painting::name);
+        final ListX<String> input = ListX.of(TestSampleGenerator.createPaintingList()).map(Painting::name);
 
-        final var shuffled = input.shuffled();
+        final ListX<String> shuffled = input.shuffled();
 
         It.println("shuffled = " + shuffled);
 

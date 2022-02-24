@@ -1,7 +1,7 @@
 package hzt.ranges;
 
+import hzt.sequences.primitives.LongSequence;
 import hzt.statistics.LongStatistics;
-import hzt.numbers.LongX;
 import org.junit.jupiter.api.Test;
 
 import java.util.LongSummaryStatistics;
@@ -47,7 +47,7 @@ class LongRangeTest {
                 .filter(l -> l > 3)
                 .toArray();
 
-        final long[] longs = LongRange.of(array)
+        final long[] longs = LongSequence.of(array)
                 .filter(l -> l > 3)
                 .toArray();
 
@@ -59,7 +59,7 @@ class LongRangeTest {
 
     @Test
     void longRangeFromUntil() {
-        final var longs = LongRange.from(1).until(7).toArray();
+        final long[] longs = LongRange.from(1).until(7).toArray();
 
         assertArrayEquals(new long[] {1, 2, 3, 4, 5, 6}, longs);
     }

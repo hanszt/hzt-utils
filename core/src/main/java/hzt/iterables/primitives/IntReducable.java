@@ -48,11 +48,11 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
             @NotNull BiFunction<Integer, Integer, R> finisher) {
         PrimitiveIterator.OfInt iterator = iterator();
         if (iterator.hasNext()) {
-            final var first = iterator.nextInt();
+            final int first = iterator.nextInt();
             int accumulator1 = first;
             int accumulator2 = first;
             while (iterator.hasNext()) {
-                final var nextInt = iterator.nextInt();
+                final int nextInt = iterator.nextInt();
                 accumulator1 = operator1.applyAsInt(accumulator1, nextInt);
                 accumulator2 = operator2.applyAsInt(accumulator2, nextInt);
             }
@@ -91,7 +91,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
     }
 
     default int first() {
-        return findFirst().orElseThrow();
+        return findFirst().orElseThrow(NoSuchElementException::new);
     }
 
     default int first(@NotNull IntPredicate predicate) {
@@ -110,7 +110,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
     }
 
     default @NotNull OptionalInt findFirst() {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfInt iterator = iterator();
         return iterator.hasNext() ? OptionalInt.of(iterator.nextInt()) : OptionalInt.empty();
     }
 
@@ -126,7 +126,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
     }
 
     default int last() {
-        return findLast().orElseThrow();
+        return findLast().orElseThrow(NoSuchElementException::new);
     }
 
     default @NotNull OptionalInt findLast() {
@@ -134,7 +134,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
     }
 
     default @NotNull OptionalInt findLast(@NotNull IntPredicate predicate) {
-        var iterator = iterator();
+        PrimitiveIterator.OfInt iterator = iterator();
         int result = iterator.nextInt();
         if (!predicate.test(result) && !iterator.hasNext()) {
             return OptionalInt.empty();

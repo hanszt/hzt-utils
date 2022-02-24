@@ -57,7 +57,7 @@ class StringXTest {
 
     @Test
     void testStringXToListXThenFirstAndLast() {
-        final ListView<Character> characters = StringX.of("Hello").toListX();
+        final ListX<Character> characters = StringX.of("Hello").toListX();
 
         assertAll(
                 () -> assertEquals('H', characters.first()),

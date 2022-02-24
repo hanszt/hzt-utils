@@ -111,7 +111,7 @@ public final class BigDecimalCollectors {
                 (bigDecimalSummaryStatistics, t) -> bigDecimalSummaryStatistics.accept(toBigDecimalMapper.apply(t)),
                 BigDecimalSummaryStatistics::combine,
                 finisher,
-                characteristics.toArray(Collector.Characteristics[]::new));
+                characteristics.toArray(new Collector.Characteristics[0]));
     }
 
     private static <T, R> Collector<T, BigDecimalStatistics, R> getBigDecimalStatisticsCollectorImpl(
@@ -122,6 +122,6 @@ public final class BigDecimalCollectors {
                 (statistics, t) -> statistics.accept(toBigDecimalMapper.apply(t)),
                 BigDecimalStatistics::combine,
                 finisher,
-                characteristics.toArray(Collector.Characteristics[]::new));
+                characteristics.toArray(new Collector.Characteristics[0]));
     }
 }

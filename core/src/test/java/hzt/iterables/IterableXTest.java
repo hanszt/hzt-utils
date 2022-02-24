@@ -118,7 +118,7 @@ public class IterableXTest {
     void testWithIndicesZipWithNext2() {
         final ListX<Museum> museums = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        final ListView<Long> sumsOfThree = museums
+        final ListX<Long> sumsOfThree = museums
                 .flatMap(Museum::getPaintings)
                 .indices()
                 .boxed()
@@ -365,7 +365,7 @@ public class IterableXTest {
     void testUnion() {
         ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
-        final SetView<Integer> union = list.union(Arrays.asList(2, 3, 4, 5, 7));
+        final SetX<Integer> union = list.union(Arrays.asList(2, 3, 4, 5, 7));
 
         assertEquals(SetX.of(1, 2, 3, 4, 5, 6, 7, 10), union);
     }
@@ -407,10 +407,10 @@ public class IterableXTest {
 
     @Test
     void testIntersect() {
-        final ListView<Integer> integers = ListX.of(1, 2, 3, 4, 5, 7);
+        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 7);
         final List<Integer> otherInts = Arrays.asList(1, 4, 5, 6);
 
-        final SetView<Integer> intersect = integers.intersect(otherInts);
+        final SetX<Integer> intersect = integers.intersect(otherInts);
 
         assertEquals(SetX.of(1, 4, 5), intersect);
     }
@@ -461,11 +461,11 @@ public class IterableXTest {
 
     @Test
     void zipWithNextCanHandleSameParameterValues() {
-        final ListView<Integer> inputList = ListX.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
+        final ListX<Integer> inputList = ListX.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
         final Sequence<Integer> inputSequence = Sequence.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
 
-        final var zippedList = inputList.zipWithNext().toListXOf(Pair::of);
-        final ListView<Pair<Integer, Integer>> zippedSequence = inputSequence.zipWithNext().toListXOf(Pair::of);
+        final ListX<Pair<Integer, Integer>> zippedList = inputList.zipWithNext().toListXOf(Pair::of);
+        final ListX<Pair<Integer, Integer>> zippedSequence = inputSequence.zipWithNext().toListXOf(Pair::of);
 
         zippedSequence.forEach(It::println);
 
@@ -771,7 +771,7 @@ public class IterableXTest {
                 .collect(toListX())
                 .maxOf(Painter::getDateOfBirth);
 
-        final ChronoLocalDate actual = paintingList
+        final LocalDate actual = paintingList
                 .mapNotNull(Painting::painter)
                 .maxOf(Painter::getDateOfBirth);
 
@@ -789,7 +789,7 @@ public class IterableXTest {
                 .map(Painting::painter)
                 .collect(Collectors.toMap(Painter::getDateOfBirth, Painter::getLastname, (a, b) -> a));
 
-        final MapX<LocalDate, String> actual = ListView.of(paintingList)
+        final MapX<LocalDate, String> actual =ListX.of(paintingList)
                 .map(Painting::painter)
                 .toMapX(Painter::getDateOfBirth, Painter::getLastname);
 
@@ -905,9 +905,9 @@ public class IterableXTest {
 
     @Test
     void testDistinct() {
-        final ListView<Integer> integers = ListX.of(1, 1, 2, 3, 2, 4, 5, 3, 5, 6);
+        final ListX<Integer> integers = ListX.of(1, 1, 2, 3, 2, 4, 5, 3, 5, 6);
 
-        final ListView<Integer> distinct = integers.distinct();
+        final ListX<Integer> distinct = integers.distinct();
 
         assertEquals(ListX.of(1, 2, 3, 4, 5, 6), distinct);
     }
@@ -937,7 +937,7 @@ public class IterableXTest {
     // causes compiler error on java 11 and older:
     // java: Compilation failed: internal java compiler error
     public static <T> IterableX<T> empty() {
-        return ListX.of(() -> new Iterator<>() {
+        return ListX.of(() -> new Iterator<T>() {
             @Override
             public boolean hasNext() {
                 return false;

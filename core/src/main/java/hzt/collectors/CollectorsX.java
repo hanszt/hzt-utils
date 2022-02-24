@@ -89,7 +89,7 @@ public final class CollectorsX {
             BinaryOperator<A> combiner,
             Function<A, R> finisher,
             Set<Collector.Characteristics> characteristics) {
-        return Collector.of(supplier, accumulator, combiner, finisher, characteristics.toArray(Collector.Characteristics[]::new));
+        return Collector.of(supplier, accumulator, combiner, finisher, characteristics.toArray(new Collector.Characteristics[0]));
     }
 
     public static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> toMap() {
@@ -134,6 +134,8 @@ public final class CollectorsX {
 
     public static <T, A, K> Collector<T, ?, Map<K, List<T>>> groupingBy(Function<? super T, ? extends A> classifierPart1,
                                                                         Function<? super A, ? extends K> classifierPart2) {
+        return Collectors.groupingBy(classifierPart1.andThen(classifierPart2));
+    }
 
     public static <T> Collector<T, ?, List<T>> toUnmodifiableList() {
         return Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList);
@@ -149,12 +151,8 @@ public final class CollectorsX {
         return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper), Collections::unmodifiableMap);
     }
 
-    public static <T> Collector<T, ?, ListView<T>> toListView() {
-        return Collector.of((Supplier<MutableList<T>>) MutableList::empty, List::add, CollectorsX::accumulate, ListView::of);
-    }
-
-    public static <T> Collector<T, MutableListX<T>, ListX<T>> toListX() {
-        return Collector.of(MutableListX::empty, List::add, MutableListX::plus, ListX::of);
+    public static <T> Collector<T, ?, ListX<T>> toListX() {
+        return Collector.of((Supplier<MutableListX<T>>) MutableListX::of, List::add, CollectorsX::accumulate, ListX::of);
     }
 
     public static <T, R> Collector<T, ?, ListX<R>> toListXOf(Function<T, R> mapper) {
@@ -167,6 +165,11 @@ public final class CollectorsX {
 
     public static <T, R> Collector<T, ?, SetX<R>> toSetXOf(Function<T, R> mapper) {
         return Collectors.mapping(mapper, toSetX());
+    }
+
+    private static <T> MutableListX<T> accumulate(MutableListX<T> left, MutableListX<T> right) {
+        left.addAll(right);
+        return left;
     }
 
     public static <T, K, V> Collector<T, ?, MapX<K, V>> toMapX(Function<T, K> keyMapper, Function<T, V> valueMapper) {

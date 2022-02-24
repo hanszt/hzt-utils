@@ -35,8 +35,8 @@ public final class IntTimSort {
     }
 
     private static int getStackLength(int len) {
-        final var i1 = (len < 119_151) ? 24 : 49;
-        final var i = len < 1_542 ? 10 : i1;
+        final int i1 = (len < 119_151) ? 24 : 49;
+        final int i = len < 1_542 ? 10 : i1;
         return (len < 120) ? 5 : i;
     }
 

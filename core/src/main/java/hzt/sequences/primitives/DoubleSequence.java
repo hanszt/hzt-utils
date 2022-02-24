@@ -24,6 +24,7 @@ import hzt.utils.primitive_comparators.DoubleComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -48,7 +49,7 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
 
     static DoubleSequence of(Iterable<Double> iterable) {
         if (iterable instanceof DoubleIterable) {
-            final var doubleIterable = (DoubleIterable) iterable;
+            final DoubleIterable doubleIterable = (DoubleIterable) iterable;
             return doubleIterable::iterator;
         }
         return of(iterable, It::asDouble);
@@ -153,13 +154,13 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
 
     @Override
     default DoubleSequence sorted() {
-        final var array = toArray();
+        final double[] array = toArray();
         Arrays.sort(array);
         return DoubleSequence.of(array);
     }
 
     default DoubleSequence sorted(DoubleComparator comparator) {
-        final var array = toArray();
+        final double[] array = toArray();
         DoubleSort.sort(array, comparator);
         return DoubleSequence.of(array);
     }
@@ -189,13 +190,13 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
     }
 
     default DoubleSequence zip(@NotNull DoubleBinaryOperator merger, double... array) {
-        final var iterator = PrimitiveIterators.doubleArrayIterator(array);
+        final PrimitiveIterator.OfDouble iterator = PrimitiveIterators.doubleArrayIterator(array);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
     default DoubleSequence zip(@NotNull DoubleBinaryOperator merger, @NotNull Iterable<Double> other) {
-        final var iterator = PrimitiveIterators.doubleIteratorOf(other.iterator(), It::asDouble);
+        final PrimitiveIterator.OfDouble iterator = PrimitiveIterators.doubleIteratorOf(other.iterator(), It::asDouble);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 

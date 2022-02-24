@@ -1,7 +1,7 @@
 package hzt.sequences;
 
 import hzt.collections.MapX;
-import hzt.collections.MutableMap;
+import hzt.collections.MutableMapX;
 import hzt.tuples.Pair;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
@@ -21,9 +21,9 @@ class EntrySequenceTest {
 
     @Test
     void testfilterValuesAndMapValues() {
-        final var mapX = MapX.of("1", 1, "2", 2, "3", 3, "4", 4);
+        final MapX<String, Integer> mapX = MapX.of("1", 1, "2", 2, "3", 3, "4", 4);
 
-        final MapView<String, LocalDate> resultMap = mapX.asSequence()
+        final MapX<String, LocalDate> resultMap = mapX.asSequence()
                 .filterValues(value -> value <= 3)
                 .mapValues(day -> LocalDate.of(2000, Month.JANUARY, day))
                 .toMapX();
@@ -36,9 +36,9 @@ class EntrySequenceTest {
 
     @Test
     void testMapValuesBothByKeyAndValue() {
-        final MapView<String, Integer> map = MapX.of("1", 1, "2", 2, "3", 3, "4", 4);
+        final MapX<String, Integer> map = MapX.of("1", 1, "2", 2, "3", 3, "4", 4);
 
-        final MapView<String, LocalDate> resultMap = map.asSequence()
+        final MapX<String, LocalDate> resultMap = map.asSequence()
                 .filterValues(value -> value <= 3)
                 .mapValues((month, day) -> LocalDate.of(2000, Month.of(Integer.parseInt(month)), day))
                 .toMapX();
@@ -51,7 +51,7 @@ class EntrySequenceTest {
 
     @Test
     void testToEntrySequence() {
-        final MutableMap<Year, BigDecimal> yearStringMap = Sequence.generate(1, i -> ++i)
+        final MutableMapX<Year, BigDecimal> yearStringMap = Sequence.generate(1, i -> ++i)
                 .asEntrySequence(It::self, BigDecimal::valueOf)
                 .mapKeys(Year::of)
                 .takeWhileKeys(year -> year.isBefore(Year.of(2001)))
@@ -66,7 +66,7 @@ class EntrySequenceTest {
 
     @Test
     void testToEntrySequenceFromPairSequence() {
-        final MutableMap<Year, Integer> yearStringMap = Sequence.generate(1, i -> ++i)
+        final MutableMapX<Year, Integer> yearStringMap = Sequence.generate(1, i -> ++i)
                 .zipWithNext(Pair::of)
                 .asEntrySequence(It::self)
                 .mapKeys(Year::of)
@@ -82,7 +82,7 @@ class EntrySequenceTest {
 
     @Test
     void testToEntrySequenceByZipWithNext() {
-        final MutableMap<Year, Year> yearStringMap = Sequence.generate(0, i -> ++i)
+        final MutableMapX<Year, Year> yearStringMap = Sequence.generate(0, i -> ++i)
                 .map(Year::of)
                 .takeWhileInclusive(year -> year.isBefore(Year.of(2000)))
                 .zipWithNext()

@@ -6,7 +6,7 @@ abstract class PrimitiveAbstractCollection<T, C, I extends PrimitiveIterator<T, 
 
     @Override
     public String toString() {
-        var iterator = iterator();
+        I iterator = iterator();
         if (! iterator.hasNext()) {
             return "[]";
         }

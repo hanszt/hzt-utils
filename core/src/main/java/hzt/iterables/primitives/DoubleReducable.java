@@ -3,6 +3,7 @@ package hzt.iterables.primitives;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.NoSuchElementException;
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
 import java.util.function.DoubleBinaryOperator;
@@ -25,16 +26,16 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
     }
 
     default double first() {
-        return findFirst().orElseThrow();
+        return findFirst().orElseThrow(NoSuchElementException::new);
     }
 
     default double first(@NotNull DoublePredicate predicate) {
-        return findFirst(predicate).orElseThrow();
+        return findFirst(predicate).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
     default OptionalDouble findFirst() {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfDouble iterator = iterator();
         return iterator.hasNext() ? OptionalDouble.of(iterator.nextDouble()) : OptionalDouble.empty();
     }
 
@@ -51,11 +52,11 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
     }
 
     default double last() {
-        return findLast().orElseThrow();
+        return findLast().orElseThrow(NoSuchElementException::new);
     }
 
     default double last(@NotNull DoublePredicate predicate) {
-        return findLast(predicate).orElseThrow();
+        return findLast(predicate).orElseThrow(NoSuchElementException::new);
     }
 
     @Override
@@ -65,7 +66,7 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
 
     @Override
     default OptionalDouble findLast(DoublePredicate predicate) {
-        var iterator = iterator();
+        PrimitiveIterator.OfDouble iterator = iterator();
         double result = iterator.nextDouble();
         if (!predicate.test(result) && !iterator.hasNext()) {
             return OptionalDouble.empty();

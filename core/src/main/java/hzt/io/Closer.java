@@ -36,8 +36,10 @@ public final class Closer<T> implements AutoCloseable {
     }
 
     public <R> R applyAndClose(@NotNull ThrowingFunction<T, R> function) {
-        try (this) {
+        try {
             return apply(function);
+        } finally {
+            close();
         }
     }
 
@@ -50,8 +52,10 @@ public final class Closer<T> implements AutoCloseable {
     }
 
     public void executeAndClose(@NotNull ThrowingConsumer<T> consumer) {
-        try (this) {
+        try {
             execute(consumer);
+        } finally {
+            close();
         }
     }
 
@@ -60,8 +64,10 @@ public final class Closer<T> implements AutoCloseable {
     }
 
     public boolean testAndClose(@NotNull Predicate<T> predicate) {
-        try (this) {
+        try {
             return predicate.test(resource);
+        } finally {
+            close();
         }
     }
 

@@ -16,9 +16,9 @@ public interface DoubleCollectable extends DoubleIterable, PrimitiveCollectable<
 
     default <R> R collect(Supplier<R> supplier, ObjDoubleConsumer<R> accumulator) {
         PrimitiveIterator.OfDouble iterator = iterator();
-        final var result = supplier.get();
+        final R result = supplier.get();
         while (iterator.hasNext()) {
-            final var i = iterator.nextDouble();
+            final double i = iterator.nextDouble();
             accumulator.accept(result, i);
         }
         return result;
@@ -28,13 +28,13 @@ public interface DoubleCollectable extends DoubleIterable, PrimitiveCollectable<
             @NotNull DoubleCollector<A1, R1> downStream1,
             @NotNull DoubleCollector<A2, R2> downStream2,
             @NotNull BiFunction<R1, R2, R> combiner) {
-        final var result1 = downStream1.supplier().get();
-        final var result2 = downStream2.supplier().get();
-        final var accumulator1 = downStream1.accumulator();
-        final var accumulator2 = downStream2.accumulator();
+        final A1 result1 = downStream1.supplier().get();
+        final A2 result2 = downStream2.supplier().get();
+        final ObjDoubleConsumer<A1> accumulator1 = downStream1.accumulator();
+        final ObjDoubleConsumer<A2> accumulator2 = downStream2.accumulator();
         PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
-            final var value = iterator.nextDouble();
+            final double value = iterator.nextDouble();
             accumulator1.accept(result1, value);
             accumulator2.accept(result2, value);
         }

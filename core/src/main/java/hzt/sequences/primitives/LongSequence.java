@@ -24,6 +24,7 @@ import hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.LongBinaryOperator;
@@ -48,7 +49,7 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
 
     static LongSequence of(Iterable<Long> iterable) {
         if (iterable instanceof LongIterable) {
-            final var longIterable = (LongIterable) iterable;
+            final LongIterable longIterable = (LongIterable) iterable;
             return longIterable::iterator;
         }
         return of(iterable, It::asLong);
@@ -159,13 +160,13 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
 
     @Override
     default LongSequence sorted() {
-        final var array = toArray();
+        final long[] array = toArray();
         Arrays.sort(array);
         return LongSequence.of(array);
     }
 
     default LongSequence sorted(LongComparator longComparator) {
-        final var array = toArray();
+        final long[] array = toArray();
         LongSort.sort(array, longComparator);
         return LongSequence.of(array);
     }
@@ -183,13 +184,13 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
     }
 
     default LongSequence zip(@NotNull LongBinaryOperator merger, long... array) {
-        final var iterator = PrimitiveIterators.longArrayIterator(array);
+        final PrimitiveIterator.OfLong iterator = PrimitiveIterators.longArrayIterator(array);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
     default LongSequence zip(@NotNull LongBinaryOperator merger, @NotNull Iterable<Long> other) {
-        final var iterator = PrimitiveIterators.longIteratorOf(other.iterator(), It::asLong);
+        final PrimitiveIterator.OfLong iterator = PrimitiveIterators.longIteratorOf(other.iterator(), It::asLong);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 

@@ -4,6 +4,7 @@ import hzt.collections.MutableCollectionX;
 import hzt.sequences.primitives.DoubleSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.PrimitiveIterator;
 import java.util.function.DoubleConsumer;
 
 public interface DoubleMutableCollection extends PrimitiveMutableCollectionX<Double, DoubleConsumer, double[]>, DoubleCollection {
@@ -14,7 +15,7 @@ public interface DoubleMutableCollection extends PrimitiveMutableCollectionX<Dou
 
     @Override
     default boolean addAll(Iterable<Double> iterable) {
-        final var iterator = DoubleSequence.of(iterable).iterator();
+        final PrimitiveIterator.OfDouble iterator = DoubleSequence.of(iterable).iterator();
         while (iterator.hasNext()) {
             add(iterator.nextDouble());
         }
@@ -28,7 +29,7 @@ public interface DoubleMutableCollection extends PrimitiveMutableCollectionX<Dou
 
     @Override
     default MutableCollectionX<Double> boxed() {
-        return null;
+        return asSequence().boxed().toMutableList();
     }
 
     boolean add(double d);

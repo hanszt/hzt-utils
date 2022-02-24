@@ -1,6 +1,5 @@
 package hzt.utils;
 
-import hzt.collections.ListView;
 import hzt.collections.MutableListX;
 import hzt.strings.StringX;
 import hzt.test.Generator;

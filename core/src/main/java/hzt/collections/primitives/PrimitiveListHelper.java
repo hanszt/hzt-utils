@@ -25,15 +25,15 @@ final class PrimitiveListHelper {
         if (isInitEmptyArray) {
             return newArray(minCapacity, array);
         }
-        final var minGrowth = minCapacity - oldCapacity;
-        final var prefGrowth = oldCapacity >> 1;
+        final int minGrowth = minCapacity - oldCapacity;
+        final int prefGrowth = oldCapacity >> 1;
         int newCapacity = PrimitiveListHelper.newLength(oldCapacity, minGrowth, prefGrowth);
         return copyElementData(newCapacity, array);
     }
 
     @NotNull
     private static <T> T newArray(int minCapacity, T original) {
-        final var capacity = Math.max(DEFAULT_CAPACITY, minCapacity);
+        final int capacity = Math.max(DEFAULT_CAPACITY, minCapacity);
         if (original instanceof int[]) {
             return (T) new int[capacity];
         } else if (original instanceof long[]) {
@@ -102,5 +102,12 @@ final class PrimitiveListHelper {
         }
         array[newSize] = 0.0;
         return newSize;
+    }
+
+    static int checkIndex(int index, int length) {
+        if (index < 0 || index >= length) {
+            throw new IndexOutOfBoundsException("Index out of range: " + index);
+        }
+        return index;
     }
 }

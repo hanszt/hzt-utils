@@ -1,11 +1,15 @@
 package hzt.ranges;
 
+import hzt.sequences.primitives.DoubleSequence;
 import hzt.statistics.DoubleStatistics;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
+import java.util.stream.DoubleStream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DoubleRangeTest {
@@ -31,8 +35,8 @@ class DoubleRangeTest {
                 .toArray();
 
 
-        final long[] longs = DoubleRange.of(array)
-                .asLongRange(Double::longValue)
+        final long[] longs = DoubleSequence.of(array)
+                .mapToLong(It::doubleAsLong)
                 .filter(l -> l > 3)
                 .toArray();
 

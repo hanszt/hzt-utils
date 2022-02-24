@@ -4,6 +4,7 @@ import hzt.collections.MutableCollectionX;
 import hzt.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.PrimitiveIterator;
 import java.util.function.LongConsumer;
 
 public interface LongMutableCollection extends PrimitiveMutableCollectionX<Long, LongConsumer, long[]>, LongCollection {
@@ -14,7 +15,7 @@ public interface LongMutableCollection extends PrimitiveMutableCollectionX<Long,
 
     @Override
     default boolean addAll(Iterable<Long> iterable) {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             add(iterator.nextLong());
         }

@@ -36,7 +36,7 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long, LongC
     LongArrayList(Iterable<Long> iterable) {
         this();
         if (iterable instanceof LongIterable) {
-            final var iterator = ((LongIterable) iterable).iterator();
+            final PrimitiveIterator.OfLong iterator = ((LongIterable) iterable).iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextLong());
             }
@@ -49,7 +49,7 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long, LongC
 
     public boolean add(long l) {
         if (size == elementData.length) {
-            final var isInitEmptyArray = elementData.length == 0;
+            final boolean isInitEmptyArray = elementData.length == 0;
             elementData = PrimitiveListHelper.growArray(elementData, size, isInitEmptyArray);
         }
         elementData[size] = l;
@@ -87,7 +87,7 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long, LongC
     }
 
     public long removeAt(int index) {
-        Objects.checkIndex(index, size);
+        PrimitiveListHelper.checkIndex(index, size);
         long oldValue = elementData[index];
         size = PrimitiveListHelper.fastRemoveLong(elementData, size, index);
         return oldValue;

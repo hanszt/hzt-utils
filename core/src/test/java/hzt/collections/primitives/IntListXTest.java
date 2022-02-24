@@ -3,6 +3,7 @@ package hzt.collections.primitives;
 import hzt.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -15,7 +16,7 @@ class IntListXTest {
 
     @Test
     void testIntListContains() {
-        final var ints = IntListX.of(1, 2, 3, 4, 5, 6, 7, 8, 4, 3, 2, 5, 2, 2342, 3, 23);
+        final IntListX ints = IntListX.of(1, 2, 3, 4, 5, 6, 7, 8, 4, 3, 2, 5, 2, 2342, 3, 23);
 
         assertAll(
                 () -> assertTrue(ints.contains(3)),
@@ -26,11 +27,11 @@ class IntListXTest {
 
     @Test
     void testLargeIntList() {
-        final var ints = IntSequence.generate(0, i -> ++i)
+        final IntListX ints = IntSequence.generate(0, i -> ++i)
                 .take(100_000)
                 .toListX();
 
-        final var ints1 = IntStream.iterate(0, i -> ++i)
+        final List<Integer> ints1 = IntStream.iterate(0, i -> ++i)
                 .limit(100_000)
                 .boxed()
                 .collect(Collectors.toList());

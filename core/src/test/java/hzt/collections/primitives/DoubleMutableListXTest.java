@@ -10,7 +10,7 @@ class DoubleMutableListXTest {
 
     @Test
     void testDifferentMethods() {
-        final var doubles = DoubleMutableListX.empty();
+        final DoubleMutableListX doubles = DoubleMutableListX.empty();
 
         assertTrue(doubles.isEmpty());
         doubles.add(Math.PI);
@@ -22,14 +22,14 @@ class DoubleMutableListXTest {
         doubles.add(2);
         doubles.add(7);
         doubles.add(Math.E);
-        final var l = doubles.removeFirst();
+        final double l = doubles.removeFirst();
         assertAll(
                 () -> assertFalse(doubles.isEmpty()),
                 () -> assertEquals(2L, l),
                 () -> assertEquals(2, doubles.size())
         );
         It.println("doubles = " + doubles);
-        final var l2 = doubles.removeLast();
+        final double l2 = doubles.removeLast();
         assertAll(
                 () -> assertFalse(doubles.isEmpty()),
                 () -> assertEquals(Math.E, l2),
@@ -39,7 +39,7 @@ class DoubleMutableListXTest {
 
     @Test
     void testCopyConstructor() {
-        final var doubles = DoubleMutableListX.empty();
+        final DoubleMutableListX doubles = DoubleMutableListX.empty();
         doubles.add(2);
         doubles.add(-43);
         doubles.add(Math.E);
@@ -47,7 +47,7 @@ class DoubleMutableListXTest {
                 .take(10_000_000)
                 .forEachDouble(doubles::add);
 
-        final var doublesCopy = DoubleMutableListX.of(doubles);
+        final DoubleMutableListX doublesCopy = DoubleMutableListX.of(doubles);
 
         assertAll(
                 () -> assertEquals(10_000_003, doubles.size()),

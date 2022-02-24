@@ -1,6 +1,7 @@
 package hzt.arrays.primitives;
 
 import hzt.arrays.primitves.DoubleSort;
+import hzt.collections.ListX;
 import hzt.collections.primitives.DoubleListX;
 import hzt.numbers.DoubleX;
 import hzt.sequences.Sequence;
@@ -17,7 +18,7 @@ class DoubleSortTest {
 
     @Test
     void testTimSort() {
-        final var array = Sequence.generate(100.0, i -> i - .1)
+        final double[] array = Sequence.generate(100.0, i -> i - .1)
                 .take(1_000)
                 .shuffled()
                 .mapToDouble(It::asDouble)
@@ -29,15 +30,15 @@ class DoubleSortTest {
 
         System.out.println(Arrays.toString(array));
 
-        final var expected = DoubleListX.of(.1, .2, .3, .4, .5, .6).mapToObj(DoubleX::toRoundedString);
-        final var actual = DoubleSequence.of(array).take(6).toListX().mapToObj(DoubleX::toRoundedString);
+        final ListX<String> expected = DoubleListX.of(.1, .2, .3, .4, .5, .6).mapToObj(DoubleX::toRoundedString);
+        final ListX<String> actual = DoubleSequence.of(array).take(6).toListX().mapToObj(DoubleX::toRoundedString);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void testTimSortReversed() {
-        final var array = Sequence.generate(0.0, i -> i + .1)
+        final double[] array = Sequence.generate(0.0, i -> i + .1)
                 .take(1_000)
                 .shuffled()
                 .mapToDouble(It::asDouble)
@@ -49,8 +50,8 @@ class DoubleSortTest {
 
         System.out.println(Arrays.toString(array));
 
-        final var expected = DoubleListX.of(99.9, 99.8, 99.7, 99.6, 99.5, 99.4).mapToObj(DoubleX::toRoundedString);
-        final var actual = DoubleSequence.of(array).take(6).toListX().mapToObj(DoubleX::toRoundedString);
+        final ListX<String> expected = DoubleListX.of(99.9, 99.8, 99.7, 99.6, 99.5, 99.4).mapToObj(DoubleX::toRoundedString);
+        final ListX<String> actual = DoubleSequence.of(array).take(6).toListX().mapToObj(DoubleX::toRoundedString);
 
         assertEquals(expected, actual);
     }

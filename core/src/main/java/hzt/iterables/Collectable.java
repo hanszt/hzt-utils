@@ -48,7 +48,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
                 list.add(mapper.apply(t));
             }
         }
-        return list.toArray(generator);
+        return list.toArray(generator.apply(0));
     }
 
     default <K, V> MutableMapX<K, V> toMutableMap(@NotNull Function<? super T, ? extends K> keyMapper,
@@ -212,7 +212,8 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <R> List<R> toListOf(@NotNull Function<? super T, ? extends R> transform) {
-        return List.copyOf(mapNotNullTo(MutableListX::empty, transform));
+        final List<? extends R> list = mapNotNullTo(MutableListX::empty, transform);
+        return Collections.unmodifiableList(list);
     }
 
     default MutableSetX<T> toMutableSet() {
@@ -293,7 +294,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
         C collection = collectionFactory.get();
         final Iterable<IndexedValue<T>> indexedIterable = this::indexedIterator;
         for (IndexedValue<T> indexedValue : indexedIterable) {
-            final var value = indexedValue.value();
+            final T value = indexedValue.value();
             if (predicate.test(indexedValue.index(), value)) {
                 collection.add(value);
             }

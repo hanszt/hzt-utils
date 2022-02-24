@@ -45,7 +45,7 @@ public interface LongListX extends LongCollection, PrimitiveSortable<LongCompara
 
     @Override
     default LongListX sorted(LongComparator comparator) {
-        final var longs = toArray();
+        final long[] longs = toArray();
         LongSort.sort(longs, comparator);
         return LongListX.of(longs);
     }

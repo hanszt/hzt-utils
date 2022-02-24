@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.function.IntSupplier;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -49,7 +50,7 @@ class WindowedSequenceTest {
 
     @Test
     void testVariableSizeChunkedSequenceSineShape() {
-        final var chunkSizes = Sequence.generate(0, i -> ++i)
+        final long[] chunkSizes = Sequence.generate(0, i -> ++i)
                 .chunked(sineWaveGenerator())
                 .take(20)
                 .onEach(It::println)
@@ -73,7 +74,7 @@ class WindowedSequenceTest {
 
     @Test
     void testVariableStepAndSizeWindowedSequence() {
-        final var windows = IntRange.closed(4, 50).boxed()
+        final ListX<ListX<Integer>> windows = IntRange.closed(4, 50).boxed()
                 .windowed(5, size -> ++size, 10, step -> --step, true)
                 .toListX();
 

@@ -47,12 +47,12 @@ final class PrimitiveListHelper {
 
     @NotNull
     private static <T> T copyElementData(int newCapacity, T primitiveArray) {
-        if (primitiveArray instanceof int[]) {
-            return (T) Arrays.copyOf((int[]) primitiveArray, newCapacity);
-        } else if (primitiveArray instanceof long[]) {
-            return (T) Arrays.copyOf((long[]) primitiveArray, newCapacity);
-        } else if (primitiveArray instanceof double[]) {
-            return (T) Arrays.copyOf((double[]) primitiveArray, newCapacity);
+        if (primitiveArray instanceof int[] intArray) {
+            return (T) Arrays.copyOf(intArray, newCapacity);
+        } else if (primitiveArray instanceof long[] longArray) {
+            return (T) Arrays.copyOf(longArray, newCapacity);
+        } else if (primitiveArray instanceof double[] doubleArray) {
+            return (T) Arrays.copyOf(doubleArray, newCapacity);
         } else {
             throw new IllegalArgumentException(primitiveArray.getClass().getSimpleName() + " not a supported type");
         }

@@ -3,9 +3,12 @@ package hzt.numbers;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
+
 @SuppressWarnings("unused")
 public final class DoubleX extends Number implements NumberX<Double>, Transformable<DoubleX> {
 
+    @Serial
     private static final long serialVersionUID = 45;
 
     private final Double thisDouble;
@@ -112,7 +115,7 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
             return false;
         }
         DoubleX doubleX = (DoubleX) o;
-        return thisDouble.equals(doubleX.thisDouble);
+        return Double.compare(thisDouble, doubleX.thisDouble) == 0;
     }
 
     public static long doubleToLongBits(double value) {

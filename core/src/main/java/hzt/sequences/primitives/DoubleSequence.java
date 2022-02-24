@@ -47,8 +47,7 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
     }
 
     static DoubleSequence of(Iterable<Double> iterable) {
-        if (iterable instanceof DoubleIterable) {
-            final var doubleIterable = (DoubleIterable) iterable;
+        if (iterable instanceof final DoubleIterable doubleIterable) {
             return doubleIterable::iterator;
         }
         return of(iterable, It::asDouble);

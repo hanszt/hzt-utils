@@ -5,6 +5,7 @@ import hzt.sequences.Sequence;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -12,6 +13,7 @@ import java.math.RoundingMode;
 @SuppressWarnings("unused")
 public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>, Transformable<BigDecimalX> {
 
+    @Serial
     private static final long serialVersionUID = 234;
 
     public static final BigDecimalX ZERO = BigDecimalX.of(BigDecimal.ZERO);

@@ -32,22 +32,17 @@ class ClosedRangeTest {
         );
     }
 
-    private static final class DateRange implements ClosedRange<LocalDate> {
-        private final LocalDate start;
-        private final LocalDate endInclusive;
-
-        public DateRange(LocalDate start, LocalDate endInclusive) {
-            this.start = start;
-            this.endInclusive = endInclusive;
-        }
+    private record DateRange(LocalDate start, LocalDate endInclusive) implements ClosedRange<LocalDate> {
 
         @Override
-        public @NotNull LocalDate start() {
+        public @NotNull
+        LocalDate start() {
             return start;
         }
 
         @Override
-        public @NotNull LocalDate endInclusive() {
+        public @NotNull
+        LocalDate endInclusive() {
             return endInclusive;
         }
     }

@@ -4,12 +4,14 @@ import hzt.ranges.LongRange;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.util.Objects;
 import java.util.function.LongPredicate;
 
 @SuppressWarnings("unused")
 public final class LongX extends Number implements NumberX<Long>, Transformable<LongX> {
 
+    @Serial
     private static final long serialVersionUID = 2;
 
     private final Long thisLong;

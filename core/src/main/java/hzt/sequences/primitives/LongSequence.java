@@ -47,8 +47,7 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
     }
 
     static LongSequence of(Iterable<Long> iterable) {
-        if (iterable instanceof LongIterable) {
-            final var longIterable = (LongIterable) iterable;
+        if (iterable instanceof final LongIterable longIterable) {
             return longIterable::iterator;
         }
         return of(iterable, It::asLong);

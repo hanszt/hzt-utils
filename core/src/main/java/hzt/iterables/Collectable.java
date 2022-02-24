@@ -341,8 +341,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
             return collection;
         }
         final Iterable<T> iterable = this;
-        if (iterable instanceof Collection) {
-            Collection<T> c = (Collection<T>) iterable;
+        if (iterable instanceof Collection<T> c) {
             if (n >= c.size()) {
                 collection.addAll(c);
                 return collection;

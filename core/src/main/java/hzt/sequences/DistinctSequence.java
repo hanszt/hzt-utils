@@ -8,15 +8,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Function;
 
-final class DistinctSequence<T, K> implements Sequence<T> {
-
-    private final Sequence<T> upstream;
-    private final Function<T, K> selector;
-
-    DistinctSequence(Sequence<T> upstream, Function<T, K> selector) {
-        this.upstream = upstream;
-        this.selector = selector;
-    }
+record DistinctSequence<T, K>(Sequence<T> upstream, Function<T, K> selector) implements Sequence<T> {
 
     @NotNull
     @Override
@@ -24,6 +16,7 @@ final class DistinctSequence<T, K> implements Sequence<T> {
         return new AbstractIterator<>() {
             private final Iterator<T> iterator = upstream.iterator();
             private final Set<K> observed = new HashSet<>();
+
             @Override
             protected void computeNext() {
                 while (iterator.hasNext()) {

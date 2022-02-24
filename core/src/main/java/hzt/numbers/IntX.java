@@ -6,12 +6,14 @@ import hzt.sequences.primitives.IntSequence;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.util.Objects;
 import java.util.function.IntPredicate;
 
 @SuppressWarnings("unused")
 public final class IntX extends Number implements NumberX<Integer>, Transformable<IntX> {
 
+    @Serial
     private static final long serialVersionUID = 20;
 
     private final Integer integer;

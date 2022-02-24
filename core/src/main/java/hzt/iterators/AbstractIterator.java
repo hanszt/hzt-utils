@@ -21,14 +21,11 @@ public abstract class AbstractIterator<T> implements Iterator<T> {
     @Override
     public boolean hasNext() {
         PreConditions.require(state != State.FAILED);
-        switch (state) {
-            case DONE:
-                return false;
-            case CONTINUE:
-                return true;
-            default:
-                return tryToComputeNext();
-        }
+        return switch (state) {
+            case DONE -> false;
+            case CONTINUE -> true;
+            default -> tryToComputeNext();
+        };
     }
 
     @Override

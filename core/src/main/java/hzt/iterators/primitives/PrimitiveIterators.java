@@ -56,8 +56,8 @@ public final class PrimitiveIterators {
         return new PrimitiveIterator.OfInt() {
             @Override
             public int nextInt() {
-                if (iterator instanceof PrimitiveIterator.OfInt) {
-                    return ((PrimitiveIterator.OfInt) iterator).nextInt();
+                if (iterator instanceof PrimitiveIterator.OfInt intIterator) {
+                    return intIterator.nextInt();
                 }
                 return mapper.applyAsInt(iterator.next());
             }
@@ -154,8 +154,8 @@ public final class PrimitiveIterators {
         return new PrimitiveIterator.OfLong() {
             @Override
             public long nextLong() {
-                if (iterator instanceof PrimitiveIterator.OfLong) {
-                    return ((PrimitiveIterator.OfLong) iterator).nextLong();
+                if (iterator instanceof PrimitiveIterator.OfLong longIterator) {
+                    return longIterator.nextLong();
                 }
                 return mapper.applyAsLong(iterator.next());
             }
@@ -252,12 +252,12 @@ public final class PrimitiveIterators {
         return new PrimitiveIterator.OfDouble() {
             @Override
             public double nextDouble() {
-                if (iterator instanceof PrimitiveIterator.OfDouble) {
-                    return ((PrimitiveIterator.OfDouble) iterator).nextDouble();
-                } else if (iterator instanceof PrimitiveIterator.OfInt) {
-                    return intToDoubleIterator((PrimitiveIterator.OfInt) iterator, It::asDouble).nextDouble();
-                } else if (iterator instanceof PrimitiveIterator.OfLong) {
-                    return longToDoubleIterator((PrimitiveIterator.OfLong) iterator, It::asDouble).nextDouble();
+                if (iterator instanceof PrimitiveIterator.OfDouble doubleIterator) {
+                    return doubleIterator.nextDouble();
+                } else if (iterator instanceof PrimitiveIterator.OfInt intIterator) {
+                    return intToDoubleIterator(intIterator, It::asDouble).nextDouble();
+                } else if (iterator instanceof PrimitiveIterator.OfLong longIterator) {
+                    return longToDoubleIterator(longIterator, It::asDouble).nextDouble();
                 } else {
                     return mapper.applyAsDouble(iterator.next());
                 }

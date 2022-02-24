@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -17,6 +18,7 @@ import java.util.stream.Stream;
 
 public final class FileX extends File {
 
+    @Serial
     private static final long serialVersionUID = 123L;
 
     private FileX(@NotNull String pathname) {

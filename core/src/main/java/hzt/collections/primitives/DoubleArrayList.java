@@ -30,8 +30,8 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
 
     DoubleArrayList(Iterable<Double> iterable) {
         this();
-        if (iterable instanceof DoubleIterable) {
-            final var iterator = ((DoubleIterable) iterable).iterator();
+        if (iterable instanceof DoubleIterable doubleIterable) {
+            final var iterator = doubleIterable.iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextDouble());
             }
@@ -99,12 +99,12 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
         if (o == this) {
             return true;
         }
-        if (!(o instanceof DoubleArrayList)) {
+        if (!(o instanceof DoubleArrayList doubleArrayList)) {
             return false;
         }
 
         PrimitiveIterator.OfDouble iterator1 = iterator();
-        PrimitiveIterator.OfDouble iterator2 = ((DoubleListX) o).iterator();
+        PrimitiveIterator.OfDouble iterator2 = doubleArrayList.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             double l1 = iterator1.nextDouble();
             double l2 = iterator2.nextDouble();

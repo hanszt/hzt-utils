@@ -35,8 +35,8 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long, LongC
 
     LongArrayList(Iterable<Long> iterable) {
         this();
-        if (iterable instanceof LongIterable) {
-            final var iterator = ((LongIterable) iterable).iterator();
+        if (iterable instanceof LongIterable longIterable) {
+            final var iterator = longIterable.iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextLong());
             }
@@ -98,12 +98,12 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long, LongC
         if (o == this) {
             return true;
         }
-        if (!(o instanceof LongArrayList)) {
+        if (!(o instanceof LongArrayList longArrayList)) {
             return false;
         }
 
         PrimitiveIterator.OfLong iterator1 = iterator();
-        PrimitiveIterator.OfLong iterator2 = ((LongListX) o).iterator();
+        PrimitiveIterator.OfLong iterator2 = longArrayList.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             long l1 = iterator1.nextLong();
             long l2 = iterator2.nextLong();

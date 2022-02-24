@@ -59,22 +59,27 @@ public final class It {
         return d;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static <T> boolean noFilter(@SuppressWarnings("unused") T t) {
         return true;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static boolean noIntFilter(@SuppressWarnings("unused") int t) {
         return true;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static boolean noLongFilter(@SuppressWarnings("unused") long t) {
         return true;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static boolean noDoubleFilter(@SuppressWarnings("unused") double t) {
         return true;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static <T> boolean blockingFilter(@SuppressWarnings("unused") T t) {
         return false;
     }

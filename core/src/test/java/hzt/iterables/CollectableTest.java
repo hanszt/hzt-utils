@@ -165,7 +165,7 @@ class CollectableTest {
                 .filter(IntX::isEven)
                 .map(Year::of);
 
-        final var years = yearStream.collect(toList());
+        final var years = yearStream.toList();
 
         assertAll(
                 () -> assertEquals(4, years.size()),

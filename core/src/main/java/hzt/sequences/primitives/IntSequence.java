@@ -47,8 +47,7 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
     }
 
     static IntSequence of(Iterable<Integer> iterable) {
-        if (iterable instanceof IntIterable) {
-            final var intIterable = (IntIterable) iterable;
+        if (iterable instanceof final IntIterable intIterable) {
             return intIterable::iterator;
         }
         return of(iterable, It::asInt);

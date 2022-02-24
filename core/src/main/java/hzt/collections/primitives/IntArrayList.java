@@ -35,8 +35,8 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
 
     IntArrayList(Iterable<Integer> iterable) {
         this();
-        if (iterable instanceof IntIterable) {
-            final var iterator = ((IntIterable) iterable).iterator();
+        if (iterable instanceof IntIterable intIterable) {
+            final var iterator = intIterable.iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextInt());
             }
@@ -97,12 +97,12 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
         if (o == this) {
             return true;
         }
-        if (!(o instanceof IntArrayList)) {
+        if (!(o instanceof IntArrayList intArrayList)) {
             return false;
         }
 
         PrimitiveIterator.OfInt iterator1 = iterator();
-        PrimitiveIterator.OfInt iterator2 = ((IntListX) o).iterator();
+        PrimitiveIterator.OfInt iterator2 = intArrayList.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             int l1 = iterator1.nextInt();
             int l2 = iterator2.nextInt();

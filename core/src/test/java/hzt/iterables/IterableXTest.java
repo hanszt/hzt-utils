@@ -887,7 +887,7 @@ public class IterableXTest {
         final List<BigDecimal> bigDecimals = IntStream.range(0, 100_000)
                 .filter(IntX::isEven)
                 .mapToObj(BigDecimal::valueOf)
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(50_000, bigDecimals.size());
     }
@@ -897,12 +897,12 @@ public class IterableXTest {
         final ListX<BigDecimal> bigDecimals = ListX.of(IntStream.range(0, 100_000)
                 .filter(IntX::isEven)
                 .mapToObj(BigDecimal::valueOf)
-                .collect(Collectors.toList()));
+                .toList());
 
         final List<BigDecimal> expected = IntStream.rangeClosed(0, 254)
                 .filter(IntX::isEven)
                 .mapToObj(BigDecimal::valueOf)
-                .collect(Collectors.toList());
+                .toList();
 
         final ListX<BigDecimal> list = bigDecimals.distinctBy(BigDecimal::byteValue);
 

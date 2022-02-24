@@ -33,7 +33,7 @@ class IntListXTest {
         final var ints1 = IntStream.iterate(0, i -> ++i)
                 .limit(100_000)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
 
         assertAll(
                 () -> assertEquals(ints1.size(), ints.size()),

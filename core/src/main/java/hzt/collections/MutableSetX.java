@@ -3,7 +3,7 @@ package hzt.collections;
 import java.util.Collection;
 import java.util.Set;
 
-public interface MutableSetX<E> extends Set<E>, SetX<E>, MutableCollection<E> {
+public interface MutableSetX<E> extends Set<E>, SetX<E>, MutableCollectionX<E> {
 
     static <E> MutableSetX<E> empty() {
         return new HashSetX<>();

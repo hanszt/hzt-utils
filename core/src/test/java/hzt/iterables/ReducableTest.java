@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,6 +48,61 @@ class ReducableTest {
         assertAll(
                 () -> assertEquals(LocalDate.of(2000, Month.APRIL, 10), localDate),
                 () -> assertEquals(expected, localDate)
+        );
+    }
+
+    @Test
+    void testFoldTwoInOnePass() {
+        final var dateSequence = Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
+                .takeWhile(d -> d.getYear() <= 1980)
+                .filter(LocalDate::isLeapYear);
+
+        final var iterations1 = new AtomicInteger();
+
+        final var expected = dateSequence
+                .onEach(d -> iterations1.incrementAndGet())
+                .toTwo(Numerable::count, Reducable::last);
+
+        final var iterations2 = new AtomicInteger();
+
+        final var actual = dateSequence
+                .onEach(d -> iterations2.incrementAndGet())
+                .foldTwo(0L, (acc, date) -> ++acc,
+                        LocalDate.EPOCH, (first, second) -> second);
+
+        It.println("pair = " + actual);
+
+        assertAll(
+                () -> assertEquals(expected, actual),
+                () -> assertEquals(iterations1.get(), iterations2.get() * 2)
+        );
+    }
+
+    @Test
+    void tesReduceTwoInOnePass() {
+        final var dateSequence = Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
+                .takeWhile(d -> d.getYear() <= 1980)
+                .filter(LocalDate::isLeapYear);
+
+        final var iterations1 = new AtomicInteger();
+
+        final var expected = dateSequence
+                .onEach(d -> iterations1.incrementAndGet())
+                .toTwo(Reducable::last, Reducable::first);
+
+        final var iterations2 = new AtomicInteger();
+
+        final var actual = dateSequence
+                .onEach(d -> iterations2.incrementAndGet())
+                .reduceTwo((a, last) -> last, (first, b) -> first);
+
+        final var pair = actual.orElseThrow();
+        It.println("pair = " + pair);
+
+        assertAll(
+                () -> assertEquals(expected.first(), pair.first()),
+                () -> assertEquals(expected.second(), pair.second()),
+                () -> assertEquals(iterations1.get(), iterations2.get() + 1)
         );
     }
 

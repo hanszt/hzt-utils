@@ -8,6 +8,7 @@ import hzt.collectors.BigDecimalCollectors;
 import hzt.numbers.IntX;
 import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
+import hzt.sequences.primitives.IntSequence;
 import hzt.statistics.BigDecimalSummaryStatistics;
 import hzt.strings.StringX;
 import hzt.test.Generator;
@@ -28,9 +29,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
 import java.time.Year;
-import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -92,7 +91,7 @@ public class IterableXTest {
                 .filter(m -> m.getName() != null)
                 .collect(toMap(Museum::getName, Museum::getPaintings));
 
-        final MapX<String, List<Painting>> actualMap = museumList.toMapX(Museum::getName, Museum::getPaintings);
+        final Map<String, List<Painting>> actualMap = museumList.toMap(Museum::getName, Museum::getPaintings);
 
         assertEquals(expectedMap, actualMap);
     }
@@ -123,9 +122,10 @@ public class IterableXTest {
         final var sumsOfThree = museums
                 .flatMap(Museum::getPaintings)
                 .indices()
-                .windowed(3, IntRange::of)
+                .boxed()
+                .windowed(3, IntSequence::of)
                 .onEach(It::println)
-                .map(IntRange::sum).toListX();
+                .map(IntSequence::sum).toListX();
 
         It.println("sumsOfThree = " + sumsOfThree);
 
@@ -138,8 +138,8 @@ public class IterableXTest {
 
         final ListX<Long> sumsOfThree = museums
                 .mapIndexed((index, value) -> index)
-                .windowed(3, IntRange::of)
-                .map(IntRange::sum);
+                .windowed(3, IntSequence::of)
+                .map(IntSequence::sum);
 
         It.println("sumsOfThree = " + sumsOfThree);
 
@@ -363,42 +363,6 @@ public class IterableXTest {
     }
 
     @Test
-    void testTakeWhile() {
-        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
-
-        final List<Museum> expected = new ArrayList<>();
-        for (Museum m : museumList) {
-            if (!(m.getPaintings().size() < 3)) {
-                break;
-            }
-            expected.add(m);
-        }
-
-        final ListX<Museum> actual = museumList.takeWhile(museum -> museum.getPaintings().size() < 3);
-
-        It.println("actual = " + actual);
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    void testTakeWhileInclusive() {
-        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
-
-        list.forEach(It::println);
-
-        final IterableX<Integer> takeWhileInclusive = list.takeWhileInclusive(i -> i != 5);
-        final ListX<Integer> takeWhile = list.takeWhile(i -> i != 5);
-
-        It.println("integers = " + takeWhileInclusive);
-
-        assertAll(
-                () -> assertIterableEquals(Arrays.asList(1, 2, 10, 4, 5), takeWhileInclusive),
-                () -> assertIterableEquals(Arrays.asList(1, 2, 10, 4), takeWhile)
-        );
-    }
-
-    @Test
     void testUnion() {
         ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
@@ -408,56 +372,12 @@ public class IterableXTest {
     }
 
     @Test
-    void testSkip() {
-        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
-
-        final List<Museum> expected = museumList.stream().skip(3).collect(Collectors.toList());
-
-        final ListX<Museum> actual = museumList.skip(3);
-
-        It.println("actual = " + actual);
-
-        assertIterableEquals(expected, actual);
-    }
-
-    @Test
-    void testTake() {
-        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
-
-        final List<Museum> expected = museumList.stream().limit(3).collect(Collectors.toList());
-
-        final IterableX<Museum> actual = museumList.take(3);
-
-        It.println("actual = " + actual);
-
-        assertIterableEquals(expected, actual);
-    }
-
-    @Test
-    void testTakeLastWhile() {
-        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
-
-        final String[] strings = "De sterrennacht, Het melkmeisje, Les Demoiselles d'Avignon, Meisje met de parel, Le Rêve, Meisje met de rode hoed, Guernica ".split(",");
-
-        final SetX<String> expected = ListX.of(strings).toSetXOf(String::trim);
-
-        final SetX<String> actual = museumList
-                .flatMap(Museum::getPaintings)
-                .takeLastWhile(Painting::isInMuseum)
-                .toSetXOf(Painting::name);
-
-        It.println("actual = " + actual);
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
     void testFromIntArrayToMappedList() {
         final int[] numbers = {1, 4, 3, 6, 7, 4, 3, 234};
 
         final List<BigDecimal> expected = IntStream.of(numbers).mapToObj(BigDecimal::valueOf).collect(Collectors.toList());
 
-        final List<BigDecimal> actual = ListX.ofInts(numbers).toListOf(BigDecimal::valueOf);
+        final List<BigDecimal> actual = IntSequence.of(numbers).boxed().toListOf(BigDecimal::valueOf);
 
         assertIterableEquals(expected, actual);
     }
@@ -538,6 +458,23 @@ public class IterableXTest {
         It.println("sum = " + sum);
 
         assertEquals(expectedSum, sum);
+    }
+
+    @Test
+    void zipWithNextCanHandleSameParameterValues() {
+        final var inputList = ListX.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
+        final var inputSequence = Sequence.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
+
+        final var zippedList = inputList.zipWithNext().toListXOf(Pair::of);
+        final var zippedSequence = inputSequence.zipWithNext().toListXOf(Pair::of);
+
+        zippedSequence.forEach(It::println);
+
+        assertAll(
+                () -> assertEquals(inputList.size() - 1, zippedList.size()),
+                () -> assertEquals(zippedList, zippedSequence)
+        );
+
     }
 
     @Test
@@ -683,7 +620,7 @@ public class IterableXTest {
     void testTransformForEach() {
         final int[] ints = IntStream.range(0, 100_000).toArray();
 
-        ListX.ofInts(ints)
+        IntSequence.of(ints)
                 .filter(IntX::isEven)
                 .onEach(this::printEvery10_000stElement)
                 .forEach(i -> assertTrue(IntX.isEven(i)));
@@ -830,7 +767,7 @@ public class IterableXTest {
                 .max(Comparator.naturalOrder())
                 .orElseThrow();
 
-        final ChronoLocalDate max = paintingList.stream()
+        final LocalDate max = paintingList.stream()
                 .map(Painting::painter)
                 .collect(toListX())
                 .maxOf(Painter::getDateOfBirth);
@@ -846,7 +783,7 @@ public class IterableXTest {
     }
 
     @Test
-    void testCollectingToMapX() {
+    void testCollectingToMap() {
         List<Painting> paintingList = TestSampleGenerator.createPaintingList();
 
         final Map<LocalDate, String> expected = paintingList.stream()
@@ -991,7 +928,7 @@ public class IterableXTest {
 
         It.println("integers = " + integers);
 
-        assertEquals(ListX.ofInts(2, 4, 3), integers);
+        assertEquals(ListX.of(2, 4, 3), integers);
     }
 
     @Test
@@ -1023,7 +960,7 @@ public class IterableXTest {
 
     @Test
     void testDifferenceBetweenIterableXAndSequence() {
-        final ListX<Integer> range = IntRange.of(0, 20).toListX();
+        final ListX<Integer> range = IntRange.of(0, 20).boxed().toListX();
 
         final ListX<String> strings = range.asSequence()
                 .filter(IntX::isEven)

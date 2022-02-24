@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public interface SetX<E> extends CollectionView<E>, Transformable<SetX<E>> {
+public interface SetX<E> extends CollectionX<E>, Transformable<SetX<E>> {
 
     static <E> SetX<E> empty() {
         return new HashSetX<>();
@@ -40,12 +40,12 @@ public interface SetX<E> extends CollectionView<E>, Transformable<SetX<E>> {
 
     @Override
     default @NotNull SetX<E> onEach(@NotNull Consumer<? super E> consumer) {
-        return SetX.of(CollectionView.super.onEach(consumer));
+        return SetX.of(CollectionX.super.onEach(consumer));
     }
 
     @Override
     @NotNull
     default <R> SetX<E> onEach(@NotNull Function<? super E, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
-        return SetX.of(CollectionView.super.onEach(selector, consumer));
+        return SetX.of(CollectionX.super.onEach(selector, consumer));
     }
 }

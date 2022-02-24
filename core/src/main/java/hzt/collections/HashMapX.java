@@ -14,12 +14,16 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
 
     private final Map<K, V> map;
 
-    HashMapX(Map<K, V> map) {
+    HashMapX(@NotNull Map<K, V> map) {
         this.map = map;
     }
 
     HashMapX() {
         this(new HashMap<>());
+    }
+
+    HashMapX(int capacity) {
+        this(new HashMap<>(capacity));
     }
 
     HashMapX(Iterable<Entry<K, V>> iterable) {

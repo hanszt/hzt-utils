@@ -52,7 +52,7 @@ class MapXTest {
                 .sum();
 
         final long actual = MapX.of(museumMap)
-                .mapValuesTo(MutableListX::of, Museum::getDateOfOpening)
+                .mapValuesTo(MutableListX::empty, Museum::getDateOfOpening)
                 .sumOfInts(LocalDate::getDayOfMonth);
 
         It.println("actual = " + actual);
@@ -82,7 +82,7 @@ class MapXTest {
                 .flatMap(e -> e.getValue().getPaintings().stream())
                 .collect(Collectors.toList());
 
-        final List<Painting> actual = MapX.of(museumMap).flatMapValuesTo(MutableListX::of, Museum::getPaintings);
+        final List<Painting> actual = MapX.of(museumMap).flatMapValuesTo(MutableListX::empty, Museum::getPaintings);
 
         It.println("actual = " + actual);
 
@@ -102,13 +102,13 @@ class MapXTest {
     }
 
     @Test
-    void testMapOfMapXSameAsInputMap() {
+    void testMapXOfMapSameAsInputMap() {
         final Map<String, Museum> museumMap = TestSampleGenerator.createMuseumMap();
 
         final MapX<String, Museum> mapX = MapX.of(museumMap);
         MapX.of(mapX).entrySet().forEach(It::println);
 
-        It.println("mapX = " + mapX);
+        It.println("map = " + mapX);
 
         assertEquals(museumMap, mapX);
     }
@@ -120,9 +120,9 @@ class MapXTest {
 
         Museum expected = museumMap.get("Van Gogh Museum");
 
-        final MutableMapX<String, Museum> mapX = MutableMapX.of(museumMap);
+        final MutableMapX<String, Museum> map = MutableMapX.of(museumMap);
 
-        final Museum van_gogh = mapX.computeIfAbsent("Van Gogh Museum", key -> {
+        final Museum van_gogh = map.computeIfAbsent("Van Gogh Museum", key -> {
             throw new IllegalStateException();
         });
 
@@ -132,7 +132,7 @@ class MapXTest {
     }
 
     @Test
-    void testMapXToList() {
+    void testMapToList() {
         final MapX<String, Museum> museumMapX = MapX.of(TestSampleGenerator.createMuseumMap());
 
         final ListX<Pair<String, Museum>> pairs = museumMapX.map(Pair::ofEntry);
@@ -163,13 +163,13 @@ class MapXTest {
 
     @Test
     void testBuildMap() {
-        final var mapX = MapX.<Integer, LocalDate>build(map ->
-                IntRange.of(1990, 2022).forEach(year -> map.put(year, LocalDate.of(year, 1, 1))));
+        final var map = MapX.<Integer, LocalDate>build(m ->
+                IntRange.of(1990, 2022).forEach(year -> m.put(year, LocalDate.of(year, 1, 1))));
 
-        mapX.forEach(It::println);
+        map.forEach(It::println);
 
-        It.println("mapX = " + mapX);
+        It.println("map = " + map);
 
-        assertEquals(32, mapX.size());
+        assertEquals(32, map.size());
     }
 }

@@ -51,7 +51,7 @@ public final class IterableXHelper {
     }
 
     @NotNull
-    static <T, R extends Comparable<R>> Optional<T> compareBy(final Iterator<T> iterator,
+    static <T, R extends Comparable<? super R>> Optional<T> compareBy(final Iterator<T> iterator,
             @NotNull Function<? super T, ? extends R> selector, @NotNull BiPredicate<R, R> biPredicate) {
         if (!iterator.hasNext()) {
             return Optional.empty();
@@ -72,7 +72,7 @@ public final class IterableXHelper {
         return Optional.ofNullable(result);
     }
 
-    static <R, K extends Comparable<K>> K asComparableOrThrow(R key) {
+    static <R, K extends Comparable<? super K>> K asComparableOrThrow(R key) {
         if (key instanceof Comparable<?> c) {
             //noinspection unchecked
             return (K) c;
@@ -81,7 +81,7 @@ public final class IterableXHelper {
     }
 
     @NotNull
-    static  <T, R extends Comparable<? extends R>> R comparisonOf(
+    static  <T, R extends Comparable<? super R>> R comparisonOf(
             @NotNull Iterator<T> iterator,
             @NotNull Function<? super T, ? extends R> selector,
             @NotNull BiPredicate<? super R, ? super R> biPredicate) {

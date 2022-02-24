@@ -1,37 +1,41 @@
 package hzt.iterables;
 
-import hzt.collections.ArrayX;
+import hzt.PreConditions;
 import hzt.collections.ListX;
 import hzt.collections.MapX;
+import hzt.collections.MutableLinkedSetX;
 import hzt.collections.MutableListX;
 import hzt.collections.MutableMapX;
 import hzt.collections.MutableSetX;
 import hzt.collections.SetX;
-import hzt.collectors.CollectorsX;
 import hzt.function.QuadFunction;
 import hzt.function.TriFunction;
+import hzt.sequences.Sequence;
+import hzt.tuples.IndexedValue;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 import java.util.stream.Collector;
 
 @FunctionalInterface
-public interface Collectable<T> extends Iterable<T> {
+public interface Collectable<T> extends IndexedIterable<T> {
 
     default T[] toTypedArray(IntFunction<T[]> generator) {
         return toArrayOf(It::self, generator);
@@ -44,33 +48,7 @@ public interface Collectable<T> extends Iterable<T> {
                 list.add(mapper.apply(t));
             }
         }
-        return list.toArray(generator.apply(0));
-    }
-
-    default ArrayX<T> toArrayX(IntFunction<T[]> generator) {
-        return ArrayX.of(toTypedArray(generator));
-    }
-
-    default <R> ArrayX<R> toArrayXOf(@NotNull Function<? super T, ? extends R> mapper, @NotNull IntFunction<R[]> generator) {
-        return ArrayX.of(toArrayOf(mapper, generator));
-    }
-
-    default int[] toIntArray(@NotNull ToIntFunction<? super T> mapper) {
-        int[] array = new int[(int) IterableXHelper.count(this, Objects::nonNull)];
-        IterableXHelper.exposeIntIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsInt(t));
-        return array;
-    }
-
-    default long[] toLongArray(@NotNull ToLongFunction<? super T> mapper) {
-        long[] array = new long[(int) IterableXHelper.count(this, Objects::nonNull)];
-        IterableXHelper.exposeIntIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsLong(t));
-        return array;
-    }
-
-    default double[] toDoubleArray(@NotNull ToDoubleFunction<? super T> mapper) {
-        double[] array = new double[(int) IterableXHelper.count(this, Objects::nonNull)];
-        IterableXHelper.exposeIntIndexedNonNullVal(this, (i, t) -> array[i] = mapper.applyAsDouble(t));
-        return array;
+        return list.toArray(generator);
     }
 
     default <K, V> MutableMapX<K, V> toMutableMap(@NotNull Function<? super T, ? extends K> keyMapper,
@@ -96,7 +74,7 @@ public interface Collectable<T> extends Iterable<T> {
     }
 
     default <A, R> R collect(@NotNull Collector<T, A, R> collector) {
-        A result = collector.supplier().get();
+        final A result = collector.supplier().get();
         final BiConsumer<A, T> accumulator = collector.accumulator();
         for (T t : this) {
             if (t != null) {
@@ -137,10 +115,22 @@ public interface Collectable<T> extends Iterable<T> {
         return finisher.apply(result);
     }
 
-    default <R1, R2, R> R teeing(@NotNull Collector<? super T, ?, R1> downstream1,
-                                 @NotNull Collector<? super T, ?, R2> downstream2,
+    default <R1, A1, R2, A2, R> R teeing(@NotNull Collector<? super T, A1, R1> downstream1,
+                                 @NotNull Collector<? super T, A2, R2> downstream2,
                                  @NotNull BiFunction<? super R1, ? super R2, R> merger) {
-        return collect(CollectorsX.teeing(downstream1, downstream2, merger));
+        A1 result1 = downstream1.supplier().get();
+        A2 result2 = downstream2.supplier().get();
+        final BiConsumer<A1, ? super T> accumulator1 = downstream1.accumulator();
+        final BiConsumer<A2, ? super T> accumulator2 = downstream2.accumulator();
+        for (T t : this) {
+            if (t != null) {
+                accumulator1.accept(result1, t);
+                accumulator2.accept(result2, t);
+            }
+        }
+        final var r1 = downstream1.finisher().apply(result1);
+        final var r2 = downstream2.finisher().apply(result2);
+        return merger.apply(r1, r2);
     }
 
     default <R1, R2> Pair<R1, R2> teeing(@NotNull Collector<? super T, ?, R1> downstream1,
@@ -148,11 +138,27 @@ public interface Collectable<T> extends Iterable<T> {
         return teeing(downstream1, downstream2, Pair::of);
     }
 
-    default <R1, R2, R3, R> R branching(@NotNull Collector<? super T, ?, R1> downstream1,
-                                        @NotNull Collector<? super T, ?, R2> downstream2,
-                                        @NotNull Collector<? super T, ?, R3> downstream3,
+    default <R1, A1, R2, A2, R3, A3, R> R branching(@NotNull Collector<? super T, A1, R1> downstream1,
+                                        @NotNull Collector<? super T, A2, R2> downstream2,
+                                        @NotNull Collector<? super T, A3, R3> downstream3,
                                         @NotNull TriFunction<? super R1, ? super R2, ? super R3, R> merger) {
-        return collect(CollectorsX.branching(downstream1, downstream2, downstream3, merger));
+        A1 result1 = downstream1.supplier().get();
+        A2 result2 = downstream2.supplier().get();
+        A3 result3 = downstream3.supplier().get();
+        final BiConsumer<A1, ? super T> accumulator1 = downstream1.accumulator();
+        final BiConsumer<A2, ? super T> accumulator2 = downstream2.accumulator();
+        final BiConsumer<A3, ? super T> accumulator3 = downstream3.accumulator();
+        for (T t : this) {
+            if (t != null) {
+                accumulator1.accept(result1, t);
+                accumulator2.accept(result2, t);
+                accumulator3.accept(result3, t);
+            }
+        }
+        final var r1 = downstream1.finisher().apply(result1);
+        final var r2 = downstream2.finisher().apply(result2);
+        final var r3 = downstream3.finisher().apply(result3);
+        return merger.apply(r1, r2, r3);
     }
 
     default <R1, R2, R3> Triple<R1, R2, R3> branching(@NotNull Collector<? super T, ?, R1> downstream1,
@@ -161,16 +167,40 @@ public interface Collectable<T> extends Iterable<T> {
         return branching(downstream1, downstream2, downstream3, Triple::of);
     }
 
-    default <R1, R2, R3, R4, R> R branching(@NotNull Collector<? super T, ?, R1> downstream1,
-                                            @NotNull Collector<? super T, ?, R2> downstream2,
-                                            @NotNull Collector<? super T, ?, R3> downstream3,
-                                            @NotNull Collector<? super T, ?, R4> downstream4,
-                                            @NotNull QuadFunction<? super R1, ? super R2, ? super R3, ? super R4, R> merger) {
-        return collect(CollectorsX.branching(downstream1, downstream2, downstream3, downstream4, merger));
+    default <A1, R1, A2, R2, A3, R3, A4, R4, R> R branching(@NotNull Collector<? super T, A1, R1> downstream1,
+                                        @NotNull Collector<? super T, A2, R2> downstream2,
+                                        @NotNull Collector<? super T, A3, R3> downstream3,
+                                        @NotNull Collector<? super T, A4, R4> downstream4,
+                                        @NotNull QuadFunction<? super R1, ? super R2, ? super R3, ? super R4, R> merger) {
+        A1 result1 = downstream1.supplier().get();
+        A2 result2 = downstream2.supplier().get();
+        A3 result3 = downstream3.supplier().get();
+        A4 result4 = downstream4.supplier().get();
+        final BiConsumer<A1, ? super T> accumulator1 = downstream1.accumulator();
+        final BiConsumer<A2, ? super T> accumulator2 = downstream2.accumulator();
+        final BiConsumer<A3, ? super T> accumulator3 = downstream3.accumulator();
+        final BiConsumer<A4, ? super T> accumulator4 = downstream4.accumulator();
+        for (T t : this) {
+            if (t != null) {
+                accumulator1.accept(result1, t);
+                accumulator2.accept(result2, t);
+                accumulator3.accept(result3, t);
+                accumulator4.accept(result4, t);
+            }
+        }
+        final var r1 = downstream1.finisher().apply(result1);
+        final var r2 = downstream2.finisher().apply(result2);
+        final var r3 = downstream3.finisher().apply(result3);
+        final var r4 = downstream4.finisher().apply(result4);
+        return merger.apply(r1, r2, r3, r4);
+    }
+
+    default <C extends Collection<T>> C to(Supplier<C> collectionFactory) {
+        return IterableXHelper.mapFilteringTo(this, collectionFactory, It::noFilter, It::self, It::noFilter);
     }
 
     default MutableListX<T> toMutableList() {
-        return IterableXHelper.mapFilteringTo(this, MutableListX::of, Objects::nonNull, It::self, It::noFilter);
+        return IterableXHelper.mapFilteringTo(this, MutableListX::empty, Objects::nonNull, It::self, It::noFilter);
     }
 
     default ListX<T> toListX() {
@@ -181,15 +211,212 @@ public interface Collectable<T> extends Iterable<T> {
         return List.copyOf(toMutableList());
     }
 
+    default <R> List<R> toListOf(@NotNull Function<? super T, ? extends R> transform) {
+        return List.copyOf(mapNotNullTo(MutableListX::empty, transform));
+    }
+
     default MutableSetX<T> toMutableSet() {
-        return IterableXHelper.mapFilteringTo(this, MutableSetX::of, Objects::nonNull, It::self, It::noFilter);
+        return IterableXHelper.mapFilteringTo(this, MutableSetX::empty, Objects::nonNull, It::self, It::noFilter);
     }
 
     default SetX<T> toSetX() {
         return toMutableSet();
     }
 
+    default <R> SetX<R> toSetXOf(@NotNull Function<? super T, ? extends R> transform) {
+        return mapNotNullTo(MutableSetX::empty, transform);
+    }
+
     default Set<T> toSet() {
         return Set.copyOf(toMutableSet());
+    }
+
+    default <R> Set<R> toSetOf(@NotNull Function<? super T, ? extends R> transform) {
+        return Collections.unmodifiableSet(this.<R, MutableSetX<R>>mapNotNullTo(MutableSetX::empty, transform));
+    }
+
+    default <R, C extends Collection<R>> C mapTo(@NotNull Supplier<C> collectionFactory,
+                                                 @NotNull Function<? super T, ? extends R> mapper) {
+        return IterableXHelper.mapFilteringTo(this, collectionFactory, Objects::nonNull, mapper, It::noFilter);
+    }
+    default <R, C extends Collection<R>> C mapNotNullTo(@NotNull Supplier<C> collectionFactory,
+                                                        @NotNull Function<? super T, ? extends R> mapper) {
+        return IterableXHelper.mapFilteringTo(this, collectionFactory, Objects::nonNull, mapper, Objects::nonNull);
+    }
+
+    default <R, C extends Collection<R>> C mapIndexedTo(@NotNull Supplier<C> collectionFactory,
+                                                        @NotNull BiFunction<Integer, ? super T, ? extends R> mapper) {
+        return Sequence.of(this::indexedIterator)
+                .mapTo(collectionFactory, indexedValue -> mapper.apply(indexedValue.index(), indexedValue.value()));
+    }
+
+    default <R, I extends Iterable<R>, C extends Collection<R>> C flatMapTo(
+            @NotNull Supplier<C> collectionSupplier,
+            @NotNull Function<? super T, ? extends I> mapper) {
+        final C collection = collectionSupplier.get();
+        for (T t : this) {
+            final I c = mapper.apply(t);
+            if (c == null) {
+                continue;
+            }
+            for (R r : c) {
+                if (r != null) {
+                    collection.add(r);
+                }
+            }
+        }
+        return collection;
+    }
+
+    default <R, C extends Collection<R>> C mapMultiTo(
+            @NotNull Supplier<C> collectionSupplier,
+            @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
+        C collection = collectionSupplier.get();
+        for (T t : this) {
+            mapper.accept(t, (Consumer<R>) collection::add);
+        }
+        return collection;
+    }
+
+    default <C extends Collection<T>> C filterTo(@NotNull Supplier<C> collectionFactory,
+                                                 @NotNull Predicate<T> predicate) {
+        return IterableXHelper.mapFilteringTo(this, collectionFactory, predicate, It::self, It::noFilter);
+    }
+
+    default <C extends Collection<T>> C filterNotTo(@NotNull Supplier<C> collectionFactory,
+                                                    @NotNull Predicate<T> predicate) {
+        return filterTo(collectionFactory, predicate.negate());
+    }
+
+    default <C extends Collection<T>> C filterIndexedTo(@NotNull Supplier<C> collectionFactory,
+                                                        @NotNull BiPredicate<Integer, T> predicate) {
+        C collection = collectionFactory.get();
+        final Iterable<IndexedValue<T>> indexedIterable = this::indexedIterator;
+        for (IndexedValue<T> indexedValue : indexedIterable) {
+            final var value = indexedValue.value();
+            if (predicate.test(indexedValue.index(), value)) {
+                collection.add(value);
+            }
+        }
+        return collection;
+    }
+
+    default <C extends Collection<T>> C skipTo(Supplier<C> collectionFactory, int count) {
+        C collection = collectionFactory.get();
+        int counter = 0;
+        for (T value : this) {
+            if (counter >= count) {
+                collection.add(value);
+            }
+            counter++;
+        }
+        return collection;
+    }
+
+    default  <C extends Collection<T>> C skipWhileTo(
+            @NotNull Supplier<C> collectionFactory,
+            @NotNull Predicate<? super T> predicate,
+            boolean inclusive) {
+        boolean yielding = false;
+        C list = collectionFactory.get();
+        for (T item : this) {
+            if (yielding) {
+                list.add(item);
+                continue;
+            }
+            if (!predicate.test(item)) {
+                if (!inclusive) {
+                    list.add(item);
+                }
+                yielding = true;
+            }
+        }
+        return list;
+    }
+
+    default <C extends Collection<T>> C takeTo(Supplier<C> collectionFactory, long n) {
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        C collection = collectionFactory.get();
+        if (n == 0) {
+            return collection;
+        }
+        final Iterable<T> iterable = this;
+        if (iterable instanceof Collection) {
+            Collection<T> c = (Collection<T>) iterable;
+            if (n >= c.size()) {
+                collection.addAll(c);
+                return collection;
+            }
+        }
+        int count = 0;
+        for (T t : this) {
+            collection.add(t);
+            if (++count == n) {
+                break;
+            }
+        }
+        return collection;
+    }
+
+    default <C extends Collection<T>> C takeWhileTo(@NotNull Supplier<C> collectionFactory,
+                                                    @NotNull Predicate<T> predicate,
+                                                    boolean inclusive) {
+        final C collection = collectionFactory.get();
+        for (T item : this) {
+            if (!predicate.test(item)) {
+                if (inclusive) {
+                    collection.add(item);
+                }
+                break;
+            }
+            collection.add(item);
+        }
+        return collection;
+    }
+
+    default <R, C extends Collection<T>> C distinctTo(@NotNull Supplier<C> collectionFactory,
+                                                      @NotNull Function<? super T, ? extends R> selector) {
+        C c = collectionFactory.get();
+        MutableSetX<R> set = MutableLinkedSetX.empty();
+        for (T t : this) {
+            if (t != null) {
+                final R r = selector.apply(t);
+                if (set.add(r)) {
+                    c.add(t);
+                }
+            }
+        }
+        return c;
+    }
+
+    default <A, R, C extends Collection<R>> C zipTo(
+            @NotNull Supplier<C> collectionFactory,
+            @NotNull Iterable<A> otherIterable,
+            @NotNull BiFunction<? super T, ? super A, ? extends R> function) {
+        final Iterator<A> otherIterator = otherIterable.iterator();
+        final Iterator<T> iterator = iterator();
+        final C list = collectionFactory.get();
+        while (iterator.hasNext() && otherIterator.hasNext()) {
+            final T next = iterator.next();
+            final A otherNext = otherIterator.next();
+            list.add(function.apply(next, otherNext));
+        }
+        return list;
+    }
+
+    default <R, C extends Collection<R>> C zipWithNextTo(@NotNull Supplier<C> collectionFactory,
+                                                         @NotNull BiFunction<? super T, ? super T, ? extends R> function) {
+        final Iterator<T> iterator = iterator();
+        if (!iterator.hasNext()) {
+            return collectionFactory.get();
+        }
+        final C list = collectionFactory.get();
+        T current = iterator.next();
+        while (iterator.hasNext()) {
+            final T next = iterator.next();
+            list.add(function.apply(current, next));
+            current = next;
+        }
+        return list;
     }
 }

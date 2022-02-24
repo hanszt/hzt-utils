@@ -9,6 +9,10 @@ public interface MutableLinkedSetX<E> extends MutableSetX<E> {
         return new LinkedHashSetX<>();
     }
 
+    static <E> MutableLinkedSetX<E> withInitCapacity(int capacity) {
+        return new LinkedHashSetX<>(capacity);
+    }
+
     static <E> MutableLinkedSetX<E> of(Set<E> set) {
         return new LinkedHashSetX<>(set);
     }

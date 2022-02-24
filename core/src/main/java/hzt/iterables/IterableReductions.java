@@ -12,11 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 
 public final class IterableReductions {
 
@@ -42,13 +40,6 @@ public final class IterableReductions {
         return Optional.empty();
     }
 
-    public static <T, A, R> R collect(Iterable<T> iterable, Collector<T, A, R> collector) {
-        A result = collector.supplier().get();
-        final BiConsumer<A, T> accumulator = collector.accumulator();
-        iterable.forEach(t -> accumulator.accept(result, t));
-        return collector.finisher().apply(result);
-    }
-
     public static <T, R, K> MapX<K, MutableListX<R>> groupMapping(
             @NotNull Iterable<T> iterable,
             @NotNull Function<? super T, ? extends K> classifier,
@@ -64,18 +55,19 @@ public final class IterableReductions {
             @NotNull Iterable<T> iterable,
             @NotNull Predicate<T> predicate,
             @NotNull Function<? super T, ? extends R> resultMapper) {
-        Pair<MutableListX<R>, MutableListX<R>> pair = Pair.of(MutableListX.empty(), MutableListX.empty());
+        MutableListX<R> matchingList = MutableListX.empty();
+        MutableListX<R> nonMatchingList = MutableListX.empty();
         for (T t : iterable) {
             if (t != null) {
                 R r = resultMapper.apply(t);
                 if (predicate.test(t)) {
-                    pair.first().add(r);
+                    matchingList.add(r);
                 } else {
-                    pair.second().add(r);
+                    nonMatchingList.add(r);
                 }
             }
         }
-        return Pair.of(pair.first().toListX(), pair.second().toListX());
+        return Pair.of(matchingList, nonMatchingList);
     }
 
     public static <T, S, I extends Iterable<S>, R> SetX<R> intersectionOf(
@@ -126,18 +118,18 @@ public final class IterableReductions {
         return true;
     }
 
-    public static <T, R> Optional<R> findLastOf(Iterable<T> iterable, @NotNull Function<T, R> mapper) {
+    public static <T> Optional<T> findLastOf(Iterable<T> iterable) {
         final Iterator<T> iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             return Optional.empty();
         } else if (iterable instanceof List<T> list) {
-            return Optional.ofNullable(list.get(list.size() - 1)).map(mapper);
+            return Optional.ofNullable(list.get(list.size() - 1));
         } else {
             T result = iterator.next();
             while (iterator.hasNext()) {
                 result = iterator.next();
             }
-            return Optional.ofNullable(result).map(mapper);
+            return Optional.ofNullable(result);
         }
     }
 

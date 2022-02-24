@@ -1,9 +1,5 @@
 package hzt.collections;
 
-import hzt.iterables.IterableXTest;
-import hzt.numbers.IntX;
-import hzt.ranges.DoubleRange;
-import hzt.ranges.IntRange;
 import hzt.sequences.Sequence;
 import hzt.test.Generator;
 import hzt.test.model.PaintingAuction;
@@ -17,24 +13,19 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.List;
-import java.util.Locale;
-import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
 import static hzt.collectors.CollectorsX.toListX;
 import static java.util.stream.Collectors.collectingAndThen;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ListXTest {
 
     @Test
     void testGetElement() {
         final var words = ListX.of("hallo", "asffasf", "string", "test");
-
-        final var list2 = words.stream().map(String::length).collect(Collectors.toList());
 
         assertAll(
                 () -> assertEquals("test", words.get(3)),
@@ -43,7 +34,7 @@ class ListXTest {
     }
 
     @Test
-    void testToMutableListX() {
+    void testToMutableList() {
         final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
 
         final List<LocalDate> expected = museums.stream()
@@ -52,7 +43,7 @@ class ListXTest {
 
         expected.add(LocalDate.MIN);
 
-        final var dates = museums.mapTo(MutableListX::of, PaintingAuction::getDateOfOpening);
+        final var dates = museums.mapTo(MutableListX::empty, PaintingAuction::getDateOfOpening);
 
         dates.add(LocalDate.MIN);
 
@@ -135,6 +126,7 @@ class ListXTest {
 
         final List<LocalDate> expected = auctions.stream()
                 .map(PaintingAuction::getDateOfOpening)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         expected.add(LocalDate.MIN);
         expected.add(LocalDate.MAX);
@@ -154,7 +146,25 @@ class ListXTest {
 
         final var integers = list.skipLast(2);
 
-        assertEquals(ListX.ofInts(1, 2, 3, 4, 5), integers);
+        assertEquals(ListX.of(1, 2, 3, 4, 5), integers);
+    }
+
+    @Test
+    void testTakeLast() {
+        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+
+        final var integers = list.takeLast(2);
+
+        assertEquals(ListX.of(6, 5), integers);
+    }
+
+    @Test
+    void testTakeLastTo() {
+        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+
+        final var integers = list.takeLastTo(size -> new LinkedTransferQueue<>(), 5);
+
+        assertIterableEquals(new LinkedTransferQueue<>(List.of(3, 4, 5, 6, 5)), integers);
     }
 
     @Test
@@ -165,8 +175,8 @@ class ListXTest {
                 .map(PaintingAuction::getDateOfOpening)
                 .collect(Collectors.toList());
 
-        final CollectionView<LocalDate> dates = museums
-                .mapTo(MutableListX::of, PaintingAuction::getDateOfOpening)
+        final CollectionX<LocalDate> dates = museums
+                .mapTo(MutableListX::empty, PaintingAuction::getDateOfOpening)
                 .also(It::println);
 
         It.println("dates = " + dates);
@@ -192,6 +202,36 @@ class ListXTest {
         It.println("dates = " + dates);
 
         assertEquals(expected, dates);
+    }
+
+    @Test
+    void testShuffledInts() {
+        final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+        final var shuffled = integers.shuffled();
+
+        It.println("shuffled = " + shuffled);
+
+        assertAll(
+                () -> assertNotEquals(integers, shuffled),
+                () -> assertTrue(shuffled.containsAll(integers)),
+                () -> assertTrue(integers.containsAll(shuffled))
+        );
+    }
+
+    @Test
+    void testShuffledObjects() {
+        final var input = ListX.of(TestSampleGenerator.createPaintingList()).map(Painting::name);
+
+        final var shuffled = input.shuffled();
+
+        It.println("shuffled = " + shuffled);
+
+        assertAll(
+                () -> assertNotEquals(input, shuffled),
+                () -> assertTrue(shuffled.containsAll(input)),
+                () -> assertTrue(input.containsAll(shuffled))
+        );
     }
 
     @Test

@@ -54,8 +54,8 @@ class StringXTest {
     }
 
     @Test
-    void testStringXToCharArrayX() {
-        final var characters = StringX.of("Hello").toArrayX();
+    void testStringXToListXThenFirstAndLast() {
+        final var characters = StringX.of("Hello").toListX();
 
         assertAll(
                 () -> assertEquals('H', characters.first()),
@@ -99,9 +99,9 @@ class StringXTest {
     void flatMapToCharArrayAndFromCharArrayToStringX() {
         final var characters = Sequence.of("hallo", "Wat is dat?", "Een test")
                 .joinToStringX("")
-                .toArray();
+                .toCharArray();
 
-        final var stringX = StringX.of("", characters);
+        final var stringX = StringX.of(characters);
 
         assertEquals("halloWat is dat?Een test", stringX.toString());
     }

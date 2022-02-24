@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static hzt.stream.StreamUtils.by;
+import static hzt.function.Functions.by;
 import static hzt.function.predicates.StringPredicates.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

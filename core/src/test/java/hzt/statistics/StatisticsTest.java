@@ -20,9 +20,9 @@ class StatisticsTest {
                 .map(d -> (int) (d * 100))
                 .toListX();
 
-        final var intRange = list.asIntRange(It::asInt);
-        final var longRange = intRange.asLongRange(It::asLong);
-        final var doubleRange = intRange.asDoubleRange(It::asDouble);
+        final var intRange = list.mapToInt(It::asInt);
+        final var longRange = intRange.mapToLong(It::asLong);
+        final var doubleRange = intRange.mapToDouble(It::asDouble);
 
         final var stats = intRange.stats();
 

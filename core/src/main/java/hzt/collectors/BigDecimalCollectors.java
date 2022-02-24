@@ -103,25 +103,25 @@ public final class BigDecimalCollectors {
                 bigDecimalStatistics -> bigDecimalStatistics.getStandardDeviation(2, RoundingMode.HALF_UP), CH_NOID);
     }
 
-    private static <T, R> CollectorImpl<T, BigDecimalSummaryStatistics, R> getBigDecimalSummaryStatisticsCollectorImpl(
+    private static <T, R> Collector<T, BigDecimalSummaryStatistics, R> getBigDecimalSummaryStatisticsCollectorImpl(
             Function<? super T, BigDecimal> toBigDecimalMapper, Function<BigDecimalSummaryStatistics, R> finisher,
             Set<Collector.Characteristics> characteristics) {
         Objects.requireNonNull(toBigDecimalMapper);
-        return new CollectorImpl<>(BigDecimalSummaryStatistics::new,
+        return Collector.of(BigDecimalSummaryStatistics::new,
                 (bigDecimalSummaryStatistics, t) -> bigDecimalSummaryStatistics.accept(toBigDecimalMapper.apply(t)),
                 BigDecimalSummaryStatistics::combine,
                 finisher,
-                characteristics);
+                characteristics.toArray(Collector.Characteristics[]::new));
     }
 
-    private static <T, R> CollectorImpl<T, BigDecimalStatistics, R> getBigDecimalStatisticsCollectorImpl(
+    private static <T, R> Collector<T, BigDecimalStatistics, R> getBigDecimalStatisticsCollectorImpl(
             Function<? super T, BigDecimal> toBigDecimalMapper, Function<BigDecimalStatistics, R> finisher,
             Set<Collector.Characteristics> characteristics) {
         Objects.requireNonNull(toBigDecimalMapper);
-        return new CollectorImpl<>(BigDecimalStatistics::new,
+        return Collector.of(BigDecimalStatistics::new,
                 (statistics, t) -> statistics.accept(toBigDecimalMapper.apply(t)),
                 BigDecimalStatistics::combine,
                 finisher,
-                characteristics);
+                characteristics.toArray(Collector.Characteristics[]::new));
     }
 }

@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 import static java.util.Comparator.comparing;
 
-final class TreeSetX<E, R extends Comparable<R>> implements NavigableSetX<E> {
+final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutableSetX<E> {
 
     private final NavigableSet<E> navigableSet;
 
@@ -183,6 +183,16 @@ final class TreeSetX<E, R extends Comparable<R>> implements NavigableSetX<E> {
     @Override
     public NavigableSet<E> tailSet(E fromElement, boolean inclusive) {
         return navigableSet.tailSet(fromElement, inclusive);
+    }
+
+    @Override
+    public @NotNull E first() {
+        return navigableSet.first();
+    }
+
+    @Override
+    public @NotNull E last() {
+        return navigableSet.last();
     }
 
     @NotNull

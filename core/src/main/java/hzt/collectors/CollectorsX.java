@@ -3,17 +3,17 @@ package hzt.collectors;
 import hzt.PreConditions;
 import hzt.collections.ListX;
 import hzt.collections.MapX;
+import hzt.collections.MutableCollectionX;
 import hzt.collections.MutableListX;
-import hzt.collections.MutableSetX;
 import hzt.collections.SetX;
 import hzt.function.QuadFunction;
 import hzt.function.QuintFunction;
 import hzt.function.TriFunction;
 import hzt.statistics.DoubleStatistics;
-import hzt.stream.StreamUtils;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
 import java.util.Collection;
@@ -40,7 +40,7 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
-@SuppressWarnings({"DuplicatedCode", "unused"})
+@SuppressWarnings({"DuplicatedCode"})
 public final class CollectorsX {
 
     private CollectorsX() {
@@ -50,7 +50,7 @@ public final class CollectorsX {
     Collector<T, ?, R> filtering(Predicate<? super T> predicate,
                                  Collector<? super T, A, R> downstream) {
         BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
-        return new CollectorImpl<>(downstream.supplier(),
+        return collectorOf(downstream.supplier(),
                 (r, t) -> {
                     if (predicate.test(t)) {
                         downstreamAccumulator.accept(r, t);
@@ -64,7 +64,7 @@ public final class CollectorsX {
     Collector<T, ?, R> flatMapping(Function<? super T, ? extends Stream<? extends U>> mapper,
                                    Collector<? super U, A, R> downstream) {
         BiConsumer<A, ? super U> downstreamAccumulator = downstream.accumulator();
-        return new CollectorImpl<>(downstream.supplier(),
+        return collectorOf(downstream.supplier(),
                 (r, t) -> {
                     try (Stream<? extends U> result = mapper.apply(t)) {
                         if (result != null) {
@@ -83,11 +83,17 @@ public final class CollectorsX {
             final Consumer<U> uConsumer = (U u) -> downstream.accumulator().accept(a, u);
             mapper.accept(t, uConsumer);
         };
-        return new CollectorImpl<>(downstream.supplier(),
-                accumulator,
-                downstream.combiner(),
-                downstream.finisher(),
-                downstream.characteristics());
+        return collectorOf(downstream.supplier(), accumulator, downstream.combiner(), downstream.finisher(), downstream.characteristics());
+    }
+
+    @NotNull
+    static <T, A, R> Collector<T, A, R> collectorOf(
+            Supplier<A> supplier,
+            BiConsumer<A, T> accumulator,
+            BinaryOperator<A> combiner,
+            Function<A, R> finisher,
+            Set<Collector.Characteristics> characteristics) {
+        return Collector.of(supplier, accumulator, combiner, finisher, characteristics.toArray(Collector.Characteristics[]::new));
     }
 
     public static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> toMap() {
@@ -132,29 +138,24 @@ public final class CollectorsX {
 
     public static <T, A, K> Collector<T, ?, Map<K, List<T>>> groupingBy(Function<? super T, ? extends A> classifierPart1,
                                                                         Function<? super A, ? extends K> classifierPart2) {
-        return Collectors.groupingBy(StreamUtils.function(classifierPart1).andThen(classifierPart2));
+
+        return Collectors.groupingBy(classifierPart1.andThen(classifierPart2));
     }
 
-    public static <T> Collector<T, ?, ListX<T>> toListX() {
-        return Collector.of((Supplier<MutableListX<T>>) MutableListX::of, List::add, CollectorsX::accumulate, ListX::of);
+    public static <T> Collector<T, MutableListX<T>, ListX<T>> toListX() {
+        return Collector.of(MutableListX::empty, List::add, MutableListX::plus, ListX::of);
     }
 
     public static <T, R> Collector<T, ?, ListX<R>> toListXOf(Function<T, R> mapper) {
         return Collectors.mapping(mapper, toListX());
     }
 
-    public static <T> Collector<T, ?, SetX<T>> toSetX() {
-        return Collector
-                .of((Supplier<MutableListX<T>>) MutableListX::of, List::add, CollectorsX::accumulate, SetX::of);
+    public static <T> Collector<T, MutableListX<T>, SetX<T>> toSetX() {
+        return Collector.of(MutableListX::empty, List::add, MutableCollectionX::plus, SetX::of);
     }
 
     public static <T, R> Collector<T, ?, SetX<R>> toSetXOf(Function<T, R> mapper) {
         return Collectors.mapping(mapper, toSetX());
-    }
-
-    private static <T> MutableListX<T> accumulate(MutableListX<T> left, MutableListX<T> right) {
-        left.addAll(right);
-        return left;
     }
 
     public static <T, K, V> Collector<T, ?, MapX<K, V>> toMapX(Function<T, K> keyMapper, Function<T, V> valueMapper) {
@@ -165,12 +166,6 @@ public final class CollectorsX {
             Function<T, K> keyMapper, Function<T, V> valueMapper, BinaryOperator<V> mergeFunction) {
         return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper, mergeFunction), MapX::of);
     }
-
-    private static <K, V> Map<K, V> accumulateMap(Map<K, V> left, Map<K, V> right) {
-        left.putAll(right);
-        return left;
-    }
-
 
     public static <T, R1, R2> Collector<T, ?, Map.Entry<R1, R2>> teeingToEntry(
             Collector<? super T, ?, R1> downstream1,
@@ -231,8 +226,8 @@ public final class CollectorsX {
      */
     public static <T, R1, R2, R>
     Collector<T, ?, R> teeing(Collector<? super T, ?, R1> downstream1,
-                                 Collector<? super T, ?, R2> downstream2,
-                                 BiFunction<? super R1, ? super R2, R> merger) {
+                              Collector<? super T, ?, R2> downstream2,
+                              BiFunction<? super R1, ? super R2, R> merger) {
         return teeing0(downstream1, downstream2, merger);
     }
 
@@ -244,8 +239,8 @@ public final class CollectorsX {
 
     private static <T, A1, A2, R1, R2, R>
     Collector<T, ?, R> teeing0(Collector<? super T, A1, R1> downstream1,
-                                  Collector<? super T, A2, R2> downstream2,
-                                  BiFunction<? super R1, ? super R2, R> merger) {
+                               Collector<? super T, A2, R2> downstream2,
+                               BiFunction<? super R1, ? super R2, R> merger) {
         PreConditions.requireAllNonNull(downstream1, downstream2, merger);
 
         Supplier<A1> c1Supplier = Objects.requireNonNull(downstream1.supplier());
@@ -282,7 +277,7 @@ public final class CollectorsX {
             }
         }
         Set<Collector.Characteristics> characteristics = evaluateCharacteristics(downstream1, downstream2);
-        return new CollectorImpl<>(DuoBox::new, DuoBox::add, DuoBox::combine, DuoBox::get, characteristics);
+        return collectorOf(DuoBox::new, DuoBox::add, DuoBox::combine, DuoBox::get, characteristics);
     }
 
     /**
@@ -328,8 +323,8 @@ public final class CollectorsX {
 
     public static <T, R1, R2, R3>
     Collector<T, ?, Triple<R1, R2, R3>> branching(Collector<? super T, ?, R1> downstream1,
-                                                    Collector<? super T, ?, R2> downstream2,
-                                                    Collector<? super T, ?, R3> downstream3) {
+                                                  Collector<? super T, ?, R2> downstream2,
+                                                  Collector<? super T, ?, R3> downstream3) {
         return branching0(downstream1, downstream2, downstream3, Triple::of);
     }
 
@@ -382,7 +377,7 @@ public final class CollectorsX {
             }
         }
         Set<Collector.Characteristics> characteristics = evaluateCharacteristics(downstream1, downstream2, downstream3);
-        return new CollectorImpl<>(TriBox::new, TriBox::add, TriBox::combine, TriBox::get, characteristics);
+        return collectorOf(TriBox::new, TriBox::add, TriBox::combine, TriBox::get, characteristics);
     }
 
     /**
@@ -487,7 +482,7 @@ public final class CollectorsX {
             }
         }
         Set<Collector.Characteristics> characteristics = evaluateCharacteristics(downstream1, downstream2, downstream3, downstream4);
-        return new CollectorImpl<>(QuadBox::new, QuadBox::add, QuadBox::combine, QuadBox::get, characteristics);
+        return collectorOf(QuadBox::new, QuadBox::add, QuadBox::combine, QuadBox::get, characteristics);
     }
 
     /**
@@ -605,7 +600,7 @@ public final class CollectorsX {
         }
         Set<Collector.Characteristics> characteristics = evaluateCharacteristics(
                 downstream1, downstream2, downstream3, downstream4, downstream5);
-        return new CollectorImpl<>(QuintBox::new, QuintBox::add, QuintBox::combine, QuintBox::get, characteristics);
+        return collectorOf(QuintBox::new, QuintBox::add, QuintBox::combine, QuintBox::get, characteristics);
     }
 
     public static <S extends Collection<T>, T> Collector<S, ?, Set<T>> toIntersection() {

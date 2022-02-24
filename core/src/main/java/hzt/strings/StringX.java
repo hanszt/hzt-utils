@@ -1,13 +1,11 @@
 package hzt.strings;
 
-import hzt.collections.ArrayX;
 import hzt.collections.ListX;
 import hzt.numbers.BigDecimalX;
 import hzt.numbers.DoubleX;
 import hzt.numbers.IntX;
 import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
-import hzt.utils.It;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
@@ -69,11 +67,11 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return new StringX(characterIterable);
     }
 
-    public static StringX of(@NotNull char[] s) {
+    public static StringX of(char @NotNull [] s) {
         return new StringX(s);
     }
 
-    public static StringX of(@NotNull char[] data, int offset, int count) {
+    public static StringX of(char @NotNull [] data, int offset, int count) {
         return StringX.of(String.valueOf(data, offset, count));
     }
 
@@ -212,7 +210,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return string.offsetByCodePoints(index, codePointOffset);
     }
 
-    public void getChars(int srcBegin, int srcEnd, @NotNull char[] dst, int dstBegin) {
+    public void getChars(int srcBegin, int srcEnd, char @NotNull[] dst, int dstBegin) {
         string.getChars(srcBegin, srcEnd, dst, dstBegin);
     }
 
@@ -409,12 +407,27 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return toIntX(10);
     }
 
+    public int toInt(int radix) {
+        return Integer.parseInt(string, radix);
+    }
+    public int toInt() {
+        return Integer.parseInt(string);
+    }
+
     public LongX toLongX() {
         return LongX.of(Long.parseLong(string));
     }
 
+    public long toLong() {
+        return Long.parseLong(string);
+    }
+
     public DoubleX toDoubleX() {
         return DoubleX.of(Double.parseDouble(string));
+    }
+
+    public double toDouble() {
+        return Double.parseDouble(string);
     }
 
     public BigDecimalX toBigDecimalX() {
@@ -436,14 +449,6 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return string.toCharArray();
     }
 
-    public ArrayX<Character> toArrayX() {
-        return ArrayX.of(toArray());
-    }
-
-    Character[] toArray() {
-        return Sequence.super.toArrayOf(It::self, Character[]::new);
-    }
-
     public static StringX format(@NotNull String format, Object... args) {
         return StringX.of(String.format(format, args));
     }
@@ -452,11 +457,11 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return StringX.of(String.format(l, format, args));
     }
 
-    public static StringX copyOf(@NotNull char[] data, int offset, int count) {
+    public static StringX copyOf(char @NotNull [] data, int offset, int count) {
         return StringX.of(String.copyValueOf(data, offset, count));
     }
 
-    public static StringX copyOf(@NotNull char[] data) {
+    public static StringX copyOf(char @NotNull [] data) {
         return StringX.of(String.copyValueOf(data));
     }
 

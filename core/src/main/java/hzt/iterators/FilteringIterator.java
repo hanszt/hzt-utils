@@ -22,10 +22,6 @@ public final class FilteringIterator<T> implements Iterator<T> {
         return new FilteringIterator<>(iterator, predicate, sendWhen);
     }
 
-    public static <T> FilteringIterator<T> of(Iterator<T> iterator, Predicate<T> predicate) {
-        return new FilteringIterator<>(iterator, predicate, true);
-    }
-
     @Override
     public boolean hasNext() {
         if (nextState == State.NEXT_UNKNOWN) {

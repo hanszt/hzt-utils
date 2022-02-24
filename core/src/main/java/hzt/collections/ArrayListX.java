@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -13,9 +14,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.ToIntFunction;
 
-final class ArrayListX<T> implements MutableListX<T> {
+final class ArrayListX<E> implements MutableListX<E> {
 
-    private final List<T> list;
+    private final List<E> list;
 
     ArrayListX() {
         this.list = new ArrayList<>();
@@ -25,36 +26,43 @@ final class ArrayListX<T> implements MutableListX<T> {
         this.list = new ArrayList<>(initialCapacity);
     }
 
-    ArrayListX(Collection<T> collection) {
+    ArrayListX(Collection<E> collection) {
         this.list = new ArrayList<>(collection);
     }
 
-    ArrayListX(Iterable<T> iterable) {
+    ArrayListX(Iterable<E> iterable) {
         list = new ArrayList<>();
-        for (T t : iterable) {
-            list.add(t);
+        for (E e : iterable) {
+            list.add(e);
         }
     }
 
     @SafeVarargs
-    ArrayListX(T... values) {
+    ArrayListX(E... values) {
         list = new ArrayList<>(values.length + 1);
         list.addAll(Arrays.asList(values));
     }
 
-    ArrayListX(T value) {
+    ArrayListX(E value) {
         list = new ArrayList<>(1);
         list.add(value);
     }
 
     @Override
-    public Optional<T> findRandom() {
+    public Optional<E> findRandom() {
         return isNotEmpty() ? Optional.of(get(IterableXHelper.RANDOM.nextInt(size()))) : Optional.empty();
     }
 
     @Override
-    public int binarySearch(int fromIndex, int toIndex, ToIntFunction<T> comparison) {
-        return ArrayHelper.binarySearch(size(), list::get, fromIndex, toIndex, comparison);
+    public ListX<E> shuffled() {
+        final var listX = to(MutableListX::empty);
+        Collections.shuffle(listX);
+        return listX;
+    }
+
+    @Override
+    public int binarySearch(int fromIndex, int toIndex, ToIntFunction<E> comparison) {
+        return ListHelper.binarySearch(size(), list::get, fromIndex, toIndex, comparison);
     }
 
     @Override
@@ -79,7 +87,7 @@ final class ArrayListX<T> implements MutableListX<T> {
 
     @NotNull
     @Override
-    public Iterator<T> iterator() {
+    public Iterator<E> iterator() {
         return list.iterator();
     }
 
@@ -97,8 +105,8 @@ final class ArrayListX<T> implements MutableListX<T> {
     }
 
     @Override
-    public boolean add(T t) {
-        return list.add(t);
+    public boolean add(E e) {
+        return list.add(e);
     }
 
     @Override
@@ -112,12 +120,12 @@ final class ArrayListX<T> implements MutableListX<T> {
     }
 
     @Override
-    public boolean addAll(@NotNull Collection<? extends T> c) {
+    public boolean addAll(@NotNull Collection<? extends E> c) {
         return list.addAll(c);
     }
 
     @Override
-    public boolean addAll(int index, @NotNull Collection<? extends T> c) {
+    public boolean addAll(int index, @NotNull Collection<? extends E> c) {
         return list.addAll(index, c);
     }
 
@@ -137,22 +145,22 @@ final class ArrayListX<T> implements MutableListX<T> {
     }
 
     @Override
-    public T get(int index) {
+    public E get(int index) {
         return list.get(index);
     }
 
     @Override
-    public T set(int index, T element) {
+    public E set(int index, E element) {
         return list.set(index, element);
     }
 
     @Override
-    public void add(int index, T element) {
+    public void add(int index, E element) {
         list.add(index, element);
     }
 
     @Override
-    public T remove(int index) {
+    public E remove(int index) {
         return list.remove(index);
     }
 
@@ -168,31 +176,31 @@ final class ArrayListX<T> implements MutableListX<T> {
 
     @NotNull
     @Override
-    public ListIterator<T> listIterator() {
+    public ListIterator<E> listIterator() {
         return list.listIterator();
     }
 
     @NotNull
     @Override
-    public ListIterator<T> listIterator(int index) {
+    public ListIterator<E> listIterator(int index) {
         return list.listIterator(index);
     }
 
     @NotNull
     @Override
-    public MutableListX<T> headTo(int toIndex) {
+    public MutableListX<E> headTo(int toIndex) {
         return subList(0, toIndex);
     }
 
     @NotNull
     @Override
-    public MutableListX<T> tailFrom(int fromIndex) {
+    public MutableListX<E> tailFrom(int fromIndex) {
         return subList(fromIndex, size());
     }
 
     @NotNull
     @Override
-    public MutableListX<T> subList(int fromIndex, int toIndex) {
+    public MutableListX<E> subList(int fromIndex, int toIndex) {
         return MutableListX.of(list.subList(fromIndex, toIndex));
     }
 
@@ -216,5 +224,9 @@ final class ArrayListX<T> implements MutableListX<T> {
     @Override
     public String toString() {
         return list.toString();
+    }
+
+    List<E> getList() {
+        return list;
     }
 }

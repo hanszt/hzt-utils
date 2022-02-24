@@ -4,20 +4,16 @@ import hzt.collections.ListX;
 import hzt.collections.MutableListX;
 import hzt.collections.MutableSetX;
 import hzt.collections.SetX;
-import hzt.ranges.DoubleRange;
-import hzt.ranges.IntRange;
-import hzt.ranges.LongRange;
+import hzt.sequences.primitives.DoubleSequence;
+import hzt.sequences.primitives.IntSequence;
+import hzt.sequences.primitives.LongSequence;
 import hzt.sequences.Sequence;
-import hzt.tuples.Pair;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
@@ -41,16 +37,13 @@ import java.util.stream.StreamSupport;
  * @param <T> The Type of the Iterable in the Transform object
  * @author Hans Zuidervaart
  */
-public interface IterableX<T> extends Mappable<T>, Filterable<T>,
-        Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>, Collectable<T>, Groupable<T> {
+public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, Takeable<T>, Zippable<T>, Windowable<T>,
+        Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>,
+        Collectable<T>, Groupable<T>, Streamable<Stream<T>> {
 
     IterableX<T> plus(@NotNull T value);
 
     IterableX<T> plus(@NotNull Iterable<T> values);
-
-    default <C extends Collection<T>> C to(Supplier<C> collectionFactory) {
-        return IterableXHelper.mapFilteringTo(this, collectionFactory, It::noFilter, It::self, It::noFilter);
-    }
 
     <R> IterableX<R> castIfInstanceOf(@NotNull Class<R> aClass);
 
@@ -58,20 +51,24 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>,
         return StreamSupport.stream(spliterator(), false);
     }
 
+    default Stream<T> parallelStream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+
     default Sequence<T> asSequence() {
         return Sequence.of(this);
     }
 
-    default IntRange asIntRange(@NotNull ToIntFunction<T> keyMapper) {
-        return IntRange.of(asSequence().map(keyMapper::applyAsInt));
+    default IntSequence mapToInt(@NotNull ToIntFunction<? super T> keyMapper) {
+        return IntSequence.of(asSequence().map(keyMapper::applyAsInt));
     }
 
-    default LongRange asLongRange(@NotNull ToLongFunction<T> keyMapper) {
-        return LongRange.of(asSequence().map(keyMapper::applyAsLong));
+    default LongSequence mapToLong(@NotNull ToLongFunction<? super T> keyMapper) {
+        return LongSequence.of(asSequence().map(keyMapper::applyAsLong));
     }
 
-    default DoubleRange asDoubleRange(@NotNull ToDoubleFunction<T> keyMapper) {
-        return DoubleRange.of(asSequence().map(keyMapper::applyAsDouble));
+    default DoubleSequence mapToDouble(@NotNull ToDoubleFunction<? super T> keyMapper) {
+        return DoubleSequence.of(asSequence().map(keyMapper::applyAsDouble));
     }
 
     <K> EntryIterable<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper);
@@ -105,52 +102,13 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>,
     }
 
     default <S, I extends Iterable<S>, R> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper,
-                                                                   @NotNull Function<? super S, ? extends R> selector) {
+                                                                 @NotNull Function<? super S, ? extends R> selector) {
         return IterableReductions.intersectionOf(this, toIterableMapper, selector);
     }
 
     default <R, I extends Iterable<R>> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper) {
         return intersectionOf(toIterableMapper, It::self);
     }
-
-    <R> IterableX<Pair<T, R>> zip(@NotNull Iterable<R> iterable);
-
-    <A, R> IterableX<R> zip(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super T, ? super A, ? extends R> function);
-
-    IterableX<Pair<T, T>> zipWithNext();
-
-    <R> IterableX<R> zipWithNext(BiFunction<T, T, R> function);
-
-    IterableX<ListX<T>> chunked(int size);
-
-    <R>IterableX<R> chunked(int size, @NotNull Function<? super ListX<T>, ? extends R> transform);
-
-    IterableX<ListX<T>> windowed(int size);
-
-    <R> IterableX<R> windowed(int size, @NotNull Function<? super ListX<T>, ? extends R> transform);
-
-    IterableX<ListX<T>> windowed(int size, int step);
-
-    <R> IterableX<R> windowed(int size, int step, @NotNull Function<? super ListX<T>, ? extends R> transform);
-
-    IterableX<ListX<T>> windowed(int size, boolean partialWindows);
-
-    IterableX<ListX<T>> windowed(int size, int step, boolean partialWindows);
-
-    <R> IterableX<R> windowed(int size, int step, boolean partialWindows,
-                              @NotNull Function<? super ListX<T>, R> transform);
-
-    IterableX<T> skip(long count);
-
-    IterableX<T> skipWhile(@NotNull Predicate<T> predicate);
-
-    IterableX<T> skipWhileInclusive(@NotNull Predicate<T> predicate);
-
-    IterableX<T> take(long n);
-
-    IterableX<T> takeWhile(@NotNull Predicate<T> predicate);
-
-    IterableX<T> takeWhileInclusive(@NotNull Predicate<T> predicate);
 
     default SetX<T> union(@NotNull Iterable<T> other) {
         MutableSetX<T> union = MutableSetX.empty();
@@ -164,5 +122,17 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>,
         final SetX<R> setX = ListX.of(other).toSetXOf(mapper);
         setX.forEach(union::add);
         return union;
+    }
+
+    default int[] toIntArray(@NotNull ToIntFunction<? super T> mapper) {
+        return mapToInt(mapper).toArray();
+    }
+
+    default long[] toLongArray(@NotNull ToLongFunction<? super T> mapper) {
+        return mapToLong(mapper).toArray();
+    }
+
+    default double[] toDoubleArray(@NotNull ToDoubleFunction<? super T> mapper) {
+        return mapToDouble(mapper).toArray();
     }
 }

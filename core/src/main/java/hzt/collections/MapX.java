@@ -12,12 +12,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 @SuppressWarnings("unused")
-public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterable<K, V> {
+public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<K, V> {
 
     static <K, V> MapX<K, V> empty() {
         return MutableMapX.empty();
@@ -79,15 +80,19 @@ public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterab
         return new HashMapX<>(entries);
     }
 
+    static <K, V> MapX<K, V> ofPairs(Iterable<Pair<K, V>> pairs) {
+        return new HashMapX<>(EntrySequence.ofPairs(pairs));
+    }
+
     @SafeVarargs
     static <K, V> MapX<K, V> ofPairs(Pair<K, V>... pairs) {
         return new HashMapX<>(pairs);
     }
 
-    static <K, V> MapX<K, V> build(Consumer<MutableMapX<K, V>> mapXConsumer) {
-        MutableMapX<K, V> mapX = MutableMapX.empty();
-        mapXConsumer.accept(mapX);
-        return mapX;
+    static <K, V> MapX<K, V> build(Consumer<MutableMapX<K, V>> mapConsumer) {
+        MutableMapX<K, V> map = MutableMapX.empty();
+        mapConsumer.accept(map);
+        return map;
     }
 
     <K1, V1> MapX<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper,
@@ -117,6 +122,11 @@ public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterab
         return asSequence().mapValues(toValueMapper).toMutableMap();
     }
 
+    @Override
+    default MapX<K, V> filter(@NotNull BiPredicate<K, V> biPredicate) {
+        return asSequence().filter(biPredicate).toMapX();
+    }
+
     default MapX<K, V> filterKeys(@NotNull Predicate<K> predicate) {
         return asSequence().filterKeys(predicate).toMapX();
     }
@@ -143,7 +153,7 @@ public interface MapX<K, V> extends CollectionView<Map.Entry<K, V>>, EntryIterab
 
     @Override
     default MapX<K, V> onEach(@NotNull BiConsumer<? super K, ? super V> biConsumer) {
-        return MapX.of(CollectionView.super.onEach(c -> biConsumer.accept(c.getKey(), c.getValue())));
+        return MapX.of(CollectionX.super.onEach(c -> biConsumer.accept(c.getKey(), c.getValue())));
     }
 
     default <K1, V1> MapX<K1, V1> inverted(Function<K, V1> toValueMapper, Function<V, K1> toKeyMapper) {

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 
-public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollection<E> {
+public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E> {
 
     static <E> MutableListX<E> empty() {
         return new ArrayListX<>();
@@ -51,6 +51,16 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollection<E>
 
     @Override
     boolean isEmpty();
+
+    @Override
+    default boolean removeFirst() {
+        return remove(get(0));
+    }
+
+    @Override
+    default boolean removeLast() {
+        return remove(get(lastIndex()));
+    }
 
     @Override
     default @NotNull MutableListX<E> get() {

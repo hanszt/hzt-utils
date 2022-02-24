@@ -1,11 +1,13 @@
 package hzt.numbers;
 
+import hzt.progressions.IntProgression;
 import hzt.ranges.IntRange;
+import hzt.sequences.primitives.IntSequence;
 import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.function.IntPredicate;
 
 @SuppressWarnings("unused")
 public final class IntX extends Number implements NumberX<Integer>, Transformable<IntX> {
@@ -22,16 +24,16 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return new IntX(number.intValue());
     }
 
-    public IntRange downTo(int target) {
-        return target > integer ? IntRange.empty() : IntRange.of(integer, target - 1);
+    public IntProgression downTo(int target) {
+        return target > integer ? IntProgression.empty() : IntProgression.closed(integer, target, -1);
     }
 
-    public IntRange upTo(int target) {
-        return target < integer ? IntRange.empty() : IntRange.closed(integer, target);
+    public IntSequence upTo(int target) {
+        return target < integer ? IntSequence.empty() : IntRange.closed(integer, target);
     }
 
     public IntRange until(int bound) {
-        return bound < integer ? IntRange.empty() : IntRange.of(integer, bound);
+        return IntRange.of(integer, bound);
     }
 
     public static String toString(int i, int radix) {
@@ -66,7 +68,7 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return Integer.parseInt(s, radix);
     }
 
-    public static Predicate<Integer> multipleOf(int multiple) {
+    public static IntPredicate multipleOf(int multiple) {
         return i -> i % multiple == 0;
     }
 
@@ -196,6 +198,10 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
 
     public static int compare(int x, int y) {
         return Integer.compare(x, y);
+    }
+
+    public static int compareReversed(int x, int y) {
+        return Integer.compare(y, x);
     }
 
     public static int compareUnsigned(int x, int y) {

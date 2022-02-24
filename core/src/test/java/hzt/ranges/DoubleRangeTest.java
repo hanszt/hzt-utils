@@ -11,7 +11,7 @@ class DoubleRangeTest {
 
     @Test
     void testRange() {
-        final var stats = DoubleRange.of(0, 100, .01).stats();
+        final var stats = DoubleRange.closed(0, 100, .01).stats();
 
         assertAll(
                 () -> assertEquals(10_000, stats.getCount()),
@@ -20,4 +20,8 @@ class DoubleRangeTest {
         );
     }
 
+    @Test
+    void testClosedDoubleRange() {
+        assertEquals(10.0, DoubleRange.closed(10, 10).boxed().single());
+    }
 }

@@ -5,7 +5,7 @@ import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.function.LongPredicate;
 
 @SuppressWarnings("unused")
 public final class LongX extends Number implements NumberX<Long>, Transformable<LongX> {
@@ -17,7 +17,7 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
     private LongX(Long thisLong) {
         this.thisLong = thisLong;
     }
-    
+
     public static LongX of(long aLong) {
         return new LongX(aLong);
     }
@@ -62,7 +62,7 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         return Long.parseLong(s);
     }
 
-    public static Predicate<Long> multipleOf(long multiple) {
+    public static LongPredicate multipleOf(long multiple) {
         return l -> l % multiple == 0;
     }
 
@@ -102,7 +102,7 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         return Long.valueOf(s);
     }
 
-    
+
     public static Long valueOf(long l) {
         return l;
     }
@@ -187,6 +187,10 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         return Long.compare(x, y);
     }
 
+    public static int compareReversed(long x, long y) {
+        return Long.compare(y, x);
+    }
+
     public static int compareUnsigned(long x, long y) {
         return Long.compareUnsigned(x, y);
     }
@@ -207,17 +211,17 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         return Long.lowestOneBit(i);
     }
 
-    
+
     public static int numberOfLeadingZeros(long i) {
         return Long.numberOfLeadingZeros(i);
     }
 
-    
+
     public static int numberOfTrailingZeros(long i) {
         return Long.numberOfTrailingZeros(i);
     }
 
-    
+
     public static int bitCount(long i) {
         return Long.bitCount(i);
     }
@@ -238,7 +242,7 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         return Long.signum(i);
     }
 
-    
+
     public static long reverseBytes(long i) {
         return Long.reverseBytes(i);
     }

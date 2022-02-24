@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-public interface Distinctable<T> {
+public interface Distinctable<T> extends Iterable<T> {
 
     Distinctable<T> distinct();
 

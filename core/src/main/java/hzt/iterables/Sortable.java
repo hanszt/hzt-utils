@@ -1,8 +1,7 @@
 package hzt.iterables;
 
-import hzt.collections.ListX;
 import hzt.collections.MutableListX;
-import hzt.collections.NavigableSetX;
+import hzt.collections.SortedMutableSetX;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,64 +11,56 @@ import java.util.function.Function;
 @FunctionalInterface
 public interface Sortable<T> extends Iterable<T> {
 
-    private <R extends Comparable<R>> ListX<T> toSortedListX(@NotNull Function<? super T, ? extends R> selector) {
-        return toMutableListSortedBy(selector);
+    default <R extends Comparable<? super R>> Sortable<T> sorted() {
+        return toMutableListSortedBy((Function<T, R>) IterableXHelper::asComparableOrThrow);
     }
 
-    default Sortable<T> shuffled() {
-        return toSortedListX(s -> IterableXHelper.nextRandomDouble());
-    }
-
-    default <R extends Comparable<R>> Sortable<T> sorted() {
-        return toSortedListX((Function<T, R>) IterableXHelper::asComparableOrThrow);
-    }
-
-    default <R extends Comparable<R>> Sortable<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
-        return toSortedListX(selector);
-    }
-
-    default Sortable<T> sortedBy(Comparator<T> comparator) {
+    default Sortable<T> sorted(Comparator<T> comparator) {
         final MutableListX<T> list = MutableListX.of(this);
         list.sort(comparator);
         return list;
     }
 
-    default <R extends Comparable<R>> Sortable<T> sortedDescending() {
+    default <R extends Comparable<? super R>> Sortable<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
+        return toMutableListSortedBy(selector);
+    }
+
+    default <R extends Comparable<? super R>> Sortable<T> sortedDescending() {
         return sortedByDescending((Function<T, R>) IterableXHelper::asComparableOrThrow);
     }
 
-    default <R extends Comparable<R>> Sortable<T> sortedByDescending(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Sortable<T> sortedByDescending(@NotNull Function<? super T, ? extends R> selector) {
         final MutableListX<T> list = MutableListX.of(this);
         list.sort(Comparator.comparing(selector).reversed());
         return list;
     }
 
-    private <R extends Comparable<R>> MutableListX<T> toMutableListSortedBy(@NotNull Function<? super T, ? extends R> selector) {
+    private <R extends Comparable<? super R>> MutableListX<T> toMutableListSortedBy(@NotNull Function<? super T, ? extends R> selector) {
         final MutableListX<T> list = MutableListX.of(this);
         list.sort(Comparator.comparing(selector));
         return list;
     }
 
-    default <R extends Comparable<R>> NavigableSetX<T> toSortedSet(@NotNull Function<? super T, ? extends R> selector) {
-        NavigableSetX<T> navigableSetX = NavigableSetX.comparingBy(selector);
+    default <R extends Comparable<? super R>> SortedMutableSetX<T> toSortedSet(@NotNull Function<? super T, ? extends R> selector) {
+        SortedMutableSetX<T> sortedMutableSet = SortedMutableSetX.comparingBy(selector);
         for (T t : this) {
             if (t != null && selector.apply(t) != null) {
-                navigableSetX.add(t);
+                sortedMutableSet.add(t);
             }
         }
-        return navigableSetX;
+        return sortedMutableSet;
     }
 
-    default <R extends Comparable<R>> NavigableSetX<R> toSortedSetOf(@NotNull Function<? super T, ? extends R> selector) {
-        MutableListX<R> listX = MutableListX.empty();
+    default <R extends Comparable<? super R>> SortedMutableSetX<R> toSortedSetOf(@NotNull Function<? super T, ? extends R> selector) {
+        MutableListX<R> list = MutableListX.empty();
         for (T t : this) {
             if (t != null) {
                 final R r = selector.apply(t);
                 if (r != null) {
-                    listX.add(r);
+                    list.add(r);
                 }
             }
         }
-        return NavigableSetX.of(listX, It::self);
+        return SortedMutableSetX.of(list, It::self);
     }
 }

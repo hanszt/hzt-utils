@@ -1,6 +1,5 @@
 package hzt.sequences;
 
-import hzt.collections.ArrayX;
 import hzt.collections.LinkedSetX;
 import hzt.collections.ListX;
 import hzt.collections.MapX;
@@ -9,6 +8,7 @@ import hzt.collections.SetX;
 import hzt.numbers.IntX;
 import hzt.numbers.LongX;
 import hzt.ranges.IntRange;
+import hzt.sequences.primitives.IntSequence;
 import hzt.strings.StringX;
 import hzt.test.Generator;
 import hzt.utils.It;
@@ -17,18 +17,27 @@ import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -124,15 +133,15 @@ class SequenceTest {
     }
 
     @Test
-    void testMapFilterReduceToArrayX() {
+    void testMapFilterReduceToIntArray() {
         ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
 
-        final ArrayX<Integer> result = list.asSequence()
-                .map(String::length)
+        final int[] result = list
+                .mapToInt(String::length)
                 .filter(l -> l > 3)
-                .toArrayX(Integer[]::new);
+                .toArray();
 
-        assertEquals(ArrayX.of(5, 4), result);
+        assertArrayEquals(new int[]{5, 4}, result);
     }
 
     @Test
@@ -271,6 +280,7 @@ class SequenceTest {
     void testLargeSequence() {
         final ListX<BigDecimal> bigDecimals = IntRange.of(0, 100_000)
                 .filter(IntX::isEven)
+                .boxed()
                 .map(BigDecimal::valueOf)
                 .sortedDescending()
                 .toListX();
@@ -330,27 +340,6 @@ class SequenceTest {
     }
 
     @Test
-    void testRange() {
-        assertArrayEquals(
-                IntStream.range(5, 10).toArray(),
-                IntRange.of(5, 10).toIntArray(It::asInt));
-    }
-
-    @Test
-    void testRangeWithInterval() {
-        assertArrayEquals(
-                IntStream.range(5, 10).filter(IntX::isEven).toArray(),
-                IntRange.of(5, 10).filter(IntX::isEven).toIntArray(It::asInt));
-    }
-
-    @Test
-    void testRangeClosed() {
-        assertArrayEquals(
-                IntStream.rangeClosed(5, 10).toArray(),
-                IntRange.closed(5, 10).toIntArray(It::asInt));
-    }
-
-    @Test
     void testIterateRandomWithinBound() {
         final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5);
 
@@ -384,17 +373,20 @@ class SequenceTest {
 
     @Test
     void testWindowedThrowsExceptionWhenStepSizeNegative() {
-        final var range = IntRange.of(0, 9);
-        assertThrows(IllegalArgumentException.class, () -> range.windowed(-4));
+        final var integers = IntSequence.of(0, 9).boxed();
+        assertThrows(IllegalArgumentException.class, () -> integers.windowed(-4));
     }
 
     @Test
     void testWindowedStepGreaterThanWindowSizeWithPartialWindow() {
         final var windows = IntRange.of(0, 98)
+                .boxed()
                 .windowed(5, 6, true)
                 .toListX();
 
         It.println("windows = " + windows);
+
+        new HashMap<>(0);
 
         assertAll(
                 () -> assertEquals(ListX.of(0, 1, 2, 3, 4), windows.first()),
@@ -405,6 +397,7 @@ class SequenceTest {
     @Test
     void testWindowedStepGreaterThanWindowSizeNoPartialWindow() {
         final var windows = IntRange.of(0, 98)
+                .boxed()
                 .windowed(5, 6)
                 .toListX();
 
@@ -420,6 +413,7 @@ class SequenceTest {
     @Test
     void testWindowedStepSmallerThanWindowSizeWithPartialWindow() {
         final var windows = IntRange.closed(0, 10)
+                .boxed()
                 .windowed(5, 2, true)
                 .toListX();
 
@@ -435,6 +429,7 @@ class SequenceTest {
     @Test
     void testWindowedStepSmallerThanWindowSizeNoPartialWindow() {
         final var windows = IntRange.of(0, 9)
+                .boxed()
                 .windowed(4, 2)
                 .toListX();
 
@@ -448,8 +443,25 @@ class SequenceTest {
     }
 
     @Test
+    void testWindowedVariableSize() {
+        final var windows = IntRange.of(0, 40)
+                .boxed()
+                .windowed(1, n -> ++n, 4, true, It::self)
+                .toListX();
+
+        It.println("windows = " + windows);
+
+        assertAll(
+                () -> assertEquals(10, windows.size()),
+                () -> assertEquals(ListX.of(0), windows.first()),
+                () -> assertEquals(ListX.of(36, 37, 38, 39), windows.last())
+        );
+    }
+
+    @Test
     void testWindowedSizeGreaterThanSequenceSizeNoPartialWindowGivesEmptyList() {
-        final var windows = IntRange.of(0, 8)
+        final var windows = IntSequence.of(0, 8)
+                .boxed()
                 .windowed(10)
                 .toListX();
 
@@ -461,6 +473,7 @@ class SequenceTest {
     @Test
     void testLargeWindowedSequence() {
         final var windows = IntRange.of(0, 1_000_000)
+                .boxed()
                 .windowed(2_001, 23, true)
                 .toListX();
 
@@ -480,8 +493,10 @@ class SequenceTest {
     @Test
     void testSequenceWindowedTransformed() {
         final var sizes = IntRange.of(0, 1_000)
-                .filter(IntX.multipleOf(5))
-                .windowed(51, 7, ListX::size)
+                .filter(i -> IntX.multipleOf(5).test(i))
+                .boxed()
+                .windowed(51, 7)
+                .map(ListX::size)
                 .toListX();
 
         It.println("sizes = " + sizes);
@@ -505,16 +520,17 @@ class SequenceTest {
     @Test
     void testZipWithNext() {
         final var sums = IntRange.of(0, 1_000)
-                .shuffled()
                 .filter(IntX.multipleOf(10))
                 .onEach(i -> It.print(i + ", "))
+                .boxed()
                 .zipWithNext(Integer::sum)
-                .toListX();
+                .toListX()
+                .shuffled();
 
         It.println("\nsums = " + sums);
 
-        It.println("windows.first() = " + sums.findFirst());
-        It.println("windows.last() = " + sums.findLast());
+        It.println("sums.first() = " + sums.findFirst());
+        It.println("sums.last() = " + sums.findLast());
 
         assertEquals(99, sums.size());
     }
@@ -534,9 +550,9 @@ class SequenceTest {
 
     @Test
     void testSequenceAssociateWith() {
-        final var listX = ListX.of(1, 2, 3, 4);
+        final var list = ListX.of(1, 2, 3, 4);
 
-        final var mapX = listX.asSequence()
+        final var map = list.asSequence()
                 .associateWith(String::valueOf)
                 .onEach(It::println)
                 .mapValues(s -> StringX.of(s).first())
@@ -544,7 +560,7 @@ class SequenceTest {
                 .onEachKey(It::println)
                 .toMapX();
 
-        assertEquals(2, mapX.size());
+        assertEquals(2, map.size());
     }
 
     @Test
@@ -578,6 +594,7 @@ class SequenceTest {
     @Test
     void testGeneratedSequenceCanBeConsumedMultipleTimes() {
         var leapYears = IntRange.from(1900).upTo(2000).step(2)
+                .boxed()
                 .map(Year::of)
                 .filter(Year::isLeap);
 
@@ -626,7 +643,7 @@ class SequenceTest {
         final var daysOfYear = Sequence
                 .generate(LocalDate.of(year, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhile(date -> date.getYear() < year + 1)
-                .asIntRange(LocalDate::getDayOfMonth);
+                .mapToInt(LocalDate::getDayOfMonth);
 
         It.println(daysOfYear.joinToString());
 
@@ -638,4 +655,62 @@ class SequenceTest {
         );
     }
 
+    @Test
+    void testToSortedLocalDateTime() {
+        final LocalDateTime initDateTime = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0, 0);
+
+        final var sorted = IntRange.of(0, 1_000)
+                .mapToObj(initDateTime::plusDays)
+                .sorted()
+                .toListX();
+
+        assertAll(
+                () -> assertEquals(initDateTime, sorted.first()),
+                () -> assertEquals(1_000, sorted.size())
+        );
+    }
+
+    @Test
+    void testSequenceOfZoneIds() {
+        Instant now = Instant.now();
+        ZonedDateTime current = now.atZone(ZoneId.systemDefault());
+        System.out.printf("Current time is %s%n%n", current);
+
+        final var noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
+
+        noneWholeHourZoneOffsetSummaries.forEach(It::println);
+
+        assertEquals(23, noneWholeHourZoneOffsetSummaries.count());
+    }
+
+    private boolean nonWholeHourOffsets(Instant instant, ZoneId id) {
+        return instant.atZone(id).getOffset().getTotalSeconds() % 3600 != 0;
+    }
+
+    @Test
+    void testTimeZonesAntarctica() {
+        Instant now = Instant.now();
+        ZonedDateTime current = now.atZone(ZoneId.systemDefault());
+        System.out.printf("Current time is %s%n%n", current);
+
+        final Sequence<String> timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.getId().contains("Antarctica"));
+
+        timeZonesAntarctica.forEach(It::println);
+
+        assertEquals(12, timeZonesAntarctica.count());
+    }
+
+    private Sequence<String> getTimeZoneSummaries(Instant now, @NotNull Predicate<ZoneId> predicate) {
+        return Sequence.of(ZoneId.getAvailableZoneIds())
+                .map(ZoneId::of)
+                .filter(predicate)
+                .map(now::atZone)
+                .sorted()
+                .map(this::toZoneSummary);
+    }
+
+    private String toZoneSummary(ZonedDateTime zonedDateTime) {
+        return String.format("%10s %-25s %10s", zonedDateTime.getOffset(), zonedDateTime.getZone(),
+                zonedDateTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+    }
 }

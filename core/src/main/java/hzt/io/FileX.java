@@ -1,6 +1,6 @@
 package hzt.io;
 
-import hzt.collections.ListView;
+import hzt.collections.ListX;
 import hzt.iterables.Collectable;
 import hzt.sequences.Sequence;
 import hzt.strings.StringX;
@@ -27,12 +27,12 @@ public final class FileX extends File {
         return new FileX(pathName);
     }
 
-    public ListView<StringX> readLines() {
+    public ListX<StringX> readLines() {
         return readLines(StandardCharsets.UTF_8);
     }
 
-    public ListView<StringX> readLines(Charset charset) {
-        return useLines(Collectable::toListView, charset);
+    public ListX<StringX> readLines(Charset charset) {
+        return useLines(Collectable::toListX, charset);
     }
 
     public String readText(Charset charset) {

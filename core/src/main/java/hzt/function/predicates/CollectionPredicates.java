@@ -1,6 +1,6 @@
 package hzt.function.predicates;
 
-import hzt.stream.StreamUtils;
+import hzt.sequences.Sequence;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,8 +12,7 @@ public final class CollectionPredicates {
     }
 
     public static <E> Predicate<Collection<E>> containsAll(Iterable<E> other) {
-        return collection -> collection != null && other != null && StreamUtils.streamOf(other)
-                .allMatch(collection::contains);
+        return collection -> collection != null && other != null && Sequence.of(other).all(collection::contains);
     }
 
     public static <E> Predicate<Collection<E>> containsAll(Collection<E> other) {
@@ -26,8 +25,7 @@ public final class CollectionPredicates {
     }
 
     public static <E> Predicate<Collection<E>> containsAny(Iterable<E> other) {
-        return collection -> collection != null && other != null && StreamUtils.streamOf(other)
-                .anyMatch(collection::contains);
+        return collection -> collection != null && other != null && Sequence.of(other).any(collection::contains);
     }
 
     @SafeVarargs
@@ -36,8 +34,7 @@ public final class CollectionPredicates {
     }
 
     public static <E> Predicate<Collection<E>> containsNone(Iterable<E> other) {
-        return collection -> collection != null && other != null && StreamUtils.streamOf(other)
-                .noneMatch(collection::contains);
+        return collection -> collection != null && other != null && Sequence.of(other).none(collection::contains);
     }
 
     @SafeVarargs

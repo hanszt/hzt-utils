@@ -21,7 +21,7 @@ class StatisticsTest {
         final ListView<Integer> list = Sequence.generate(RANDOM::nextGaussian)
                 .take(1_000)
                 .map(d -> (int) (d * 100))
-                .toListView();
+                .toListX();
 
         final LongRange intRange = list.asLongRange(It::asLong);
         final LongRange longRange = intRange.asLongRange(It::asLong);

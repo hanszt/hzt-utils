@@ -1,107 +1,83 @@
 package hzt.ranges;
 
-import hzt.collections.MutableList;
-import hzt.statistics.IntStatistics;
+import hzt.collections.primitives.IntListX;
+import hzt.collections.primitives.IntMutableListX;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.IntSummaryStatistics;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class IntRangeTest {
 
     @Test
-    void testSteppedIntRange() {
-        MutableList<Integer> list = MutableList.empty();
-        for (int i : IntRange.until(15).step(4)) {
-            It.println(i);
+    void testIntRange() {
+        final var intRange = IntRange.of(1, 100);
+
+        assertAll(
+                () -> assertTrue(intRange.contains(3)),
+                () -> assertFalse(intRange.contains(101))
+        );
+    }
+
+    @Test
+    void testIterateIntRange() {
+        final var range = IntRange.of(2, 10);
+        IntMutableListX list = IntMutableListX.empty();
+        for (int i : range) {
             list.add(i);
         }
-        assertEquals(Arrays.asList(0, 4, 8, 12), list);
-    }
-
-    @Test
-    void testDescendingSteppedIntRange() {
-        MutableList<Integer> list = MutableList.empty();
-        for (int i : IntRange.from(100).downTo(20).step(5)) {
-            It.println(i);
+        for (int i : range) {
             list.add(i);
         }
-        assertAll(
-                () -> assertEquals(17, list.size()),
-                () -> assertEquals(100, list.first())
-        );
+        assertEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9), list);
     }
 
     @Test
-    void testDescendingIntRange() {
-        final IntRange integers = IntRange.from(100).downTo(20);
-        assertAll(
-                () -> assertEquals(81, integers.count()),
-                () -> assertEquals(100, integers.first())
-        );
+    void testRange() {
+        final var range = IntRange.of(2, 10);
+        assertIterableEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9), range);
     }
 
     @Test
-    void testGetEmptyIntRangeWhenFromValueIsGreaterThanUntilValue() {
-        assertEquals(0 , IntRange.from(100).until(0).count());
+    void testSteppedRange() {
+        final var range = IntRange.of(2, 20, 2);
+
+        System.out.println("range = " + range);
+        range.forEach(It::println);
+
+        assertIterableEquals(IntListX.of(2, 4, 6, 8, 10, 12, 14, 16, 18), range);
     }
 
     @Test
-    void testStats() {
-        final IntSummaryStatistics expected = IntStream.range(0, 100).summaryStatistics();
-
-        final IntStatistics actual = IntRange.of(0, 100).stats();
-
-        It.println("actual = " + actual);
-
-        assertAll(
-                () -> assertEquals(expected.getCount(), actual.getCount()),
-                () -> assertEquals(expected.getSum(), actual.getSum()),
-                () -> assertEquals(expected.getAverage(), actual.getAverage()),
-                () -> assertEquals(expected.getMax(), actual.getMax())
-        );
+    void testRangeClosed() {
+        final var range = IntRange.closed(2, 10);
+        assertIterableEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9, 10), range);
     }
 
     @Test
-    void testIntRangeFromIntStream() {
-        final IntSummaryStatistics expected = IntStream.range(0, 100).summaryStatistics();
+    void testSteppedRangeClosed() {
+        final var range = IntRange.closed(2, 20, 2);
 
-        final IntStatistics actual = IntRange.of(IntStream.range(0, 100)).stats();
+        System.out.println("range = " + range);
+        range.forEach(It::println);
 
-        It.println("actual = " + actual);
-
-        assertAll(
-                () -> assertEquals(expected.getCount(), actual.getCount()),
-                () -> assertEquals(expected.getSum(), actual.getSum()),
-                () -> assertEquals(expected.getAverage(), actual.getAverage()),
-                () -> assertEquals(expected.getMax(), actual.getMax())
-        );
+        assertIterableEquals(IntListX.of(2, 4, 6, 8, 10, 12, 14, 16, 18, 20), range);
     }
 
     @Test
-    void intRangeFromIntArray() {
-        int[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
-
-        final long[] expected = IntStream.of(array)
-                .mapToLong(It::asLong)
-                .filter(l -> l > 3)
-                .toArray();
-
-
-        final long[] longs = IntRange.of(array)
-                .asLongRange(It::asLong)
-                .filter(l -> l > 3)
-                .toArray();
-
-        assertAll(
-                () -> assertArrayEquals(new long[]{4, 5, 4, 6, 4, 4}, longs),
-                () -> assertArrayEquals(expected, longs)
-        );
+    void testRangeClosedToArray() {
+        assertArrayEquals(
+                IntStream.rangeClosed(5, 10).toArray(),
+                IntRange.closed(5, 10).toArray());
     }
+
+    @Test
+    void emptyIntRange() {
+        final var empty = IntRange.empty();
+        empty.forEach(System.out::println);
+        assertTrue(empty.none());
+    }
+
 }

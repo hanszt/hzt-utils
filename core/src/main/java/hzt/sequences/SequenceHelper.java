@@ -1,5 +1,6 @@
 package hzt.sequences;
 
+import hzt.PreConditions;
 import hzt.iterators.FilteringIterator;
 import hzt.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -8,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.IntConsumer;
 import java.util.function.Predicate;
 
 final class SequenceHelper {

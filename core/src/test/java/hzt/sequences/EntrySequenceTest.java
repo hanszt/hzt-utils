@@ -1,6 +1,6 @@
 package hzt.sequences;
 
-import hzt.collections.MapView;
+import hzt.collections.MapX;
 import hzt.collections.MutableMap;
 import hzt.tuples.Pair;
 import hzt.utils.It;
@@ -21,12 +21,12 @@ class EntrySequenceTest {
 
     @Test
     void testfilterValuesAndMapValues() {
-        final MapView<String, Integer> mapView = MapView.of("1", 1, "2", 2, "3", 3, "4", 4);
+        final var mapX = MapX.of("1", 1, "2", 2, "3", 3, "4", 4);
 
-        final MapView<String, LocalDate> resultMap = mapView.asSequence()
+        final MapView<String, LocalDate> resultMap = mapX.asSequence()
                 .filterValues(value -> value <= 3)
                 .mapValues(day -> LocalDate.of(2000, Month.JANUARY, day))
-                .toMapView();
+                .toMapX();
 
         assertAll(
                 () -> assertEquals(3, resultMap.size()),
@@ -36,12 +36,12 @@ class EntrySequenceTest {
 
     @Test
     void testMapValuesBothByKeyAndValue() {
-        final MapView<String, Integer> map = MapView.of("1", 1, "2", 2, "3", 3, "4", 4);
+        final MapView<String, Integer> map = MapX.of("1", 1, "2", 2, "3", 3, "4", 4);
 
         final MapView<String, LocalDate> resultMap = map.asSequence()
                 .filterValues(value -> value <= 3)
                 .mapValues((month, day) -> LocalDate.of(2000, Month.of(Integer.parseInt(month)), day))
-                .toMapView();
+                .toMapX();
 
         assertAll(
                 () -> assertEquals(3, resultMap.size()),

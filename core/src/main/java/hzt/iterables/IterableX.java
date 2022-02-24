@@ -1,12 +1,12 @@
 package hzt.iterables;
 
-import hzt.collections.ListView;
-import hzt.collections.MutableList;
-import hzt.collections.MutableSet;
-import hzt.collections.SetView;
-import hzt.ranges.DoubleRange;
-import hzt.ranges.IntRange;
-import hzt.ranges.LongRange;
+import hzt.collections.ListX;
+import hzt.collections.MutableListX;
+import hzt.collections.MutableSetX;
+import hzt.collections.SetX;
+import hzt.sequences.primitives.DoubleSequence;
+import hzt.sequences.primitives.IntSequence;
+import hzt.sequences.primitives.LongSequence;
 import hzt.sequences.Sequence;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
@@ -39,15 +38,12 @@ import java.util.stream.StreamSupport;
  * @author Hans Zuidervaart
  */
 public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, Takeable<T>, Zippable<T>, Windowable<T>,
-        Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>, Collectable<T>, Groupable<T> {
+        Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>,
+        Collectable<T>, Groupable<T>, Streamable<Stream<T>> {
 
     IterableX<T> plus(@NotNull T value);
 
     IterableX<T> plus(@NotNull Iterable<T> values);
-
-    default <C extends Collection<T>> C to(Supplier<C> collectionFactory) {
-        return IterableXHelper.mapFilteringTo(this, collectionFactory, It::noFilter, It::self, It::noFilter);
-    }
 
     <R> IterableX<R> castIfInstanceOf(@NotNull Class<R> aClass);
 
@@ -55,20 +51,24 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         return StreamSupport.stream(spliterator(), false);
     }
 
+    default Stream<T> parallelStream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+
     default Sequence<T> asSequence() {
         return Sequence.of(this);
     }
 
-    default IntRange asIntRange(@NotNull ToIntFunction<T> keyMapper) {
-        return IntRange.of(asSequence().map(keyMapper::applyAsInt));
+    default IntSequence mapToInt(@NotNull ToIntFunction<? super T> keyMapper) {
+        return IntSequence.of(asSequence().map(keyMapper::applyAsInt));
     }
 
-    default LongRange asLongRange(@NotNull ToLongFunction<T> keyMapper) {
-        return LongRange.of(asSequence().map(keyMapper::applyAsLong));
+    default LongSequence mapToLong(@NotNull ToLongFunction<? super T> keyMapper) {
+        return LongSequence.of(asSequence().map(keyMapper::applyAsLong));
     }
 
-    default DoubleRange asDoubleRange(@NotNull ToDoubleFunction<T> keyMapper) {
-        return DoubleRange.of(asSequence().map(keyMapper::applyAsDouble));
+    default DoubleSequence mapToDouble(@NotNull ToDoubleFunction<? super T> keyMapper) {
+        return DoubleSequence.of(asSequence().map(keyMapper::applyAsDouble));
     }
 
     <K> EntryIterable<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper);
@@ -94,33 +94,45 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         return this;
     }
 
-    default SetView<T> intersect(@NotNull Iterable<T> other) {
+    default SetX<T> intersect(@NotNull Iterable<T> other) {
         final MutableSet<T> intersection = toMutableSet();
-        final Collection<T> otherCollection = other instanceof Collectable<?> ? (Collection<T>) other : MutableList.of(other);
+        final Collection<T> otherCollection = other instanceof Collectable<?> ? (Collection<T>) other : MutableListX.of(other);
         intersection.retainAll(otherCollection);
         return intersection;
     }
 
-    default <S, I extends Iterable<S>, R> SetView<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper,
-                                                                    @NotNull Function<? super S, ? extends R> selector) {
+    default <S, I extends Iterable<S>, R> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper,
+                                                                 @NotNull Function<? super S, ? extends R> selector) {
         return IterableReductions.intersectionOf(this, toIterableMapper, selector);
     }
 
-    default <R, I extends Iterable<R>> SetView<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper) {
+    default <R, I extends Iterable<R>> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper) {
         return intersectionOf(toIterableMapper, It::self);
     }
 
-    default SetView<T> union(@NotNull Iterable<T> other) {
-        MutableSet<T> union = MutableSet.empty();
+    default SetX<T> union(@NotNull Iterable<T> other) {
+        MutableSetX<T> union = MutableSetX.empty();
         forEach(union::add);
         other.forEach(union::add);
         return union;
     }
 
-    default <R> SetView<R> union(@NotNull Iterable<T> other, @NotNull Function<? super T, ? extends R> mapper) {
-        MutableSet<R> union = mapTo(MutableSet::empty, mapper);
-        final SetView<R> setView = ListView.of(other).toSetViewOf(mapper);
-        setView.forEach(union::add);
+    default <R> SetX<R> union(@NotNull Iterable<T> other, @NotNull Function<? super T, ? extends R> mapper) {
+        MutableSetX<R> union = mapTo(MutableSetX::empty, mapper);
+        final SetX<R> setX = ListX.of(other).toSetXOf(mapper);
+        setX.forEach(union::add);
         return union;
+    }
+
+    default int[] toIntArray(@NotNull ToIntFunction<? super T> mapper) {
+        return mapToInt(mapper).toArray();
+    }
+
+    default long[] toLongArray(@NotNull ToLongFunction<? super T> mapper) {
+        return mapToLong(mapper).toArray();
+    }
+
+    default double[] toDoubleArray(@NotNull ToDoubleFunction<? super T> mapper) {
+        return mapToDouble(mapper).toArray();
     }
 }

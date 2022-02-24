@@ -1,13 +1,12 @@
 package hzt.function.predicates;
 
+import hzt.sequences.Sequence;
+
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import static hzt.stream.StreamUtils.anyMatch;
-import static hzt.stream.StreamUtils.noneMatch;
 
 public final class StringPredicates {
 
@@ -94,18 +93,18 @@ public final class StringPredicates {
     }
 
     public static Predicate<String> endsWithAnyOf(String... strings) {
-        return string -> string != null && anyMatch(string::endsWith, strings);
+        return string -> string != null && Sequence.of(strings).any(string::endsWith);
     }
 
     public static Predicate<String> endsWithNoneOf(String... strings) {
-        return string -> string != null && noneMatch(string::endsWith, strings);
+        return string -> string != null && Sequence.of(strings).none(string::endsWith);
     }
     public static Predicate<String> startsWithAnyOf(String... strings) {
-        return string -> string != null && anyMatch(string::startsWith, strings);
+        return string -> string != null && Sequence.of(strings).any(string::startsWith);
     }
 
     public static Predicate<String> startsWithNoneOf(String... strings) {
-        return string -> string != null && noneMatch(string::startsWith, strings);
+        return string -> string != null && Sequence.of(strings).none(string::startsWith);
     }
 
 }

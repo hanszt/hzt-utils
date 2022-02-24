@@ -1,34 +1,41 @@
 package hzt.ranges;
 
 import hzt.statistics.LongStatistics;
-import hzt.utils.It;
+import hzt.numbers.LongX;
 import org.junit.jupiter.api.Test;
 
 import java.util.LongSummaryStatistics;
 import java.util.stream.LongStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LongRangeTest {
 
     @Test
-    void longRangeStatsGreaterThanIntegerMax() {
-        final LongStatistics stats = LongRange.of(0, Integer.MAX_VALUE * 10L, 1_000L).stats();
+    void longRangeStatsGreaterThanIntegerMaxFasterThanSequentialStream() {
+        final LongStatistics stats = LongRange.of(0, Integer.MAX_VALUE + 100_000L, 1000)
+                .map(l -> l + 2 * l)
+                .stats();
 
         assertAll(
-                () -> assertEquals(21474836000L, stats.getMax()),
-                () -> assertEquals(1.0737418E10, stats.getAverage()));
+                () -> assertEquals(6442749000L, stats.getMax()),
+                () -> assertEquals(3.2213745E9, stats.getAverage())
+        );
     }
 
     @Test
-    void longStreamRangeStatsGreaterThanIntegerMax() {
+    void longStreamParallelStatsGreaterThanIntegerMax() {
         final LongSummaryStatistics stats = LongStream.range(0, Integer.MAX_VALUE + 100_000L)
                 .parallel()
+                .filter(l -> l % 1_000 == 0)
+                .map(l -> l + 2 * l)
                 .summaryStatistics();
 
         assertAll(
-                () -> assertEquals(Integer.MAX_VALUE + 99_999L, stats.getMax()),
-                () -> assertEquals(1.073791823E9, stats.getAverage())
+                () -> assertEquals(6442749000L, stats.getMax()),
+                () -> assertEquals(3.2213745E9, stats.getAverage())
         );
     }
 
@@ -51,13 +58,10 @@ class LongRangeTest {
     }
 
     @Test
-    void longRangeForEachLong() {
-        long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+    void longRangeFromUntil() {
+        final var longs = LongRange.from(1).until(7).toArray();
 
-        LongRange.of(array)
-                .filter(l -> l > 3)
-                .onEach(It::println)
-                .forEachLong(l -> assertTrue(l > 3));
+        assertArrayEquals(new long[] {1, 2, 3, 4, 5, 6}, longs);
     }
 
 }

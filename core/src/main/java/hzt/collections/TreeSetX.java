@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 import static java.util.Comparator.comparing;
 
-final class TreeSetX<E, R extends Comparable<R>> implements SortedMutableSet<E> {
+final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutableSetX<E> {
 
     private final NavigableSet<E> navigableSet;
 

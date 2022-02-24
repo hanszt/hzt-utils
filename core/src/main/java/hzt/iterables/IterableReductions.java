@@ -1,11 +1,11 @@
 package hzt.iterables;
 
-import hzt.collections.ListView;
-import hzt.collections.MapView;
-import hzt.collections.MutableList;
-import hzt.collections.MutableMap;
-import hzt.collections.MutableSet;
-import hzt.collections.SetView;
+import hzt.collections.ListX;
+import hzt.collections.MapX;
+import hzt.collections.MutableListX;
+import hzt.collections.MutableMapX;
+import hzt.collections.MutableSetX;
+import hzt.collections.SetX;
 import hzt.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,23 +40,23 @@ public final class IterableReductions {
         return Optional.empty();
     }
 
-    public static <T, R, K> MapView<K, MutableList<R>> groupMapping(
+    public static <T, R, K> MapX<K, MutableListX<R>> groupMapping(
             @NotNull Iterable<T> iterable,
             @NotNull Function<? super T, ? extends K> classifier,
             @NotNull Function<? super T, ? extends R> valueMapper) {
-        MutableMap<K, MutableList<R>> groupedMap = MutableMap.empty();
+        MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
         for (T t : iterable) {
-            groupedMap.computeIfAbsent(classifier.apply(t), key -> MutableList.empty()).add(valueMapper.apply(t));
+            groupedMap.computeIfAbsent(classifier.apply(t), key -> MutableListX.empty()).add(valueMapper.apply(t));
         }
         return groupedMap;
     }
 
-    public static <T, R> Pair<ListView<R>, ListView<R>> partitionMapping(
+    public static <T, R> Pair<ListX<R>, ListX<R>> partitionMapping(
             @NotNull Iterable<T> iterable,
             @NotNull Predicate<T> predicate,
             @NotNull Function<? super T, ? extends R> resultMapper) {
-        MutableList<R> matchingList = MutableList.empty();
-        MutableList<R> nonMatchingList = MutableList.empty();
+        MutableListX<R> matchingList = MutableListX.empty();
+        MutableListX<R> nonMatchingList = MutableListX.empty();
         for (T t : iterable) {
             if (t != null) {
                 R r = resultMapper.apply(t);
@@ -70,14 +70,14 @@ public final class IterableReductions {
         return Pair.of(matchingList, nonMatchingList);
     }
 
-    public static <T, S, I extends Iterable<S>, R> SetView<R> intersectionOf(
+    public static <T, S, I extends Iterable<S>, R> SetX<R> intersectionOf(
             @NotNull Iterable<T> iterable,
             @NotNull Function<? super T, ? extends I> toCollectionMapper,
             @NotNull Function<? super S, ? extends R> selector) {
-        MutableSet<R> common = MutableSet.empty();
+        MutableSetX<R> common = MutableSetX.empty();
         for (T t : iterable) {
             final I otherIterable = toCollectionMapper.apply(t);
-            final MutableList<R> resultList = MutableList.empty();
+            final MutableListX<R> resultList = MutableListX.empty();
             for (S s : otherIterable) {
                 final R r = selector.apply(s);
                 resultList.add(r);
@@ -118,19 +118,19 @@ public final class IterableReductions {
         return true;
     }
 
-    public static <T, R> Optional<R> findLastOf(Iterable<T> iterable, @NotNull Function<T, R> mapper) {
+    public static <T> Optional<T> findLastOf(Iterable<T> iterable) {
         final Iterator<T> iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             return Optional.empty();
         } else if (iterable instanceof List) {
             List<T> list = (List<T>) iterable;
-            return Optional.ofNullable(list.get(list.size() - 1)).map(mapper);
+            return Optional.ofNullable(list.get(list.size() - 1));
         } else {
             T result = iterator.next();
             while (iterator.hasNext()) {
                 result = iterator.next();
             }
-            return Optional.ofNullable(result).map(mapper);
+            return Optional.ofNullable(result);
         }
     }
 

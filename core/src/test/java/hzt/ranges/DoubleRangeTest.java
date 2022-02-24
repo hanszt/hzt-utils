@@ -4,17 +4,15 @@ import hzt.statistics.DoubleStatistics;
 import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
-import java.util.stream.DoubleStream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DoubleRangeTest {
 
     @Test
     void testRange() {
-        final DoubleStatistics stats = DoubleRange.of(0, 100, .01).stats();
+        final DoubleStatistics stats = DoubleRange.closed(0, 100, .01).stats();
 
         assertAll(
                 () -> assertEquals(10_000, stats.getCount()),
@@ -43,5 +41,4 @@ class DoubleRangeTest {
                 () -> assertArrayEquals(expected, longs)
         );
     }
-
 }

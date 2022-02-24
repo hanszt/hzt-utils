@@ -3,6 +3,7 @@ package hzt.io;
 import hzt.collections.ListView;
 import hzt.sequences.Sequence;
 import hzt.strings.StringX;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -50,7 +51,7 @@ class FileXTest {
                 sequence.map(line -> line.split(" ").toIntArray(Integer::parseInt))
                 .toTypedArray(int[][]::new));
 
-        Arrays.stream(grid).map(Arrays::toString).forEach(System.out::println);
+        Arrays.stream(grid).map(Arrays::toString).forEach(It::println);
 
         assertArrayEquals(new int[] {1, 1, 0, 0, 0, 0, 0}, grid[0]);
     }

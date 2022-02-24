@@ -9,27 +9,27 @@ public final class ComparingPredicates {
     private ComparingPredicates() {
     }
 
-    public static <T extends Comparable<T>> Predicate<T> greaterThan(final T other) {
+    public static <T extends Comparable<? super T>> Predicate<T> greaterThan(final T other) {
         return value -> value.compareTo(other) > 0;
     }
 
-    public static <T extends Comparable<T>> Predicate<T> greaterThanOrEq(final T other) {
+    public static <T extends Comparable<? super T>> Predicate<T> greaterThanOrEq(final T other) {
         return value -> value.compareTo(other) >= 0;
     }
 
-    public static <T extends Comparable<T>> Predicate<T> smallerThan(final T other) {
+    public static <T extends Comparable<? super T>> Predicate<T> smallerThan(final T other) {
         return value -> value.compareTo(other) < 0;
     }
 
-    public static <T extends Comparable<T>> Predicate<T> smallerThanOrEq(final T other) {
+    public static <T extends Comparable<? super T>> Predicate<T> smallerThanOrEq(final T other) {
         return value -> value.compareTo(other) <= 0;
     }
 
-    public static <T extends Comparable<T>> Predicate<T> before(final T other) {
+    public static <T extends Comparable<? super T>> Predicate<T> before(final T other) {
         return smallerThan(other);
     }
 
-    public static <T extends Comparable<T>> Predicate<T> after(final T other) {
+    public static <T extends Comparable<? super T>> Predicate<T> after(final T other) {
         return greaterThan(other);
     }
 

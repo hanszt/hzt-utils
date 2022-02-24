@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-final class HashMapX<K, V> implements MutableMap<K, V> {
+final class HashMapX<K, V> implements MutableMapX<K, V> {
 
     private final Map<K, V> map;
 
@@ -96,18 +96,18 @@ final class HashMapX<K, V> implements MutableMap<K, V> {
     }
 
     @Override
-    public @NotNull MutableSet<K> keySet() {
-        return MutableLinkedSet.of(map.keySet());
+    public @NotNull MutableSetX<K> keySet() {
+        return MutableLinkedSetX.of(map.keySet());
     }
 
     @Override
-    public @NotNull MutableList<V> values() {
-        return MutableList.of(map.values());
+    public @NotNull MutableListX<V> values() {
+        return MutableListX.of(map.values());
     }
 
     @Override
-    public @NotNull MutableSet<Entry<K, V>> entrySet() {
-        return MutableSet.of(map.entrySet());
+    public @NotNull MutableSetX<Entry<K, V>> entrySet() {
+        return MutableSetX.of(map.entrySet());
     }
 
     @NotNull

@@ -2,7 +2,6 @@ package hzt.sequences;
 
 import hzt.PreConditions;
 import hzt.collections.ListView;
-import hzt.collections.MapView;
 import hzt.function.QuadFunction;
 import hzt.function.TriFunction;
 import hzt.iterables.IterableX;
@@ -10,18 +9,19 @@ import hzt.iterators.ArrayIterator;
 import hzt.iterators.FlatteningIterator;
 import hzt.iterators.GeneratorIterator;
 import hzt.iterators.MultiMappingIterator;
-import hzt.iterators.PrimitiveIterators;
 import hzt.iterators.SkipWhileIterator;
 import hzt.iterators.TakeWhileIterator;
-import hzt.ranges.DoubleRange;
-import hzt.ranges.IntRange;
-import hzt.ranges.LongRange;
+import hzt.iterators.primitives.PrimitiveIterators;
+import hzt.sequences.primitives.DoubleSequence;
+import hzt.sequences.primitives.IntSequence;
+import hzt.sequences.primitives.LongSequence;
 import hzt.strings.StringX;
 import hzt.tuples.IndexedValue;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.AbstractMap;
 import java.util.Comparator;
@@ -51,7 +51,7 @@ import java.util.stream.Stream;
  * @param <T> the type of the items in the Sequence
  */
 @FunctionalInterface
-public interface Sequence<T> extends IterableX<T> {
+public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     static <T> Sequence<T> empty() {
         return new EmptySequence<>();
@@ -78,23 +78,19 @@ public interface Sequence<T> extends IterableX<T> {
         return () -> ArrayIterator.of(values);
     }
 
-    static Sequence<Boolean> ofBools(boolean... values) {
-        return () -> PrimitiveIterators.booleanArrayIterator(values);
-    }
-
-    static <T> Sequence<T> ofNullable(T value) {
+    static <T> Sequence<T> ofNullable(@Nullable T value) {
         return value != null ? Sequence.of(value) : new EmptySequence<>();
     }
 
-    static <T> Sequence<T> generate(T seedValue, UnaryOperator<T> nextFunction) {
+    static <T> Sequence<T> generate(@Nullable T seedValue, @NotNull UnaryOperator<T> nextFunction) {
         return seedValue == null ? new EmptySequence<>() : (() -> GeneratorIterator.of(() -> seedValue, nextFunction));
     }
 
-    static <T> Sequence<T> generate(Supplier<T> nextFunction) {
+    static <T> Sequence<T> generate(@NotNull Supplier<T> nextFunction) {
         return () -> GeneratorIterator.of(nextFunction, t -> nextFunction.get());
     }
 
-    static <T> Sequence<T> generate(Supplier<T> seedFunction, UnaryOperator<T> nextFunction) {
+    static <T> Sequence<T> generate(@NotNull Supplier<T> seedFunction, @NotNull UnaryOperator<T> nextFunction) {
         return () -> GeneratorIterator.of(seedFunction, nextFunction);
     }
 
@@ -192,45 +188,8 @@ public interface Sequence<T> extends IterableX<T> {
         return new DistinctSequence<>(this, selector);
     }
 
-    default Sequence<ListView<T>> chunked(int size) {
-        return windowed(size, size, true);
-    }
-
-    default <R> Sequence<R> chunked(int size, @NotNull Function<? super ListView<T>, ? extends R> transform) {
-        return windowed(size, size, true).map(transform);
-    }
-
-    default Sequence<ListView<T>> windowed(int size) {
-        return windowed(size, 1);
-    }
-
-    default <R> Sequence<R> windowed(int size, @NotNull Function<? super ListView<T>, ? extends R> transform) {
-        return windowed(size, 1).map(transform);
-    }
-
-    default Sequence<ListView<T>> windowed(int size, int step) {
-        return windowed(size, step, false);
-    }
-
-    default <R> Sequence<R> windowed(int size, int step, @NotNull Function<? super ListView<T>, ? extends R> transform) {
-        return windowed(size, step, false).map(transform);
-    }
-
-    default Sequence<ListView<T>> windowed(int size, boolean partialWindows) {
-        return windowed(size, 1, partialWindows);
-    }
-
-    default Sequence<ListView<T>> windowed(int size, int step, boolean partialWindows) {
-        return windowed(size, step, partialWindows, It::self);
-    }
-
-    default <R> Sequence<R> windowed(int size, int step, boolean partialWindows,
-                                     @NotNull Function<? super ListView<T>, R> transform) {
-        return new WindowedSequence<>(this, size, step, partialWindows).map(transform);
-    }
-
-    default <R> Sequence<R> zipWithNext(BiFunction<T, T, R> function) {
-        return windowed(2, list -> function.apply(list.first(), list.get(1)));
+    default <R> Sequence<R> zipWithNext(@NotNull BiFunction<? super T, ? super T, ? extends R> function) {
+        return windowed(2, list -> function.apply(list.first(), list.last()));
     }
 
     default <A, R> Sequence<R> zip(@NotNull Iterable<A> other, @NotNull BiFunction<? super T, ? super A, ? extends R> function) {
@@ -286,13 +245,13 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default <R extends Comparable<R>> Sequence<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
-        return Sequence.of(IterableX.super.sortedBy(selector));
+    default Sequence<T> sorted(Comparator<T> comparator) {
+        return Sequence.of(IterableX.super.sorted(comparator));
     }
 
     @Override
-    default Sequence<T> sortedBy(Comparator<T> comparator) {
-        return Sequence.of(IterableX.super.sortedBy(comparator));
+    default <R extends Comparable<? super R>> Sequence<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
+        return Sequence.of(IterableX.super.sortedBy(selector));
     }
 
     @Override
@@ -300,14 +259,13 @@ public interface Sequence<T> extends IterableX<T> {
         return Sequence.of(IterableX.super.sortedDescending());
     }
 
-    @Override
-    default <R extends Comparable<R>> Sequence<T> sortedByDescending(@NotNull Function<? super T, ? extends R> selector) {
-        return Sequence.of(IterableX.super.sortedByDescending(selector));
+    default Sequence<T> shuffled() {
+        return toListX().shuffled().asSequence();
     }
 
     @Override
-    default Sequence<T> shuffled() {
-        return Sequence.of(IterableX.super.shuffled());
+    default <R extends Comparable<? super R>> Sequence<T> sortedByDescending(@NotNull Function<? super T, ? extends R> selector) {
+        return Sequence.of(IterableX.super.sortedByDescending(selector));
     }
 
     default <K, V> EntrySequence<K, V> asEntrySequence(Function<T, K> keyMapper, Function<T, V> valueMapper) {
@@ -328,17 +286,17 @@ public interface Sequence<T> extends IterableX<T> {
     }
 
     @Override
-    default IntRange asIntRange(@NotNull ToIntFunction<T> toIntMapper) {
+    default IntSequence mapToInt(@NotNull ToIntFunction<? super T> toIntMapper) {
         return () -> PrimitiveIterators.intIteratorOf(iterator(), toIntMapper);
     }
 
     @Override
-    default LongRange asLongRange(@NotNull ToLongFunction<T> toLongMapper) {
+    default LongSequence mapToLong(@NotNull ToLongFunction<? super T> toLongMapper) {
         return () -> PrimitiveIterators.longIteratorOf(iterator(), toLongMapper);
     }
 
     @Override
-    default DoubleRange asDoubleRange(@NotNull ToDoubleFunction<T> toDoubleMapper) {
+    default DoubleSequence mapToDouble(@NotNull ToDoubleFunction<? super T> toDoubleMapper) {
         return () -> PrimitiveIterators.doubleIteratorOf(iterator(), toDoubleMapper);
     }
 
@@ -348,7 +306,7 @@ public interface Sequence<T> extends IterableX<T> {
 
     default <R1, R2, R> R toTwo(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,
                                 @NotNull Function<? super Sequence<T>, ? extends R2> resultMapper2,
-                                @NotNull BiFunction<R1, R2, R> merger) {
+                                @NotNull BiFunction<? super R1, ? super R2, ? extends R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
     }
 

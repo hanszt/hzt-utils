@@ -1,7 +1,6 @@
 package hzt.strings;
 
-import hzt.collections.ListView;
-import hzt.collections.MutableList;
+import hzt.collections.ListX;
 import hzt.sequences.Sequence;
 import hzt.tuples.Pair;
 import hzt.utils.It;
@@ -33,10 +32,10 @@ class StringXTest {
                 .map(List::size)
                 .collect(Collectors.toList());
 
-        final ListView<Integer> characterCounts = StringX.of(hallo)
+        final ListX<Integer> characterCounts = StringX.of(hallo)
                 .group()
                 .values()
-                .map(MutableList::size);
+                .map(ListX::size);
 
         It.println("hallo = " + characterCounts);
 
@@ -57,8 +56,8 @@ class StringXTest {
     }
 
     @Test
-    void testStringXToListViewThenFirstAndLast() {
-        final ListView<Character> characters = StringX.of("Hello").toListView();
+    void testStringXToListXThenFirstAndLast() {
+        final ListView<Character> characters = StringX.of("Hello").toListX();
 
         assertAll(
                 () -> assertEquals('H', characters.first()),
@@ -110,7 +109,7 @@ class StringXTest {
             "Avida Dollars ->  Salvador Dali",
             "Altissimvm planetam tergeminvm observavi -> Salve vmbistinevm geminatvm Martia proles"})
     void testStringIsAnagram(String string) {
-        final ListView<String> split = StringX.of(string).split(" -> ");
+        final ListX<String> split = StringX.of(string).split(" -> ");
         final String string1 = split.first();
         final String string2 = split.last();
 
@@ -125,7 +124,7 @@ class StringXTest {
             "Avida Dollars ->  Salvador Dalis",
             "Altissimum planetam tergeminum observavi -> Salve umbistineum geminatum Martia proles"})
     void testStringIsNotAnagram(String string) {
-        final ListView<String> split = StringX.of(string).split(" -> ");
+        final ListX<String> split = StringX.of(string).split(" -> ");
         final String string1 = split.first();
         final String string2 = split.last();
 

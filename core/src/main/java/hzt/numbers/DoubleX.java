@@ -112,7 +112,7 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
             return false;
         }
         DoubleX doubleX = (DoubleX) o;
-        return thisDouble.equals(doubleX.thisDouble);
+        return Double.compare(thisDouble, doubleX.thisDouble) == 0;
     }
 
     public static long doubleToLongBits(double value) {

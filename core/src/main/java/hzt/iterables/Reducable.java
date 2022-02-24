@@ -18,8 +18,7 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface Reducable<T> extends Iterable<T> {
 
-    default <R> @NotNull R fold(@NotNull R initial,
-                                @NotNull BiFunction<? super R, ? super T, ? extends R> operation) {
+    default <R> @NotNull R fold(@NotNull R initial, @NotNull BiFunction<? super R, ? super T, ? extends R> operation) {
         R accumulator = initial;
         for (T t : this) {
             if (t != null) {

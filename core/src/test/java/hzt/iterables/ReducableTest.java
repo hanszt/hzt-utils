@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -106,4 +108,23 @@ class ReducableTest {
         );
     }
 
+    @Test
+    void testReduce() {
+        final var result = Sequence.of(ZoneId.getAvailableZoneIds())
+                .reduce("", (acc, s) -> acc.length() > s.length() ? acc : s);
+
+        final var expected = Sequence.of(ZoneId.getAvailableZoneIds())
+                .maxBy(String::length)
+                .orElse("");
+
+        final var expected2 = ZoneId.getAvailableZoneIds().stream()
+                .max(Comparator.comparing(String::length))
+                .orElse("");
+
+        assertAll(
+                () -> assertEquals("America/Argentina/ComodRivadavia", result),
+                () -> assertEquals(expected, result),
+                () -> assertEquals(expected2, result)
+        );
+    }
 }

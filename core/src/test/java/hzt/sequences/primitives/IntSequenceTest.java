@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.IntSummaryStatistics;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
@@ -23,7 +22,7 @@ class IntSequenceTest {
 
     @Test
     void testSteppedIntRange() {
-        MutableListX<Integer> list = MutableListX.<Integer>empty();
+        MutableListX<Integer> list = MutableListX.empty();
         for (int i : IntRange.until(15).step(4)) {
             It.println(i);
             list.add(i);
@@ -69,7 +68,7 @@ class IntSequenceTest {
 
     @Test
     void testDescendingSteppedIntRange() {
-        MutableListX<Integer> list = MutableListX.<Integer>empty();
+        MutableListX<Integer> list = MutableListX.empty();
         for (int i : IntRange.from(100).downTo(20).step(5)) {
             It.println(i);
             list.add(i);

@@ -6,10 +6,6 @@ import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.PrimitiveIterator;
-import java.util.function.LongFunction;
-import java.util.function.LongUnaryOperator;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 

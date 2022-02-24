@@ -163,7 +163,7 @@ class MapXTest {
 
     @Test
     void testBuildMap() {
-        final MapX<Integer, LocalDate> map = MapX.<Integer, LocalDate>build(m ->
+        final MapX<Integer, LocalDate> map = MapX.build(m ->
                 IntRange.of(1990, 2022).forEach(year -> m.put(year, LocalDate.of(year, 1, 1))));
 
         map.forEach(It::println);

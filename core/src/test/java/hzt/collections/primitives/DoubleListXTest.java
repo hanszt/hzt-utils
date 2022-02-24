@@ -8,7 +8,7 @@ class DoubleListXTest {
 
     @Test
     void testContainsAll() {
-        final var doubles = DoubleListX.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
+        final DoubleListX doubles = DoubleListX.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
         assertTrue(doubles.containsAll(1, 4, 2, 6, 5));
     }
 }

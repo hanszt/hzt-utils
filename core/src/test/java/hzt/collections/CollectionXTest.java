@@ -4,7 +4,6 @@ import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,7 +60,7 @@ class CollectionXTest {
     void testMapMulti() {
         final ListX<ListX<String>> input = ListX.of(ListX.of("a", "b", "c"), ListX.of("d", "e", "f", "g"));
 
-        final ListX<String> strings = input.<String>mapMulti(Iterable::forEach);
+        final ListX<String> strings = input.mapMulti(Iterable::forEach);
 
         strings.forEach(It::println);
 
@@ -80,7 +79,7 @@ class CollectionXTest {
 
     @Test
     void testIfEmpty() {
-        final ListX<Integer> list = ListX.<Integer>empty();
+        final ListX<Integer> list = ListX.empty();
         final MutableSetX<Integer> set2 = MutableSetX.of(1, 2, 3, 4, 5, 6);
 
         assertAll(

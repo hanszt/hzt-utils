@@ -67,6 +67,11 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
         return size == 0;
     }
 
+    @Override
+    public int get(int index) {
+        return elementData[index];
+    }
+
     public int indexOf(int o) {
         return indexOfRange(o, 0, size);
     }
@@ -128,6 +133,12 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
     @Override
     public PrimitiveIterator.@NotNull OfInt iterator() {
         return listIterator();
+    }
+
+    @Override
+    public int set(int index, int value) {
+        elementData[index] = value;
+        return value;
     }
 
     @Override

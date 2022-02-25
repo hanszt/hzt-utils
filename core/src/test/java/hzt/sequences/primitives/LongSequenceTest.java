@@ -207,18 +207,11 @@ class LongSequenceTest {
         final var sums = LongSequence.generate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, LongListX::sum)
-                .toArray();
-
-        final var sums2 = Sequence.generate(0, l -> ++l)
-                .take(1_000_000)
-                .windowed(1_000, 50)
-                .map(s -> s.sumOfLongs(It::asLong))
-                .mapToLong(It::asLong)
-                .toArray();
+                .toListX();
 
         assertAll(
-                () -> assertEquals(19981, sums.length),
-                () -> assertArrayEquals(sums, sums2)
+                () -> assertEquals(19981, sums.size()),
+                () -> assertEquals(999499500L, sums.last())
         );
 
     }

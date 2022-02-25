@@ -2,6 +2,7 @@ package hzt.iterables.primitives;
 
 import hzt.collections.primitives.DoubleCollection;
 import hzt.collections.primitives.DoubleListX;
+import hzt.collections.primitives.DoubleMutableCollection;
 import hzt.collections.primitives.DoubleMutableListX;
 import hzt.collectors.primitves.DoubleCollector;
 import org.jetbrains.annotations.NotNull;
@@ -42,20 +43,19 @@ public interface DoubleCollectable extends DoubleIterable, PrimitiveCollectable<
     }
 
     default DoubleListX toListX() {
-        DoubleMutableListX list = DoubleMutableListX.empty();
-        PrimitiveIterator.OfDouble iterator = iterator();
-        while (iterator.hasNext()) {
-            list.add(iterator.nextDouble());
+        return to(DoubleMutableListX::empty);
+    }
+
+    default <C extends DoubleMutableCollection> C to(Supplier<C> collectionFactory) {
+        C collection = collectionFactory.get();
+        final var iterator = iterator();
+        while(iterator.hasNext()) {
+            collection.add(iterator.nextDouble());
         }
-        return list;
+        return collection;
     }
 
     default DoubleMutableListX toMutableList() {
-        DoubleMutableListX list = DoubleMutableListX.empty();
-        PrimitiveIterator.OfDouble iterator = iterator();
-        while (iterator.hasNext()) {
-            list.add(iterator.nextDouble());
-        }
-        return list;
+        return to(DoubleMutableListX::empty);
     }
 }

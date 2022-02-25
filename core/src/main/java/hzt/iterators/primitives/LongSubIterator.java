@@ -1,29 +1,29 @@
-package hzt.iterators;
+package hzt.iterators.primitives;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
 
-public final class SubIterator<T> implements Iterator<T> {
+public final class LongSubIterator implements PrimitiveIterator.OfLong {
 
-    private final Iterator<T> iterator;
+    private final PrimitiveIterator.OfLong iterator;
     private final long startIndex;
     private final long endIndex;
 
-    private long position;
+    private int position;
 
-    private SubIterator(Iterator<T> iterator, long startIndex, long endIndex) {
+    private LongSubIterator(PrimitiveIterator.OfLong iterator, long startIndex, long endIndex) {
         this.iterator = iterator;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
     }
 
-    public static <T> SubIterator<T> of(Iterator<T> iterator, long startIndex, long endIndex) {
-        return new SubIterator<>(iterator, startIndex, endIndex);
+    public static LongSubIterator of(PrimitiveIterator.OfLong iterator, long startIndex, long endIndex) {
+        return new LongSubIterator(iterator, startIndex, endIndex);
     }
 
     private void skip() {
         while (position < startIndex && iterator.hasNext()) {
-            iterator.next();
+            iterator.nextLong();
             position++;
         }
     }
@@ -35,12 +35,12 @@ public final class SubIterator<T> implements Iterator<T> {
     }
 
     @Override
-    public T next() {
+    public long nextLong() {
         skip();
         if (position >= endIndex) {
             throw new NoSuchElementException();
         }
         position++;
-        return iterator.next();
+        return iterator.nextLong();
     }
 }

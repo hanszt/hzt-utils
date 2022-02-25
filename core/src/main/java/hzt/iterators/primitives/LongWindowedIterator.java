@@ -60,7 +60,7 @@ public final class LongWindowedIterator extends AbstractIterator<LongListX> {
 
     private void fillIfWindowEmpty() {
         while (iterator.hasNext() && nextWindow.size() < size) {
-            nextWindow.add(iterator.next());
+            nextWindow.add(iterator.nextLong());
         }
     }
 
@@ -71,7 +71,7 @@ public final class LongWindowedIterator extends AbstractIterator<LongListX> {
                 nextWindow.removeAt(0);
             }
             if (iterator.hasNext()) {
-                nextWindow.add(iterator.next());
+                nextWindow.add(iterator.nextLong());
             }
             stepCount--;
         }

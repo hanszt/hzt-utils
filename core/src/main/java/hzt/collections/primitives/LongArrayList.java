@@ -68,6 +68,17 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long, LongC
     }
 
     @Override
+    public long get(int index) {
+        return elementData[index];
+    }
+
+    @Override
+    public long set(int index, long value) {
+        elementData[index] = value;
+        return value;
+    }
+
+    @Override
     public int indexOf(long l) {
         return indexOfRange(l, 0, size);
     }

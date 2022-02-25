@@ -37,7 +37,17 @@ public interface IntMutableListX extends IntListX, IntMutableCollection,
         return listIterator();
     }
 
-    boolean add(int l);
+    int set(int index, int value);
+
+    @Override
+    default boolean remove(int i) {
+        final var index = indexOf(i);
+        if (index >= 0) {
+            removeAt(index);
+            return true;
+        }
+        return false;
+    }
 
     int removeAt(int index);
 

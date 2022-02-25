@@ -103,6 +103,11 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
         return DoubleListX.of(asSequence().plus(values));
     }
 
+    @Override
+    default DoubleListX plus(double @NotNull ... array) {
+        return asSequence().plus(array).toListX();
+    }
+
     default DoubleSequence asSequence() {
         return DoubleSequence.of(this);
     }

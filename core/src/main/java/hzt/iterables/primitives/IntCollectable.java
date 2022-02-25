@@ -2,6 +2,7 @@ package hzt.iterables.primitives;
 
 import hzt.collections.primitives.IntCollection;
 import hzt.collections.primitives.IntListX;
+import hzt.collections.primitives.IntMutableCollection;
 import hzt.collections.primitives.IntMutableListX;
 import hzt.collectors.primitves.IntCollector;
 import hzt.utils.It;
@@ -47,20 +48,19 @@ public interface IntCollectable extends IntIterable, PrimitiveCollectable<IntCol
     }
 
     default IntListX toListX() {
-        IntMutableListX list = IntMutableListX.empty();
-        PrimitiveIterator.OfInt iterator = iterator();
-        while (iterator.hasNext()) {
-            list.add(iterator.nextInt());
+        return to(IntMutableListX::empty);
+    }
+
+    default <C extends IntMutableCollection> C to(Supplier<C> collectionFactory) {
+        C collection = collectionFactory.get();
+        final var iterator = iterator();
+        while(iterator.hasNext()) {
+            collection.add(iterator.nextInt());
         }
-        return list;
+        return collection;
     }
 
     default IntMutableListX toMutableList() {
-        IntMutableListX list = IntMutableListX.empty();
-        PrimitiveIterator.OfInt iterator = iterator();
-        while (iterator.hasNext()) {
-            list.add(iterator.nextInt());
-        }
-        return list;
+        return to(IntMutableListX::empty);
     }
 }

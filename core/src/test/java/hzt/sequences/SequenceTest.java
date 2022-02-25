@@ -471,26 +471,6 @@ class SequenceTest {
     }
 
     @Test
-    void testLargeWindowedSequence() {
-        final var windows = IntRange.of(0, 1_000_000)
-                .boxed()
-                .windowed(2_001, 23, true)
-                .toListX();
-
-        final var lastWindow = windows.last();
-
-        final var tail = windows.tailFrom(windows.size() - 2);
-
-        It.println("tail = " + tail);
-
-        assertAll(
-                () -> assertEquals(43479, windows.size()),
-                () -> assertEquals(999_994, lastWindow.first()),
-                () -> assertEquals(999_999, lastWindow.last())
-        );
-    }
-
-    @Test
     void testSequenceWindowedTransformed() {
         final var sizes = IntRange.of(0, 1_000)
                 .filter(i -> IntX.multipleOf(5).test(i))

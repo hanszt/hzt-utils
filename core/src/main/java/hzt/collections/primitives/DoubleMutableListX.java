@@ -39,7 +39,17 @@ public interface DoubleMutableListX extends DoubleListX, DoubleMutableCollection
         return asSequence().boxed().toMutableList();
     }
 
-    boolean add(double d);
+    long set(int index, long value);
+
+    @Override
+    default boolean remove(double d) {
+        final var index = indexOf(d);
+        if (index >= 0) {
+            removeAt(index);
+            return true;
+        }
+        return false;
+    }
 
     double removeAt(int index);
 

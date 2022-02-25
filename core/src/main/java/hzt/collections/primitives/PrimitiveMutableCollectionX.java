@@ -1,6 +1,7 @@
 package hzt.collections.primitives;
 
 import hzt.collections.MutableCollectionX;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @param <T> The boxed type
@@ -9,11 +10,17 @@ import hzt.collections.MutableCollectionX;
  */
 public interface PrimitiveMutableCollectionX<T, C, A> extends PrimitiveCollectionX<T, C, A> {
 
-    boolean add(T t);
+    boolean addAll(@NotNull Iterable<T> iterable);
 
-    boolean addAll(Iterable<T> iterable);
+    boolean addAll(@NotNull A array);
 
-    PrimitiveMutableCollectionX<T, C, A> plus(Iterable<T> iterable);
+    boolean removeAll(@NotNull Iterable<T> iterable);
+
+    boolean removeAll(@NotNull A array);
+
+    PrimitiveMutableCollectionX<T, C, A> plus(@NotNull Iterable<T> iterable);
+
+    PrimitiveMutableCollectionX<T, C, A> plus(@NotNull A array);
 
     MutableCollectionX<T> boxed();
 }

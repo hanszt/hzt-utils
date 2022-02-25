@@ -25,12 +25,12 @@ public final class IntSkipWhileIterator implements OfInt {
 
     private void skip() {
         if (inclusive && inclusiveSkipped && iterator.hasNext()) {
-            nextItem = iterator.next();
+            nextItem = iterator.nextInt();
             state = SkipState.NEXT_ITEM;
             return;
         }
         while (iterator.hasNext()) {
-            final int item = iterator.next();
+            final int item = iterator.nextInt();
             if (!predicate.test(item)) {
                 if (inclusive && !inclusiveSkipped) {
                     inclusiveSkipped = true;
@@ -62,7 +62,7 @@ public final class IntSkipWhileIterator implements OfInt {
             state = SkipState.NORMAL_ITERATION;
             return result;
         }
-        return iterator.next();
+        return iterator.nextInt();
     }
 
     private enum SkipState {

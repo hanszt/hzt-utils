@@ -1,6 +1,5 @@
 package hzt.sequences.primitives;
 
-import hzt.arrays.primitves.DoubleSort;
 import hzt.collections.primitives.DoubleListX;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.DoubleCollectable;
@@ -23,7 +22,6 @@ import hzt.utils.It;
 import hzt.utils.primitive_comparators.DoubleComparator;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
@@ -43,7 +41,7 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
         PrimitiveSequence<Double, DoubleConsumer, DoubleUnaryOperator, DoublePredicate, DoubleBinaryOperator> {
 
     static DoubleSequence empty() {
-        return DoubleSequence.of(Sequence.empty());
+        return PrimitiveIterators::emptyDoubleIterator;
     }
 
     static DoubleSequence of(Iterable<Double> iterable) {
@@ -92,7 +90,7 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
     }
 
     default DoubleSequence flatMap(DoubleFunction<? extends DoubleSequence> flatMapper) {
-        return DoubleSequence.of(stream().flatMap(s -> flatMapper.apply(s).stream()));
+        return mapMulti((value, c) -> flatMapper.apply(value).forEachDouble(c));
     }
 
     default DoubleSequence mapMulti(DoubleMapMultiConsumer mapMultiConsumer) {
@@ -123,7 +121,7 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
 
     @Override
     default DoubleSequence take(long n) {
-        return DoubleSequence.of(stream().limit(n));
+        return new DoubleTakeSequence(this, n);
     }
 
     @Override
@@ -138,7 +136,7 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
 
     @Override
     default DoubleSequence skip(long n) {
-        return DoubleSequence.of(stream().skip(n));
+        return new DoubleSkipSequence(this, n);
     }
 
     @Override
@@ -153,15 +151,11 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
 
     @Override
     default DoubleSequence sorted() {
-        final var array = toArray();
-        Arrays.sort(array);
-        return DoubleSequence.of(array);
+        return toListX().sorted().asSequence();
     }
 
     default DoubleSequence sorted(DoubleComparator comparator) {
-        final var array = toArray();
-        DoubleSort.sort(array, comparator);
-        return DoubleSequence.of(array);
+        return toListX().sorted(comparator).asSequence();
     }
 
     @Override
@@ -246,7 +240,7 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
     }
 
     default double[] toArray() {
-        return stream().toArray();
+        return toListX().toArray();
     }
 
     default <R1, R2, R> R doublesToTwo(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,

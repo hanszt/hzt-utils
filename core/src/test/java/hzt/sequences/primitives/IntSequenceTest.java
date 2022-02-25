@@ -213,12 +213,12 @@ class IntSequenceTest {
 
     @Test
     void testChunked() {
-        final var longs = IntSequence.generate(0, i -> ++i)
-                .take(1_000)
+        final long[] longs = IntSequence.generate(0, i -> ++i)
+                .take(500)
                 .chunked(100)
                 .mapToLong(IntListX::sum)
                 .toArray();
 
-        assertArrayEquals(new long[] {1, 2, 3, 4, 5, 6, 7, 7,9,8}, longs);
+        assertArrayEquals(new long[] {4950, 14950, 24950, 34950, 44950}, longs);
     }
 }

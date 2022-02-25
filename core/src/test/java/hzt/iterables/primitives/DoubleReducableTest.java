@@ -9,7 +9,7 @@ class DoubleReducableTest {
 
     @Test
     void testReduceDouble() {
-        final var sum = DoubleSequence.generate(0, d -> d + .1)
+        final double sum = DoubleSequence.generate(0, d -> d + .1)
                 .map(Math::sin)
                 .take(1_000_000)
                 .reduce(0.0, Double::sum);

@@ -196,7 +196,7 @@ public interface Reducable<T> extends Iterable<T> {
     }
 
     default @NotNull T last(Predicate<T> predicate) {
-        return findLast(predicate).orElseThrow();
+        return findLast(predicate).orElseThrow(NoSuchElementException::new);
     }
 
     default <R> @NotNull R lastOf(@NotNull Function<? super T, ? extends R> mapper) {

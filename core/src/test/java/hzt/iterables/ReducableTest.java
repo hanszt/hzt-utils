@@ -30,8 +30,8 @@ class ReducableTest {
 
     @Test
     void testSingleConditional() {
-        final var set = SetX.of(10, 3, 6, 2);
-        final var single = set.single(i -> i < 3);
+        final SetX<Integer> set = SetX.of(10, 3, 6, 2);
+        final Integer single = set.single(i -> i < 3);
         assertEquals(2, single);
     }
 
@@ -120,14 +120,14 @@ class ReducableTest {
 
     @Test
     void testReduce() {
-        final var result = Sequence.of(ZoneId.getAvailableZoneIds())
+        final String result = Sequence.of(ZoneId.getAvailableZoneIds())
                 .reduce("", (acc, s) -> acc.length() > s.length() ? acc : s);
 
-        final var expected = Sequence.of(ZoneId.getAvailableZoneIds())
+        final String expected = Sequence.of(ZoneId.getAvailableZoneIds())
                 .maxBy(String::length)
                 .orElse("");
 
-        final var expected2 = ZoneId.getAvailableZoneIds().stream()
+        final String expected2 = ZoneId.getAvailableZoneIds().stream()
                 .max(Comparator.comparing(String::length))
                 .orElse("");
 
@@ -140,8 +140,8 @@ class ReducableTest {
 
     @Test
     void testFindLast() {
-        var list = ListX.of("hi", "hello", "this", "is", "a", "test");
-        final var last = list.last(s -> s.contains("i"));
+        ListX<String> list = ListX.of("hi", "hello", "this", "is", "a", "test");
+        final String last = list.last(s -> s.contains("i"));
 
         assertEquals("is", last);
     }

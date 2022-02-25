@@ -1,6 +1,5 @@
 package hzt.sequences.primitives;
 
-import hzt.arrays.primitves.LongSort;
 import hzt.collections.primitives.LongListX;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.LongCollectable;
@@ -44,7 +43,7 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
         PrimitiveSequence<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator> {
 
     static LongSequence empty() {
-        return LongSequence.of(Sequence.empty());
+        return PrimitiveIterators::emptyLongIterator;
     }
 
     static LongSequence of(Iterable<Long> iterable) {
@@ -96,7 +95,7 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
     }
 
     default LongSequence flatMap(LongFunction<? extends LongSequence> flatMapper) {
-        return LongSequence.of(stream().flatMap(s -> flatMapper.apply(s).stream()));
+        return mapMulti((value, c) -> flatMapper.apply(value).forEachLong(c));
     }
 
     default LongSequence mapMulti(LongMapMultiConsumer longMapMultiConsumer) {
@@ -133,7 +132,7 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
     }
 
     default LongSequence take(long n) {
-        return LongSequence.of(stream().limit(n));
+        return new LongTakeSequence(this, n);
     }
 
     default LongSequence takeWhile(@NotNull LongPredicate predicate) {
@@ -146,7 +145,7 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
     }
 
     default LongSequence skip(long n) {
-        return LongSequence.of(stream().skip(n));
+        return new LongSkipSequence(this, n);
     }
 
     default LongSequence skipWhile(@NotNull LongPredicate longPredicate) {
@@ -160,15 +159,11 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
 
     @Override
     default LongSequence sorted() {
-        final long[] array = toArray();
-        Arrays.sort(array);
-        return LongSequence.of(array);
+        return toListX().sorted().asSequence();
     }
 
     default LongSequence sorted(LongComparator longComparator) {
-        final long[] array = toArray();
-        LongSort.sort(array, longComparator);
-        return LongSequence.of(array);
+        return toListX().sorted(longComparator).asSequence();
     }
 
     @Override
@@ -241,7 +236,7 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
     }
 
     default long[] toArray() {
-        return stream().toArray();
+        return toListX().toArray();
     }
 
     default <R1, R2, R> R longsToTwo(@NotNull Function<? super LongSequence, ? extends R1> resultMapper1,

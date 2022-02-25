@@ -102,6 +102,11 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
         return LongListX.of(asSequence().plus(values));
     }
 
+    @Override
+    default LongListX plus(long @NotNull ... array) {
+        return asSequence().plus(array).toListX();
+    }
+
     default LongSequence asSequence() {
         return LongSequence.of(this);
     }

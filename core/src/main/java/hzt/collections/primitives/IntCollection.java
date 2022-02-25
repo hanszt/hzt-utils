@@ -99,7 +99,12 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
 
     @Override
     default IntListX plus(@NotNull Iterable<Integer> values) {
-        return IntListX.of(asSequence().plus(values));
+        return asSequence().plus(values).toListX();
+    }
+
+    @Override
+    default IntListX plus(int @NotNull ... array) {
+        return asSequence().plus(array).toListX();
     }
 
     default IntSequence asSequence() {

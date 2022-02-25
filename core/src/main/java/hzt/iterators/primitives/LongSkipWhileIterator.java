@@ -25,12 +25,12 @@ public final class LongSkipWhileIterator implements OfLong {
 
     private void skip() {
         if (inclusive && inclusiveSkipped && iterator.hasNext()) {
-            nextItem = iterator.next();
+            nextItem = iterator.nextLong();
             state = SkipState.NEXT_ITEM;
             return;
         }
         while (iterator.hasNext()) {
-            final long item = iterator.next();
+            final long item = iterator.nextLong();
             if (!predicate.test(item)) {
                 if (inclusive && !inclusiveSkipped) {
                     inclusiveSkipped = true;
@@ -62,7 +62,7 @@ public final class LongSkipWhileIterator implements OfLong {
             state = SkipState.NORMAL_ITERATION;
             return result;
         }
-        return iterator.next();
+        return iterator.nextLong();
     }
 
     private enum SkipState {

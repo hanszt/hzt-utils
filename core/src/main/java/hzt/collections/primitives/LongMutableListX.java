@@ -32,12 +32,22 @@ public interface LongMutableListX extends LongListX, LongMutableCollection,
         return listIterator();
     }
 
+    long set(int index, long value);
+
+    @Override
+    default boolean remove(long l) {
+        final var index = indexOf(l);
+        if (index >= 0) {
+            removeAt(index);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     default MutableListX<Long> boxed() {
         return asSequence().boxed().toMutableList();
     }
-
-    boolean add(long l);
 
     long removeAt(int index);
 

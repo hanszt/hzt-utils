@@ -26,6 +26,8 @@ public interface PrimitiveCollectionX<T, C, A> {
 
     PrimitiveCollectionX<T, C, A> plus(Iterable<T> iterable);
 
+    PrimitiveCollectionX<T, C, A> plus(@NotNull A array);
+
     PrimitiveIterator<T, C> iterator();
 
     CollectionX<T> boxed();

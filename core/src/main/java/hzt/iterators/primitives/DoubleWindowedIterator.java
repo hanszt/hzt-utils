@@ -60,7 +60,7 @@ public final class DoubleWindowedIterator extends AbstractIterator<DoubleListX> 
 
     private void fillIfWindowEmpty() {
         while (iterator.hasNext() && nextWindow.size() < size) {
-            nextWindow.add(iterator.next());
+            nextWindow.add(iterator.nextDouble());
         }
     }
 
@@ -71,7 +71,7 @@ public final class DoubleWindowedIterator extends AbstractIterator<DoubleListX> 
                 nextWindow.removeAt(0);
             }
             if (iterator.hasNext()) {
-                nextWindow.add(iterator.next());
+                nextWindow.add(iterator.nextDouble());
             }
             stepCount--;
         }

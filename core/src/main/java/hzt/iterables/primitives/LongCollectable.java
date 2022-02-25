@@ -2,6 +2,7 @@ package hzt.iterables.primitives;
 
 import hzt.collections.primitives.LongCollection;
 import hzt.collections.primitives.LongListX;
+import hzt.collections.primitives.LongMutableCollection;
 import hzt.collections.primitives.LongMutableListX;
 import hzt.collectors.primitves.LongCollector;
 import org.jetbrains.annotations.NotNull;
@@ -42,20 +43,19 @@ public interface LongCollectable extends LongIterable, PrimitiveCollectable<Long
     }
 
     default LongListX toListX() {
-        LongMutableListX list = LongMutableListX.empty();
-        PrimitiveIterator.OfLong iterator = iterator();
+        return to(LongMutableListX::empty);
+    }
+
+    default <C extends LongMutableCollection> C to(Supplier<C> collectionFactory) {
+        C collection = collectionFactory.get();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
-            list.add(iterator.nextLong());
+            collection.add(iterator.nextLong());
         }
-        return list;
+        return collection;
     }
 
     default LongMutableListX toMutableList() {
-        LongMutableListX list = LongMutableListX.empty();
-        PrimitiveIterator.OfLong iterator = iterator();
-        while (iterator.hasNext()) {
-            list.add(iterator.nextLong());
-        }
-        return list;
+       return to(LongMutableListX::empty);
     }
 }

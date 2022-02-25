@@ -1,6 +1,5 @@
 package hzt.sequences.primitives;
 
-import hzt.arrays.primitves.IntSort;
 import hzt.collections.primitives.IntListX;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.IntCollectable;
@@ -35,9 +34,7 @@ import java.util.function.IntSupplier;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
-import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 import java.util.stream.IntStream;
 
 @FunctionalInterface
@@ -46,7 +43,7 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
         PrimitiveSequence<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator> {
 
     static IntSequence empty() {
-        return IntSequence.of(Sequence.empty());
+        return PrimitiveIterators::emptyIntIterator;
     }
 
     static IntSequence of(Iterable<Integer> iterable) {
@@ -99,7 +96,7 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
     }
 
     default IntSequence flatMap(IntFunction<? extends IntSequence> flatMapper) {
-        return IntSequence.of(stream().flatMap(s -> flatMapper.apply(s).stream()));
+        return mapMulti((value, c) -> flatMapper.apply(value).forEachInt(c));
     }
 
     default IntSequence mapMulti(IntMapMultiConsumer intMapMultiConsumer) {
@@ -129,7 +126,7 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
 
     @Override
     default IntSequence take(long n) {
-        return IntSequence.of(stream().limit(n));
+        return new IntTakeSequence(this, n);
     }
 
     @Override
@@ -144,7 +141,7 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
 
     @Override
     default IntSequence skip(long n) {
-        return IntSequence.of(stream().skip(n));
+        return new IntSkipSequence(this, n);
     }
 
     @Override
@@ -159,15 +156,11 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
 
     @Override
     default IntSequence sorted() {
-        final int[] array = toArray();
-        Arrays.sort(array);
-        return IntSequence.of(array);
+        return toListX().sorted().asSequence();
     }
 
     default IntSequence sorted(IntComparator intComparator) {
-        final int[] array = toArray();
-        IntSort.sort(array, intComparator);
-        return IntSequence.of(array);
+        return toListX().sorted(intComparator).asSequence();
     }
 
     @Override
@@ -211,10 +204,6 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
         return windowed(size, size, true);
     }
 
-    default IntSequence chunked(int size, @NotNull ToIntFunction<IntListX> transform) {
-        return windowed(size, size, true).mapToInt(transform);
-    }
-
     default Sequence<IntListX> windowed(int size, int step, boolean partialWindows) {
         return new IntWindowedSequence(this, size, step, partialWindows);
     }
@@ -249,7 +238,7 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
     }
 
     default int[] toArray() {
-        return stream().toArray();
+        return toListX().toArray();
     }
 
     default <R1, R2, R> R intsToTwo(@NotNull Function<? super IntSequence, ? extends R1> resultMapper1,

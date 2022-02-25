@@ -375,6 +375,48 @@ public final class PrimitiveIterators {
         };
     }
 
+    public static PrimitiveIterator.@NotNull OfInt emptyIntIterator() {
+        return new PrimitiveIterator.OfInt() {
+            @Override
+            public int nextInt() {
+                throw new NoSuchElementException();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+        };
+    }
+
+    public static PrimitiveIterator.@NotNull OfLong emptyLongIterator() {
+        return new PrimitiveIterator.OfLong() {
+            @Override
+            public long nextLong() {
+                throw new NoSuchElementException();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+        };
+    }
+
+    public static PrimitiveIterator.@NotNull OfDouble emptyDoubleIterator() {
+        return new PrimitiveIterator.OfDouble() {
+            @Override
+            public double nextDouble() {
+                throw new NoSuchElementException();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+        };
+    }
+
     @NotNull
     private static String getMessage(int index) {
         return "index out of bounds. (Index value: " + index + ")";

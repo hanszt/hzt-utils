@@ -6,6 +6,8 @@ import hzt.iterables.primitives.PrimitiveSortable;
 import hzt.numbers.LongX;
 import hzt.utils.primitive_comparators.LongComparator;
 
+import java.util.Arrays;
+
 public interface LongListX extends LongCollection, PrimitiveSortable<LongComparator> {
 
     static LongListX empty() {
@@ -28,10 +30,9 @@ public interface LongListX extends LongCollection, PrimitiveSortable<LongCompara
         return indexOf(l) >= 0;
     }
 
-    int indexOf(long l);
+    long get(int index);
 
-    @Override
-    long[] toArray();
+    int indexOf(long l);
 
     @Override
     default ListX<Long> boxed() {
@@ -40,7 +41,9 @@ public interface LongListX extends LongCollection, PrimitiveSortable<LongCompara
 
     @Override
     default LongListX sorted() {
-        return sorted(Long::compare);
+        final var array = toArray();
+        Arrays.sort(array);
+        return LongListX.of(array);
     }
 
     @Override

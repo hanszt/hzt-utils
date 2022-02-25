@@ -6,7 +6,6 @@ import hzt.statistics.DoubleStatistics;
 import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -58,7 +57,6 @@ class BigDecimalCollectorsTest {
     }
 
     @Test
-    @Disabled("Not available in java 8")
     void testStandardDeviatingBigDecimal() {
         final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
         It.println("Sample bankaccountList:");
@@ -88,7 +86,6 @@ class BigDecimalCollectorsTest {
     }
 
     @Test
-    @Disabled("Not supported in java 8")
     void testStatisticsFromRandomGaussianDataset() {
         BigDecimal targetMean = BigDecimal.valueOf(3);
         BigDecimal targetStdDev = BigDecimal.valueOf(4);

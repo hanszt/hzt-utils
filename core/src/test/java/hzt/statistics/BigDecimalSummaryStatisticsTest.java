@@ -1,6 +1,5 @@
 package hzt.statistics;
 
-import hzt.statistics.BigDecimalSummaryStatistics;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingSupplier;
 

@@ -26,7 +26,7 @@ public final class IterableReductions {
         for (T t : iterable) {
             accumulator = operator.apply(accumulator, t);
         }
-        return initial;
+        return accumulator;
     }
 
     public static <T> Optional<T> reduce(Iterator<T> iterator, BinaryOperator<T> operator) {

@@ -1,6 +1,7 @@
 package hzt.sequences.primitives;
 
 import hzt.collections.MutableListX;
+import hzt.collections.primitives.IntListX;
 import hzt.numbers.IntX;
 import hzt.progressions.IntProgression;
 import hzt.ranges.IntRange;
@@ -208,5 +209,16 @@ class IntSequenceTest {
                 () -> assertEquals(LENGTH, array.length),
                 () -> assertEquals(Byte.MIN_VALUE, array[0])
         );
+    }
+
+    @Test
+    void testChunked() {
+        final var longs = IntSequence.generate(0, i -> ++i)
+                .take(1_000)
+                .chunked(100)
+                .mapToLong(IntListX::sum)
+                .toArray();
+
+        assertArrayEquals(new long[] {1, 2, 3, 4, 5, 6, 7, 7,9,8}, longs);
     }
 }

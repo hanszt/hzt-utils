@@ -1,5 +1,6 @@
 package hzt.iterables;
 
+import hzt.collections.ListX;
 import hzt.collections.SetX;
 import hzt.sequences.Sequence;
 import hzt.tuples.Pair;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,6 +26,13 @@ class ReducableTest {
         final SetX<Integer> singleton = SetX.of(10);
         final Integer single = singleton.single();
         assertEquals(10, single);
+    }
+
+    @Test
+    void testSingleConditional() {
+        final var set = SetX.of(10, 3, 6, 2);
+        final var single = set.single(i -> i < 3);
+        assertEquals(2, single);
     }
 
     @Test
@@ -108,4 +118,31 @@ class ReducableTest {
         );
     }
 
+    @Test
+    void testReduce() {
+        final var result = Sequence.of(ZoneId.getAvailableZoneIds())
+                .reduce("", (acc, s) -> acc.length() > s.length() ? acc : s);
+
+        final var expected = Sequence.of(ZoneId.getAvailableZoneIds())
+                .maxBy(String::length)
+                .orElse("");
+
+        final var expected2 = ZoneId.getAvailableZoneIds().stream()
+                .max(Comparator.comparing(String::length))
+                .orElse("");
+
+        assertAll(
+                () -> assertEquals("America/Argentina/ComodRivadavia", result),
+                () -> assertEquals(expected, result),
+                () -> assertEquals(expected2, result)
+        );
+    }
+
+    @Test
+    void testFindLast() {
+        var list = ListX.of("hi", "hello", "this", "is", "a", "test");
+        final var last = list.last(s -> s.contains("i"));
+
+        assertEquals("is", last);
+    }
 }

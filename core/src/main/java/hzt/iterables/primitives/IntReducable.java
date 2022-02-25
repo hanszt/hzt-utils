@@ -24,7 +24,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
             int nextInt = iterator.nextInt();
             accumulator = operator.applyAsInt(accumulator, nextInt);
         }
-        return initial;
+        return accumulator;
     }
 
     default <R> R reduceTwo(

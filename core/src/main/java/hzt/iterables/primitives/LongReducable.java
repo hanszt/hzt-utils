@@ -15,14 +15,14 @@ import java.util.function.LongPredicate;
 @FunctionalInterface
 public interface LongReducable extends LongIterable, PrimitiveReducable<Long, LongBinaryOperator, LongPredicate, OptionalLong> {
 
-    default long reduce(LongIterable iterable, long initial, LongBinaryOperator operator) {
+    default long reduce(long initial, LongBinaryOperator operator) {
         long accumulator = initial;
-        PrimitiveIterator.OfLong iterator = iterable.iterator();
+        PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             long t = iterator.nextLong();
             accumulator = operator.applyAsLong(accumulator, t);
         }
-        return initial;
+        return accumulator;
     }
 
     default @NotNull OptionalLong reduce(@NotNull LongBinaryOperator operator) {

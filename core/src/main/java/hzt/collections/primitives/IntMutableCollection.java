@@ -16,9 +16,9 @@ public interface IntMutableCollection extends PrimitiveMutableCollectionX<Intege
     @Override
     default boolean addAll(@NotNull Iterable<Integer> iterable) {
         if (iterable instanceof IntIterable) {
-            final var iterator = ((IntIterable) iterable).iterator();
+            final PrimitiveIterator.OfInt iterator = ((IntIterable) iterable).iterator();
             while (iterator.hasNext()) {
-                final var added = add(iterator.nextInt());
+                final boolean added = add(iterator.nextInt());
                 if (!added) {
                     return false;
                 }
@@ -26,7 +26,7 @@ public interface IntMutableCollection extends PrimitiveMutableCollectionX<Intege
             return true;
         }
         for (int i : iterable) {
-            final var added = add(i);
+            final boolean added = add(i);
             if (!added) {
                 return false;
             }
@@ -36,9 +36,9 @@ public interface IntMutableCollection extends PrimitiveMutableCollectionX<Intege
 
     @Override
     default boolean addAll(int @NotNull ... array) {
-        final var iterator = PrimitiveIterators.intArrayIterator(array);
+        final PrimitiveIterator.OfInt iterator = PrimitiveIterators.intArrayIterator(array);
         while (iterator.hasNext()) {
-            final var added = add(iterator.nextInt());
+            final boolean added = add(iterator.nextInt());
             if (!added) {
                 return false;
             }
@@ -51,9 +51,9 @@ public interface IntMutableCollection extends PrimitiveMutableCollectionX<Intege
     @Override
     default boolean removeAll(@NotNull Iterable<Integer> iterable) {
         if (iterable instanceof IntIterable) {
-            final var iterator = ((IntIterable) iterable).iterator();
+            final PrimitiveIterator.OfInt iterator = ((IntIterable) iterable).iterator();
             while (iterator.hasNext()) {
-                final var removed = remove(iterator.nextInt());
+                final boolean removed = remove(iterator.nextInt());
                 if (!removed) {
                     return false;
                 }
@@ -61,7 +61,7 @@ public interface IntMutableCollection extends PrimitiveMutableCollectionX<Intege
             return true;
         }
         for (int i : iterable) {
-            final var removed = remove(i);
+            final boolean removed = remove(i);
             if (!removed) {
                 return false;
             }
@@ -73,7 +73,7 @@ public interface IntMutableCollection extends PrimitiveMutableCollectionX<Intege
     default boolean removeAll(int @NotNull ... array) {
         final PrimitiveIterator.OfInt iterator = PrimitiveIterators.intArrayIterator(array);
         while (iterator.hasNext()) {
-            final var removed = remove(iterator.nextInt());
+            final boolean removed = remove(iterator.nextInt());
             if (!removed) {
                 return false;
             }

@@ -56,9 +56,9 @@ class LongMutableListXTest {
 
     @Test
     void testSet() {
-        final var list = LongMutableListX.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
+        final LongMutableListX list = LongMutableListX.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
         list.set(4, 14);
-        final var value = list.get(4);
+        final long value = list.get(4);
         assertEquals(14L, value);
     }
 }

@@ -41,7 +41,7 @@ public interface IntMutableListX extends IntListX, IntMutableCollection,
 
     @Override
     default boolean remove(int i) {
-        final var index = indexOf(i);
+        final int index = indexOf(i);
         if (index >= 0) {
             removeAt(index);
             return true;

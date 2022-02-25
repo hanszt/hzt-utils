@@ -44,14 +44,14 @@ public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator
 
     @Override
     default IntListX sorted() {
-        final var array = toArray();
+        final int[] array = toArray();
         Arrays.sort(array);
         return IntListX.of(array);
     }
 
     @Override
     default IntListX sorted(IntComparator comparator) {
-        final var array = toArray();
+        final int[] array = toArray();
         IntSort.sort(array, comparator);
         return IntListX.of(array);
     }

@@ -10,8 +10,8 @@ class LongMutableCollectionTest {
 
     @Test
     void testRemoveAllLongs() {
-        final var list = LongMutableListX.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
-        final var removedAll = list.removeAll( 3, 4, 6, 5, 7, 8);
+        final LongMutableListX list = LongMutableListX.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
+        final boolean removedAll = list.removeAll( 3, 4, 6, 5, 7, 8);
 
         assertAll(
                 () -> assertTrue(removedAll),
@@ -21,8 +21,8 @@ class LongMutableCollectionTest {
 
     @Test
     void testAddAllLongs() {
-        final var list = LongMutableListX.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
-        final var addedAll = list.addAll( 3, 4, 6, 5, 7, 8);
+        final LongMutableListX list = LongMutableListX.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
+        final boolean addedAll = list.addAll( 3, 4, 6, 5, 7, 8);
 
         assertAll(
                 () -> assertTrue(addedAll),

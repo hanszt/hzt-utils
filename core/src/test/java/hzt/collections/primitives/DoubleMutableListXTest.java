@@ -60,9 +60,9 @@ class DoubleMutableListXTest {
 
     @Test
     void testRemove() {
-        final var list = DoubleMutableListX.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final DoubleMutableListX list = DoubleMutableListX.of(1, 2, 3, 4, 5, 6, 7, 8);
 
-        final var remove = list.remove(7);
+        final boolean remove = list.remove(7);
         System.out.println("list = " + list);
 
         assertAll(

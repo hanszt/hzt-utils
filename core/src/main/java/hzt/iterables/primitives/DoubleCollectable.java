@@ -48,7 +48,7 @@ public interface DoubleCollectable extends DoubleIterable, PrimitiveCollectable<
 
     default <C extends DoubleMutableCollection> C to(Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
-        final var iterator = iterator();
+        final PrimitiveIterator.OfDouble iterator = iterator();
         while(iterator.hasNext()) {
             collection.add(iterator.nextDouble());
         }

@@ -8,8 +8,8 @@ class DoubleMutableCollectionTest {
 
     @Test
     void testRemoveAll() {
-        final var list = DoubleMutableListX.of(1, 4, 5, 3, Math.PI, 7, 5, 8, 9);
-        final var removedAll = list.removeAll( 3, 4, 5, 7, Math.PI);
+        final DoubleMutableListX list = DoubleMutableListX.of(1, 4, 5, 3, Math.PI, 7, 5, 8, 9);
+        final boolean removedAll = list.removeAll( 3, 4, 5, 7, Math.PI);
 
         assertAll(
                 () -> assertTrue(removedAll),
@@ -19,8 +19,8 @@ class DoubleMutableCollectionTest {
 
     @Test
     void testAddAll() {
-        final var list = DoubleMutableListX.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
-        final var addedAll = list.addAll( 3, 4, 6, 5, 7, 8, Math.E);
+        final DoubleMutableListX list = DoubleMutableListX.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
+        final boolean addedAll = list.addAll( 3, 4, 6, 5, 7, 8, Math.E);
 
         assertAll(
                 () -> assertTrue(addedAll),

@@ -84,8 +84,8 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
 
     int indexOfRange(double o, int start, int end) {
         for (int i = start; i < end; i++) {
-            final var elementDatum = elementData[i];
-            final var compare = Double.compare(o, elementDatum);
+            final double elementDatum = elementData[i];
+            final int compare = Double.compare(o, elementDatum);
             if (compare == 0) {
                 return i;
             }

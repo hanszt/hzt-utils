@@ -1,5 +1,6 @@
 package hzt.sequences.primitives;
 
+import hzt.collections.ListX;
 import hzt.collections.MutableListX;
 import hzt.collections.primitives.IntListX;
 import hzt.numbers.IntX;
@@ -224,13 +225,13 @@ class IntSequenceTest {
 
     @Test
     void testLargeWindowedSequence() {
-        final var windows = IntRange.of(0, 1_000_000)
+        final ListX<IntListX> windows = IntRange.of(0, 1_000_000)
                 .windowed(2_001, 23, true)
                 .toListX();
 
-        final var lastWindow = windows.last();
+        final IntListX lastWindow = windows.last();
 
-        final var tail = windows.tailFrom(windows.size() - 2);
+        final ListX<IntListX> tail = windows.tailFrom(windows.size() - 2);
 
         It.println("tail = " + tail);
 

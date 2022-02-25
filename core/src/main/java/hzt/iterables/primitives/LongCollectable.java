@@ -48,7 +48,7 @@ public interface LongCollectable extends LongIterable, PrimitiveCollectable<Long
 
     default <C extends LongMutableCollection> C to(Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             collection.add(iterator.nextLong());
         }

@@ -29,7 +29,7 @@ class LongListXTest {
     @Test
     void testGet() {
         LongListX list = LongListX.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
-        final var value = list.get(4);
+        final long value = list.get(4);
         assertEquals(5L, value);
     }
 

@@ -53,7 +53,7 @@ public interface IntCollectable extends IntIterable, PrimitiveCollectable<IntCol
 
     default <C extends IntMutableCollection> C to(Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
-        final var iterator = iterator();
+        final PrimitiveIterator.OfInt iterator = iterator();
         while(iterator.hasNext()) {
             collection.add(iterator.nextInt());
         }

@@ -41,14 +41,14 @@ public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleC
 
     @Override
     default DoubleListX sorted() {
-        final var array = toArray();
+        final double[] array = toArray();
         Arrays.sort(array);
         return DoubleListX.of(array);
     }
 
     @Override
     default DoubleListX sorted(DoubleComparator comparator) {
-        final var array = toArray();
+        final double[] array = toArray();
         DoubleSort.sort(array, comparator);
         return DoubleListX.of(array);
     }

@@ -44,9 +44,9 @@ class IntListXTest {
 
     @Test
     void testLastIndexOf() {
-        final var intListX = IntListX.of(1, 2, 4, 3, 5, 4, 3);
+        final IntListX intListX = IntListX.of(1, 2, 4, 3, 5, 4, 3);
 
-        final var index = intListX.lastIndexOf(4);
+        final int index = intListX.lastIndexOf(4);
 
         assertEquals(5, index);
     }

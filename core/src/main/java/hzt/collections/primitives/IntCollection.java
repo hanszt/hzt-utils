@@ -9,6 +9,7 @@ import hzt.iterables.primitives.IntStreamable;
 import hzt.sequences.primitives.IntSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.IntConsumer;
@@ -109,7 +110,7 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
 
     @Override
     default Spliterator.OfInt spliterator() {
-        final var array = toArray();
+        final int[] array = toArray();
         return Spliterators.spliterator(array, 0, array.length,
                 Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }

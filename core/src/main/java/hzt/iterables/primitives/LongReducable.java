@@ -110,7 +110,7 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
     }
 
     default long single() {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }

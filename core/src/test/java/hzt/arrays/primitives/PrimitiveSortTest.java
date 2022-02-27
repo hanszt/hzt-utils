@@ -1,6 +1,7 @@
 package hzt.arrays.primitives;
 
 import hzt.arrays.primitves.PrimitiveSort;
+import hzt.collections.ListX;
 import hzt.utils.primitive_comparators.IntComparator;
 import hzt.utils.primitive_comparators.LongComparator;
 import hzt.collections.primitives.DoubleListX;
@@ -23,7 +24,7 @@ class PrimitiveSortTest {
 
     @Test
     void testIntTimSort() {
-        final var array = Sequence.generate(1_000, i -> --i)
+        final int[] array = Sequence.generate(1_000, i -> --i)
                 .take(1_000)
                 .shuffled()
                 .mapToInt(It::asInt)
@@ -40,7 +41,7 @@ class PrimitiveSortTest {
 
     @Test
     void testIntTimSortReversed() {
-        final var array = Sequence.generate(0, i -> ++i)
+        final int[] array = Sequence.generate(0, i -> ++i)
                 .take(1_000)
                 .shuffled()
                 .mapToInt(It::asInt)
@@ -57,7 +58,7 @@ class PrimitiveSortTest {
 
     @Test
     void testLongTimSort() {
-        final var array = Sequence.generate(1_000, i -> --i)
+        final long[] array = Sequence.generate(1_000, i -> --i)
                 .take(1_000)
                 .shuffled()
                 .mapToLong(It::asLong)
@@ -74,7 +75,7 @@ class PrimitiveSortTest {
 
     @Test
     void testLongTimSortReversed() {
-        final var array = Sequence.generate(0, i -> ++i)
+        final long[] array = Sequence.generate(0, i -> ++i)
                 .take(1_000)
                 .shuffled()
                 .mapToLong(It::asLong)
@@ -91,7 +92,7 @@ class PrimitiveSortTest {
 
     @Test
     void testDoubleTimSort() {
-        final var array = Sequence.generate(100.0, i -> i - .1)
+        final double[] array = Sequence.generate(100.0, i -> i - .1)
                 .take(1_000)
                 .shuffled()
                 .mapToDouble(It::asDouble)
@@ -103,15 +104,15 @@ class PrimitiveSortTest {
 
         System.out.println(Arrays.toString(array));
 
-        final var expected = DoubleListX.of(.1, .2, .3, .4, .5, .6).mapToObj(DoubleX::toRoundedString);
-        final var actual = DoubleSequence.of(array).take(6).toListX().mapToObj(DoubleX::toRoundedString);
+        final ListX<String> expected = DoubleListX.of(.1, .2, .3, .4, .5, .6).mapToObj(DoubleX::toRoundedString);
+        final ListX<String> actual = DoubleSequence.of(array).take(6).toListX().mapToObj(DoubleX::toRoundedString);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void testDoubleTimSortReversed() {
-        final var array = Sequence.generate(0.0, i -> i + .1)
+        final double[] array = Sequence.generate(0.0, i -> i + .1)
                 .take(1_000)
                 .shuffled()
                 .mapToDouble(It::asDouble)
@@ -123,8 +124,8 @@ class PrimitiveSortTest {
 
         System.out.println(Arrays.toString(array));
 
-        final var expected = DoubleListX.of(99.9, 99.8, 99.7, 99.6, 99.5, 99.4).mapToObj(DoubleX::toRoundedString);
-        final var actual = DoubleSequence.of(array).take(6).toListX().mapToObj(DoubleX::toRoundedString);
+        final ListX<String> expected = DoubleListX.of(99.9, 99.8, 99.7, 99.6, 99.5, 99.4).mapToObj(DoubleX::toRoundedString);
+        final ListX<String> actual = DoubleSequence.of(array).take(6).toListX().mapToObj(DoubleX::toRoundedString);
 
         assertEquals(expected, actual);
     }

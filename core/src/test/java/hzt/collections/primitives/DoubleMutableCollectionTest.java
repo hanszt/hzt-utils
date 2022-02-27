@@ -38,7 +38,7 @@ class DoubleMutableCollectionTest {
                 .take(1_000_000)
                 .toListX();
 
-        final var sum = listX.stream().sum();
+        final double sum = listX.stream().sum();
 
         System.out.println("sum = " + sum);
 

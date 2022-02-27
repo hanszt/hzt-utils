@@ -149,7 +149,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
     }
 
     default int single() {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfInt iterator = iterator();
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }

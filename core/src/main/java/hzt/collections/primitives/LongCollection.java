@@ -9,6 +9,7 @@ import hzt.iterables.primitives.LongStreamable;
 import hzt.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.LongConsumer;
@@ -109,7 +110,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     @Override
     default Spliterator.OfLong spliterator() {
-        final var array = toArray();
+        final long[] array = toArray();
         return Spliterators.spliterator(array, 0, array.length,
                 Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }

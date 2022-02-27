@@ -110,7 +110,7 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
     }
 
     default double single() {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfDouble iterator = iterator();
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }

@@ -1,5 +1,6 @@
 package hzt.sequences.primitives;
 
+import hzt.collections.ListX;
 import hzt.collections.primitives.DoubleListX;
 import hzt.sequences.Sequence;
 import hzt.utils.It;
@@ -16,7 +17,7 @@ class DoubleWindowedSequenceTest {
     void testPartialWindowedDoubleSequence() {
         double[] array = {1 * Math.PI, 2, 3, 4, 5, 6, 7};
 
-        final var windows = DoubleSequence.of(array)
+        final double[][] windows = DoubleSequence.of(array)
                 .windowed(3, 2, true)
                 .map(DoubleListX::toArray)
                 .toTypedArray(double[][]::new);
@@ -28,21 +29,21 @@ class DoubleWindowedSequenceTest {
 
     @Test
     void testLargeVariableWindowedSequence() {
-        final var windows = DoubleSequence.generate(0, pi -> pi + Math.PI)
+        final ListX<DoubleListX> windows = DoubleSequence.generate(0, pi -> pi + Math.PI)
                 .take(2_000_000)
                 .windowed(2000, size -> --size, 1, step -> ++step)
                 .onEach(w -> System.out.println(w.size()))
                 .toListX();
 
-        final var lastWindow = windows.last();
+        final DoubleListX lastWindow = windows.last();
 
-        final var firstWindow = windows.first();
+        final DoubleListX firstWindow = windows.first();
 
-        final var head = windows.headTo(3);
+        final ListX<DoubleListX> head = windows.headTo(3);
 
         head.forEach(It::println);
 
-        final var tail = windows.tailFrom(windows.size() - 3);
+        final ListX<DoubleListX> tail = windows.tailFrom(windows.size() - 3);
 
         tail.forEach(It::println);
 

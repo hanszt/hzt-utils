@@ -93,7 +93,7 @@ class CollectableTest {
                 .generate(LocalDate.of(1950, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhileInclusive(date -> date.getYear() <= 2000)
                 .filter(LocalDate::isLeapYear)
-                .toTwo(Sequence::toList, IterableX::last);
+                .toTwo(Sequence::toList, Sequence::last);
 
         assertAll(
                 () -> assertEquals(4758, leepYearResult.first().size()),
@@ -135,7 +135,7 @@ class CollectableTest {
 
         assertAll(
                 () -> assertEquals(100, triple.first().length),
-                () -> assertEquals(Year.of(0), triple.second().boxed().map(Year::of).first()),
+                () -> assertEquals(Year.of(0), triple.second().mapToObj(Year::of).first()),
                 () -> assertEquals(49.5, triple.third().getAverage())
         );
     }

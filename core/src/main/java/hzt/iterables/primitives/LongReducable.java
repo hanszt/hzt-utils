@@ -4,6 +4,7 @@ import hzt.function.LongFoldFunction;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.NoSuchElementException;
 import java.util.OptionalLong;
 import java.util.PrimitiveIterator;
 import java.util.function.BinaryOperator;
@@ -106,6 +107,18 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
             }
         }
         return OptionalLong.of(result);
+    }
+
+    default long single() {
+        final var iterator = iterator();
+        if (!iterator.hasNext()) {
+            throw new NoSuchElementException("Sequence is empty");
+        }
+        long single = iterator.nextLong();
+        if (iterator.hasNext()) {
+            throw new IllegalArgumentException("Sequence has more than one element");
+        }
+        return single;
     }
 
     default boolean any(@NotNull LongPredicate predicate) {

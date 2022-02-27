@@ -9,6 +9,8 @@ import hzt.iterables.primitives.LongStreamable;
 import hzt.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.LongConsumer;
 import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
@@ -20,20 +22,15 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
         PrimitiveCollectionX<Long, LongConsumer, long[]> {
 
     default int size() {
-        return (int) asSequence().count();
+        return (int) count();
     }
 
     default boolean isEmpty() {
-        return asSequence().none();
+        return none();
     }
 
     default boolean isNotEmpty() {
-        return asSequence().any();
-    }
-
-    @Override
-    default boolean contains(Long l) {
-        return contains((long) l);
+        return any();
     }
 
     @Override
@@ -108,6 +105,13 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     default LongSequence asSequence() {
         return LongSequence.of(this);
+    }
+
+    @Override
+    default Spliterator.OfLong spliterator() {
+        final var array = toArray();
+        return Spliterators.spliterator(array, 0, array.length,
+                Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }
 
     @Override

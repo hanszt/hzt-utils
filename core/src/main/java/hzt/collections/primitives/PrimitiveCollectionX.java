@@ -4,6 +4,7 @@ import hzt.collections.CollectionX;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
+import java.util.Spliterator;
 
 /**
  * @param <T> The boxed type
@@ -18,8 +19,6 @@ public interface PrimitiveCollectionX<T, C, A> {
 
     boolean isNotEmpty();
 
-    boolean contains(T o);
-
     boolean containsAll(@NotNull Iterable<T> iterable);
 
     boolean containsAll(@NotNull A array);
@@ -29,6 +28,8 @@ public interface PrimitiveCollectionX<T, C, A> {
     PrimitiveCollectionX<T, C, A> plus(@NotNull A array);
 
     PrimitiveIterator<T, C> iterator();
+
+    Spliterator<T> spliterator();
 
     CollectionX<T> boxed();
 

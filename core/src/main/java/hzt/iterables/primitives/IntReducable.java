@@ -148,6 +148,18 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
         return OptionalInt.of(result);
     }
 
+    default int single() {
+        final var iterator = iterator();
+        if (!iterator.hasNext()) {
+            throw new NoSuchElementException("Sequence is empty");
+        }
+        int single = iterator.nextInt();
+        if (iterator.hasNext()) {
+            throw new IllegalArgumentException("Sequence has more than one element");
+        }
+        return single;
+    }
+
     default boolean any(@NotNull IntPredicate predicate) {
         PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {

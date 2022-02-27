@@ -1,6 +1,5 @@
 package hzt.sequences.primitives;
 
-import hzt.collections.primitives.LongListX;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.LongCollectable;
 import hzt.iterables.primitives.LongIterable;
@@ -36,7 +35,7 @@ import java.util.function.ToLongFunction;
 import java.util.stream.LongStream;
 
 @FunctionalInterface
-public interface LongSequence extends LongReducable, LongCollectable, LongNumerable, LongStreamable,
+public interface LongSequence extends LongWindowedSequence, LongReducable, LongCollectable, LongNumerable, LongStreamable,
         PrimitiveSortable<LongComparator>,
         PrimitiveSequence<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator> {
 
@@ -190,47 +189,6 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
     @Override
     default LongSequence zipWithNext(@NotNull LongBinaryOperator merger) {
         return windowed(2, s -> merger.applyAsLong(s.first(), s.last()));
-    }
-
-    default Sequence<LongListX> chunked(int size) {
-        return windowed(size, size, true);
-    }
-
-    default LongSequence chunked(int size, @NotNull ToLongFunction<LongListX> transform) {
-        return windowed(size, size, true).mapToLong(transform);
-    }
-
-    default Sequence<LongListX> windowed(int size, int step, boolean partialWindows) {
-        return new LongWindowedSequence(this, size, step, partialWindows);
-    }
-
-    default Sequence<LongListX> windowed(int size, int step) {
-        return windowed(size, step, false);
-    }
-
-    default Sequence<LongListX> windowed(int size) {
-        return windowed(size, 1);
-    }
-
-    default Sequence<LongListX> windowed(int size, boolean partialWindows) {
-        return windowed(size, 1, partialWindows);
-    }
-
-    default LongSequence windowed(int size, int step, boolean partialWindows,
-                                  @NotNull ToLongFunction<LongListX> reducer) {
-        return windowed(size, step, partialWindows).mapToLong(reducer);
-    }
-
-    default LongSequence windowed(int size, int step, @NotNull ToLongFunction<LongListX> reducer) {
-        return windowed(size, step, false, reducer);
-    }
-
-    default LongSequence windowed(int size, @NotNull ToLongFunction<LongListX> reducer) {
-        return windowed(size, 1, reducer);
-    }
-
-    default LongSequence windowed(int size, boolean partialWindows, @NotNull ToLongFunction<LongListX> reducer) {
-        return windowed(size, 1, partialWindows, reducer);
     }
 
     default long[] toArray() {

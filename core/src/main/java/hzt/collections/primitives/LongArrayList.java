@@ -93,6 +93,20 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long, LongC
     }
 
     @Override
+    public int lastIndexOf(long l) {
+        return lastIndexOfRange(l, 0, size);
+    }
+
+    private int lastIndexOfRange(long value, int start, int end) {
+        for (int i = end - 1; i >= start; i--) {
+            if (value == elementData[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
     public int size() {
         return size;
     }

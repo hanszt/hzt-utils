@@ -1,11 +1,31 @@
 package hzt.arrays.primitves;
 
 import hzt.utils.primitive_comparators.DoubleComparator;
+import hzt.utils.primitive_comparators.IntComparator;
+import hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
-public final class DoubleSort {
+public final class PrimitiveSort {
 
-    private DoubleSort() {
+    private PrimitiveSort() {
+    }
+
+    public static void sort(int @NotNull [] array, @NotNull IntComparator comparator) {
+        sort(array, 0, array.length, comparator);
+    }
+
+    public static void sort(int @NotNull [] array, int fromIndex, int toIndex, @NotNull IntComparator comparator) {
+        checkBounds(array.length, fromIndex, toIndex);
+        IntTimSort.sort(array, fromIndex, toIndex, comparator);
+    }
+
+    public static void sort(long @NotNull [] array, @NotNull LongComparator comparator) {
+        sort(array, 0, array.length, comparator);
+    }
+
+    public static void sort(long @NotNull [] array, int fromIndex, int toIndex, @NotNull LongComparator comparator) {
+        checkBounds(array.length, fromIndex, toIndex);
+        LongTimSort.sort(array, fromIndex, toIndex, comparator);
     }
 
     public static void sort(double @NotNull [] array, @NotNull DoubleComparator comparator) {

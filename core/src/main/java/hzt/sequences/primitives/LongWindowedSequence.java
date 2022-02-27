@@ -1,43 +1,65 @@
 package hzt.sequences.primitives;
 
-import hzt.PreConditions;
 import hzt.collections.primitives.LongListX;
+import hzt.iterables.primitives.LongIterable;
 import hzt.iterators.primitives.LongWindowedIterator;
 import hzt.sequences.Sequence;
+import hzt.sequences.SequenceHelper;
+import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
+import java.util.function.IntUnaryOperator;
+import java.util.function.ToLongFunction;
 
-public final class LongWindowedSequence implements Sequence<LongListX> {
+public interface LongWindowedSequence extends LongIterable {
 
-    private final LongSequence upstream;
-    private final int size;
-    private final int step;
-    private final boolean partialWindows;
-
-    public LongWindowedSequence(LongSequence upstream, int size, int step, boolean partialWindows) {
-        checkWindowSizeAndStep(size, step);
-        this.upstream = upstream;
-        this.size = size;
-        this.step = step;
-        this.partialWindows = partialWindows;
+    default Sequence<LongListX> chunked(int size) {
+        return windowed(size, size, true);
     }
 
-    private static void checkWindowSizeAndStep(int size, int step) {
-        PreConditions.require(size > 0 && step > 0, () -> getErrorMessage(size, step));
-
+    default LongSequence chunked(int size, @NotNull ToLongFunction<LongListX> transform) {
+        return windowed(size, size, true).mapToLong(transform);
     }
 
-    private static String getErrorMessage(int size, int step) {
-        if (size != step) {
-            return "Both size " + size + " and step " + step + " must be greater than zero.";
-        }
-        return "size " + size + " must be greater than zero.";
+    default Sequence<LongListX> windowed(int size, int step, boolean partialWindows) {
+        return windowed(size, It::asInt, step, It::asInt, partialWindows);
     }
 
-    @NotNull
-    @Override
-    public Iterator<LongListX> iterator() {
-        return LongWindowedIterator.of(upstream.iterator(), size, step, partialWindows);
+    default Sequence<LongListX> windowed(int initSize,
+                                        @NotNull IntUnaryOperator nextSizeSupplier,
+                                        int initStep,
+                                        @NotNull IntUnaryOperator nextStepSupplier,
+                                        boolean partialWindows) {
+        SequenceHelper.checkInitWindowSizeAndStep(initSize, initStep);
+        return () -> LongWindowedIterator.of(iterator(), initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
+    }
+
+    default Sequence<LongListX> windowed(int size, int step) {
+        return windowed(size, step, false);
+    }
+
+    default Sequence<LongListX> windowed(int size) {
+        return windowed(size, 1);
+    }
+
+    default Sequence<LongListX> windowed(int size, boolean partialWindows) {
+        return windowed(size, 1, partialWindows);
+    }
+
+    default LongSequence windowed(int size, int step, boolean partialWindows,
+                                  @NotNull ToLongFunction<LongListX> reducer) {
+        return windowed(size, step, partialWindows).mapToLong(reducer);
+    }
+
+    default LongSequence windowed(int size, int step, @NotNull ToLongFunction<LongListX> reducer) {
+        return windowed(size, step, false, reducer);
+    }
+
+    default LongSequence windowed(int size, @NotNull ToLongFunction<LongListX> reducer) {
+        return windowed(size, 1, reducer);
+    }
+
+    default LongSequence windowed(int size, boolean partialWindows, @NotNull ToLongFunction<LongListX> reducer) {
+        return windowed(size, 1, partialWindows, reducer);
     }
 }

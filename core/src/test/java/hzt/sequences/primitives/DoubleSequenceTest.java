@@ -111,20 +111,6 @@ class DoubleSequenceTest {
     }
 
     @Test
-    void testPartialWindowedDoubleSequence() {
-        double[] array = {1, 2, 3, 4, 5, 6, 7};
-
-        final var windows = DoubleSequence.of(array)
-                .windowed(3, 2, true)
-                .map(DoubleListX::toArray)
-                .toTypedArray(double[][]::new);
-
-        Sequence.of(windows).map(Arrays::toString).forEach(It::println);
-
-        assertEquals(4, windows.length);
-    }
-
-    @Test
     void testPartialWindowedDoubleSequenceWindowReduced() {
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 

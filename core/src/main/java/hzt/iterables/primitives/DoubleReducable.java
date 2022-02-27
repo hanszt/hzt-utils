@@ -4,6 +4,7 @@ import hzt.function.ObjDoubleFunction;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.NoSuchElementException;
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
 import java.util.function.BinaryOperator;
@@ -106,6 +107,18 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
             }
         }
         return OptionalDouble.of(result);
+    }
+
+    default double single() {
+        final var iterator = iterator();
+        if (!iterator.hasNext()) {
+            throw new NoSuchElementException("Sequence is empty");
+        }
+        double single = iterator.nextDouble();
+        if (iterator.hasNext()) {
+            throw new IllegalArgumentException("Sequence has more than one element");
+        }
+        return single;
     }
 
     @Override

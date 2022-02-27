@@ -1,6 +1,5 @@
 package hzt.sequences.primitives;
 
-import hzt.collections.primitives.DoubleListX;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.DoubleCollectable;
 import hzt.iterables.primitives.DoubleIterable;
@@ -38,7 +37,7 @@ import java.util.function.ToDoubleFunction;
 import java.util.stream.DoubleStream;
 
 @FunctionalInterface
-public interface DoubleSequence extends DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable,
+public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable,
         PrimitiveSortable<DoubleComparator>,
         PrimitiveSequence<Double, DoubleConsumer, DoubleUnaryOperator, DoublePredicate, DoubleBinaryOperator> {
 
@@ -198,47 +197,6 @@ public interface DoubleSequence extends DoubleReducable, DoubleCollectable, Doub
     @Override
     default DoubleSequence zipWithNext(@NotNull DoubleBinaryOperator merger) {
         return windowed(2, s -> merger.applyAsDouble(s.first(), s.last()));
-    }
-
-    default Sequence<DoubleListX> chunked(int size) {
-        return windowed(size, size, true);
-    }
-
-    default DoubleSequence chunked(int size, @NotNull ToDoubleFunction<DoubleListX> transform) {
-        return windowed(size, size, true).mapToDouble(transform);
-    }
-
-    default Sequence<DoubleListX> windowed(int size, int step, boolean partialWindows) {
-        return new DoubleWindowedSequence(this, size, step, partialWindows);
-    }
-
-    default Sequence<DoubleListX> windowed(int size, int step) {
-        return windowed(size, step, false);
-    }
-
-    default Sequence<DoubleListX> windowed(int size) {
-        return windowed(size, 1);
-    }
-
-    default Sequence<DoubleListX> windowed(int size, boolean partialWindows) {
-        return windowed(size, 1, partialWindows);
-    }
-
-    default DoubleSequence windowed(int size, int step, boolean partialWindows,
-                                    @NotNull ToDoubleFunction<DoubleListX> reducer) {
-        return windowed(size, step, partialWindows).mapToDouble(reducer);
-    }
-
-    default DoubleSequence windowed(int size, int step, @NotNull ToDoubleFunction<DoubleListX> reducer) {
-        return windowed(size, step, false, reducer);
-    }
-
-    default DoubleSequence windowed(int size, @NotNull ToDoubleFunction<DoubleListX> reducer) {
-        return windowed(size, 1, reducer);
-    }
-
-    default DoubleSequence windowed(int size, boolean partialWindows, @NotNull ToDoubleFunction<DoubleListX> reducer) {
-        return windowed(size, 1, partialWindows, reducer);
     }
 
     default double[] toArray() {

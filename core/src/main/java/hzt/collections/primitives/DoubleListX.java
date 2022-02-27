@@ -1,6 +1,6 @@
 package hzt.collections.primitives;
 
-import hzt.arrays.primitves.DoubleSort;
+import hzt.arrays.primitves.PrimitiveSort;
 import hzt.collections.ListX;
 import hzt.iterables.primitives.PrimitiveSortable;
 import hzt.numbers.DoubleX;
@@ -34,6 +34,8 @@ public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleC
 
     int indexOf(double d);
 
+    int lastIndexOf(double d);
+
     @Override
     default ListX<Double> boxed() {
         return asSequence().boxed().toListX();
@@ -49,7 +51,7 @@ public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleC
     @Override
     default DoubleListX sorted(DoubleComparator comparator) {
         final double[] array = toArray();
-        DoubleSort.sort(array, comparator);
+        PrimitiveSort.sort(array, comparator);
         return DoubleListX.of(array);
     }
 

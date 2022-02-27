@@ -27,14 +27,8 @@ import java.util.stream.StreamSupport;
  * <p>
  * It is inspired by the functional methods provided for collections in Kotlin
  * <p>
- * The functions applied to a Transformer are eagerly evaluated as apposed to in a stream.
- * For smaller collections < 100_000 elements, the performance is similar to streams
- * <p>
- * For larger collections, or when a lot of transformation are applied, streams are preferred.
- * <p>
- * For a Transformer, I suggest not to apply more than 3 subsequent transformations.
  *
- * @param <T> The Type of the Iterable in the Transform object
+ * @param <T> The Type of the Iterable in the IterableX object
  * @author Hans Zuidervaart
  */
 public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, Takeable<T>, Zippable<T>, Windowable<T>,

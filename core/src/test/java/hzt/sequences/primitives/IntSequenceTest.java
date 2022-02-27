@@ -222,23 +222,4 @@ class IntSequenceTest {
 
         assertArrayEquals(new long[] {4950, 14950, 24950, 34950, 44950}, longs);
     }
-
-    @Test
-    void testLargeWindowedSequence() {
-        final ListX<IntListX> windows = IntRange.of(0, 1_000_000)
-                .windowed(2_001, 23, true)
-                .toListX();
-
-        final IntListX lastWindow = windows.last();
-
-        final ListX<IntListX> tail = windows.tailFrom(windows.size() - 2);
-
-        It.println("tail = " + tail);
-
-        assertAll(
-                () -> assertEquals(43479, windows.size()),
-                () -> assertEquals(999_994, lastWindow.first()),
-                () -> assertEquals(999_999, lastWindow.last())
-        );
-    }
 }

@@ -1,22 +1,31 @@
 package hzt.utils.primitive_comparators;
 
-public interface LongComparator {
+import java.util.Comparator;
 
-    int compare(long var1, long var3);
+@FunctionalInterface
+public interface LongComparator extends Comparator<Long> {
+
+    int compareLong(long l1, long l2);
+
+    @Override
+    default int compare(Long l1, Long l2) {
+        return compareLong(l1, l2);
+    }
 
     static LongComparator comparing(LongComparator comparator) {
         return comparator;
     }
 
     static LongComparator reverseOrder() {
-        return (a, b) -> Long.compare(b, a);
+        return (l1, l2) -> Long.compare(l2, l1);
     }
 
     default LongComparator thenComparing(LongComparator comparator) {
         return comparator;
     }
 
+    @Override
     default LongComparator reversed() {
-        return (a, b) -> Long.compare(b, a);
+        return reverseOrder();
     }
 }

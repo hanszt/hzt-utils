@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.Predicate;
 
-final class SequenceHelper {
+public final class SequenceHelper {
 
     private SequenceHelper() {
     }
@@ -36,11 +36,16 @@ final class SequenceHelper {
             public boolean hasNext() {
                 return iterator.hasNext();
             }
+
             @Override
             public R next() {
                 return mapper.apply(iterator.next());
             }
         };
+    }
+
+    public static void checkInitWindowSizeAndStep(int size, int step) {
+        PreConditions.require(size > 0 && step > 0, () -> getErrorMessage(size, step));
     }
 
     static <T, A, R> Iterator<R> mergingIterator(@NotNull Iterator<T> thisIterator,
@@ -93,7 +98,7 @@ final class SequenceHelper {
 
     @NotNull
     static <T, V> Iterator<Pair<T, V>> associateWithIterator(@NotNull Iterator<T> iterator,
-                                                              @NotNull Function<? super T, ? extends V> valueMapper) {
+                                                             @NotNull Function<? super T, ? extends V> valueMapper) {
         return new Iterator<Pair<T, V>>() {
             @Override
             public boolean hasNext() {
@@ -107,11 +112,6 @@ final class SequenceHelper {
         };
     }
 
-    static void checkInitWindowSizeAndStep(int size, int step) {
-        PreConditions.require(size > 0 && step > 0, () -> getErrorMessage(size, step));
-
-    }
-
     private static String getErrorMessage(int size, int step) {
         if (size != step) {
             return "Both size " + size + " and step " + step + " must be greater than zero.";
@@ -121,6 +121,7 @@ final class SequenceHelper {
 
     static class HoldingConsumer implements IntConsumer {
         private int value = 0;
+
         @Override
         public void accept(int value) {
             this.value = value;

@@ -76,8 +76,22 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
         return indexOfRange(o, 0, size);
     }
 
-    int indexOfRange(int value, int start, int end) {
+    private int indexOfRange(int value, int start, int end) {
         for (int i = start; i < end; i++) {
+            if (value == elementData[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public int lastIndexOf(int i) {
+        return lastIndexOfRange(i, 0, size);
+    }
+
+    private int lastIndexOfRange(int value, int start, int end) {
+        for (int i = end - 1; i >= start; i--) {
             if (value == elementData[i]) {
                 return i;
             }

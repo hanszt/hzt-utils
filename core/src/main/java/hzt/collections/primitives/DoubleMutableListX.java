@@ -39,7 +39,7 @@ public interface DoubleMutableListX extends DoubleListX, DoubleMutableCollection
         return asSequence().boxed().toMutableList();
     }
 
-    long set(int index, long value);
+    double set(int index, double value);
 
     @Override
     default boolean remove(double d) {

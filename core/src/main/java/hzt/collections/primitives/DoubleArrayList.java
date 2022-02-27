@@ -84,9 +84,21 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
 
     int indexOfRange(double o, int start, int end) {
         for (int i = start; i < end; i++) {
-            final double elementDatum = elementData[i];
-            final int compare = Double.compare(o, elementDatum);
-            if (compare == 0) {
+            if (Double.compare(o, elementData[i]) == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public int lastIndexOf(double d) {
+        return lastIndexOfRange(d, 0, size);
+    }
+
+    private int lastIndexOfRange(double value, int start, int end) {
+        for (int i = end - 1; i >= start; i--) {
+            if (Double.compare(value, elementData[i]) == 0) {
                 return i;
             }
         }
@@ -140,7 +152,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
     }
 
     @Override
-    public long set(int index, long value) {
+    public double set(int index, double value) {
         elementData[index] = value;
         return value;
     }

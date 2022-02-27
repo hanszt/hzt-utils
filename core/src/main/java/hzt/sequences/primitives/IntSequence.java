@@ -1,6 +1,5 @@
 package hzt.sequences.primitives;
 
-import hzt.collections.primitives.IntListX;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.IntCollectable;
 import hzt.iterables.primitives.IntIterable;
@@ -38,7 +37,7 @@ import java.util.function.ToIntFunction;
 import java.util.stream.IntStream;
 
 @FunctionalInterface
-public interface IntSequence extends IntReducable, IntCollectable, IntNumerable, IntStreamable,
+public interface IntSequence extends IntWindowedSequence, IntReducable, IntCollectable, IntNumerable, IntStreamable,
         PrimitiveSortable<IntComparator>,
         PrimitiveSequence<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator> {
 
@@ -198,43 +197,6 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
     @Override
     default IntSequence zipWithNext(@NotNull IntBinaryOperator merger) {
         return windowed(2, s -> merger.applyAsInt(s.first(), s.last()));
-    }
-
-    default Sequence<IntListX> chunked(int size) {
-        return windowed(size, size, true);
-    }
-
-    default Sequence<IntListX> windowed(int size, int step, boolean partialWindows) {
-        return new IntWindowedSequence(this, size, step, partialWindows);
-    }
-
-    default Sequence<IntListX> windowed(int size, int step) {
-        return windowed(size, step, false);
-    }
-
-    default Sequence<IntListX> windowed(int size) {
-        return windowed(size, 1);
-    }
-
-    default Sequence<IntListX> windowed(int size, boolean partialWindows) {
-        return windowed(size, 1, partialWindows);
-    }
-
-    default IntSequence windowed(int size, int step, boolean partialWindows,
-                                 @NotNull ToIntFunction<IntListX> reducer) {
-        return windowed(size, step, partialWindows).mapToInt(reducer);
-    }
-
-    default IntSequence windowed(int size, int step, @NotNull ToIntFunction<IntListX> reducer) {
-        return windowed(size, step, false, reducer);
-    }
-
-    default IntSequence windowed(int size, @NotNull ToIntFunction<IntListX> reducer) {
-        return windowed(size, 1, reducer);
-    }
-
-    default IntSequence windowed(int size, boolean partialWindows, @NotNull ToIntFunction<IntListX> reducer) {
-        return windowed(size, 1, partialWindows, reducer);
     }
 
     default int[] toArray() {

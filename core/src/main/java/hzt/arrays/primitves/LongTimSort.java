@@ -94,7 +94,7 @@ public final class LongTimSort {
             int n;
             while (left < right) {
                 n = (left + right) >>> 1;
-                if (c.compare(pivot, array[n]) < 0) {
+                if (c.compareLong(pivot, array[n]) < 0) {
                     right = n;
                 } else {
                     left = n + 1;
@@ -125,12 +125,12 @@ public final class LongTimSort {
         if (runHi == hi) {
             return 1;
         } else {
-            if (c.compare(a[runHi++], a[lo]) >= 0) {
-                while (runHi < hi && c.compare(a[runHi], a[runHi - 1]) >= 0) {
+            if (c.compareLong(a[runHi++], a[lo]) >= 0) {
+                while (runHi < hi && c.compareLong(a[runHi], a[runHi - 1]) >= 0) {
                     ++runHi;
                 }
             } else {
-                while (runHi < hi && c.compare(a[runHi], a[runHi - 1]) < 0) {
+                while (runHi < hi && c.compareLong(a[runHi], a[runHi - 1]) < 0) {
                     ++runHi;
                 }
                 reverseRange(a, lo, runHi);
@@ -250,10 +250,10 @@ public final class LongTimSort {
         int lastOfs = 0;
         int ofs = 1;
         int m;
-        if (c.compare(key, a[base + hint]) > 0) {
+        if (c.compareLong(key, a[base + hint]) > 0) {
             m = len - hint;
 
-            while (ofs < m && c.compare(key, a[base + hint + ofs]) > 0) {
+            while (ofs < m && c.compareLong(key, a[base + hint + ofs]) > 0) {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
                 if (ofs <= 0) {
@@ -270,7 +270,7 @@ public final class LongTimSort {
         } else {
             m = hint + 1;
 
-            while (ofs < m && c.compare(key, a[base + hint - ofs]) <= 0) {
+            while (ofs < m && c.compareLong(key, a[base + hint - ofs]) <= 0) {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
                 if (ofs <= 0) {
@@ -293,7 +293,7 @@ public final class LongTimSort {
 
         while (lastOfs < ofs) {
             m = lastOfs + ((ofs - lastOfs) >>> 1);
-            if (c.compare(key, a[base + m]) > 0) {
+            if (c.compareLong(key, a[base + m]) > 0) {
                 lastOfs = m + 1;
             } else {
                 ofs = m;
@@ -310,10 +310,10 @@ public final class LongTimSort {
         int ofs = 1;
         int lastOfs = 0;
         int m;
-        if (c.compare(key, a[base + hint]) < 0) {
+        if (c.compareLong(key, a[base + hint]) < 0) {
             m = hint + 1;
 
-            while (ofs < m && c.compare(key, a[base + hint - ofs]) < 0) {
+            while (ofs < m && c.compareLong(key, a[base + hint - ofs]) < 0) {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
                 if (ofs <= 0) {
@@ -331,7 +331,7 @@ public final class LongTimSort {
         } else {
             m = len - hint;
 
-            while (ofs < m && c.compare(key, a[base + hint + ofs]) >= 0) {
+            while (ofs < m && c.compareLong(key, a[base + hint + ofs]) >= 0) {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
                 if (ofs <= 0) {
@@ -353,7 +353,7 @@ public final class LongTimSort {
 
         while (lastOfs < ofs) {
             m = lastOfs + (ofs - lastOfs >>> 1);
-            if (c.compare(key, a[base + m]) < 0) {
+            if (c.compareLong(key, a[base + m]) < 0) {
                 ofs = m;
             } else {
                 lastOfs = m + 1;
@@ -393,7 +393,7 @@ public final class LongTimSort {
                 while (len1 > 1 && len2 > 0) {
                     label145:
                     {
-                        if (c.compare(array[cursor2], tmp[cursor1]) < 0) {
+                        if (c.compareLong(array[cursor2], tmp[cursor1]) < 0) {
                             array[dest++] = array[cursor2++];
                             ++count2;
                             count1 = 0;
@@ -518,7 +518,7 @@ public final class LongTimSort {
                 while (len1 > 0 && len2 > 1) {
                     label145:
                     {
-                        if (c.compare(tmp[cursor2], array[cursor1]) < 0) {
+                        if (c.compareLong(tmp[cursor2], array[cursor1]) < 0) {
                             array[dest--] = array[cursor1--];
                             ++count1;
                             count2 = 0;

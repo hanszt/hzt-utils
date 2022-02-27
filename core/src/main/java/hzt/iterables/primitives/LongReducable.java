@@ -109,6 +109,18 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
         return OptionalLong.of(result);
     }
 
+    default long single() {
+        final var iterator = iterator();
+        if (!iterator.hasNext()) {
+            throw new NoSuchElementException("Sequence is empty");
+        }
+        long single = iterator.nextLong();
+        if (iterator.hasNext()) {
+            throw new IllegalArgumentException("Sequence has more than one element");
+        }
+        return single;
+    }
+
     default boolean any(@NotNull LongPredicate predicate) {
         PrimitiveIterator.OfLong iterator = this.iterator();
         while (iterator.hasNext()) {

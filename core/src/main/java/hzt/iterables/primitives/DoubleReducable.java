@@ -109,6 +109,18 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
         return OptionalDouble.of(result);
     }
 
+    default double single() {
+        final var iterator = iterator();
+        if (!iterator.hasNext()) {
+            throw new NoSuchElementException("Sequence is empty");
+        }
+        double single = iterator.nextDouble();
+        if (iterator.hasNext()) {
+            throw new IllegalArgumentException("Sequence has more than one element");
+        }
+        return single;
+    }
+
     @Override
     default boolean any(@NotNull DoublePredicate predicate) {
         PrimitiveIterator.OfDouble iterator = this.iterator();

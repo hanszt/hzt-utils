@@ -220,7 +220,7 @@ class LongSequenceTest {
 
     @Test
     void testSkipWhileInclusive() {
-        final var longs = LongSequence.generate(0L, l -> ++l)
+        final LongSequence longs = LongSequence.generate(0L, l -> ++l)
                 .map(Generator::fib)
                 .skipWhileInclusive(l -> l < 3)
                 .takeWhileInclusive(l -> l < 55);

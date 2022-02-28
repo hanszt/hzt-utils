@@ -178,9 +178,9 @@ class DoubleSequenceTest {
 
     @Test
     void testOnDoubleSequence() {
-        final var n = 1_234;
+        final int n = 1_234;
 
-        final var doubles = DoubleSequence.generate(0, d -> d + .1)
+        final double[] doubles = DoubleSequence.generate(0, d -> d + .1)
                 .take(n)
                 .onSequence(d -> d.boxed().step(200).forEach(It::println))
                 .toArray();

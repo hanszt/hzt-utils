@@ -70,7 +70,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <K, V> Map<K, V> toMap(@NotNull Function<T, K> keyMapper, @NotNull Function<T, V> valueMapper) {
-        return Map.copyOf(toMutableMap(keyMapper, valueMapper));
+        return Collections.unmodifiableMap(toMutableMap(keyMapper, valueMapper));
     }
 
     default <A, R> R collect(@NotNull Collector<T, A, R> collector) {

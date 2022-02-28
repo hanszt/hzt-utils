@@ -5,6 +5,7 @@ import hzt.collections.MutableListX;
 import hzt.collections.SetX;
 import hzt.sequences.Sequence;
 import hzt.tuples.Pair;
+import hzt.tuples.Triple;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
@@ -93,23 +94,23 @@ class ReducableTest {
 
     @Test
     void testFoldThreeInOnePass() {
-        final var dateSequence = Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
+        final Sequence<LocalDate> dateSequence = Sequence.generate(LocalDate.ofEpochDay(0), d -> d.plusDays(1))
                 .takeWhile(d -> d.getYear() <= 1980)
                 .filter(LocalDate::isLeapYear);
 
-        final var iterations1 = new AtomicInteger();
+        final AtomicInteger iterations1 = new AtomicInteger();
 
-        final var expected = dateSequence
+        final Triple<MutableListX<LocalDate>, Long, LocalDate> expected = dateSequence
                 .onEach(d -> iterations1.incrementAndGet())
                 .toThree(Sequence::toMutableList, Numerable::count, Reducable::last);
 
-        final var iterations2 = new AtomicInteger();
+        final AtomicInteger iterations2 = new AtomicInteger();
 
-        final var actual = dateSequence
+        final Triple<MutableListX<Object>, Long, LocalDate> actual = dateSequence
                 .onEach(d -> iterations2.incrementAndGet())
                 .foldThree(MutableListX.empty(), MutableListX::plus,
                         0L, (a, b) -> ++a,
-                        LocalDate.EPOCH, (first, second) -> second);
+                        LocalDate.ofEpochDay(0), (first, second) -> second);
 
         It.println("pair = " + actual);
 

@@ -1,5 +1,6 @@
 package hzt.sequences.primitives;
 
+import hzt.PreConditions;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.LongCollectable;
 import hzt.iterables.primitives.LongIterable;
@@ -15,6 +16,7 @@ import hzt.iterators.primitives.LongTakeWhileIterator;
 import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
+import hzt.sequences.SkipTakeSequence;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
@@ -22,6 +24,7 @@ import hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongConsumer;
@@ -129,7 +132,15 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence take(long n) {
-        return new LongTakeSequence(this, n);
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        if (n == 0) {
+            return PrimitiveIterators::emptyLongIterator;
+        } else if (this instanceof SkipTakeSequence) {
+            LongSkipTakeSequence skipTakeSequence = (LongSkipTakeSequence) this;
+            return skipTakeSequence.take(n);
+        } else {
+            return new LongTakeSequence(this, n);
+        }
     }
 
     default LongSequence takeWhile(@NotNull LongPredicate predicate) {
@@ -142,7 +153,15 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence skip(long n) {
-        return new LongSkipSequence(this, n);
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        if (n == 0) {
+            return this;
+        } else if (this instanceof LongSkipTakeSequence) {
+            LongSkipTakeSequence skipTakeSequence = (LongSkipTakeSequence) this;
+            return skipTakeSequence.skip(n);
+        } else {
+            return new LongSkipSequence(this, n);
+        }
     }
 
     default LongSequence skipWhile(@NotNull LongPredicate longPredicate) {
@@ -188,11 +207,20 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
 
     @Override
     default LongSequence zipWithNext(@NotNull LongBinaryOperator merger) {
-        return windowed(2, s -> merger.applyAsLong(s.first(), s.last()));
+        return windowed(2, w -> merger.applyAsLong(w.first(), w.last()));
     }
 
     default long[] toArray() {
         return toListX().toArray();
+    }
+
+    default <R> R transform(@NotNull Function<? super LongSequence, ? extends R> resultMapper) {
+        return resultMapper.apply(this);
+    }
+
+    default LongSequence onSequence(Consumer<? super LongSequence> consumer) {
+        consumer.accept(this);
+        return this;
     }
 
     default <R1, R2, R> R longsToTwo(@NotNull Function<? super LongSequence, ? extends R1> resultMapper1,

@@ -67,7 +67,7 @@ public interface WindowedSequence<T> extends Windowable<T> {
                                      int step,
                                      boolean partialWindows,
                                      @NotNull Function<? super ListX<T>, R> transform) {
-        return Sequence.of(windowed(initSize, nextSizeSupplier, step, It::asInt, partialWindows)).map(transform);
+        return windowed(initSize, nextSizeSupplier, step, It::asInt, partialWindows).map(transform);
     }
 
     default Sequence<ListX<T>> windowed(int initSize,

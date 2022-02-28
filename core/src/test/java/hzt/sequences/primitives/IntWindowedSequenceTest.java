@@ -62,7 +62,7 @@ class IntWindowedSequenceTest {
 
         final var sizes = IntRange.of(0, 1000)
                 .chunked(chunkSize::incrementAndGet)
-                .onEach(System.out::println)
+                .onEach(It::println)
                 .mapToInt(IntListX::size)
                 .toArray();
 

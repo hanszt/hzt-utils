@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Spliterator;
 
 public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E> {
 
@@ -30,6 +31,20 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
 
     static <E> MutableListX<E> of(@NotNull E value) {
         return new ArrayListX<>(value);
+    }
+
+    @Override
+    default MutableListX<E> plus(@NotNull E value) {
+        add(value);
+        return this;
+    }
+
+    @Override
+    default MutableListX<E> plus(@NotNull Iterable<E> iterable) {
+        for (E item : iterable) {
+            add(item);
+        }
+        return this;
     }
 
     MutableListX<E> headTo(int toIndex);
@@ -65,5 +80,10 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
     @Override
     default @NotNull MutableListX<E> get() {
         return this;
+    }
+
+    @Override
+    default Spliterator<E> spliterator() {
+        return List.super.spliterator();
     }
 }

@@ -31,7 +31,7 @@ class DoubleWindowedSequenceTest {
         final var windows = DoubleSequence.generate(0, pi -> pi + Math.PI)
                 .take(2_000_000)
                 .windowed(2000, size -> --size, 1, step -> ++step)
-                .onEach(w -> System.out.println(w.size()))
+                .onEach(w -> It.println(w.size()))
                 .toListX();
 
         final var lastWindow = windows.last();

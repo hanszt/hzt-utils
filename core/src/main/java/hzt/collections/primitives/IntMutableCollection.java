@@ -3,7 +3,6 @@ package hzt.collections.primitives;
 import hzt.collections.MutableCollectionX;
 import hzt.iterables.primitives.IntIterable;
 import hzt.iterators.primitives.PrimitiveIterators;
-import hzt.sequences.primitives.IntSequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.IntConsumer;
@@ -82,12 +81,12 @@ public interface IntMutableCollection extends PrimitiveMutableCollectionX<Intege
 
     @Override
     default IntMutableListX plus(@NotNull Iterable<Integer> iterable) {
-        return IntSequence.of(this).plus(iterable).toMutableList();
+        return (IntMutableListX) IntCollection.super.plus(iterable);
     }
 
     @Override
     default IntMutableListX plus(int @NotNull ... array) {
-        return IntSequence.of(this).plus(array).toMutableList();
+        return (IntMutableListX) IntCollection.super.plus(array);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package hzt.collections.primitives;
 
 import hzt.sequences.primitives.IntSequence;
+import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -40,7 +41,7 @@ class DoubleMutableCollectionTest {
 
         final var sum = listX.stream().sum();
 
-        System.out.println("sum = " + sum);
+        It.println("sum = " + sum);
 
         assertTrue(sum < 10);
     }

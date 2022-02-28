@@ -97,12 +97,16 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
 
     @Override
     default DoubleListX plus(@NotNull Iterable<Double> values) {
-        return DoubleListX.of(asSequence().plus(values));
+        DoubleMutableListX list = DoubleMutableListX.of(this);
+        list.addAll(values);
+        return list;
     }
 
     @Override
     default DoubleListX plus(double @NotNull ... array) {
-        return asSequence().plus(array).toListX();
+        DoubleMutableListX list = DoubleMutableListX.of(this);
+        list.addAll(array);
+        return list;
     }
 
     default DoubleSequence asSequence() {
@@ -113,7 +117,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
     default Spliterator.OfDouble spliterator() {
         final var array = toArray();
         return Spliterators.spliterator(array, 0, array.length,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE);
+                Spliterator.ORDERED | Spliterator.NONNULL);
     }
 
     @Override

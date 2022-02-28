@@ -1,6 +1,7 @@
 package hzt.iterables;
 
 import hzt.collections.ListX;
+import hzt.collections.MutableListX;
 import hzt.collections.SetX;
 import hzt.sequences.Sequence;
 import hzt.utils.It;
@@ -85,6 +86,34 @@ class ReducableTest {
         assertAll(
                 () -> assertEquals(expected, actual),
                 () -> assertEquals(iterations1.get(), iterations2.get() * 2)
+        );
+    }
+
+    @Test
+    void testFoldThreeInOnePass() {
+        final var dateSequence = Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
+                .takeWhile(d -> d.getYear() <= 1980)
+                .filter(LocalDate::isLeapYear);
+
+        final var iterations1 = new AtomicInteger();
+
+        final var expected = dateSequence
+                .onEach(d -> iterations1.incrementAndGet())
+                .toThree(Sequence::toMutableList, Numerable::count, Reducable::last);
+
+        final var iterations2 = new AtomicInteger();
+
+        final var actual = dateSequence
+                .onEach(d -> iterations2.incrementAndGet())
+                .foldThree(MutableListX.empty(), MutableListX::plus,
+                        0L, (a, b) -> ++a,
+                        LocalDate.EPOCH, (first, second) -> second);
+
+        It.println("pair = " + actual);
+
+        assertAll(
+                () -> assertEquals(expected, actual),
+                () -> assertEquals(iterations1.get(), iterations2.get() * 3)
         );
     }
 

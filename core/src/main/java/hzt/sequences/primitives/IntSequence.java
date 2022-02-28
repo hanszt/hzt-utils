@@ -1,5 +1,6 @@
 package hzt.sequences.primitives;
 
+import hzt.PreConditions;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.IntCollectable;
 import hzt.iterables.primitives.IntIterable;
@@ -15,6 +16,7 @@ import hzt.iterators.primitives.IntTakeWhileIterator;
 import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.numbers.IntX;
 import hzt.sequences.Sequence;
+import hzt.sequences.SkipTakeSequence;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
@@ -22,6 +24,7 @@ import hzt.utils.primitive_comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
@@ -123,7 +126,15 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     @Override
     default IntSequence take(long n) {
-        return new IntTakeSequence(this, n);
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        if (n == 0) {
+            return PrimitiveIterators::emptyIntIterator;
+        } else if (this instanceof SkipTakeSequence) {
+            IntSkipTakeSequence skipTakeSequence = (IntSkipTakeSequence) this;
+            return skipTakeSequence.take(n);
+        } else {
+            return new IntTakeSequence(this, n);
+        }
     }
 
     @Override
@@ -138,7 +149,15 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     @Override
     default IntSequence skip(long n) {
-        return new IntSkipSequence(this, n);
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        if (n == 0) {
+            return this;
+        } else if (this instanceof IntSkipTakeSequence) {
+            IntSkipTakeSequence skipTakeSequence = (IntSkipTakeSequence) this;
+            return skipTakeSequence.skip(n);
+        } else {
+            return new IntSkipSequence(this, n);
+        }
     }
 
     @Override
@@ -194,11 +213,20 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     @Override
     default IntSequence zipWithNext(@NotNull IntBinaryOperator merger) {
-        return windowed(2, s -> merger.applyAsInt(s.first(), s.last()));
+        return windowed(2, w -> merger.applyAsInt(w.first(), w.last()));
     }
 
     default int[] toArray() {
         return toListX().toArray();
+    }
+
+    default <R> R transform(@NotNull Function<? super IntSequence, ? extends R> resultMapper) {
+        return resultMapper.apply(this);
+    }
+
+    default IntSequence onSequence(Consumer<? super IntSequence> consumer) {
+        consumer.accept(this);
+        return this;
     }
 
     default <R1, R2, R> R intsToTwo(@NotNull Function<? super IntSequence, ? extends R1> resultMapper1,

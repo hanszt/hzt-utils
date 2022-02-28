@@ -63,7 +63,7 @@ class DoubleMutableListXTest {
         final var list = DoubleMutableListX.of(1, 2, 3, 4, 5, 6, 7, 8);
 
         final var remove = list.remove(7);
-        System.out.println("list = " + list);
+        It.println("list = " + list);
 
         assertAll(
                 () -> assertTrue(remove),

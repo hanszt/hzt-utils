@@ -1,13 +1,11 @@
 package hzt.iterables.primitives;
 
-import hzt.function.LongFoldFunction;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.OptionalLong;
 import java.util.PrimitiveIterator;
-import java.util.function.BinaryOperator;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
@@ -37,21 +35,16 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
         return OptionalLong.empty();
     }
 
-    default <R> @NotNull R reduce(@NotNull R initial,
+    default <R> @NotNull R reduce(long initial,
                                   @NotNull LongFunction<R> mapper,
-                                  @NotNull BinaryOperator<R> operation) {
-        return fold(initial, (acc, next) -> operation.apply(acc, mapper.apply(next)));
-    }
-
-    default <R> @NotNull R fold(@NotNull R initial,
-                                @NotNull LongFoldFunction<R> operation) {
-        R accumulator = initial;
+                                  @NotNull LongBinaryOperator operation) {
+        long accumulator = initial;
         PrimitiveIterator.OfLong iterator = this.iterator();
         while (iterator.hasNext()) {
             long t = iterator.nextLong();
-            accumulator = operation.apply(accumulator, t);
+            accumulator = operation.applyAsLong(accumulator, t);
         }
-        return accumulator;
+        return mapper.apply(accumulator);
     }
 
     default long first() {

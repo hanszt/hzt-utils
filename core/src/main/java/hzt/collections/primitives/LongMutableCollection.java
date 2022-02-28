@@ -3,7 +3,6 @@ package hzt.collections.primitives;
 import hzt.collections.MutableCollectionX;
 import hzt.iterables.primitives.LongIterable;
 import hzt.iterators.primitives.PrimitiveIterators;
-import hzt.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.LongConsumer;
@@ -82,12 +81,12 @@ public interface LongMutableCollection extends PrimitiveMutableCollectionX<Long,
 
     @Override
     default LongMutableListX plus(@NotNull Iterable<Long> iterable) {
-        return LongSequence.of(this).plus(iterable).toMutableList();
+        return (LongMutableListX) LongCollection.super.plus(iterable);
     }
 
     @Override
     default LongMutableListX plus(long @NotNull ... array) {
-        return LongSequence.of(this).plus(array).toMutableList();
+        return (LongMutableListX) LongCollection.super.plus(array);
     }
 
     @Override

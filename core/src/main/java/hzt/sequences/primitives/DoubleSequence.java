@@ -1,5 +1,6 @@
 package hzt.sequences.primitives;
 
+import hzt.PreConditions;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.DoubleCollectable;
 import hzt.iterables.primitives.DoubleIterable;
@@ -15,6 +16,7 @@ import hzt.iterators.primitives.DoubleTakeWhileIterator;
 import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.numbers.DoubleX;
 import hzt.sequences.Sequence;
+import hzt.sequences.SkipTakeSequence;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
@@ -24,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
@@ -122,7 +125,15 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     @Override
     default DoubleSequence take(long n) {
-        return new DoubleTakeSequence(this, n);
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        if (n == 0) {
+            return PrimitiveIterators::emptyDoubleIterator;
+        } else if (this instanceof SkipTakeSequence) {
+            DoubleSkipTakeSequence skipTakeSequence = (DoubleSkipTakeSequence) this;
+            return skipTakeSequence.take(n);
+        } else {
+            return new DoubleTakeSequence(this, n);
+        }
     }
 
     @Override
@@ -137,7 +148,15 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     @Override
     default DoubleSequence skip(long n) {
-        return new DoubleSkipSequence(this, n);
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        if (n == 0) {
+            return this;
+        } else if (this instanceof DoubleSkipTakeSequence) {
+            DoubleSkipTakeSequence skipTakeSequence = (DoubleSkipTakeSequence) this;
+            return skipTakeSequence.skip(n);
+        } else {
+            return new DoubleSkipSequence(this, n);
+        }
     }
 
     @Override
@@ -196,11 +215,20 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     @Override
     default DoubleSequence zipWithNext(@NotNull DoubleBinaryOperator merger) {
-        return windowed(2, s -> merger.applyAsDouble(s.first(), s.last()));
+        return windowed(2, w -> merger.applyAsDouble(w.first(), w.last()));
     }
 
     default double[] toArray() {
         return toListX().toArray();
+    }
+
+    default <R> R transform(@NotNull Function<? super DoubleSequence, ? extends R> resultMapper) {
+        return resultMapper.apply(this);
+    }
+
+    default DoubleSequence onSequence(Consumer<? super DoubleSequence> consumer) {
+        consumer.accept(this);
+        return this;
     }
 
     default <R1, R2, R> R doublesToTwo(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,

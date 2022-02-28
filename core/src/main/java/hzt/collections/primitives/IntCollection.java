@@ -96,12 +96,16 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
 
     @Override
     default IntListX plus(@NotNull Iterable<Integer> values) {
-        return asSequence().plus(values).toListX();
+        IntMutableListX list = IntMutableListX.empty();
+        list.addAll(values);
+        return list;
     }
 
     @Override
     default IntListX plus(int @NotNull ... array) {
-        return asSequence().plus(array).toListX();
+        IntMutableListX list = IntMutableListX.empty();
+        list.addAll(array);
+        return list;
     }
 
     default IntSequence asSequence() {
@@ -112,7 +116,7 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
     default Spliterator.OfInt spliterator() {
         final int[] array = toArray();
         return Spliterators.spliterator(array, 0, array.length,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE);
+                Spliterator.ORDERED | Spliterator.NONNULL);
     }
 
     @Override

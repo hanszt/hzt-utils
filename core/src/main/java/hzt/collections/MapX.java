@@ -17,7 +17,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-@SuppressWarnings("unused")
 public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<K, V> {
 
     static <K, V> MapX<K, V> empty() {
@@ -137,18 +136,24 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
 
     @Override
     default MapX<K, V> onEachKey(@NotNull Consumer<? super K> consumer) {
-        throw new UnsupportedOperationException();
+        return mapKeys(k -> {
+            consumer.accept(k);
+            return k;
+        });
     }
 
     @Override
     default MapX<K, V> onEachValue(@NotNull Consumer<? super V> consumer) {
-        throw new UnsupportedOperationException();
+        return mapValues(v -> {
+            consumer.accept(v);
+            return v;
+        });
     }
 
     @Override
     @NotNull
     default MapX<K, V> onEach(@NotNull Consumer<? super Map.Entry<K, V>> consumer) {
-        return MapX.of(onEach(It::self, consumer));
+        return MapX.of(CollectionX.super.onEach(consumer));
     }
 
     @Override

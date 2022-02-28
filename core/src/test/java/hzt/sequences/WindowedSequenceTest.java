@@ -76,9 +76,12 @@ class WindowedSequenceTest {
     void testVariableStepAndSizeWindowedSequence() {
         final ListX<ListX<Integer>> windows = IntRange.closed(4, 50).boxed()
                 .windowed(5, size -> ++size, 10, step -> --step, true)
+                .onSequence(w -> w
+                        .zipWithNext()
+                        .forEach((w1, w2) -> It.println(w2.first() - w1.first())))
                 .toListX();
 
-        System.out.println("windows = " + windows);
+        It.println("windows = " + windows);
 
         assertAll(
                 () -> assertEquals(ListX.of(4, 5, 6, 7, 8), windows.first()),

@@ -3,7 +3,6 @@ package hzt.collections.primitives;
 import hzt.collections.MutableCollectionX;
 import hzt.iterables.primitives.DoubleIterable;
 import hzt.iterators.primitives.PrimitiveIterators;
-import hzt.sequences.primitives.DoubleSequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
@@ -83,12 +82,12 @@ public interface DoubleMutableCollection extends PrimitiveMutableCollectionX<Dou
 
     @Override
     default DoubleMutableListX plus(@NotNull Iterable<Double> iterable) {
-        return DoubleSequence.of(this).plus(iterable).toMutableList();
+        return (DoubleMutableListX) DoubleCollection.super.plus(iterable);
     }
 
     @Override
     default DoubleMutableListX plus(double @NotNull ... array) {
-        return asSequence().plus(array).toMutableList();
+        return (DoubleMutableListX) DoubleCollection.super.plus(array);
     }
 
     @Override

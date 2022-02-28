@@ -159,6 +159,10 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
                 .map(IndexedValue::value);
     }
 
+    default Sequence<T> step(int step) {
+        return filterIndexed((index, v) -> index % step == 0);
+    }
+
     default Sequence<IndexedValue<T>> withIndex() {
         return this::indexedIterator;
     }
@@ -303,6 +307,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     default <R> R transform(@NotNull Function<? super Sequence<T>, ? extends R> resultMapper) {
         return resultMapper.apply(this);
+    }
+
+    default Sequence<T> onSequence(Consumer<Sequence<T>> sequenceConsumer) {
+        sequenceConsumer.accept(this);
+        return this;
     }
 
     default <R1, R2, R> R toTwo(@NotNull Function<? super Sequence<T>, ? extends R1> resultMapper1,

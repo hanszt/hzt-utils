@@ -125,7 +125,6 @@ class ListXTest {
 
         final List<LocalDate> expected = auctions.stream()
                 .map(PaintingAuction::getDateOfOpening)
-                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         expected.add(LocalDate.MIN);
         expected.add(LocalDate.MAX);

@@ -9,8 +9,8 @@ public final class IntSkipWhileIterator implements OfInt {
     private final IntPredicate predicate;
     private final boolean inclusive;
 
-    private boolean inclusiveSkipped = false;
     private int nextItem = 0;
+    private boolean firstIteration = true;
     private SkipState state = SkipState.SKIPPING;
 
     IntSkipWhileIterator(OfInt iterator, IntPredicate predicate, boolean inclusive) {
@@ -24,22 +24,17 @@ public final class IntSkipWhileIterator implements OfInt {
     }
 
     private void skip() {
-        if (inclusive && inclusiveSkipped && iterator.hasNext()) {
-            nextItem = iterator.nextInt();
-            state = SkipState.NEXT_ITEM;
-            return;
-        }
         while (iterator.hasNext()) {
-            final int item = iterator.nextInt();
-            if (!predicate.test(item)) {
-                if (inclusive && !inclusiveSkipped) {
-                    inclusiveSkipped = true;
-                    return;
+            nextItem = iterator.nextInt();
+            if (!predicate.test(nextItem)) {
+                if (!firstIteration && inclusive && iterator.hasNext()) {
+                    nextItem = iterator.nextInt();
                 }
-                nextItem = item;
                 state = SkipState.NEXT_ITEM;
+                firstIteration = false;
                 return;
             }
+            firstIteration = false;
         }
         state = SkipState.NORMAL_ITERATION;
     }

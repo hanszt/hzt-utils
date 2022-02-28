@@ -4,6 +4,8 @@ import hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -47,5 +49,10 @@ public interface SetX<E> extends CollectionX<E>, Transformable<SetX<E>> {
     @NotNull
     default <R> SetX<E> onEach(@NotNull Function<? super E, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
         return SetX.of(CollectionX.super.onEach(selector, consumer));
+    }
+
+    @Override
+    default Spliterator<E> spliterator() {
+        return Spliterators.spliterator(iterator(), size(), Spliterator.DISTINCT);
     }
 }

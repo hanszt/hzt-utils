@@ -96,12 +96,16 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     @Override
     default LongListX plus(@NotNull Iterable<Long> values) {
-        return LongListX.of(asSequence().plus(values));
+        LongMutableListX listX = LongMutableListX.empty();
+        listX.addAll(values);
+        return listX;
     }
 
     @Override
     default LongListX plus(long @NotNull ... array) {
-        return asSequence().plus(array).toListX();
+        LongMutableListX listX = LongMutableListX.empty();
+        listX.addAll(array);
+        return listX;
     }
 
     default LongSequence asSequence() {
@@ -112,7 +116,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
     default Spliterator.OfLong spliterator() {
         final long[] array = toArray();
         return Spliterators.spliterator(array, 0, array.length,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE);
+                Spliterator.ORDERED | Spliterator.NONNULL);
     }
 
     @Override

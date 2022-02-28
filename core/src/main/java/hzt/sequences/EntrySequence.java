@@ -102,12 +102,18 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
 
     @Override
     default EntryIterable<K, V> onEachValue(@NotNull Consumer<? super V> consumer) {
-        throw new UnsupportedOperationException();
+        return EntrySequence.of(mapValues(value -> {
+            consumer.accept(value);
+            return value;
+        }));
     }
 
     @Override
     default EntryIterable<K, V> onEach(@NotNull BiConsumer<? super K, ? super V> biConsumer) {
-        throw new UnsupportedOperationException();
+        return EntrySequence.of(map(e -> {
+            biConsumer.accept(e.getKey(), e.getValue());
+            return e;
+        }));
     }
 
     @NotNull

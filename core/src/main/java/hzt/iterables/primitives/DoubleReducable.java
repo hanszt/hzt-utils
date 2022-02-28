@@ -1,13 +1,11 @@
 package hzt.iterables.primitives;
 
-import hzt.function.ObjDoubleFunction;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
-import java.util.function.BinaryOperator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
@@ -38,20 +36,16 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
         return OptionalDouble.empty();
     }
 
-    default <R> @NotNull R reduce(@NotNull R initial,
+    default <R> @NotNull R reduce(double initial,
                                   @NotNull DoubleFunction<R> mapper,
-                                  @NotNull BinaryOperator<R> operation) {
-        return fold(initial, (acc, next) -> operation.apply(acc, mapper.apply(next)));
-    }
-
-    default <R> @NotNull R fold(@NotNull R initial, @NotNull ObjDoubleFunction<R> operation) {
-        R accumulator = initial;
+                                  @NotNull DoubleBinaryOperator operation) {
+        double accumulator = initial;
         PrimitiveIterator.OfDouble iterator = this.iterator();
         while (iterator.hasNext()) {
             double t = iterator.nextDouble();
-            accumulator = operation.apply(accumulator, t);
+            accumulator = operation.applyAsDouble(accumulator, t);
         }
-        return accumulator;
+        return mapper.apply(accumulator);
     }
 
     default double first() {

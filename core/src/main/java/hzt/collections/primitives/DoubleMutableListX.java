@@ -2,6 +2,7 @@ package hzt.collections.primitives;
 
 import hzt.collections.MutableListX;
 import hzt.iterators.primitives.PrimitiveListIterator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 
@@ -26,6 +27,18 @@ public interface DoubleMutableListX extends DoubleListX, DoubleMutableCollection
 
     static DoubleMutableListX withInitCapacity(int capacity) {
         return new DoubleArrayList(capacity);
+    }
+
+    @Override
+    default DoubleMutableListX plus(@NotNull Iterable<Double> iterable) {
+        addAll(iterable);
+        return this;
+    }
+
+    @Override
+    default DoubleMutableListX plus(double @NotNull ... iterable) {
+        addAll(iterable);
+        return this;
     }
 
     PrimitiveListIterator.OfDouble listIterator();

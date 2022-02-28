@@ -5,7 +5,6 @@ import hzt.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -16,12 +15,11 @@ public interface IndexedIterable<T> extends Iterable<T> {
         return IndexedIterator.of(iterator());
     }
 
-    default void forEachIndexed(BiConsumer<Integer, T> action) {
+    default void forEachIndexed(@NotNull BiConsumer<Integer, T> action) {
         forEachIndexedValue(indexedValue -> action.accept(indexedValue.index(), indexedValue.value()));
     }
 
-    default void forEachIndexedValue(Consumer<IndexedValue<T>> action) {
-        Objects.requireNonNull(action);
+    default void forEachIndexedValue(@NotNull Consumer<IndexedValue<T>> action) {
         Iterator<IndexedValue<T>> iterator = indexedIterator();
         while (iterator.hasNext()) {
             final IndexedValue<T> next = iterator.next();

@@ -1,6 +1,5 @@
 package hzt.iterables.primitives;
 
-import hzt.function.IntFoldFunction;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +8,6 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
@@ -73,21 +71,16 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
         return OptionalInt.empty();
     }
 
-    default <R> @NotNull R reduce(@NotNull R initial,
+    default <R> @NotNull R reduce(int initial,
                                   @NotNull IntFunction<R> mapper,
-                                  @NotNull BinaryOperator<R> operation) {
-        return fold(initial, (acc, next) -> operation.apply(acc, mapper.apply(next)));
-    }
-
-    default <R> @NotNull R fold(@NotNull R initial,
-                                @NotNull IntFoldFunction<R> operation) {
-        R accumulator = initial;
-        PrimitiveIterator.OfInt iterator = this.iterator();
+                                  @NotNull IntBinaryOperator operation) {
+        int accumulator = initial;
+        PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             int t = iterator.nextInt();
-            accumulator = operation.apply(accumulator, t);
+            accumulator = operation.applyAsInt(accumulator, t);
         }
-        return accumulator;
+        return mapper.apply(accumulator);
     }
 
     default int first() {
@@ -172,7 +165,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
     }
 
     default boolean all(@NotNull IntPredicate predicate) {
-        PrimitiveIterator.OfInt iterator = this.iterator();
+        PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             int t = iterator.nextInt();
             if (!predicate.test(t)) {

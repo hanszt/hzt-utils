@@ -81,10 +81,16 @@ public interface Reducable<T> extends Iterable<T> {
         return IterableReductions.reduce(this, initial, operation);
     }
 
-    default <R> @NotNull R reduce(@NotNull R initial,
+    default <R> @NotNull R reduce(@NotNull T initial,
                                   @NotNull Function<? super T, ? extends R> mapper,
-                                  @NotNull BinaryOperator<R> operation) {
-        return fold(initial, (acc, next) -> operation.apply(acc, mapper.apply(next)));
+                                  @NotNull BinaryOperator<T> operation) {
+        T accumulator = initial;
+        for (T t : this) {
+            if (t != null) {
+                accumulator = operation.apply(accumulator, t);
+            }
+        }
+        return mapper.apply(accumulator);
     }
 
     default Optional<Pair<T, T>> reduceTwo(

@@ -10,6 +10,8 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -235,5 +237,10 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
     @NotNull
     default <R> ListX<E> onEach(@NotNull Function<? super E, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
         return ListX.of(CollectionX.super.onEach(selector, consumer));
+    }
+
+    @Override
+    default Spliterator<E> spliterator() {
+        return Spliterators.spliterator(iterator(), size(), Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }
 }

@@ -2,6 +2,7 @@ package hzt.collections.primitives;
 
 import hzt.collections.MutableListX;
 import hzt.iterators.primitives.PrimitiveListIterator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 
@@ -26,6 +27,18 @@ public interface LongMutableListX extends LongListX, LongMutableCollection,
 
     static LongMutableListX withInitCapacity(int capacity) {
         return new LongArrayList(capacity);
+    }
+
+    @Override
+    default LongMutableListX plus(@NotNull Iterable<Long> iterable) {
+        addAll(iterable);
+        return this;
+    }
+
+    @Override
+    default LongMutableListX plus(long @NotNull ... array) {
+        addAll(array);
+        return this;
     }
 
     default PrimitiveIterator.OfLong iterator() {

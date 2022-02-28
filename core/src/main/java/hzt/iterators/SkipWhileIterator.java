@@ -9,7 +9,6 @@ public final class SkipWhileIterator<T> implements Iterator<T> {
     private final Predicate<T> predicate;
     private final boolean inclusive;
 
-    private boolean inclusiveSkipped = false;
     private T nextItem = null;
     private SkipState state = SkipState.SKIPPING;
 
@@ -24,19 +23,13 @@ public final class SkipWhileIterator<T> implements Iterator<T> {
     }
 
     private void skip() {
-        if (inclusive && inclusiveSkipped && iterator.hasNext()) {
-            nextItem = iterator.next();
-            state = SkipState.NEXT_ITEM;
-            return;
-        }
         while (iterator.hasNext()) {
-            final T item = iterator.next();
-            if (!predicate.test(item)) {
-                if (inclusive && !inclusiveSkipped) {
-                    inclusiveSkipped = true;
-                    return;
+            T prev = nextItem;
+            nextItem = iterator.next();
+            if (!predicate.test(nextItem)) {
+                if (prev != null && inclusive && iterator.hasNext()) {
+                    nextItem = iterator.next();
                 }
-                nextItem = item;
                 state = SkipState.NEXT_ITEM;
                 return;
             }

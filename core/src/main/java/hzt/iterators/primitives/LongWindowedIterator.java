@@ -70,25 +70,15 @@ public final class LongWindowedIterator extends AbstractIterator<LongListX> {
 
     private void computeNextForWindowedSequenceOverlapping(int windowInitCapacity) {
         nextWindow = nextWindow.isEmpty() ? LongMutableListX.withInitCapacity(windowInitCapacity) : LongMutableListX.of(nextWindow);
-        if (nextWindow.isEmpty()) {
-            fillIfWindowEmpty();
-        } else {
-            calculateNextOverlappingWindowIfNotEmpty();
-        }
+        calculateNextOverlappingWindow();
         if (!partialWindows && nextWindow.size() < size) {
             nextWindow = LongMutableListX.empty();
         }
     }
 
-    private void fillIfWindowEmpty() {
-        while (iterator.hasNext() && nextWindow.size() < size) {
-            nextWindow.add(iterator.nextLong());
-        }
-    }
-
-    private void calculateNextOverlappingWindowIfNotEmpty() {
+    private void calculateNextOverlappingWindow() {
         int stepCount = 0;
-        while (stepCount < step && !nextWindow.isEmpty()) {
+        while (stepCount < step && nextWindow.isNotEmpty()) {
             nextWindow.removeFirst();
             stepCount++;
         }
@@ -119,10 +109,10 @@ public final class LongWindowedIterator extends AbstractIterator<LongListX> {
     @Override
     protected void computeNext() {
         final LongMutableListX next = computeNextWindow();
-        if (next.isEmpty()) {
-            done();
-        } else {
+        if (next.isNotEmpty()) {
             setNext(next);
+        } else {
+            done();
         }
     }
 }

@@ -15,6 +15,7 @@ import hzt.statistics.IntStatistics;
 import hzt.strings.StringX;
 import hzt.test.Generator;
 import hzt.tuples.IndexedValue;
+import hzt.tuples.Pair;
 import hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
@@ -702,17 +703,17 @@ class SequenceTest {
 
     @Test
     void testStepSequence() {
-        final var intSequence = Sequence.generate(0, i -> ++i)
+        final IntSequence intSequence = Sequence.generate(0, i -> ++i)
                 .skip(4)
                 .take(1_000)
                 .step(200)
                 .onEach(It::println)
                 .mapToInt(It::asInt);
 
-        final var integers = intSequence.toListX();
-        final var sum = intSequence.sum();
+        final IntListX integers = intSequence.toListX();
+        final long sum = intSequence.sum();
 
-        final var pair = intSequence.boxed()
+        final Pair<IntMutableListX, Integer> pair = intSequence.boxed()
                 .foldTwo(IntMutableListX.empty(), IntMutableListX::plus, 0, Integer::sum);
 
         assertAll(

@@ -44,7 +44,7 @@ class IntRangeTest {
     void testSteppedRange() {
         final var range = IntRange.of(2, 20, 2);
 
-        System.out.println("range = " + range);
+        It.println("range = " + range);
         range.forEach(It::println);
 
         assertIterableEquals(IntListX.of(2, 4, 6, 8, 10, 12, 14, 16, 18), range);
@@ -60,7 +60,7 @@ class IntRangeTest {
     void testSteppedRangeClosed() {
         final var range = IntRange.closed(2, 20, 2);
 
-        System.out.println("range = " + range);
+        It.println("range = " + range);
         range.forEach(It::println);
 
         assertIterableEquals(IntListX.of(2, 4, 6, 8, 10, 12, 14, 16, 18, 20), range);
@@ -76,7 +76,7 @@ class IntRangeTest {
     @Test
     void emptyIntRange() {
         final var empty = IntRange.empty();
-        empty.forEach(System.out::println);
+        empty.forEach(It::println);
         assertTrue(empty.none());
     }
 

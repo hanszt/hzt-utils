@@ -67,12 +67,31 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
         return size == 0;
     }
 
+    @Override
+    public int get(int index) {
+        return elementData[index];
+    }
+
     public int indexOf(int o) {
         return indexOfRange(o, 0, size);
     }
 
-    int indexOfRange(int value, int start, int end) {
+    private int indexOfRange(int value, int start, int end) {
         for (int i = start; i < end; i++) {
+            if (value == elementData[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public int lastIndexOf(int i) {
+        return lastIndexOfRange(i, 0, size);
+    }
+
+    private int lastIndexOfRange(int value, int start, int end) {
+        for (int i = end - 1; i >= start; i--) {
             if (value == elementData[i]) {
                 return i;
             }
@@ -128,6 +147,12 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
     @Override
     public PrimitiveIterator.@NotNull OfInt iterator() {
         return listIterator();
+    }
+
+    @Override
+    public int set(int index, int value) {
+        elementData[index] = value;
+        return value;
     }
 
     @Override

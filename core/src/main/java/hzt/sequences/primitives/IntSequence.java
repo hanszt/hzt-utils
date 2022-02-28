@@ -1,7 +1,6 @@
 package hzt.sequences.primitives;
 
-import hzt.arrays.primitves.IntSort;
-import hzt.collections.primitives.IntListX;
+import hzt.PreConditions;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.IntCollectable;
 import hzt.iterables.primitives.IntIterable;
@@ -17,14 +16,15 @@ import hzt.iterators.primitives.IntTakeWhileIterator;
 import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.numbers.IntX;
 import hzt.sequences.Sequence;
+import hzt.sequences.SkipTakeSequence;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
 import hzt.utils.primitive_comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
@@ -38,12 +38,12 @@ import java.util.function.ToIntFunction;
 import java.util.stream.IntStream;
 
 @FunctionalInterface
-public interface IntSequence extends IntReducable, IntCollectable, IntNumerable, IntStreamable,
+public interface IntSequence extends IntWindowedSequence, IntReducable, IntCollectable, IntNumerable, IntStreamable,
         PrimitiveSortable<IntComparator>,
         PrimitiveSequence<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator> {
 
     static IntSequence empty() {
-        return IntSequence.of(Sequence.empty());
+        return PrimitiveIterators::emptyIntIterator;
     }
 
     static IntSequence of(Iterable<Integer> iterable) {
@@ -95,7 +95,7 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
     }
 
     default IntSequence flatMap(IntFunction<? extends IntSequence> flatMapper) {
-        return IntSequence.of(stream().flatMap(s -> flatMapper.apply(s).stream()));
+        return mapMulti((value, c) -> flatMapper.apply(value).forEachInt(c));
     }
 
     default IntSequence mapMulti(IntMapMultiConsumer intMapMultiConsumer) {
@@ -125,7 +125,15 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
 
     @Override
     default IntSequence take(long n) {
-        return IntSequence.of(stream().limit(n));
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        if (n == 0) {
+            return PrimitiveIterators::emptyIntIterator;
+        } else if (this instanceof SkipTakeSequence) {
+            IntSkipTakeSequence skipTakeSequence = (IntSkipTakeSequence) this;
+            return skipTakeSequence.take(n);
+        } else {
+            return new IntTakeSequence(this, n);
+        }
     }
 
     @Override
@@ -140,7 +148,15 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
 
     @Override
     default IntSequence skip(long n) {
-        return IntSequence.of(stream().skip(n));
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        if (n == 0) {
+            return this;
+        } else if (this instanceof IntSkipTakeSequence) {
+            IntSkipTakeSequence skipTakeSequence = (IntSkipTakeSequence) this;
+            return skipTakeSequence.skip(n);
+        } else {
+            return new IntSkipSequence(this, n);
+        }
     }
 
     @Override
@@ -155,15 +171,11 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
 
     @Override
     default IntSequence sorted() {
-        final var array = toArray();
-        Arrays.sort(array);
-        return IntSequence.of(array);
+        return toListX().sorted().asSequence();
     }
 
     default IntSequence sorted(IntComparator intComparator) {
-        final var array = toArray();
-        IntSort.sort(array, intComparator);
-        return IntSequence.of(array);
+        return toListX().sorted(intComparator).asSequence();
     }
 
     @Override
@@ -200,52 +212,20 @@ public interface IntSequence extends IntReducable, IntCollectable, IntNumerable,
 
     @Override
     default IntSequence zipWithNext(@NotNull IntBinaryOperator merger) {
-        return windowed(2, s -> merger.applyAsInt(s.first(), s.last()));
-    }
-
-    default Sequence<IntListX> chunked(int size) {
-        return windowed(size, size, true);
-    }
-
-    default IntSequence chunked(int size, @NotNull ToIntFunction<IntListX> transform) {
-        return windowed(size, size, true).mapToInt(transform);
-    }
-
-    default Sequence<IntListX> windowed(int size, int step, boolean partialWindows) {
-        return new IntWindowedSequence(this, size, step, partialWindows);
-    }
-
-    default Sequence<IntListX> windowed(int size, int step) {
-        return windowed(size, step, false);
-    }
-
-    default Sequence<IntListX> windowed(int size) {
-        return windowed(size, 1);
-    }
-
-    default Sequence<IntListX> windowed(int size, boolean partialWindows) {
-        return windowed(size, 1, partialWindows);
-    }
-
-    default IntSequence windowed(int size, int step, boolean partialWindows,
-                                 @NotNull ToIntFunction<IntListX> reducer) {
-        return windowed(size, step, partialWindows).mapToInt(reducer);
-    }
-
-    default IntSequence windowed(int size, int step, @NotNull ToIntFunction<IntListX> reducer) {
-        return windowed(size, step, false, reducer);
-    }
-
-    default IntSequence windowed(int size, @NotNull ToIntFunction<IntListX> reducer) {
-        return windowed(size, 1, reducer);
-    }
-
-    default IntSequence windowed(int size, boolean partialWindows, @NotNull ToIntFunction<IntListX> reducer) {
-        return windowed(size, 1, partialWindows, reducer);
+        return windowed(2, w -> merger.applyAsInt(w.first(), w.last()));
     }
 
     default int[] toArray() {
-        return stream().toArray();
+        return toListX().toArray();
+    }
+
+    default <R> R transform(@NotNull Function<? super IntSequence, ? extends R> resultMapper) {
+        return resultMapper.apply(this);
+    }
+
+    default IntSequence onSequence(Consumer<? super IntSequence> consumer) {
+        consumer.accept(this);
+        return this;
     }
 
     default <R1, R2, R> R intsToTwo(@NotNull Function<? super IntSequence, ? extends R1> resultMapper1,

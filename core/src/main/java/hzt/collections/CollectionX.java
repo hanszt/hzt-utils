@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -230,5 +232,10 @@ public interface CollectionX<E> extends IterableX<E> {
 
     default ListX<E> takeWhileInclusive(@NotNull Predicate<E> predicate) {
         return takeWhileTo(MutableListX::empty, predicate, true);
+    }
+
+    @Override
+    default Spliterator<E> spliterator() {
+        return Spliterators.spliterator(iterator(), size(), Spliterator.SIZED);
     }
 }

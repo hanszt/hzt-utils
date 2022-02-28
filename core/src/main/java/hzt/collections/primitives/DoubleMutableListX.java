@@ -2,6 +2,7 @@ package hzt.collections.primitives;
 
 import hzt.collections.MutableListX;
 import hzt.iterators.primitives.PrimitiveListIterator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 
@@ -28,6 +29,18 @@ public interface DoubleMutableListX extends DoubleListX, DoubleMutableCollection
         return new DoubleArrayList(capacity);
     }
 
+    @Override
+    default DoubleMutableListX plus(@NotNull Iterable<Double> iterable) {
+        addAll(iterable);
+        return this;
+    }
+
+    @Override
+    default DoubleMutableListX plus(double @NotNull ... iterable) {
+        addAll(iterable);
+        return this;
+    }
+
     PrimitiveListIterator.OfDouble listIterator();
 
     default PrimitiveIterator.OfDouble iterator() {
@@ -39,7 +52,17 @@ public interface DoubleMutableListX extends DoubleListX, DoubleMutableCollection
         return asSequence().boxed().toMutableList();
     }
 
-    boolean add(double d);
+    double set(int index, double value);
+
+    @Override
+    default boolean remove(double d) {
+        final var index = indexOf(d);
+        if (index >= 0) {
+            removeAt(index);
+            return true;
+        }
+        return false;
+    }
 
     double removeAt(int index);
 

@@ -9,7 +9,7 @@ public final class SubIterator<T> implements Iterator<T> {
     private final long startIndex;
     private final long endIndex;
 
-    private int position;
+    private long position;
 
     private SubIterator(Iterator<T> iterator, long startIndex, long endIndex) {
         this.iterator = iterator;

@@ -73,6 +73,11 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
         return size;
     }
 
+    @Override
+    public double get(int index) {
+        return elementData[index];
+    }
+
     public int indexOf(double d) {
         return indexOfRange(d, 0, size);
     }
@@ -80,6 +85,20 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
     int indexOfRange(double o, int start, int end) {
         for (int i = start; i < end; i++) {
             if (Double.compare(o, elementData[i]) == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public int lastIndexOf(double d) {
+        return lastIndexOfRange(d, 0, size);
+    }
+
+    private int lastIndexOfRange(double value, int start, int end) {
+        for (int i = end - 1; i >= start; i--) {
+            if (Double.compare(value, elementData[i]) == 0) {
                 return i;
             }
         }
@@ -133,6 +152,12 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
     }
 
     @Override
+    public double set(int index, double value) {
+        elementData[index] = value;
+        return value;
+    }
+
+    @Override
     public @NotNull PrimitiveListIterator.OfDouble listIterator() {
         return listIterator(0);
     }
@@ -154,7 +179,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
 
             @Override
             public boolean hasPrevious() {
-                return false;
+                return index > 0;
             }
 
             @Override

@@ -9,6 +9,8 @@ import hzt.iterables.primitives.IntStreamable;
 import hzt.sequences.primitives.IntSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
@@ -20,20 +22,15 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
         PrimitiveCollectionX<Integer, IntConsumer, int[]> {
 
     default int size() {
-        return (int) asSequence().count();
+        return (int) count();
     }
 
     default boolean isEmpty() {
-        return asSequence().none();
+        return none();
     }
 
     default boolean isNotEmpty() {
-        return asSequence().any();
-    }
-
-    @Override
-    default boolean contains(Integer o) {
-        return contains((int) o);
+        return any();
     }
 
     @Override
@@ -98,11 +95,27 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
 
     @Override
     default IntListX plus(@NotNull Iterable<Integer> values) {
-        return IntListX.of(asSequence().plus(values));
+        IntMutableListX list = IntMutableListX.empty();
+        list.addAll(values);
+        return list;
+    }
+
+    @Override
+    default IntListX plus(int @NotNull ... array) {
+        IntMutableListX list = IntMutableListX.empty();
+        list.addAll(array);
+        return list;
     }
 
     default IntSequence asSequence() {
         return IntSequence.of(this);
+    }
+
+    @Override
+    default Spliterator.OfInt spliterator() {
+        final var array = toArray();
+        return Spliterators.spliterator(array, 0, array.length,
+                Spliterator.ORDERED | Spliterator.NONNULL);
     }
 
     @Override

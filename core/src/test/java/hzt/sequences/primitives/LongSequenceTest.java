@@ -4,6 +4,7 @@ import hzt.collections.MutableListX;
 import hzt.collections.primitives.LongListX;
 import hzt.ranges.LongRange;
 import hzt.sequences.Sequence;
+import hzt.test.Generator;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +15,7 @@ import java.util.stream.LongStream;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LongSequenceTest {
@@ -207,20 +209,25 @@ class LongSequenceTest {
         final var sums = LongSequence.generate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, LongListX::sum)
-                .toArray();
-
-        final var sums2 = Sequence.generate(0, l -> ++l)
-                .take(1_000_000)
-                .windowed(1_000, 50)
-                .map(s -> s.sumOfLongs(It::asLong))
-                .mapToLong(It::asLong)
-                .toArray();
+                .toListX();
 
         assertAll(
-                () -> assertEquals(19981, sums.length),
-                () -> assertArrayEquals(sums, sums2)
+                () -> assertEquals(19981, sums.size()),
+                () -> assertEquals(999499500L, sums.last())
         );
 
+    }
+
+    @Test
+    void testSkipWhileInclusive() {
+        final var longs = LongSequence.generate(0L, l -> ++l)
+                .map(Generator::fib)
+                .skipWhileInclusive(l -> l < 3)
+                .takeWhileInclusive(l -> l < 55);
+
+        longs.forEach(System.out::println);
+
+        assertIterableEquals(LongSequence.of(5, 8, 13, 21, 34, 55), longs);
     }
 
 }

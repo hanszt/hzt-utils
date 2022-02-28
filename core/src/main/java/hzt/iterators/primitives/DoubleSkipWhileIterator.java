@@ -9,8 +9,8 @@ public final class DoubleSkipWhileIterator implements OfDouble {
     private final DoublePredicate predicate;
     private final boolean inclusive;
 
-    private boolean inclusiveSkipped = false;
-    private double nextItem = 0L;
+    private double nextItem = 0.0;
+    private boolean firstIteration = true;
     private SkipState state = SkipState.SKIPPING;
 
     DoubleSkipWhileIterator(OfDouble iterator, DoublePredicate predicate, boolean inclusive) {
@@ -24,22 +24,17 @@ public final class DoubleSkipWhileIterator implements OfDouble {
     }
 
     private void skip() {
-        if (inclusive && inclusiveSkipped && iterator.hasNext()) {
-            nextItem = iterator.next();
-            state = SkipState.NEXT_ITEM;
-            return;
-        }
         while (iterator.hasNext()) {
-            final double item = iterator.next();
-            if (!predicate.test(item)) {
-                if (inclusive && !inclusiveSkipped) {
-                    inclusiveSkipped = true;
-                    return;
+            nextItem = iterator.nextDouble();
+            if (!predicate.test(nextItem)) {
+                if (!firstIteration && inclusive && iterator.hasNext()) {
+                    nextItem = iterator.nextDouble();
                 }
-                nextItem = item;
                 state = SkipState.NEXT_ITEM;
+                firstIteration = false;
                 return;
             }
+            firstIteration = false;
         }
         state = SkipState.NORMAL_ITERATION;
     }
@@ -62,7 +57,7 @@ public final class DoubleSkipWhileIterator implements OfDouble {
             state = SkipState.NORMAL_ITERATION;
             return result;
         }
-        return iterator.next();
+        return iterator.nextDouble();
     }
 
     private enum SkipState {

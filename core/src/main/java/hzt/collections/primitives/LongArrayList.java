@@ -68,6 +68,17 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long, LongC
     }
 
     @Override
+    public long get(int index) {
+        return elementData[index];
+    }
+
+    @Override
+    public long set(int index, long value) {
+        elementData[index] = value;
+        return value;
+    }
+
+    @Override
     public int indexOf(long l) {
         return indexOfRange(l, 0, size);
     }
@@ -75,6 +86,20 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long, LongC
     int indexOfRange(long l, int start, int end) {
         for (int i = start; i < end; i++) {
             if (l == elementData[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public int lastIndexOf(long l) {
+        return lastIndexOfRange(l, 0, size);
+    }
+
+    private int lastIndexOfRange(long value, int start, int end) {
+        for (int i = end - 1; i >= start; i--) {
+            if (value == elementData[i]) {
                 return i;
             }
         }

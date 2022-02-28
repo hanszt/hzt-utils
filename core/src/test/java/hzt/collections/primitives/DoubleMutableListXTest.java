@@ -4,7 +4,10 @@ import hzt.sequences.primitives.DoubleSequence;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DoubleMutableListXTest {
 
@@ -52,6 +55,19 @@ class DoubleMutableListXTest {
         assertAll(
                 () -> assertEquals(10_000_003, doubles.size()),
                 () -> assertEquals(doubles, doublesCopy)
+        );
+    }
+
+    @Test
+    void testRemove() {
+        final var list = DoubleMutableListX.of(1, 2, 3, 4, 5, 6, 7, 8);
+
+        final var remove = list.remove(7);
+        It.println("list = " + list);
+
+        assertAll(
+                () -> assertTrue(remove),
+                () -> assertEquals(DoubleListX.of(1, 2, 3, 4, 5, 6, 8), list)
         );
     }
 }

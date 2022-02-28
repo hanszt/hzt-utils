@@ -5,6 +5,8 @@ import hzt.collections.ListX;
 import hzt.collections.MapX;
 import hzt.collections.MutableListX;
 import hzt.collections.SetX;
+import hzt.collections.primitives.IntListX;
+import hzt.collections.primitives.IntMutableListX;
 import hzt.numbers.IntX;
 import hzt.numbers.LongX;
 import hzt.ranges.IntRange;
@@ -471,26 +473,6 @@ class SequenceTest {
     }
 
     @Test
-    void testLargeWindowedSequence() {
-        final var windows = IntRange.of(0, 1_000_000)
-                .boxed()
-                .windowed(2_001, 23, true)
-                .toListX();
-
-        final var lastWindow = windows.last();
-
-        final var tail = windows.tailFrom(windows.size() - 2);
-
-        It.println("tail = " + tail);
-
-        assertAll(
-                () -> assertEquals(43479, windows.size()),
-                () -> assertEquals(999_994, lastWindow.first()),
-                () -> assertEquals(999_999, lastWindow.last())
-        );
-    }
-
-    @Test
     void testSequenceWindowedTransformed() {
         final var sizes = IntRange.of(0, 1_000)
                 .filter(i -> IntX.multipleOf(5).test(i))
@@ -674,7 +656,7 @@ class SequenceTest {
     void testSequenceOfZoneIds() {
         Instant now = Instant.now();
         ZonedDateTime current = now.atZone(ZoneId.systemDefault());
-        System.out.printf("Current time is %s%n%n", current);
+        It.printf("Current time is %s%n%n", current);
 
         final var noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
 
@@ -691,7 +673,7 @@ class SequenceTest {
     void testTimeZonesAntarctica() {
         Instant now = Instant.now();
         ZonedDateTime current = now.atZone(ZoneId.systemDefault());
-        System.out.printf("Current time is %s%n%n", current);
+        It.printf("Current time is %s%n%n", current);
 
         final Sequence<String> timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.getId().contains("Antarctica"));
 
@@ -712,5 +694,28 @@ class SequenceTest {
     private String toZoneSummary(ZonedDateTime zonedDateTime) {
         return String.format("%10s %-25s %10s", zonedDateTime.getOffset(), zonedDateTime.getZone(),
                 zonedDateTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+    }
+
+    @Test
+    void testStepSequence() {
+        final var intSequence = Sequence.generate(0, i -> ++i)
+                .skip(4)
+                .take(1_000)
+                .step(200)
+                .onEach(It::println)
+                .mapToInt(It::asInt);
+
+        final var integers = intSequence.toListX();
+        final var sum = intSequence.sum();
+
+        final var pair = intSequence.boxed()
+                .foldTwo(IntMutableListX.empty(), IntMutableListX::plus, 0, Integer::sum);
+
+        assertAll(
+                () -> assertEquals(IntListX.of(4, 204, 404, 604, 804), integers),
+                () -> assertEquals(pair.first(), integers),
+                () -> assertEquals(2020, sum),
+                () -> assertEquals(pair.second().longValue(), sum)
+        );
     }
 }

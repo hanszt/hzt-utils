@@ -2,6 +2,7 @@ package hzt.collections;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.Spliterator;
 
 public interface MutableSetX<E> extends Set<E>, SetX<E>, MutableCollectionX<E> {
 
@@ -31,4 +32,9 @@ public interface MutableSetX<E> extends Set<E>, SetX<E>, MutableCollectionX<E> {
     }
 
     boolean isEmpty();
+
+    @Override
+    default Spliterator<E> spliterator() {
+        return Set.super.spliterator();
+    }
 }

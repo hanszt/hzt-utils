@@ -13,13 +13,11 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 @FunctionalInterface
 public interface Reducable<T> extends Iterable<T> {
 
-    default <R> @NotNull R fold(@NotNull R initial,
-                                @NotNull BiFunction<? super R, ? super T, ? extends R> operation) {
+    default <R> @NotNull R fold(@NotNull R initial, @NotNull BiFunction<? super R, ? super T, ? extends R> operation) {
         R accumulator = initial;
         for (T t : this) {
             if (t != null) {
@@ -83,10 +81,16 @@ public interface Reducable<T> extends Iterable<T> {
         return IterableReductions.reduce(this, initial, operation);
     }
 
-    default <R> @NotNull R reduce(@NotNull R initial,
+    default <R> @NotNull R reduce(@NotNull T initial,
                                   @NotNull Function<? super T, ? extends R> mapper,
-                                  @NotNull BinaryOperator<R> operation) {
-        return fold(initial, (acc, next) -> operation.apply(acc, mapper.apply(next)));
+                                  @NotNull BinaryOperator<T> operation) {
+        T accumulator = initial;
+        for (T t : this) {
+            if (t != null) {
+                accumulator = operation.apply(accumulator, t);
+            }
+        }
+        return mapper.apply(accumulator);
     }
 
     default Optional<Pair<T, T>> reduceTwo(
@@ -175,14 +179,6 @@ public interface Reducable<T> extends Iterable<T> {
         return findFirstOf(It::self);
     }
 
-    default @NotNull T findFirstOrElseGet(@NotNull Supplier<T> supplier) {
-        return findFirstOf(It::self).orElseGet(supplier);
-    }
-
-    default @NotNull T findFirstOrElse(@NotNull T defaultValue) {
-        return findFirstOf(It::self).orElse(defaultValue);
-    }
-
     default @NotNull Optional<T> findFirst(@NotNull Predicate<T> predicate) {
         for (T next : this) {
             if (next != null && predicate.test(next)) {
@@ -206,7 +202,7 @@ public interface Reducable<T> extends Iterable<T> {
     }
 
     default @NotNull T last(Predicate<T> predicate) {
-        return lastOf(It::self);
+        return findLast(predicate).orElseThrow();
     }
 
     default <R> @NotNull R lastOf(@NotNull Function<? super T, ? extends R> mapper) {
@@ -215,14 +211,6 @@ public interface Reducable<T> extends Iterable<T> {
 
     default Optional<T> findLast() {
         return findLastOf(It::self);
-    }
-
-    default @NotNull T findLastOrElse(@NotNull T defaultVal) {
-        return findFirstOrElseGet(() -> defaultVal);
-    }
-
-    default @NotNull T findLastOrElseGet(@NotNull Supplier<T> supplier) {
-        return findLast().orElseGet(supplier);
     }
 
     default @NotNull Optional<T> findLast(@NotNull Predicate<T> predicate) {

@@ -1,9 +1,12 @@
 package hzt.collections.primitives;
 
+import hzt.arrays.primitves.PrimitiveSort;
 import hzt.collections.ListX;
 import hzt.iterables.primitives.PrimitiveSortable;
 import hzt.numbers.DoubleX;
 import hzt.utils.primitive_comparators.DoubleComparator;
+
+import java.util.Arrays;
 
 public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleComparator> {
 
@@ -27,10 +30,11 @@ public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleC
         return indexOf(o) >= 0;
     }
 
+    double get(int index);
+
     int indexOf(double d);
 
-    @Override
-    double[] toArray();
+    int lastIndexOf(double d);
 
     @Override
     default ListX<Double> boxed() {
@@ -39,12 +43,16 @@ public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleC
 
     @Override
     default DoubleListX sorted() {
-        return asSequence().sorted().toListX();
+        final var array = toArray();
+        Arrays.sort(array);
+        return DoubleListX.of(array);
     }
 
     @Override
     default DoubleListX sorted(DoubleComparator comparator) {
-        return asSequence().sorted(comparator).toListX();
+        final var array = toArray();
+        PrimitiveSort.sort(array, comparator);
+        return DoubleListX.of(array);
     }
 
     @Override

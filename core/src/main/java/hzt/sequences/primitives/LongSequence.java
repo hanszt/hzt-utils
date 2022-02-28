@@ -1,7 +1,6 @@
 package hzt.sequences.primitives;
 
-import hzt.arrays.primitves.LongSort;
-import hzt.collections.primitives.LongListX;
+import hzt.PreConditions;
 import hzt.function.TriFunction;
 import hzt.iterables.primitives.LongCollectable;
 import hzt.iterables.primitives.LongIterable;
@@ -17,14 +16,15 @@ import hzt.iterators.primitives.LongTakeWhileIterator;
 import hzt.iterators.primitives.PrimitiveIterators;
 import hzt.numbers.LongX;
 import hzt.sequences.Sequence;
+import hzt.sequences.SkipTakeSequence;
 import hzt.tuples.Pair;
 import hzt.tuples.Triple;
 import hzt.utils.It;
 import hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongConsumer;
@@ -38,12 +38,12 @@ import java.util.function.ToLongFunction;
 import java.util.stream.LongStream;
 
 @FunctionalInterface
-public interface LongSequence extends LongReducable, LongCollectable, LongNumerable, LongStreamable,
+public interface LongSequence extends LongWindowedSequence, LongReducable, LongCollectable, LongNumerable, LongStreamable,
         PrimitiveSortable<LongComparator>,
         PrimitiveSequence<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator> {
 
     static LongSequence empty() {
-        return LongSequence.of(Sequence.empty());
+        return PrimitiveIterators::emptyLongIterator;
     }
 
     static LongSequence of(Iterable<Long> iterable) {
@@ -94,7 +94,7 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
     }
 
     default LongSequence flatMap(LongFunction<? extends LongSequence> flatMapper) {
-        return LongSequence.of(stream().flatMap(s -> flatMapper.apply(s).stream()));
+        return mapMulti((value, c) -> flatMapper.apply(value).forEachLong(c));
     }
 
     default LongSequence mapMulti(LongMapMultiConsumer longMapMultiConsumer) {
@@ -131,7 +131,15 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
     }
 
     default LongSequence take(long n) {
-        return LongSequence.of(stream().limit(n));
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        if (n == 0) {
+            return PrimitiveIterators::emptyLongIterator;
+        } else if (this instanceof SkipTakeSequence) {
+            LongSkipTakeSequence skipTakeSequence = (LongSkipTakeSequence) this;
+            return skipTakeSequence.take(n);
+        } else {
+            return new LongTakeSequence(this, n);
+        }
     }
 
     default LongSequence takeWhile(@NotNull LongPredicate predicate) {
@@ -144,7 +152,15 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
     }
 
     default LongSequence skip(long n) {
-        return LongSequence.of(stream().skip(n));
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        if (n == 0) {
+            return this;
+        } else if (this instanceof LongSkipTakeSequence) {
+            LongSkipTakeSequence skipTakeSequence = (LongSkipTakeSequence) this;
+            return skipTakeSequence.skip(n);
+        } else {
+            return new LongSkipSequence(this, n);
+        }
     }
 
     default LongSequence skipWhile(@NotNull LongPredicate longPredicate) {
@@ -158,15 +174,11 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
 
     @Override
     default LongSequence sorted() {
-        final var array = toArray();
-        Arrays.sort(array);
-        return LongSequence.of(array);
+        return toListX().sorted().asSequence();
     }
 
     default LongSequence sorted(LongComparator longComparator) {
-        final var array = toArray();
-        LongSort.sort(array, longComparator);
-        return LongSequence.of(array);
+        return toListX().sorted(longComparator).asSequence();
     }
 
     @Override
@@ -194,52 +206,20 @@ public interface LongSequence extends LongReducable, LongCollectable, LongNumera
 
     @Override
     default LongSequence zipWithNext(@NotNull LongBinaryOperator merger) {
-        return windowed(2, s -> merger.applyAsLong(s.first(), s.last()));
-    }
-
-    default Sequence<LongListX> chunked(int size) {
-        return windowed(size, size, true);
-    }
-
-    default LongSequence chunked(int size, @NotNull ToLongFunction<LongListX> transform) {
-        return windowed(size, size, true).mapToLong(transform);
-    }
-
-    default Sequence<LongListX> windowed(int size, int step, boolean partialWindows) {
-        return new LongWindowedSequence(this, size, step, partialWindows);
-    }
-
-    default Sequence<LongListX> windowed(int size, int step) {
-        return windowed(size, step, false);
-    }
-
-    default Sequence<LongListX> windowed(int size) {
-        return windowed(size, 1);
-    }
-
-    default Sequence<LongListX> windowed(int size, boolean partialWindows) {
-        return windowed(size, 1, partialWindows);
-    }
-
-    default LongSequence windowed(int size, int step, boolean partialWindows,
-                                  @NotNull ToLongFunction<LongListX> reducer) {
-        return windowed(size, step, partialWindows).mapToLong(reducer);
-    }
-
-    default LongSequence windowed(int size, int step, @NotNull ToLongFunction<LongListX> reducer) {
-        return windowed(size, step, false, reducer);
-    }
-
-    default LongSequence windowed(int size, @NotNull ToLongFunction<LongListX> reducer) {
-        return windowed(size, 1, reducer);
-    }
-
-    default LongSequence windowed(int size, boolean partialWindows, @NotNull ToLongFunction<LongListX> reducer) {
-        return windowed(size, 1, partialWindows, reducer);
+        return windowed(2, w -> merger.applyAsLong(w.first(), w.last()));
     }
 
     default long[] toArray() {
-        return stream().toArray();
+        return toListX().toArray();
+    }
+
+    default <R> R transform(@NotNull Function<? super LongSequence, ? extends R> resultMapper) {
+        return resultMapper.apply(this);
+    }
+
+    default LongSequence onSequence(Consumer<? super LongSequence> consumer) {
+        consumer.accept(this);
+        return this;
     }
 
     default <R1, R2, R> R longsToTwo(@NotNull Function<? super LongSequence, ? extends R1> resultMapper1,

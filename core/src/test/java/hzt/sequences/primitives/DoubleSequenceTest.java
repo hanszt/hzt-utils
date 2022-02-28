@@ -111,20 +111,6 @@ class DoubleSequenceTest {
     }
 
     @Test
-    void testPartialWindowedDoubleSequence() {
-        double[] array = {1, 2, 3, 4, 5, 6, 7};
-
-        final var windows = DoubleSequence.of(array)
-                .windowed(3, 2, true)
-                .map(DoubleListX::toArray)
-                .toTypedArray(double[][]::new);
-
-        Sequence.of(windows).map(Arrays::toString).forEach(It::println);
-
-        assertEquals(4, windows.length);
-    }
-
-    @Test
     void testPartialWindowedDoubleSequenceWindowReduced() {
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 
@@ -188,6 +174,18 @@ class DoubleSequenceTest {
             output += .1;
             counter++;
         }
+    }
+
+    @Test
+    void testOnDoubleSequence() {
+        final var n = 1_234;
+
+        final var doubles = DoubleSequence.generate(0, d -> d + .1)
+                .take(n)
+                .onSequence(d -> d.boxed().step(200).forEach(It::println))
+                .toArray();
+
+        assertEquals(n, doubles.length);
     }
 
 }

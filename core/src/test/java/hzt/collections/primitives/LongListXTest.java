@@ -3,7 +3,9 @@ package hzt.collections.primitives;
 import hzt.sequences.primitives.LongSequence;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LongListXTest {
 
@@ -22,6 +24,19 @@ class LongListXTest {
                 () -> assertEquals(1_000_000, longs.size()),
                 () -> assertEquals(expected, actual)
         );
+    }
+
+    @Test
+    void testGet() {
+        LongListX list = LongListX.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
+        final var value = list.get(4);
+        assertEquals(5L, value);
+    }
+
+    @Test
+    void testGetOutsideRangeYieldsIndexOutOfBound() {
+        LongListX list = LongListX.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
+        assertThrows(IndexOutOfBoundsException.class, () -> list.get(14));
     }
 
 }

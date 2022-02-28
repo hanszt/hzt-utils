@@ -23,6 +23,7 @@ class EntrySequenceTest {
 
         final var resultMap = mapX.asSequence()
                 .filterValues(value -> value <= 3)
+                .onEach((k, v) -> It.println("key: " + k + ", value: " + v))
                 .mapValues(day -> LocalDate.of(2000, Month.JANUARY, day))
                 .toMapX();
 
@@ -39,6 +40,7 @@ class EntrySequenceTest {
         final var resultMap = map.asSequence()
                 .filterValues(value -> value <= 3)
                 .mapValues((month, day) -> LocalDate.of(2000, Month.of(Integer.parseInt(month)), day))
+                .onEachValue(It::println)
                 .toMapX();
 
         assertAll(
@@ -53,6 +55,7 @@ class EntrySequenceTest {
                 .asEntrySequence(It::self, BigDecimal::valueOf)
                 .mapKeys(Year::of)
                 .takeWhileKeys(year -> year.isBefore(Year.of(2001)))
+                .onEachKey(It::println)
                 .skip(20)
                 .toMutableMap();
 

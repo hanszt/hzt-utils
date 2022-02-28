@@ -1,22 +1,31 @@
 package hzt.utils.primitive_comparators;
 
-public interface IntComparator {
+import java.util.Comparator;
 
-    int compare(int var1, int var2);
+@FunctionalInterface
+public interface IntComparator extends Comparator<Integer> {
+
+    int compareInt(int i1, int i2);
+
+    @Override
+    default int compare(Integer i1, Integer i2) {
+        return compareInt(i1, i2);
+    }
 
     static IntComparator comparing(IntComparator comparator) {
         return comparator;
     }
 
     static IntComparator reverseOrder() {
-        return (a, b) -> Integer.compare(b, a);
+        return (i1, i2) -> Integer.compare(i2, i1);
     }
 
     default IntComparator thenComparing(IntComparator comparator) {
         return comparator;
     }
 
+    @Override
     default IntComparator reversed() {
-        return (a, b) -> Integer.compare(b, a);
+        return reverseOrder();
     }
 }

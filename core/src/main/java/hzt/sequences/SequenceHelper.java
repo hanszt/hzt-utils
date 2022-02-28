@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.Predicate;
 
-final class SequenceHelper {
+public final class SequenceHelper {
 
     private SequenceHelper() {
     }
@@ -32,6 +32,7 @@ final class SequenceHelper {
             public boolean hasNext() {
                 return iterator.hasNext();
             }
+
             @Override
             public R next() {
                 return mapper.apply(iterator.next());
@@ -39,7 +40,7 @@ final class SequenceHelper {
         };
     }
 
-    static void checkInitWindowSizeAndStep(int size, int step) {
+    public static void checkInitWindowSizeAndStep(int size, int step) {
         PreConditions.require(size > 0 && step > 0, () -> getErrorMessage(size, step));
 
     }
@@ -53,6 +54,7 @@ final class SequenceHelper {
 
     static class HoldingConsumer implements IntConsumer {
         private int value = 0;
+
         @Override
         public void accept(int value) {
             this.value = value;

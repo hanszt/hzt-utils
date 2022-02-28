@@ -1,9 +1,12 @@
 package hzt.collections.primitives;
 
+import hzt.arrays.primitves.PrimitiveSort;
 import hzt.collections.ListX;
 import hzt.iterables.primitives.PrimitiveSortable;
 import hzt.numbers.IntX;
 import hzt.utils.primitive_comparators.IntComparator;
+
+import java.util.Arrays;
 
 public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator> {
 
@@ -27,7 +30,11 @@ public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator
         return indexOf(i) >= 0;
     }
 
+    int get(int index);
+
     int indexOf(int i);
+
+    int lastIndexOf(int i);
 
     @Override
     int[] toArray();
@@ -39,12 +46,16 @@ public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator
 
     @Override
     default IntListX sorted() {
-        return asSequence().sorted().toListX();
+        final var array = toArray();
+        Arrays.sort(array);
+        return IntListX.of(array);
     }
 
     @Override
     default IntListX sorted(IntComparator comparator) {
-        return asSequence().sorted(comparator).toListX();
+        final var array = toArray();
+        PrimitiveSort.sort(array, comparator);
+        return IntListX.of(array);
     }
 
     @Override

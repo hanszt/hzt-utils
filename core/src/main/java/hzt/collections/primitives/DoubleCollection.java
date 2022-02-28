@@ -9,6 +9,8 @@ import hzt.iterables.primitives.DoubleStreamable;
 import hzt.sequences.primitives.DoubleSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
@@ -20,22 +22,17 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
         PrimitiveCollectionX<Double, DoubleConsumer, double[]> {
 
     default int size() {
-        return (int) asSequence().count();
+        return (int) count();
     }
 
     @Override
     default boolean isEmpty() {
-        return asSequence().none();
+        return none();
     }
 
     @Override
     default boolean isNotEmpty() {
-        return asSequence().any();
-    }
-
-    @Override
-    default boolean contains(Double o) {
-        return contains((double) o);
+        return any();
     }
 
     @Override
@@ -100,11 +97,27 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
 
     @Override
     default DoubleListX plus(@NotNull Iterable<Double> values) {
-        return DoubleListX.of(asSequence().plus(values));
+        DoubleMutableListX list = DoubleMutableListX.of(this);
+        list.addAll(values);
+        return list;
+    }
+
+    @Override
+    default DoubleListX plus(double @NotNull ... array) {
+        DoubleMutableListX list = DoubleMutableListX.of(this);
+        list.addAll(array);
+        return list;
     }
 
     default DoubleSequence asSequence() {
         return DoubleSequence.of(this);
+    }
+
+    @Override
+    default Spliterator.OfDouble spliterator() {
+        final var array = toArray();
+        return Spliterators.spliterator(array, 0, array.length,
+                Spliterator.ORDERED | Spliterator.NONNULL);
     }
 
     @Override

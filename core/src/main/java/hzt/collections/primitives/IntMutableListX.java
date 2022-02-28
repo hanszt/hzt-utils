@@ -2,6 +2,7 @@ package hzt.collections.primitives;
 
 import hzt.collections.MutableListX;
 import hzt.iterators.primitives.PrimitiveListIterator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 
@@ -24,20 +25,42 @@ public interface IntMutableListX extends IntListX, IntMutableCollection,
         return new IntArrayList(array);
     }
 
+    static IntMutableListX withInitCapacity(int capacity) {
+        return new IntArrayList(capacity);
+    }
+
+    @Override
+    default IntMutableListX plus(@NotNull Iterable<Integer> iterable) {
+        addAll(iterable);
+        return this;
+    }
+
+    @Override
+    default IntMutableListX plus(int @NotNull ... array) {
+        addAll(array);
+        return this;
+    }
+
     @Override
     default MutableListX<Integer> boxed() {
         return asSequence().boxed().toMutableList();
-    }
-
-    static IntMutableListX withInitCapacity(int capacity) {
-        return new IntArrayList(capacity);
     }
 
     default PrimitiveIterator.OfInt iterator() {
         return listIterator();
     }
 
-    boolean add(int l);
+    int set(int index, int value);
+
+    @Override
+    default boolean remove(int i) {
+        final var index = indexOf(i);
+        if (index >= 0) {
+            removeAt(index);
+            return true;
+        }
+        return false;
+    }
 
     int removeAt(int index);
 

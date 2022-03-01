@@ -225,7 +225,7 @@ class LongSequenceTest {
                 .skipWhileInclusive(l -> l < 3)
                 .takeWhileInclusive(l -> l < 55);
 
-        longs.forEach(System.out::println);
+        longs.forEach(It::println);
 
         assertIterableEquals(LongSequence.of(5, 8, 13, 21, 34, 55), longs);
     }

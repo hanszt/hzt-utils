@@ -2,7 +2,9 @@ package hzt.sequences.primitives;
 
 import hzt.collections.ListX;
 import hzt.collections.primitives.DoubleListX;
+import hzt.numbers.DoubleX;
 import hzt.sequences.Sequence;
+import hzt.test.Generator;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
@@ -53,5 +55,39 @@ class DoubleWindowedSequenceTest {
                 () -> assertEquals(1, lastWindow.size()),
                 () -> assertEquals(6280043.714399726, lastWindow.single())
         );
+    }
+
+    @Test
+    void testApproximateGoldenRatioUsingDoubleSequence() {
+        double goldenRatio = (1 + Math.sqrt(5)) / 2;
+        final var scale = 20;
+
+        final var approximations = IntSequence.generate(1, i -> ++i)
+                .mapToLong(Generator::fibSum)
+                .windowed(2)
+                .mapToDouble(w -> (double) w.last() / w.first())
+                .takeWhileInclusive(gr -> !DoubleX.toRoundedString(gr, scale)
+                        .equals(DoubleX.toRoundedString(goldenRatio, scale)))
+                .toListX();
+
+        final var expected = DoubleX.toRoundedString(goldenRatio, scale);
+        final var actual = DoubleX.toRoundedString(approximations.last(), scale);
+
+        assertAll(
+                () -> assertEquals(75, approximations.size()),
+                () -> assertEquals(expected, actual)
+        );
+    }
+
+    @Test
+    void testVariableSizedChunkedDoubleSequence() {
+        final var chunks = DoubleSequence.generate(0, i -> i + Math.E)
+                .chunked(1, Generator::sawTooth)
+                .take(100)
+                .toListX();
+
+        chunks.forEach(It::println);
+
+        assertEquals(5, chunks.count(chunk -> chunk.size() == 1));
     }
 }

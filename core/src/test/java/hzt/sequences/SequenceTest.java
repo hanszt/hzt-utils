@@ -7,6 +7,7 @@ import hzt.collections.MutableListX;
 import hzt.collections.SetX;
 import hzt.collections.primitives.IntListX;
 import hzt.collections.primitives.IntMutableListX;
+import hzt.iterables.Reducable;
 import hzt.numbers.IntX;
 import hzt.numbers.LongX;
 import hzt.ranges.IntRange;
@@ -27,6 +28,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -721,6 +724,53 @@ class SequenceTest {
                 () -> assertEquals(pair.first(), integers),
                 () -> assertEquals(2020, sum),
                 () -> assertEquals(pair.second().longValue(), sum)
+        );
+    }
+
+    @Test
+    void testTakeWhileInclusiveZonedDateTime() {
+        final var zonedDateTimes = Sequence
+                .generate(ZonedDateTime.parse("2019-03-27T20:45:30+05:30[Asia/Calcutta]"), zdt -> zdt.plusHours(1))
+                .takeWhileInclusive(d -> d.isBefore(ZonedDateTime.parse("2020-03-27T20:45:30+00:00[UTC]")))
+                .toListX();
+
+        final var expected = LocalDateTime.of(2020, Month.MARCH, 28, 2, 45, 30);
+
+        assertAll(
+                () -> assertEquals(8791, zonedDateTimes.size()),
+                () -> assertEquals(expected, zonedDateTimes.last().toLocalDateTime())
+        );
+    }
+
+    @Test
+    void testGoldenRatioConvergenceBigDecimal() {
+        final var scale = 200;
+        final var sqrtOf5 = BigDecimal.valueOf(5).sqrt(MathContext.DECIMAL128);
+        var goldenRatio = (BigDecimal.ONE.add(sqrtOf5)).divide(BigDecimal.valueOf(2), scale, RoundingMode.HALF_UP);
+
+        It.println("goldenRatio by sqrt = " + goldenRatio);
+
+        final var MAX_ITERATIONS = 10_000;
+
+        final var approximations = IntSequence.generate(900, i -> ++i)
+                .mapToObj(Generator::fibSumBd)
+                .windowed(2)
+                .map(w -> w.last().divide(w.first(), scale, RoundingMode.HALF_UP))
+                .windowed(2)
+                .takeWhileInclusive(approximation -> !approximation.first().equals(approximation.last()))
+                .filter(ListX::isNotEmpty)
+                .map(Reducable::last)
+                .take(MAX_ITERATIONS)
+                .toListX();
+
+        final var actual = approximations.last();
+        It.println("golden ratio by seq = " + actual);
+
+        approximations.forEach(It::println);
+
+        assertAll(
+                () -> assertEquals(56, approximations.size()),
+                () -> assertEquals(goldenRatio.setScale(30, RoundingMode.HALF_UP), actual.setScale(30, RoundingMode.HALF_UP))
         );
     }
 }

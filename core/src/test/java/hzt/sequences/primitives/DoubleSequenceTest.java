@@ -2,7 +2,9 @@ package hzt.sequences.primitives;
 
 import hzt.collections.MutableListX;
 import hzt.collections.primitives.DoubleListX;
+import hzt.numbers.DoubleX;
 import hzt.sequences.Sequence;
+import hzt.test.Generator;
 import hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
@@ -186,6 +188,32 @@ class DoubleSequenceTest {
                 .toArray();
 
         assertEquals(n, doubles.length);
+    }
+
+    @Test
+    void testGoldenRatioConvergence() {
+        double goldenRatio = (1 + Math.sqrt(5)) / 2;
+        final var scale = 20;
+
+        final var roundedGoldenRatio = DoubleX.toRoundedString(goldenRatio, scale);
+
+        It.println("roundedGoldenRatio = " + roundedGoldenRatio);
+
+        final var approximations = IntSequence.generate(1, i -> ++i)
+                .mapToLong(Generator::fibSum)
+                .windowed(2)
+                .mapToDouble(w -> (double) w.last() / w.first())
+                .takeWhileInclusive(approximation -> !DoubleX.toRoundedString(approximation, scale)
+                        .equals(roundedGoldenRatio))
+                .onEach(s -> It.println(DoubleX.toRoundedString(s, scale)))
+                .toListX();
+
+        final var actual = DoubleX.toRoundedString(approximations.last(), scale);
+
+        assertAll(
+                () -> assertEquals(75, approximations.size()),
+                () -> assertEquals(roundedGoldenRatio, actual)
+        );
     }
 
 }

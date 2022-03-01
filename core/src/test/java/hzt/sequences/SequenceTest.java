@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -729,12 +728,12 @@ class SequenceTest {
 
     @Test
     void testTakeWhileInclusiveZonedDateTime() {
-        final var zonedDateTimes = Sequence
+        final ListX<ZonedDateTime> zonedDateTimes = Sequence
                 .generate(ZonedDateTime.parse("2019-03-27T20:45:30+05:30[Asia/Calcutta]"), zdt -> zdt.plusHours(1))
                 .takeWhileInclusive(d -> d.isBefore(ZonedDateTime.parse("2020-03-27T20:45:30+00:00[UTC]")))
                 .toListX();
 
-        final var expected = LocalDateTime.of(2020, Month.MARCH, 28, 2, 45, 30);
+        final LocalDateTime expected = LocalDateTime.of(2020, Month.MARCH, 28, 2, 45, 30);
 
         assertAll(
                 () -> assertEquals(8791, zonedDateTimes.size()),
@@ -744,15 +743,15 @@ class SequenceTest {
 
     @Test
     void testGoldenRatioConvergenceBigDecimal() {
-        final var scale = 200;
-        final var sqrtOf5 = BigDecimal.valueOf(5).sqrt(MathContext.DECIMAL128);
-        var goldenRatio = (BigDecimal.ONE.add(sqrtOf5)).divide(BigDecimal.valueOf(2), scale, RoundingMode.HALF_UP);
+        final int scale = 200;
+        final BigDecimal sqrtOf5 = BigDecimal.valueOf(Math.sqrt(5.0));
+        BigDecimal goldenRatio = (BigDecimal.ONE.add(sqrtOf5)).divide(BigDecimal.valueOf(2), scale, RoundingMode.HALF_UP);
 
         It.println("goldenRatio by sqrt = " + goldenRatio);
 
-        final var MAX_ITERATIONS = 10_000;
+        final int MAX_ITERATIONS = 10_000;
 
-        final var approximations = IntSequence.generate(900, i -> ++i)
+        final ListX<BigDecimal> approximations = IntSequence.generate(900, i -> ++i)
                 .mapToObj(Generator::fibSumBd)
                 .windowed(2)
                 .map(w -> w.last().divide(w.first(), scale, RoundingMode.HALF_UP))
@@ -763,14 +762,14 @@ class SequenceTest {
                 .take(MAX_ITERATIONS)
                 .toListX();
 
-        final var actual = approximations.last();
+        final BigDecimal actual = approximations.last();
         It.println("golden ratio by seq = " + actual);
 
         approximations.forEach(It::println);
 
         assertAll(
                 () -> assertEquals(56, approximations.size()),
-                () -> assertEquals(goldenRatio.setScale(30, RoundingMode.HALF_UP), actual.setScale(30, RoundingMode.HALF_UP))
+                () -> assertEquals(goldenRatio.setScale(10, RoundingMode.HALF_UP), actual.setScale(10, RoundingMode.HALF_UP))
         );
     }
 }

@@ -193,13 +193,13 @@ class DoubleSequenceTest {
     @Test
     void testGoldenRatioConvergence() {
         double goldenRatio = (1 + Math.sqrt(5)) / 2;
-        final var scale = 20;
+        final int scale = 20;
 
-        final var roundedGoldenRatio = DoubleX.toRoundedString(goldenRatio, scale);
+        final String roundedGoldenRatio = DoubleX.toRoundedString(goldenRatio, scale);
 
         It.println("roundedGoldenRatio = " + roundedGoldenRatio);
 
-        final var approximations = IntSequence.generate(1, i -> ++i)
+        final DoubleListX approximations = IntSequence.generate(1, i -> ++i)
                 .mapToLong(Generator::fibSum)
                 .windowed(2)
                 .mapToDouble(w -> (double) w.last() / w.first())
@@ -208,7 +208,7 @@ class DoubleSequenceTest {
                 .onEach(s -> It.println(DoubleX.toRoundedString(s, scale)))
                 .toListX();
 
-        final var actual = DoubleX.toRoundedString(approximations.last(), scale);
+        final String actual = DoubleX.toRoundedString(approximations.last(), scale);
 
         assertAll(
                 () -> assertEquals(75, approximations.size()),

@@ -60,9 +60,9 @@ class DoubleWindowedSequenceTest {
     @Test
     void testApproximateGoldenRatioUsingDoubleSequence() {
         double goldenRatio = (1 + Math.sqrt(5)) / 2;
-        final var scale = 20;
+        final int scale = 20;
 
-        final var approximations = IntSequence.generate(1, i -> ++i)
+        final DoubleListX approximations = IntSequence.generate(1, i -> ++i)
                 .mapToLong(Generator::fibSum)
                 .windowed(2)
                 .mapToDouble(w -> (double) w.last() / w.first())
@@ -70,8 +70,8 @@ class DoubleWindowedSequenceTest {
                         .equals(DoubleX.toRoundedString(goldenRatio, scale)))
                 .toListX();
 
-        final var expected = DoubleX.toRoundedString(goldenRatio, scale);
-        final var actual = DoubleX.toRoundedString(approximations.last(), scale);
+        final String expected = DoubleX.toRoundedString(goldenRatio, scale);
+        final String actual = DoubleX.toRoundedString(approximations.last(), scale);
 
         assertAll(
                 () -> assertEquals(75, approximations.size()),
@@ -81,7 +81,7 @@ class DoubleWindowedSequenceTest {
 
     @Test
     void testVariableSizedChunkedDoubleSequence() {
-        final var chunks = DoubleSequence.generate(0, i -> i + Math.E)
+        final ListX<DoubleListX> chunks = DoubleSequence.generate(0, i -> i + Math.E)
                 .chunked(1, Generator::sawTooth)
                 .take(100)
                 .toListX();

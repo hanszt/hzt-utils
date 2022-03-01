@@ -8,6 +8,7 @@ import hzt.sequences.SequenceHelper;
 import hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ToLongFunction;
 
@@ -17,8 +18,20 @@ public interface LongWindowedSequence extends LongIterable {
         return windowed(size, size, true);
     }
 
-    default LongSequence chunked(int size, @NotNull ToLongFunction<LongListX> transform) {
-        return windowed(size, size, true).mapToLong(transform);
+    default Sequence<LongListX> chunked(IntSupplier nextSizeSupplier) {
+        return chunked(nextSizeSupplier.getAsInt(), size -> nextSizeSupplier.getAsInt());
+    }
+
+    default Sequence<LongListX> chunked(int initSize, IntUnaryOperator nextSizeSupplier) {
+        //The holding consumer provides a way to provide the same value to both the size and step unary operator.
+        //It also makes sure the nextSizeSupplier from this method is only called once instead of twice
+        //It is required that the call for next size is made before next step for them to receive the same value
+        final var holdingConsumer = new PrimitiveSequenceHelper.HoldingConsumer();
+        return windowed(initSize, size -> {
+            final var nextSize = nextSizeSupplier.applyAsInt(size);
+            holdingConsumer.accept(nextSize);
+            return nextSize;
+        }, initSize, step -> holdingConsumer.getValue(), true);
     }
 
     default Sequence<LongListX> windowed(int size, int step, boolean partialWindows) {

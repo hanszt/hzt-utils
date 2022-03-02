@@ -1,6 +1,7 @@
 package hzt.utils.primitive_comparators;
 
 import java.util.Comparator;
+import java.util.function.IntUnaryOperator;
 
 @FunctionalInterface
 public interface IntComparator extends Comparator<Integer> {
@@ -12,8 +13,12 @@ public interface IntComparator extends Comparator<Integer> {
         return compareInt(i1, i2);
     }
 
-    static IntComparator comparing(IntComparator comparator) {
-        return comparator;
+    static IntComparator comparing(IntUnaryOperator selector) {
+        return (i1, i2) -> Integer.compare(selector.applyAsInt(i1), selector.applyAsInt(i2));
+    }
+
+    static IntComparator naturalOrder() {
+        return Integer::compare;
     }
 
     static IntComparator reverseOrder() {

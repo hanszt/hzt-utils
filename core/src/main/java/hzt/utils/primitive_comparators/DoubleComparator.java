@@ -1,6 +1,7 @@
 package hzt.utils.primitive_comparators;
 
 import java.util.Comparator;
+import java.util.function.DoubleUnaryOperator;
 
 @FunctionalInterface
 public interface DoubleComparator extends Comparator<Double> {
@@ -12,8 +13,12 @@ public interface DoubleComparator extends Comparator<Double> {
         return compareDouble(d1, d2);
     }
 
-    static DoubleComparator comparing(DoubleComparator comparator) {
-        return comparator;
+    static DoubleComparator comparing(DoubleUnaryOperator selector) {
+        return (d1, d2) -> Double.compare(selector.applyAsDouble(d1), selector.applyAsDouble(d2));
+    }
+
+    static DoubleComparator naturalOrder() {
+        return Double::compare;
     }
 
     static DoubleComparator reverseOrder() {

@@ -1,6 +1,7 @@
 package hzt.utils.primitive_comparators;
 
 import java.util.Comparator;
+import java.util.function.LongUnaryOperator;
 
 @FunctionalInterface
 public interface LongComparator extends Comparator<Long> {
@@ -12,8 +13,12 @@ public interface LongComparator extends Comparator<Long> {
         return compareLong(l1, l2);
     }
 
-    static LongComparator comparing(LongComparator comparator) {
-        return comparator;
+    static LongComparator comparing(LongUnaryOperator selector) {
+        return (l1, l2) -> Long.compare(selector.applyAsLong(l1), selector.applyAsLong(l2));
+    }
+
+    static LongComparator naturalOrder() {
+        return Long::compare;
     }
 
     static LongComparator reverseOrder() {

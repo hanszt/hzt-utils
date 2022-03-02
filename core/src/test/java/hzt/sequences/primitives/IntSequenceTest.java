@@ -5,6 +5,7 @@ import hzt.collections.primitives.IntListX;
 import hzt.numbers.IntX;
 import hzt.ranges.IntRange;
 import hzt.utils.It;
+import hzt.utils.primitive_comparators.IntComparator;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import static hzt.utils.primitive_comparators.IntComparator.comparing;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -163,7 +163,7 @@ class IntSequenceTest {
         int [] array = {-1, 4, -5, 3, -6, 7, -4, 8, -5, 9, -4};
 
         final var sorted = IntSequence.of(array)
-                .sorted(comparing(Integer::compare)
+                .sorted(IntComparator.comparing(It::asInt)
                         .thenComparing(Integer::compareUnsigned))
                 .toArray();
 

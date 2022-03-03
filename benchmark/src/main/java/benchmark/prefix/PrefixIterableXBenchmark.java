@@ -1,7 +1,7 @@
 package benchmark.prefix;
 
-import hzt.sequences.primitives.IntSequence;
-import hzt.strings.StringX;
+import org.hzt.utils.sequences.primitives.IntSequence;
+import org.hzt.utils.strings.StringX;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;

@@ -1,7 +1,7 @@
 package benchmark.prefix;
 
-import hzt.collections.ListX;
-import hzt.numbers.IntX;
+import org.hzt.utils.collections.ListX;
+import org.hzt.utils.numbers.IntX;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;

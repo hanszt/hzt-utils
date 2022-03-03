@@ -22,10 +22,10 @@ public class Customer {
 
     @Override
     public boolean equals(Object o) {
-        return this == o || (o instanceof Customer other &&
-                Objects.equals(id, other.id) &&
-                Objects.equals(name, other.name) &&
-                Objects.equals(bankAccounts, other.bankAccounts));
+        return this == o || (o instanceof Customer &&
+                Objects.equals(id, ((Customer) o).id) &&
+                Objects.equals(name, ((Customer) o).name) &&
+                Objects.equals(bankAccounts, ((Customer) o).bankAccounts));
     }
 
     @Override

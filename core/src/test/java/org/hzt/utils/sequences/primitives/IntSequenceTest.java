@@ -1,14 +1,13 @@
 package org.hzt.utils.sequences.primitives;
 
-import hzt.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.IntListX;
 import org.hzt.utils.numbers.IntX;
-import hzt.progressions.IntProgression;
+import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.ranges.IntRange;
-import hzt.statistics.IntStatistics;
 import org.hzt.utils.It;
 import org.hzt.utils.primitive_comparators.IntComparator;
+import org.hzt.utils.statistics.IntStatistics;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

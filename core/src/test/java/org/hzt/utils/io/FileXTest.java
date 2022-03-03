@@ -1,6 +1,6 @@
 package org.hzt.utils.io;
 
-import hzt.collections.ListX;
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.strings.StringX;
 import org.hzt.utils.It;

@@ -2,7 +2,7 @@ package org.hzt.utils.sequences;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.iterators.FilteringIterator;
-import hzt.tuples.Pair;
+import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;

@@ -1,6 +1,7 @@
 package org.hzt.utils.arrays.primitives;
 
 import org.hzt.utils.arrays.primitves.PrimitiveSort;
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.collections.primitives.DoubleListX;

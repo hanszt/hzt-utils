@@ -1,7 +1,7 @@
 package org.hzt.utils.sequences.primitives;
 
-import hzt.collections.ListX;
-import hzt.collections.primitives.LongListX;
+import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.primitives.LongListX;
 import org.hzt.utils.test.Generator;
 import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;

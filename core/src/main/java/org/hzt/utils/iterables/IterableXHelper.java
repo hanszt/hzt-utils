@@ -1,9 +1,9 @@
 package org.hzt.utils.iterables;
 
-import hzt.collections.ListX;
-import hzt.collections.MutableListX;
-import hzt.collections.MutableSetX;
-import hzt.tuples.IndexedValue;
+import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.collections.MutableSetX;
+import org.hzt.utils.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -29,7 +29,7 @@ public final class IterableXHelper {
     }
 
     static <T, R extends Comparable<? super R>> ListX<T> toSortedListX(@NotNull Iterable<T> iterable,
-                                                               @NotNull Function<? super T, ? extends R> selector) {
+                                                                       @NotNull Function<? super T, ? extends R> selector) {
         return toMutableListXSortedBy(selector, iterable);
     }
 

@@ -1,6 +1,6 @@
 package org.hzt.utils.sequences.primitives;
 
-import hzt.collections.ListX;
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.numbers.BigDecimalX;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.ranges.LongRange;

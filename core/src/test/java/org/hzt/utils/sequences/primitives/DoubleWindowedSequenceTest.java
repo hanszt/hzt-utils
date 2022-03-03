@@ -1,6 +1,6 @@
 package org.hzt.utils.sequences.primitives;
 
-import hzt.collections.ListX;
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.primitives.DoubleListX;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.Sequence;

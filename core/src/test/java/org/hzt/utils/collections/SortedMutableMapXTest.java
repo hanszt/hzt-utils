@@ -1,9 +1,9 @@
 package org.hzt.utils.collections;
 
-import hzt.iterables.IterableX;
 import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
+import org.hzt.utils.iterables.IterableX;
 import org.junit.jupiter.api.Test;
 
 import java.util.NavigableMap;

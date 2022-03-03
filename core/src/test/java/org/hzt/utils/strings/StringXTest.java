@@ -3,6 +3,7 @@ package org.hzt.utils.strings;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.It;
+import org.hzt.utils.tuples.Pair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

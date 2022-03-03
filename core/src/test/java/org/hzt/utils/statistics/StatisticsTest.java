@@ -1,11 +1,11 @@
 package org.hzt.utils.statistics;
 
-import hzt.collections.ListX;
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.Sequence;
-import hzt.sequences.primitives.DoubleSequence;
-import hzt.sequences.primitives.IntSequence;
-import hzt.sequences.primitives.LongSequence;
 import org.hzt.utils.It;
+import org.hzt.utils.sequences.primitives.DoubleSequence;
+import org.hzt.utils.sequences.primitives.IntSequence;
+import org.hzt.utils.sequences.primitives.LongSequence;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;

@@ -1,6 +1,7 @@
 package org.hzt.utils.ranges;
 
-import org.hzt.utils.numbers.LongX;
+import org.hzt.utils.sequences.primitives.LongSequence;
+import org.hzt.utils.statistics.LongStatistics;
 import org.junit.jupiter.api.Test;
 
 import java.util.LongSummaryStatistics;

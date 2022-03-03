@@ -5,6 +5,8 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.It;
+import org.hzt.utils.tuples.Pair;
+import org.hzt.utils.tuples.Triple;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

@@ -7,6 +7,8 @@ import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.statistics.IntStatistics;
+import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;

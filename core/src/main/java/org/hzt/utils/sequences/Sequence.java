@@ -1,6 +1,7 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.MapX;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.IterableX;

@@ -1,6 +1,7 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.collections.MapX;
+import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;

@@ -1,8 +1,8 @@
 package org.hzt.utils.ranges;
 
-import hzt.sequences.primitives.DoubleSequence;
-import hzt.statistics.DoubleStatistics;
-import hzt.utils.It;
+import org.hzt.utils.It;
+import org.hzt.utils.sequences.primitives.DoubleSequence;
+import org.hzt.utils.statistics.DoubleStatistics;
 import org.junit.jupiter.api.Test;
 
 import java.util.Locale;

@@ -1,5 +1,7 @@
 package org.hzt.test.model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,10 +71,10 @@ public class Museum implements Comparable<Museum>, Iterable<Painting> {
 
     @Override
     public boolean equals(Object o) {
-        return this == o || (o instanceof Museum museum &&
-                Objects.equals(name, museum.name) &&
-                Objects.equals(dateOfOpening, museum.dateOfOpening) &&
-                Objects.equals(mostPopularPainting, museum.mostPopularPainting));
+        return this == o || (o instanceof Museum &&
+                Objects.equals(name, ((Museum) o).name) &&
+                Objects.equals(dateOfOpening, ((Museum) o).dateOfOpening) &&
+                Objects.equals(mostPopularPainting, ((Museum) o).mostPopularPainting));
     }
 
     @Override
@@ -81,12 +83,9 @@ public class Museum implements Comparable<Museum>, Iterable<Painting> {
     }
 
     @Override
-    public int compareTo(Museum o) {
+    public int compareTo(@NotNull Museum o) {
         if (name == null) {
             return -1;
-        }
-        if (o == null) {
-            return 1;
         }
         if (o.getName() == null) {
             return 1;

@@ -1,12 +1,10 @@
 package org.hzt.test.model;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class Book implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1;
 
     private String title;
@@ -70,9 +68,9 @@ public class Book implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        return this == o || (o instanceof Book book &&
-                Objects.equals(title, book.title) &&
-                Objects.equals(category, book.category));
+        return this == o || (o instanceof Book &&
+                Objects.equals(title, ((Book) o).title) &&
+                Objects.equals(category, ((Book) o).category));
     }
 
     @Override
@@ -83,10 +81,10 @@ public class Book implements Serializable {
     @Override
     public String toString() {
         return "Book{" +
-                "bookName='" + title + '\'' +
+                "((Book) o)Name='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", copies=" + copies +
-                ", bookCategory='" + category + '\'' +
+                ", ((Book) o)Category='" + category + '\'' +
                 ", language='" + language + '\'' +
                 '}';
     }

@@ -93,16 +93,16 @@ public final class TestSampleGenerator {
 
     public static List<Museum> createMuseumList() {
 
-        final var groupedByLastName = createPaintingList().stream()
+        final Map<String, List<Painting>> groupedByLastName = createPaintingList().stream()
                 .collect(Collectors.groupingBy(painting -> painting.painter().getLastname()));
 
         final List<Painting> vanGoghPaintings = groupedByLastName.get("van Gogh");
         final List<Painting> vermeerPaintings = groupedByLastName.get("Vermeer");
         final List<Painting> picassoPaintings = groupedByLastName.get("Picasso");
 
-        final var painter = new Painter("Hans", "Zuidervaart", LocalDate.of(1989, 10 ,18));
+        final Painter painter = new Painter("Hans", "Zuidervaart", LocalDate.of(1989, 10 ,18));
         return Arrays.asList(
-                new Museum(null, null, Arrays.asList(new Painting("Test", painter, Year.of(1997), false))),
+                new Museum(null, null, Collections.singletonList(new Painting("Test", painter, Year.of(1997), false))),
                 new Museum("Van Gogh Museum", LocalDate.of(1992, Month.APRIL, 2), vanGoghPaintings),
                 new Museum("Vermeer Museum", LocalDate.of(1940, Month.JANUARY, 23), vermeerPaintings),
                 new Museum("Picasso Museum", LocalDate.of(1965, Month.AUGUST, 4), picassoPaintings));
@@ -129,7 +129,7 @@ public final class TestSampleGenerator {
     public static List<Number> createRandomNumberTypeList(int amount) {
         return IntStream.range(0, amount)
                 .mapToObj(TestSampleGenerator::toRandomNumberType)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private static Number toRandomNumberType(int integer) {
@@ -139,12 +139,12 @@ public final class TestSampleGenerator {
     public static List<Number> createNumberTypeList(int amount) {
         return IntStream.range(0, amount)
                 .mapToObj(TestSampleGenerator::toNumberType)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public static DoubleStream gaussianDoubles(int amount, double targetMean, double targetStdDev) {
         return IntStream.range(0, amount)
-                .mapToDouble(i -> RANDOM.nextGaussian(targetMean, targetStdDev));
+                .mapToDouble(i -> targetMean + targetStdDev * RANDOM.nextGaussian());
     }
 
     private static Number toNumberType(int integer) {
@@ -154,6 +154,6 @@ public final class TestSampleGenerator {
     public static Map<String, Museum> createMuseumMap() {
         return createMuseumList().stream()
                 .filter(e -> e.getName() != null)
-                .collect(Collectors.toUnmodifiableMap(Museum::getName, Function.identity()));
+                .collect(Collectors.toMap(Museum::getName, Function.identity()));
     }
 }

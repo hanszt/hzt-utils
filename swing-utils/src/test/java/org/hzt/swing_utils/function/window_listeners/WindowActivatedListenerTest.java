@@ -14,7 +14,7 @@ class WindowActivatedListenerTest {
 
     @Test
     void testWindowActivatedListener() {
-        final var thread = new Thread(this::testWindowActivated);
+        final Thread thread = new Thread(this::testWindowActivated);
         thread.start();
         await().until(() -> !thread.isAlive());
     }

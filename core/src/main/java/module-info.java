@@ -2,25 +2,25 @@ open module core {
 
     requires org.jetbrains.annotations;
 
-    exports hzt.collections;
-    exports hzt.collections.primitives;
-    exports hzt.function;
-    exports hzt.function.predicates;
-    exports hzt.sequences;
-    exports hzt.sequences.primitives;
-    exports hzt.statistics;
-    exports hzt.strings;
-    exports hzt.numbers;
-    exports hzt.io;
-    exports hzt.iterables;
-    exports hzt.iterables.primitives;
-    exports hzt.tuples;
-    exports hzt.utils;
-    exports hzt.utils.primitive_comparators;
-    exports hzt.collectors;
-    exports hzt.collectors.primitves;
-    exports hzt.ranges;
-    exports hzt.progressions;
-    exports hzt.iterators.primitives;
-    exports hzt.arrays.primitves;
+    exports org.hzt.utils;
+    exports org.hzt.utils.collections;
+    exports org.hzt.utils.collections.primitives;
+    exports org.hzt.utils.function;
+    exports org.hzt.utils.function.predicates;
+    exports org.hzt.utils.sequences;
+    exports org.hzt.utils.sequences.primitives;
+    exports org.hzt.utils.statistics;
+    exports org.hzt.utils.strings;
+    exports org.hzt.utils.numbers;
+    exports org.hzt.utils.io;
+    exports org.hzt.utils.iterables;
+    exports org.hzt.utils.iterables.primitives;
+    exports org.hzt.utils.tuples;
+    exports org.hzt.utils.primitive_comparators;
+    exports org.hzt.utils.collectors;
+    exports org.hzt.utils.collectors.primitves;
+    exports org.hzt.utils.ranges;
+    exports org.hzt.utils.progressions;
+    exports org.hzt.utils.iterators.primitives;
+    exports org.hzt.utils.arrays.primitves;
 }

@@ -1,6 +1,6 @@
 package benchmark.prefix;
 
-import org.hzt.utils.sequences.primitives.IntSequence;
+import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.statistics.IntStatistics;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Param;
@@ -10,6 +10,9 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+
+import java.util.IntSummaryStatistics;
+import java.util.stream.IntStream;
 
 @SuppressWarnings("unused")
 @State(Scope.Benchmark)
@@ -22,11 +25,28 @@ public class PrefixIntRangeBenchmark {
     }
 
     @Benchmark
-    public IntStatistics mapFilterToList() {
-        return IntSequence.of(0, nrOfIterations)
+    public IntSummaryStatistics parallelStreamMapFilterToSummaryStats() {
+        return IntStream.range(0, nrOfIterations)
+                .parallel()
                 .map(i -> i * 2)
-                .filter(i -> i % 2 == 0)
+                .filter(i -> i % 4 == 0)
+                .summaryStatistics();
+    }
+
+    @Benchmark
+    public IntStatistics mapFilterToStats() {
+        return IntRange.of(0, nrOfIterations)
+                .map(i -> i * 2)
+                .filter(i -> i % 4 == 0)
                 .stats();
+    }
+
+    @Benchmark
+    public IntSummaryStatistics streamMapFilterToSummaryStats() {
+        return IntStream.range(0, nrOfIterations)
+                .map(i -> i * 2)
+                .filter(i -> i % 4 == 0)
+                .summaryStatistics();
     }
 
     public static void main(String[] args) {

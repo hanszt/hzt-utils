@@ -1,5 +1,6 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.primitives.IntCollectable;
@@ -15,12 +16,11 @@ import org.hzt.utils.iterators.primitives.IntSkipWhileIterator;
 import org.hzt.utils.iterators.primitives.IntTakeWhileIterator;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.hzt.utils.numbers.IntX;
+import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.SkipTakeSequence;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
-import org.hzt.utils.It;
-import org.hzt.utils.primitive_comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;

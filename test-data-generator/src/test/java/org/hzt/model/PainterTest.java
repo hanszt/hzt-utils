@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,7 +54,8 @@ class PainterTest {
                 .findFirst()
                 .orElseThrow();
 
-        final List<Painting> paintings = StreamSupport.stream(picasso.spliterator(), false).toList();
+        final List<Painting> paintings = StreamSupport.stream(picasso.spliterator(), false)
+                .collect(Collectors.toList());
 
         picasso.forEach(System.out::println);
 

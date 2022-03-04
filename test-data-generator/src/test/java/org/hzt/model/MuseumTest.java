@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,9 +29,9 @@ class MuseumTest {
                 .filter(museum -> Optional.ofNullable(museum).map(Museum::getDateOfOpening)
                         .filter(d -> d.isBefore(LocalDate.now()))
                         .isPresent())
-                .mapMulti(Museum::forEach)
+                .flatMap(m -> StreamSupport.stream(m.spliterator(), false))
                 .filter(painting -> painting.ageInYears() > 200)
-                .toList();
+                .collect(Collectors.toList());
 
         System.out.println("paintings = " + paintings);
 
@@ -45,7 +46,8 @@ class MuseumTest {
                 .findFirst()
                 .orElseThrow();
 
-        final List<Painting> paintings = StreamSupport.stream(firstMuseum.spliterator(), false).toList();
+        final List<Painting> paintings = StreamSupport.stream(firstMuseum.spliterator(), false)
+                .collect(Collectors.toList());
 
         assertFalse(paintings.isEmpty());
     }

@@ -119,7 +119,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default Sequence<Long> boxed() {
-        return Sequence.of(this);
+        return mapToObj(Long::valueOf);
     }
 
     default LongSequence filter(@NotNull LongPredicate predicate) {

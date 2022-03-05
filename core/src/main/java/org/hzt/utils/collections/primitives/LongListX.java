@@ -7,6 +7,7 @@ import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.primitive_comparators.LongComparator;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 public interface LongListX extends LongCollection, PrimitiveSortable<LongComparator> {
 
@@ -26,6 +27,12 @@ public interface LongListX extends LongCollection, PrimitiveSortable<LongCompara
         return new LongArrayList(array);
     }
 
+    static LongListX build(Consumer<LongMutableListX> factory) {
+        final LongMutableListX listX = LongMutableListX.empty();
+        factory.accept(listX);
+        return listX;
+    }
+
     default boolean contains(long l) {
         return indexOf(l) >= 0;
     }
@@ -37,9 +44,7 @@ public interface LongListX extends LongCollection, PrimitiveSortable<LongCompara
     int lastIndexOf(long l);
 
     @Override
-    default ListX<Long> boxed() {
-        return asSequence().boxed().toListX();
-    }
+    ListX<Long> boxed();
 
     @Override
     default LongListX sorted() {

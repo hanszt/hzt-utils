@@ -7,10 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.PrimitiveIterator;
-import java.util.function.DoubleConsumer;
 
-final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleConsumer, PrimitiveIterator.OfDouble>
-        implements DoubleMutableListX {
+final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implements DoubleMutableListX {
 
     private int size = 0;
     private double[] elementData;
@@ -157,6 +155,11 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
         return value;
     }
 
+    @Override
+    public DoubleMutableListX toMutableList() {
+        return this;
+    }
+    
     @Override
     public @NotNull PrimitiveListIterator.OfDouble listIterator() {
         return listIterator(0);

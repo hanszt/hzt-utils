@@ -71,15 +71,15 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> map(@NotNull Function<? super E, ? extends R> mapper) {
-        return mapTo(MutableListX::empty, mapper);
+        return mapTo(() -> MutableListX.withInitCapacity(size()), mapper);
     }
 
     default <R> ListX<R> mapIndexed(@NotNull BiFunction<Integer, ? super E, ? extends R> mapper) {
-        return mapIndexedTo(MutableListX::empty, mapper);
+        return mapIndexedTo(() -> MutableListX.withInitCapacity(size()), mapper);
     }
 
     default ListX<E> filter(@NotNull Predicate<E> predicate) {
-        return filterTo(MutableListX::empty, predicate);
+        return filterTo(() -> MutableListX.withInitCapacity(size()), predicate);
     }
 
     default <R> ListX<E> filterBy(@NotNull Function<? super E, ? extends R> selector, @NotNull Predicate<R> predicate) {
@@ -87,11 +87,11 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default ListX<E> filterIndexed(@NotNull BiPredicate<Integer, E> predicate) {
-        return filterIndexedTo(MutableListX::empty, predicate);
+        return filterIndexedTo(() -> MutableListX.withInitCapacity(size()), predicate);
     }
 
     default ListX<E> filterNot(@NotNull Predicate<E> predicate) {
-        return IterableX.super.filterNotTo(MutableListX::empty, predicate);
+        return IterableX.super.filterNotTo(() -> MutableListX.withInitCapacity(size()), predicate);
     }
 
     default <R> ListX<StringX> mapToStringX(@NotNull Function<? super E, ? extends R> mapper) {
@@ -99,15 +99,15 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> flatMap(@NotNull Function<E, Iterable<R>> mapper) {
-        return flatMapTo(MutableListX::empty, mapper);
+        return flatMapTo(() -> MutableListX.withInitCapacity(size()), mapper);
     }
 
     default <R> ListX<R> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<R>> mapper) {
-        return mapMultiTo(MutableListX::empty, mapper);
+        return mapMultiTo(() -> MutableListX.withInitCapacity(size()), mapper);
     }
 
     default <R> ListX<R> mapNotNull(@NotNull Function<? super E, ? extends R> mapper) {
-        return mapNotNullTo(MutableListX::empty, mapper);
+        return mapNotNullTo(() -> MutableListX.withInitCapacity(size()), mapper);
     }
 
     @Override
@@ -208,7 +208,7 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default ListX<E> skip(long count) {
-        return skipTo(MutableListX::empty, (int) count);
+        return skipTo(() -> MutableListX.withInitCapacity(size() - (int) count), (int) count);
     }
 
     @Override
@@ -223,7 +223,7 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default ListX<E> take(long n) {
-        return takeTo(MutableListX::empty, n);
+        return takeTo(() -> MutableListX.withInitCapacity((int) n), n);
     }
 
     default ListX<E> takeWhile(@NotNull Predicate<E> predicate) {
@@ -237,5 +237,10 @@ public interface CollectionX<E> extends IterableX<E> {
     @Override
     default Spliterator<E> spliterator() {
         return Spliterators.spliterator(iterator(), size(), Spliterator.SIZED);
+    }
+
+    @Override
+    default MutableListX<E> toMutableList() {
+        return to(() -> MutableListX.withInitCapacity(size()));
     }
 }

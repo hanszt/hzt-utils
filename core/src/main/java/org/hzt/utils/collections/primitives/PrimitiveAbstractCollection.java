@@ -1,18 +1,16 @@
 package org.hzt.utils.collections.primitives;
 
-import java.util.PrimitiveIterator;
-
-abstract class PrimitiveAbstractCollection<T, C, I extends PrimitiveIterator<T, C>> {
+abstract class PrimitiveAbstractCollection<T> implements Iterable<T> {
 
     @Override
     public String toString() {
         var iterator = iterator();
-        if (! iterator.hasNext()) {
+        if (!iterator.hasNext()) {
             return "[]";
         }
         StringBuilder sb = new StringBuilder();
         sb.append('[');
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             sb.append(iterator.next());
             if (!iterator.hasNext()) {
                 return sb.append(']').toString();
@@ -21,6 +19,4 @@ abstract class PrimitiveAbstractCollection<T, C, I extends PrimitiveIterator<T, 
         }
         return sb.toString();
     }
-
-    abstract I iterator();
 }

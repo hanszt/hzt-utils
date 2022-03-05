@@ -43,7 +43,7 @@ public interface DoubleCollectable extends DoubleIterable, PrimitiveCollectable<
     }
 
     default DoubleListX toListX() {
-        return to(DoubleMutableListX::empty);
+        return toMutableList();
     }
 
     default <C extends DoubleMutableCollection> C to(Supplier<C> collectionFactory) {

@@ -128,7 +128,7 @@ public final class TestSampleGenerator {
     public static List<Number> createRandomNumberTypeList(int amount) {
         return IntStream.range(0, amount)
                 .mapToObj(TestSampleGenerator::toRandomNumberType)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private static Number toRandomNumberType(int integer) {
@@ -138,12 +138,12 @@ public final class TestSampleGenerator {
     public static List<Number> createNumberTypeList(int amount) {
         return IntStream.range(0, amount)
                 .mapToObj(TestSampleGenerator::toNumberType)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public static DoubleStream gaussianDoubles(int amount, double targetMean, double targetStdDev) {
         return IntStream.range(0, amount)
-                .mapToDouble(i -> RANDOM.nextGaussian(targetMean, targetStdDev));
+                .mapToDouble(i -> targetMean + targetStdDev * RANDOM.nextGaussian());
     }
 
     private static Number toNumberType(int integer) {

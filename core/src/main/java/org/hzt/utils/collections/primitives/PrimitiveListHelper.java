@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 final class PrimitiveListHelper {
 
-    static final int SOFT_MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
+    private static final int SOFT_MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
     static final int DEFAULT_CAPACITY = 10;
 
     private PrimitiveListHelper() {
@@ -27,7 +27,7 @@ final class PrimitiveListHelper {
         }
         final var minGrowth = minCapacity - oldCapacity;
         final var prefGrowth = oldCapacity >> 1;
-        int newCapacity = PrimitiveListHelper.newLength(oldCapacity, minGrowth, prefGrowth);
+        int newCapacity = newLength(oldCapacity, minGrowth, prefGrowth);
         return copyElementData(newCapacity, array);
     }
 
@@ -61,8 +61,8 @@ final class PrimitiveListHelper {
     static int newLength(int oldLength, int minGrowth, int prefGrowth) {
         PreConditions.require(oldLength >= 0);
         PreConditions.require(minGrowth > 0);
-
-        int prefLength = oldLength + Math.max(minGrowth, prefGrowth); // might overflow
+        // might overflow
+        int prefLength = oldLength + Math.max(minGrowth, prefGrowth);
         if (0 < prefLength && prefLength <= SOFT_MAX_ARRAY_LENGTH) {
             return prefLength;
         }

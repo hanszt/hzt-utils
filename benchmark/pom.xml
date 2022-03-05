@@ -24,6 +24,10 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.hzt.utils</groupId>
+      <artifactId>test-data-generator</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.openjdk.jmh</groupId>
       <artifactId>jmh-core</artifactId>
       <version>${jmh.version}</version>

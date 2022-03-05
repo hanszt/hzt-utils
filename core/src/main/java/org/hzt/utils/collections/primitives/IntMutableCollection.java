@@ -5,9 +5,12 @@ import org.hzt.utils.iterables.primitives.IntIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.PrimitiveIterator;
 import java.util.function.IntConsumer;
+import java.util.function.IntPredicate;
 
-public interface IntMutableCollection extends PrimitiveMutableCollectionX<Integer, IntConsumer, int[]>, IntCollection {
+public interface IntMutableCollection extends IntCollection,
+        PrimitiveMutableCollectionX<Integer, IntConsumer, IntPredicate, int[]>{
 
     boolean add(int i);
 
@@ -77,6 +80,19 @@ public interface IntMutableCollection extends PrimitiveMutableCollectionX<Intege
             }
         }
         return true;
+    }
+
+    @Override
+    default boolean removeIf(@NotNull IntPredicate predicate) {
+        boolean removed = false;
+        final PrimitiveIterator.OfInt iterator = iterator();
+        while (iterator.hasNext()) {
+            final int value = iterator.nextInt();
+            if (predicate.test(value)) {
+                removed = remove(value);
+            }
+        }
+        return removed;
     }
 
     @Override

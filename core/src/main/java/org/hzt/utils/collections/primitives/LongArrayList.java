@@ -196,4 +196,9 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long, LongC
             }
         };
     }
+
+    @Override
+    public LongMutableListX toMutableList() {
+        return this;
+    }
 }

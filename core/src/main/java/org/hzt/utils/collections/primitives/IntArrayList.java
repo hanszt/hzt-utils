@@ -195,4 +195,9 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
             }
         };
     }
+
+    @Override
+    public IntMutableListX toMutableList() {
+        return this;
+    }
 }

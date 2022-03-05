@@ -121,7 +121,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     default Sequence<Integer> boxed() {
-        return Sequence.of(this);
+        return mapToObj(Integer::valueOf);
     }
 
     @Override

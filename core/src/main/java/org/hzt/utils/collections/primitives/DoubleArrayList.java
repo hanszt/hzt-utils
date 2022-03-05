@@ -198,4 +198,9 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double, DoubleCo
             }
         };
     }
+
+    @Override
+    public DoubleMutableListX toMutableList() {
+        return this;
+    }
 }

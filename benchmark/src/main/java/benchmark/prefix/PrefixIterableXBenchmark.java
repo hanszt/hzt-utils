@@ -1,7 +1,6 @@
 package benchmark.prefix;
 
 import org.hzt.utils.ranges.IntRange;
-import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.strings.StringX;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Param;
@@ -33,8 +32,7 @@ public class PrefixIterableXBenchmark {
     
     @Benchmark
     public boolean anyMatch() {
-        return IntRange.of(0, nrOfIterations)
-                .any(x -> x == -1);
+        return IntRange.of(0, nrOfIterations).any(x -> x == -1);
     }
 
     public static void main(String[] args) {

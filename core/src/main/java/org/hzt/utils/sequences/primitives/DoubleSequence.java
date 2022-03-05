@@ -118,7 +118,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     @Override
     default Sequence<Double> boxed() {
-        return Sequence.of(this);
+        return mapToObj(Double::valueOf);
     }
 
     @Override

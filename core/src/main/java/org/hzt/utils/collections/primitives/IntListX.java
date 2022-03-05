@@ -7,6 +7,7 @@ import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator> {
 
@@ -24,6 +25,12 @@ public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator
 
     static IntListX of(int... array) {
         return new IntArrayList(array);
+    }
+
+    static IntListX build(Consumer<IntMutableListX> factory) {
+        final IntMutableListX listX = IntMutableListX.empty();
+        factory.accept(listX);
+        return listX;
     }
 
     default boolean contains(int i) {

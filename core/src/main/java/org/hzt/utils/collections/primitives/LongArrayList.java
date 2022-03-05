@@ -7,10 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.PrimitiveIterator;
-import java.util.function.LongConsumer;
 
-public final class LongArrayList extends PrimitiveAbstractCollection<Long, LongConsumer, PrimitiveIterator.OfLong>
-        implements LongMutableListX {
+public final class LongArrayList extends PrimitiveAbstractCollection<Long> implements LongMutableListX {
 
     private int size = 0;
     private long[] elementData;

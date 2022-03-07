@@ -98,7 +98,7 @@ public interface CollectionX<E> extends IterableX<E> {
         return map(s -> StringX.of(mapper.apply(s).toString()));
     }
 
-    default <R> ListX<R> flatMap(@NotNull Function<E, Iterable<R>> mapper) {
+    default <R> ListX<R> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends R>> mapper) {
         return flatMapTo(() -> MutableListX.withInitCapacity(size()), mapper);
     }
 

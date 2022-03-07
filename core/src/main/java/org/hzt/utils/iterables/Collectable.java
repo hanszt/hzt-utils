@@ -250,7 +250,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
                 .mapTo(collectionFactory, indexedValue -> mapper.apply(indexedValue.index(), indexedValue.value()));
     }
 
-    default <R, I extends Iterable<R>, C extends Collection<R>> C flatMapTo(
+    default <R, I extends Iterable<? extends R>, C extends Collection<R>> C flatMapTo(
             @NotNull Supplier<C> collectionSupplier,
             @NotNull Function<? super T, ? extends I> mapper) {
         final C collection = collectionSupplier.get();

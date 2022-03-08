@@ -4,6 +4,12 @@ import org.hzt.utils.PreConditions;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A Tim sort implementation for sorting long arrays where a LongComparator is used for the comparisons
+ *
+ * Credits for this implementation go to
+ * <a href="https://github.com/mintern-java/primitive">Java Primitive by Mintern</a>
+ */
 public final class LongTimSort {
 
     private static final int MIN_MERGE = 32;

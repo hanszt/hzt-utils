@@ -32,7 +32,7 @@ class LongMutableCollectionTest {
 
     @Test
     void testRemoveIf() {
-        final var list = LongMutableListX.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
+        final LongMutableListX list = LongMutableListX.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
         final boolean removed = list.removeIf(l -> l % 2 == 0);
 
         assertAll(

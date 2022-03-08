@@ -48,7 +48,7 @@ class DoubleMutableCollectionTest {
 
     @Test
     void testRemoveIf() {
-        final var list = DoubleMutableListX.of(Math.PI, 1, 4, 5, 3, 6, Math.E, 7, 5, 8, 9);
+        final DoubleMutableListX list = DoubleMutableListX.of(Math.PI, 1, 4, 5, 3, 6, Math.E, 7, 5, 8, 9);
         final boolean removed = list.removeIf(l -> l % 2 == 0);
 
         assertAll(

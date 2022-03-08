@@ -45,7 +45,7 @@ public final class FlatteningIterator<T, R> implements Iterator<R> {
             if (!iterator.hasNext()) {
                 return false;
             } else {
-                final var nextItemIterator = toIteratorFunction.apply(iterator.next());
+                final Iterator<? extends R> nextItemIterator = toIteratorFunction.apply(iterator.next());
                 if (nextItemIterator.hasNext()) {
                     itemIterator = nextItemIterator;
                     return true;

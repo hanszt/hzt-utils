@@ -218,7 +218,7 @@ class SequenceTest {
         final ListX<CollectionX<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
                 SetX.of("test"));
 
-        final var result = list.asSequence()
+        final IntListX result = list.asSequence()
                 .mapMultiToInt((strings, accept) -> strings
                         .mapToInt(String::length)
                         .forEachInt(accept))
@@ -799,7 +799,7 @@ class SequenceTest {
 
     @Test
     void testFlatmapIterator() {
-        final var integers = IntRange.of(0, 1_000)
+        final ListX<Integer> integers = IntRange.of(0, 1_000)
                 .windowed(10)
                 .map(IntListX::iterator)
                 .flatMap(i -> () -> i)

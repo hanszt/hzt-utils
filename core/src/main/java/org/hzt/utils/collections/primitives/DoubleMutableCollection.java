@@ -7,8 +7,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.DoubleConsumer;
+import java.util.function.DoublePredicate;
 
-public interface DoubleMutableCollection extends PrimitiveMutableCollectionX<Double, DoubleConsumer, double[]>, DoubleCollection {
+public interface DoubleMutableCollection extends DoubleCollection,
+        PrimitiveMutableCollectionX<Double, DoubleConsumer, DoublePredicate, double[]> {
 
     boolean add(double d);
 
@@ -78,6 +80,19 @@ public interface DoubleMutableCollection extends PrimitiveMutableCollectionX<Dou
             }
         }
         return true;
+    }
+
+    @Override
+    default boolean removeIf(@NotNull DoublePredicate predicate) {
+        boolean removed = false;
+        final PrimitiveIterator.OfDouble iterator = iterator();
+        while (iterator.hasNext()) {
+            final double value = iterator.nextDouble();
+            if (predicate.test(value)) {
+                removed = remove(value);
+            }
+        }
+        return removed;
     }
 
     @Override

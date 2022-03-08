@@ -43,7 +43,7 @@ public interface LongCollectable extends LongIterable, PrimitiveCollectable<Long
     }
 
     default LongListX toListX() {
-        return to(LongMutableListX::empty);
+        return toMutableList();
     }
 
     default <C extends LongMutableCollection> C to(Supplier<C> collectionFactory) {

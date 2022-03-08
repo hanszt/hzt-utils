@@ -5,10 +5,11 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @param <T> The boxed type
- * @param <C> The PrimitiveConsumer
- * @param <A> The primitive array Type
+ * @param <C> The primitive consumer
+ * @param <P> The primitive predicate
+ * @param <A> The primitive array type
  */
-public interface PrimitiveMutableCollectionX<T, C, A> extends PrimitiveCollectionX<T, C, A> {
+public interface PrimitiveMutableCollectionX<T, C, P, A> extends PrimitiveCollectionX<T, C, A> {
 
     boolean addAll(@NotNull Iterable<T> iterable);
 
@@ -18,9 +19,11 @@ public interface PrimitiveMutableCollectionX<T, C, A> extends PrimitiveCollectio
 
     boolean removeAll(@NotNull A array);
 
-    PrimitiveMutableCollectionX<T, C, A> plus(@NotNull Iterable<T> iterable);
+    boolean removeIf(@NotNull P predicate);
 
-    PrimitiveMutableCollectionX<T, C, A> plus(@NotNull A array);
+    PrimitiveMutableCollectionX<T, C, P, A> plus(@NotNull Iterable<T> iterable);
+
+    PrimitiveMutableCollectionX<T, C, P, A> plus(@NotNull A array);
 
     MutableCollectionX<T> boxed();
 }

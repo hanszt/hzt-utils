@@ -47,28 +47,28 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
     boolean contains(long l);
 
     default LongListX filter(LongPredicate predicate) {
-        LongMutableListX doubles = LongMutableListX.empty();
+        LongMutableListX longs = LongMutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             final long value = iterator.nextLong();
             if (predicate.test(value)) {
-                doubles.add(value);
+                longs.add(value);
             }
         }
-        return doubles;
+        return longs;
     }
 
     default LongListX map(LongUnaryOperator mapper) {
-        LongMutableListX doubles = LongMutableListX.empty();
+        LongMutableListX longs = LongMutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
-            doubles.add(mapper.applyAsLong(iterator.nextLong()));
+            longs.add(mapper.applyAsLong(iterator.nextLong()));
         }
-        return doubles;
+        return longs;
     }
 
     default IntListX mapToInt(LongToIntFunction mapper) {
-        IntMutableListX ints = IntMutableListX.empty();
+        IntMutableListX ints = IntMutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextLong()));
@@ -77,7 +77,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
     }
 
     default DoubleListX mapToDouble(LongToDoubleFunction mapper) {
-        DoubleMutableListX doubles = DoubleMutableListX.empty();
+        DoubleMutableListX doubles = DoubleMutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextLong()));
@@ -86,7 +86,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
     }
 
     default <R> ListX<R> mapToObj(LongFunction<R> mapper) {
-        MutableListX<R> doubles = MutableListX.empty();
+        MutableListX<R> doubles = MutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.apply(iterator.nextLong()));
@@ -96,14 +96,14 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     @Override
     default LongListX plus(@NotNull Iterable<Long> values) {
-        LongMutableListX listX = LongMutableListX.empty();
+        LongMutableListX listX = toMutableList();
         listX.addAll(values);
         return listX;
     }
 
     @Override
     default LongListX plus(long @NotNull ... array) {
-        LongMutableListX listX = LongMutableListX.empty();
+        LongMutableListX listX = toMutableList();
         listX.addAll(array);
         return listX;
     }
@@ -121,4 +121,9 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     @Override
     long[] toArray();
+
+    @Override
+    default LongMutableListX toMutableList() {
+        return to(() -> LongMutableListX.withInitCapacity(size()));
+    }
 }

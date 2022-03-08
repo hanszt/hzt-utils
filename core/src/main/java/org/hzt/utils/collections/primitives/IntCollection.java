@@ -47,28 +47,28 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
     boolean contains(int i);
 
     default IntListX filter(IntPredicate predicate) {
-        IntMutableListX doubles = IntMutableListX.empty();
+        IntMutableListX ints = IntMutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             final int value = iterator.nextInt();
             if (predicate.test(value)) {
-                doubles.add(value);
+                ints.add(value);
             }
         }
-        return doubles;
+        return ints;
     }
 
     default IntListX map(IntUnaryOperator mapper) {
-        IntMutableListX doubles = IntMutableListX.empty();
+        IntMutableListX ints = IntMutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
-            doubles.add(mapper.applyAsInt(iterator.nextInt()));
+            ints.add(mapper.applyAsInt(iterator.nextInt()));
         }
-        return doubles;
+        return ints;
     }
 
     default LongListX mapToLong(IntToLongFunction mapper) {
-        LongMutableListX longs = LongMutableListX.empty();
+        LongMutableListX longs = LongMutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextInt()));
@@ -77,7 +77,7 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
     }
 
     default DoubleListX mapToDouble(IntToDoubleFunction mapper) {
-        DoubleMutableListX doubles = DoubleMutableListX.empty();
+        DoubleMutableListX doubles = DoubleMutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextInt()));
@@ -86,24 +86,24 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
     }
 
     default <R> ListX<R> mapToObj(IntFunction<R> mapper) {
-        MutableListX<R> doubles = MutableListX.empty();
+        MutableListX<R> listX = MutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
-            doubles.add(mapper.apply(iterator.nextInt()));
+            listX.add(mapper.apply(iterator.nextInt()));
         }
-        return doubles;
+        return listX;
     }
 
     @Override
     default IntListX plus(@NotNull Iterable<Integer> values) {
-        IntMutableListX list = IntMutableListX.empty();
+        IntMutableListX list = toMutableList();
         list.addAll(values);
         return list;
     }
 
     @Override
     default IntListX plus(int @NotNull ... array) {
-        IntMutableListX list = IntMutableListX.empty();
+        IntMutableListX list = toMutableList();
         list.addAll(array);
         return list;
     }
@@ -117,6 +117,11 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
         final int[] array = toArray();
         return Spliterators.spliterator(array, 0, array.length,
                 Spliterator.ORDERED | Spliterator.NONNULL);
+    }
+
+    @Override
+    default IntMutableListX toMutableList() {
+        return to(() -> IntMutableListX.withInitCapacity(size()));
     }
 
     @Override

@@ -48,7 +48,7 @@ public interface IntCollectable extends IntIterable, PrimitiveCollectable<IntCol
     }
 
     default IntListX toListX() {
-        return to(IntMutableListX::empty);
+        return toMutableList();
     }
 
     default <C extends IntMutableCollection> C to(Supplier<C> collectionFactory) {

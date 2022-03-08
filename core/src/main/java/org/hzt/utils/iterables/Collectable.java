@@ -1,5 +1,6 @@
 package org.hzt.utils.iterables;
 
+import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
@@ -14,7 +15,6 @@ import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
-import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -200,7 +200,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default MutableListX<T> toMutableList() {
-        return IterableXHelper.mapFilteringTo(this, MutableListX::empty, Objects::nonNull, It::self, It::noFilter);
+        return to(MutableListX::empty);
     }
 
     default ListX<T> toListX() {
@@ -251,7 +251,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
                 .mapTo(collectionFactory, indexedValue -> mapper.apply(indexedValue.index(), indexedValue.value()));
     }
 
-    default <R, I extends Iterable<R>, C extends Collection<R>> C flatMapTo(
+    default <R, I extends Iterable<? extends R>, C extends Collection<R>> C flatMapTo(
             @NotNull Supplier<C> collectionSupplier,
             @NotNull Function<? super T, ? extends I> mapper) {
         final C collection = collectionSupplier.get();

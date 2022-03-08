@@ -1,5 +1,6 @@
 package org.hzt.utils.sequences;
 
+import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.MapX;
 import org.hzt.utils.function.QuadFunction;
@@ -12,6 +13,9 @@ import org.hzt.utils.iterators.MultiMappingIterator;
 import org.hzt.utils.iterators.SkipWhileIterator;
 import org.hzt.utils.iterators.TakeWhileIterator;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
+import org.hzt.utils.iterators.primitives.ToDoubleMultiMappingIterator;
+import org.hzt.utils.iterators.primitives.ToIntMultiMappingIterator;
+import org.hzt.utils.iterators.primitives.ToLongMultiMappingIterator;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.sequences.primitives.LongSequence;
@@ -19,7 +23,6 @@ import org.hzt.utils.strings.StringX;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
-import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +34,10 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
 import java.util.function.Function;
+import java.util.function.IntConsumer;
+import java.util.function.LongConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
@@ -123,16 +129,28 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return new TransformingIndexedSequence<>(this, mapper);
     }
 
-    default <R> Sequence<R> flatMap(@NotNull Function<T, Iterable<R>> transform) {
+    default <R> Sequence<R> flatMap(@NotNull Function<? super T, ? extends Iterable<? extends R>> transform) {
         return () -> FlatteningIterator.of(iterator(), t -> transform.apply(t).iterator());
     }
 
-    default <R> Sequence<R> flatMapStream(@NotNull Function<T, Stream<R>> transform) {
+    default <R> Sequence<R> flatMapStream(@NotNull Function<? super T, ? extends Stream<? extends R>> transform) {
         return () -> FlatteningIterator.of(iterator(), t -> transform.apply(t).iterator());
     }
 
     default <R> Sequence<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
         return () -> MultiMappingIterator.of(iterator(), mapper);
+    }
+
+    default IntSequence mapMultiToInt(@NotNull BiConsumer<? super T, IntConsumer> mapper) {
+        return () -> ToIntMultiMappingIterator.of(iterator(), mapper);
+    }
+
+    default LongSequence mapMultiToLong(@NotNull BiConsumer<? super T, LongConsumer> mapper) {
+        return () -> ToLongMultiMappingIterator.of(iterator(), mapper);
+    }
+
+    default DoubleSequence mapMultiToDouble(@NotNull BiConsumer<? super T, DoubleConsumer> mapper) {
+        return () -> ToDoubleMultiMappingIterator.of(iterator(), mapper);
     }
 
     @Override

@@ -1,5 +1,12 @@
 package org.hzt.utils.sequences;
 
+import org.hzt.test.TestSampleGenerator;
+import org.hzt.test.model.BankAccount;
+import org.hzt.test.model.Museum;
+import org.hzt.test.model.Painter;
+import org.hzt.test.model.Painting;
+import org.hzt.utils.It;
+import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.collections.LinkedSetX;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
@@ -204,6 +211,23 @@ class SequenceTest {
         It.println("result = " + result);
 
         assertEquals(ListX.of("Hallo", "test"), result);
+    }
+
+    @Test
+    void testMapMultiToIntList() {
+        final ListX<CollectionX<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
+                SetX.of("test"));
+
+        final var result = list.asSequence()
+                .mapMultiToInt((strings, accept) -> strings
+                        .mapToInt(String::length)
+                        .forEachInt(accept))
+                .filter(length -> length > 3)
+                .toListX();
+
+        It.println("result = " + result);
+
+        assertEquals(IntListX.of(5, 4), result);
     }
 
     @Test
@@ -771,5 +795,18 @@ class SequenceTest {
                 () -> assertEquals(56, approximations.size()),
                 () -> assertEquals(goldenRatio.setScale(10, RoundingMode.HALF_UP), actual.setScale(10, RoundingMode.HALF_UP))
         );
+    }
+
+    @Test
+    void testFlatmapIterator() {
+        final var integers = IntRange.of(0, 1_000)
+                .windowed(10)
+                .map(IntListX::iterator)
+                .flatMap(i -> () -> i)
+                .toListX();
+
+        System.out.println("integers = " + integers);
+
+        assertEquals(9910, integers.size());
     }
 }

@@ -8,7 +8,7 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class IntCollectorImpl<A, R> implements IntCollector<A, R> {
+public final class IntCollectorImpl<A, R> implements IntCollector<A, R> {
 
     private final Supplier<A> supplier;
     private final ObjIntConsumer<A> accumulator;

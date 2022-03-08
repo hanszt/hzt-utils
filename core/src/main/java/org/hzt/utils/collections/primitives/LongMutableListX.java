@@ -59,7 +59,7 @@ public interface LongMutableListX extends LongListX, LongMutableCollection,
 
     @Override
     default MutableListX<Long> boxed() {
-        return asSequence().boxed().toMutableList();
+        return MutableListX.of(this);
     }
 
     long removeAt(int index);

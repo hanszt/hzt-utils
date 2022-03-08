@@ -33,7 +33,7 @@ class DoubleMutableCollectionTest {
     }
 
     @Test
-    void streamFromDoubleCollection() {
+    void testStreamFromDoubleCollection() {
         DoubleListX listX = IntSequence.generate(1, d -> d + 2)
                 .mapToDouble(i -> 1. / i)
                 .take(1_000_000)
@@ -44,5 +44,16 @@ class DoubleMutableCollectionTest {
         It.println("sum = " + sum);
 
         assertTrue(sum < 10);
+    }
+
+    @Test
+    void testRemoveIf() {
+        final var list = DoubleMutableListX.of(Math.PI, 1, 4, 5, 3, 6, Math.E, 7, 5, 8, 9);
+        final boolean removed = list.removeIf(l -> l % 2 == 0);
+
+        assertAll(
+                () -> assertTrue(removed),
+                () -> assertEquals(DoubleListX.of(Math.PI, 1, 5, 3, Math.E, 7, 5, 9), list)
+        );
     }
 }

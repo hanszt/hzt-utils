@@ -49,7 +49,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
     boolean contains(double o);
 
     default DoubleListX filter(DoublePredicate predicate) {
-        DoubleMutableListX doubles = DoubleMutableListX.empty();
+        DoubleMutableListX doubles = DoubleMutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             final double value = iterator.nextDouble();
@@ -61,7 +61,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
     }
 
     default DoubleListX map(DoubleUnaryOperator mapper) {
-        DoubleMutableListX doubles = DoubleMutableListX.empty();
+        DoubleMutableListX doubles = DoubleMutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextDouble()));
@@ -70,7 +70,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
     }
 
     default IntListX mapToInt(DoubleToIntFunction mapper) {
-        IntMutableListX ints = IntMutableListX.empty();
+        IntMutableListX ints = IntMutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextDouble()));
@@ -79,7 +79,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
     }
 
     default LongListX mapToLong(DoubleToLongFunction mapper) {
-        LongMutableListX longs = LongMutableListX.empty();
+        LongMutableListX longs = LongMutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextDouble()));
@@ -88,7 +88,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
     }
 
     default <R> ListX<R> mapToObj(DoubleFunction<R> mapper) {
-        MutableListX<R> doubles = MutableListX.empty();
+        MutableListX<R> doubles = MutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.apply(iterator.nextDouble()));
@@ -98,14 +98,14 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
 
     @Override
     default DoubleListX plus(@NotNull Iterable<Double> values) {
-        DoubleMutableListX list = DoubleMutableListX.of(this);
+        DoubleMutableListX list = toMutableList();
         list.addAll(values);
         return list;
     }
 
     @Override
     default DoubleListX plus(double @NotNull ... array) {
-        DoubleMutableListX list = DoubleMutableListX.of(this);
+        DoubleMutableListX list = toMutableList();
         list.addAll(array);
         return list;
     }
@@ -123,4 +123,9 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
 
     @Override
     double[] toArray();
+
+    @Override
+    default DoubleMutableListX toMutableList() {
+        return to(() -> DoubleMutableListX.withInitCapacity(size()));
+    }
 }

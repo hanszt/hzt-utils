@@ -7,6 +7,7 @@ import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleComparator> {
 
@@ -24,6 +25,12 @@ public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleC
 
     static DoubleListX of(double... array) {
         return new DoubleArrayList(array);
+    }
+
+    static DoubleListX build(Consumer<DoubleMutableListX> factory) {
+        final DoubleMutableListX listX = DoubleMutableListX.empty();
+        factory.accept(listX);
+        return listX;
     }
 
     default boolean contains(double o) {

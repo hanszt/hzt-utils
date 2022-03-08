@@ -5,9 +5,12 @@ import org.hzt.utils.iterables.primitives.LongIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.PrimitiveIterator;
 import java.util.function.LongConsumer;
+import java.util.function.LongPredicate;
 
-public interface LongMutableCollection extends PrimitiveMutableCollectionX<Long, LongConsumer, long[]>, LongCollection {
+public interface LongMutableCollection extends LongCollection,
+        PrimitiveMutableCollectionX<Long, LongConsumer, LongPredicate, long[]> {
 
     boolean add(long l);
 
@@ -77,6 +80,19 @@ public interface LongMutableCollection extends PrimitiveMutableCollectionX<Long,
             }
         }
         return true;
+    }
+
+    @Override
+    default boolean removeIf(@NotNull LongPredicate predicate) {
+        boolean removed = false;
+        final PrimitiveIterator.OfLong iterator = iterator();
+        while (iterator.hasNext()) {
+            final long value = iterator.nextLong();
+            if (predicate.test(value)) {
+                removed = remove(value);
+            }
+        }
+        return removed;
     }
 
     @Override

@@ -7,10 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.PrimitiveIterator;
-import java.util.function.IntConsumer;
 
-final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsumer, PrimitiveIterator.OfInt>
-        implements IntMutableListX {
+final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements IntMutableListX {
 
     private int size = 0;
     private int[] elementData;
@@ -19,7 +17,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
         elementData = new int[initCapacity];
     }
 
-    IntArrayList(IntListX intListX) {
+    IntArrayList(@NotNull IntListX intListX) {
         size = intListX.size();
         this.elementData = intListX.toArray();
     }
@@ -28,12 +26,12 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
         elementData = new int[PrimitiveListHelper.DEFAULT_CAPACITY];
     }
 
-    IntArrayList(int... array) {
+    IntArrayList(int @NotNull ... array) {
         size = array.length;
         elementData = Arrays.copyOf(array, size);
     }
 
-    IntArrayList(Iterable<Integer> iterable) {
+    IntArrayList(@NotNull Iterable<Integer> iterable) {
         this();
         if (iterable instanceof IntIterable) {
             final var iterator = ((IntIterable) iterable).iterator();
@@ -153,6 +151,11 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer, IntConsume
     public int set(int index, int value) {
         elementData[index] = value;
         return value;
+    }
+
+    @Override
+    public IntMutableListX toMutableList() {
+        return this;
     }
 
     @Override

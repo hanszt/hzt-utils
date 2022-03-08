@@ -16,7 +16,7 @@ public interface Mappable<T> extends IndexedIterable<T> {
 
     <R> Mappable<R> mapIndexed(@NotNull BiFunction<Integer, ? super T, ? extends R> mapper);
 
-    <R> Mappable<R> flatMap(@NotNull Function<T, Iterable<R>> mapper);
+    <R> Mappable<R> flatMap(@NotNull Function<? super T, ? extends Iterable<? extends R>> mapper);
 
     <R> Mappable<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<R>> mapper);
 

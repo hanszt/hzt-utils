@@ -5,6 +5,7 @@ import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.primitives.LongMutableListX;
 import org.hzt.utils.tuples.Pair;
 
+import java.util.PrimitiveIterator;
 import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
 
@@ -13,20 +14,20 @@ public interface LongGroupable extends PrimitiveGroupable<Long, LongMutableListX
 
     @Override
     default MapX<Long, LongMutableListX> group() {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         final MutableMapX<Long, LongMutableListX> map = MutableMapX.empty();
         while (iterator.hasNext()) {
-            final var nextLong = iterator.nextLong();
+            final long nextLong = iterator.nextLong();
             map.computeIfAbsent(nextLong, key -> LongMutableListX.empty()).add(nextLong);
         }
         return map;
     }
 
     default <K> MapX<K, LongMutableListX> groupBy(LongFunction<K> classifier) {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         final MutableMapX<K, LongMutableListX> map = MutableMapX.empty();
         while (iterator.hasNext()) {
-            final var nextLong = iterator.nextLong();
+            final long nextLong = iterator.nextLong();
             map.computeIfAbsent(classifier.apply(nextLong), key -> LongMutableListX.empty()).add(nextLong);
         }
         return map;
@@ -34,11 +35,11 @@ public interface LongGroupable extends PrimitiveGroupable<Long, LongMutableListX
 
     @Override
     default Pair<LongMutableListX, LongMutableListX> partition(LongPredicate predicate) {
-        final var matchingList = LongMutableListX.empty();
-        final var nonMatchingList = LongMutableListX.empty();
-        final var iterator = iterator();
+        final LongMutableListX matchingList = LongMutableListX.empty();
+        final LongMutableListX nonMatchingList = LongMutableListX.empty();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
-            final var nextLong = iterator.nextLong();
+            final long nextLong = iterator.nextLong();
             if (predicate.test(nextLong)) {
                 matchingList.add(nextLong);
             } else {

@@ -7,6 +7,7 @@ import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 
@@ -45,7 +46,7 @@ public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator
     int lastIndexOf(int i);
 
     default int random() {
-        return findRandom().orElseThrow();
+        return findRandom().orElseThrow(NoSuchElementException::new);
     }
 
     OptionalInt findRandom();

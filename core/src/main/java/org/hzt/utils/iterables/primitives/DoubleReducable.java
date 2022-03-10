@@ -59,7 +59,7 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
                                                  @NotNull BiFunction<Double, Double, R> finisher) {
         PrimitiveIterator.OfDouble iterator = iterator();
         if (iterator.hasNext()) {
-            final var first = iterator.nextDouble();
+            final double first = iterator.nextDouble();
             double accumulator1 = first;
             double accumulator2 = first;
             while (iterator.hasNext()) {

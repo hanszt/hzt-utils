@@ -57,7 +57,7 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
                                                  @NotNull BiFunction<Long, Long, R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
         if (iterator.hasNext()) {
-            final var first = iterator.nextLong();
+            final long first = iterator.nextLong();
             long accumulator1 = first;
             long accumulator2 = first;
             while (iterator.hasNext()) {

@@ -108,7 +108,7 @@ class ReducableTest {
 
         final Triple<MutableListX<Object>, Long, LocalDate> actual = dateSequence
                 .onEach(d -> iterations2.incrementAndGet())
-                .foldThree(MutableListX.empty(), MutableListX::plus,
+                .foldToThree(MutableListX.empty(), MutableListX::plus,
                         0L, (a, b) -> ++a,
                         LocalDate.ofEpochDay(0), (first, second) -> second);
 
@@ -136,7 +136,7 @@ class ReducableTest {
 
         final Optional<Pair<LocalDate, LocalDate>> actual = dateSequence
                 .onEach(d -> iterations2.incrementAndGet())
-                .reduceTwo((a, last) -> last, (first, b) -> first);
+                .reduceToTwo((a, last) -> last, (first, b) -> first);
 
         final Pair<LocalDate, LocalDate> pair = actual.orElseThrow(NoSuchElementException::new);
         It.println("pair = " + pair);

@@ -30,6 +30,10 @@ public interface IntCollectable extends IntIterable, PrimitiveCollectable<IntCol
         return finisher.apply(result);
     }
 
+    default <A, R> R collect(IntCollector<A, R> collector) {
+        return collect(collector.supplier(), collector.accumulator(), collector.finisher());
+    }
+
     default <A1, R1, A2, R2, R> R teeing(
             @NotNull IntCollector<A1, R1> downStream1,
             @NotNull IntCollector<A2, R2> downStream2,

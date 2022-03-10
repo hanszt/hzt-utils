@@ -1,9 +1,9 @@
 package org.hzt.utils.iterables;
 
+import org.hzt.utils.It;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
-import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -29,16 +29,14 @@ public interface Reducable<T> extends Iterable<T> {
 
     default <R1, R2> Pair<R1, R2> foldTwo(
             @NotNull R1 initial1, @NotNull BiFunction<? super R1, ? super T, ? extends R1> operator1,
-            @NotNull R2 initial2, @NotNull BiFunction<? super R2, ? super T, ? extends R2> operator2
-    ) {
+            @NotNull R2 initial2, @NotNull BiFunction<? super R2, ? super T, ? extends R2> operator2) {
         return foldTwo(initial1, operator1, initial2, operator2, Pair::of);
     }
 
     default <R1, R2, R> R foldTwo(
             @NotNull R1 initial1, @NotNull BiFunction<? super R1, ? super T, ? extends R1> operator1,
             @NotNull R2 initial2, @NotNull BiFunction<? super R2, ? super T, ? extends R2> operator2,
-            @NotNull BiFunction<? super R1, ? super R2, ? extends R> finisher
-    ) {
+            @NotNull BiFunction<? super R1, ? super R2, ? extends R> finisher) {
         R1 accumulator1 = initial1;
         R2 accumulator2 = initial2;
         for (T next : this) {
@@ -48,15 +46,15 @@ public interface Reducable<T> extends Iterable<T> {
         return finisher.apply(accumulator1, accumulator2);
     }
 
-    default <R1, R2, R3> Triple<R1, R2, R3> foldThree(
+    default <R1, R2, R3> Triple<R1, R2, R3> foldToThree(
             @NotNull R1 initial1, @NotNull BiFunction<? super R1, ? super T, ? extends R1> operator1,
             @NotNull R2 initial2, @NotNull BiFunction<? super R2, ? super T, ? extends R2> operator2,
             @NotNull R3 initial3, @NotNull BiFunction<? super R3, ? super T, ? extends R3> operator3
     ) {
-        return foldThree(initial1, operator1, initial2, operator2, initial3, operator3, Triple::of);
+        return foldToThree(initial1, operator1, initial2, operator2, initial3, operator3, Triple::of);
     }
 
-    default <R1, R2, R3, R> R foldThree(
+    default <R1, R2, R3, R> R foldToThree(
             @NotNull R1 initial1, @NotNull BiFunction<? super R1, ? super T, ? extends R1> operator1,
             @NotNull R2 initial2, @NotNull BiFunction<? super R2, ? super T, ? extends R2> operator2,
             @NotNull R3 initial3, @NotNull BiFunction<? super R3, ? super T, ? extends R3> operator3,
@@ -84,22 +82,16 @@ public interface Reducable<T> extends Iterable<T> {
     default <R> @NotNull R reduce(@NotNull T initial,
                                   @NotNull Function<? super T, ? extends R> mapper,
                                   @NotNull BinaryOperator<T> operation) {
-        T accumulator = initial;
-        for (T t : this) {
-            if (t != null) {
-                accumulator = operation.apply(accumulator, t);
-            }
-        }
-        return mapper.apply(accumulator);
+        return mapper.apply(reduce(initial, operation));
     }
 
-    default Optional<Pair<T, T>> reduceTwo(
+    default Optional<Pair<T, T>> reduceToTwo(
             @NotNull BinaryOperator<T> operator1,
             @NotNull BinaryOperator<T> operator2) {
-        return reduceTwo(operator1, operator2, Pair::of);
+        return reduceToTwo(operator1, operator2, Pair::of);
     }
 
-    default <R> Optional<R> reduceTwo(
+    default <R> Optional<R> reduceToTwo(
             @NotNull BinaryOperator<T> operator1,
             @NotNull BinaryOperator<T> operator2,
             @NotNull BiFunction<? super T, ? super T, ? extends R> finisher) {

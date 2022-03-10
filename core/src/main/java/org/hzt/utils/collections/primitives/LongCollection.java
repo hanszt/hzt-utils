@@ -3,6 +3,7 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.iterables.primitives.LongCollectable;
+import org.hzt.utils.iterables.primitives.LongGroupable;
 import org.hzt.utils.iterables.primitives.LongNumerable;
 import org.hzt.utils.iterables.primitives.LongReducable;
 import org.hzt.utils.iterables.primitives.LongStreamable;
@@ -19,7 +20,7 @@ import java.util.function.LongToDoubleFunction;
 import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
 
-public interface LongCollection extends LongReducable, LongCollectable, LongNumerable, LongStreamable,
+public interface LongCollection extends LongReducable, LongCollectable, LongNumerable, LongStreamable, LongGroupable,
         PrimitiveCollectionX<Long, LongConsumer, long[]> {
 
     default int size() {

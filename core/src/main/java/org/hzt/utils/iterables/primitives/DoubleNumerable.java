@@ -77,8 +77,7 @@ public interface DoubleNumerable extends DoubleIterable, PrimitiveNumerable<Doub
         DoubleStatistics doubleStatistics = new DoubleStatistics();
         PrimitiveIterator.OfDouble iterator = this.iterator();
         while (iterator.hasNext()) {
-            double i = iterator.nextDouble();
-            doubleStatistics.accept(i);
+            doubleStatistics.accept(iterator.nextDouble());
         }
         return doubleStatistics;
     }

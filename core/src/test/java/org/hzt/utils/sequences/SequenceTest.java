@@ -374,18 +374,18 @@ class SequenceTest {
 
     @Test
     void testIterateRandomWithinBound() {
-        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5);
+        final IntListX integers = IntListX.of(1, 2, 3, 4, 5);
 
-        final MapX<Integer, MutableListX<Integer>> group = Sequence
+        final MapX<Integer, IntMutableListX> group = IntSequence
                 .generate(integers::random)
                 .take(10_000_000)
                 .group();
 
-        group.values().forEach(List::size, It::println);
+        group.values().forEach(IntListX::size, It::println);
 
         assertAll(
                 () -> assertEquals(integers.size(), group.size()),
-                () -> group.values().forEach(ListX::isNotEmpty, Assertions::assertTrue)
+                () -> group.values().forEach(IntListX::isNotEmpty, Assertions::assertTrue)
         );
     }
 
@@ -655,10 +655,14 @@ class SequenceTest {
 
         final IntSequence daysOfYear = Sequence
                 .generate(LocalDate.of(year, Month.JANUARY, 1), date -> date.plusDays(1))
-                .takeWhile(date -> date.getYear() < year + 1)
+                .takeWhile(date -> date.getYear() == year)
                 .mapToInt(LocalDate::getDayOfMonth);
 
         It.println(daysOfYear.joinToString());
+
+        It.println("daysOfYear.min() = " + daysOfYear.min());
+
+        It.println("daysOfYear.max() = " + daysOfYear.max());
 
         assertAll(
                 () -> assertTrue(Year.of(year).isLeap()),
@@ -805,7 +809,7 @@ class SequenceTest {
                 .flatMap(i -> () -> i)
                 .toListX();
 
-        System.out.println("integers = " + integers);
+        It.println("integers = " + integers);
 
         assertEquals(9910, integers.size());
     }

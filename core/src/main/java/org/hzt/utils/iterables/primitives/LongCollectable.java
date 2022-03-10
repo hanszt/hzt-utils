@@ -1,5 +1,6 @@
 package org.hzt.utils.iterables.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.LongCollection;
 import org.hzt.utils.collections.primitives.LongListX;
 import org.hzt.utils.collections.primitives.LongMutableCollection;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 
@@ -16,13 +18,20 @@ import java.util.function.Supplier;
 public interface LongCollectable extends LongIterable, PrimitiveCollectable<LongCollection> {
 
     default <R> R collect(Supplier<R> supplier, ObjLongConsumer<R> accumulator) {
+        return collect(supplier, accumulator, It::self);
+    }
+
+    default <A, R> R collect(Supplier<A> supplier, ObjLongConsumer<A> accumulator, Function<A, R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
-        final R result = supplier.get();
+        final A result = supplier.get();
         while (iterator.hasNext()) {
-            final long i = iterator.nextLong();
-            accumulator.accept(result, i);
+            accumulator.accept(result, iterator.nextLong());
         }
-        return result;
+        return finisher.apply(result);
+    }
+
+    default <A, R> R collect(LongCollector<A, R> collector) {
+        return collect(collector.supplier(), collector.accumulator(), collector.finisher());
     }
 
     default <A1, R1, A2, R2, R> R teeing(

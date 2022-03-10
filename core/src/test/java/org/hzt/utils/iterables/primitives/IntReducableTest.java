@@ -17,7 +17,7 @@ class IntReducableTest {
         integers.forEach(It::println);
 
         final Pair<Integer, Integer> pair = integers
-                .reduceTwo(1, (acc, next) -> acc * next,
+                .reduceToTwo(1, (acc, next) -> acc * next,
                         0, Integer::sum,
                         Pair::of);
 

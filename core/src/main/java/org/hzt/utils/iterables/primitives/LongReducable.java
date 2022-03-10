@@ -4,8 +4,10 @@ import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.PrimitiveIterator;
+import java.util.function.BiFunction;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
@@ -14,11 +16,10 @@ import java.util.function.LongPredicate;
 public interface LongReducable extends LongIterable, PrimitiveReducable<Long, LongBinaryOperator, LongPredicate, OptionalLong> {
 
     default long reduce(long initial, LongBinaryOperator operator) {
-        long accumulator = initial;
         PrimitiveIterator.OfLong iterator = iterator();
+        long accumulator = initial;
         while (iterator.hasNext()) {
-            long t = iterator.nextLong();
-            accumulator = operator.applyAsLong(accumulator, t);
+            accumulator = operator.applyAsLong(accumulator, iterator.nextLong());
         }
         return accumulator;
     }
@@ -35,16 +36,44 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
         return OptionalLong.empty();
     }
 
+    default <R> R reduceToTwo(
+            long initial1, @NotNull LongBinaryOperator operator1,
+            long initial2, @NotNull LongBinaryOperator operator2,
+            @NotNull BiFunction<Long, Long, R> finisher) {
+        PrimitiveIterator.OfLong iterator = iterator();
+        long accumulator1 = initial1;
+        long accumulator2 = initial2;
+        while (iterator.hasNext()) {
+            long nextLong = iterator.nextLong();
+            accumulator1 = operator1.applyAsLong(accumulator1, nextLong);
+            accumulator2 = operator2.applyAsLong(accumulator2, nextLong);
+        }
+        return finisher.apply(accumulator1, accumulator2);
+    }
+
+    @Override
+    default @NotNull <R> Optional<R> reduceToTwo(@NotNull LongBinaryOperator operator1,
+                                                 @NotNull LongBinaryOperator operator2,
+                                                 @NotNull BiFunction<Long, Long, R> finisher) {
+        PrimitiveIterator.OfLong iterator = iterator();
+        if (iterator.hasNext()) {
+            final var first = iterator.nextLong();
+            long accumulator1 = first;
+            long accumulator2 = first;
+            while (iterator.hasNext()) {
+                long nextLong = iterator.nextLong();
+                accumulator1 = operator1.applyAsLong(accumulator1, nextLong);
+                accumulator2 = operator2.applyAsLong(accumulator2, nextLong);
+            }
+            return Optional.of(finisher.apply(accumulator1, accumulator2));
+        }
+        return Optional.empty();
+    }
+
     default <R> @NotNull R reduce(long initial,
                                   @NotNull LongFunction<R> mapper,
                                   @NotNull LongBinaryOperator operation) {
-        long accumulator = initial;
-        PrimitiveIterator.OfLong iterator = this.iterator();
-        while (iterator.hasNext()) {
-            long t = iterator.nextLong();
-            accumulator = operation.applyAsLong(accumulator, t);
-        }
-        return mapper.apply(accumulator);
+        return mapper.apply(reduce(initial, operation));
     }
 
     default long first() {
@@ -115,10 +144,9 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
     }
 
     default boolean any(@NotNull LongPredicate predicate) {
-        PrimitiveIterator.OfLong iterator = this.iterator();
+        PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
-            long element = iterator.nextLong();
-            if (predicate.test(element)) {
+            if (predicate.test(iterator.nextLong())) {
                 return true;
             }
         }
@@ -126,10 +154,9 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
     }
 
     default boolean all(@NotNull LongPredicate predicate) {
-        PrimitiveIterator.OfLong iterator = this.iterator();
+        PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
-            long t = iterator.nextLong();
-            if (!predicate.test(t)) {
+            if (!predicate.test(iterator.nextLong())) {
                 return false;
             }
         }
@@ -137,10 +164,9 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
     }
 
     default boolean none(@NotNull LongPredicate predicate) {
-        PrimitiveIterator.OfLong iterator = this.iterator();
+        PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
-            long t = iterator.nextLong();
-            if (predicate.test(t)) {
+            if (predicate.test(iterator.nextLong())) {
                 return false;
             }
         }

@@ -8,7 +8,7 @@ import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class DoubleCollectorImpl<A, R> implements DoubleCollector<A, R> {
+public final class DoubleCollectorImpl<A, R> implements DoubleCollector<A, R> {
 
     private final Supplier<A> supplier;
     private final ObjDoubleConsumer<A> accumulator;

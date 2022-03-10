@@ -8,7 +8,7 @@ import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class LongCollectorImpl<A, R> implements LongCollector<A, R> {
+public final class LongCollectorImpl<A, R> implements LongCollector<A, R> {
 
     private final Supplier<A> supplier;
     private final ObjLongConsumer<A> accumulator;

@@ -2,6 +2,9 @@ package org.hzt.utils.iterables.primitives;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+import java.util.function.BiFunction;
+
 /**
  * @param <T> The numberType
  * @param <B> The primitive binaryOperator
@@ -12,11 +15,9 @@ public interface PrimitiveReducable<T, B, P, O> extends Iterable<T> {
 
     @NotNull O reduce(@NotNull B operator);
 
-    boolean any(@NotNull P predicate);
-
-    boolean all(@NotNull P predicate);
-
-    boolean none(@NotNull P predicate);
+    <R> @NotNull Optional<R> reduceToTwo(@NotNull B operator1,
+                                         @NotNull B operator2,
+                                         @NotNull BiFunction<T, T, R> finisher);
 
     O findFirst();
 
@@ -26,9 +27,15 @@ public interface PrimitiveReducable<T, B, P, O> extends Iterable<T> {
 
     O findLast(P predicate);
 
+    boolean any(@NotNull P predicate);
+
     default boolean any() {
         return iterator().hasNext();
     }
+
+    boolean all(@NotNull P predicate);
+
+    boolean none(@NotNull P predicate);
 
     default boolean none() {
         return !iterator().hasNext();

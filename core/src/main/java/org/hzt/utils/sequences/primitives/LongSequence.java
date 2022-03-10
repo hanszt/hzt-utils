@@ -3,6 +3,7 @@ package org.hzt.utils.sequences.primitives;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.primitives.LongCollectable;
+import org.hzt.utils.iterables.primitives.LongGroupable;
 import org.hzt.utils.iterables.primitives.LongIterable;
 import org.hzt.utils.iterables.primitives.LongNumerable;
 import org.hzt.utils.iterables.primitives.LongReducable;
@@ -39,7 +40,7 @@ import java.util.stream.LongStream;
 
 @FunctionalInterface
 public interface LongSequence extends LongWindowedSequence, LongReducable, LongCollectable, LongNumerable, LongStreamable,
-        PrimitiveSortable<LongComparator>,
+        LongGroupable, PrimitiveSortable<LongComparator>,
         PrimitiveSequence<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator> {
 
     static LongSequence empty() {

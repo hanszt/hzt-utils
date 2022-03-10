@@ -4,8 +4,10 @@ import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
+import java.util.function.BiFunction;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
@@ -36,16 +38,44 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
         return OptionalDouble.empty();
     }
 
+    default <R> R reduceToTwo(
+            double initial1, @NotNull DoubleBinaryOperator operator1,
+            double initial2, @NotNull DoubleBinaryOperator operator2,
+            @NotNull BiFunction<Double, Double, R> finisher) {
+        PrimitiveIterator.OfDouble iterator = iterator();
+        double accumulator1 = initial1;
+        double accumulator2 = initial2;
+        while (iterator.hasNext()) {
+            double nextDouble = iterator.nextDouble();
+            accumulator1 = operator1.applyAsDouble(accumulator1, nextDouble);
+            accumulator2 = operator2.applyAsDouble(accumulator2, nextDouble);
+        }
+        return finisher.apply(accumulator1, accumulator2);
+    }
+
+    @Override
+    default @NotNull <R> Optional<R> reduceToTwo(@NotNull DoubleBinaryOperator operator1,
+                                                 @NotNull DoubleBinaryOperator operator2,
+                                                 @NotNull BiFunction<Double, Double, R> finisher) {
+        PrimitiveIterator.OfDouble iterator = iterator();
+        if (iterator.hasNext()) {
+            final var first = iterator.nextDouble();
+            double accumulator1 = first;
+            double accumulator2 = first;
+            while (iterator.hasNext()) {
+                double nextDouble = iterator.nextDouble();
+                accumulator1 = operator1.applyAsDouble(accumulator1, nextDouble);
+                accumulator2 = operator2.applyAsDouble(accumulator2, nextDouble);
+            }
+            return Optional.of(finisher.apply(accumulator1, accumulator2));
+        }
+        return Optional.empty();
+    }
+
     default <R> @NotNull R reduce(double initial,
                                   @NotNull DoubleFunction<R> mapper,
                                   @NotNull DoubleBinaryOperator operation) {
-        double accumulator = initial;
-        PrimitiveIterator.OfDouble iterator = this.iterator();
-        while (iterator.hasNext()) {
-            double t = iterator.nextDouble();
-            accumulator = operation.applyAsDouble(accumulator, t);
-        }
-        return mapper.apply(accumulator);
+        return mapper.apply(reduce(initial, operation));
     }
 
     default double first() {
@@ -117,10 +147,9 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
 
     @Override
     default boolean any(@NotNull DoublePredicate predicate) {
-        PrimitiveIterator.OfDouble iterator = this.iterator();
+        PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
-            double element = iterator.nextDouble();
-            if (predicate.test(element)) {
+            if (predicate.test(iterator.nextDouble())) {
                 return true;
             }
         }
@@ -129,10 +158,9 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
 
     @Override
     default boolean all(@NotNull DoublePredicate predicate) {
-        PrimitiveIterator.OfDouble iterator = this.iterator();
+        PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
-            double t = iterator.nextDouble();
-            if (!predicate.test(t)) {
+            if (!predicate.test(iterator.nextDouble())) {
                 return false;
             }
         }
@@ -143,8 +171,7 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
     default boolean none(@NotNull DoublePredicate predicate) {
         PrimitiveIterator.OfDouble iterator = this.iterator();
         while (iterator.hasNext()) {
-            double t = iterator.nextDouble();
-            if (predicate.test(t)) {
+            if (predicate.test(iterator.nextDouble())) {
                 return false;
             }
         }

@@ -4,6 +4,7 @@ import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.primitives.IntCollectable;
+import org.hzt.utils.iterables.primitives.IntGroupable;
 import org.hzt.utils.iterables.primitives.IntIterable;
 import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.iterables.primitives.IntReducable;
@@ -39,7 +40,7 @@ import java.util.stream.IntStream;
 
 @FunctionalInterface
 public interface IntSequence extends IntWindowedSequence, IntReducable, IntCollectable, IntNumerable, IntStreamable,
-        PrimitiveSortable<IntComparator>,
+        IntGroupable, PrimitiveSortable<IntComparator>,
         PrimitiveSequence<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator> {
 
     static IntSequence empty() {

@@ -19,13 +19,12 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
         int accumulator = initial;
         PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {
-            int nextInt = iterator.nextInt();
-            accumulator = operator.applyAsInt(accumulator, nextInt);
+            accumulator = operator.applyAsInt(accumulator, iterator.nextInt());
         }
         return accumulator;
     }
 
-    default <R> R reduceTwo(
+    default <R> R reduceToTwo(
             int initial1, @NotNull IntBinaryOperator operator1,
             int initial2, @NotNull IntBinaryOperator operator2,
             @NotNull BiFunction<Integer, Integer, R> finisher) {
@@ -40,7 +39,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
         return finisher.apply(accumulator1, accumulator2);
     }
 
-    default <R> Optional<R> reduceTwo(
+    default <R> @NotNull Optional<R> reduceToTwo(
             @NotNull IntBinaryOperator operator1,
             @NotNull IntBinaryOperator operator2,
             @NotNull BiFunction<Integer, Integer, R> finisher) {
@@ -50,7 +49,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
             int accumulator1 = first;
             int accumulator2 = first;
             while (iterator.hasNext()) {
-                final var nextInt = iterator.nextInt();
+                int nextInt = iterator.nextInt();
                 accumulator1 = operator1.applyAsInt(accumulator1, nextInt);
                 accumulator2 = operator2.applyAsInt(accumulator2, nextInt);
             }
@@ -74,13 +73,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
     default <R> @NotNull R reduce(int initial,
                                   @NotNull IntFunction<R> mapper,
                                   @NotNull IntBinaryOperator operation) {
-        int accumulator = initial;
-        PrimitiveIterator.OfInt iterator = iterator();
-        while (iterator.hasNext()) {
-            int t = iterator.nextInt();
-            accumulator = operation.applyAsInt(accumulator, t);
-        }
-        return mapper.apply(accumulator);
+        return mapper.apply(reduce(initial, operation));
     }
 
     default int first() {
@@ -156,8 +149,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
     default boolean any(@NotNull IntPredicate predicate) {
         PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {
-            int element = iterator.nextInt();
-            if (predicate.test(element)) {
+            if (predicate.test(iterator.nextInt())) {
                 return true;
             }
         }
@@ -167,8 +159,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
     default boolean all(@NotNull IntPredicate predicate) {
         PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
-            int t = iterator.nextInt();
-            if (!predicate.test(t)) {
+            if (!predicate.test(iterator.nextInt())) {
                 return false;
             }
         }
@@ -178,8 +169,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
     default boolean none(@NotNull IntPredicate predicate) {
         PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {
-            int t = iterator.nextInt();
-            if (predicate.test(t)) {
+            if (predicate.test(iterator.nextInt())) {
                 return false;
             }
         }

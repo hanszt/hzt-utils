@@ -105,7 +105,7 @@ class ReducableTest {
 
         final var actual = dateSequence
                 .onEach(d -> iterations2.incrementAndGet())
-                .foldThree(MutableListX.empty(), MutableListX::plus,
+                .foldToThree(MutableListX.empty(), MutableListX::plus,
                         0L, (a, b) -> ++a,
                         LocalDate.EPOCH, (first, second) -> second);
 
@@ -133,7 +133,7 @@ class ReducableTest {
 
         final var actual = dateSequence
                 .onEach(d -> iterations2.incrementAndGet())
-                .reduceTwo((a, last) -> last, (first, b) -> first);
+                .reduceToTwo((a, last) -> last, (first, b) -> first);
 
         final var pair = actual.orElseThrow();
         It.println("pair = " + pair);

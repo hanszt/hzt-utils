@@ -1,5 +1,6 @@
 package org.hzt.utils.iterables.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.DoubleCollection;
 import org.hzt.utils.collections.primitives.DoubleListX;
 import org.hzt.utils.collections.primitives.DoubleMutableCollection;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 
@@ -16,13 +18,20 @@ import java.util.function.Supplier;
 public interface DoubleCollectable extends DoubleIterable, PrimitiveCollectable<DoubleCollection> {
 
     default <R> R collect(Supplier<R> supplier, ObjDoubleConsumer<R> accumulator) {
+        return collect(supplier, accumulator, It::self);
+    }
+
+    default <A, R> R collect(Supplier<A> supplier, ObjDoubleConsumer<A> accumulator, Function<A, R> finisher) {
         PrimitiveIterator.OfDouble iterator = iterator();
         final var result = supplier.get();
         while (iterator.hasNext()) {
-            final var i = iterator.nextDouble();
-            accumulator.accept(result, i);
+            accumulator.accept(result, iterator.nextDouble());
         }
-        return result;
+        return finisher.apply(result);
+    }
+
+    default <A, R> R collect(DoubleCollector<A, R> collector) {
+        return collect(collector.supplier(), collector.accumulator(), collector.finisher());
     }
 
     default <A1, R1, A2, R2, R> R teeing(

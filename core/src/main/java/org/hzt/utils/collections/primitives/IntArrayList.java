@@ -1,11 +1,13 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.primitives.IntIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
 
 final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements IntMutableListX {
@@ -86,6 +88,11 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
     @Override
     public int lastIndexOf(int i) {
         return lastIndexOfRange(i, 0, size);
+    }
+
+    @Override
+    public OptionalInt findRandom() {
+        return isNotEmpty() ? OptionalInt.of(get(IterableXHelper.RANDOM.nextInt(size()))) : OptionalInt.empty();
     }
 
     private int lastIndexOfRange(int value, int start, int end) {

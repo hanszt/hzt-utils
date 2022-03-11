@@ -1,4 +1,4 @@
-open module core {
+open module hzt.utils.core {
 
     requires org.jetbrains.annotations;
 

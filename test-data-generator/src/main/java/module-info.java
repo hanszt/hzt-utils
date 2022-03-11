@@ -1,4 +1,4 @@
-open module test.data.generator {
+open module hzt.utils.test {
 
     requires org.jetbrains.annotations;
 

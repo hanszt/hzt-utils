@@ -23,6 +23,7 @@ import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -50,6 +51,11 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SequenceTest {
+
+    @BeforeAll
+    static void setup() {
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
+    }
 
     @Test
     void testSimpleStreamWithMapYieldsIteratorWithNext() {
@@ -646,9 +652,13 @@ class SequenceTest {
         final var daysOfYear = Sequence
                 .generate(LocalDate.of(year, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhile(date -> date.getYear() == year)
-                .mapToInt(LocalDate::getDayOfMonth);
+                .mapToInt(LocalDate::getDayOfMonth)
+                .toListX();
 
+
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "false");
         It.println(daysOfYear.joinToString());
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
         It.println("daysOfYear.min() = " + daysOfYear.min());
 
@@ -793,6 +803,8 @@ class SequenceTest {
 
     @Test
     void testFlatmapIterator() {
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "false");
+
         final var integers = IntRange.of(0, 1_000)
                 .windowed(10)
                 .map(IntListX::iterator)
@@ -800,6 +812,8 @@ class SequenceTest {
                 .toListX();
 
         It.println("integers = " + integers);
+
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
         assertEquals(9910, integers.size());
     }

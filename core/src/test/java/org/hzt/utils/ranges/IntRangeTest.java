@@ -3,6 +3,7 @@ package org.hzt.utils.ranges;
 import org.hzt.utils.collections.primitives.IntListX;
 import org.hzt.utils.collections.primitives.IntMutableListX;
 import org.hzt.utils.It;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
@@ -10,6 +11,11 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class IntRangeTest {
+
+    @BeforeAll
+    static void setup() {
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
+    }
 
     @Test
     void testIntRange() {
@@ -25,35 +31,31 @@ class IntRangeTest {
     void testIterateIntRange() {
         final var range = IntRange.of(2, 10);
         IntMutableListX list = IntMutableListX.empty();
-        for (int i : range) {
-            list.add(i);
-        }
-        for (int i : range) {
-            list.add(i);
-        }
+        range.forEachInt(list::add);
+        range.forEachInt(list::add);
         assertEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9), list);
     }
 
     @Test
     void testRange() {
-        final var range = IntRange.of(2, 10);
-        assertIterableEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9), range);
+        final var range = IntRange.of(2, 10).toListX();
+        assertEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9), range);
     }
 
     @Test
     void testSteppedRange() {
-        final var range = IntRange.of(2, 20, 2);
+        final var range = IntRange.of(2, 20, 2).toListX();
 
         It.println("range = " + range);
         range.forEach(It::println);
 
-        assertIterableEquals(IntListX.of(2, 4, 6, 8, 10, 12, 14, 16, 18), range);
+        assertEquals(IntListX.of(2, 4, 6, 8, 10, 12, 14, 16, 18), range);
     }
 
     @Test
     void testRangeClosed() {
-        final var range = IntRange.closed(2, 10);
-        assertIterableEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9, 10), range);
+        final var range = IntRange.closed(2, 10).toListX();
+        assertEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9, 10), range);
     }
 
     @Test
@@ -61,9 +63,11 @@ class IntRangeTest {
         final var range = IntRange.closed(2, 20, 2);
 
         It.println("range = " + range);
-        range.forEach(It::println);
+        range.forEachInt(It::println);
 
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "false");
         assertIterableEquals(IntListX.of(2, 4, 6, 8, 10, 12, 14, 16, 18, 20), range);
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
     }
 
     @Test

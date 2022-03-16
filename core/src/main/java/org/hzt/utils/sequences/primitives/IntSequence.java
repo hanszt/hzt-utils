@@ -83,11 +83,11 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     default IntSequence plus(int @NotNull ... values) {
-        return Sequence.of(this, IntSequence.of(values)).flatMap(It::self).mapToInt(It::asInt);
+        return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(IntIterable::forEachInt);
     }
 
     default IntSequence plus(@NotNull Iterable<Integer> values) {
-        return Sequence.of(this, IntSequence.of(values)).flatMap(It::self).mapToInt(It::asInt);
+        return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(IntIterable::forEachInt);
     }
 
     @Override

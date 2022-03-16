@@ -83,7 +83,7 @@ public final class DoubleWindowedIterator extends AbstractIterator<DoubleListX> 
             stepCount++;
         }
         while (iterator.hasNext() && nextWindow.size() < size) {
-            nextWindow.add(iterator.next());
+            nextWindow.add(iterator.nextDouble());
         }
     }
 

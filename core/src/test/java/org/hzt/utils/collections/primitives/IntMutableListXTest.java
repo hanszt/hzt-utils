@@ -2,11 +2,17 @@ package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.It;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class IntMutableListXTest {
+
+    @BeforeAll
+    static void setup() {
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
+    }
 
     @Test
     void testDifferentMethods() {
@@ -35,7 +41,7 @@ class IntMutableListXTest {
                 () -> assertEquals(1, ints.size())
         );
 
-        ints.forEach(It::println);
+        ints.forEachInt(It::println);
     }
 
     @Test

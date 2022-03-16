@@ -2,6 +2,7 @@ package org.hzt.utils.statistics;
 
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.It;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -10,6 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StatisticsTest {
+
+    @BeforeAll
+    static void setup() {
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
+    }
 
     private static final Random RANDOM = new Random();
 
@@ -31,9 +37,13 @@ class StatisticsTest {
 
         It.println("longRange.count() = " + longRange.count());
         It.println(longRange.sum());
+
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "false");
         It.println(intRange.joinToString());
         It.println(longRange.joinToString());
         It.println(doubleRange.joinToString());
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
+
         It.println(standardDeviationIntRange);
 
         assertAll(

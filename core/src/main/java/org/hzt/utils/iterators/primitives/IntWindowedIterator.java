@@ -83,7 +83,7 @@ public final class IntWindowedIterator extends AbstractIterator<IntListX> {
             stepCount++;
         }
         while (iterator.hasNext() && nextWindow.size() < size) {
-            nextWindow.add(iterator.next());
+            nextWindow.add(iterator.nextInt());
         }
     }
 

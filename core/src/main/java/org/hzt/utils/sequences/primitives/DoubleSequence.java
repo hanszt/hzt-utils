@@ -3,6 +3,7 @@ package org.hzt.utils.sequences.primitives;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.primitives.DoubleCollectable;
+import org.hzt.utils.iterables.primitives.DoubleGroupable;
 import org.hzt.utils.iterables.primitives.DoubleIterable;
 import org.hzt.utils.iterables.primitives.DoubleNumerable;
 import org.hzt.utils.iterables.primitives.DoubleReducable;
@@ -39,7 +40,7 @@ import java.util.stream.DoubleStream;
 
 @FunctionalInterface
 public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable,
-        PrimitiveSortable<DoubleComparator>,
+        DoubleGroupable, PrimitiveSortable<DoubleComparator>,
         PrimitiveSequence<Double, DoubleConsumer, DoubleUnaryOperator, DoublePredicate, DoubleBinaryOperator> {
 
     static DoubleSequence empty() {
@@ -79,11 +80,11 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     default DoubleSequence plus(double @NotNull ... values) {
-        return Sequence.of(this, DoubleSequence.of(values)).flatMap(It::self).mapToDouble(It::asDouble);
+        return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(DoubleIterable::forEachDouble);
     }
 
     default DoubleSequence plus(@NotNull Iterable<Double> values) {
-        return Sequence.of(this, DoubleSequence.of(values)).flatMap(It::self).mapToDouble(It::asDouble);
+        return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(DoubleIterable::forEachDouble);
     }
 
     @Override

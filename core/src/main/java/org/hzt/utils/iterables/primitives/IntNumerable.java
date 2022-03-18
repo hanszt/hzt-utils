@@ -74,10 +74,9 @@ public interface IntNumerable extends IntIterable, PrimitiveNumerable<IntPredica
 
     default @NotNull IntStatistics stats() {
         IntStatistics intStatistics = new IntStatistics();
-        PrimitiveIterator.OfInt iterator = this.iterator();
+        PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
-            int i = iterator.nextInt();
-            intStatistics.accept(i);
+            intStatistics.accept(iterator.nextInt());
         }
         return intStatistics;
     }

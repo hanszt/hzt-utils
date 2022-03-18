@@ -375,7 +375,7 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static PrimitiveIterator.@NotNull OfInt emptyIntIterator() {
+    public static @NotNull PrimitiveIterator.OfInt emptyIntIterator() {
         return new PrimitiveIterator.OfInt() {
             @Override
             public int nextInt() {
@@ -403,7 +403,7 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static PrimitiveIterator.@NotNull OfDouble emptyDoubleIterator() {
+    public static @NotNull PrimitiveIterator.OfDouble emptyDoubleIterator() {
         return new PrimitiveIterator.OfDouble() {
             @Override
             public double nextDouble() {

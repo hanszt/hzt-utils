@@ -1,6 +1,7 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.collections.ListX;
+import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.It;
@@ -37,7 +38,9 @@ class WindowedSequenceTest {
         final var sumDays = Sequence
                 .generate(LocalDate.of(1900, Month.JANUARY, 1), date -> date.plusMonths(1))
                 .chunked(12)
-                .map(dates -> dates.sumOfInts(LocalDate::getDayOfYear))
+                .map(dates -> dates.mapToInt(LocalDate::getDayOfYear))
+                .onEach(days -> days.forEachInt(System.out::println))
+                .map(IntNumerable::sum)
                 .zipWithNext(Pair::of)
                 .takeWhileInclusive(p -> p.first().equals(p.second()))
                 .toList();

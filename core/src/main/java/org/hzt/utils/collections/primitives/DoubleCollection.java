@@ -3,6 +3,7 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.iterables.primitives.DoubleCollectable;
+import org.hzt.utils.iterables.primitives.DoubleGroupable;
 import org.hzt.utils.iterables.primitives.DoubleNumerable;
 import org.hzt.utils.iterables.primitives.DoubleReducable;
 import org.hzt.utils.iterables.primitives.DoubleStreamable;
@@ -18,7 +19,7 @@ import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
 
-public interface DoubleCollection extends DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable,
+public interface DoubleCollection extends DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable, DoubleGroupable,
         PrimitiveCollectionX<Double, DoubleConsumer, double[]> {
 
     default int size() {

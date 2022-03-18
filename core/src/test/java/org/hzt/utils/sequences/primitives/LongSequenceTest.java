@@ -1,11 +1,13 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.LongListX;
+import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.ranges.LongRange;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
-import org.hzt.utils.It;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -15,10 +17,14 @@ import java.util.stream.LongStream;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LongSequenceTest {
+
+    @BeforeAll
+    static void setup() {
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
+    }
 
     @Test
     void longRangeFromLongArray() {
@@ -35,6 +41,24 @@ class LongSequenceTest {
         assertAll(
                 () -> assertArrayEquals(new long[]{4, 5, 4, 6, 4, 4}, longs),
                 () -> assertArrayEquals(expected, longs)
+        );
+    }
+
+    @Test
+    void testLongSequencePlusArray() {
+        long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, Long.MAX_VALUE};
+
+        final long[] result = LongSequence.of(1, 3, 2, 5, 4, 2)
+                .filter(LongX::isEven)
+                .plus(35, 76, 5)
+                .plus(LongListX.of(array))
+                .toArray();
+
+        It.println(Arrays.toString(result));
+
+        assertAll(
+                () -> assertEquals(18, result.length),
+                () -> assertArrayEquals(new long[]{2, 4, 2, 35, 76, 5, 1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, Long.MAX_VALUE}, result)
         );
     }
 
@@ -223,11 +247,12 @@ class LongSequenceTest {
         final var longs = LongSequence.generate(0L, l -> ++l)
                 .map(Generator::fib)
                 .skipWhileInclusive(l -> l < 3)
-                .takeWhileInclusive(l -> l < 55);
+                .takeWhileInclusive(l -> l < 55)
+                .toListX();
 
-        longs.forEach(It::println);
+        longs.forEachLong(It::println);
 
-        assertIterableEquals(LongSequence.of(5, 8, 13, 21, 34, 55), longs);
+        assertEquals(LongListX.of(5, 8, 13, 21, 34, 55), longs);
     }
 
 }

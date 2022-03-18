@@ -74,10 +74,9 @@ public interface LongNumerable extends LongIterable, PrimitiveNumerable<LongPred
 
     default @NotNull LongStatistics stats() {
         LongStatistics longStatistics = new LongStatistics();
-        PrimitiveIterator.OfLong iterator = this.iterator();
+        PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
-            long i = iterator.nextLong();
-            longStatistics.accept(i);
+            longStatistics.accept(iterator.nextLong());
         }
         return longStatistics;
     }

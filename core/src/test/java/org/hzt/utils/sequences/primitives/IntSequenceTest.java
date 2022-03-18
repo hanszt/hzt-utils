@@ -1,12 +1,14 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.It;
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.IntListX;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.progressions.IntProgression;
-import org.hzt.utils.ranges.IntRange;
-import org.hzt.utils.It;
 import org.hzt.utils.primitive_comparators.IntComparator;
+import org.hzt.utils.ranges.IntRange;
+import org.junit.jupiter.api.BeforeAll;
 import org.hzt.utils.statistics.IntStatistics;
 import org.junit.jupiter.api.Test;
 
@@ -21,14 +23,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IntSequenceTest {
 
+    @BeforeAll
+    static void setup() {
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
+    }
+
     @Test
     void testSteppedIntRange() {
-        MutableListX<Integer> list = MutableListX.empty();
-        for (int i : IntRange.until(15).step(4)) {
-            It.println(i);
-            list.add(i);
-        }
-        assertEquals(Arrays.asList(0, 4, 8, 12), list);
+        IntListX list = IntRange.until(15)
+                .step(4)
+                .onEach(System.out::println)
+                .toListX();
+
+        assertEquals(IntListX.of(0, 4, 8, 12), list);
     }
 
     @Test
@@ -38,14 +45,14 @@ class IntSequenceTest {
         final int[] result = IntSequence.of(1, 3, 2, 5, 4, 2)
                 .filter(IntX::isEven)
                 .plus(35, 76, 5)
-                .plus(array)
+                .plus(IntListX.of(array))
                 .toArray();
 
         It.println(Arrays.toString(result));
 
         assertAll(
                 () -> assertEquals(18, result.length),
-                () -> assertArrayEquals(new int[] {2, 4, 2, 35, 76, 5, 1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2}, result)
+                () -> assertArrayEquals(new int[]{2, 4, 2, 35, 76, 5, 1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2}, result)
         );
     }
 
@@ -63,17 +70,16 @@ class IntSequenceTest {
 
         assertAll(
                 () -> assertEquals(14, result.length),
-                () -> assertArrayEquals(new int[] {2, 4, 2, 35, 76, 5, 1, 2, 3, 4, 5, 6, 7, 6}, result)
+                () -> assertArrayEquals(new int[]{2, 4, 2, 35, 76, 5, 1, 2, 3, 4, 5, 6, 7, 6}, result)
         );
     }
 
     @Test
     void testDescendingSteppedIntRange() {
         MutableListX<Integer> list = MutableListX.empty();
-        for (int i : IntRange.from(100).downTo(20).step(5)) {
-            It.println(i);
-            list.add(i);
-        }
+        IntRange.from(100).downTo(20).step(5)
+                .onEach(System.out::println)
+                .forEachInt(list::add);
         assertAll(
                 () -> assertEquals(17, list.size()),
                 () -> assertEquals(100, list.first())
@@ -91,7 +97,7 @@ class IntSequenceTest {
 
     @Test
     void testGetEmptyIntRangeWhenFromValueIsGreaterThanUntilValue() {
-        assertEquals(0 , IntRange.from(100).until(0).count());
+        assertEquals(0, IntRange.from(100).until(0).count());
     }
 
     @Test
@@ -149,7 +155,7 @@ class IntSequenceTest {
 
     @Test
     void testSortedDescending() {
-        int [] array = {1, 4, 5, 3, 6, 7, 4, 8, 5, 9, 4};
+        int[] array = {1, 4, 5, 3, 6, 7, 4, 8, 5, 9, 4};
 
         final int[] sorted = IntSequence.of(array)
                 .sortedDescending()
@@ -162,7 +168,7 @@ class IntSequenceTest {
 
     @Test
     void testSortedThenComparingUnsignedUsingIntComparator() {
-        int [] array = {-1, 4, -5, 3, -6, 7, -4, 8, -5, 9, -4};
+        int[] array = {-1, 4, -5, 3, -6, 7, -4, 8, -5, 9, -4};
 
         final int[] sorted = IntSequence.of(array)
                 .sorted(IntComparator.comparing(It::asInt)
@@ -219,6 +225,6 @@ class IntSequenceTest {
                 .mapToLong(IntListX::sum)
                 .toArray();
 
-        assertArrayEquals(new long[] {4950, 14950, 24950, 34950, 44950}, longs);
+        assertArrayEquals(new long[]{4950, 14950, 24950, 34950, 44950}, longs);
     }
 }

@@ -5,7 +5,7 @@ import java.util.PrimitiveIterator;
 
 public interface PrimitiveListIterator<T> extends ListIterator<T> {
 
-    interface OfInt extends PrimitiveIterator.OfInt, ListIterator<Integer> {
+    interface OfInt extends PrimitiveIterator.OfInt, PrimitiveListIterator<Integer> {
 
         int previousInt();
 
@@ -16,7 +16,7 @@ public interface PrimitiveListIterator<T> extends ListIterator<T> {
 
         @Override
         default Integer next() {
-            return nextInt();
+            return PrimitiveIterator.OfInt.super.next();
         }
 
         @Override
@@ -41,7 +41,7 @@ public interface PrimitiveListIterator<T> extends ListIterator<T> {
         }
     }
 
-    interface OfLong extends PrimitiveIterator.OfLong, ListIterator<Long> {
+    interface OfLong extends PrimitiveIterator.OfLong, PrimitiveListIterator<Long> {
 
         long previousLong();
 
@@ -52,7 +52,7 @@ public interface PrimitiveListIterator<T> extends ListIterator<T> {
 
         @Override
         default Long next() {
-            return nextLong();
+            return PrimitiveIterator.OfLong.super.next();
         }
 
         @Override
@@ -77,7 +77,7 @@ public interface PrimitiveListIterator<T> extends ListIterator<T> {
         }
     }
 
-    interface OfDouble extends PrimitiveIterator.OfDouble, ListIterator<Double> {
+    interface OfDouble extends PrimitiveIterator.OfDouble, PrimitiveListIterator<Double> {
 
         double previousDouble();
 
@@ -88,7 +88,7 @@ public interface PrimitiveListIterator<T> extends ListIterator<T> {
 
         @Override
         default Double next() {
-            return nextDouble();
+            return PrimitiveIterator.OfDouble.super.next();
         }
 
         @Override

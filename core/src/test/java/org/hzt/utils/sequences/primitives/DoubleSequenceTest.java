@@ -1,11 +1,12 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.DoubleListX;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
-import org.hzt.utils.It;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -19,6 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class DoubleSequenceTest {
+
+    @BeforeAll
+    static void setup() {
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
+    }
 
     @Test
     void doubleRangeFromDoubleArray() {
@@ -38,6 +44,25 @@ class DoubleSequenceTest {
         assertAll(
                 () -> assertArrayEquals(new long[]{4, 5, 4, 6, 4, 4}, longs),
                 () -> assertArrayEquals(expected, longs)
+        );
+    }
+
+    @Test
+    void testDoubleSequencePlusArray() {
+        double[] array = {1, Math.PI, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+
+        final double[] result = DoubleSequence.of(1, 3, 2, 5, 4, 2)
+                .plus(Math.E, 76, 5)
+                .plus(DoubleListX.of(array))
+                .toArray();
+
+        It.println(Arrays.toString(result));
+
+        final var expected = new double[]{1, 3, 2, 5, 4, 2, Math.E, 76, 5, 1, Math.PI, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+
+        assertAll(
+                () -> assertEquals(21, result.length),
+                () -> assertArrayEquals(expected, result)
         );
     }
 

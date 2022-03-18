@@ -622,7 +622,7 @@ public class IterableXTest {
         IntSequence.of(ints)
                 .filter(IntX::isEven)
                 .onEach(this::printEvery10_000stElement)
-                .forEach(i -> assertTrue(IntX.isEven(i)));
+                .forEachInt(i -> assertTrue(IntX.isEven(i)));
     }
 
     @Test

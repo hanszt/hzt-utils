@@ -86,11 +86,11 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence plus(long @NotNull ... values) {
-        return Sequence.of(this, LongSequence.of(values)).flatMap(It::self).mapToLong(It::asLong);
+        return Sequence.of(this, LongSequence.of(values)).mapMultiToLong(LongIterable::forEachLong);
     }
 
     default LongSequence plus(@NotNull Iterable<Long> values) {
-        return Sequence.of(this, LongSequence.of(values)).flatMap(It::self).mapToLong(It::asLong);
+        return Sequence.of(this, LongSequence.of(values)).mapMultiToLong(LongIterable::forEachLong);
     }
 
     default LongSequence map(@NotNull LongUnaryOperator unaryOperator) {

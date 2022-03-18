@@ -82,11 +82,11 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     default DoubleSequence plus(double @NotNull ... values) {
-        return Sequence.of(this, DoubleSequence.of(values)).flatMap(It::self).mapToDouble(It::asDouble);
+        return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(DoubleIterable::forEachDouble);
     }
 
     default DoubleSequence plus(@NotNull Iterable<Double> values) {
-        return Sequence.of(this, DoubleSequence.of(values)).flatMap(It::self).mapToDouble(It::asDouble);
+        return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(DoubleIterable::forEachDouble);
     }
 
     @Override

@@ -38,13 +38,13 @@ class IntRangeTest {
 
     @Test
     void testRange() {
-        final IntRange range = IntRange.of(2, 10).toListX();
+        final IntListX range = IntRange.of(2, 10).toListX();
         assertEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9), range);
     }
 
     @Test
     void testSteppedRange() {
-        final IntRange range = IntRange.of(2, 20, 2).toListX();
+        final IntListX range = IntRange.of(2, 20, 2).toListX();
 
         It.println("range = " + range);
         range.forEach(It::println);
@@ -54,7 +54,7 @@ class IntRangeTest {
 
     @Test
     void testRangeClosed() {
-        final IntRange range = IntRange.closed(2, 10).toListX();
+        final IntListX range = IntRange.closed(2, 10).toListX();
         assertEquals(IntListX.of(2, 3, 4, 5, 6, 7, 8, 9, 10), range);
     }
 

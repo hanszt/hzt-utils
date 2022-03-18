@@ -58,7 +58,7 @@ class DoubleSequenceTest {
 
         It.println(Arrays.toString(result));
 
-        final var expected = new double[]{1, 3, 2, 5, 4, 2, Math.E, 76, 5, 1, Math.PI, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+        final double[] expected = new double[]{1, 3, 2, 5, 4, 2, Math.E, 76, 5, 1, Math.PI, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
         assertAll(
                 () -> assertEquals(21, result.length),

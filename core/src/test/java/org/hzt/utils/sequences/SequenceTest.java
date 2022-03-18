@@ -659,7 +659,7 @@ class SequenceTest {
     void testSequenceAsIntRange() {
         final int year = 2020;
 
-        final IntSequence daysOfYear = Sequence
+        final IntListX daysOfYear = Sequence
                 .generate(LocalDate.of(year, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhile(date -> date.getYear() == year)
                 .mapToInt(LocalDate::getDayOfMonth)

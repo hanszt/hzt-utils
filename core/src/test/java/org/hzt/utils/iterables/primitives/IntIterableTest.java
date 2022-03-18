@@ -15,10 +15,10 @@ class IntIterableTest {
 
     @Test
     void testTripWire() {
-        final var integers = IntListX.of(1, 2, 3, 4, 9, 5, 6, 6);
+        final IntListX integers = IntListX.of(1, 2, 3, 4, 9, 5, 6, 6);
         integers.forEach(System.out::println);
 
-        final var property = System.getProperty("org.openjdk.java.util.stream.tripwire");
+        final String property = System.getProperty("org.openjdk.java.util.stream.tripwire");
         assertEquals("true", property);
     }
 

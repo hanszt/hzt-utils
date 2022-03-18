@@ -34,7 +34,6 @@ class StatisticsTest {
         final IntSequence longRange = intRange.mapToInt(It::longAsInt);
         final DoubleSequence doubleRange = intRange.mapToDouble(It::asDouble);
 
-        It.println("stats = " + stats);
         final double standardDeviationIntRange = intRange.stats().getStandardDeviation();
 
         It.println("longRange.count() = " + longRange.count());

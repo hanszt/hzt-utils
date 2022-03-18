@@ -6,7 +6,7 @@ Author: Hans Zuidervaart
 
 ## Usage
 Add the following dependency to your project:
-````
+````xml
     <dependency>
         <groupId>org.hzt.utils</groupId>
         <artifactId>test-data-generator</artifactId>
@@ -17,6 +17,6 @@ Add the following dependency to your project:
 See the tests in this project to see how the swing utilities can be used
 
 ## Examples
-````
+````java
 List<Painting> paintings = TestSampleGenerator.createPaintingList();
 ````

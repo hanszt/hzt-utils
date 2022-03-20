@@ -8,11 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DoubleGroupableTest {
 
-    @BeforeAll
-    static void setup() {
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
-    }
-
     @Test
     void testGroupBy() {
         final var entries = DoubleRange

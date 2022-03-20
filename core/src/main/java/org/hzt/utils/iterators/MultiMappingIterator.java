@@ -1,6 +1,6 @@
 package org.hzt.utils.iterators;
 
-import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -47,9 +47,9 @@ public final class MultiMappingIterator<T, R> implements Iterator<R> {
             if (!iterator.hasNext()) {
                 return false;
             } else {
-                MutableListX<R> list = MutableListX.empty();
-                mapper.accept(iterator.next(), (Consumer<R>) list::add);
-                final Iterator<R> nextItemIterator = list.iterator();
+                SpinedBuffer<R> buffer = new SpinedBuffer<>();
+                mapper.accept(iterator.next(), buffer);
+                final Iterator<R> nextItemIterator = buffer.iterator();
                 if (nextItemIterator.hasNext()) {
                     itemIterator = nextItemIterator;
                     return true;

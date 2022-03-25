@@ -7,8 +7,12 @@ import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URL;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -17,6 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -24,6 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public final class TestSampleGenerator {
 
@@ -155,5 +162,20 @@ public final class TestSampleGenerator {
         return createMuseumList().stream()
                 .filter(e -> e.getName() != null)
                 .collect(Collectors.toMap(Museum::getName, Function.identity()));
+    }
+
+    public static List<String> getEnglishNameList() {
+        final var name = "/english_names.txt";
+        final var path = Optional.ofNullable(TestSampleGenerator.class.getResource(name))
+                .map(URL::getFile)
+                .map(File::new)
+                .map(File::toPath)
+                .orElseThrow(() -> new NoSuchElementException("Could not find resource " + name));
+
+        try (Stream<String> s = Files.lines(path)) {
+            return s.collect(Collectors.toUnmodifiableList());
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

@@ -1,14 +1,12 @@
 package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
-import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.IntListX;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.ranges.IntRange;
-import org.junit.jupiter.api.BeforeAll;
 import org.hzt.utils.statistics.IntStatistics;
 import org.junit.jupiter.api.Test;
 
@@ -22,11 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IntSequenceTest {
-
-    @BeforeAll
-    static void setup() {
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
-    }
 
     @Test
     void testSteppedIntRange() {

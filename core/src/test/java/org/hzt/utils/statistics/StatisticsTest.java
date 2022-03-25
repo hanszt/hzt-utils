@@ -16,11 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StatisticsTest {
 
-    @BeforeAll
-    static void setup() {
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
-    }
-
     private static final Random RANDOM = new Random();
 
     @Test

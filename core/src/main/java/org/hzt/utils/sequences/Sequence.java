@@ -263,32 +263,32 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     @Override
     default Sequence<T> sorted() {
-        return Sequence.of(IterableX.super.sorted());
+        return () -> IterableX.super.sorted().iterator();
     }
 
     @Override
     default Sequence<T> sorted(Comparator<T> comparator) {
-        return Sequence.of(IterableX.super.sorted(comparator));
+        return () -> IterableX.super.sorted(comparator).iterator();
     }
 
     @Override
     default <R extends Comparable<? super R>> Sequence<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
-        return Sequence.of(IterableX.super.sortedBy(selector));
+        return () -> IterableX.super.sortedBy(selector).iterator();
     }
 
     @Override
     default Sequence<T> sortedDescending() {
-        return Sequence.of(IterableX.super.sortedDescending());
+        return () -> IterableX.super.sortedDescending().iterator();
     }
 
     @Override
     default Sequence<T> shuffled() {
-        return toListX().shuffled().asSequence();
+        return () -> toListX().shuffled().iterator();
     }
 
     @Override
     default <R extends Comparable<? super R>> Sequence<T> sortedByDescending(@NotNull Function<? super T, ? extends R> selector) {
-        return Sequence.of(IterableX.super.sortedByDescending(selector));
+        return () -> IterableX.super.sortedByDescending(selector).iterator();
     }
 
     default <K, V> EntrySequence<K, V> asEntrySequence(Function<T, K> keyMapper, Function<T, V> valueMapper) {

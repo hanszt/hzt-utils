@@ -9,11 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class IntMutableListXTest {
 
-    @BeforeAll
-    static void setup() {
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
-    }
-
     @Test
     void testDifferentMethods() {
         final IntMutableListX ints = IntMutableListX.empty();

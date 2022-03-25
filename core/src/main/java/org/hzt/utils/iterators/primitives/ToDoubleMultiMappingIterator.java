@@ -1,6 +1,6 @@
 package org.hzt.utils.iterators.primitives;
 
-import org.hzt.utils.collections.primitives.DoubleMutableListX;
+import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -48,9 +48,9 @@ public final class ToDoubleMultiMappingIterator<T> implements PrimitiveIterator.
             if (!iterator.hasNext()) {
                 return false;
             } else {
-                DoubleMutableListX intBuffer = DoubleMutableListX.empty();
-                mapper.accept(iterator.next(), intBuffer::add);
-                final OfDouble nextItemIterator = intBuffer.iterator();
+                SpinedBuffer.OfDouble doubleBuffer = new SpinedBuffer.OfDouble();
+                mapper.accept(iterator.next(), doubleBuffer);
+                final OfDouble nextItemIterator = doubleBuffer.iterator();
                 if (nextItemIterator.hasNext()) {
                     itemIterator = nextItemIterator;
                     return true;

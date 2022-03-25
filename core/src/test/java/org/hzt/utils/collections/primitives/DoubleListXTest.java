@@ -7,11 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DoubleListXTest {
 
-    @BeforeAll
-    static void setup() {
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
-    }
-
     @Test
     void testContainsAll() {
         final DoubleListX doubles = DoubleListX.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);

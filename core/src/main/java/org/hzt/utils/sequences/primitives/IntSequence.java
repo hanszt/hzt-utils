@@ -175,11 +175,11 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     @Override
     default IntSequence sorted() {
-        return toListX().sorted().asSequence();
+        return () -> toListX().sorted().iterator();
     }
 
     default IntSequence sorted(IntComparator intComparator) {
-        return toListX().sorted(intComparator).asSequence();
+        return () -> toListX().sorted(intComparator).iterator();
     }
 
     @Override

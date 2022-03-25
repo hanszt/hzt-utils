@@ -12,11 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class IntRangeTest {
 
-    @BeforeAll
-    static void setup() {
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
-    }
-
     @Test
     void testIntRange() {
         final IntRange intRange = IntRange.of(1, 100);

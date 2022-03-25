@@ -170,11 +170,11 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     @Override
     default DoubleSequence sorted() {
-        return toListX().sorted().asSequence();
+        return () -> toListX().sorted().iterator();
     }
 
     default DoubleSequence sorted(DoubleComparator comparator) {
-        return toListX().sorted(comparator).asSequence();
+        return () -> toListX().sorted(comparator).iterator();
     }
 
     @Override

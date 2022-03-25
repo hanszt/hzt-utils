@@ -1,6 +1,5 @@
 package org.hzt.utils.iterables;
 
-import org.hzt.test.TestSampleGenerator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
@@ -55,14 +54,25 @@ class SortableTest {
 
     @Test
     void testSequenceSortedBy() {
-        final var names = Sequence.of(TestSampleGenerator.getEnglishNameList().stream())
+        final var englishNameList = List.of(
+                "Oliver",
+                "Harry",
+                "George",
+                "Noah",
+                "Jack",
+                "Jacob",
+                "Leo",
+                "Oscar",
+                "Charlie"
+        );
+        final var names = Sequence.of(englishNameList.stream())
                 .take(10)
                 .sortedBy(String::length)
                 .toList();
 
         System.out.println("names = " + names);
 
-        final var expectedNames = List.of("Leo, Noah, Jack, Harry, Jacob, Oscar, Oliver, George, Charlie, Muhammad"
+        final var expectedNames = List.of("Leo, Noah, Jack, Harry, Jacob, Oscar, Oliver, George, Charlie"
                 .split(", "));
 
         assertEquals(expectedNames, names);
@@ -77,10 +87,10 @@ class SortableTest {
                 .toList();
 
         System.out.println("localDates = " + localDates);
-        
+
         final var expectedDates = Sequence
                 .of("2019-08-13, 2019-08-20, 2019-08-27, 2019-09-03, 2019-09-10, 2019-09-17, 2019-09-24, 2019-10-01, 2019-10-08, 2019-10-15"
-                .split(", "))
+                        .split(", "))
                 .map(LocalDate::parse)
                 .toList();
 

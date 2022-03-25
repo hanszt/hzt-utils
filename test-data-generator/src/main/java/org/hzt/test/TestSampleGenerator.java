@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -165,15 +166,15 @@ public final class TestSampleGenerator {
     }
 
     public static List<String> getEnglishNameList() {
-        final var name = "/english_names.txt";
-        final var path = Optional.ofNullable(TestSampleGenerator.class.getResource(name))
+        final String name = "/english_names.txt";
+        final Path path = Optional.ofNullable(TestSampleGenerator.class.getResource(name))
                 .map(URL::getFile)
                 .map(File::new)
                 .map(File::toPath)
                 .orElseThrow(() -> new NoSuchElementException("Could not find resource " + name));
 
         try (Stream<String> s = Files.lines(path)) {
-            return s.collect(Collectors.toUnmodifiableList());
+            return s.collect(Collectors.toList());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

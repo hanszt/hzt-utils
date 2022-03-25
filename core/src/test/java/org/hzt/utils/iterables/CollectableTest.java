@@ -174,7 +174,7 @@ class CollectableTest {
     }
 
     @Test
-    void sequenceOfStreamCanOnlyBeConsumedOnce() {
+    void testSequenceOfStreamCanOnlyBeConsumedOnce() {
         final var yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
                 .filter(IntX::isEven)
                 .map(Year::of);

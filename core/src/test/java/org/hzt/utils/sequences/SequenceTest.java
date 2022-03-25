@@ -52,11 +52,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SequenceTest {
 
-    @BeforeAll
-    static void setup() {
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
-    }
-
     @Test
     void testSimpleStreamWithMapYieldsIteratorWithNext() {
         ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");

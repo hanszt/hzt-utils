@@ -5,6 +5,7 @@ import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
 import org.hzt.utils.It;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -43,10 +44,10 @@ class DoubleWindowedSequenceTest {
         final var head = windows.headTo(3);
 
         head.forEach(It::println);
-
-        final var tail = windows.tailFrom(windows.size() - 3);
-
-        tail.forEach(It::println);
+//
+//        final var tail = windows.tailFrom(windows.size() - 3);
+//
+//        tail.forEach(It::println);
 
         assertAll(
                 () -> assertEquals(2000, windows.size()),

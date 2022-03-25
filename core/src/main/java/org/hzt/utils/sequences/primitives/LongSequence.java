@@ -175,11 +175,11 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
 
     @Override
     default LongSequence sorted() {
-        return toListX().sorted().asSequence();
+        return () -> toListX().sorted().iterator();
     }
 
     default LongSequence sorted(LongComparator longComparator) {
-        return toListX().sorted(longComparator).asSequence();
+        return () -> toListX().sorted(longComparator).iterator();
     }
 
     @Override

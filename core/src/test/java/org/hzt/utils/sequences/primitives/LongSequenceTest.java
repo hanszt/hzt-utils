@@ -21,11 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LongSequenceTest {
 
-    @BeforeAll
-    static void setup() {
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
-    }
-
     @Test
     void longRangeFromLongArray() {
         long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};

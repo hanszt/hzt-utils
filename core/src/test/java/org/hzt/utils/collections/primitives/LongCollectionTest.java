@@ -8,11 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class LongCollectionTest {
 
-    @BeforeAll
-    static void setup() {
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
-    }
-
     @Test
     void longCollectionMap() {
         final var longs = LongListX.of(1, 2, 3, 4, 5, 4, 3, 234).map(l -> l * 2);

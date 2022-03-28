@@ -1,6 +1,6 @@
 package org.hzt.utils.iterators.primitives;
 
-import org.hzt.utils.collections.primitives.LongMutableListX;
+import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -48,9 +48,9 @@ public final class ToLongMultiMappingIterator<T> implements PrimitiveIterator.Of
             if (!iterator.hasNext()) {
                 return false;
             } else {
-                LongMutableListX intBuffer = LongMutableListX.empty();
-                mapper.accept(iterator.next(), intBuffer::add);
-                final OfLong nextItemIterator = intBuffer.iterator();
+                SpinedBuffer.OfLong longBuffer = new SpinedBuffer.OfLong();
+                mapper.accept(iterator.next(), longBuffer);
+                final OfLong nextItemIterator = longBuffer.iterator();
                 if (nextItemIterator.hasNext()) {
                     itemIterator = nextItemIterator;
                     return true;

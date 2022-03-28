@@ -1,7 +1,7 @@
 package org.hzt.utils.iterators.primitives;
 
-import org.hzt.utils.collections.primitives.IntMutableListX;
 import org.hzt.utils.sequences.primitives.IntSequence;
+import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
@@ -44,8 +44,8 @@ public final class IntMultiMappingIterator implements PrimitiveIterator.OfInt {
             if (!iterator.hasNext()) {
                 return false;
             } else {
-                IntMutableListX intBuffer = IntMutableListX.empty();
-                mapper.accept(iterator.nextInt(), intBuffer::add);
+                SpinedBuffer.OfInt intBuffer = new SpinedBuffer.OfInt();
+                mapper.accept(iterator.nextInt(), intBuffer);
                 final OfInt nextItemIterator = intBuffer.iterator();
                 if (nextItemIterator.hasNext()) {
                     itemIterator = nextItemIterator;

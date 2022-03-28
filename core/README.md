@@ -79,6 +79,7 @@ The MutableCollection classes always start their name with `Mutable`.
 The [CollectionsX](src/main/java/org/hzt/utils/collections/CollectionX.java) 
 interface contains functional style default methods for map, filter and other well-known
 functional operations. So every collection that extends this interface, also gets these methods for free in its namespace. 
+
 It extends the java.util.Iterable interface. This interface is used to iterate over the elements in the functional style methods.
 It does not extend the java.util.Collection interface because I didn't want the mutator methods like for example `add` and `remove`
 to pollute the namespace.
@@ -86,19 +87,29 @@ to pollute the namespace.
 The [MutableCollectionX](src/main/java/org/hzt/utils/collections/MutableCollectionX.java) interface extends the CollectionX interface as well as
 the java.util.Collection interface.
 
-###### An example of an immutable list on which the filter method  is called:
+###### An example of an immutable list on which the map method is called:
 ```java
+    ListX<String> list = ListX.of("This is a test");
 
+    ListX<Integer> stringSizes = list.map(String::length);
+    
+    assertEquals(ListX.of(4, 2, 1, 4), stringSizes);
+```
+
+###### An example of an immutable list on which the filter method is called:
+```java
     ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
     ListX<Integer> evenNrs = list.filter(IntX::isEven);
     
     assertEquals(ListX.of(2, 4, 6), evenNrs);
-
 ```
+All transformation methods on CollectionX extending classes are eagerly evaluated. So it is advised not to chain to many operations.
+
+For longer chains and operations over larger collections, the [Sequence api](src/main/java/org/hzt/utils/sequences/Sequence.java),
+discussed in the next section, can be used to iterate over the elements in a lazy way.
 
 More examples can be found in the test classes in the collections [test package](src/test/java/org/hzt/utils/collections)
-
 
 The api is mostly inspired by the kotlin Collections framework.
 

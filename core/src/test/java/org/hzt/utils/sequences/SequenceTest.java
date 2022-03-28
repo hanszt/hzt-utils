@@ -23,7 +23,6 @@ import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -51,11 +50,6 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SequenceTest {
-
-    @BeforeAll
-    static void setup() {
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
-    }
 
     @Test
     void testSimpleStreamWithMapYieldsIteratorWithNext() {
@@ -685,6 +679,42 @@ class SequenceTest {
                 () -> assertEquals(initDateTime, sorted.first()),
                 () -> assertEquals(1_000, sorted.size())
         );
+    }
+
+    @Test
+    void testIntersperseByPrevious() {
+        final var integers = Sequence.generate(0, i -> --i)
+                .take(10)
+                .intersperse(i -> ++i)
+                .toList();
+
+        System.out.println("integers = " + integers);
+
+        assertEquals(List.of(0, 1, -1, 0, -2, -1, -3, -2, -4, -3, -5, -4, -6, -5, -7, -6, -8, -7, -9), integers);
+    }
+
+    @Test
+    void testIntersperseConstantValue() {
+        final var integers = Sequence.generate(0, i -> --i)
+                .take(10)
+                .intersperse(5)
+                .toList();
+
+        System.out.println("integers = " + integers);
+
+        assertEquals(List.of(0, 5, -1, 5, -2, 5, -3, 5, -4, 5, -5, 5, -6, 5, -7, 5, -8, 5, -9), integers);
+    }
+
+    @Test
+    void testIntersperseVariable() {
+        final var integers = Sequence.generate(0, i -> --i)
+                .take(10)
+                .intersperse(0, i -> i + 2)
+                .toList();
+
+        System.out.println("integers = " + integers);
+
+        assertEquals(List.of(0, 0, -1, 2, -2, 4, -3, 6, -4, 8, -5, 10, -6, 12, -7, 14, -8, 16, -9), integers);
     }
 
     @Test

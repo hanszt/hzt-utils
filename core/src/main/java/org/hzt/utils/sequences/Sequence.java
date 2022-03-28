@@ -103,6 +103,26 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return Sequence.of(this, Sequence.of(values)).flatMap(It::self);
     }
 
+    default Sequence<T> intersperse(T value) {
+        return intersperse(t -> value);
+    }
+
+    default Sequence<T> intersperse(UnaryOperator<T> operator) {
+        return () -> SequenceHelper.interspersingIterator(iterator(), operator);
+    }
+
+    default Sequence<T> intersperse(Supplier<T> operator) {
+        return intersperse(operator, t -> operator.get());
+    }
+
+    default Sequence<T> intersperse(T initValue, UnaryOperator<T> operator) {
+        return intersperse(() -> initValue, operator);
+    }
+
+    default Sequence<T> intersperse(Supplier<T> initSupplier, UnaryOperator<T> operator) {
+        return () -> SequenceHelper.interspersingIterator(iterator(), initSupplier, operator);
+    }
+
     default <R> Sequence<R> map(@NotNull Function<? super T, ? extends R> mapper) {
         return SequenceHelper.transformingSequence(this, mapper);
     }

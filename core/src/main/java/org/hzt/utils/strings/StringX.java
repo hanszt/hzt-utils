@@ -1,12 +1,14 @@
 package org.hzt.utils.strings;
 
+import org.hzt.utils.PreConditions;
+import org.hzt.utils.Transformable;
 import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.numbers.BigDecimalX;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
@@ -209,7 +211,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return string.offsetByCodePoints(index, codePointOffset);
     }
 
-    public void getChars(int srcBegin, int srcEnd, char @NotNull[] dst, int dstBegin) {
+    public void getChars(int srcBegin, int srcEnd, char @NotNull [] dst, int dstBegin) {
         string.getChars(srcBegin, srcEnd, dst, dstBegin);
     }
 
@@ -362,7 +364,43 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public ListX<String> split(@NotNull CharSequence delimiter) {
-        return ListX.of(this.string.split(StringX.of(delimiter).toString()));
+        return split(0, delimiter);
+    }
+
+    public ListX<String> split(int limit, @NotNull CharSequence delimiter) {
+        final var delimiterAsString = StringX.of(delimiter).toString();
+        return split(delimiterAsString, limit);
+    }
+
+    /**
+     * @param delimiter the delimiter
+     * @param limit the limit to which ti split
+     * @return a list with split strings
+     *
+     * This method is inspired by the Kotlin standard library
+     */
+    private ListX<String> split(String delimiter, int limit) {
+        PreConditions.require(limit >= 0, () -> "Limit must be non-negative, but was $limit");
+        var currentOffset = 0;
+        var nextIndex = indexOf(delimiter, currentOffset);
+        if (nextIndex == -1 || limit == 1) {
+            return ListX.of(this.toString());
+        }
+
+        boolean isLimited = limit > 0;
+        MutableListX<String> result = MutableListX.withInitCapacity(isLimited ? Math.min(limit, 10) : 10);
+        do {
+            result.add(string.substring(currentOffset, nextIndex));
+            currentOffset = nextIndex + delimiter.length();
+            // Do not search for next occurrence if we're reaching limit
+            if (isLimited && result.size() == limit - 1) {
+                break;
+            }
+            nextIndex = indexOf(delimiter, currentOffset);
+        } while (nextIndex != -1);
+
+        result.add(string.substring(currentOffset));
+        return result;
     }
 
     public static StringX join(CharSequence delimiter, CharSequence... elements) {
@@ -399,7 +437,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public IntX toIntX(int radix) {
-       return IntX.of(Integer.parseInt(string, radix));
+        return IntX.of(Integer.parseInt(string, radix));
     }
 
     public IntX toIntX() {
@@ -409,6 +447,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     public int toInt(int radix) {
         return Integer.parseInt(string, radix);
     }
+
     public int toInt() {
         return Integer.parseInt(string);
     }

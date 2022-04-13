@@ -1,9 +1,9 @@
 package org.hzt.utils.numbers;
 
+import org.hzt.utils.Transformable;
 import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.IntSequence;
-import org.hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;

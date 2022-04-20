@@ -4,6 +4,7 @@ import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
+import org.hzt.utils.iterators.functional_iterator.IteratorX;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.sequences.primitives.LongSequence;
@@ -34,6 +35,10 @@ import java.util.stream.StreamSupport;
 public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, Takeable<T>, Zippable<T>, Windowable<T>,
         Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>,
         Collectable<T>, Groupable<T>, Streamable<Stream<T>> {
+
+    default IteratorX<T> iteratorX() {
+        return IteratorX.of(iterator());
+    }
 
     IterableX<T> plus(@NotNull T value);
 

@@ -1,11 +1,17 @@
 package org.hzt.utils.collections;
 
+import org.hzt.utils.It;
+import org.hzt.utils.collections.primitives.DoubleListX;
+import org.hzt.utils.collections.primitives.DoubleMutableListX;
+import org.hzt.utils.collections.primitives.IntListX;
+import org.hzt.utils.collections.primitives.IntMutableListX;
+import org.hzt.utils.collections.primitives.LongListX;
+import org.hzt.utils.collections.primitives.LongMutableListX;
 import org.hzt.utils.iterables.IterableX;
-import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.strings.StringX;
 import org.hzt.utils.tuples.IndexedValue;
-import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -20,6 +26,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 @FunctionalInterface
 public interface CollectionX<E> extends IterableX<E> {
@@ -96,6 +105,33 @@ public interface CollectionX<E> extends IterableX<E> {
 
     default <R> ListX<StringX> mapToStringX(@NotNull Function<? super E, ? extends R> mapper) {
         return map(s -> StringX.of(mapper.apply(s).toString()));
+    }
+
+    @Override
+    default IntListX mapToInt(@NotNull ToIntFunction<? super E> mapper) {
+        IntMutableListX intList = IntMutableListX.withInitCapacity(size());
+        for (E e : this) {
+            intList.add(mapper.applyAsInt(e));
+        }
+        return intList;
+    }
+
+    @Override
+    default LongListX mapToLong(@NotNull ToLongFunction<? super E> mapper) {
+        LongMutableListX longList = LongMutableListX.withInitCapacity(size());
+        for (E e : this) {
+            longList.add(mapper.applyAsLong(e));
+        }
+        return longList;
+    }
+
+    @Override
+    default DoubleListX mapToDouble(@NotNull ToDoubleFunction<? super E> mapper) {
+        DoubleMutableListX doubleList = DoubleMutableListX.withInitCapacity(size());
+        for (E e : this) {
+            doubleList.add(mapper.applyAsDouble(e));
+        }
+        return doubleList;
     }
 
     default <R> ListX<R> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends R>> mapper) {

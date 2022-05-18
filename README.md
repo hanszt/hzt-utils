@@ -45,3 +45,4 @@ Below table gives an overview of the versioning so far:
 ### Sources
 - [Design Patterns in the Light of Lambda Expressions. Venkat Subramaniam, Agile developer, inc](https://www.youtube.com/watch?v=WN9kgdSVhDo)
 - [Kotlin docs](https://kotlinlang.org/docs/home.html)
+- [Live templates](https://www.youtube.com/watch?v=Sio9MdSqXZo)

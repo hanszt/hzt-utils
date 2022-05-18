@@ -8,6 +8,7 @@ import org.hzt.utils.sequences.SequenceHelper;
 import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ToLongFunction;
@@ -26,12 +27,12 @@ public interface LongWindowedSequence extends LongIterable {
         //The holding consumer provides a way to provide the same value to both the size and step unary operator.
         //It also makes sure the nextSizeSupplier from this method is only called once instead of twice
         //It is required that the call for next size is made before next step for them to receive the same value
-        final var holdingConsumer = new PrimitiveSequenceHelper.HoldingConsumer();
+        final var holdingConsumer = new AtomicInteger();
         return windowed(initSize, size -> {
             final var nextSize = nextSizeSupplier.applyAsInt(size);
-            holdingConsumer.accept(nextSize);
+            holdingConsumer.set(nextSize);
             return nextSize;
-        }, initSize, step -> holdingConsumer.getValue(), true);
+        }, initSize, step -> holdingConsumer.get(), true);
     }
 
     default Sequence<LongListX> windowed(int size, int step, boolean partialWindows) {

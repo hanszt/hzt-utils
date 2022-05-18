@@ -95,6 +95,13 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
         return isNotEmpty() ? OptionalInt.of(get(IterableXHelper.RANDOM.nextInt(size()))) : OptionalInt.empty();
     }
 
+    @Override
+    public IntListX shuffled() {
+        final var mutableListX = IntMutableListX.of(this);
+        PrimitiveListHelper.shuffle(mutableListX);
+        return mutableListX;
+    }
+
     private int lastIndexOfRange(int value, int start, int end) {
         for (int i = end - 1; i >= start; i--) {
             if (value == elementData[i]) {

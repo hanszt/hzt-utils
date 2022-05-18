@@ -76,4 +76,6 @@ public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator
     default IntListX sortedDescending() {
         return sorted(IntX::compareReversed);
     }
+
+    IntListX shuffled();
 }

@@ -77,8 +77,7 @@ class PrimitiveSortTest {
         final var array = Sequence.generate(0, i -> ++i)
                 .take(1_000)
                 .shuffled()
-                .mapToLong(It::asLong)
-                .toArray();
+                .toLongArray(It::asLong);
 
         It.println(Arrays.toString(array));
 

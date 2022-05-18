@@ -1,5 +1,6 @@
-package org.hzt.utils;
+package org.hzt.reflection.utils;
 
+import org.hzt.reflection.utils.ReflectionUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

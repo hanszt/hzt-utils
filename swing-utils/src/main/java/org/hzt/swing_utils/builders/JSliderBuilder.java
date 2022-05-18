@@ -30,7 +30,7 @@ public final class JSliderBuilder {
     }
 
     public JSliderBuilder withMaximum(int maxValue) {
-        slider.setMinimum(maxValue);
+        slider.setMaximum(maxValue);
         return this;
     }
 

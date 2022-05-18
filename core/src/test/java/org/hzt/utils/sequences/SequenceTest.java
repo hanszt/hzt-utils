@@ -43,7 +43,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -68,11 +70,11 @@ class SequenceTest {
     @Test
     void testMapReduce() {
         ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
-        final double sum = Sequence.of(list)
+
+        final double sum = list
                 .map(String::length)
-                .map(Double::valueOf)
-                .reduce(Double::sum)
-                .orElseThrow();
+                .mapToDouble(Double::valueOf)
+                .sum();
 
         assertEquals(17, sum);
     }
@@ -727,7 +729,7 @@ class SequenceTest {
 
         noneWholeHourZoneOffsetSummaries.forEach(It::println);
 
-        assertEquals(23, noneWholeHourZoneOffsetSummaries.count());
+        assertEquals(25, noneWholeHourZoneOffsetSummaries.count());
     }
 
     private boolean nonWholeHourOffsets(Instant instant, ZoneId id) {

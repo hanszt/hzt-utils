@@ -185,6 +185,10 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return sorted((IntX::compareReversed));
     }
 
+    default IntSequence shuffled() {
+        return () -> toListX().shuffled().iterator();
+    }
+
     @Override
     default @NotNull IntSequence filter(@NotNull IntPredicate predicate) {
         return () -> IntFilteringIterator.of(iterator(), predicate, true);

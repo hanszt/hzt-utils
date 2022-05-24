@@ -1,4 +1,4 @@
-package org.hzt.utils;
+package org.hzt.reflection.utils;
 
 public final class ReflectionUtils {
 

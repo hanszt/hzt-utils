@@ -17,6 +17,7 @@
         <module>swing-utils</module>
         <module>reflection</module>
         <module>fx-utils</module>
+        <module>geometry</module>
     </modules>
 
     <properties>

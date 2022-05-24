@@ -1,4 +1,4 @@
 open module hzt.utils.reflection {
 
-    exports org.hzt.utils;
+    exports org.hzt.reflection.utils;
 }

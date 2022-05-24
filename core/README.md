@@ -1,6 +1,7 @@
 ## Hzt Utils Core
 
 ---
+
 This is a utility library for working with java collections in a functional style. Inspired by Kotlin-Collections.
 
 Author: Hans Zuidervaart

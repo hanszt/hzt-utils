@@ -10,7 +10,10 @@ Author: Hans Zuidervaart
 Each module contains its own README.md. Click the links below to view them
 
 - [Core](/core/README.md) contains an extended and functional collections api. Inspired by Kotlin collections.
-- [Swing utils](/swing-utils/README.md) contains some functional interfaces for easier functional programming in swing.
+- [Reflection](reflection/README.md)
+- [Geometry](geometry/README.md)
+- [Fx utils](fx-utils/README.md) contains some util functions for javaFX applications
+- [Swing utils](/swing-utils/README.md) contains some functional interfaces for easier functional programming in swing. It also contains some component builders.
 - [Test data generator](/test-data-generator/README.md) Contains an api that provides test data for easy testing
 - [Benchmark project](/benchmark/README.md) a project to benchmark the Sequence api found in the core module
 
@@ -25,7 +28,7 @@ Add the following dependency to your project:
     </dependency>
 ````
 
-See the tests in this project to see how the utilities can be used
+See the tests in the models of this project to see how the utilities can be used
 
 ---
 ### Versions

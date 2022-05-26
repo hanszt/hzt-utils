@@ -43,14 +43,13 @@ public final class IntMultiMappingIterator implements PrimitiveIterator.OfInt {
         while (itemIterator == null) {
             if (!iterator.hasNext()) {
                 return false;
-            } else {
-                SpinedBuffer.OfInt intBuffer = new SpinedBuffer.OfInt();
-                mapper.accept(iterator.nextInt(), intBuffer);
-                final OfInt nextItemIterator = intBuffer.iterator();
-                if (nextItemIterator.hasNext()) {
-                    itemIterator = nextItemIterator;
-                    return true;
-                }
+            }
+            SpinedBuffer.OfInt intBuffer = new SpinedBuffer.OfInt();
+            mapper.accept(iterator.nextInt(), intBuffer);
+            final OfInt nextItemIterator = intBuffer.iterator();
+            if (nextItemIterator.hasNext()) {
+                itemIterator = nextItemIterator;
+                return true;
             }
         }
         return true;

@@ -424,9 +424,9 @@ public class IterableXTest {
 
         Set<Period> expected = museums.stream()
                 .map(Museum::getPaintings)
-                .collect(intersectingBy(Painting::getMilleniumOfCreation));
+                .collect(intersectingBy(Painting::getMillenniumOfCreation));
 
-        final SetX<Period> intersection = museums.intersectionOf(Museum::getPaintings, Painting::getMilleniumOfCreation);
+        final SetX<Period> intersection = museums.intersectionOf(Museum::getPaintings, Painting::getMillenniumOfCreation);
 
         It.println("intersection = " + intersection);
 

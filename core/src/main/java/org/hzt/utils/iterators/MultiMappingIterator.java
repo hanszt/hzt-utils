@@ -46,14 +46,13 @@ public final class MultiMappingIterator<T, R> implements Iterator<R> {
         while (itemIterator == null) {
             if (!iterator.hasNext()) {
                 return false;
-            } else {
-                SpinedBuffer<R> buffer = new SpinedBuffer<>();
-                mapper.accept(iterator.next(), buffer);
-                final Iterator<R> nextItemIterator = buffer.iterator();
-                if (nextItemIterator.hasNext()) {
-                    itemIterator = nextItemIterator;
-                    return true;
-                }
+            }
+            SpinedBuffer<R> buffer = new SpinedBuffer<>();
+            mapper.accept(iterator.next(), buffer);
+            final Iterator<R> nextItemIterator = buffer.iterator();
+            if (nextItemIterator.hasNext()) {
+                itemIterator = nextItemIterator;
+                return true;
             }
         }
         return true;

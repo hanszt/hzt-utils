@@ -9,9 +9,9 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -52,7 +52,7 @@ public final class IterableXHelper {
 
     @NotNull
     static <T, R extends Comparable<? super R>> Optional<T> compareBy(final Iterator<T> iterator,
-            @NotNull Function<? super T, ? extends R> selector, @NotNull BiPredicate<R, R> biPredicate) {
+            @NotNull Function<? super T, ? extends R> selector, @NotNull IntPredicate predicate) {
         if (!iterator.hasNext()) {
             return Optional.empty();
         }
@@ -64,7 +64,7 @@ public final class IterableXHelper {
         do {
             final T next = iterator.next();
             final R nextToCompare = selector.apply(next);
-            if (biPredicate.test(value, nextToCompare)) {
+            if (value != null && nextToCompare != null && predicate.test(value.compareTo(nextToCompare))) {
                 result = next;
                 value = nextToCompare;
             }
@@ -85,7 +85,7 @@ public final class IterableXHelper {
     static  <T, R extends Comparable<? super R>> R comparisonOf(
             @NotNull Iterator<T> iterator,
             @NotNull Function<? super T, ? extends R> selector,
-            @NotNull BiPredicate<? super R, ? super R> biPredicate) {
+            @NotNull IntPredicate biPredicate) {
         if (!iterator.hasNext()) {
             throw noValuePresentException();
         }
@@ -95,7 +95,7 @@ public final class IterableXHelper {
             final T next = iterator.next();
             if (next != null) {
                 final R value = selector.apply(next);
-                if (biPredicate.test(result, value)) {
+                if (result != null && value != null && biPredicate.test(result.compareTo(value))) {
                     result = value;
                 }
             }

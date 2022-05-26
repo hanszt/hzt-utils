@@ -65,20 +65,22 @@ public interface Collectable<T> extends IndexedIterable<T> {
         return map;
     }
 
-    default <K, V> MapX<K, V> toMapX(@NotNull Function<T, K> keyMapper, @NotNull Function<T, V> valueMapper) {
+    default <K, V> MapX<K, V> toMapX(@NotNull Function<? super T, ? extends K> keyMapper,
+                                     @NotNull Function<? super T, ? extends V> valueMapper) {
         return toMutableMap(keyMapper, valueMapper);
     }
 
-    default <K, V> Map<K, V> toMap(@NotNull Function<T, K> keyMapper, @NotNull Function<T, V> valueMapper) {
+    default <K, V> Map<K, V> toMap(@NotNull Function<? super T, ? extends K> keyMapper,
+                                   @NotNull Function<? super T, ? extends V> valueMapper) {
         return Map.copyOf(toMutableMap(keyMapper, valueMapper));
     }
 
-    default <A, R> R collect(@NotNull Collector<T, A, R> collector) {
+    default <A, R> R collect(@NotNull Collector<? super T, A, R> collector) {
         final A result = collector.supplier().get();
-        final BiConsumer<A, T> accumulator = collector.accumulator();
-        for (T t : this) {
-            if (t != null) {
-                accumulator.accept(result, t);
+        final BiConsumer<A, ? super T> accumulator = collector.accumulator();
+        for (T item : this) {
+            if (item != null) {
+                accumulator.accept(result, item);
             }
         }
         return collector.finisher().apply(result);
@@ -104,9 +106,9 @@ public interface Collectable<T> extends IndexedIterable<T> {
                                 @NotNull BiConsumer<A, ? super U> accumulator,
                                 @NotNull Function<A, R> finisher) {
         A result = supplier.get();
-        for (T t : this) {
-            if (filter.test(t)) {
-                U u = mapper.apply(t);
+        for (T item : this) {
+            if (filter.test(item)) {
+                U u = mapper.apply(item);
                 if (resultFilter.test(u)) {
                     accumulator.accept(result, u);
                 }
@@ -122,10 +124,10 @@ public interface Collectable<T> extends IndexedIterable<T> {
         A2 result2 = downstream2.supplier().get();
         final BiConsumer<A1, ? super T> accumulator1 = downstream1.accumulator();
         final BiConsumer<A2, ? super T> accumulator2 = downstream2.accumulator();
-        for (T t : this) {
-            if (t != null) {
-                accumulator1.accept(result1, t);
-                accumulator2.accept(result2, t);
+        for (T item : this) {
+            if (item != null) {
+                accumulator1.accept(result1, item);
+                accumulator2.accept(result2, item);
             }
         }
         final var r1 = downstream1.finisher().apply(result1);
@@ -148,11 +150,11 @@ public interface Collectable<T> extends IndexedIterable<T> {
         final BiConsumer<A1, ? super T> accumulator1 = downstream1.accumulator();
         final BiConsumer<A2, ? super T> accumulator2 = downstream2.accumulator();
         final BiConsumer<A3, ? super T> accumulator3 = downstream3.accumulator();
-        for (T t : this) {
-            if (t != null) {
-                accumulator1.accept(result1, t);
-                accumulator2.accept(result2, t);
-                accumulator3.accept(result3, t);
+        for (T item : this) {
+            if (item != null) {
+                accumulator1.accept(result1, item);
+                accumulator2.accept(result2, item);
+                accumulator3.accept(result3, item);
             }
         }
         final var r1 = downstream1.finisher().apply(result1);
@@ -180,12 +182,12 @@ public interface Collectable<T> extends IndexedIterable<T> {
         final BiConsumer<A2, ? super T> accumulator2 = downstream2.accumulator();
         final BiConsumer<A3, ? super T> accumulator3 = downstream3.accumulator();
         final BiConsumer<A4, ? super T> accumulator4 = downstream4.accumulator();
-        for (T t : this) {
-            if (t != null) {
-                accumulator1.accept(result1, t);
-                accumulator2.accept(result2, t);
-                accumulator3.accept(result3, t);
-                accumulator4.accept(result4, t);
+        for (T item : this) {
+            if (item != null) {
+                accumulator1.accept(result1, item);
+                accumulator2.accept(result2, item);
+                accumulator3.accept(result3, item);
+                accumulator4.accept(result4, item);
             }
         }
         final var r1 = downstream1.finisher().apply(result1);
@@ -254,8 +256,8 @@ public interface Collectable<T> extends IndexedIterable<T> {
             @NotNull Supplier<C> collectionSupplier,
             @NotNull Function<? super T, ? extends I> mapper) {
         final C collection = collectionSupplier.get();
-        for (T t : this) {
-            final I c = mapper.apply(t);
+        for (T item : this) {
+            final I c = mapper.apply(item);
             if (c == null) {
                 continue;
             }
@@ -272,8 +274,8 @@ public interface Collectable<T> extends IndexedIterable<T> {
             @NotNull Supplier<C> collectionSupplier,
             @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
         C collection = collectionSupplier.get();
-        for (T t : this) {
-            mapper.accept(t, (Consumer<R>) collection::add);
+        for (T item : this) {
+            mapper.accept(item, (Consumer<R>) collection::add);
         }
         return collection;
     }

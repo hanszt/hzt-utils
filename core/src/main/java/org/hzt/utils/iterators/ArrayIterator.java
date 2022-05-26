@@ -23,8 +23,7 @@ public final class ArrayIterator<E> implements Iterator<E> {
 
     @Override
     public E next() {
-        int prevIndex = index;
-        if (prevIndex < 0 || prevIndex >= array.length) {
+        if (index < 0 || index >= array.length) {
             throw new NoSuchElementException("index out of bounds. (Index value: " + index + ")");
         }
         return array[index++];

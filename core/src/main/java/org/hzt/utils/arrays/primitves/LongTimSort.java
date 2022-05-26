@@ -197,9 +197,8 @@ public final class LongTimSort {
     }
 
     private void mergeForceCollapse() {
-        int n;
         while (this.stackSize > 1) {
-            n = this.stackSize - 2;
+            int n = this.stackSize - 2;
             if (n > 0 && this.runLen[n - 1] < this.runLen[n + 1]) {
                 --n;
             }

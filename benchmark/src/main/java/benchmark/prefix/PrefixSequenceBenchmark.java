@@ -1,7 +1,7 @@
 package benchmark.prefix;
 
-import org.hzt.utils.collections.ListX;
 import org.hzt.utils.numbers.IntX;
+import org.hzt.utils.sequences.Sequence;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
@@ -11,34 +11,65 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 @SuppressWarnings("unused")
 @State(Scope.Benchmark)
 public class PrefixSequenceBenchmark {
     @Param({"100000"})
     private int nrOfIterations;
 
-    private final ListX<String> list = ListX.build(strings -> {
-                for (int i = 0; i < 100_000; i++) {
-                    strings.add(String.valueOf(i));
-                }
-            }
-    );
+    private final List<String> list = IntStream.range(0, 100_000)
+            .mapToObj(String::valueOf)
+            .collect(Collectors.toUnmodifiableList());
 
     public PrefixSequenceBenchmark() {
         super();
     }
 
     @Benchmark
-    public ListX<Integer> mapFilterToList() {
-        return list.asSequence()
+    public List<Integer> sequenceOfListMapFilterToList() {
+        return Sequence.of(list)
                 .map(String::length)
                 .filter(IntX::isEven)
-                .toListX();
+                .toList();
+    }
+
+    @Benchmark
+    public List<Integer> streamMapFilterToList() {
+        return list.stream()
+                .map(String::length)
+                .filter(IntX::isEven)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Benchmark
+    public List<Integer> parallelStreamMapFilterToList() {
+        return list.parallelStream()
+                .map(String::length)
+                .filter(IntX::isEven)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Benchmark
+    public List<Integer> imperativeMapFilterToList() {
+        List<Integer> result = new ArrayList<>();
+        for (String s : list) {
+            int length = s.length();
+            if (IntX.isEven(length)) {
+                result.add(length);
+            }
+        }
+        return List.copyOf(result);
     }
 
     public static void main(String[] args) {
         Options options = new OptionsBuilder()
                 .include(PrefixSequenceBenchmark.class.getSimpleName())
+                .shouldFailOnError(true)
                 .build();
         try {
             new Runner(options).run();

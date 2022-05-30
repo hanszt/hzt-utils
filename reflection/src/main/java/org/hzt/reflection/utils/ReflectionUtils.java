@@ -10,6 +10,6 @@ public final class ReflectionUtils {
                 .walk(frames -> frames.skip(1)
                         .findFirst()
                         .map(StackWalker.StackFrame::getMethodName)
-                        .orElseThrow());
+                        .orElseThrow(() -> new IllegalStateException("Method name could not be obtained")));
     }
 }

@@ -8,23 +8,23 @@ import org.jetbrains.annotations.NotNull;
  * A Tim sort implementation for sorting double arrays where a DoubleComparator is used for the comparisons
  * Based on the generic java implementation of TimSort
  *
- * see java.util.TimSort;
+ * @see java.util.TimSort;
  */
-@SuppressWarnings("DuplicatedCode")
+@SuppressWarnings({"DuplicatedCode", "JavadocReference"})
 public final class DoubleTimSort extends PrimitiveTimSort {
 
     private final DoubleComparator doubleComparator;
     private final double[] doubleArray;
     private final int[] runBase;
     private final int[] runLen;
-    private double[] temporaryArray;
+    private double[] tempArray;
 
     @SuppressWarnings("squid:S2384")
     private DoubleTimSort(double[] doubleArray, DoubleComparator doubleComparator) {
         super(doubleArray.length);
         this.doubleArray = doubleArray;
         this.doubleComparator = doubleComparator;
-        this.temporaryArray = new double[tmpLen];
+        this.tempArray = new double[tempLength];
 
         int stackLen = getStackLength(doubleArray.length);
         this.runBase = new int[stackLen];
@@ -316,7 +316,7 @@ public final class DoubleTimSort extends PrimitiveTimSort {
         // Copy first run into temp array
         double[] array = doubleArray; // For performance
         double[] tmpArray = ensureCapacity(len1);
-        int cursor1 = tmpBase; // Indexes into tmp array
+        int cursor1 = tempBase; // Indexes into tmp array
         int cursor2 = base2;   // Indexes int a
         int dest = base1;      // Indexes int a
         System.arraycopy(array, base1, tmpArray, cursor1, len1);
@@ -419,7 +419,7 @@ public final class DoubleTimSort extends PrimitiveTimSort {
         // Copy second run into temp array
         double[] array = doubleArray; // For performance
         double[] tmp = ensureCapacity(len2);
-        int tmpBase = this.tmpBase;
+        int tmpBase = this.tempBase;
         System.arraycopy(array, base2, tmp, tmpBase, len2);
 
         int cursor1 = base1 + len1 - 1;  // Indexes into a
@@ -527,12 +527,12 @@ public final class DoubleTimSort extends PrimitiveTimSort {
 
     @SuppressWarnings("squid:S2384")
     private double[] ensureCapacity(int minCapacity) {
-        if (tmpLen < minCapacity) {
-            int newSize = calculateNewSize(minCapacity, doubleArray.length);
-            temporaryArray = new double[newSize];
-            tmpLen = newSize;
-            tmpBase = 0;
+        if (tempLength < minCapacity) {
+            int newSize = calculateNewLength(minCapacity, doubleArray.length);
+            tempArray = new double[newSize];
+            tempLength = newSize;
+            tempBase = 0;
         }
-        return temporaryArray;
+        return tempArray;
     }
 }

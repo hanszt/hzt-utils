@@ -8,23 +8,23 @@ import org.jetbrains.annotations.NotNull;
  * A Tim sort implementation for sorting long arrays where a LongComparator is used for the comparisons
  * Based on the generic java implementation of TimSort
  *
- * see java.util.TimSort;
+ * @see java.util.TimSort;
  */
-@SuppressWarnings("DuplicatedCode")
+@SuppressWarnings({"DuplicatedCode", "JavadocReference"})
 public final class LongTimSort extends PrimitiveTimSort {
 
     private final LongComparator longComparator;
     private final long[] longArray;
     private final int[] runBase;
     private final int[] runLen;
-    private long[] temporaryArray;
+    private long[] tempArray;
 
     @SuppressWarnings("squid:S2384")
     private LongTimSort(long[] longArray, LongComparator longComparator) {
         super(longArray.length);
         this.longArray = longArray;
         this.longComparator = longComparator;
-        this.temporaryArray = new long[tmpLen];
+        this.tempArray = new long[tempLength];
 
         int stackLen = getStackLength(longArray.length);
         this.runBase = new int[stackLen];
@@ -316,7 +316,7 @@ public final class LongTimSort extends PrimitiveTimSort {
         // Copy first run into temp array
         long[] array = longArray; // For performance
         long[] tmpArray = ensureCapacity(len1);
-        int cursor1 = tmpBase; // Indexes into tmp array
+        int cursor1 = tempBase; // Indexes into tmp array
         int cursor2 = base2;   // Indexes int a
         int dest = base1;      // Indexes int a
         System.arraycopy(array, base1, tmpArray, cursor1, len1);
@@ -419,7 +419,7 @@ public final class LongTimSort extends PrimitiveTimSort {
         // Copy second run into temp array
         long[] array = longArray; // For performance
         long[] tmp = ensureCapacity(len2);
-        int tmpBase = this.tmpBase;
+        int tmpBase = this.tempBase;
         System.arraycopy(array, base2, tmp, tmpBase, len2);
 
         int cursor1 = base1 + len1 - 1;  // Indexes into a
@@ -527,12 +527,12 @@ public final class LongTimSort extends PrimitiveTimSort {
 
     @SuppressWarnings("squid:S2384")
     private long[] ensureCapacity(int minCapacity) {
-        if (tmpLen < minCapacity) {
-            int newSize = calculateNewSize(minCapacity, longArray.length);
-            temporaryArray = new long[newSize];
-            tmpLen = newSize;
-            tmpBase = 0;
+        if (tempLength < minCapacity) {
+            int newSize = calculateNewLength(minCapacity, longArray.length);
+            tempArray = new long[newSize];
+            tempLength = newSize;
+            tempBase = 0;
         }
-        return temporaryArray;
+        return tempArray;
     }
 }

@@ -2,12 +2,13 @@ package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
+import org.hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 
 public interface LongMutableListX extends LongListX, LongMutableCollection,
-        PrimitiveMutableList<PrimitiveListIterator.OfLong> {
+        PrimitiveMutableList<PrimitiveListIterator.OfLong, LongComparator> {
 
     static LongMutableListX empty() {
         return new LongArrayList();

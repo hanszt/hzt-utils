@@ -3,6 +3,8 @@ package org.hzt.utils.numbers;
 import org.hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 @SuppressWarnings("unused")
 public final class DoubleX extends Number implements NumberX<Double>, Transformable<DoubleX> {
 

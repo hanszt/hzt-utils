@@ -27,6 +27,22 @@ public interface GridPoint2D {
         return new GridPoint2DImpl(getX() - other.getX(), getY() - other.getY());
     }
 
+    default int distanceSquared(int x, int y) {
+        return x * x + y * y;
+    }
+
+    default int distanceSquared(GridPoint2D other) {
+        return distanceSquared(other.getX(), other.getY());
+    }
+
+    default double distance(int x, int y) {
+        return Math.sqrt(distanceSquared(x, y));
+    }
+
+    default double distance(GridPoint2D other) {
+        return distance(other.getX(), other.getY());
+    }
+
     default int gridDistance(int x, int y) {
         return Math.abs(getX() - x) + Math.abs(getY() - y);
     }
@@ -36,7 +52,11 @@ public interface GridPoint2D {
     }
 
     default int gridMagnitude() {
-        return gridDistance(0, 0);
+        return gridDistance(ZERO);
+    }
+
+    default double magnitude() {
+        return distance(ZERO);
     }
 
     default GridPoint2D midpoint(GridPoint2D gridPoint2D) {
@@ -70,9 +90,17 @@ public interface GridPoint2D {
         return getX() * x + getY() * y;
     }
 
+    default int dotProduct(GridPoint2D point2D) {
+        return dotProduct(point2D.getX(), point2D.getY());
+    }
+
     default GridPoint3D crossProduct(int x, int y) {
         final int ax = getX();
         final int ay = getY();
         return new GridPoint3DImpl(0, 0, ax * y - ay * x);
+    }
+
+    default GridPoint3D crossProduct(GridPoint2D point2D) {
+        return crossProduct(point2D.getX(), point2D.getY());
     }
 }

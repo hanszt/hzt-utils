@@ -1,6 +1,7 @@
 package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.It;
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.primitives.LongCollection;
 import org.hzt.utils.collections.primitives.LongListX;
 import org.hzt.utils.collections.primitives.LongMutableCollection;
@@ -66,5 +67,31 @@ public interface LongCollectable extends LongIterable, PrimitiveCollectable<Long
 
     default LongMutableListX toMutableList() {
        return to(LongMutableListX::empty);
+    }
+
+    default <C extends LongMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        C collection = collectionFactory.get();
+        if (n == 0) {
+            return collection;
+        }
+        final LongIterable iterable = this;
+        if (iterable instanceof LongMutableCollection) {
+            LongMutableCollection c = (LongMutableCollection) iterable;
+            if (n >= c.size()) {
+                collection.addAll(c);
+                return collection;
+            }
+        }
+        int count = 0;
+        final var iterator = iterator();
+        while (iterator.hasNext()) {
+            long value = iterator.nextLong();
+            collection.add(value);
+            if (++count == n) {
+                break;
+            }
+        }
+        return collection;
     }
 }

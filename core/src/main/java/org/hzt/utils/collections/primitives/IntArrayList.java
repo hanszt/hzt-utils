@@ -1,8 +1,10 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.arrays.primitves.PrimitiveSort;
 import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.primitives.IntIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
+import org.hzt.utils.primitive_comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -69,6 +71,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
 
     @Override
     public int get(int index) {
+        Objects.checkIndex(index, size);
         return elementData[index];
     }
 
@@ -163,6 +166,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
 
     @Override
     public int set(int index, int value) {
+        Objects.checkIndex(index, size);
         elementData[index] = value;
         return value;
     }
@@ -178,6 +182,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
     }
 
     @Override
+    @SuppressWarnings("squid:S1188")
     public PrimitiveListIterator.OfInt listIterator(int startIndex) {
         return new PrimitiveListIterator.OfInt() {
             private int index = startIndex;
@@ -211,5 +216,15 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
                 return index - 1;
             }
         };
+    }
+
+    @Override
+    public void sort(IntComparator comparator) {
+        PrimitiveSort.sort(elementData, 0, size, comparator);
+    }
+
+    @Override
+    public void sort() {
+        sort(Integer::compare);
     }
 }

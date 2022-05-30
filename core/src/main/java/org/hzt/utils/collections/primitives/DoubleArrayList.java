@@ -1,7 +1,9 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.arrays.primitves.PrimitiveSort;
 import org.hzt.utils.iterables.primitives.DoubleIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
+import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -73,6 +75,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
 
     @Override
     public double get(int index) {
+        Objects.checkIndex(index, size);
         return elementData[index];
     }
 
@@ -151,6 +154,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
 
     @Override
     public double set(int index, double value) {
+        Objects.checkIndex(index, size);
         elementData[index] = value;
         return value;
     }
@@ -166,6 +170,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
     }
 
     @Override
+    @SuppressWarnings("squid:S1188")
     public @NotNull PrimitiveListIterator.OfDouble listIterator(int startIndex) {
         return new PrimitiveListIterator.OfDouble() {
             private int index = startIndex;
@@ -200,5 +205,15 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
                 return index - 1;
             }
         };
+    }
+
+    @Override
+    public void sort(DoubleComparator comparator) {
+        PrimitiveSort.sort(elementData, 0, size, comparator);
+    }
+
+    @Override
+    public void sort() {
+        sort(Double::compare);
     }
 }

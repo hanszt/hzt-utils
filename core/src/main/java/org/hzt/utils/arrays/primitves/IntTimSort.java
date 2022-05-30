@@ -8,23 +8,23 @@ import org.jetbrains.annotations.NotNull;
  * A Tim sort implementation for sorting int arrays where an IntComparator is used for the comparisons
  * Based on the generic java implementation of TimSort
  *
- * see java.util.TimSort;
+ * @see java.util.TimSort;
  */
-@SuppressWarnings("DuplicatedCode")
+@SuppressWarnings({"DuplicatedCode", "JavadocReference"})
 public final class IntTimSort extends PrimitiveTimSort {
 
     private final IntComparator intComparator;
     private final int[] intArray;
     private final int[] runBase;
     private final int[] runLen;
-    private int[] temporaryArray;
+    private int[] tempArray;
 
     @SuppressWarnings("squid:S2384")
     private IntTimSort(int[] intArray, IntComparator intComparator) {
         super(intArray.length);
         this.intArray = intArray;
         this.intComparator = intComparator;
-        this.temporaryArray = new int[tmpLen];
+        this.tempArray = new int[tempLength];
 
         int stackLen = getStackLength(intArray.length);
         this.runBase = new int[stackLen];
@@ -316,7 +316,7 @@ public final class IntTimSort extends PrimitiveTimSort {
         // Copy first run into temp array
         int[] array = intArray; // For performance
         int[] tmpArray = ensureCapacity(len1);
-        int cursor1 = tmpBase; // Indexes into tmp array
+        int cursor1 = tempBase; // Indexes into tmp array
         int cursor2 = base2;   // Indexes int a
         int dest = base1;      // Indexes int a
         System.arraycopy(array, base1, tmpArray, cursor1, len1);
@@ -419,7 +419,7 @@ public final class IntTimSort extends PrimitiveTimSort {
         // Copy second run into temp array
         int[] array = intArray; // For performance
         int[] tmp = ensureCapacity(len2);
-        int tmpBase = this.tmpBase;
+        int tmpBase = this.tempBase;
         System.arraycopy(array, base2, tmp, tmpBase, len2);
 
         int cursor1 = base1 + len1 - 1;  // Indexes into a
@@ -527,12 +527,12 @@ public final class IntTimSort extends PrimitiveTimSort {
 
     @SuppressWarnings("squid:S2384")
     private int[] ensureCapacity(int minCapacity) {
-        if (tmpLen < minCapacity) {
-            int newSize = calculateNewSize(minCapacity, intArray.length);
-            temporaryArray = new int[newSize];
-            tmpLen = newSize;
-            tmpBase = 0;
+        if (tempLength < minCapacity) {
+            int newLength = calculateNewLength(minCapacity, intArray.length);
+            tempArray = new int[newLength];
+            tempLength = newLength;
+            tempBase = 0;
         }
-        return temporaryArray;
+        return tempArray;
     }
 }

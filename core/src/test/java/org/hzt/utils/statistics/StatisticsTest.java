@@ -1,12 +1,11 @@
 package org.hzt.utils.statistics;
 
-import org.hzt.utils.collections.ListX;
-import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.It;
-import org.hzt.utils.sequences.primitives.DoubleSequence;
-import org.hzt.utils.sequences.primitives.IntSequence;
-import org.hzt.utils.sequences.primitives.LongSequence;
-import org.junit.jupiter.api.BeforeAll;
+import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.primitives.DoubleListX;
+import org.hzt.utils.collections.primitives.IntListX;
+import org.hzt.utils.collections.primitives.LongListX;
+import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -16,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StatisticsTest {
 
-    private static final Random RANDOM = new Random();
+    private static final Random RANDOM = new Random(0);
 
     @Test
     void testStatisticsStandardDeviation() {
@@ -25,9 +24,9 @@ class StatisticsTest {
                 .map(d -> (int) (d * 100))
                 .toListX();
 
-        final LongSequence intRange = list.mapToLong(It::asLong);
-        final IntSequence longRange = intRange.mapToInt(It::longAsInt);
-        final DoubleSequence doubleRange = intRange.mapToDouble(It::asDouble);
+        final LongListX intRange = list.mapToLong(It::asLong);
+        final IntListX longRange = intRange.mapToInt(It::longAsInt);
+        final DoubleListX doubleRange = intRange.mapToDouble(It::asDouble);
 
         final double standardDeviationIntRange = intRange.stats().getStandardDeviation();
 

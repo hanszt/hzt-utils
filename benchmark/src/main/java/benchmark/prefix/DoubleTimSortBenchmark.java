@@ -45,7 +45,7 @@ public class DoubleTimSortBenchmark {
 
     @Benchmark
     public DoubleMutableListX doubleListSort() {
-        final var list = DoubleMutableListX.of(primitiveList);
+        final DoubleMutableListX list = DoubleMutableListX.of(primitiveList);
         list.sort();
         return list;
     }
@@ -53,7 +53,7 @@ public class DoubleTimSortBenchmark {
     @Benchmark
     @SuppressWarnings("squid:S2384")
     public MutableListX<Double> listSort() {
-        final var list = MutableListX.of(inputList);
+        final MutableListX<Double> list = MutableListX.of(inputList);
         list.sort(Comparator.comparing(It::self));
         return list;
     }
@@ -68,7 +68,7 @@ public class DoubleTimSortBenchmark {
 
     @Benchmark
     public DoubleMutableListX doubleListSortReversed() {
-        final var list = DoubleMutableListX.of(primitiveList);
+        final DoubleMutableListX list = DoubleMutableListX.of(primitiveList);
         list.sort(DoubleComparator.reverseOrder());
         return list;
     }
@@ -76,7 +76,7 @@ public class DoubleTimSortBenchmark {
     @Benchmark
     @SuppressWarnings("squid:S2384")
     public MutableListX<Double> listSortReversed() {
-        final var list = MutableListX.of(inputList);
+        final MutableListX<Double> list = MutableListX.of(inputList);
         list.sort(Comparator.reverseOrder());
         return list;
     }

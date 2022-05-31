@@ -84,7 +84,7 @@ public interface LongCollectable extends LongIterable, PrimitiveCollectable<Long
             }
         }
         int count = 0;
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             long value = iterator.nextLong();
             collection.add(value);

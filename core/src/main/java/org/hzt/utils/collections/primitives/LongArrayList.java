@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.primitves.PrimitiveSort;
 import org.hzt.utils.iterables.primitives.LongIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
@@ -69,13 +70,13 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
 
     @Override
     public long get(int index) {
-        Objects.checkIndex(index, size);
+        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
         return elementData[index];
     }
 
     @Override
     public long set(int index, long value) {
-        Objects.checkIndex(index, size);
+        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
         elementData[index] = value;
         return value;
     }

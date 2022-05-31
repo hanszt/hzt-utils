@@ -76,7 +76,7 @@ public final class CollectorsX {
 
     public static <T, U, A, R> Collector<T, ?, R> multiMapping(BiConsumer<? super T, ? super Consumer<U>> mapper,
                                                                Collector<? super U, A, R> downstream) {
-        return Collectors.flatMapping(e -> {
+        return flatMapping(e -> {
             SpinedBuffer<U> buffer = new SpinedBuffer<>();
             mapper.accept(e, buffer);
             return StreamSupport.stream(buffer.spliterator(), false);

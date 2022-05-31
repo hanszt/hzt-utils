@@ -1,6 +1,7 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.It;
+import org.hzt.utils.tuples.IndexedValue;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -91,7 +92,7 @@ class CollectionXTest {
     @Test
     void testCollectionWithIndex() {
         final ListX<Integer> list = ListX.of(1, 2, 4, 8, 16, 32);
-        final var indexedValues = list.withIndex();
+        final ListX<IndexedValue<Integer>> indexedValues = list.withIndex();
 
         assertAll(
                 () -> assertEquals(6, list.size()),

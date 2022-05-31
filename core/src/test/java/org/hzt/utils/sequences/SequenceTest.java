@@ -22,12 +22,6 @@ import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.statistics.IntStatistics;
 import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
-import org.hzt.utils.It;
-import org.hzt.test.TestSampleGenerator;
-import org.hzt.test.model.BankAccount;
-import org.hzt.test.model.Museum;
-import org.hzt.test.model.Painter;
-import org.hzt.test.model.Painting;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -83,7 +77,7 @@ class SequenceTest {
         final double sum = list
                 .map(String::length)
                 .mapToDouble(Double::valueOf)
-                .sum(NoSuchElementException::new);
+                .sum();
 
         assertEquals(17, sum);
     }
@@ -188,7 +182,7 @@ class SequenceTest {
                 new ArrayDeque<>(Collections.singleton("test")));
 
         final ListX<String> result = list.asSequence()
-                .flatMap(It::self)
+                .flatMap(t -> It.self(t))
                 .filter(s -> s.length() > 3)
                 .filterNot(String::isEmpty)
                 .toListX();
@@ -596,7 +590,7 @@ class SequenceTest {
                 .filter(IntX::isEven)
                 .sorted()
                 .windowed(3, true)
-                .flatMap(It::self)
+                .flatMap(t -> It.self(t))
                 .withIndex()
                 .toList();
 
@@ -694,38 +688,38 @@ class SequenceTest {
 
     @Test
     void testIntersperseByPrevious() {
-        final var integers = Sequence.generate(0, i -> --i)
+        final List<Integer> integers = Sequence.generate(0, i -> --i)
                 .take(10)
                 .intersperse(i -> ++i)
                 .toList();
 
         System.out.println("integers = " + integers);
 
-        assertEquals(List.of(0, 1, -1, 0, -2, -1, -3, -2, -4, -3, -5, -4, -6, -5, -7, -6, -8, -7, -9), integers);
+        assertEquals(Arrays.asList(0, 1, -1, 0, -2, -1, -3, -2, -4, -3, -5, -4, -6, -5, -7, -6, -8, -7, -9), integers);
     }
 
     @Test
     void testIntersperseConstantValue() {
-        final var integers = Sequence.generate(0, i -> --i)
+        final List<Integer> integers = Sequence.generate(0, i -> --i)
                 .take(10)
                 .intersperse(5)
                 .toList();
 
         System.out.println("integers = " + integers);
 
-        assertEquals(List.of(0, 5, -1, 5, -2, 5, -3, 5, -4, 5, -5, 5, -6, 5, -7, 5, -8, 5, -9), integers);
+        assertEquals(Arrays.asList(0, 5, -1, 5, -2, 5, -3, 5, -4, 5, -5, 5, -6, 5, -7, 5, -8, 5, -9), integers);
     }
 
     @Test
     void testIntersperseVariable() {
-        final var integers = Sequence.generate(0, i -> --i)
+        final List<Integer> integers = Sequence.generate(0, i -> --i)
                 .take(10)
                 .intersperse(0, i -> i + 2)
                 .toList();
 
         System.out.println("integers = " + integers);
 
-        assertEquals(List.of(0, 0, -1, 2, -2, 4, -3, 6, -4, 8, -5, 10, -6, 12, -7, 14, -8, 16, -9), integers);
+        assertEquals(Arrays.asList(0, 0, -1, 2, -2, 4, -3, 6, -4, 8, -5, 10, -6, 12, -7, 14, -8, 16, -9), integers);
     }
 
     @Test
@@ -733,14 +727,14 @@ class SequenceTest {
         @SuppressWarnings("squid:S5977")
         final Random random = new Random(0);
 
-        final var integers = Sequence.generate(0, i -> --i)
+        final List<Integer> integers = Sequence.generate(0, i -> --i)
                 .take(10)
                 .intersperse(() -> random.nextInt(20))
                 .toList();
 
         System.out.println("integers = " + integers);
 
-        assertEquals(List.of(0, 0, -1, 8, -2, 9, -3, 7, -4, 15, -5, 13, -6, 11, -7, 1, -8, 19, -9), integers);
+        assertEquals(Arrays.asList(0, 0, -1, 8, -2, 9, -3, 7, -4, 15, -5, 13, -6, 11, -7, 1, -8, 19, -9), integers);
     }
 
     @Test

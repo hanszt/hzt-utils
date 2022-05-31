@@ -22,7 +22,7 @@ class GridPoint3DTest {
         GridPoint3D point1 = GridPoint3D.from(2, 4, 3);
         GridPoint3D point2 = GridPoint3D.from(3, 2, 5);
 
-        final var actual = point1.crossProduct(point2);
+        final GridPoint3D actual = point1.crossProduct(point2);
 
         assertEquals(GridPoint3D.from(14, -1, -8), actual);
     }

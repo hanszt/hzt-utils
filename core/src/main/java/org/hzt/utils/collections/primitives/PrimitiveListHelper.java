@@ -134,8 +134,8 @@ final class PrimitiveListHelper {
     }
 
     public static void swap(IntMutableListX list, int i, int j) {
-        final var element = list.get(i);
-        final var other = list.set(j, element);
+        final int element = list.get(i);
+        final int other = list.set(j, element);
         list.set(i, other);
     }
 

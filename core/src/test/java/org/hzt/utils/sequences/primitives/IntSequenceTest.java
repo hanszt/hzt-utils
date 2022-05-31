@@ -36,11 +36,11 @@ class IntSequenceTest {
     @Test
     @DisplayName("Test sum stream yields wrong result for large int value sums")
     void testSumStreamYieldsWrongResultForLargeIntValueSums() {
-        final var endExclusive = 100_000;
+        final int endExclusive = 100_000;
 
-        final var sumIntStream = IntStream.range(0, endExclusive).sum();
-        final var sumIntRange = IntRange.of(0, endExclusive).sum();
-        final var sumIntStreamUsingCollector = IntStream.range(0, endExclusive)
+        final int sumIntStream = IntStream.range(0, endExclusive).sum();
+        final long sumIntRange = IntRange.of(0, endExclusive).sum();
+        final long sumIntStreamUsingCollector = IntStream.range(0, endExclusive)
                 .summaryStatistics()
                 .getSum();
 

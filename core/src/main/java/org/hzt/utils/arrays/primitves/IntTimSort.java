@@ -147,10 +147,10 @@ public final class IntTimSort extends PrimitiveTimSort {
             if (runLen[n] > runLen[n + 1]) {
                 return; // Invariant is established
             }
-            final var b1 = n > 0 && runLen[n - 1] <= runLen[n] + runLen[n + 1];
-            final var b2 = n > 1 && runLen[n - 2] <= runLen[n - 1] + runLen[n];
+            final boolean b1 = n > 0 && runLen[n - 1] <= runLen[n] + runLen[n + 1];
+            final boolean b2 = n > 1 && runLen[n - 2] <= runLen[n - 1] + runLen[n];
             if ((b1 || b2)) {
-                final var b3 = runLen[n - 1] < runLen[n + 1];
+                final boolean b3 = runLen[n - 1] < runLen[n + 1];
                 if (b3) {
                     n--;
                 }

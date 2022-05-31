@@ -121,7 +121,7 @@ public final class SequenceHelper {
     }
 
     public static <T> Iterator<T> interspersingIterator(Iterator<T> iterator, UnaryOperator<T> operator) {
-        return new Iterator<>() {
+        return new Iterator<T>() {
             private T current = null;
 
             @Override
@@ -132,7 +132,7 @@ public final class SequenceHelper {
             @Override
             public T next() {
                 if (current != null) {
-                    final var valueToInsert = operator.apply(current);
+                    final T valueToInsert = operator.apply(current);
                     current = null;
                     return valueToInsert;
                 } else {
@@ -146,7 +146,7 @@ public final class SequenceHelper {
     public static <T> Iterator<T> interspersingIterator(Iterator<T> iterator,
                                                         Supplier<T> initValSupplier,
                                                         UnaryOperator<T> operator) {
-        return new Iterator<>() {
+        return new Iterator<T>() {
             private T valueToInsert = null;
             private boolean insertValue = false;
 

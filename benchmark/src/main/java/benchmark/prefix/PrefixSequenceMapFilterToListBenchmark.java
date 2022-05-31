@@ -12,6 +12,7 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -24,7 +25,7 @@ public class PrefixSequenceMapFilterToListBenchmark {
 
     private final List<String> list = IntStream.range(0, 100_000)
             .mapToObj(String::valueOf)
-            .collect(Collectors.toUnmodifiableList());
+            .collect(Collectors.toList());
 
     public PrefixSequenceMapFilterToListBenchmark() {
         super();
@@ -43,7 +44,7 @@ public class PrefixSequenceMapFilterToListBenchmark {
         return list.stream()
                 .map(String::length)
                 .filter(IntX::isEven)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
     }
 
     @Benchmark
@@ -51,7 +52,7 @@ public class PrefixSequenceMapFilterToListBenchmark {
         return list.parallelStream()
                 .map(String::length)
                 .filter(IntX::isEven)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
     }
 
     @Benchmark
@@ -63,7 +64,7 @@ public class PrefixSequenceMapFilterToListBenchmark {
                 result.add(length);
             }
         }
-        return List.copyOf(result);
+        return Collections.unmodifiableList(result);
     }
 
     public static void main(String[] args) {

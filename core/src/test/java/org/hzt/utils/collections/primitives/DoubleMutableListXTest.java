@@ -74,7 +74,7 @@ class DoubleMutableListXTest {
 
     @Test
     void testSortSmallDoubleList() {
-        final var doubles = DoubleSequence.generate(0, i -> --i)
+        final DoubleMutableListX doubles = DoubleSequence.generate(0, i -> --i)
                 .take(10)
                 .toMutableList();
 
@@ -86,7 +86,7 @@ class DoubleMutableListXTest {
     }
     @Test
     void testSortDoubleList() {
-        final var doubles = DoubleSequence.generate(1_000_000, i -> --i)
+        final DoubleMutableListX doubles = DoubleSequence.generate(1_000_000, i -> --i)
                 .take(1_000_000)
                 .toMutableList();
 
@@ -97,7 +97,7 @@ class DoubleMutableListXTest {
 
     @Test
     void testSortReversedDoubleList() {
-        final var doubles = DoubleSequence.generate(-1_000_000, i -> ++i)
+        final DoubleMutableListX doubles = DoubleSequence.generate(-1_000_000, i -> ++i)
                 .take(1_000_000)
                 .toMutableList();
 

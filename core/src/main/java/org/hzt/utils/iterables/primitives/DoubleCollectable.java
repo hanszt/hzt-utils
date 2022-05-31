@@ -84,7 +84,7 @@ public interface DoubleCollectable extends DoubleIterable, PrimitiveCollectable<
             }
         }
         int count = 0;
-        final var iterator = iterator();
+        final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             double value = iterator.nextDouble();
             collection.add(value);

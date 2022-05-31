@@ -4,6 +4,9 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.hzt.fx.utils.Listeners.forNewValue;
@@ -27,7 +30,7 @@ class ListenersTest {
 
         value1.bindBidirectional(value2);
 
-        for (int value : Set.of(1, 2, 4, 56, 400, -4, 6, 3)) {
+        for (int value : Collections.unmodifiableSet(new HashSet<>(Arrays.asList(1, 2, 4, 56, 400, -4, 6, 3)))) {
             value1.set(value);
             assertEquals(value1.get(), value2.get());
         }

@@ -26,7 +26,7 @@ public interface WindowedSequence<T> extends Windowable<T> {
         //The holding consumer provides a way to provide the same value to both the size and step unary operator.
         //It also makes sure the nextSizeSupplier from this method is only called once instead of twice
         //It is required that the call for next size is made before next step for them to receive the same value
-        final SequenceHelper.HoldingConsumer holdingConsumer = new AtomicInteger();
+        final AtomicInteger holdingConsumer = new AtomicInteger();
         return windowed(initSize, size -> {
             final int nextSize = nextSizeSupplier.applyAsInt(size);
             holdingConsumer.set(nextSize);

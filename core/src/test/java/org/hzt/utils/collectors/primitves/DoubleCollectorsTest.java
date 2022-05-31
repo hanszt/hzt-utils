@@ -1,5 +1,6 @@
 package org.hzt.utils.collectors.primitves;
 
+import org.hzt.utils.collections.primitives.DoubleListX;
 import org.junit.jupiter.api.Test;
 
 import static java.lang.Math.E;
@@ -11,12 +12,12 @@ class DoubleCollectorsTest {
 
     @Test
     void testCollectToDoubleList() {
-        final var doubles = generate(1, d -> d + E)
+        final DoubleListX doubles = generate(1, d -> d + E)
                 .take(10)
                 .onEach(System.out::println)
                 .collect(DoubleCollectors.toList());
 
-        final var last = doubles.last();
+        final double last = doubles.last();
 
         assertAll(
                 () -> assertEquals(10, doubles.size()),

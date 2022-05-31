@@ -102,11 +102,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default Sequence<T> plus(@NotNull T value) {
-        return Sequence.of(this, Sequence.of(value)).flatMap(It::self);
+        return Sequence.of(this, Sequence.of(value)).mapMulti(Iterable::forEach);
     }
 
     default Sequence<T> plus(@NotNull Iterable<T> values) {
-        return Sequence.of(this, Sequence.of(values)).flatMap(It::self);
+        return Sequence.of(this, Sequence.of(values)).mapMulti(Iterable::forEach);
     }
 
     default Sequence<T> intersperse(T value) {

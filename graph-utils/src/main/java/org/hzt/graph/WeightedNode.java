@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class WeightedNode<T> implements Node<T> {
@@ -47,7 +48,7 @@ public class WeightedNode<T> implements Node<T> {
     }
 
     public List<WeightedNode<T>> getNeighbors() {
-        return List.copyOf(neighbors);
+        return Collections.unmodifiableList(neighbors);
     }
 
     public boolean addNeighbor(WeightedNode<T> neighbor) {

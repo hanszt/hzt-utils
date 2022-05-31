@@ -11,6 +11,7 @@ import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.statistics.IntStatistics;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
@@ -260,13 +262,13 @@ class CollectableTest {
 
     @Test
     void testCollectJoining() {
-        var strings = Set.of("collect", "joining", "requires",
+        Set<String> strings = new HashSet<>(Arrays.asList("collect", "joining", "requires",
                 "Collector<? super T, A, R>", "as", "collector", "definition",
-                "instead", "of", "Collector<T, A, R>");
+                "instead", "of", "Collector<T, A, R>"));
 
-        final var expected = String.join(", ", strings);
-        final var expected2 = Sequence.of(strings).joinToString();
-        final var result = Sequence.of(strings).collect(joining(", "));
+        final String expected = String.join(", ", strings);
+        final String expected2 = Sequence.of(strings).joinToString();
+        final String result = Sequence.of(strings).collect(joining(", "));
 
         assertAll(
                 () -> assertEquals(expected, result),

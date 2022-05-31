@@ -84,7 +84,7 @@ public interface IntCollectable extends IntIterable, PrimitiveCollectable<IntCol
             }
         }
         int count = 0;
-        final var iterator = iterator();
+        final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             int value = iterator.nextInt();
             collection.add(value);

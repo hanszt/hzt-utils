@@ -358,7 +358,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public ListX<String> split(int limit, @NotNull CharSequence delimiter) {
-        final var delimiterAsString = StringX.of(delimiter).toString();
+        final String delimiterAsString = StringX.of(delimiter).toString();
         return split(delimiterAsString, limit);
     }
 
@@ -371,8 +371,8 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
      */
     private ListX<String> split(String delimiter, int limit) {
         PreConditions.require(limit >= 0, () -> "Limit must be non-negative, but was $limit");
-        var currentOffset = 0;
-        var nextIndex = indexOf(delimiter, currentOffset);
+        int currentOffset = 0;
+        int nextIndex = indexOf(delimiter, currentOffset);
         if (nextIndex == -1 || limit == 1) {
             return ListX.of(this.toString());
         }

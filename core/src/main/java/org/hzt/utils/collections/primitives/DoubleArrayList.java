@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.primitves.PrimitiveSort;
 import org.hzt.utils.iterables.primitives.DoubleIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
@@ -75,7 +76,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
 
     @Override
     public double get(int index) {
-        Objects.checkIndex(index, size);
+        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
         return elementData[index];
     }
 
@@ -154,7 +155,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
 
     @Override
     public double set(int index, double value) {
-        Objects.checkIndex(index, size);
+        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
         elementData[index] = value;
         return value;
     }

@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.primitves.PrimitiveSort;
 import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.primitives.IntIterable;
@@ -71,7 +72,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
 
     @Override
     public int get(int index) {
-        Objects.checkIndex(index, size);
+        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
         return elementData[index];
     }
 
@@ -100,7 +101,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
 
     @Override
     public IntListX shuffled() {
-        final var mutableListX = IntMutableListX.of(this);
+        final IntMutableListX mutableListX = IntMutableListX.of(this);
         PrimitiveListHelper.shuffle(mutableListX);
         return mutableListX;
     }
@@ -166,7 +167,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
 
     @Override
     public int set(int index, int value) {
-        Objects.checkIndex(index, size);
+        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
         elementData[index] = value;
         return value;
     }

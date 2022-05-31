@@ -1,6 +1,11 @@
 package benchmark.prefix;
 
+import org.hzt.utils.collections.MapX;
+import org.hzt.utils.collections.primitives.IntMutableListX;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
@@ -11,9 +16,9 @@ class PrefixSequenceGroupingBenchmarkTest {
 
     @Test
     void testIntRangeLoopAndIntStreamGroupingYieldsSameResult() {
-        final var sequenceGrouping = groupingBenchmark.intRangeFilterGroup();
-        final var streamGrouping = groupingBenchmark.intStreamRangeFilterGroup();
-        final var imperativeGrouping = groupingBenchmark.groupByImperative();
+        final MapX<Integer, IntMutableListX> sequenceGrouping = groupingBenchmark.intRangeFilterGroup();
+        final Map<Integer, List<Integer>> streamGrouping = groupingBenchmark.intStreamRangeFilterGroup();
+        final Map<Integer, List<Integer>> imperativeGrouping = groupingBenchmark.groupByImperative();
 
         System.out.println("intsFromIntStream = " + streamGrouping);
 

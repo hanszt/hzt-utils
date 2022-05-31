@@ -9,7 +9,7 @@ class LongXTest {
 
     @Test
     void testGenerateFibonacciNrs() {
-        final var longs = LongX.fibonacciSequence()
+        final LongListX longs = LongX.fibonacciSequence()
                 .take(10)
                 .toListX();
 
@@ -18,7 +18,7 @@ class LongXTest {
 
     @Test
     void testNthFibNr() {
-        final var fibNr = LongX.nthFibonacciNumber(7);
+        final long fibNr = LongX.nthFibonacciNumber(7);
 
         assertEquals(8, fibNr);
     }

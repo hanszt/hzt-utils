@@ -1,6 +1,7 @@
 package org.hzt.graph;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class NodeImpl<T> implements Node<T> {
@@ -13,7 +14,7 @@ public class NodeImpl<T> implements Node<T> {
     }
 
     public List<NodeImpl<T>> getNeighbors() {
-        return List.copyOf(neighbors);
+        return Collections.unmodifiableList(neighbors);
     }
 
     public T getPayload() {

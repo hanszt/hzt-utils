@@ -5,6 +5,7 @@ import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collectors.BigDecimalCollectors;
+import org.hzt.utils.iterators.functional_iterator.IteratorX;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
@@ -968,12 +969,13 @@ public class IterableXTest {
 
     @Test
     void testIteratorX() {
-        final var expected = new ArrayList<String>();
-        final var actual = new ArrayList<String>();
-        final var strings = ListX.of("hello", "this", "is", "a", "test");
+        final List<String> expected = new ArrayList<>();
+        final List<String> actual = new ArrayList<>();
+        final ListX<String> strings = ListX.of("hello", "this", "is", "a", "test");
 
         strings.iterator().forEachRemaining(expected::add);
-        final var stringIteratorX = strings.iteratorX();
+        final IteratorX<String> stringIteratorX = strings.iteratorX();
+        //noinspection StatementWithEmptyBody
         while(stringIteratorX.tryAdvance(actual::add));
 
         assertEquals(expected, actual);

@@ -15,8 +15,8 @@ class GraphAlgorithmsTest {
     @Test
     @DisplayName("Test find shortest path using Dijkstra")
     void testFindShortestPathUsingDijkstra() {
-        final var start = new WeightedNode<>(null, 3);
-        final var graph = new WeightedNode<>(null, 2);
+        final WeightedNode<Object> start = new WeightedNode<>(null, 3);
+        final WeightedNode<Object> graph = new WeightedNode<>(null, 2);
         assertThrows(IllegalStateException.class, () -> GraphAlgorithms.dijkstra(start, graph));
     }
 

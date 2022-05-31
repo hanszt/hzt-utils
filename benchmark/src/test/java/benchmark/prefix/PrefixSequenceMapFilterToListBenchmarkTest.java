@@ -2,8 +2,11 @@ package benchmark.prefix;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class PrefixSequenceMapFilterToListBenchmarkTest {
 
@@ -11,14 +14,14 @@ class PrefixSequenceMapFilterToListBenchmarkTest {
 
     @Test
     void testSequenceLoopAndStreamMapFilterToListYieldSameResult() {
-        final var sequenceResult = prefixSequenceMapFilterToListBenchmark.sequenceOfListMapFilterToList();
-        final var streamResult = prefixSequenceMapFilterToListBenchmark.streamMapFilterToList();
-        final var loopResult = prefixSequenceMapFilterToListBenchmark.imperativeMapFilterToList();
+        final List<Integer> sequenceResult = prefixSequenceMapFilterToListBenchmark.sequenceOfListMapFilterToList();
+        final List<Integer> streamResult = prefixSequenceMapFilterToListBenchmark.streamMapFilterToList();
+        final List<Integer> loopResult = prefixSequenceMapFilterToListBenchmark.imperativeMapFilterToList();
 
         System.out.println("streamResult = " + streamResult);
 
         assertAll(
-                () -> assertEquals(sequenceResult, streamResult),
+                () -> assertIterableEquals(sequenceResult, streamResult),
                 () -> assertEquals(loopResult, sequenceResult)
         );
     }

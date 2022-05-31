@@ -71,7 +71,7 @@ class EntrySequenceTest {
     void testToEntrySequenceFromPairSequence() {
         final MutableMapX<Year, Integer> yearStringMap = Sequence.generate(1, i -> ++i)
                 .zipWithNext(Pair::of)
-                .asEntrySequence(It::self)
+                .asEntrySequence(t -> It.self(t))
                 .mapKeys(Year::of)
                 .takeWhileKeys(year -> year.isBefore(Year.of(2001)))
                 .skip(20)

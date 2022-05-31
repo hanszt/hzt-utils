@@ -68,7 +68,7 @@ class LongMutableListXTest {
 
     @Test
     void testSortLongList() {
-        final var longs = LongSequence.generate(1_000_000, i -> --i)
+        final LongMutableListX longs = LongSequence.generate(1_000_000, i -> --i)
                 .take(1_000_000)
                 .toMutableList();
 
@@ -79,7 +79,7 @@ class LongMutableListXTest {
 
     @Test
     void testSortReversedLongList() {
-        final var longs = LongSequence.generate(-1_000_000, i -> ++i)
+        final LongMutableListX longs = LongSequence.generate(-1_000_000, i -> ++i)
                 .take(1_000_000)
                 .toMutableList();
 

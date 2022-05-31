@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,13 +27,13 @@ class IteratorXTest {
         List<String> list1 = new ArrayList<>();
         List<String> list2 = new ArrayList<>();
 
-        final var upperBound = 100;
+        final int upperBound = 100;
 
         IteratorX<String> stringIterator = getBoundedStringIteratorX(upperBound);
         //noinspection StatementWithEmptyBody
         while (stringIterator.tryAdvance(list1::add)) ;
 
-        final var boundedIteratorX = getBoundedStringIteratorX(upperBound);
+        final IteratorX<String> boundedIteratorX = getBoundedStringIteratorX(upperBound);
         final Iterable<String> stringIterable = boundedIteratorX::asIterator;
         stringIterable.forEach(list2::add);
 
@@ -43,7 +45,7 @@ class IteratorXTest {
         List<String> list1 = new ArrayList<>();
         List<String> list2 = new ArrayList<>();
 
-        final var upperBound = 200;
+        final int upperBound = 200;
         IteratorX<String> stringIterator = getBoundedStringIteratorX(upperBound);
         stringIterator.forEachRemaining(list1::add);
         stringIterator.forEachRemaining(list2::add);
@@ -57,7 +59,7 @@ class IteratorXTest {
     @Test
     @DisplayName("Test get correct iterator from iteratorX instance")
     void testGetCorrectIteratorFromIteratorXInstance() {
-        final var bound = 241;
+        final int bound = 241;
         AtomicInteger atomicInteger = new AtomicInteger();
 
         IteratorX<String> stringIterator = getBoundedStringIteratorX(bound);
@@ -73,13 +75,13 @@ class IteratorXTest {
 
     @Test
     void testMappingIterator() {
-        final var strings = ListX.of("This", "is", "a", "test");
+        final ListX<String> strings = ListX.of("This", "is", "a", "test");
 
-        final var stringIteratorX = strings.iteratorX();
+        final IteratorX<String> stringIteratorX = strings.iteratorX();
 
         final IteratorX<Integer> toLengthMapperIterator = action -> {
-            final var consumer = new AtomicReference<String>();
-            final var advance = stringIteratorX.tryAdvance(consumer::set);
+            final AtomicReference<String> consumer = new AtomicReference<>();
+            final boolean advance = stringIteratorX.tryAdvance(consumer::set);
             if (advance) {
                 action.accept(consumer.get().length());
             }
@@ -87,7 +89,7 @@ class IteratorXTest {
         };
         Iterable<Integer> integers = toLengthMapperIterator::asIterator;
 
-        assertIterableEquals(List.of(4, 2, 1, 4), integers);
+        assertIterableEquals(Arrays.asList(4, 2, 1, 4), integers);
     }
 
     private static class BoundedIterator<T> {
@@ -106,7 +108,7 @@ class IteratorXTest {
         }
 
         private boolean supplyNext(Consumer<? super T> consumer) {
-            final var supplyNext = counter < upperBound;
+            final boolean supplyNext = counter < upperBound;
             if (supplyNext) {
                 consumer.accept(supplier.apply(counter));
             }
@@ -124,7 +126,7 @@ class IteratorXTest {
                 .parse("2022-04-21")::minusDays)
                 ::supplyNext;
 
-        final var ints = StreamSupport.stream(dateIterator.asSpliterator(), false)
+        final int[] ints = StreamSupport.stream(dateIterator.asSpliterator(), false)
                 .mapToInt(LocalDate::getDayOfMonth)
                 .filter(IntX::isEven)
                 .toArray();
@@ -136,7 +138,7 @@ class IteratorXTest {
     @DisplayName("Test iterator from empty iteratorX throws no such element exception")
     void testIteratorFromEmptyIteratorXThrowsNoSuchElementException() {
         IteratorX<String> iteratorX = c -> false;
-        final var stringIterator = iteratorX.asIterator();
+        final Iterator<String> stringIterator = iteratorX.asIterator();
 
         assertAll(
                 () -> assertFalse(stringIterator.hasNext()),
@@ -148,10 +150,10 @@ class IteratorXTest {
     @DisplayName("Test iterator from single element iteratorX throws no such element exception after 1")
     void testIteratorFromOneThrowsNoSuchElementExceptionAfterOne() {
         IteratorX<String> iteratorX = BoundedIterator.of(1, String::valueOf)::supplyNext;
-        final var stringIterator = iteratorX.asIterator();
+        final Iterator<String> stringIterator = iteratorX.asIterator();
 
-        final var hasOne = stringIterator.hasNext();
-        final var first = stringIterator.next();
+        final boolean hasOne = stringIterator.hasNext();
+        final String first = stringIterator.next();
 
         assertAll(
                 () -> assertTrue(hasOne),

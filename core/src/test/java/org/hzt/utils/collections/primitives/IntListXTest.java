@@ -54,9 +54,9 @@ class IntListXTest {
 
     @Test
     void testShuffled() {
-        final var intListX = IntListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        final IntListX intListX = IntListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        final var shuffled = intListX.shuffled();
+        final IntListX shuffled = intListX.shuffled();
 
         System.out.println("shuffled = " + shuffled);
 

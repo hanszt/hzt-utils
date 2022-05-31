@@ -92,7 +92,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     default DoubleSequence flatMap(DoubleFunction<? extends DoubleSequence> flatMapper) {
-        return mapMulti((value, c) -> flatMapper.apply(value).forEachDouble(c));
+        return mapMulti((value, doubleConsumer) -> flatMapper.apply(value).forEachDouble(doubleConsumer));
     }
 
     default DoubleSequence mapMulti(DoubleMapMultiConsumer mapMultiConsumer) {

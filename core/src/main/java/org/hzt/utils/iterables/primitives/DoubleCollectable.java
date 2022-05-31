@@ -1,6 +1,7 @@
 package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.It;
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.primitives.DoubleCollection;
 import org.hzt.utils.collections.primitives.DoubleListX;
 import org.hzt.utils.collections.primitives.DoubleMutableCollection;
@@ -66,5 +67,31 @@ public interface DoubleCollectable extends DoubleIterable, PrimitiveCollectable<
 
     default DoubleMutableListX toMutableList() {
         return to(DoubleMutableListX::empty);
+    }
+
+    default <C extends DoubleMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        C collection = collectionFactory.get();
+        if (n == 0) {
+            return collection;
+        }
+        final DoubleIterable iterable = this;
+        if (iterable instanceof DoubleMutableCollection) {
+            DoubleMutableCollection c = (DoubleMutableCollection) iterable;
+            if (n >= c.size()) {
+                collection.addAll(c);
+                return collection;
+            }
+        }
+        int count = 0;
+        final var iterator = iterator();
+        while (iterator.hasNext()) {
+            double value = iterator.nextDouble();
+            collection.add(value);
+            if (++count == n) {
+                break;
+            }
+        }
+        return collection;
     }
 }

@@ -4,6 +4,7 @@ import org.hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.DoubleSummaryStatistics;
+import java.util.Objects;
 
 public final class DoubleStatistics extends DoubleSummaryStatistics
         implements NumberStatistics, Transformable<DoubleStatistics> {
@@ -54,6 +55,27 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
     public Double getStandardDeviation() {
         final double average = getAverage();
         return getCount() > 0 ? Math.sqrt((getSumOfSquare() / getCount()) - average * average) : 0.0D;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DoubleStatistics that = (DoubleStatistics) o;
+        return getCount() == that.getCount() &&
+                Double.compare(getAverage(), that.getAverage()) == 0 &&
+                Double.compare(that.getSumOfSquare(), getSumOfSquare()) == 0 &&
+                Double.compare(that.sumOfSquareCompensation, sumOfSquareCompensation) == 0 &&
+                Double.compare(that.simpleSumOfSquare, simpleSumOfSquare) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCount(), getAverage(), getSumOfSquare(), sumOfSquareCompensation, simpleSumOfSquare);
     }
 
     @Override

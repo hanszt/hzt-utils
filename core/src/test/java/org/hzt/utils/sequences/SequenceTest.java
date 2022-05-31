@@ -43,9 +43,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Random;
 import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -717,6 +716,21 @@ class SequenceTest {
         System.out.println("integers = " + integers);
 
         assertEquals(List.of(0, 0, -1, 2, -2, 4, -3, 6, -4, 8, -5, 10, -6, 12, -7, 14, -8, 16, -9), integers);
+    }
+
+    @Test
+    void testIntersperseBySupplier() {
+        @SuppressWarnings("squid:S5977")
+        final Random random = new Random(0);
+
+        final var integers = Sequence.generate(0, i -> --i)
+                .take(10)
+                .intersperse(() -> random.nextInt(20))
+                .toList();
+
+        System.out.println("integers = " + integers);
+
+        assertEquals(List.of(0, 0, -1, 8, -2, 9, -3, 7, -4, 15, -5, 13, -6, 11, -7, 1, -8, 19, -9), integers);
     }
 
     @Test

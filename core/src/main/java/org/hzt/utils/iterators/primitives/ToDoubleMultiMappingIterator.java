@@ -47,14 +47,13 @@ public final class ToDoubleMultiMappingIterator<T> implements PrimitiveIterator.
         while (itemIterator == null) {
             if (!iterator.hasNext()) {
                 return false;
-            } else {
-                SpinedBuffer.OfDouble doubleBuffer = new SpinedBuffer.OfDouble();
-                mapper.accept(iterator.next(), doubleBuffer);
-                final OfDouble nextItemIterator = doubleBuffer.iterator();
-                if (nextItemIterator.hasNext()) {
-                    itemIterator = nextItemIterator;
-                    return true;
-                }
+            }
+            SpinedBuffer.OfDouble doubleBuffer = new SpinedBuffer.OfDouble();
+            mapper.accept(iterator.next(), doubleBuffer);
+            final OfDouble nextItemIterator = doubleBuffer.iterator();
+            if (nextItemIterator.hasNext()) {
+                itemIterator = nextItemIterator;
+                return true;
             }
         }
         return true;

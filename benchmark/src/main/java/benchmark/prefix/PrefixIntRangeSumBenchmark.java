@@ -14,25 +14,28 @@ import java.util.stream.IntStream;
 
 @SuppressWarnings("unused")
 @State(Scope.Benchmark)
-public class PrefixIntRangeReduceBenchmark {
+public class PrefixIntRangeSumBenchmark {
+
+    private static final int UPPER_BOUND_RANGE = 100_000;
+
     @Param({"100000"})
     private int nrOfIterations;
 
-    public PrefixIntRangeReduceBenchmark() {
+    public PrefixIntRangeSumBenchmark() {
         super();
     }
 
     @Benchmark
-    public long mapFilterSum() {
-        return IntRange.of(0, nrOfIterations)
+    public long intSequenceMapFilterSum() {
+        return IntRange.of(0, UPPER_BOUND_RANGE)
                 .map(i -> i * 2)
                 .filter(i -> i % 4 == 0)
                 .sum();
     }
 
     @Benchmark
-    public long intListMapFilterSum() {
-        return IntRange.of(0, nrOfIterations)
+    public long intListXMapFilterSum() {
+        return IntRange.of(0, UPPER_BOUND_RANGE)
                 .toListX()
                 .map(i -> i * 2)
                 .filter(i -> i % 4 == 0)
@@ -41,25 +44,27 @@ public class PrefixIntRangeReduceBenchmark {
 
     @Benchmark
     public long streamMapFilterSum() {
-        return IntStream.range(0, nrOfIterations)
+        return IntStream.range(0, UPPER_BOUND_RANGE)
                 .map(i -> i * 2)
                 .filter(i -> i % 4 == 0)
-                .sum();
+                .summaryStatistics()
+                .getSum();
     }
 
     @Benchmark
     public long parallelStreamMapFilterSum() {
-        return IntStream.range(0, nrOfIterations)
+        return IntStream.range(0, UPPER_BOUND_RANGE)
                 .parallel()
                 .map(i -> i * 2)
                 .filter(i -> i % 4 == 0)
-                .sum();
+                .summaryStatistics()
+                .getSum();
     }
 
     @Benchmark
     public long loopMapFilterSum() {
         long sum = 0;
-        for (int i = 0; i < nrOfIterations; i++) {
+        for (int i = 0; i < UPPER_BOUND_RANGE; i++) {
             int i2 = i * 2;
             if (i2 % 4 == 0) {
                 sum += i2;
@@ -70,11 +75,11 @@ public class PrefixIntRangeReduceBenchmark {
 
     public static void main(String[] args) {
         Options options = new OptionsBuilder()
-                .include(PrefixIntRangeReduceBenchmark.class.getSimpleName())
+                .include(PrefixIntRangeSumBenchmark.class.getSimpleName())
                 .forks(1)
                 .warmupIterations(2)
-                .shouldFailOnError(true)
                 .measurementIterations(3)
+                .shouldFailOnError(true)
                 .build();
         try {
             new Runner(options).run();

@@ -6,75 +6,60 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * A Tim sort implementation for sorting long arrays where a LongComparator is used for the comparisons
+ * Based on the generic java implementation of TimSort
  *
- * Credits for this implementation go to
- * <a href="https://github.com/mintern-java/primitive">Java Primitive by Mintern</a>
+ * @see java.util.TimSort;
  */
-public final class LongTimSort {
+@SuppressWarnings({"DuplicatedCode", "JavadocReference"})
+public final class LongTimSort extends PrimitiveTimSort {
 
-    private static final int MIN_MERGE = 32;
-    private static final int MIN_GALLOP = 7;
-    private static final int INITIAL_TMP_STORAGE_LENGTH = 256;
-
-    private final long[] array;
-    private final LongComparator comparator;
-    private int minGallop = MIN_GALLOP;
-    private long[] temporaryArray;
-    private int tmpBase;
-    private int tmpLen;
-    private int stackSize = 0;
+    private final LongComparator longComparator;
+    private final long[] longArray;
     private final int[] runBase;
     private final int[] runLen;
+    private long[] tempArray;
 
-    private LongTimSort(long[] array, LongComparator comparator) {
-        this.array = array;
-        this.comparator = comparator;
-        int length = array.length;
-        int tempLength = length < 512 ? (length >>> 1) : INITIAL_TMP_STORAGE_LENGTH;
-        this.temporaryArray = new long[tempLength];
-        this.tmpBase = 0;
-        this.tmpLen = tempLength;
+    @SuppressWarnings("squid:S2384")
+    private LongTimSort(long[] longArray, LongComparator longComparator) {
+        super(longArray.length);
+        this.longArray = longArray;
+        this.longComparator = longComparator;
+        this.tempArray = new long[tempLength];
 
-        int stackLen = getStackLength(length);
+        int stackLen = getStackLength(longArray.length);
         this.runBase = new int[stackLen];
         this.runLen = new int[stackLen];
-    }
-
-    private static int getStackLength(int len) {
-        final var i1 = (len < 119_151) ? 24 : 49;
-        final var i = len < 1_542 ? 10 : i1;
-        return (len < 120) ? 5 : i;
     }
 
     static void sort(long @NotNull [] array, int fromIndex, int toIndex, @NotNull LongComparator comparator) {
         PreConditions.require(fromIndex >= 0 && fromIndex <= toIndex && toIndex <= array.length);
 
-        int nRemaining = toIndex - fromIndex;
+        final int nRemaining = toIndex - fromIndex;
         if (nRemaining >= 2) {
             if (nRemaining < MIN_MERGE) {
                 int initRunLen = countRunAndMakeAscending(array, fromIndex, toIndex, comparator);
                 binarySort(array, fromIndex, toIndex, fromIndex + initRunLen, comparator);
             } else {
-                LongTimSort ts = new LongTimSort(array, comparator);
-                int minRun = minRunLength(nRemaining);
+                LongTimSort timSort = new LongTimSort(array, comparator);
+                final int minRun = minRunLength(nRemaining);
 
-                fromIndex = getLo(array, fromIndex, toIndex, comparator, nRemaining, ts, minRun);
+                fromIndex = getLo(array, fromIndex, toIndex, comparator, nRemaining, timSort, minRun);
 
                 PreConditions.require(fromIndex == toIndex);
 
-                ts.mergeForceCollapse();
+                timSort.mergeForceCollapse();
 
-                PreConditions.require(ts.stackSize == 1);
+                PreConditions.require(timSort.stackSize == 1);
             }
         }
     }
 
-    private static int getLo(long[] a, int lo, int hi, LongComparator c, int nRemaining, LongTimSort ts, int minRun) {
+    private static int getLo(long[] array, int lo, int hi, LongComparator c, int nRemaining, LongTimSort ts, int minRun) {
         do {
-            int runLen = countRunAndMakeAscending(a, lo, hi, c);
+            int runLen = countRunAndMakeAscending(array, lo, hi, c);
             if (runLen < minRun) {
                 int force = Math.min(nRemaining, minRun);
-                binarySort(a, lo, lo + force, lo + runLen, c);
+                binarySort(array, lo, lo + force, lo + runLen, c);
                 runLen = force;
             }
 
@@ -86,7 +71,7 @@ public final class LongTimSort {
         return lo;
     }
 
-    private static void binarySort(long[] array, int lo, int hi, int start, LongComparator c) {
+    private static void binarySort(long[] array, int lo, int hi, int start, LongComparator comparator) {
         PreConditions.require(lo <= start && start <= hi);
         if (start == lo) {
             ++start;
@@ -97,19 +82,17 @@ public final class LongTimSort {
             int right = start;
 
             PreConditions.require(lo <= start);
-            int n;
             while (left < right) {
-                n = (left + right) >>> 1;
-                if (c.compareLong(pivot, array[n]) < 0) {
-                    right = n;
+                int mid = (left + right) >>> 1;
+                if (comparator.compareLong(pivot, array[mid]) < 0) {
+                    right = mid;
                 } else {
-                    left = n + 1;
+                    left = mid + 1;
                 }
             }
-
             PreConditions.require(left == right);
 
-            n = start - left;
+            int n = start - left;
             if (n == 2) {
                 array[left + 2] = array[left + 1];
                 array[left + 1] = array[left];
@@ -121,523 +104,435 @@ public final class LongTimSort {
             array[left] = pivot;
             ++start;
         }
-
     }
 
-    private static int countRunAndMakeAscending(long[] a, int lo, int hi, LongComparator c) {
+    private static int countRunAndMakeAscending(long[] a, int lo, int hi, LongComparator comparator) {
         PreConditions.require(lo < hi);
 
         int runHi = lo + 1;
         if (runHi == hi) {
             return 1;
-        } else {
-            if (c.compareLong(a[runHi++], a[lo]) >= 0) {
-                while (runHi < hi && c.compareLong(a[runHi], a[runHi - 1]) >= 0) {
-                    ++runHi;
-                }
-            } else {
-                while (runHi < hi && c.compareLong(a[runHi], a[runHi - 1]) < 0) {
-                    ++runHi;
-                }
-                reverseRange(a, lo, runHi);
-            }
-
-            return runHi - lo;
         }
+        if (comparator.compareLong(a[runHi++], a[lo]) >= 0) {
+            while (runHi < hi && comparator.compareLong(a[runHi], a[runHi - 1]) >= 0) {
+                ++runHi;
+            }
+        } else {
+            while (runHi < hi && comparator.compareLong(a[runHi], a[runHi - 1]) < 0) {
+                ++runHi;
+            }
+            reverseRange(a, lo, runHi);
+        }
+        return runHi - lo;
     }
 
     private static void reverseRange(long[] a, int lo, int hi) {
         --hi;
-
         while (lo < hi) {
             long t = a[lo];
             a[lo++] = a[hi];
             a[hi--] = t;
         }
-
-    }
-
-    private static int minRunLength(int n) {
-        PreConditions.require(n >= 0);
-
-        int r;
-        for (r = 0; n >= MIN_MERGE; n >>= 1) {
-            r |= n & 1;
-        }
-
-        return n + r;
     }
 
     private void pushRun(int runBase, int runLen) {
-        this.runBase[this.stackSize] = runBase;
-        this.runLen[this.stackSize] = runLen;
-        ++this.stackSize;
+        this.runBase[stackSize] = runBase;
+        this.runLen[stackSize] = runLen;
+        ++stackSize;
     }
 
     private void mergeCollapse() {
-        while (true) {
-            if (this.stackSize <= 1) {
-                return;
+        while (stackSize > 1) {
+            int n = stackSize - 2;
+            if (runLen[n] > runLen[n + 1]) {
+                return; // Invariant is established
             }
-            int n = this.stackSize - 2;
-            if (n > 0 && this.runLen[n - 1] <= this.runLen[n] + this.runLen[n + 1]) {
-                if (this.runLen[n - 1] < this.runLen[n + 1]) {
-                    --n;
+            final var b1 = n > 0 && runLen[n - 1] <= runLen[n] + runLen[n + 1];
+            final var b2 = n > 1 && runLen[n - 2] <= runLen[n - 1] + runLen[n];
+            if ((b1 || b2)) {
+                final var b3 = runLen[n - 1] < runLen[n + 1];
+                if (b3) {
+                    n--;
                 }
-                this.mergeAt(n);
-                continue;
             }
-
-            if (this.runLen[n] <= this.runLen[n + 1]) {
-                this.mergeAt(n);
-                continue;
-            }
-            return;
+            mergeAt(n);
         }
     }
 
     private void mergeForceCollapse() {
-        int n;
-        while (this.stackSize > 1) {
-            n = this.stackSize - 2;
-            if (n > 0 && this.runLen[n - 1] < this.runLen[n + 1]) {
+        while (stackSize > 1) {
+            int n = stackSize - 2;
+            if (n > 0 && runLen[n - 1] < runLen[n + 1]) {
                 --n;
             }
-            this.mergeAt(n);
+            mergeAt(n);
         }
-
     }
 
     private void mergeAt(int i) {
-        PreConditions.require(this.stackSize >= 2);
+        PreConditions.require(stackSize >= 2);
         PreConditions.require(i >= 0);
-        PreConditions.require(i == this.stackSize - 2 || i == this.stackSize - 3);
+        PreConditions.require(i == stackSize - 2 || i == stackSize - 3);
 
-        int base1 = this.runBase[i];
-        int len1 = this.runLen[i];
-        int base2 = this.runBase[i + 1];
-        int len2 = this.runLen[i + 1];
+        int base1 = runBase[i];
+        int len1 = runLen[i];
+        int base2 = runBase[i + 1];
+        int len2 = runLen[i + 1];
 
         PreConditions.require(len1 > 0 && len2 > 0);
         PreConditions.require(base1 + len1 == base2);
 
-        this.runLen[i] = len1 + len2;
-        if (i == this.stackSize - 3) {
-            this.runBase[i + 1] = this.runBase[i + 2];
-            this.runLen[i + 1] = this.runLen[i + 2];
+        runLen[i] = len1 + len2;
+        if (i == stackSize - 3) {
+            runBase[i + 1] = runBase[i + 2];
+            runLen[i + 1] = runLen[i + 2];
         }
 
-        --this.stackSize;
-        int k = gallopRight(this.array[base2], this.array, base1, len1, 0, this.comparator);
+        --stackSize;
+        int k = gallopRight(longArray[base2], longArray, base1, len1, 0, longComparator);
 
         PreConditions.require(k >= 0);
 
         base1 += k;
         len1 -= k;
-        if (len1 != 0) {
-            len2 = gallopLeft(this.array[base1 + len1 - 1], this.array, base2, len2, len2 - 1, this.comparator);
+        if (len1 == 0) {
+            return;
+        }
+        len2 = gallopLeft(longArray[base1 + len1 - 1], longArray, base2, len2, len2 - 1, longComparator);
 
-            PreConditions.require(len2 >= 0);
+        PreConditions.require(len2 >= 0);
 
-            if (len2 != 0) {
-                if (len1 <= len2) {
-                    this.mergeLo(base1, len1, base2, len2);
-                } else {
-                    this.mergeHi(base1, len1, base2, len2);
-                }
-
+        if (len2 != 0) {
+            if (len1 <= len2) {
+                mergeLo(base1, len1, base2, len2);
+            } else {
+                mergeHi(base1, len1, base2, len2);
             }
         }
     }
 
-    private static int gallopLeft(long key, long[] a, int base, int len, int hint, LongComparator c) {
+    //Suppress the warnings that have to do with to long and complex methods. In this case performance is more important
+    @SuppressWarnings({"squid:S1541", "squid:S3776"})
+    private static int gallopLeft(long key, long[] a, int base, int len, int hint, LongComparator comparator) {
         PreConditions.require(hint >= 0 && hint < len);
 
         int lastOfs = 0;
         int ofs = 1;
-        int m;
-        if (c.compareLong(key, a[base + hint]) > 0) {
-            m = len - hint;
+        if (comparator.compareLong(key, a[base + hint]) > 0) {
+            final int maxOfs = len - hint;
 
-            while (ofs < m && c.compareLong(key, a[base + hint + ofs]) > 0) {
+            while (ofs < maxOfs && comparator.compareLong(key, a[base + hint + ofs]) > 0) {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
-                if (ofs <= 0) {
-                    ofs = m;
-                }
+                ofs = (ofs <= 0) ? maxOfs : ofs;
             }
-
-            if (ofs > m) {
-                ofs = m;
-            }
+            ofs = Math.min(ofs, maxOfs);
 
             lastOfs += hint;
             ofs += hint;
         } else {
-            m = hint + 1;
+            final int maxOfs = hint + 1;
 
-            while (ofs < m && c.compareLong(key, a[base + hint - ofs]) <= 0) {
+            while (ofs < maxOfs && comparator.compareLong(key, a[base + hint - ofs]) <= 0) {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
-                if (ofs <= 0) {
-                    ofs = m;
-                }
+                ofs = (ofs <= 0) ? maxOfs : ofs;
             }
-
-            if (ofs > m) {
-                ofs = m;
-            }
+            ofs = Math.min(ofs, maxOfs);
 
             int tmp = lastOfs;
             lastOfs = hint - ofs;
             ofs = hint - tmp;
         }
-
         PreConditions.require(-1 <= lastOfs && lastOfs < ofs && ofs <= len);
 
         ++lastOfs;
 
         while (lastOfs < ofs) {
-            m = lastOfs + ((ofs - lastOfs) >>> 1);
-            if (c.compareLong(key, a[base + m]) > 0) {
-                lastOfs = m + 1;
+            final int maxOfs = lastOfs + ((ofs - lastOfs) >>> 1);
+            if (comparator.compareLong(key, a[base + maxOfs]) > 0) {
+                lastOfs = maxOfs + 1;
             } else {
-                ofs = m;
+                ofs = maxOfs;
             }
         }
-
         PreConditions.require(lastOfs == ofs);
-
         return ofs;
     }
 
-    private static int gallopRight(long key, long[] a, int base, int len, int hint, LongComparator c) {
+    //Suppress the warnings that have to do with to long and complex methods. In this case performance is more important
+    @SuppressWarnings({"squid:S1541", "squid:S3776"})
+    private static int gallopRight(long key, long[] array, int base, int len, int hint, LongComparator comparator) {
         PreConditions.require(hint >= 0 && hint < len);
         int ofs = 1;
         int lastOfs = 0;
-        int m;
-        if (c.compareLong(key, a[base + hint]) < 0) {
-            m = hint + 1;
+        if (comparator.compareLong(key, array[base + hint]) < 0) {
+            final int maxOfs = hint + 1;
 
-            while (ofs < m && c.compareLong(key, a[base + hint - ofs]) < 0) {
+            while (ofs < maxOfs && comparator.compareLong(key, array[base + hint - ofs]) < 0) {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
-                if (ofs <= 0) {
-                    ofs = m;
-                }
+                ofs = (ofs <= 0) ? maxOfs : ofs;
             }
-
-            if (ofs > m) {
-                ofs = m;
-            }
+            ofs = Math.min(ofs, maxOfs);
 
             int tmp = lastOfs;
             lastOfs = hint - ofs;
             ofs = hint - tmp;
         } else {
-            m = len - hint;
+            int maxOfs = len - hint;
 
-            while (ofs < m && c.compareLong(key, a[base + hint + ofs]) >= 0) {
+            while (ofs < maxOfs && comparator.compareLong(key, array[base + hint + ofs]) >= 0) {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
-                if (ofs <= 0) {
-                    ofs = m;
-                }
+                ofs = (ofs <= 0) ? maxOfs : ofs;
             }
 
-            if (ofs > m) {
-                ofs = m;
-            }
+            ofs = Math.min(ofs, maxOfs);
 
             lastOfs += hint;
             ofs += hint;
         }
-
         PreConditions.require(-1 <= lastOfs && lastOfs < ofs && ofs <= len);
 
         ++lastOfs;
 
         while (lastOfs < ofs) {
-            m = lastOfs + (ofs - lastOfs >>> 1);
-            if (c.compareLong(key, a[base + m]) < 0) {
-                ofs = m;
+            final int maxOfs = lastOfs + ((ofs - lastOfs) >>> 1);
+            if (comparator.compareLong(key, array[base + maxOfs]) < 0) {
+                ofs = maxOfs;
             } else {
-                lastOfs = m + 1;
+                lastOfs = maxOfs + 1;
             }
         }
         PreConditions.require(lastOfs == ofs);
-
         return ofs;
     }
 
+    //Suppress the warnings that have to do with to long and complex methods. In this case performance is more important
+    @SuppressWarnings({"squid:S134", "squid:S135", "squid:S138", "squid:S1119", "squid:S1541", "squid:S3776"})
     private void mergeLo(int base1, int len1, int base2, int len2) {
         PreConditions.require(len1 > 0 && len2 > 0 && base1 + len1 == base2);
-
-        long[] array = this.array;
-        long[] tmp = this.ensureCapacity(len1);
-
-        int cursor1 = this.tmpBase;
-        System.arraycopy(array, base1, tmp, cursor1, len1);
-        int dest = base1 + 1;
-        int cursor2 = base2 + 1;
-        array[base1] = array[base2];
-        --len2;
-        if (len2 == 0) {
-            System.arraycopy(tmp, cursor1, array, dest, len1);
-        } else if (len1 == 1) {
+        // Copy first run into temp array
+        long[] array = longArray; // For performance
+        long[] tmpArray = ensureCapacity(len1);
+        int cursor1 = tempBase; // Indexes into tmp array
+        int cursor2 = base2;   // Indexes int a
+        int dest = base1;      // Indexes int a
+        System.arraycopy(array, base1, tmpArray, cursor1, len1);
+        // Move first element of second run and deal with degenerate cases
+        array[dest++] = array[cursor2++];
+        if (--len2 == 0) {
+            System.arraycopy(tmpArray, cursor1, array, dest, len1);
+            return;
+        }
+        if (len1 == 1) {
             System.arraycopy(array, cursor2, array, dest, len2);
-            array[dest + len2] = tmp[cursor1];
-        } else {
-            LongComparator c = this.comparator;
-            int minGallop = this.minGallop;
-
-            label131:
-            while (true) {
-                int count1 = 0;
-                int count2 = 0;
-
-                while (len1 > 1 && len2 > 0) {
-                    label145:
-                    {
-                        if (c.compareLong(array[cursor2], tmp[cursor1]) < 0) {
-                            array[dest++] = array[cursor2++];
-                            ++count2;
-                            count1 = 0;
-                            --len2;
-                            if (len2 == 0) {
-                                break label145;
-                            }
-                        } else {
-                            array[dest++] = tmp[cursor1++];
-                            ++count1;
-                            count2 = 0;
-                            --len1;
-                            if (len1 == 1) {
-                                break label145;
-                            }
-                        }
-
-                        if ((count1 | count2) < minGallop) {
-                            continue;
-                        }
-
-                        while (len1 > 1 && len2 > 0) {
-                            count1 = gallopRight(array[cursor2], tmp, cursor1, len1, 0, c);
-                            if (count1 != 0) {
-                                System.arraycopy(tmp, cursor1, array, dest, count1);
-                                dest += count1;
-                                cursor1 += count1;
-                                len1 -= count1;
-                                if (len1 <= 1) {
-                                    break label145;
-                                }
-                            }
-
-                            array[dest++] = array[cursor2++];
-                            --len2;
-                            if (len2 == 0) {
-                                break label145;
-                            }
-
-                            count2 = gallopLeft(tmp[cursor1], array, cursor2, len2, 0, c);
-                            if (count2 != 0) {
-                                System.arraycopy(array, cursor2, array, dest, count2);
-                                dest += count2;
-                                cursor2 += count2;
-                                len2 -= count2;
-                                if (len2 == 0) {
-                                    break label145;
-                                }
-                            }
-
-                            array[dest++] = tmp[cursor1++];
-                            --len1;
-                            if (len1 == 1) {
-                                break label145;
-                            }
-
-                            --minGallop;
-                            if (!(count1 >= MIN_GALLOP || count2 >= MIN_GALLOP)) {
-                                if (minGallop < 0) {
-                                    minGallop = 0;
-                                }
-
-                                minGallop += 2;
-                                continue label131;
-                            }
-                        }
-
-                        throw new AssertionError();
+            array[dest + len2] = tmpArray[cursor1]; // Last elt of run 1 to end of merge
+            return;
+        }
+        LongComparator comparator = longComparator;  // Use local variable for performance
+        int minGallop = this.minGallop;    //  "    "       "     "      "
+        outer:
+        while (true) {
+            int count1 = 0; // Number of times in a row that first run won
+            int count2 = 0; // Number of times in a row that second run won
+            // Do the straightforward thing until (if ever) one run starts winning consistently.
+            do {
+                PreConditions.require(len1 > 1 && len2 > 0);
+                if (comparator.compareLong(array[cursor2], tmpArray[cursor1]) < 0) {
+                    array[dest++] = array[cursor2++];
+                    count2++;
+                    count1 = 0;
+                    if (--len2 == 0) {
+                        break outer;
                     }
-
-                    this.minGallop = Math.max(minGallop, 1);
-                    if (len1 == 1) {
-                        PreConditions.require(len2 > 0);
-
-                        System.arraycopy(array, cursor2, array, dest, len2);
-                        array[dest + len2] = tmp[cursor1];
-                    } else {
-                        if (len1 == 0) {
-                            throw new IllegalArgumentException("Comparison method violates its general contract!");
-                        }
-                        PreConditions.require(len2 == 0);
-
-                        System.arraycopy(tmp, cursor1, array, dest, len1);
+                } else {
+                    array[dest++] = tmpArray[cursor1++];
+                    count1++;
+                    count2 = 0;
+                    if (--len1 == 1) {
+                        break outer;
                     }
-                    return;
+                }
+            } while ((count1 | count2) < minGallop);
+
+            /*
+             * One run is winning so consistently that galloping may be a
+             * huge win. So try that, and continue galloping until (if ever)
+             * neither run appears to be winning consistently anymore.
+             */
+            do {
+                PreConditions.require(len1 > 1 && len2 > 0);
+                count1 = gallopRight(array[cursor2], tmpArray, cursor1, len1, 0, comparator);
+                if (count1 != 0) {
+                    System.arraycopy(tmpArray, cursor1, array, dest, count1);
+                    dest += count1;
+                    cursor1 += count1;
+                    len1 -= count1;
+                    if (len1 <= 1) {
+                        break outer;
+                    }
+                }
+                array[dest++] = array[cursor2++];
+                if (--len2 == 0) {
+                    break outer;
                 }
 
-                throw new AssertionError();
-            }
+                count2 = gallopLeft(tmpArray[cursor1], array, cursor2, len2, 0, comparator);
+                if (count2 != 0) {
+                    System.arraycopy(array, cursor2, array, dest, count2);
+                    dest += count2;
+                    cursor2 += count2;
+                    len2 -= count2;
+                    if (len2 == 0) {
+                        break outer;
+                    }
+                }
+                array[dest++] = tmpArray[cursor1++];
+                if (--len1 == 1) {
+                    break outer;
+                }
+                minGallop--;
+            } while (count1 >= MIN_GALLOP || count2 >= MIN_GALLOP);
+            minGallop = Math.max(minGallop, 0);
+            minGallop += 2;  // Penalize for leaving gallop mode
+        }  // End of "outer" loop
+        this.minGallop = Math.max(minGallop, 1);  // Write back to field
+
+        if (len1 == 1) {
+            PreConditions.require(len2 > 0);
+            System.arraycopy(array, cursor2, array, dest, len2);
+            array[dest + len2] = tmpArray[cursor1]; //  Last elt of run 1 to end of merge
+        } else if (len1 == 0) {
+            throw new IllegalArgumentException("Comparison method violates its general contract!");
+        } else {
+            PreConditions.require(len2 == 0);
+            System.arraycopy(tmpArray, cursor1, array, dest, len1);
         }
     }
 
+    @SuppressWarnings({"squid:S134", "squid:S135", "squid:S138", "squid:S1119", "squid:S1541", "squid:S3776"})
     private void mergeHi(int base1, int len1, int base2, int len2) {
         PreConditions.require(len1 > 0 && len2 > 0 && base1 + len1 == base2);
 
-        long[] array = this.array;
-        long[] tmp = this.ensureCapacity(len2);
-        int tmpBase = this.tmpBase;
+        // Copy second run into temp array
+        long[] array = longArray; // For performance
+        long[] tmp = ensureCapacity(len2);
+        int tmpBase = this.tempBase;
         System.arraycopy(array, base2, tmp, tmpBase, len2);
 
-        int cursor1 = base1 + len1 - 1;
-        int cursor2 = tmpBase + len2 - 1;
-        int dest = base2 + len2 - 1;
+        int cursor1 = base1 + len1 - 1;  // Indexes into a
+        int dest = base2 + len2 - 1;     // Indexes into a
+        // Move last element of first run and deal with degenerate cases
         array[dest--] = array[cursor1--];
-        --len1;
-        if (len1 == 0) {
+        if (--len1 == 0) {
             System.arraycopy(tmp, tmpBase, array, dest - (len2 - 1), len2);
-        } else if (len2 == 1) {
+            return;
+        }
+        int cursor2 = tmpBase + len2 - 1; // Indexes into tmp array
+        if (len2 == 1) {
             dest -= len1;
             cursor1 -= len1;
             System.arraycopy(array, cursor1 + 1, array, dest + 1, len1);
             array[dest] = tmp[cursor2];
-        } else {
-            LongComparator c = this.comparator;
-            int minGallop = this.minGallop;
+            return;
+        }
 
-            label131:
-            while (true) {
-                int count1 = 0;
-                int count2 = 0;
+        LongComparator comparator = longComparator;  // Use local variable for performance
+        int minGallop = this.minGallop;    //  "    "       "     "      "
+        outer:
+        while (true) {
+            int count1 = 0; // Number of times in a row that first run won
+            int count2 = 0; // Number of times in a row that second run won
 
-                while (len1 > 0 && len2 > 1) {
-                    label145:
-                    {
-                        if (c.compareLong(tmp[cursor2], array[cursor1]) < 0) {
-                            array[dest--] = array[cursor1--];
-                            ++count1;
-                            count2 = 0;
-                            --len1;
-                            if (len1 == 0) {
-                                break label145;
-                            }
-                        } else {
-                            array[dest--] = tmp[cursor2--];
-                            ++count2;
-                            count1 = 0;
-                            --len2;
-                            if (len2 == 1) {
-                                break label145;
-                            }
-                        }
-
-                        if ((count1 | count2) < minGallop) {
-                            continue;
-                        }
-
-                        while (len1 > 0 && len2 > 1) {
-                            count1 = len1 - gallopRight(tmp[cursor2], array, base1, len1, len1 - 1, c);
-                            if (count1 != 0) {
-                                dest -= count1;
-                                cursor1 -= count1;
-                                len1 -= count1;
-                                System.arraycopy(array, cursor1 + 1, array, dest + 1, count1);
-                                if (len1 == 0) {
-                                    break label145;
-                                }
-                            }
-
-                            array[dest--] = tmp[cursor2--];
-                            --len2;
-                            if (len2 == 1) {
-                                break label145;
-                            }
-
-                            count2 = len2 - gallopLeft(array[cursor1], tmp, tmpBase, len2, len2 - 1, c);
-                            if (count2 != 0) {
-                                dest -= count2;
-                                cursor2 -= count2;
-                                len2 -= count2;
-                                System.arraycopy(tmp, cursor2 + 1, array, dest + 1, count2);
-                                if (len2 <= 1) {
-                                    break label145;
-                                }
-                            }
-
-                            array[dest--] = array[cursor1--];
-                            --len1;
-                            if (len1 == 0) {
-                                break label145;
-                            }
-
-                            --minGallop;
-                            if (!(count1 >= MIN_GALLOP || count2 >= MIN_GALLOP)) {
-                                if (minGallop < 0) {
-                                    minGallop = 0;
-                                }
-
-                                minGallop += 2;
-                                continue label131;
-                            }
-                        }
-
-                        throw new AssertionError();
+            /*
+             * Do the straightforward thing until (if ever) one run
+             * appears to win consistently.
+             */
+            do {
+                PreConditions.require(len1 > 0 && len2 > 1);
+                if (comparator.compareLong(tmp[cursor2], array[cursor1]) < 0) {
+                    array[dest--] = array[cursor1--];
+                    count1++;
+                    count2 = 0;
+                    if (--len1 == 0) {
+                        break outer;
                     }
-
-                    this.minGallop = Math.max(minGallop, 1);
-                    if (len2 == 1) {
-                        PreConditions.require(len1 > 0);
-
-                        dest -= len1;
-                        cursor1 -= len1;
-                        System.arraycopy(array, cursor1 + 1, array, dest + 1, len1);
-                        array[dest] = tmp[cursor2];
-                    } else {
-                        if (len2 == 0) {
-                            throw new IllegalArgumentException("Comparison method violates its general contract!");
-                        }
-                        PreConditions.require(len1 == 0);
-
-                        System.arraycopy(tmp, tmpBase, array, dest - (len2 - 1), len2);
+                } else {
+                    array[dest--] = tmp[cursor2--];
+                    count2++;
+                    count1 = 0;
+                    if (--len2 == 1) {
+                        break outer;
                     }
-                    return;
                 }
+            } while ((count1 | count2) < minGallop);
 
-                throw new AssertionError();
-            }
+            /*
+             * One run is winning so consistently that galloping may be a
+             * huge win. So try that, and continue galloping until (if ever)
+             * neither run appears to be winning consistently anymore.
+             */
+            do {
+                PreConditions.require(len1 > 0 && len2 > 1);
+                count1 = len1 - gallopRight(tmp[cursor2], array, base1, len1, len1 - 1, comparator);
+                if (count1 != 0) {
+                    dest -= count1;
+                    cursor1 -= count1;
+                    len1 -= count1;
+                    System.arraycopy(array, cursor1 + 1, array, dest + 1, count1);
+                    if (len1 == 0) {
+                        break outer;
+                    }
+                }
+                array[dest--] = tmp[cursor2--];
+                if (--len2 == 1) {
+                    break outer;
+                }
+                count2 = len2 - gallopLeft(array[cursor1], tmp, tmpBase, len2, len2 - 1, comparator);
+                if (count2 != 0) {
+                    dest -= count2;
+                    cursor2 -= count2;
+                    len2 -= count2;
+                    System.arraycopy(tmp, cursor2 + 1, array, dest + 1, count2);
+                    if (len2 <= 1) {
+                        break outer;
+                    }
+                }
+                array[dest--] = array[cursor1--];
+                if (--len1 == 0) {
+                    break outer;
+                }
+                minGallop--;
+            } while (count1 >= MIN_GALLOP || count2 >= MIN_GALLOP);
+            minGallop = Math.max(minGallop, 0);
+            minGallop += 2;  // Penalize for leaving gallop mode
+        }  // End of "outer" loop
+        this.minGallop = Math.max(minGallop, 1);  // Write back to field
+
+        if (len2 == 1) {
+            PreConditions.require(len1 > 0);
+            dest -= len1;
+            cursor1 -= len1;
+            System.arraycopy(array, cursor1 + 1, array, dest + 1, len1);
+            array[dest] = tmp[cursor2];  // Move first elt of run2 to front of merge
+        } else if (len2 == 0) {
+            throw new IllegalArgumentException("Comparison method violates its general contract!");
+        } else {
+            PreConditions.require(len1 == 0);
+            System.arraycopy(tmp, tmpBase, array, dest - (len2 - 1), len2);
         }
     }
 
+    @SuppressWarnings("squid:S2384")
     private long[] ensureCapacity(int minCapacity) {
-        if (this.tmpLen < minCapacity) {
-            int newSize = minCapacity | (minCapacity >> 1);
-            newSize |= newSize >> 2;
-            newSize |= newSize >> 4;
-            newSize |= newSize >> 8;
-            newSize |= newSize >> 16;
-            ++newSize;
-            if (newSize < 0) {
-                newSize = minCapacity;
-            } else {
-                newSize = Math.min(newSize, this.array.length >>> 1);
-            }
-
-            this.temporaryArray = new long[newSize];
-            this.tmpLen = newSize;
-            this.tmpBase = 0;
+        if (tempLength < minCapacity) {
+            int newSize = calculateNewLength(minCapacity, longArray.length);
+            tempArray = new long[newSize];
+            tempLength = newSize;
+            tempBase = 0;
         }
-
-        return this.temporaryArray;
+        return tempArray;
     }
 }

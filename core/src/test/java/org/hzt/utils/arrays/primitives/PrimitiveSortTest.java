@@ -102,8 +102,13 @@ class PrimitiveSortTest {
 
         It.println(Arrays.toString(array));
 
-        final var expected = DoubleListX.of(.1, .2, .3, .4, .5, .6).mapToObj(DoubleX::toRoundedString);
-        final var actual = DoubleSequence.of(array).take(6).toListX().mapToObj(DoubleX::toRoundedString);
+        final var expected = DoubleListX.of(.1, .2, .3, .4, .5, .6)
+                .mapToObj(DoubleX::toRoundedString);
+
+        final var actual = DoubleSequence.of(array)
+                .take(6)
+                .toListX()
+                .mapToObj(DoubleX::toRoundedString);
 
         assertEquals(expected, actual);
     }

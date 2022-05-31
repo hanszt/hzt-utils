@@ -2,12 +2,13 @@ package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
+import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 
 public interface DoubleMutableListX extends DoubleListX, DoubleMutableCollection,
-        PrimitiveMutableList<PrimitiveListIterator.OfDouble> {
+        PrimitiveMutableList<PrimitiveListIterator.OfDouble, DoubleComparator> {
 
     static DoubleMutableListX empty() {
         return new DoubleArrayList();

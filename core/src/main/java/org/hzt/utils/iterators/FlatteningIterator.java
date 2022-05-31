@@ -44,12 +44,11 @@ public final class FlatteningIterator<T, R> implements Iterator<R> {
         while (itemIterator == null) {
             if (!iterator.hasNext()) {
                 return false;
-            } else {
-                final var nextItemIterator = toIteratorFunction.apply(iterator.next());
-                if (nextItemIterator.hasNext()) {
-                    itemIterator = nextItemIterator;
-                    return true;
-                }
+            }
+            final var nextItemIterator = toIteratorFunction.apply(iterator.next());
+            if (nextItemIterator.hasNext()) {
+                itemIterator = nextItemIterator;
+                return true;
             }
         }
         return true;

@@ -1,18 +1,18 @@
 package org.hzt.utils.iterables;
 
+import org.hzt.test.TestSampleGenerator;
+import org.hzt.test.model.Museum;
+import org.hzt.test.model.Painter;
+import org.hzt.test.model.Painting;
+import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.ranges.IntRange;
-import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.tuples.Triple;
-import org.hzt.utils.It;
-import org.hzt.test.TestSampleGenerator;
-import org.hzt.test.model.Museum;
-import org.hzt.test.model.Painter;
-import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -23,12 +23,13 @@ import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import static org.hzt.utils.collectors.CollectorsX.branching;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.*;
+import static org.hzt.utils.collectors.CollectorsX.branching;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -254,5 +255,22 @@ class CollectableTest {
                 .toTypedArray(Painting[]::new);
 
         assertArrayEquals(expected, museumArray);
+    }
+
+    @Test
+    void testCollectJoining() {
+        var strings = Set.of("collect", "joining", "requires",
+                "Collector<? super T, A, R>", "as", "collector", "definition",
+                "instead", "of", "Collector<T, A, R>");
+
+        final var expected = String.join(", ", strings);
+        final var expected2 = Sequence.of(strings).joinToString();
+        final var result = Sequence.of(strings).collect(joining(", "));
+
+        assertAll(
+                () -> assertEquals(expected, result),
+                () -> assertEquals(expected2, result)
+        );
+
     }
 }

@@ -121,6 +121,10 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
                 Spliterator.ORDERED | Spliterator.NONNULL);
     }
 
+    default DoubleListX take(long n) {
+        return takeTo(() -> DoubleMutableListX.withInitCapacity((int) n), n);
+    }
+
     @Override
     double[] toArray();
 

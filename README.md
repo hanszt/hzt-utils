@@ -12,6 +12,7 @@ Each module contains its own README.md. Click the links below to view them
 - [Core](/core/README.md) contains an extended and functional collections api. Inspired by Kotlin collections.
 - [Reflection](reflection/README.md)
 - [Geometry](geometry/README.md)
+- [Graph utils](graph-utils/README.md)
 - [Fx utils](fx-utils/README.md) contains some util functions for javaFX applications
 - [Swing utils](/swing-utils/README.md) contains some functional interfaces for easier functional programming in swing. It also contains some component builders.
 - [Test data generator](/test-data-generator/README.md) Contains an api that provides test data for easy testing

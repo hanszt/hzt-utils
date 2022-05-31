@@ -118,6 +118,23 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return i;
     }
 
+    public static IntSequence primeNrSequence() {
+        return IntSequence.generate(0, i -> i + (i < 3 ? 1 : 2))
+                .takeWhile(i -> i >= 0)
+                .filter(IntX::isPrimeNr);
+    }
+
+    public static boolean isPrimeNr(long nrToCheck) {
+        long counter = 0;
+        for (long num = nrToCheck; num >= 1; num--) {
+            if (nrToCheck % num == 0) {
+                counter++;
+            }
+        }
+        return counter == 2;
+    }
+
+
     @Override
     public byte byteValue() {
         return integer.byteValue();

@@ -88,4 +88,15 @@ class CollectionXTest {
         );
     }
 
+    @Test
+    void testCollectionWithIndex() {
+        final ListX<Integer> list = ListX.of(1, 2, 4, 8, 16, 32);
+        final var indexedValues = list.withIndex();
+
+        assertAll(
+                () -> assertEquals(6, list.size()),
+                () -> assertEquals(ListX.of(0, 2, 8, 24, 64, 160), indexedValues.map(iv -> iv.index() * iv.value()))
+        );
+    }
+
 }

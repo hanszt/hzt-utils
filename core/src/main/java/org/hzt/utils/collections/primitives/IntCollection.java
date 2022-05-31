@@ -108,6 +108,11 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
         return list;
     }
 
+    @Override
+    default IntListX take(long n) {
+        return takeTo(() -> IntMutableListX.withInitCapacity((int) n), n);
+    }
+
     default IntSequence asSequence() {
         return IntSequence.of(this);
     }

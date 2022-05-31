@@ -1,7 +1,10 @@
 package org.hzt.utils.numbers;
 
-import org.hzt.utils.ranges.LongRange;
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
+import org.hzt.utils.ranges.LongRange;
+import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
@@ -104,9 +107,22 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         return Long.valueOf(s);
     }
 
-
     public static Long valueOf(long l) {
         return l;
+    }
+
+    public static LongSequence fibonacciSequence() {
+        return Sequence.generate(new long[]{0, 1L}, longs -> new long[]{longs[1], longs[0] + longs[1]})
+                .mapToLong(longs -> longs[0])
+                .takeWhile(l -> l >= 0);
+    }
+
+    public static long nthFibonacciNumber(int n) {
+        PreConditions.require(n >= 0, () -> "n must be greater than 0");
+        return fibonacciSequence()
+                .take(n)
+                .reduce((first, second) -> second)
+                .orElseThrow(() -> new IllegalArgumentException("term n=" + n + " would yield value larger than Long.MAX_VALUE"));
     }
 
     public static Long decode(String nm) throws NumberFormatException {

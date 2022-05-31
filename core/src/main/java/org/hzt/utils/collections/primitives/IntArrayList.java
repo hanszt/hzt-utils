@@ -76,11 +76,11 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
     }
 
     public int indexOf(int o) {
-        return indexOfRange(o, 0, size);
+        return indexOfRange(o, size);
     }
 
-    private int indexOfRange(int value, int start, int end) {
-        for (int i = start; i < end; i++) {
+    private int indexOfRange(int value, int end) {
+        for (int i = 0; i < end; i++) {
             if (value == elementData[i]) {
                 return i;
             }
@@ -90,7 +90,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
 
     @Override
     public int lastIndexOf(int i) {
-        return lastIndexOfRange(i, 0, size);
+        return lastIndexOfRange(i, size);
     }
 
     @Override
@@ -105,8 +105,8 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
         return mutableListX;
     }
 
-    private int lastIndexOfRange(int value, int start, int end) {
-        for (int i = end - 1; i >= start; i--) {
+    private int lastIndexOfRange(int value, int end) {
+        for (int i = end - 1; i >= 0; i--) {
             if (value == elementData[i]) {
                 return i;
             }
@@ -225,6 +225,6 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
 
     @Override
     public void sort() {
-        sort(Integer::compare);
+        Arrays.sort(elementData, 0, size);
     }
 }

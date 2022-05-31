@@ -82,11 +82,11 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
 
     @Override
     public int indexOf(long l) {
-        return indexOfRange(l, 0, size);
+        return indexOfRange(l, size);
     }
 
-    int indexOfRange(long l, int start, int end) {
-        for (int i = start; i < end; i++) {
+    int indexOfRange(long l, int end) {
+        for (int i = 0; i < end; i++) {
             if (l == elementData[i]) {
                 return i;
             }
@@ -96,11 +96,11 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
 
     @Override
     public int lastIndexOf(long l) {
-        return lastIndexOfRange(l, 0, size);
+        return lastIndexOfRange(l, size);
     }
 
-    private int lastIndexOfRange(long value, int start, int end) {
-        for (int i = end - 1; i >= start; i--) {
+    private int lastIndexOfRange(long value, int end) {
+        for (int i = end - 1; i >= 0; i--) {
             if (value == elementData[i]) {
                 return i;
             }
@@ -207,7 +207,7 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
 
     @Override
     public void sort() {
-        sort(Long::compare);
+        Arrays.sort(elementData, 0, size);
     }
 
     @Override

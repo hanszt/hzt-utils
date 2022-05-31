@@ -83,8 +83,8 @@ public class PrefixSequenceGroupingBenchmark {
                 .include(PrefixSequenceGroupingBenchmark.class.getSimpleName())
                 .forks(2)
                 .warmupIterations(2)
-                .shouldFailOnError(true)
                 .measurementIterations(3)
+                .shouldFailOnError(true)
                 .build();
         try {
             new Runner(options).run();

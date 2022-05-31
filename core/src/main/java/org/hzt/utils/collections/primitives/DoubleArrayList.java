@@ -80,11 +80,11 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
     }
 
     public int indexOf(double d) {
-        return indexOfRange(d, 0, size);
+        return indexOfRange(d, size);
     }
 
-    int indexOfRange(double o, int start, int end) {
-        for (int i = start; i < end; i++) {
+    int indexOfRange(double o, int end) {
+        for (int i = 0; i < end; i++) {
             if (Double.compare(o, elementData[i]) == 0) {
                 return i;
             }
@@ -94,11 +94,11 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
 
     @Override
     public int lastIndexOf(double d) {
-        return lastIndexOfRange(d, 0, size);
+        return lastIndexOfRange(d, size);
     }
 
-    private int lastIndexOfRange(double value, int start, int end) {
-        for (int i = end - 1; i >= start; i--) {
+    private int lastIndexOfRange(double value, int end) {
+        for (int i = end - 1; i >= 0; i--) {
             if (Double.compare(value, elementData[i]) == 0) {
                 return i;
             }
@@ -214,6 +214,6 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
 
     @Override
     public void sort() {
-        sort(Double::compare);
+        Arrays.sort(elementData, 0, size);
     }
 }

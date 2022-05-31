@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 
 @SuppressWarnings("unused")
 @State(Scope.Benchmark)
-public class PrefixSequenceBenchmark {
+public class PrefixSequenceMapFilterToListBenchmark {
     @Param({"100000"})
     private int nrOfIterations;
 
@@ -26,7 +26,7 @@ public class PrefixSequenceBenchmark {
             .mapToObj(String::valueOf)
             .collect(Collectors.toUnmodifiableList());
 
-    public PrefixSequenceBenchmark() {
+    public PrefixSequenceMapFilterToListBenchmark() {
         super();
     }
 
@@ -68,7 +68,7 @@ public class PrefixSequenceBenchmark {
 
     public static void main(String[] args) {
         Options options = new OptionsBuilder()
-                .include(PrefixSequenceBenchmark.class.getSimpleName())
+                .include(PrefixSequenceMapFilterToListBenchmark.class.getSimpleName())
                 .shouldFailOnError(true)
                 .build();
         try {

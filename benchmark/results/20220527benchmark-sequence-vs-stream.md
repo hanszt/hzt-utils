@@ -1,6 +1,6 @@
 ## Run 1 at around 14:00:00
 ```
-"C:\Program Files\Java\jdk-17\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.2\lib\idea_rt.jar=55067:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.2\bin" -Dfile.encoding=UTF-8 -classpath C:\_Programming\Java\hzt-utils\benchmark\target\classes;C:\_Programming\Java\hzt-utils\core\target\classes;C:\Users\hzuiderv\.m2\repository\org\jetbrains\annotations\22.0.0\annotations-22.0.0.jar;C:\Users\hzuiderv\.m2\repository\org\openjdk\jmh\jmh-core\1.34\jmh-core-1.34.jar;C:\Users\hzuiderv\.m2\repository\net\sf\jopt-simple\jopt-simple\5.0.4\jopt-simple-5.0.4.jar;C:\Users\hzuiderv\.m2\repository\org\apache\commons\commons-math3\3.2\commons-math3-3.2.jar;C:\Users\hzuiderv\.m2\repository\org\openjdk\jmh\jmh-generator-annprocess\1.34\jmh-generator-annprocess-1.34.jar benchmark.prefix.PrefixSequenceBenchmark
+"C:\Program Files\Java\jdk-17\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.2\lib\idea_rt.jar=55067:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.2\bin" -Dfile.encoding=UTF-8 -classpath C:\_Programming\Java\hzt-utils\benchmark\target\classes;C:\_Programming\Java\hzt-utils\core\target\classes;C:\Users\hzuiderv\.m2\repository\org\jetbrains\annotations\22.0.0\annotations-22.0.0.jar;C:\Users\hzuiderv\.m2\repository\org\openjdk\jmh\jmh-core\1.34\jmh-core-1.34.jar;C:\Users\hzuiderv\.m2\repository\net\sf\jopt-simple\jopt-simple\5.0.4\jopt-simple-5.0.4.jar;C:\Users\hzuiderv\.m2\repository\org\apache\commons\commons-math3\3.2\commons-math3-3.2.jar;C:\Users\hzuiderv\.m2\repository\org\openjdk\jmh\jmh-generator-annprocess\1.34\jmh-generator-annprocess-1.34.jar benchmark.prefix.PrefixSequenceMapFilterToListBenchmark
 # JMH version: 1.34
 # VM version: JDK 17, Java HotSpot(TM) 64-Bit Server VM, 17+35-LTS-2724
 # VM invoker: C:\Program Files\Java\jdk-17\bin\java.exe
@@ -11,7 +11,7 @@
 # Timeout: 10 min per iteration
 # Threads: 1 thread, will synchronize iterations
 # Benchmark mode: Throughput, ops/time
-# Benchmark: benchmark.prefix.PrefixSequenceBenchmark.sequenceOfListMapFilterToList
+# Benchmark: benchmark.prefix.PrefixSequenceMapFilterToListBenchmark.sequenceOfListMapFilterToList
 # Parameters: (nrOfIterations = 100000)
 
 # Run progress: 0,00% complete, ETA 00:16:40
@@ -80,7 +80,7 @@ Iteration   4: 1953,236 ops/s
 Iteration   5: 1982,506 ops/s
 
 
-Result "benchmark.prefix.PrefixSequenceBenchmark.sequenceOfListMapFilterToList":
+Result "benchmark.prefix.PrefixSequenceMapFilterToListBenchmark.sequenceOfListMapFilterToList":
 1824,763 ±(99.9%) 169,854 ops/s [Average]
 (min, avg, max) = (1336,167, 1824,763, 1997,125), stdev = 226,751
 CI (99.9%): [1654,909, 1994,618] (assumes normal distribution)
@@ -96,7 +96,7 @@ CI (99.9%): [1654,909, 1994,618] (assumes normal distribution)
 # Timeout: 10 min per iteration
 # Threads: 1 thread, will synchronize iterations
 # Benchmark mode: Throughput, ops/time
-# Benchmark: benchmark.prefix.PrefixSequenceBenchmark.streamMapFilterToList
+# Benchmark: benchmark.prefix.PrefixSequenceMapFilterToListBenchmark.streamMapFilterToList
 # Parameters: (nrOfIterations = 100000)
 
 # Run progress: 50,00% complete, ETA 00:08:24
@@ -165,7 +165,7 @@ Iteration   4: 2345,624 ops/s
 Iteration   5: 2320,819 ops/s
 
 
-Result "benchmark.prefix.PrefixSequenceBenchmark.streamMapFilterToList":
+Result "benchmark.prefix.PrefixSequenceMapFilterToListBenchmark.streamMapFilterToList":
 2316,112 ±(99.9%) 49,639 ops/s [Average]
 (min, avg, max) = (2194,515, 2316,112, 2435,203), stdev = 66,267
 CI (99.9%): [2266,473, 2365,751] (assumes normal distribution)
@@ -194,7 +194,7 @@ Process finished with exit code 0
 
 ## Run 2 at around 16:30 
 ````
-"C:\Program Files\Java\jdk-17\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.2\lib\idea_rt.jar=50853:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.2\bin" -Dfile.encoding=UTF-8 -classpath C:\_Programming\Java\hzt-utils\benchmark\target\classes;C:\_Programming\Java\hzt-utils\core\target\classes;C:\Users\hzuiderv\.m2\repository\org\jetbrains\annotations\22.0.0\annotations-22.0.0.jar;C:\Users\hzuiderv\.m2\repository\org\openjdk\jmh\jmh-core\1.34\jmh-core-1.34.jar;C:\Users\hzuiderv\.m2\repository\net\sf\jopt-simple\jopt-simple\5.0.4\jopt-simple-5.0.4.jar;C:\Users\hzuiderv\.m2\repository\org\apache\commons\commons-math3\3.2\commons-math3-3.2.jar;C:\Users\hzuiderv\.m2\repository\org\openjdk\jmh\jmh-generator-annprocess\1.34\jmh-generator-annprocess-1.34.jar benchmark.prefix.PrefixSequenceBenchmark
+"C:\Program Files\Java\jdk-17\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.2\lib\idea_rt.jar=50853:C:\Program Files\JetBrains\IntelliJ IDEA 2021.2.2\bin" -Dfile.encoding=UTF-8 -classpath C:\_Programming\Java\hzt-utils\benchmark\target\classes;C:\_Programming\Java\hzt-utils\core\target\classes;C:\Users\hzuiderv\.m2\repository\org\jetbrains\annotations\22.0.0\annotations-22.0.0.jar;C:\Users\hzuiderv\.m2\repository\org\openjdk\jmh\jmh-core\1.34\jmh-core-1.34.jar;C:\Users\hzuiderv\.m2\repository\net\sf\jopt-simple\jopt-simple\5.0.4\jopt-simple-5.0.4.jar;C:\Users\hzuiderv\.m2\repository\org\apache\commons\commons-math3\3.2\commons-math3-3.2.jar;C:\Users\hzuiderv\.m2\repository\org\openjdk\jmh\jmh-generator-annprocess\1.34\jmh-generator-annprocess-1.34.jar benchmark.prefix.PrefixSequenceMapFilterToListBenchmark
 # JMH version: 1.34
 # VM version: JDK 17, Java HotSpot(TM) 64-Bit Server VM, 17+35-LTS-2724
 # VM invoker: C:\Program Files\Java\jdk-17\bin\java.exe
@@ -205,7 +205,7 @@ Process finished with exit code 0
 # Timeout: 10 min per iteration
 # Threads: 1 thread, will synchronize iterations
 # Benchmark mode: Throughput, ops/time
-# Benchmark: benchmark.prefix.PrefixSequenceBenchmark.imperativeMapFilterToList
+# Benchmark: benchmark.prefix.PrefixSequenceMapFilterToListBenchmark.imperativeMapFilterToList
 # Parameters: (nrOfIterations = 100000)
 
 # Run progress: 0,00% complete, ETA 00:05:20
@@ -223,7 +223,7 @@ Iteration   2: 4031,938 ops/s
 Iteration   3: 3765,534 ops/s
 
 
-Result "benchmark.prefix.PrefixSequenceBenchmark.imperativeMapFilterToList":
+Result "benchmark.prefix.PrefixSequenceMapFilterToListBenchmark.imperativeMapFilterToList":
   3938,669 ±(99.9%) 297,466 ops/s [Average]
   (min, avg, max) = (3765,534, 3938,669, 4053,524), stdev = 106,079
   CI (99.9%): [3641,203, 4236,135] (assumes normal distribution)
@@ -239,7 +239,7 @@ Result "benchmark.prefix.PrefixSequenceBenchmark.imperativeMapFilterToList":
 # Timeout: 10 min per iteration
 # Threads: 1 thread, will synchronize iterations
 # Benchmark mode: Throughput, ops/time
-# Benchmark: benchmark.prefix.PrefixSequenceBenchmark.parallelStreamMapFilterToList
+# Benchmark: benchmark.prefix.PrefixSequenceMapFilterToListBenchmark.parallelStreamMapFilterToList
 # Parameters: (nrOfIterations = 100000)
 
 # Run progress: 25,00% complete, ETA 00:04:06
@@ -257,7 +257,7 @@ Iteration   2: 7440,504 ops/s
 Iteration   3: 7609,385 ops/s
 
 
-Result "benchmark.prefix.PrefixSequenceBenchmark.parallelStreamMapFilterToList":
+Result "benchmark.prefix.PrefixSequenceMapFilterToListBenchmark.parallelStreamMapFilterToList":
   7575,555 ±(99.9%) 761,848 ops/s [Average]
   (min, avg, max) = (7141,911, 7575,555, 7957,365), stdev = 271,682
   CI (99.9%): [6813,707, 8337,402] (assumes normal distribution)
@@ -273,7 +273,7 @@ Result "benchmark.prefix.PrefixSequenceBenchmark.parallelStreamMapFilterToList":
 # Timeout: 10 min per iteration
 # Threads: 1 thread, will synchronize iterations
 # Benchmark mode: Throughput, ops/time
-# Benchmark: benchmark.prefix.PrefixSequenceBenchmark.sequenceOfListMapFilterToList
+# Benchmark: benchmark.prefix.PrefixSequenceMapFilterToListBenchmark.sequenceOfListMapFilterToList
 # Parameters: (nrOfIterations = 100000)
 
 # Run progress: 50,00% complete, ETA 00:02:44
@@ -291,7 +291,7 @@ Iteration   2: 1667,698 ops/s
 Iteration   3: 1607,212 ops/s
 
 
-Result "benchmark.prefix.PrefixSequenceBenchmark.sequenceOfListMapFilterToList":
+Result "benchmark.prefix.PrefixSequenceMapFilterToListBenchmark.sequenceOfListMapFilterToList":
   1851,688 ±(99.9%) 470,881 ops/s [Average]
   (min, avg, max) = (1607,212, 1851,688, 1982,581), stdev = 167,921
   CI (99.9%): [1380,806, 2322,569] (assumes normal distribution)
@@ -307,7 +307,7 @@ Result "benchmark.prefix.PrefixSequenceBenchmark.sequenceOfListMapFilterToList":
 # Timeout: 10 min per iteration
 # Threads: 1 thread, will synchronize iterations
 # Benchmark mode: Throughput, ops/time
-# Benchmark: benchmark.prefix.PrefixSequenceBenchmark.streamMapFilterToList
+# Benchmark: benchmark.prefix.PrefixSequenceMapFilterToListBenchmark.streamMapFilterToList
 # Parameters: (nrOfIterations = 100000)
 
 # Run progress: 75,00% complete, ETA 00:01:22
@@ -325,7 +325,7 @@ Iteration   2: 2453,063 ops/s
 Iteration   3: 2447,680 ops/s
 
 
-Result "benchmark.prefix.PrefixSequenceBenchmark.streamMapFilterToList":
+Result "benchmark.prefix.PrefixSequenceMapFilterToListBenchmark.streamMapFilterToList":
   2304,065 ±(99.9%) 405,070 ops/s [Average]
   (min, avg, max) = (2098,302, 2304,065, 2453,063), stdev = 144,452
   CI (99.9%): [1898,995, 2709,135] (assumes normal distribution)
@@ -345,11 +345,11 @@ works, and factor in a small probability of new VM bugs. Additionally, while com
 different JVMs are already problematic, the performance difference caused by different Blackhole
 modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
 
-Benchmark                                              (nrOfIterations)   Mode  Cnt     Score     Error  Units
-PrefixSequenceBenchmark.imperativeMapFilterToList                100000  thrpt    6  3938,669 ± 297,466  ops/s
-PrefixSequenceBenchmark.parallelStreamMapFilterToList            100000  thrpt    6  7575,555 ± 761,848  ops/s
-PrefixSequenceBenchmark.sequenceOfListMapFilterToList            100000  thrpt    6  1851,688 ± 470,881  ops/s
-PrefixSequenceBenchmark.streamMapFilterToList                    100000  thrpt    6  2304,065 ± 405,070  ops/s
+Benchmark                                                             (nrOfIterations)   Mode  Cnt     Score     Error  Units
+PrefixSequenceMapFilterToListBenchmark.imperativeMapFilterToList                100000  thrpt    6  3938,669 ± 297,466  ops/s
+PrefixSequenceMapFilterToListBenchmark.parallelStreamMapFilterToList            100000  thrpt    6  7575,555 ± 761,848  ops/s
+PrefixSequenceMapFilterToListBenchmark.sequenceOfListMapFilterToList            100000  thrpt    6  1851,688 ± 470,881  ops/s
+PrefixSequenceMapFilterToListBenchmark.streamMapFilterToList                    100000  thrpt    6  2304,065 ± 405,070  ops/s
 
 Process finished with exit code 0
 

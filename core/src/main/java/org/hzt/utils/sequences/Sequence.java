@@ -56,6 +56,7 @@ import java.util.stream.Stream;
  * @param <T> the type of the items in the Sequence
  */
 @FunctionalInterface
+@SuppressWarnings("squid:S1448")
 public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     static <T> Sequence<T> empty() {

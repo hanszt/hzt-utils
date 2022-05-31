@@ -6,6 +6,7 @@ import org.hzt.utils.iterators.WindowedIterator;
 import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
@@ -25,12 +26,12 @@ public interface WindowedSequence<T> extends Windowable<T> {
         //The holding consumer provides a way to provide the same value to both the size and step unary operator.
         //It also makes sure the nextSizeSupplier from this method is only called once instead of twice
         //It is required that the call for next size is made before next step for them to receive the same value
-        final SequenceHelper.HoldingConsumer holdingConsumer = new SequenceHelper.HoldingConsumer();
+        final SequenceHelper.HoldingConsumer holdingConsumer = new AtomicInteger();
         return windowed(initSize, size -> {
             final int nextSize = nextSizeSupplier.applyAsInt(size);
-            holdingConsumer.accept(nextSize);
+            holdingConsumer.set(nextSize);
             return nextSize;
-        }, initSize, step -> holdingConsumer.getValue(), true);
+        }, initSize, step -> holdingConsumer.get(), true);
     }
 
     default Sequence<ListX<T>> windowed(int size) {

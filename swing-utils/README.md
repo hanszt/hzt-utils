@@ -14,7 +14,7 @@ Add the following dependency to your project:
     </dependency>
 ````
 
-See the tests in this project to see how the swing utilities can be used
+See the [tests](src/test/java/org/hzt) in this project to see how the swing utilities can be used
 
 ## Examples
 ````java

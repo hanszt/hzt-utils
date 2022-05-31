@@ -106,26 +106,22 @@ public interface Numerable<T> extends Iterable<T> {
 
     @NotNull
     default <R extends Comparable<? super R>> Optional<T> minBy(@NotNull Function<? super T, ? extends R> selector) {
-        return IterableXHelper.compareBy(iterator(),
-                selector, (first, second) -> first != null && second != null && first.compareTo(second) > 0);
+        return IterableXHelper.compareBy(iterator(), selector, i -> i > 0);
     }
 
     @NotNull
     default <R extends Comparable<? super R>> Optional<T> maxBy(@NotNull Function<? super T, ? extends R> selector) {
-        return IterableXHelper.compareBy(iterator(),
-                selector, (first, second) -> first != null && second != null && first.compareTo(second) < 0);
+        return IterableXHelper.compareBy(iterator(), selector, i -> i < 0);
     }
 
     @NotNull
     default <R extends Comparable<? super R>> R minOf(@NotNull Function<? super T, ? extends R> selector) {
-        return IterableXHelper
-                .comparisonOf(iterator(), selector, (first, second) -> first != null && second != null && first.compareTo(second) > 0);
+        return IterableXHelper.comparisonOf(iterator(), selector, i -> i > 0);
     }
 
     @NotNull
     default <R extends Comparable<? super R>> R maxOf(@NotNull Function<? super T, ? extends R> selector) {
-        return IterableXHelper
-                .comparisonOf(iterator(), selector, (first, second) -> first != null && second != null && first.compareTo(second) < 0);
+        return IterableXHelper.comparisonOf(iterator(), selector, i -> i < 0);
     }
 
     default IntStatistics statsOfInts(@NotNull ToIntFunction<? super T> mapper) {

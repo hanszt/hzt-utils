@@ -4,6 +4,7 @@ import org.hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.IntSummaryStatistics;
+import java.util.Objects;
 
 public final class IntStatistics extends IntSummaryStatistics
         implements NumberStatistics, Transformable<IntStatistics> {
@@ -31,6 +32,25 @@ public final class IntStatistics extends IntSummaryStatistics
         final double average = getAverage();
         final double sumOfSquareAverage = (double) sumOfSquare / getCount();
         return getCount() > 0 ? Math.sqrt(sumOfSquareAverage - average * average) : 0.0D;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        IntStatistics that = (IntStatistics) o;
+        return getCount() == that.getCount() &&
+                Double.compare(getAverage(), that.getAverage()) == 0 &&
+                sumOfSquare == that.sumOfSquare;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCount(), getAverage(), sumOfSquare);
     }
 
     @Override

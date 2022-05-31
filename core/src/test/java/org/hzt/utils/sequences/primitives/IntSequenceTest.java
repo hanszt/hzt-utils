@@ -8,6 +8,7 @@ import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.statistics.IntStatistics;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -18,6 +19,7 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IntSequenceTest {
 
@@ -29,6 +31,23 @@ class IntSequenceTest {
                 .toListX();
 
         assertEquals(IntListX.of(0, 4, 8, 12), list);
+    }
+
+    @Test
+    @DisplayName("Test sum stream yields wrong result for large int value sums")
+    void testSumStreamYieldsWrongResultForLargeIntValueSums() {
+        final var endExclusive = 100_000;
+
+        final var sumIntStream = IntStream.range(0, endExclusive).sum();
+        final var sumIntRange = IntRange.of(0, endExclusive).sum();
+        final var sumIntStreamUsingCollector = IntStream.range(0, endExclusive)
+                .summaryStatistics()
+                .getSum();
+
+        assertAll(
+                () -> assertEquals(sumIntRange, sumIntStreamUsingCollector),
+                () -> assertTrue(sumIntStream < sumIntRange)
+        );
     }
 
     @Test

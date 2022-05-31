@@ -29,6 +29,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.Year;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -124,7 +125,8 @@ public class IterableXTest {
                 .boxed()
                 .windowed(3, IntSequence::of)
                 .onEach(It::println)
-                .map(IntSequence::sum).toListX();
+                .map(IntSequence::sum)
+                .toListX();
 
         It.println("sumsOfThree = " + sumsOfThree);
 
@@ -421,9 +423,9 @@ public class IterableXTest {
 
         Set<Period> expected = museums.stream()
                 .map(Museum::getPaintings)
-                .collect(intersectingBy(Painting::getMilleniumOfCreation));
+                .collect(intersectingBy(Painting::getMillenniumOfCreation));
 
-        final SetX<Period> intersection = museums.intersectionOf(Museum::getPaintings, Painting::getMilleniumOfCreation);
+        final SetX<Period> intersection = museums.intersectionOf(Museum::getPaintings, Painting::getMillenniumOfCreation);
 
         It.println("intersection = " + intersection);
 
@@ -963,4 +965,18 @@ public class IterableXTest {
 
         assertEquals(6, strings.size());
     }
+
+    @Test
+    void testIteratorX() {
+        final var expected = new ArrayList<String>();
+        final var actual = new ArrayList<String>();
+        final var strings = ListX.of("hello", "this", "is", "a", "test");
+
+        strings.iterator().forEachRemaining(expected::add);
+        final var stringIteratorX = strings.iteratorX();
+        while(stringIteratorX.tryAdvance(actual::add));
+
+        assertEquals(expected, actual);
+    }
+
 }

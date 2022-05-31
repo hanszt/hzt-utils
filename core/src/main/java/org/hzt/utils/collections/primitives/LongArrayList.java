@@ -1,7 +1,9 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.arrays.primitves.PrimitiveSort;
 import org.hzt.utils.iterables.primitives.LongIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
+import org.hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -67,22 +69,24 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
 
     @Override
     public long get(int index) {
+        Objects.checkIndex(index, size);
         return elementData[index];
     }
 
     @Override
     public long set(int index, long value) {
+        Objects.checkIndex(index, size);
         elementData[index] = value;
         return value;
     }
 
     @Override
     public int indexOf(long l) {
-        return indexOfRange(l, 0, size);
+        return indexOfRange(l, size);
     }
 
-    int indexOfRange(long l, int start, int end) {
-        for (int i = start; i < end; i++) {
+    int indexOfRange(long l, int end) {
+        for (int i = 0; i < end; i++) {
             if (l == elementData[i]) {
                 return i;
             }
@@ -92,11 +96,11 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
 
     @Override
     public int lastIndexOf(long l) {
-        return lastIndexOfRange(l, 0, size);
+        return lastIndexOfRange(l, size);
     }
 
-    private int lastIndexOfRange(long value, int start, int end) {
-        for (int i = end - 1; i >= start; i--) {
+    private int lastIndexOfRange(long value, int end) {
+        for (int i = end - 1; i >= 0; i--) {
             if (value == elementData[i]) {
                 return i;
             }
@@ -160,6 +164,7 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
     }
 
     @Override
+    @SuppressWarnings("squid:S1188")
     public PrimitiveListIterator.OfLong listIterator(int startIndex) {
         return new PrimitiveListIterator.OfLong() {
             private int index = 0;
@@ -193,6 +198,16 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
                 return index - 1;
             }
         };
+    }
+
+    @Override
+    public void sort(LongComparator comparator) {
+        PrimitiveSort.sort(elementData, 0, size, comparator);
+    }
+
+    @Override
+    public void sort() {
+        Arrays.sort(elementData, 0, size);
     }
 
     @Override

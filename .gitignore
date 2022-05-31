@@ -6,6 +6,7 @@
 *.exe
 *.o
 *.so
+target
 
 # Packages #
 ############
@@ -27,6 +28,11 @@
 *.ipr
 help
 
+### Eclipse IDE ###
+.classpath
+.project
+.settings
+
 # Logs and databases #
 ######################
 *.log
@@ -42,7 +48,3 @@ help
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# IDE generated files #
-######################
-target

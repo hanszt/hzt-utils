@@ -98,7 +98,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence flatMap(LongFunction<? extends LongSequence> flatMapper) {
-        return mapMulti((value, c) -> flatMapper.apply(value).forEachLong(c));
+        return mapMulti((value, longConsumer) -> flatMapper.apply(value).forEachLong(longConsumer));
     }
 
     default LongSequence mapMulti(LongMapMultiConsumer longMapMultiConsumer) {

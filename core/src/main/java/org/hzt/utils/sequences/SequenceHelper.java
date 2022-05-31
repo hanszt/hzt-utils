@@ -10,8 +10,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.IntConsumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 public final class SequenceHelper {
 
@@ -119,16 +120,52 @@ public final class SequenceHelper {
         return "size " + size + " must be greater than zero.";
     }
 
-    static class HoldingConsumer implements IntConsumer {
-        private int value = 0;
+    public static <T> Iterator<T> interspersingIterator(Iterator<T> iterator, UnaryOperator<T> operator) {
+        return new Iterator<>() {
+            private T current = null;
 
-        @Override
-        public void accept(int value) {
-            this.value = value;
-        }
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
 
-        public int getValue() {
-            return value;
-        }
+            @Override
+            public T next() {
+                if (current != null) {
+                    final var valueToInsert = operator.apply(current);
+                    current = null;
+                    return valueToInsert;
+                } else {
+                    current = iterator.next();
+                    return current;
+                }
+            }
+        };
+    }
+
+    public static <T> Iterator<T> interspersingIterator(Iterator<T> iterator,
+                                                        Supplier<T> initValSupplier,
+                                                        UnaryOperator<T> operator) {
+        return new Iterator<>() {
+            private T valueToInsert = null;
+            private boolean insertValue = false;
+
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public T next() {
+                if (insertValue) {
+                    insertValue = false;
+                    valueToInsert = valueToInsert == null ? initValSupplier.get() : operator.apply(this.valueToInsert);
+                    return valueToInsert;
+                } else {
+                    insertValue = true;
+                    return iterator.next();
+                }
+            }
+        };
     }
 }

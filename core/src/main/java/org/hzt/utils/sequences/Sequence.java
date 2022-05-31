@@ -57,6 +57,7 @@ import java.util.stream.Stream;
  * @param <T> the type of the items in the Sequence
  */
 @FunctionalInterface
+@SuppressWarnings("squid:S1448")
 public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     static <T> Sequence<T> empty() {
@@ -106,6 +107,26 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     default Sequence<T> plus(@NotNull Iterable<T> values) {
         return Sequence.of(this, Sequence.of(values)).flatMap(It::self);
+    }
+
+    default Sequence<T> intersperse(T value) {
+        return intersperse(t -> value);
+    }
+
+    default Sequence<T> intersperse(UnaryOperator<T> operator) {
+        return () -> SequenceHelper.interspersingIterator(iterator(), operator);
+    }
+
+    default Sequence<T> intersperse(Supplier<T> operator) {
+        return intersperse(operator, t -> operator.get());
+    }
+
+    default Sequence<T> intersperse(T initValue, UnaryOperator<T> operator) {
+        return intersperse(() -> initValue, operator);
+    }
+
+    default Sequence<T> intersperse(Supplier<T> initSupplier, UnaryOperator<T> operator) {
+        return () -> SequenceHelper.interspersingIterator(iterator(), initSupplier, operator);
     }
 
     default <R> Sequence<R> map(@NotNull Function<? super T, ? extends R> mapper) {

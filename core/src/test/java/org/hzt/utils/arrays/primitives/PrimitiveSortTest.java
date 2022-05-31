@@ -78,8 +78,7 @@ class PrimitiveSortTest {
         final long[] array = Sequence.generate(0, i -> ++i)
                 .take(1_000)
                 .shuffled()
-                .mapToLong(It::asLong)
-                .toArray();
+                .toLongArray(It::asLong);
 
         It.println(Arrays.toString(array));
 
@@ -104,8 +103,13 @@ class PrimitiveSortTest {
 
         It.println(Arrays.toString(array));
 
-        final ListX<String> expected = DoubleListX.of(.1, .2, .3, .4, .5, .6).mapToObj(DoubleX::toRoundedString);
-        final ListX<String> actual = DoubleSequence.of(array).take(6).toListX().mapToObj(DoubleX::toRoundedString);
+        final ListX<String> expected = DoubleListX.of(.1, .2, .3, .4, .5, .6)
+                .mapToObj(DoubleX::toRoundedString);
+
+        final ListX<String> actual = DoubleSequence.of(array)
+                .take(6)
+                .toListX()
+                .mapToObj(DoubleX::toRoundedString);
 
         assertEquals(expected, actual);
     }

@@ -15,6 +15,10 @@
         <module>test-data-generator</module>
         <module>benchmark</module>
         <module>swing-utils</module>
+        <module>reflection</module>
+        <module>fx-utils</module>
+        <module>geometry</module>
+        <module>graph-utils</module>
     </modules>
 
     <properties>
@@ -26,6 +30,8 @@
         <!--        test-->
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <awaitility.version>4.1.1</awaitility.version>
+        <!--        dependency management-->
+        <javafx.version>17.0.2</javafx.version>
         <!--        other-->
         <annotations.version>22.0.0</annotations.version>
         <!--plugins-->
@@ -53,6 +59,11 @@
                 <artifactId>awaitility</artifactId>
                 <version>${awaitility.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-base</artifactId>
+                <version>${javafx.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

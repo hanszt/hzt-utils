@@ -1,11 +1,14 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.sequences.primitives.LongSequence;
 import org.hzt.utils.It;
-import org.junit.jupiter.api.BeforeAll;
+import org.hzt.utils.primitive_comparators.LongComparator;
+import org.hzt.utils.sequences.primitives.LongSequence;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LongMutableListXTest {
 
@@ -61,5 +64,27 @@ class LongMutableListXTest {
         list.set(4, 14);
         final long value = list.get(4);
         assertEquals(14L, value);
+    }
+
+    @Test
+    void testSortLongList() {
+        final var longs = LongSequence.generate(1_000_000, i -> --i)
+                .take(1_000_000)
+                .toMutableList();
+
+        longs.sort();
+
+        assertEquals(LongListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), longs.take(10));
+    }
+
+    @Test
+    void testSortReversedLongList() {
+        final var longs = LongSequence.generate(-1_000_000, i -> ++i)
+                .take(1_000_000)
+                .toMutableList();
+
+        longs.sort(LongComparator.reverseOrder());
+
+        assertEquals(LongListX.of(-1, -2, -3, -4, -5, -6, -7, -8, -9, -10), longs.take(10));
     }
 }

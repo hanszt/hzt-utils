@@ -1,11 +1,12 @@
 package org.hzt.utils.iterables.primitives;
 
+import org.hzt.utils.It;
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.primitives.IntCollection;
 import org.hzt.utils.collections.primitives.IntListX;
 import org.hzt.utils.collections.primitives.IntMutableCollection;
 import org.hzt.utils.collections.primitives.IntMutableListX;
 import org.hzt.utils.collectors.primitves.IntCollector;
-import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
@@ -66,5 +67,31 @@ public interface IntCollectable extends IntIterable, PrimitiveCollectable<IntCol
 
     default IntMutableListX toMutableList() {
         return to(IntMutableListX::empty);
+    }
+
+    default <C extends IntMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {
+        PreConditions.requireGreaterThanOrEqualToZero(n);
+        C collection = collectionFactory.get();
+        if (n == 0) {
+            return collection;
+        }
+        final IntIterable iterable = this;
+        if (iterable instanceof IntMutableCollection) {
+            IntMutableCollection c = (IntMutableCollection) iterable;
+            if (n >= c.size()) {
+                collection.addAll(c);
+                return collection;
+            }
+        }
+        int count = 0;
+        final var iterator = iterator();
+        while (iterator.hasNext()) {
+            int value = iterator.nextInt();
+            collection.add(value);
+            if (++count == n) {
+                break;
+            }
+        }
+        return collection;
     }
 }

@@ -1,11 +1,14 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.It;
-import org.junit.jupiter.api.BeforeAll;
+import org.hzt.utils.primitive_comparators.IntComparator;
+import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IntMutableListXTest {
 
@@ -56,4 +59,29 @@ class IntMutableListXTest {
                 () -> assertEquals(ints, intsCopy)
         );
     }
+
+    @Test
+    void testSortIntList() {
+        final var ints = IntSequence.generate(10_000, i -> --i)
+                .take(10_000)
+                .shuffled()
+                .toMutableList();
+
+        ints.sort();
+
+        assertEquals(IntListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ints.take(10));
+    }
+
+    @Test
+    void testSortReversedIntList() {
+        final var ints = IntSequence.generate(-10_000, i -> ++i)
+                .take(10_000)
+                .shuffled()
+                .toMutableList();
+
+        ints.sort(IntComparator.reverseOrder());
+
+        assertEquals(IntListX.of(-1, -2, -3, -4, -5, -6, -7, -8, -9, -10), ints.take(10));
+    }
+
 }

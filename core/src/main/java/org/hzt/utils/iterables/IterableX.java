@@ -1,14 +1,15 @@
 package org.hzt.utils.iterables;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
-import org.hzt.utils.sequences.primitives.DoubleSequence;
-import org.hzt.utils.sequences.primitives.IntSequence;
-import org.hzt.utils.sequences.primitives.LongSequence;
+import org.hzt.utils.iterables.primitives.DoubleIterable;
+import org.hzt.utils.iterables.primitives.IntIterable;
+import org.hzt.utils.iterables.primitives.LongIterable;
+import org.hzt.utils.iterators.functional_iterator.IteratorX;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -35,6 +36,10 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>,
         Collectable<T>, Groupable<T>, Streamable<Stream<T>> {
 
+    default IteratorX<T> iteratorX() {
+        return IteratorX.of(iterator());
+    }
+
     IterableX<T> plus(@NotNull T value);
 
     IterableX<T> plus(@NotNull Iterable<T> values);
@@ -53,17 +58,11 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         return Sequence.of(this);
     }
 
-    default IntSequence mapToInt(@NotNull ToIntFunction<? super T> keyMapper) {
-        return IntSequence.of(asSequence().map(keyMapper::applyAsInt));
-    }
+    IntIterable mapToInt(@NotNull ToIntFunction<? super T> mapper);
 
-    default LongSequence mapToLong(@NotNull ToLongFunction<? super T> keyMapper) {
-        return LongSequence.of(asSequence().map(keyMapper::applyAsLong));
-    }
+    LongIterable mapToLong(@NotNull ToLongFunction<? super T> toLongMapper);
 
-    default DoubleSequence mapToDouble(@NotNull ToDoubleFunction<? super T> keyMapper) {
-        return DoubleSequence.of(asSequence().map(keyMapper::applyAsDouble));
-    }
+    DoubleIterable mapToDouble(@NotNull ToDoubleFunction<? super T> mapper);
 
     <K> EntryIterable<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper);
 
@@ -119,14 +118,14 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
     }
 
     default int[] toIntArray(@NotNull ToIntFunction<? super T> mapper) {
-        return mapToInt(mapper).toArray();
+        return asSequence().mapToInt(mapper).toArray();
     }
 
     default long[] toLongArray(@NotNull ToLongFunction<? super T> mapper) {
-        return mapToLong(mapper).toArray();
+        return asSequence().mapToLong(mapper).toArray();
     }
 
     default double[] toDoubleArray(@NotNull ToDoubleFunction<? super T> mapper) {
-        return mapToDouble(mapper).toArray();
+        return asSequence().mapToDouble(mapper).toArray();
     }
 }

@@ -2,12 +2,13 @@ package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
+import org.hzt.utils.primitive_comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 
 public interface IntMutableListX extends IntListX, IntMutableCollection,
-        PrimitiveMutableList<PrimitiveListIterator.OfInt> {
+        PrimitiveMutableList<PrimitiveListIterator.OfInt, IntComparator> {
 
     static IntMutableListX empty() {
         return new IntArrayList();

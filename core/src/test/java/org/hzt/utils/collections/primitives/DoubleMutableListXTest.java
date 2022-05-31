@@ -1,7 +1,8 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.It;
+import org.hzt.utils.primitive_comparators.DoubleComparator;
+import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -69,5 +70,39 @@ class DoubleMutableListXTest {
                 () -> assertTrue(remove),
                 () -> assertEquals(DoubleListX.of(1, 2, 3, 4, 5, 6, 8), list)
         );
+    }
+
+    @Test
+    void testSortSmallDoubleList() {
+        final var doubles = DoubleSequence.generate(0, i -> --i)
+                .take(10)
+                .toMutableList();
+
+        doubles.sort();
+
+        doubles.forEachDouble(System.out::println);
+
+        assertEquals(DoubleListX.of(-9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0), doubles);
+    }
+    @Test
+    void testSortDoubleList() {
+        final var doubles = DoubleSequence.generate(1_000_000, i -> --i)
+                .take(1_000_000)
+                .toMutableList();
+
+        doubles.sort();
+
+        assertEquals(DoubleListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), doubles.take(10));
+    }
+
+    @Test
+    void testSortReversedDoubleList() {
+        final var doubles = DoubleSequence.generate(-1_000_000, i -> ++i)
+                .take(1_000_000)
+                .toMutableList();
+
+        doubles.sort(DoubleComparator.reverseOrder());
+
+        assertEquals(DoubleListX.of(-1, -2, -3, -4, -5, -6, -7, -8, -9, -10), doubles.take(10));
     }
 }

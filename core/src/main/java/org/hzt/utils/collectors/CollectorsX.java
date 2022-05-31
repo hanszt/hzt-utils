@@ -1,5 +1,6 @@
 package org.hzt.utils.collectors;
 
+import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
@@ -9,10 +10,10 @@ import org.hzt.utils.collections.SetX;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.QuintFunction;
 import org.hzt.utils.function.TriFunction;
+import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.hzt.utils.statistics.DoubleStatistics;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
-import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
@@ -35,6 +36,7 @@ import java.util.function.ToDoubleFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @SuppressWarnings({"DuplicatedCode"})
 public final class CollectorsX {
@@ -72,14 +74,13 @@ public final class CollectorsX {
                 downstream.characteristics());
     }
 
-    //Experimental. Runs faster into out of memory error than mapMulti method from Stream. No buffer implemented here
     public static <T, U, A, R> Collector<T, ?, R> multiMapping(BiConsumer<? super T, ? super Consumer<U>> mapper,
                                                                Collector<? super U, A, R> downstream) {
-        final BiConsumer<A, T> accumulator = (A a, T t) -> {
-            final Consumer<U> uConsumer = (U u) -> downstream.accumulator().accept(a, u);
-            mapper.accept(t, uConsumer);
-        };
-        return collectorOf(downstream.supplier(), accumulator, downstream.combiner(), downstream.finisher(), downstream.characteristics());
+        return Collectors.flatMapping(e -> {
+            SpinedBuffer<U> buffer = new SpinedBuffer<>();
+            mapper.accept(e, buffer);
+            return StreamSupport.stream(buffer.spliterator(), false);
+        }, downstream);
     }
 
     @NotNull

@@ -99,7 +99,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     default IntSequence flatMap(IntFunction<? extends IntSequence> flatMapper) {
-        return mapMulti((value, c) -> flatMapper.apply(value).forEachInt(c));
+        return mapMulti((value, intConsumer) -> flatMapper.apply(value).forEachInt(intConsumer));
     }
 
     default IntSequence mapMulti(IntMapMultiConsumer intMapMultiConsumer) {
@@ -185,6 +185,10 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     @Override
     default IntSequence sortedDescending() {
         return sorted((IntX::compareReversed));
+    }
+
+    default IntSequence shuffled() {
+        return () -> toListX().shuffled().iterator();
     }
 
     @Override

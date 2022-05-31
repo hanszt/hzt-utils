@@ -109,6 +109,11 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
         return listX;
     }
 
+    @Override
+    default PrimitiveCollectionX<Long, LongConsumer, long[]> take(long n) {
+        return takeTo(() -> LongMutableListX.withInitCapacity((int) n), n);
+    }
+
     default LongSequence asSequence() {
         return LongSequence.of(this);
     }

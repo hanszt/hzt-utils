@@ -106,7 +106,7 @@ class CollectorsXTest {
 
         Set<Period> paintingNamesPresentInAllMuseums = museumList.stream()
                 .map(Museum::getPaintings)
-                .collect(intersectingBy(Painting::getMilleniumOfCreation));
+                .collect(intersectingBy(Painting::getMillenniumOfCreation));
 
         It.println("paintingMadeInPreviousMilleniumPresentInAllMuseums = " + paintingNamesPresentInAllMuseums);
 

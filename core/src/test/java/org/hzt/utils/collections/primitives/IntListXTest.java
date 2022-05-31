@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IntListXTest {
@@ -49,5 +50,16 @@ class IntListXTest {
         final int index = intListX.lastIndexOf(4);
 
         assertEquals(5, index);
+    }
+
+    @Test
+    void testShuffled() {
+        final var intListX = IntListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+        final var shuffled = intListX.shuffled();
+
+        System.out.println("shuffled = " + shuffled);
+
+        assertNotEquals(intListX, shuffled);
     }
 }

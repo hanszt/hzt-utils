@@ -37,7 +37,7 @@ public final class Painting
         return yearOfCreation;
     }
 
-    public Period getMilleniumOfCreation() {
+    public Period getMillenniumOfCreation() {
         if (yearOfCreation.isAfter(Year.of(1000)) && yearOfCreation.isBefore(Year.of(2000))) {
             return Period.between(LocalDate.of(1000, 1, 1), LocalDate.of(1999, 12, 31));
         } else if (yearOfCreation.isBefore(Year.of(1000))) {
@@ -75,6 +75,7 @@ public final class Painting
         }
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
+        }
         }
         Painting that = (Painting) obj;
         return Objects.equals(this.name, that.name) &&

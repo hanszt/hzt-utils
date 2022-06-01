@@ -6,11 +6,11 @@
 
   <parent>
     <groupId>org.hzt.utils</groupId>
-    <artifactId>commons</artifactId>
+    <artifactId>hzt-utils</artifactId>
     <version>0.7.5.11</version>
   </parent>
 
-  <artifactId>hzt-utils-benchmark</artifactId>
+  <artifactId>benchmark</artifactId>
 
   <properties>
     <uberjar.name>benchmarks</uberjar.name>

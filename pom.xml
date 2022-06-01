@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.hzt.utils</groupId>
-    <artifactId>commons</artifactId>
+    <artifactId>hzt-utils</artifactId>
     <version>0.7.5.11</version>
     <packaging>pom</packaging>
 

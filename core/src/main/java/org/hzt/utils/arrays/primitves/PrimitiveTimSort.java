@@ -2,19 +2,29 @@ package org.hzt.utils.arrays.primitves;
 
 import org.hzt.utils.PreConditions;
 
-class PrimitiveTimSort {
+/**
+ * @param <A> the primitive array type
+ * @param <C> the primitive comparator type
+ */
+abstract class PrimitiveTimSort<A, C> {
 
     static final int MIN_MERGE = 32;
     static final int MIN_GALLOP = 7;
     static final int INITIAL_TMP_STORAGE_LENGTH = 256;
 
+    final int[] runBase;
+    final int[] runLength;
     int minGallop = MIN_GALLOP;
-    int tempBase = 0;
     int stackSize = 0;
-    int tempLength;
 
     PrimitiveTimSort(int length) {
-        this.tempLength = length < 512 ? (length >>> 1) : INITIAL_TMP_STORAGE_LENGTH;
+        int stackLen = getStackLength(length);
+        this.runBase = new int[stackLen];
+        this.runLength = new int[stackLen];
+    }
+
+    static int getInitTempLength(int length) {
+        return length < 512 ? (length >>> 1) : INITIAL_TMP_STORAGE_LENGTH;
     }
 
     @SuppressWarnings("squid:S3358")
@@ -22,6 +32,56 @@ class PrimitiveTimSort {
         return (len < 120) ? 5 :
                 (len < 1_542 ? 10 :
                         ((len < 119_151) ? 24 : 49));
+    }
+
+    int getLo(A array, int lo, int hi, C comparator, int nRemaining, int minRun) {
+        do {
+            int runLen = getRunLen(array, lo, hi, comparator, nRemaining, minRun);
+
+            pushRun(lo, runLen);
+            mergeCollapse();
+            lo += runLen;
+            nRemaining -= runLen;
+        } while (nRemaining != 0);
+        return lo;
+    }
+
+    abstract int getRunLen(A array, int lo, int hi, C comparator, int nRemaining, int minRun);
+
+    private void mergeCollapse() {
+        while (stackSize > 1) {
+            int n = stackSize - 2;
+            if (runLength[n] > runLength[n + 1]) {
+                return; // Invariant is established
+            }
+            final var b1 = n > 0 && runLength[n - 1] <= runLength[n] + runLength[n + 1];
+            final var b2 = n > 1 && runLength[n - 2] <= runLength[n - 1] + runLength[n];
+            if ((b1 || b2)) {
+                final var b3 = runLength[n - 1] < runLength[n + 1];
+                if (b3) {
+                    n--;
+                }
+            }
+            mergeAt(n);
+        }
+    }
+
+    void mergeForceCollapse() {
+        while (stackSize > 1) {
+            int n = stackSize - 2;
+            if (n > 0 && runLength[n - 1] < runLength[n + 1]) {
+                --n;
+            }
+            mergeAt(n);
+        }
+    }
+
+    abstract void mergeAt(int n);
+
+    private void pushRun(int runBase, int runLen) {
+        this.runBase[stackSize] = runBase;
+        this.runLength[stackSize] = runLen;
+        ++stackSize;
     }
 
     static int minRunLength(int n) {
@@ -33,6 +93,21 @@ class PrimitiveTimSort {
         }
         return n + r;
     }
+
+    void decideMergeStrategy(int base1, int len1, int base2, int len2) {
+        PreConditions.require(len2 >= 0);
+        if (len2 != 0) {
+            if (len1 <= len2) {
+                mergeLo(base1, len1, base2, len2);
+            } else {
+                mergeHi(base1, len1, base2, len2);
+            }
+        }
+    }
+
+    abstract void mergeLo(int base1, int len1, int base2, int len2);
+
+    abstract void mergeHi(int base1, int len1, int base2, int len2);
 
     static int calculateNewLength(int minCapacity, int length) {
         int newLength = minCapacity | (minCapacity >> 1);

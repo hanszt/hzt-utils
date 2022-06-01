@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>commons</artifactId>
+        <artifactId>hzt-utils</artifactId>
         <groupId>org.hzt.utils</groupId>
         <version>0.7.5.11</version>
     </parent>

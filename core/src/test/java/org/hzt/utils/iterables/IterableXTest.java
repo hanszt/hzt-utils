@@ -1,5 +1,13 @@
 package org.hzt.utils.iterables;
 
+import org.hzt.test.TestSampleGenerator;
+import org.hzt.test.model.BankAccount;
+import org.hzt.test.model.Book;
+import org.hzt.test.model.Customer;
+import org.hzt.test.model.Museum;
+import org.hzt.test.model.Painter;
+import org.hzt.test.model.Painting;
+import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableListX;
@@ -14,14 +22,6 @@ import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
 import org.hzt.utils.test.model.PaintingAuction;
 import org.hzt.utils.tuples.Pair;
-import org.hzt.utils.It;
-import org.hzt.test.TestSampleGenerator;
-import org.hzt.test.model.BankAccount;
-import org.hzt.test.model.Book;
-import org.hzt.test.model.Customer;
-import org.hzt.test.model.Museum;
-import org.hzt.test.model.Painter;
-import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -37,23 +37,21 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.IntSummaryStatistics;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.stream.Collectors.*;
 import static org.hzt.utils.collectors.CollectorsX.intersectingBy;
 import static org.hzt.utils.collectors.CollectorsX.toListX;
-import static java.util.stream.Collectors.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class IterableXTest {
+class IterableXTest {
 
     @Test
     void testMappingToSet() {
@@ -940,27 +938,6 @@ public class IterableXTest {
     }
 
     @Test
-    void testJava11AndBeforeCompilerTripperWorkFineInJava17() {
-        assertDoesNotThrow(() -> empty());
-    }
-
-    // causes compiler error on java 11 and older:
-    // java: Compilation failed: internal java compiler error
-    public static <T> IterableX<T> empty() {
-        return ListX.of(() -> new Iterator<>() {
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
-
-            @Override
-            public T next() {
-                throw new NoSuchElementException();
-            }
-        });
-    }
-
-    @Test
     void testDifferenceBetweenIterableXAndSequence() {
         final ListX<Integer> range = IntRange.of(0, 20).boxed().toListX();
 
@@ -982,6 +959,7 @@ public class IterableXTest {
 
         strings.iterator().forEachRemaining(expected::add);
         final var stringIteratorX = strings.iteratorX();
+        //noinspection StatementWithEmptyBody
         while(stringIteratorX.tryAdvance(actual::add));
 
         assertEquals(expected, actual);

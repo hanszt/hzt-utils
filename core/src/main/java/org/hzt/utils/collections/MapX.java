@@ -17,13 +17,14 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@SuppressWarnings("squid:S107")
 public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<K, V> {
 
     static <K, V> MapX<K, V> empty() {
         return MutableMapX.empty();
     }
 
-    static <K, V> MapX<K, V> of(Map<K, V> map) {
+    static <K, V> MapX<K, V> of(Map<? extends K, ? extends V> map) {
         return MutableMapX.ofMap(map);
     }
 

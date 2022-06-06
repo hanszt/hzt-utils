@@ -7,20 +7,20 @@ import java.util.function.Predicate;
 public final class TakeWhileIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
-    private final Predicate<T> predicate;
+    private final Predicate<? super T> predicate;
     private final boolean inclusive;
 
     private boolean inclusiveConsumed = false;
     private T nextItem;
     private State nextState = State.INIT_UNKNOWN;
 
-    private TakeWhileIterator(Iterator<T> iterator, Predicate<T> predicate, boolean inclusive) {
+    private TakeWhileIterator(Iterator<T> iterator, Predicate<? super T> predicate, boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
     }
 
-    public static <T> TakeWhileIterator<T> of(Iterator<T> iterator, Predicate<T> predicate, boolean inclusive) {
+    public static <T> TakeWhileIterator<T> of(Iterator<T> iterator, Predicate<? super T> predicate, boolean inclusive) {
         return new TakeWhileIterator<>(iterator, predicate, inclusive);
     }
 

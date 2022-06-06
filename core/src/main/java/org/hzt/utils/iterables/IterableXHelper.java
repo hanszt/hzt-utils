@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
@@ -72,7 +71,7 @@ public final class IterableXHelper {
         return Optional.ofNullable(result);
     }
 
-    static <R, K extends Comparable<? super K>> K asComparableOrThrow(R key) {
+    public static <R, K extends Comparable<? super K>> K asComparableOrThrow(R key) {
         if (key instanceof Comparable) {
             Comparable<?> c = (Comparable<?>) key;
             //noinspection unchecked
@@ -136,26 +135,16 @@ public final class IterableXHelper {
         return Optional.empty();
     }
 
-    public static double nextRandomDouble() {
-        return RANDOM.nextDouble();
-    }
-
     @NotNull
     static NoSuchElementException noValuePresentException() {
         return new NoSuchElementException("No value present");
     }
 
-    static <T> void exposeIntIndexedNonNullVal(@NotNull Iterable<T> iterable, @NotNull BiConsumer<Integer, T> consumer) {
-        int counter = 0;
+    static <T> void exposeNonNullVal(@NotNull Iterable<T> iterable, @NotNull Consumer<T> consumer) {
         for (T value : iterable) {
             if (value != null) {
-                consumer.accept(counter, value);
-                counter++;
+                consumer.accept(value);
             }
         }
-    }
-
-    static <T> void exposeNonNullVal(@NotNull Iterable<T> iterable, @NotNull Consumer<T> consumer) {
-        exposeIntIndexedNonNullVal(iterable, (i, v) -> consumer.accept(v));
     }
 }

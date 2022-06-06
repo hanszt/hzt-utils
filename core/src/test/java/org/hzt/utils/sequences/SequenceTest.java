@@ -123,7 +123,7 @@ class SequenceTest {
         final var sum = Sequence.of(list)
                 .map(String::length)
                 .filterIndexed((index, length) -> length > 2 && IntX.isOdd(index))
-                .sumOfLongs(It::self);
+                .longSumOf(It::self);
 
         assertEquals(6, sum);
     }
@@ -228,7 +228,7 @@ class SequenceTest {
         final var result = Sequence.generate(0, i -> ++i)
                 .windowed(8, 3)
                 .onEach(windows::add)
-                .takeWhile(s -> s.sumOfInts(It::asInt) < 1_000_000)
+                .takeWhile(s -> s.intSumOf(It::asInt) < 1_000_000)
                 .<Integer>mapMulti(Iterable::forEach)
                 .toListX();
 
@@ -607,7 +607,7 @@ class SequenceTest {
 
         It.println("first = " + first);
         It.println("last = " + last);
-        final var stats = leapYears.statsOfInts(Year::getValue);
+        final var stats = leapYears.intStatsOf(Year::getValue);
 
         assertAll(
                 () -> assertEquals(Year.of(1904), first),

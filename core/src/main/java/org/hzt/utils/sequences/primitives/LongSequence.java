@@ -91,6 +91,11 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return Sequence.of(this, LongSequence.of(values)).mapMultiToLong(LongIterable::forEachLong);
     }
 
+    @Override
+    default LongSequence distinct() {
+        return () -> PrimitiveIterators.distinctIterator(iterator());
+    }
+
     default LongSequence map(@NotNull LongUnaryOperator unaryOperator) {
         return () -> PrimitiveIterators.longTransformingIterator(iterator(), unaryOperator);
     }

@@ -26,4 +26,6 @@ public interface PrimitiveMutableCollectionX<T, C, P, A> extends PrimitiveCollec
     PrimitiveMutableCollectionX<T, C, P, A> plus(@NotNull A array);
 
     MutableCollectionX<T> boxed();
+
+    void clear();
 }

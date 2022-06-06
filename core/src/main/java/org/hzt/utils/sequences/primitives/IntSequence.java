@@ -92,6 +92,11 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     @Override
+    default IntSequence distinct() {
+        return () -> PrimitiveIterators.distinctIterator(iterator());
+    }
+
+    @Override
     default IntSequence map(@NotNull IntUnaryOperator mapper) {
         return () -> PrimitiveIterators.intTransformingIterator(iterator(), mapper);
     }

@@ -48,7 +48,7 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
         }
     }
 
-    int getRunLen(long[] array, int lo, int hi, LongComparator comparator, int nRemaining, int minRun) {
+    protected int getRunLen(long[] array, int lo, int hi, LongComparator comparator, int nRemaining, int minRun) {
         int runLen = PrimitiveSort.countRunAndMakeAscending(array, lo, hi, comparator);
         if (runLen < minRun) {
             final int force = Math.min(nRemaining, minRun);
@@ -58,7 +58,7 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
         return runLen;
     }
 
-    void mergeAt(int i) {
+    protected void mergeAt(int i) {
         PreConditions.require(stackSize >= 2);
         PreConditions.require(i >= 0);
         PreConditions.require(i == stackSize - 2 || i == stackSize - 3);
@@ -191,7 +191,7 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
 
     //Suppress the warnings that have to do with to long and complex methods. In this case performance is more important
     @SuppressWarnings({"squid:S134", "squid:S135", "squid:S138", "squid:S1119", "squid:S1541", "squid:S3776"})
-    void mergeLo(int base1, int len1, int base2, int len2) {
+    protected void mergeLo(int base1, int len1, int base2, int len2) {
         PreConditions.require(len1 > 0 && len2 > 0 && base1 + len1 == base2);
         // Copy first run into temp array
         long[] array = longArray; // For performance
@@ -293,7 +293,7 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
     }
 
     @SuppressWarnings({"squid:S134", "squid:S135", "squid:S138", "squid:S1119", "squid:S1541", "squid:S3776"})
-    void mergeHi(int base1, int len1, int base2, int len2) {
+    protected void mergeHi(int base1, int len1, int base2, int len2) {
         PreConditions.require(len1 > 0 && len2 > 0 && base1 + len1 == base2);
 
         // Copy second run into temp array

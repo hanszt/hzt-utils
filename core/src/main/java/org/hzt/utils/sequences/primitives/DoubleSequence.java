@@ -88,6 +88,11 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     @Override
+    default DoubleSequence distinct() {
+        return () -> PrimitiveIterators.distinctIterator(iterator());
+    }
+
+    @Override
     default DoubleSequence map(@NotNull DoubleUnaryOperator mapper) {
         return () -> PrimitiveIterators.doubleTransformingIterator(iterator(), mapper);
     }

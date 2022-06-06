@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+@SuppressWarnings("squid:S1448")
 public final class StringX implements CharSequence, Sequence<Character>, Transformable<StringX> {
 
     private final String string;
@@ -327,7 +328,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     @Override
-    public StringX filter(@NotNull Predicate<Character> predicate) {
+    public StringX filter(@NotNull Predicate<? super Character> predicate) {
         return StringX.of(Sequence.super.filter(predicate));
     }
 

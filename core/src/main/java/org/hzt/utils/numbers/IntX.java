@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.function.IntPredicate;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "squid:S1448"})
 public final class IntX extends Number implements NumberX<Integer>, Transformable<IntX> {
 
     private static final long serialVersionUID = 20;

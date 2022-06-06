@@ -6,7 +6,7 @@ import org.hzt.utils.PreConditions;
  * @param <A> the primitive array type
  * @param <C> the primitive comparator type
  */
-abstract class PrimitiveTimSort<A, C> {
+public abstract class PrimitiveTimSort<A, C> {
 
     static final int MIN_MERGE = 32;
     static final int MIN_GALLOP = 7;
@@ -17,24 +17,24 @@ abstract class PrimitiveTimSort<A, C> {
     int minGallop = MIN_GALLOP;
     int stackSize = 0;
 
-    PrimitiveTimSort(int length) {
+    protected PrimitiveTimSort(int length) {
         int stackLen = getStackLength(length);
         this.runBase = new int[stackLen];
         this.runLength = new int[stackLen];
     }
 
-    static int getInitTempLength(int length) {
+    protected static int getInitTempLength(int length) {
         return length < 512 ? (length >>> 1) : INITIAL_TMP_STORAGE_LENGTH;
     }
 
     @SuppressWarnings("squid:S3358")
-    static int getStackLength(int len) {
+    protected static int getStackLength(int len) {
         return (len < 120) ? 5 :
                 (len < 1_542 ? 10 :
                         ((len < 119_151) ? 24 : 49));
     }
 
-    int getLo(A array, int lo, int hi, C comparator, int nRemaining, int minRun) {
+    protected int getLo(A array, int lo, int hi, C comparator, int nRemaining, int minRun) {
         do {
             int runLen = getRunLen(array, lo, hi, comparator, nRemaining, minRun);
 
@@ -46,7 +46,7 @@ abstract class PrimitiveTimSort<A, C> {
         return lo;
     }
 
-    abstract int getRunLen(A array, int lo, int hi, C comparator, int nRemaining, int minRun);
+    protected abstract int getRunLen(A array, int lo, int hi, C comparator, int nRemaining, int minRun);
 
     private void mergeCollapse() {
         while (stackSize > 1) {
@@ -76,7 +76,7 @@ abstract class PrimitiveTimSort<A, C> {
         }
     }
 
-    abstract void mergeAt(int n);
+    protected abstract void mergeAt(int n);
 
     private void pushRun(int runBase, int runLen) {
         this.runBase[stackSize] = runBase;
@@ -84,7 +84,7 @@ abstract class PrimitiveTimSort<A, C> {
         ++stackSize;
     }
 
-    static int minRunLength(int n) {
+    protected static int minRunLength(int n) {
         PreConditions.require(n >= 0);
         int r = 0;
         while (n >= MIN_MERGE) {
@@ -94,7 +94,7 @@ abstract class PrimitiveTimSort<A, C> {
         return n + r;
     }
 
-    void decideMergeStrategy(int base1, int len1, int base2, int len2) {
+    protected void decideMergeStrategy(int base1, int len1, int base2, int len2) {
         PreConditions.require(len2 >= 0);
         if (len2 != 0) {
             if (len1 <= len2) {
@@ -105,11 +105,11 @@ abstract class PrimitiveTimSort<A, C> {
         }
     }
 
-    abstract void mergeLo(int base1, int len1, int base2, int len2);
+    protected abstract void mergeLo(int base1, int len1, int base2, int len2);
 
-    abstract void mergeHi(int base1, int len1, int base2, int len2);
+    protected abstract void mergeHi(int base1, int len1, int base2, int len2);
 
-    static int calculateNewLength(int minCapacity, int length) {
+    protected static int calculateNewLength(int minCapacity, int length) {
         int newLength = minCapacity | (minCapacity >> 1);
         newLength |= newLength >> 2;
         newLength |= newLength >> 4;

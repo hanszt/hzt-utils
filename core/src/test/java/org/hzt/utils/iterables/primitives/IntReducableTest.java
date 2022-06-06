@@ -14,7 +14,7 @@ class IntReducableTest {
     void testReduceTwo() {
         final var integers = IntListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-        integers.forEach(It::println);
+        integers.forEachInt(It::println);
 
         final var pair = integers
                 .reduceToTwo(1, (acc, next) -> acc * next,

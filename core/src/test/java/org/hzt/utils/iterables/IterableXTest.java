@@ -291,7 +291,7 @@ class IterableXTest {
 
         final IntSummaryStatistics expected = paintings.stream().mapToInt(Painting::ageInYears).summaryStatistics();
 
-        final IntSummaryStatistics actual = paintings.statsOfInts(Painting::ageInYears);
+        final IntSummaryStatistics actual = paintings.intStatsOf(Painting::ageInYears);
 
         assertAll(
                 () -> assertEquals(expected.getMin(), actual.getMin()),
@@ -311,7 +311,7 @@ class IterableXTest {
                 .map(BankAccount::getBalance)
                 .collect(BigDecimalCollectors.summarizingBigDecimal());
 
-        final BigDecimalSummaryStatistics actual = bankAccounts.statsOfBigDecimals(BankAccount::getBalance);
+        final BigDecimalSummaryStatistics actual = bankAccounts.bigDecimalStatsOf(BankAccount::getBalance);
 
         assertAll(
                 () -> assertEquals(expected.getMin(), actual.getMin()),
@@ -439,7 +439,7 @@ class IterableXTest {
                 .map(BankAccount::getBalance)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        final BigDecimal actual = list.bigDecimalSum(BankAccount::getBalance);
+        final BigDecimal actual = list.bigDecimalSumOf(BankAccount::getBalance);
 
         assertEquals(expected, actual);
     }
@@ -568,7 +568,7 @@ class IterableXTest {
                 .map(BankAccount::getBalance)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        final BigDecimal actual = list.bigDecimalSum(BankAccount::getBalance);
+        final BigDecimal actual = list.bigDecimalSumOf(BankAccount::getBalance);
 
         It.println("actual = " + actual);
 
@@ -581,7 +581,7 @@ class IterableXTest {
 
         final int expected = list.stream().mapToInt(Painting::ageInYears).sum();
 
-        final long actual = list.sumOfInts(Painting::ageInYears);
+        final long actual = list.intSumOf(Painting::ageInYears);
 
         It.println("actual = " + actual);
 
@@ -609,7 +609,7 @@ class IterableXTest {
                 .map(BankAccount::getBalance)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        final BigDecimal actual = ListX.of(listX).bigDecimalSum(BankAccount::getBalance);
+        final BigDecimal actual = ListX.of(listX).bigDecimalSumOf(BankAccount::getBalance);
 
         It.println("actual = " + actual);
 

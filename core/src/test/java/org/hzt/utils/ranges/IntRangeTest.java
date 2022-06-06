@@ -1,9 +1,8 @@
 package org.hzt.utils.ranges;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.IntListX;
 import org.hzt.utils.collections.primitives.IntMutableListX;
-import org.hzt.utils.It;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
@@ -42,7 +41,7 @@ class IntRangeTest {
         final var range = IntRange.of(2, 20, 2).toListX();
 
         It.println("range = " + range);
-        range.forEach(It::println);
+        range.forEachInt(It::println);
 
         assertEquals(IntListX.of(2, 4, 6, 8, 10, 12, 14, 16, 18), range);
     }

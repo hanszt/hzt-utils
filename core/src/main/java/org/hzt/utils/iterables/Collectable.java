@@ -75,7 +75,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
         return Map.copyOf(toMutableMap(keyMapper, valueMapper));
     }
 
-    default <A, R> R collect(@NotNull Collector<? super T, A, R> collector) {
+    default <R, A> R collect(@NotNull Collector<? super T, A, R> collector) {
         final A result = collector.supplier().get();
         final BiConsumer<A, ? super T> accumulator = collector.accumulator();
         for (T item : this) {
@@ -281,7 +281,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <C extends Collection<T>> C filterTo(@NotNull Supplier<C> collectionFactory,
-                                                 @NotNull Predicate<T> predicate) {
+                                                 @NotNull Predicate<? super T> predicate) {
         return IterableXHelper.mapFilteringTo(this, collectionFactory, predicate, It::self, It::noFilter);
     }
 
@@ -361,7 +361,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <C extends Collection<T>> C takeWhileTo(@NotNull Supplier<C> collectionFactory,
-                                                    @NotNull Predicate<T> predicate,
+                                                    @NotNull Predicate<? super T> predicate,
                                                     boolean inclusive) {
         final C collection = collectionFactory.get();
         for (T item : this) {

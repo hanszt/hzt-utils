@@ -174,7 +174,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return filter(aClass::isInstance).map(aClass::cast);
     }
 
-    default Sequence<T> filter(@NotNull Predicate<T> predicate) {
+    default Sequence<T> filter(@NotNull Predicate<? super T> predicate) {
         return SequenceHelper.filteringSequence(this, predicate);
     }
 
@@ -264,11 +264,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         }
     }
 
-    default Sequence<T> takeWhile(@NotNull Predicate<T> predicate) {
+    default Sequence<T> takeWhile(@NotNull Predicate<? super T> predicate) {
         return () -> TakeWhileIterator.of(iterator(), predicate, false);
     }
 
-    default Sequence<T> takeWhileInclusive(@NotNull Predicate<T> predicate) {
+    default Sequence<T> takeWhileInclusive(@NotNull Predicate<? super T> predicate) {
         return () -> TakeWhileIterator.of(iterator(), predicate, true);
     }
 
@@ -300,7 +300,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default Sequence<T> sorted(Comparator<T> comparator) {
+    default Sequence<T> sorted(Comparator<? super T> comparator) {
         return () -> IterableX.super.sorted(comparator).iterator();
     }
 

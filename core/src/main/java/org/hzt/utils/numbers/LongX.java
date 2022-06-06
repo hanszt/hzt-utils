@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.function.LongPredicate;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "squid:S1448"})
 public final class LongX extends Number implements NumberX<Long>, Transformable<LongX> {
 
     private static final long serialVersionUID = 2;

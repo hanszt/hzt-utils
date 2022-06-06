@@ -115,7 +115,7 @@ class CollectableTest {
 
         final var actual = paintingList.asSequence()
                 .toThree(s -> s.partitionMapping(Painting::isInMuseum, Painting::painter),
-                        s -> s.statsOfInts(Painting::ageInYears),
+                        s -> s.intStatsOf(Painting::ageInYears),
                         Sequence::count);
 
         final IntSummaryStatistics expectedStats = expected.second();
@@ -149,7 +149,7 @@ class CollectableTest {
                 .toFour(Sequence::count,
                         s -> s.minOf(It::self),
                         s -> s.maxOf(It::self),
-                        s -> s.sumOfInts(It::self),
+                        s -> s.intSumOf(It::self),
                         IntSummaryStatistics::new);
 
         assertAll(
@@ -219,7 +219,7 @@ class CollectableTest {
                 summingInt(It::asInt),
                 IntSummaryStatistics::new);
 
-        final var stats = sequence.statsOfInts(It::asInt);
+        final var stats = sequence.intStatsOf(It::asInt);
 
         assertAll(
                 () -> assertEquals(statistics.getCount(), stats.getCount()),

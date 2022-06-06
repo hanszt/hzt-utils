@@ -3,9 +3,7 @@ package org.hzt.utils.numbers;
 import org.hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
-
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "squid:S1448"})
 public final class DoubleX extends Number implements NumberX<Double>, Transformable<DoubleX> {
 
     private static final long serialVersionUID = 45;

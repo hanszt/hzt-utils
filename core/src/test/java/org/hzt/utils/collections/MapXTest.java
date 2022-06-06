@@ -53,7 +53,7 @@ class MapXTest {
 
         final long actual = MapX.of(museumMap)
                 .mapValuesTo(MutableListX::empty, Museum::getDateOfOpening)
-                .sumOfInts(LocalDate::getDayOfMonth);
+                .intSumOf(LocalDate::getDayOfMonth);
 
         It.println("actual = " + actual);
 
@@ -164,7 +164,7 @@ class MapXTest {
     @Test
     void testBuildMap() {
         final var map = MapX.<Integer, LocalDate>build(m ->
-                IntRange.of(1990, 2022).forEach(year -> m.put(year, LocalDate.of(year, 1, 1))));
+                IntRange.of(1990, 2022).forEachInt(year -> m.put(year, LocalDate.of(year, 1, 1))));
 
         map.forEach(It::println);
 

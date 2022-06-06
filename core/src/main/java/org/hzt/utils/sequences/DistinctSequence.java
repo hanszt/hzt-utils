@@ -24,7 +24,8 @@ final class DistinctSequence<T, K> implements Sequence<T> {
     public Iterator<T> iterator() {
         final Iterator<T> iterator = upstream.iterator();
         final Set<K> observed = new HashSet<>();
-        return ((IteratorX<T>) action -> nextDistinctValue(iterator, observed, action)).asIterator();
+        final IteratorX<T> iteratorX = action -> nextDistinctValue(iterator, observed, action);
+        return iteratorX.asIterator();
     }
 
     private boolean nextDistinctValue(Iterator<T> iterator, Set<K> observed, Consumer<? super T> action) {

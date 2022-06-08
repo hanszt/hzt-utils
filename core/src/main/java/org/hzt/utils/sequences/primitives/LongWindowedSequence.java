@@ -1,11 +1,11 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.LongListX;
-import org.hzt.utils.iterables.primitives.LongIterable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.LongWindowedIterator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.SequenceHelper;
-import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,7 +13,7 @@ import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ToLongFunction;
 
-public interface LongWindowedSequence extends LongIterable {
+public interface LongWindowedSequence extends PrimitiveIterable.OfLong {
 
     default Sequence<LongListX> chunked(int size) {
         return windowed(size, size, true);

@@ -9,6 +9,7 @@ open module hzt.utils.core {
     exports org.hzt.utils.function.predicates;
     exports org.hzt.utils.sequences;
     exports org.hzt.utils.sequences.primitives;
+    exports org.hzt.utils.streams;
     exports org.hzt.utils.statistics;
     exports org.hzt.utils.strings;
     exports org.hzt.utils.numbers;

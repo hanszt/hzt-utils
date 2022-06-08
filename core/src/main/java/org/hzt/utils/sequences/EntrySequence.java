@@ -60,7 +60,8 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     @Override
-    default <K1, V1> EntrySequence<K1, V1> inverted(Function<K, V1> toValueMapper, Function<V, K1> toKeyMapper) {
+    default <K1, V1> EntrySequence<K1, V1> inverted(@NotNull Function<? super K, ? extends V1> toValueMapper,
+                                                    @NotNull Function<? super V, ? extends K1> toKeyMapper) {
         return EntrySequence.of(map(e -> Map.entry(toKeyMapper.apply(e.getValue()), toValueMapper.apply(e.getKey()))));
     }
 
@@ -69,7 +70,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return inverted(It::self, It::self);
     }
 
-    default <R> Sequence<R> map(@NotNull BiFunction<K, V, R> biFunction) {
+    default <R> Sequence<R> map(@NotNull BiFunction<? super K, ? super V, ? extends R> biFunction) {
         return map(e -> biFunction.apply(e.getKey(), e.getValue()));
     }
 
@@ -83,7 +84,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     @Override
-    default <K1> EntryIterable<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, K1> toKeyMapper) {
+    default <K1> EntryIterable<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, ? extends K1> toKeyMapper) {
         return EntrySequence.of(map(e -> Map.entry(toKeyMapper.apply(e.getKey(), e.getValue()), e.getValue())));
     }
 
@@ -92,19 +93,19 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     @Override
-    default <V1> EntryIterable<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, V1> toValueMapper) {
+    default <V1> EntryIterable<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, ? extends V1> toValueMapper) {
         return EntrySequence.of(map(e -> Map.entry(e.getKey(), toValueMapper.apply(e.getKey(), e.getValue()))));
     }
 
-    default EntrySequence<K, V> filter(@NotNull BiPredicate<K, V> biPredicate) {
+    default EntrySequence<K, V> filter(@NotNull BiPredicate<? super K, ? super V> biPredicate) {
         return EntrySequence.of(Sequence.super.filter(e -> biPredicate.test(e.getKey(), e.getValue())));
     }
 
-    default EntrySequence<K, V> filterKeys(@NotNull Predicate<K> predicate) {
+    default EntrySequence<K, V> filterKeys(@NotNull Predicate<? super K> predicate) {
         return EntrySequence.of(Sequence.super.filter(e -> predicate.test(e.getKey())));
     }
 
-    default EntrySequence<K, V> filterValues(@NotNull Predicate<V> predicate) {
+    default EntrySequence<K, V> filterValues(@NotNull Predicate<? super V> predicate) {
         return EntrySequence.of(Sequence.super.filter(e -> predicate.test(e.getValue())));
     }
 

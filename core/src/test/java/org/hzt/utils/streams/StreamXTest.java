@@ -3,10 +3,13 @@ package org.hzt.utils.streams;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
+import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
@@ -57,7 +60,7 @@ class StreamXTest {
     }
 
     @Test
-    void testStreamXCanNotBeConsumedMoreThanOnce() {
+    void testStreamXCanBeConsumedOnlyOnce() {
         List<String> strings = List.of("This", "is", "a", "StreamX", "test");
 
         final var stream = StreamX.of(strings);
@@ -163,11 +166,42 @@ class StreamXTest {
                 .map(String::valueOf);
 
         int counter = 0;
+        //noinspection unused
         for (String s : strings) {
             counter++;
         }
 
         assertEquals(1_000_000, counter);
+    }
+
+    @Test
+    void testParallelism() {
+        final var generate = Sequence.generate(LocalDate.EPOCH, date -> date.plusWeeks(2))
+                .takeWhile(LocalDate.of(2020, Month.JANUARY, 1)::isAfter);
+
+        final var months = StreamX.of(generate)
+                .filter(this::dateInLeapYear)
+                .isParallel(System.out::println)
+                .parallel()
+                .isParallel(System.out::println)
+                .filter(this::dateInLeapYear)
+                .map(this::dateToMonth)
+                .toListX();
+
+        assertEquals(314, months.size());
+
+    }
+
+    private boolean dateInLeapYear(LocalDate localDate) {
+        System.out.println("dateInLeapYear:");
+        System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
+        return localDate.isLeapYear();
+    }
+
+    private Month dateToMonth(LocalDate localDate) {
+        System.out.println("dateToMonth");
+        System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
+        return localDate.getMonth();
     }
 
 }

@@ -2,7 +2,7 @@ package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.primitves.PrimitiveSort;
 import org.hzt.utils.iterables.IterableXHelper;
-import org.hzt.utils.iterables.primitives.IntIterable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
@@ -37,8 +37,8 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
 
     IntArrayList(@NotNull Iterable<Integer> iterable) {
         this();
-        if (iterable instanceof IntIterable) {
-            final var iterator = ((IntIterable) iterable).iterator();
+        if (iterable instanceof PrimitiveIterable.OfInt) {
+            final var iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextInt());
             }

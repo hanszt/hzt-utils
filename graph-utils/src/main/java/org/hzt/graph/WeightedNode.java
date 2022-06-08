@@ -1,70 +1,108 @@
 package org.hzt.graph;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-
-import java.util.ArrayList;
 import java.util.List;
 
-public class WeightedNode<T> implements Node<T> {
+public interface WeightedNode<T> extends Node<T> {
 
-    private final int weight;
-    private final IntegerProperty cost = new SimpleIntegerProperty(Integer.MAX_VALUE);
+    T getPayload();
 
-    private final ObjectProperty<WeightedNode<T>> predecessor = new SimpleObjectProperty<>();
-
-    private final List<WeightedNode<T>> neighbors = new ArrayList<>();
-    private final T payload;
-
-    public WeightedNode(T payload, int weight) {
-        this.payload = payload;
-        this.weight = weight;
+    default int costPlusHeuristic() {
+        return getCost() + getHeuristic();
     }
 
-    public int getWeight() {
-        return weight;
+    default int compareTo(WeightedNode<T> other) {
+        return costPlusHeuristic() - other.costPlusHeuristic();
     }
 
-    public int getCost() {
-        return cost.get();
-    }
+    List<WeightedEdge<T>> getWeightedEdges();
 
-    public IntegerProperty costProperty() {
-        return cost;
-    }
-
-    public void updateCost(WeightedNode<T> current) {
-        int newCost = current.getCost() + weight;
-        if (newCost < cost.get()) {
-            setCost(newCost);
-        }
-    }
-
-    public void setCost(int cost) {
-        this.cost.set(cost);
-    }
-
-    public List<WeightedNode<T>> getNeighbors() {
-        return List.copyOf(neighbors);
-    }
-
-    public boolean addNeighbor(WeightedNode<T> neighbor) {
-        return neighbors.add(neighbor);
+    @Override
+    default List<Edge<T>> getEdges() {
+       throw new UnsupportedOperationException();
     }
 
     @Override
-    public T getPayload() {
-        return payload;
+    default void setPredecessor(Node<T> node) {
+
     }
 
-    public WeightedNode<T> getPredecessor() {
-        return predecessor.get();
-    }
+    /**
+     * @return the predecessor of the node
+     */
+    WeightedNode<T> getPredecessor();
 
-    public ObjectProperty<WeightedNode<T>> predecessorProperty() {
-        return predecessor;
-    }
+    /**
+     * Set the predecessor of the node. In the graph path search, an algorithm finds the nodes
+     * to form possibly the best path (the best is relative, depending on how the algorithm
+     * evaluate the cost) between the origin and destination. The search goes node by node
+     * from the origin to the destination, for every two consecutive nodes, the leading node
+     * is the predecessor of the trailing node.
+     *
+     * @param node node
+     */
+    void setPredecessor(WeightedNode<T> node);
 
+    /**
+     * @return true if the node is open, false otherwise
+     * @see #setOpen
+     */
+    boolean isOpen();
+
+    /**
+     * Makes the node open or closed. When set to closed, it will no longer be considered
+     * as a candidate in the graph path search.
+     *
+     * @param open open
+     */
+    void setOpen(boolean open);
+
+    /**
+     * @return if this node has been visited during the graph path search
+     */
+    boolean isVisited();
+
+    /**
+     * Indicates whether or not the node has been visited during the graph path search.
+     *
+     * @param visited visited
+     */
+    void setVisited(boolean visited);
+
+    /**
+     * @return true if the node has been selected to be part of the resulted path, false otherwise
+     */
+    boolean isSelected();
+
+    /**
+     * Indicates whether or not the node has been selected to be part of the resulted path.
+     *
+     * @param selected selected
+     */
+    void setSelected(boolean selected);
+
+    /**
+     * @return the heuristic value of the node
+     */
+    int getHeuristic();
+
+    /**
+     * Set the heuristic value evaluated as the cost from the node to the destination.
+     *
+     * @param heuristic heuristic
+     */
+    void setHeuristic(int heuristic);
+
+    /**
+     * @return the cost of node
+     */
+    int getCost();
+
+    /**
+     * Set the cost evaluated from the origin to the node.
+     *
+     * @param cost cost
+     */
+    void setCost(int cost);
+
+    boolean addEdge(WeightedEdge<T> weightedEdge);
 }

@@ -6,7 +6,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.StreamSupport;
 
 @FunctionalInterface
-public interface DoubleStreamable extends DoubleIterable, Streamable<DoubleStream> {
+public interface DoubleStreamable extends PrimitiveIterable.OfDouble, Streamable<DoubleStream> {
     @Override
     default DoubleStream stream() {
         return StreamSupport.doubleStream(spliterator(), false);

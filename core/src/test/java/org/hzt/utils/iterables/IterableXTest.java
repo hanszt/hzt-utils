@@ -958,7 +958,7 @@ class IterableXTest {
         final var strings = ListX.of("hello", "this", "is", "a", "test");
 
         strings.iterator().forEachRemaining(expected::add);
-        final var stringIteratorX = strings.iteratorX();
+        final var stringIteratorX = strings.atomicIterator();
         //noinspection StatementWithEmptyBody
         while(stringIteratorX.tryAdvance(actual::add));
 

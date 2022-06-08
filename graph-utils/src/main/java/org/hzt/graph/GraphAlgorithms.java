@@ -20,9 +20,11 @@ public final class GraphAlgorithms {
                     .min(Comparator.comparing(WeightedNode::getCost))
                     .orElseThrow();
 
-            for (WeightedNode<T> neighbor : current.getNeighbors()) {
+            for (Edge<T> edge : current) {
+                WeightedEdge<T> weightedEdge = (WeightedEdge<T>) edge;
+                WeightedNode<T> neighbor = weightedEdge.getOpposite(current);
                 if (!settled.contains(neighbor)) {
-                    neighbor.updateCost(current);
+                    neighbor.setCost(current.getCost());
                     unsettled.add(neighbor);
                 }
             }
@@ -36,11 +38,11 @@ public final class GraphAlgorithms {
         throw new IllegalStateException("Dit not find a path to goal: " + goal);
     }
 
-    public static <T> NodeImpl<T> breadthFirstSearch(NodeImpl<T> start, List<NodeImpl<T>> graph) {
+    public static <T> WeightedNode<T> breadthFirstSearch(WeightedNode<T> start, List<WeightedNode<T>> graph) {
         throw new UnsupportedOperationException();
     }
 
-    public static <T> NodeImpl<T> depthFirstSearch(NodeImpl<T> start, List<NodeImpl<T>> graph) {
+    public static <T> ObservableWeightedNodeImpl<T> depthFirstSearch(ObservableWeightedNodeImpl<T> start, List<WeightedNode<T>> graph) {
         throw new UnsupportedOperationException();
     }
 }

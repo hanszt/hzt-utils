@@ -1,7 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.MutableCollectionX;
-import org.hzt.utils.iterables.primitives.LongIterable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,8 +16,8 @@ public interface LongMutableCollection extends LongCollection,
 
     @Override
     default boolean addAll(@NotNull Iterable<Long> iterable) {
-        if (iterable instanceof LongIterable) {
-            final var iterator = ((LongIterable) iterable).iterator();
+        if (iterable instanceof PrimitiveIterable.OfLong) {
+            final var iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
             while (iterator.hasNext()) {
                 final var added = add(iterator.nextLong());
                 if (!added) {
@@ -51,8 +51,8 @@ public interface LongMutableCollection extends LongCollection,
 
     @Override
     default boolean removeAll(@NotNull Iterable<Long> iterable) {
-        if (iterable instanceof LongIterable) {
-            final var iterator = ((LongIterable) iterable).iterator();
+        if (iterable instanceof PrimitiveIterable.OfLong) {
+            final var iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
             while (iterator.hasNext()) {
                 final var removed = remove(iterator.nextLong());
                 if (!removed) {

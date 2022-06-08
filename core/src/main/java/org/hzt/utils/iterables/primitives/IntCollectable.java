@@ -16,7 +16,7 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 
 @FunctionalInterface
-public interface IntCollectable extends IntIterable, PrimitiveCollectable<IntCollection> {
+public interface IntCollectable extends PrimitiveIterable.OfInt, PrimitiveCollectable<IntCollection> {
 
     default <R> R collect(Supplier<R> supplier, ObjIntConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
@@ -75,7 +75,7 @@ public interface IntCollectable extends IntIterable, PrimitiveCollectable<IntCol
         if (n == 0) {
             return collection;
         }
-        final IntIterable iterable = this;
+        final PrimitiveIterable.OfInt iterable = this;
         if (iterable instanceof IntMutableCollection) {
             IntMutableCollection c = (IntMutableCollection) iterable;
             if (n >= c.size()) {

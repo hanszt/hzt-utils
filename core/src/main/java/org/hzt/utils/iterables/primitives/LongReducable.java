@@ -13,7 +13,7 @@ import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
 
 @FunctionalInterface
-public interface LongReducable extends LongIterable, PrimitiveReducable<Long, LongBinaryOperator, LongPredicate, OptionalLong> {
+public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReducable<Long, LongBinaryOperator, LongPredicate, OptionalLong> {
 
     default long reduce(long initial, LongBinaryOperator operator) {
         PrimitiveIterator.OfLong iterator = iterator();
@@ -136,6 +136,7 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }
+        @SuppressWarnings("squid:S1941")
         long single = iterator.nextLong();
         if (iterator.hasNext()) {
             throw new IllegalArgumentException("Sequence has more than one element");

@@ -5,10 +5,10 @@ import org.hzt.utils.PreConditions;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.primitives.IntCollectable;
 import org.hzt.utils.iterables.primitives.IntGroupable;
-import org.hzt.utils.iterables.primitives.IntIterable;
 import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.iterables.primitives.IntReducable;
 import org.hzt.utils.iterables.primitives.IntStreamable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.IntFilteringIterator;
 import org.hzt.utils.iterators.primitives.IntGeneratorIterator;
@@ -48,8 +48,8 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     static IntSequence of(Iterable<Integer> iterable) {
-        if (iterable instanceof IntIterable) {
-            final var intIterable = (IntIterable) iterable;
+        if (iterable instanceof PrimitiveIterable.OfInt) {
+            final var intIterable = (PrimitiveIterable.OfInt) iterable;
             return intIterable::iterator;
         }
         return of(iterable, It::asInt);
@@ -84,11 +84,11 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     default IntSequence plus(int @NotNull ... values) {
-        return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(IntIterable::forEachInt);
+        return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(PrimitiveIterable.OfInt::forEachInt);
     }
 
     default IntSequence plus(@NotNull Iterable<Integer> values) {
-        return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(IntIterable::forEachInt);
+        return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(PrimitiveIterable.OfInt::forEachInt);
     }
 
     @Override

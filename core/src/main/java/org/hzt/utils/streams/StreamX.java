@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -38,14 +39,26 @@ import java.util.stream.StreamSupport;
 
 @FunctionalInterface
 @SuppressWarnings("squid:S1448")
-public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T> {
+public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Spliterable<T> {
 
+    static <T> StreamX<T> generate(Supplier<T> operator) {
+        return StreamX.of(Stream.generate(operator));
+    }
+
+    static <T> StreamX<T> generate(T initial, UnaryOperator<T> operator) {
+        return StreamX.of(Stream.iterate(initial, operator));
+    }
+
+    @SafeVarargs
+    static <T> StreamX<T> of(@NotNull T... values) {
+        return new StreamXImpl<>(stream(Spliterators.spliterator(values, 0), false));
+    }
     static <T> StreamX<T> of(@NotNull Iterable<T> iterable) {
-        return new StreamXImpl<>(StreamSupport.stream(iterable.spliterator(), false));
+        return new StreamXImpl<>(stream(iterable.spliterator(), false));
     }
 
     static <T> StreamX<T> parallel(@NotNull Iterable<T> iterable) {
-        return new StreamXImpl<>(StreamSupport.stream(iterable.spliterator(), true));
+        return new StreamXImpl<>(stream(iterable.spliterator(), true));
     }
 
     static <T> StreamX<T> of(Stream<T> stream) {
@@ -59,6 +72,10 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T> {
     private Stream<T> stream() {
         final var spliterator = spliterator();
         final var parallel = this instanceof StreamXImpl && isParallel();
+        return stream(spliterator, parallel);
+    }
+
+    private static <T> Stream<T> stream(final Spliterator<T> spliterator, final boolean parallel) {
         if (spliterator.hasCharacteristics(Spliterator.IMMUTABLE) ||
                 spliterator.hasCharacteristics(Spliterator.CONCURRENT)) {
             return StreamSupport.stream(spliterator, parallel);
@@ -82,18 +99,18 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T> {
     }
 
     @Override
-    default IntStream mapToInt(ToIntFunction<? super T> mapper) {
-        return stream().mapToInt(mapper);
+    default IntStreamX mapToInt(ToIntFunction<? super T> mapper) {
+        return IntStreamX.of(stream().mapToInt(mapper));
     }
 
     @Override
-    default LongStream mapToLong(ToLongFunction<? super T> mapper) {
-        return stream().mapToLong(mapper);
+    default LongStreamX mapToLong(ToLongFunction<? super T> mapper) {
+        return LongStreamX.of(stream().mapToLong(mapper));
     }
 
     @Override
-    default DoubleStream mapToDouble(ToDoubleFunction<? super T> mapper) {
-        return stream().mapToDouble(mapper);
+    default DoubleStreamX mapToDouble(ToDoubleFunction<? super T> mapper) {
+        return DoubleStreamX.of(stream().mapToDouble(mapper));
     }
 
     @Override
@@ -102,18 +119,18 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T> {
     }
 
     @Override
-    default IntStream flatMapToInt(Function<? super T, ? extends IntStream> mapper) {
-        return stream().flatMapToInt(mapper);
+    default IntStreamX flatMapToInt(Function<? super T, ? extends IntStream> mapper) {
+        return IntStreamX.of(stream().flatMapToInt(mapper));
     }
 
     @Override
-    default LongStream flatMapToLong(Function<? super T, ? extends LongStream> mapper) {
-        return stream().flatMapToLong(mapper);
+    default LongStreamX flatMapToLong(Function<? super T, ? extends LongStream> mapper) {
+        return LongStreamX.of(stream().flatMapToLong(mapper));
     }
 
     @Override
-    default DoubleStream flatMapToDouble(Function<? super T, ? extends DoubleStream> mapper) {
-        return stream().flatMapToDouble(mapper);
+    default DoubleStreamX flatMapToDouble(Function<? super T, ? extends DoubleStream> mapper) {
+        return DoubleStreamX.of(stream().flatMapToDouble(mapper));
     }
 
     @Override
@@ -299,16 +316,20 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T> {
         throw new UnsupportedOperationException("isParallel() not supported in StreamX interface");
     }
 
+    default StreamX<T> isParallel(Consumer<Boolean> resultSupplier) {
+        return peek(s -> resultSupplier.accept(isParallel()));
+    }
+
     @NotNull
     @Override
     default StreamX<T> sequential() {
-        return StreamX.of(stream().sequential());
+        return StreamX.of(stream(spliterator(), false));
     }
 
     @NotNull
     @Override
     default StreamX<T> parallel() {
-        return StreamX.of(stream().parallel());
+        return StreamX.of(stream(spliterator(), true));
     }
 
     @NotNull

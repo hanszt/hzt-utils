@@ -429,7 +429,7 @@ public final class PrimitiveIterators {
     @NotNull
     public static PrimitiveIterator.OfInt distinctIterator(PrimitiveIterator.OfInt iterator) {
         final Set<Integer> observed = new HashSet<>();
-        final PrimitiveIteratorX.OfInt iteratorX = action -> nextDistinctInt(iterator, observed, action);
+        final PrimitiveAtomicIterator.OfInt iteratorX = action -> nextDistinctInt(iterator, observed, action);
         return iteratorX.asIterator();
     }
 
@@ -447,7 +447,7 @@ public final class PrimitiveIterators {
     @NotNull
     public static PrimitiveIterator.OfLong distinctIterator(PrimitiveIterator.OfLong iterator) {
         final Set<Long> observed = new HashSet<>();
-        final PrimitiveIteratorX.OfLong iteratorX = action -> nextDistinctLong(iterator, observed, action);
+        final PrimitiveAtomicIterator.OfLong iteratorX = action -> nextDistinctLong(iterator, observed, action);
         return iteratorX.asIterator();
     }
 
@@ -465,7 +465,7 @@ public final class PrimitiveIterators {
     @NotNull
     public static PrimitiveIterator.OfDouble distinctIterator(PrimitiveIterator.OfDouble iterator) {
         final Set<Double> observed = new HashSet<>();
-        final PrimitiveIteratorX.OfDouble iteratorX = action -> nextDistinctDouble(iterator, observed, action);
+        final PrimitiveAtomicIterator.OfDouble iteratorX = action -> nextDistinctDouble(iterator, observed, action);
         return iteratorX.asIterator();
     }
 

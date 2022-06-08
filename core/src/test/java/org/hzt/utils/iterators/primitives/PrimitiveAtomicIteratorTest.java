@@ -8,13 +8,13 @@ import java.util.function.IntConsumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PrimitiveIteratorXTest {
+class PrimitiveAtomicIteratorTest {
 
     @Test
     void testForEachRemaining() {
         IntMutableListX listX = IntMutableListX.empty();
 
-        IntListX.of(1, 3, 5, 7, 8, 9).iteratorX().forEachRemaining((IntConsumer) listX::add);
+        IntListX.of(1, 3, 5, 7, 8, 9).atomicIterator().forEachRemaining((IntConsumer) listX::add);
 
         assertEquals(IntListX.of(1, 3, 5, 7, 8, 9), listX);
     }

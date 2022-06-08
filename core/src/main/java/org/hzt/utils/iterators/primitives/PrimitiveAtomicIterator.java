@@ -1,6 +1,6 @@
 package org.hzt.utils.iterators.primitives;
 
-import org.hzt.utils.iterators.functional_iterator.IteratorX;
+import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
@@ -14,12 +14,12 @@ import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 
 @SuppressWarnings({"squid:S2972", "squid:S121", "squid:S119"})
-public interface PrimitiveIteratorX<T, T_CONS> extends IteratorX<T> {
+public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
     void forEachRemaining(T_CONS consumer);
     final class IteratorLogger {
 
-        private static final System.Logger LOGGER = System.getLogger(PrimitiveIteratorX.class.getSimpleName());
+        private static final System.Logger LOGGER = System.getLogger(PrimitiveAtomicIterator.class.getSimpleName());
 
         private IteratorLogger() {
         }
@@ -30,7 +30,7 @@ public interface PrimitiveIteratorX<T, T_CONS> extends IteratorX<T> {
     }
 
     @FunctionalInterface
-    interface OfInt extends PrimitiveIteratorX<Integer, IntConsumer> {
+    interface OfInt extends PrimitiveAtomicIterator<Integer, IntConsumer> {
 
         boolean tryAdvanceInt(IntConsumer action);
 
@@ -53,7 +53,7 @@ public interface PrimitiveIteratorX<T, T_CONS> extends IteratorX<T> {
         @Override
         default void forEachRemaining(Consumer<? super Integer> action) {
             IteratorLogger.warn("Use forEachRemaining(IntConsumer) instead");
-            PrimitiveIteratorX.super.forEachRemaining(action);
+            PrimitiveAtomicIterator.super.forEachRemaining(action);
         }
 
         @Override
@@ -76,7 +76,7 @@ public interface PrimitiveIteratorX<T, T_CONS> extends IteratorX<T> {
     }
 
     @FunctionalInterface
-    interface OfLong extends PrimitiveIteratorX<Long, LongConsumer> {
+    interface OfLong extends PrimitiveAtomicIterator<Long, LongConsumer> {
 
         boolean tryAdvanceLong(LongConsumer action);
 
@@ -99,7 +99,7 @@ public interface PrimitiveIteratorX<T, T_CONS> extends IteratorX<T> {
         @Override
         default void forEachRemaining(Consumer<? super Long> action) {
             IteratorLogger.warn("Use forEachRemaining(LongConsumer) instead");
-            PrimitiveIteratorX.super.forEachRemaining(action);
+            PrimitiveAtomicIterator.super.forEachRemaining(action);
         }
 
         @Override
@@ -121,7 +121,7 @@ public interface PrimitiveIteratorX<T, T_CONS> extends IteratorX<T> {
         }
     }
 
-    interface OfDouble extends PrimitiveIteratorX<Double, DoubleConsumer> {
+    interface OfDouble extends PrimitiveAtomicIterator<Double, DoubleConsumer> {
 
         boolean tryAdvanceDouble(DoubleConsumer action);
 
@@ -144,7 +144,7 @@ public interface PrimitiveIteratorX<T, T_CONS> extends IteratorX<T> {
         @Override
         default void forEachRemaining(Consumer<? super Double> action) {
             IteratorLogger.warn("Use forEachRemaining(DoubleConsumer) instead");
-            PrimitiveIteratorX.super.forEachRemaining(action);
+            PrimitiveAtomicIterator.super.forEachRemaining(action);
         }
 
         @Override
@@ -180,7 +180,7 @@ public interface PrimitiveIteratorX<T, T_CONS> extends IteratorX<T> {
         }
     }
 
-    static PrimitiveIteratorX.OfInt of(PrimitiveIterator.OfInt iterator) {
+    static PrimitiveAtomicIterator.OfInt of(PrimitiveIterator.OfInt iterator) {
         return action -> acceptIfHasNext(iterator, action);
     }
 
@@ -192,7 +192,7 @@ public interface PrimitiveIteratorX<T, T_CONS> extends IteratorX<T> {
         return hasNext;
     }
 
-    static PrimitiveIteratorX.OfLong of(PrimitiveIterator.OfLong iterator) {
+    static PrimitiveAtomicIterator.OfLong of(PrimitiveIterator.OfLong iterator) {
         return action -> acceptIfHasNext(iterator, action);
     }
 
@@ -204,7 +204,7 @@ public interface PrimitiveIteratorX<T, T_CONS> extends IteratorX<T> {
         return hasNext;
     }
 
-    static PrimitiveIteratorX.OfDouble of(PrimitiveIterator.OfDouble iterator) {
+    static PrimitiveAtomicIterator.OfDouble of(PrimitiveIterator.OfDouble iterator) {
         return action -> acceptIfHasNext(iterator, action);
     }
 

@@ -11,13 +11,13 @@ import java.util.function.Consumer;
 
 @FunctionalInterface
 @SuppressWarnings("squid:S1711")
-public interface IteratorX<T> {
+public interface AtomicIterator<T> {
 
-    static <T> IteratorX<T> of(Iterator<T> iterator) {
+    static <T> AtomicIterator<T> of(Iterator<T> iterator) {
         return action -> acceptIfHasNext(iterator, action);
     }
 
-    static <T> IteratorX<T> of(Spliterator<T> spliterator) {
+    static <T> AtomicIterator<T> of(Spliterator<T> spliterator) {
         return spliterator::tryAdvance;
     }
 

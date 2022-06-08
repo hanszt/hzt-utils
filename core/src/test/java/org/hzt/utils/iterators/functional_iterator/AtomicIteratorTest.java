@@ -18,7 +18,7 @@ import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class IteratorXTest {
+class AtomicIteratorTest {
 
     @Test
     void testFunctionalIteratorImpl() {
@@ -27,7 +27,7 @@ class IteratorXTest {
 
         final var upperBound = 100;
 
-        IteratorX<String> stringIterator = getBoundedStringIteratorX(upperBound);
+        AtomicIterator<String> stringIterator = getBoundedStringIteratorX(upperBound);
         //noinspection StatementWithEmptyBody
         while (stringIterator.tryAdvance(list1::add)) ;
 
@@ -44,7 +44,7 @@ class IteratorXTest {
         List<String> list2 = new ArrayList<>();
 
         final var upperBound = 200;
-        IteratorX<String> stringIterator = getBoundedStringIteratorX(upperBound);
+        AtomicIterator<String> stringIterator = getBoundedStringIteratorX(upperBound);
         stringIterator.forEachRemaining(list1::add);
         stringIterator.forEachRemaining(list2::add);
 
@@ -60,14 +60,14 @@ class IteratorXTest {
         final var bound = 241;
         AtomicInteger atomicInteger = new AtomicInteger();
 
-        IteratorX<String> stringIterator = getBoundedStringIteratorX(bound);
+        AtomicIterator<String> stringIterator = getBoundedStringIteratorX(bound);
         stringIterator.asIterator().forEachRemaining(e -> atomicInteger.incrementAndGet());
 
         assertEquals(bound, atomicInteger.get());
     }
 
     @NotNull
-    private IteratorX<String> getBoundedStringIteratorX(int upperBound) {
+    private AtomicIterator<String> getBoundedStringIteratorX(int upperBound) {
         return new BoundedIterator<>(upperBound, String::valueOf)::supplyNext;
     }
 
@@ -75,9 +75,9 @@ class IteratorXTest {
     void testMappingIterator() {
         final var strings = ListX.of("This", "is", "a", "test");
 
-        final var stringIteratorX = strings.iteratorX();
+        final var stringIteratorX = strings.atomicIterator();
 
-        final IteratorX<Integer> toLengthMapperIterator = action -> {
+        final AtomicIterator<Integer> toLengthMapperIterator = action -> {
             final var consumer = new AtomicReference<String>();
             final var advance = stringIteratorX.tryAdvance(consumer::set);
             if (advance) {
@@ -120,7 +120,7 @@ class IteratorXTest {
     void testAsSpliterator() {
         final int upperBound = 9_000;
 
-        IteratorX<LocalDate> dateIterator = BoundedIterator.of(upperBound, LocalDate
+        AtomicIterator<LocalDate> dateIterator = BoundedIterator.of(upperBound, LocalDate
                 .parse("2022-04-21")::minusDays)
                 ::supplyNext;
 
@@ -135,8 +135,8 @@ class IteratorXTest {
     @Test
     @DisplayName("Test iterator from empty iteratorX throws no such element exception")
     void testIteratorFromEmptyIteratorXThrowsNoSuchElementException() {
-        IteratorX<String> iteratorX = c -> false;
-        final var stringIterator = iteratorX.asIterator();
+        AtomicIterator<String> atomicIterator = c -> false;
+        final var stringIterator = atomicIterator.asIterator();
 
         assertAll(
                 () -> assertFalse(stringIterator.hasNext()),
@@ -147,8 +147,8 @@ class IteratorXTest {
     @Test
     @DisplayName("Test iterator from single element iteratorX throws no such element exception after 1")
     void testIteratorFromOneThrowsNoSuchElementExceptionAfterOne() {
-        IteratorX<String> iteratorX = BoundedIterator.of(1, String::valueOf)::supplyNext;
-        final var stringIterator = iteratorX.asIterator();
+        AtomicIterator<String> atomicIterator = BoundedIterator.of(1, String::valueOf)::supplyNext;
+        final var stringIterator = atomicIterator.asIterator();
 
         final var hasOne = stringIterator.hasNext();
         final var first = stringIterator.next();

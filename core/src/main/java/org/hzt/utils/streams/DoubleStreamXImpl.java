@@ -3,20 +3,20 @@ package org.hzt.utils.streams;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Spliterator;
-import java.util.stream.Stream;
+import java.util.stream.DoubleStream;
 
-class StreamXImpl<T> implements StreamX<T> {
+final class DoubleStreamXImpl implements DoubleStreamX {
 
-    private final Stream<T> stream;
+    private final DoubleStream stream;
 
-    StreamXImpl(Stream<T> stream) {
+    DoubleStreamXImpl(DoubleStream stream) {
         this.stream = stream;
     }
 
 
     @NotNull
     @Override
-    public Spliterator<T> spliterator() {
+    public Spliterator.OfDouble spliterator() {
         return stream.spliterator();
     }
 

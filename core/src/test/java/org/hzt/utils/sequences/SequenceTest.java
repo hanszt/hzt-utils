@@ -543,8 +543,8 @@ class SequenceTest {
     void testSequenceOfMap() {
         final var map = Map.of(1, "a", 2, "b", 3, "c", 4, "d");
 
-        final var mapX = Sequence.of(map)
-                .mapValues(s -> StringX.of(s).first())
+        final var mapX = Sequence.ofMap(map)
+                .mapByValues(s -> StringX.of(s).first())
                 .filterValues(Character::isLetter)
                 .filterKeys(IntX::isEven)
                 .toMapX();
@@ -559,7 +559,7 @@ class SequenceTest {
         final var map = list.asSequence()
                 .associateWith(String::valueOf)
                 .onEach(It::println)
-                .mapValues(s -> StringX.of(s).first())
+                .mapByValues(s -> StringX.of(s).first())
                 .filterKeys(IntX::isEven)
                 .onEachKey(It::println)
                 .toMapX();
@@ -582,7 +582,7 @@ class SequenceTest {
     void testSequenceFromStream() {
         final var stream = IntStream.range(0, 100).boxed();
 
-        final var list = Sequence.of(stream)
+        final var list = Sequence.ofStream(stream)
                 .filter(IntX::isEven)
                 .sorted()
                 .windowed(3, true)

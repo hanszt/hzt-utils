@@ -47,8 +47,8 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     }
 
     @Override
-    default <K1, V1> EntryStreamX<K1, V1> inverted(@NotNull Function<? super K, ? extends V1> toValueMapper,
-                                                   @NotNull Function<? super V, ? extends K1> toKeyMapper) {
+    default <K1, V1> EntryStreamX<K1, V1> inverted(@NotNull Function<? super V, ? extends K1> toKeyMapper,
+                                                   @NotNull Function<? super K, ? extends V1> toValueMapper) {
         return ofStream(map((k, v) -> Map.entry(toKeyMapper.apply(v), toValueMapper.apply(k))));
     }
 
@@ -75,7 +75,7 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     }
 
     @Override
-    default <K1> EntryStreamX<K1, V> mapKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
+    default <K1> EntryStreamX<K1, V> mapByKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
         return ofStream(map((k , v) -> Map.entry(keyMapper.apply(k), v)));
     }
 
@@ -85,7 +85,7 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     }
 
     @Override
-    default <V1> EntryStreamX<K, V1> mapValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
+    default <V1> EntryStreamX<K, V1> mapByValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
         return ofStream(map((k, v) -> Map.entry(k, valueMapper.apply(v))));
     }
 

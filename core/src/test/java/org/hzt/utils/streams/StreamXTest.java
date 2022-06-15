@@ -1,6 +1,7 @@
 package org.hzt.utils.streams;
 
 import org.hzt.test.TestSampleGenerator;
+import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.sequences.Sequence;
@@ -10,13 +11,15 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Collection;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StreamXTest {
@@ -84,14 +87,14 @@ class StreamXTest {
 
     @Test
     void streamXCanBeImplementedAsFunctionInterface() {
-        final var firstNameLastInAlphabet = new Museum()
+        final var firstNameLastInAlphabet = new Gallery()
                 .map(Painting::painter)
                 .maxOf(Painter::getFirstName);
 
         assertEquals("Vincent", firstNameLastInAlphabet);
     }
 
-    private static class Museum implements StreamX<Painting> {
+    private static class Gallery implements StreamX<Painting> {
 
         private final List<Painting> paintings = TestSampleGenerator.createPaintingList();
 
@@ -136,7 +139,7 @@ class StreamXTest {
 
         final var expected = integers.stream()
                 .takeWhile(i -> i < 7)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(toUnmodifiableList());
 
         final var actual = StreamX.of(integers)
                 .takeWhile(i -> i < 7)
@@ -152,7 +155,7 @@ class StreamXTest {
         final UnaryOperator<Integer> modulo3 = i -> i % 3;
 
         final var expected = integers.stream()
-                .collect(Collectors.groupingBy(modulo3));
+                .collect(groupingBy(modulo3));
 
         final var actual = StreamX.of(integers).groupBy(modulo3);
 
@@ -202,6 +205,22 @@ class StreamXTest {
         System.out.println("dateToMonth");
         System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
         return localDate.getMonth();
+    }
+
+    @Test
+    void testFlatMapIterable() {
+        final var museumListContainingNulls = TestSampleGenerator.getMuseumListContainingNulls();
+
+        final var expected = museumListContainingNulls.stream()
+                .map(Museum::getPaintings)
+                .flatMap(Collection::stream)
+                .collect(toUnmodifiableList());
+
+        final var paintings = StreamX.of(museumListContainingNulls)
+                .flatMapIterable(Museum::getPaintings)
+                .toList();
+
+        assertEquals(expected, paintings);
     }
 
 }

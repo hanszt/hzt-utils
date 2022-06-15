@@ -63,21 +63,21 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return new EmptySequence<>();
     }
 
+    @SafeVarargs
+    static <T> Sequence<T> of(T... values) {
+        return () -> ArrayIterator.of(values);
+    }
+
     static <T> Sequence<T> of(@NotNull Iterable<T> iterable) {
         return iterable::iterator;
     }
 
-    static <T> Sequence<T> of(@NotNull Stream<T> stream) {
+    static <T> Sequence<T> ofStream(@NotNull Stream<T> stream) {
         return stream::iterator;
     }
 
-    static <K, V> EntrySequence<K, V> of(Map<K, V> map) {
+    static <K, V> EntrySequence<K, V> ofMap(Map<K, V> map) {
         return map.entrySet()::iterator;
-    }
-
-    @SafeVarargs
-    static <T> Sequence<T> of(T... values) {
-        return () -> ArrayIterator.of(values);
     }
 
     static <T> Sequence<T> ofNullable(@Nullable T value) {

@@ -1,8 +1,20 @@
 package org.hzt.graph;
 
+import org.hzt.utils.sequences.Sequence;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Iterator;
 import java.util.List;
 
-public interface WeightedNode<T> extends Node<T> {
+public interface WeightedNode<T> extends Sequence<WeightedEdge<T>> {
+
+    static <T> WeightedNode<T> of(T payload, int cost) {
+        return new ObservableWeightedNodeImpl<>(payload, cost);
+    }
+
+    static <T> WeightedNode<T> ofCost(int cost) {
+        return of(null, cost);
+    }
 
     T getPayload();
 
@@ -16,12 +28,14 @@ public interface WeightedNode<T> extends Node<T> {
 
     List<WeightedEdge<T>> getWeightedEdges();
 
+    List<WeightedEdge<T>> getEdges();
+
+    @NotNull
     @Override
-    default List<Edge<T>> getEdges() {
-       throw new UnsupportedOperationException();
+    default Iterator<WeightedEdge<T>> iterator() {
+        return getEdges().iterator();
     }
 
-    @Override
     default void setPredecessor(Node<T> node) {
 
     }

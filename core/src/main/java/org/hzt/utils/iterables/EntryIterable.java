@@ -26,16 +26,16 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
     <K1, V1> EntryIterable<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper,
                                        @NotNull Function<? super V, ? extends V1> valueMapper);
 
-    <K1, V1> EntryIterable<K1, V1> inverted(@NotNull Function<? super K, ? extends V1> toValueMapper,
-                                            @NotNull Function<? super V, ? extends K1> toKeyMapper);
+    <K1, V1> EntryIterable<K1, V1> inverted(@NotNull Function<? super V, ? extends K1> toKeyMapper,
+                                            @NotNull Function<? super K, ? extends V1> toValueMapper);
 
     EntryIterable<V, K> inverted();
 
-    <K1> EntryIterable<K1, V> mapKeys(@NotNull Function<? super K, ? extends K1> keyMapper);
+    <K1> EntryIterable<K1, V> mapByKeys(@NotNull Function<? super K, ? extends K1> keyMapper);
 
     <K1> EntryIterable<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, ? extends K1> toKeyMapper);
 
-    <V1> EntryIterable<K, V1> mapValues(@NotNull Function<? super V, ? extends V1> valueMapper);
+    <V1> EntryIterable<K, V1> mapByValues(@NotNull Function<? super V, ? extends V1> valueMapper);
 
     <V1> EntryIterable<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, ? extends V1> toValueMapper);
 

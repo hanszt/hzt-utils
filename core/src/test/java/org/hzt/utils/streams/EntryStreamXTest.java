@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Spliterator;
@@ -18,7 +17,7 @@ class EntryStreamXTest {
         final var map = Map.of(1, "This", 2, "is", 3, "a", 4, "test");
 
         final var entries = EntryStreamX.ofMap(map)
-                .mapKeys(LocalDate::ofEpochDay)
+                .mapByKeys(LocalDate::ofEpochDay)
                 .parallel()
                 .isParallel(System.out::println)
                 .inverted()

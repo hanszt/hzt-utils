@@ -1,6 +1,6 @@
 package org.hzt.graph;
 
-public interface WeightedEdge<T> extends Edge<T> {
+public interface WeightedEdge<T> {
 
     static <T> WeightedEdge<T> build(WeightedNode<T> node1, WeightedNode<T> node2, int weight) {
         return new WeightedEdgeImpl<>(node1, node2, weight);

@@ -2,7 +2,6 @@ package org.hzt.graph;
 
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public final class GraphAlgorithms {
@@ -20,8 +19,8 @@ public final class GraphAlgorithms {
                     .min(Comparator.comparing(WeightedNode::getCost))
                     .orElseThrow();
 
-            for (Edge<T> edge : current) {
-                WeightedEdge<T> weightedEdge = (WeightedEdge<T>) edge;
+            for (WeightedEdge<T> edge : current) {
+                WeightedEdge<T> weightedEdge = edge;
                 WeightedNode<T> neighbor = weightedEdge.getOpposite(current);
                 if (!settled.contains(neighbor)) {
                     neighbor.setCost(current.getCost());
@@ -38,11 +37,11 @@ public final class GraphAlgorithms {
         throw new IllegalStateException("Dit not find a path to goal: " + goal);
     }
 
-    public static <T> WeightedNode<T> breadthFirstSearch(WeightedNode<T> start, List<WeightedNode<T>> graph) {
+    public static <T> Node<T> breadthFirstSearch(Node<T> start, Node<T> goal) {
         throw new UnsupportedOperationException();
     }
 
-    public static <T> ObservableWeightedNodeImpl<T> depthFirstSearch(ObservableWeightedNodeImpl<T> start, List<WeightedNode<T>> graph) {
+    public static <T> Node<T> depthFirstSearch(Node<T> start, Node<T> goal) {
         throw new UnsupportedOperationException();
     }
 }

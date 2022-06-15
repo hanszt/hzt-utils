@@ -57,6 +57,10 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
         return new StreamXImpl<>(stream(iterable.spliterator(), false));
     }
 
+    static <K, V> EntryStreamX<K, V> ofMap(Map<K, V> map) {
+        return () -> map.entrySet().spliterator();
+    }
+
     static <T> StreamX<T> parallel(@NotNull Iterable<T> iterable) {
         return new StreamXImpl<>(stream(iterable.spliterator(), true));
     }
@@ -116,6 +120,10 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     @Override
     default <R> StreamX<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
         return StreamX.of(stream().flatMap(mapper));
+    }
+
+    default <R> StreamX<R> flatMapIterable(Function<? super T, ? extends Iterable<? extends R>> mapper) {
+        return flatMap(e -> StreamSupport.stream(mapper.apply(e).spliterator(), isParallel()));
     }
 
     @Override
@@ -350,7 +358,7 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     }
 
     default <R> StreamX<R> mapMulti(BiConsumer<? super T, ? super Consumer<R>> mapper) {
-        final var sequence = Sequence.of(stream()).mapMulti(mapper);
+        final var sequence = Sequence.ofStream(stream()).mapMulti(mapper);
         final var parallel = isParallel();
         return new StreamXImpl<>(parallel ? sequence.parallelStream() : sequence.stream());
     }

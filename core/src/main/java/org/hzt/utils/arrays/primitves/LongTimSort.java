@@ -236,7 +236,6 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
                     }
                 }
             } while ((count1 | count2) < minGallop);
-
             /*
              * One run is winning so consistently that galloping may be a
              * huge win. So try that, and continue galloping until (if ever)
@@ -295,22 +294,20 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
     @SuppressWarnings({"squid:S134", "squid:S135", "squid:S138", "squid:S1119", "squid:S1541", "squid:S3776"})
     protected void mergeHi(int base1, int len1, int base2, int len2) {
         PreConditions.require(len1 > 0 && len2 > 0 && base1 + len1 == base2);
-
         // Copy second run into temp array
         long[] array = longArray; // For performance
         long[] tmpArray = ensureCapacity(len2);
-        final int tmpBase = 0;
-        System.arraycopy(array, base2, tmpArray, tmpBase, len2);
+        System.arraycopy(array, base2, tmpArray, 0, len2);
 
         int cursor1 = base1 + len1 - 1;  // Indexes into a
         int dest = base2 + len2 - 1;     // Indexes into a
         // Move last element of first run and deal with degenerate cases
         array[dest--] = array[cursor1--];
         if (--len1 == 0) {
-            System.arraycopy(tmpArray, tmpBase, array, dest - (len2 - 1), len2);
+            System.arraycopy(tmpArray, 0, array, dest - (len2 - 1), len2);
             return;
         }
-        int cursor2 = tmpBase + len2 - 1; // Indexes into tmp array
+        int cursor2 = len2 - 1; // Indexes into tmp array
         if (len2 == 1) {
             dest -= len1;
             cursor1 -= len1;
@@ -318,14 +315,12 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
             array[dest] = tmpArray[cursor2];
             return;
         }
-
         LongComparator comparator = longComparator;  // Use local variable for performance
         int minGallop = this.minGallop;    //  "    "       "     "      "
         outer:
         while (true) {
             int count1 = 0; // Number of times in a row that first run won
             int count2 = 0; // Number of times in a row that second run won
-
             /*
              * Do the straightforward thing until (if ever) one run
              * appears to win consistently.
@@ -370,7 +365,7 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
                 if (--len2 == 1) {
                     break outer;
                 }
-                count2 = len2 - gallopLeft(array[cursor1], tmpArray, tmpBase, len2, len2 - 1, comparator);
+                count2 = len2 - gallopLeft(array[cursor1], tmpArray, 0, len2, len2 - 1, comparator);
                 if (count2 != 0) {
                     dest -= count2;
                     cursor2 -= count2;
@@ -401,7 +396,7 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
             throw new IllegalArgumentException("Comparison method violates its general contract!");
         } else {
             PreConditions.require(len1 == 0);
-            System.arraycopy(tmpArray, tmpBase, array, dest - (len2 - 1), len2);
+            System.arraycopy(tmpArray, 0, array, dest - (len2 - 1), len2);
         }
     }
 

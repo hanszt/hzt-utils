@@ -103,7 +103,7 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     }
 
     @Override
-    default <K1> MapX<K1, V> mapKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
+    default <K1> MapX<K1, V> mapByKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
         return map(keyMapper, It::self);
     }
 
@@ -113,7 +113,7 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     }
 
     @Override
-    default <V1> MapX<K, V1> mapValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
+    default <V1> MapX<K, V1> mapByValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
         return map(It::self, valueMapper);
     }
 
@@ -137,7 +137,7 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
 
     @Override
     default MapX<K, V> onEachKey(@NotNull Consumer<? super K> consumer) {
-        return mapKeys(k -> {
+        return mapByKeys(k -> {
             consumer.accept(k);
             return k;
         });
@@ -145,7 +145,7 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
 
     @Override
     default MapX<K, V> onEachValue(@NotNull Consumer<? super V> consumer) {
-        return mapValues(v -> {
+        return mapByValues(v -> {
             consumer.accept(v);
             return v;
         });
@@ -162,8 +162,8 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
         return MapX.of(CollectionX.super.onEach(c -> biConsumer.accept(c.getKey(), c.getValue())));
     }
 
-    default <K1, V1> MapX<K1, V1> inverted(@NotNull Function<? super K, ? extends V1> toValueMapper,
-                                           @NotNull Function<? super V, ? extends K1> toKeyMapper) {
+    default <K1, V1> MapX<K1, V1> inverted(@NotNull Function<? super V, ? extends K1> toKeyMapper,
+                                           @NotNull Function<? super K, ? extends V1> toValueMapper) {
         Map<K1, V1> resultMap = new HashMap<>();
         for (Map.Entry<K, V> entry : this) {
             V value = entry.getValue();

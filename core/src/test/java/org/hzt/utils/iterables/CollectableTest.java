@@ -180,7 +180,7 @@ class CollectableTest {
                 .filter(IntX::isEven)
                 .map(Year::of);
 
-        final var yearSequence = Sequence.of(yearStream);
+        final var yearSequence = Sequence.ofStream(yearStream);
 
         assertAll(
                 () -> assertEquals(4, yearSequence.count()),

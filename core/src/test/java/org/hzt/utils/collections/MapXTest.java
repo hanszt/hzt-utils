@@ -96,7 +96,7 @@ class MapXTest {
         map.put("2", 2);
         map.put("3", 3);
 
-        final var result = EntrySequence.of(map).mapValues(Year::of).toMapX();
+        final var result = EntrySequence.of(map).mapByValues(Year::of).toMapX();
 
         assertEquals(MapX.of("1", Year.of(1), "2", Year.of(2), "3", Year.of(3)), result);
     }

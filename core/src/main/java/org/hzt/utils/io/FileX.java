@@ -57,7 +57,7 @@ public final class FileX extends File {
 
     public <T> T useLines(Function<Sequence<StringX>, T> block, Charset charset) {
         try(Stream<String> lines = Files.lines(Path.of(getPath()), charset)) {
-            return block.apply(Sequence.of(lines).map(StringX::of));
+            return block.apply(Sequence.ofStream(lines).map(StringX::of));
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

@@ -24,7 +24,12 @@ final class ObservableWeightedNodeImpl<T> implements WeightedNode<T> {
     private final IntegerProperty heuristic = new SimpleIntegerProperty();
 
     ObservableWeightedNodeImpl(T payload) {
+        this(payload, 0);
+    }
+
+    ObservableWeightedNodeImpl(T payload, int cost) {
         this.payload = payload;
+        this.cost.set(cost);
     }
 
     public T getPayload() {
@@ -34,6 +39,11 @@ final class ObservableWeightedNodeImpl<T> implements WeightedNode<T> {
     @Override
     public List<WeightedEdge<T>> getWeightedEdges() {
         return Collections.emptyList();
+    }
+
+    @Override
+    public List<WeightedEdge<T>> getEdges() {
+        return weightedEdges;
     }
 
     public ObjectProperty<WeightedNode<T>> predecessorProperty() {
@@ -85,9 +95,8 @@ final class ObservableWeightedNodeImpl<T> implements WeightedNode<T> {
         this.selected.set(selected);
     }
 
-    @Override
-    public boolean addEdge(Edge<T> weightedEdge) {
-        return false;
+    public boolean addEdge(WeightedEdge<T> weightedEdge) {
+        return weightedEdges.add(weightedEdge);
     }
 
     @Override
@@ -108,10 +117,5 @@ final class ObservableWeightedNodeImpl<T> implements WeightedNode<T> {
     @Override
     public void setCost(int cost) {
         this.cost.set(cost);
-    }
-
-    @Override
-    public boolean addEdge(WeightedEdge<T> weightedEdge) {
-        return weightedEdges.add(weightedEdge);
     }
 }

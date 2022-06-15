@@ -30,8 +30,8 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
 
     DoubleArrayList(Iterable<Double> iterable) {
         this();
-        if (iterable instanceof PrimitiveIterable.OfDouble) {
-            final var iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
+        if (iterable instanceof PrimitiveIterable.OfDouble doubleIterable) {
+            final var iterator = doubleIterable.iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextDouble());
             }

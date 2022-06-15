@@ -16,8 +16,8 @@ public interface IntMutableCollection extends IntCollection,
 
     @Override
     default boolean addAll(@NotNull Iterable<Integer> iterable) {
-        if (iterable instanceof PrimitiveIterable.OfInt) {
-            final var iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
+        if (iterable instanceof PrimitiveIterable.OfInt intIterable) {
+            final var iterator = intIterable.iterator();
             while (iterator.hasNext()) {
                 final var added = add(iterator.nextInt());
                 if (!added) {
@@ -51,8 +51,8 @@ public interface IntMutableCollection extends IntCollection,
 
     @Override
     default boolean removeAll(@NotNull Iterable<Integer> iterable) {
-        if (iterable instanceof PrimitiveIterable.OfInt) {
-            final var iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
+        if (iterable instanceof PrimitiveIterable.OfInt intIterable) {
+            final var iterator = intIterable.iterator();
             while (iterator.hasNext()) {
                 final var removed = remove(iterator.nextInt());
                 if (!removed) {

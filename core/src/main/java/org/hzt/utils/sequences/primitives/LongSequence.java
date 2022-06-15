@@ -19,7 +19,6 @@ import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.sequences.SkipTakeSequence;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
@@ -140,8 +139,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
             return PrimitiveIterators::emptyLongIterator;
-        } else if (this instanceof SkipTakeSequence) {
-            LongSkipTakeSequence skipTakeSequence = (LongSkipTakeSequence) this;
+        } else if (this instanceof LongSkipTakeSequence skipTakeSequence) {
             return skipTakeSequence.take(n);
         } else {
             return new LongTakeSequence(this, n);
@@ -161,8 +159,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
             return this;
-        } else if (this instanceof LongSkipTakeSequence) {
-            LongSkipTakeSequence skipTakeSequence = (LongSkipTakeSequence) this;
+        } else if (this instanceof LongSkipTakeSequence skipTakeSequence) {
             return skipTakeSequence.skip(n);
         } else {
             return new LongSkipSequence(this, n);

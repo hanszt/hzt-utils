@@ -68,10 +68,10 @@ public class Painter implements Comparable<Painter>, Iterable<Painting> {
 
     @Override
     public boolean equals(Object o) {
-        return this == o || (o instanceof Painter &&
-                Objects.equals(this.firstName, ((Painter) o).firstName) &&
-                Objects.equals(this.lastname, ((Painter) o).lastname) &&
-                Objects.equals(this.dateOfBirth, ((Painter) o).dateOfBirth));
+        return this == o || (o instanceof Painter painter &&
+                Objects.equals(this.firstName, painter.firstName) &&
+                Objects.equals(this.lastname, painter.lastname) &&
+                Objects.equals(this.dateOfBirth, painter.dateOfBirth));
     }
 
     @Override

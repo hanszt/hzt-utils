@@ -76,12 +76,9 @@ public interface DoubleCollectable extends PrimitiveIterable.OfDouble, Primitive
             return collection;
         }
         final PrimitiveIterable.OfDouble iterable = this;
-        if (iterable instanceof DoubleMutableCollection) {
-            DoubleMutableCollection c = (DoubleMutableCollection) iterable;
-            if (n >= c.size()) {
-                collection.addAll(c);
-                return collection;
-            }
+        if (iterable instanceof DoubleMutableCollection c && n >= c.size()) {
+            collection.addAll(c);
+            return collection;
         }
         int count = 0;
         final var iterator = iterator();

@@ -71,10 +71,10 @@ public class Museum implements Comparable<Museum>, Iterable<Painting> {
 
     @Override
     public boolean equals(Object o) {
-        return this == o || (o instanceof Museum &&
-                Objects.equals(name, ((Museum) o).name) &&
-                Objects.equals(dateOfOpening, ((Museum) o).dateOfOpening) &&
-                Objects.equals(mostPopularPainting, ((Museum) o).mostPopularPainting));
+        return this == o || (o instanceof Museum museum &&
+                Objects.equals(name, museum.name) &&
+                Objects.equals(dateOfOpening, museum.dateOfOpening) &&
+                Objects.equals(mostPopularPainting, museum.mostPopularPainting));
     }
 
     @Override

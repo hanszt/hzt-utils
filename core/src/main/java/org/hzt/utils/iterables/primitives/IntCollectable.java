@@ -76,12 +76,9 @@ public interface IntCollectable extends PrimitiveIterable.OfInt, PrimitiveCollec
             return collection;
         }
         final PrimitiveIterable.OfInt iterable = this;
-        if (iterable instanceof IntMutableCollection) {
-            IntMutableCollection c = (IntMutableCollection) iterable;
-            if (n >= c.size()) {
-                collection.addAll(c);
-                return collection;
-            }
+        if (iterable instanceof IntMutableCollection c && n >= c.size()) {
+            collection.addAll(c);
+            return collection;
         }
         int count = 0;
         final var iterator = iterator();

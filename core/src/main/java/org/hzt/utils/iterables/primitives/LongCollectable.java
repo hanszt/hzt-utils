@@ -76,12 +76,9 @@ public interface LongCollectable extends PrimitiveIterable.OfLong, PrimitiveColl
             return collection;
         }
         final PrimitiveIterable.OfLong iterable = this;
-        if (iterable instanceof LongMutableCollection) {
-            LongMutableCollection c = (LongMutableCollection) iterable;
-            if (n >= c.size()) {
-                collection.addAll(c);
-                return collection;
-            }
+        if (iterable instanceof LongMutableCollection c && n >= c.size()) {
+            collection.addAll(c);
+            return collection;
         }
         int count = 0;
         final var iterator = iterator();

@@ -42,10 +42,10 @@ public class BankAccount {
 
     @Override
     public boolean equals(Object o) {
-        return this == o || (o instanceof BankAccount &&
-                Objects.equals(accountNumber, ((BankAccount) o).accountNumber) &&
-                Objects.equals(customer, ((BankAccount) o).customer) &&
-                Objects.equals(balance, ((BankAccount) o).balance));
+        return this == o || (o instanceof BankAccount bankAccount &&
+                Objects.equals(accountNumber, bankAccount.accountNumber) &&
+                Objects.equals(customer, bankAccount.customer) &&
+                Objects.equals(balance, bankAccount.balance));
     }
 
     @Override

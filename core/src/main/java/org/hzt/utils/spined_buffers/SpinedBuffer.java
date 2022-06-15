@@ -676,8 +676,8 @@ public class SpinedBuffer<E>
 
         @Override
         public void forEach(Consumer<? super Integer> consumer) {
-            if (consumer instanceof IntConsumer) {
-                super.forEach((IntConsumer) consumer);
+            if (consumer instanceof IntConsumer intConsumer) {
+                super.forEach(intConsumer);
             } else {
                 spliterator().forEachRemaining(consumer);
             }
@@ -785,8 +785,8 @@ public class SpinedBuffer<E>
 
         @Override
         public void forEach(Consumer<? super Long> consumer) {
-            if (consumer instanceof LongConsumer) {
-                super.forEach((LongConsumer) consumer);
+            if (consumer instanceof LongConsumer longConsumer) {
+                super.forEach(longConsumer);
             } else {
                 spliterator().forEachRemaining(consumer);
             }
@@ -897,8 +897,8 @@ public class SpinedBuffer<E>
 
         @Override
         public void forEach(Consumer<? super Double> consumer) {
-            if (consumer instanceof DoubleConsumer) {
-                super.forEach((DoubleConsumer) consumer);
+            if (consumer instanceof DoubleConsumer doubleConsumer) {
+                super.forEach(doubleConsumer);
             } else {
                 spliterator().forEachRemaining(consumer);
             }

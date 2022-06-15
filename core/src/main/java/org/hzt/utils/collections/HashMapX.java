@@ -14,8 +14,8 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
 
     private final Map<K, V> map;
 
-    HashMapX(@NotNull Map<K, V> map) {
-        this.map = map;
+    HashMapX(@NotNull Map<? extends K, ? extends V> map) {
+        this.map = new LinkedHashMap<>(map);
     }
 
     HashMapX() {

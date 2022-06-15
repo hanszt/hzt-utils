@@ -5,10 +5,8 @@ import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
-import org.hzt.utils.iterables.primitives.DoubleIterable;
-import org.hzt.utils.iterables.primitives.IntIterable;
-import org.hzt.utils.iterables.primitives.LongIterable;
-import org.hzt.utils.iterators.functional_iterator.IteratorX;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
+import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,8 +34,8 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>,
         Collectable<T>, Groupable<T>, Streamable<Stream<T>> {
 
-    default IteratorX<T> iteratorX() {
-        return IteratorX.of(iterator());
+    default AtomicIterator<T> atomicIterator() {
+        return AtomicIterator.of(iterator());
     }
 
     IterableX<T> plus(@NotNull T value);
@@ -58,11 +56,11 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         return Sequence.of(this);
     }
 
-    IntIterable mapToInt(@NotNull ToIntFunction<? super T> mapper);
+    PrimitiveIterable.OfInt mapToInt(@NotNull ToIntFunction<? super T> mapper);
 
-    LongIterable mapToLong(@NotNull ToLongFunction<? super T> toLongMapper);
+    PrimitiveIterable.OfLong mapToLong(@NotNull ToLongFunction<? super T> toLongMapper);
 
-    DoubleIterable mapToDouble(@NotNull ToDoubleFunction<? super T> mapper);
+    PrimitiveIterable.OfDouble mapToDouble(@NotNull ToDoubleFunction<? super T> mapper);
 
     <K> EntryIterable<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper);
 

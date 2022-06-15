@@ -3,6 +3,8 @@ package org.hzt.utils.primitive_comparators;
 import java.util.Comparator;
 import java.util.function.IntUnaryOperator;
 
+import static java.lang.System.Logger.Level.*;
+
 @FunctionalInterface
 public interface IntComparator extends Comparator<Integer> {
 
@@ -10,6 +12,7 @@ public interface IntComparator extends Comparator<Integer> {
 
     @Override
     default int compare(Integer i1, Integer i2) {
+        System.getLogger(getClass().getSimpleName()).log(WARNING, "Use `compareInt` instead");
         return compareInt(i1, i2);
     }
 

@@ -88,7 +88,7 @@ public interface CollectionX<E> extends IterableX<E> {
         return mapIndexedTo(() -> MutableListX.withInitCapacity(size()), mapper);
     }
 
-    default ListX<E> filter(@NotNull Predicate<E> predicate) {
+    default ListX<E> filter(@NotNull Predicate<? super E> predicate) {
         return filterTo(() -> MutableListX.withInitCapacity(size()), predicate);
     }
 
@@ -171,7 +171,7 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     @Override
-    default ListX<E> sorted(Comparator<E> comparator) {
+    default ListX<E> sorted(Comparator<? super E> comparator) {
         return (ListX<E>) IterableX.super.sorted(comparator);
     }
 
@@ -263,11 +263,11 @@ public interface CollectionX<E> extends IterableX<E> {
         return takeTo(() -> MutableListX.withInitCapacity((int) n), n);
     }
 
-    default ListX<E> takeWhile(@NotNull Predicate<E> predicate) {
+    default ListX<E> takeWhile(@NotNull Predicate<? super E> predicate) {
         return takeWhileTo(MutableListX::empty, predicate, false);
     }
 
-    default ListX<E> takeWhileInclusive(@NotNull Predicate<E> predicate) {
+    default ListX<E> takeWhileInclusive(@NotNull Predicate<? super E> predicate) {
         return takeWhileTo(MutableListX::empty, predicate, true);
     }
 

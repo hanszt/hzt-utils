@@ -11,12 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class GraphAlgorithmsTest {
+    // TODO: 8-6-2022 implement
 
     @Test
     @DisplayName("Test find shortest path using Dijkstra")
     void testFindShortestPathUsingDijkstra() {
-        final var start = new WeightedNode<>(null, 3);
-        final var graph = new WeightedNode<>(null, 2);
+        final var start = WeightedNode.ofCost(3);
+        final var graph = WeightedNode.ofCost(2);
         assertThrows(IllegalStateException.class, () -> GraphAlgorithms.dijkstra(start, graph));
     }
 
@@ -32,18 +33,32 @@ class GraphAlgorithmsTest {
     @Test
     void testFindShortestPath() {
         Map<String, WeightedNode<String>> graph = new HashMap<>();
-        WeightedNode<String> AB = new WeightedNode<>("AB", 3);
-        WeightedNode<String> BA = new WeightedNode<>("BA", 3);
-        WeightedNode<String> AC = new WeightedNode<>("AC", 2);
-        WeightedNode<String> CA = new WeightedNode<>("CA", 2);
-        WeightedNode<String> AD = new WeightedNode<>("AD", 6);
-        WeightedNode<String> DA = new WeightedNode<>("DA", 6);
-        WeightedNode<String> BD = new WeightedNode<>("BD", 5);
-        WeightedNode<String> DB = new WeightedNode<>("DB", 5);
-        WeightedNode<String> CD = new WeightedNode<>("CD", 1);
-        WeightedNode<String> DC = new WeightedNode<>("DC", 1);
-        WeightedNode<String> DE = new WeightedNode<>("DE", 7);
-        WeightedNode<String> BE = new WeightedNode<>("BE", 4);
+        WeightedNode<String> AB = WeightedNode.of("AB", 3);
+        WeightedNode<String> BA = WeightedNode.of("BA", 3);
+        WeightedNode<String> AC = WeightedNode.of("AC", 2);
+        WeightedNode<String> CA = WeightedNode.of("CA", 2);
+        WeightedNode<String> AD = WeightedNode.of("AD", 6);
+        WeightedNode<String> DA = WeightedNode.of("DA", 6);
+        WeightedNode<String> BD = WeightedNode.of("BD", 5);
+        WeightedNode<String> DB = WeightedNode.of("DB", 5);
+        WeightedNode<String> CD = WeightedNode.of("CD", 1);
+        WeightedNode<String> DC = WeightedNode.of("DC", 1);
+        WeightedNode<String> DE = WeightedNode.of("DE", 7);
+        WeightedNode<String> BE = WeightedNode.of("BE", 4);
+        fail("Not implemented");
+    }
+
+    @Test
+    @Disabled("Needs to be fixed")
+    void testBreadthFirstSearch() {
+        GraphAlgorithms.breadthFirstSearch(null, null);
+        fail("Not implemented");
+    }
+
+    @Test
+    @Disabled("Needs to be fixed")
+    void testDepthFirstSearch() {
+        GraphAlgorithms.depthFirstSearch(null, null);
         fail("Not implemented");
     }
 

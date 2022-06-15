@@ -1,13 +1,14 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.primitives.DoubleCollectable;
 import org.hzt.utils.iterables.primitives.DoubleGroupable;
-import org.hzt.utils.iterables.primitives.DoubleIterable;
 import org.hzt.utils.iterables.primitives.DoubleNumerable;
 import org.hzt.utils.iterables.primitives.DoubleReducable;
 import org.hzt.utils.iterables.primitives.DoubleStreamable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.DoubleFilteringIterator;
 import org.hzt.utils.iterators.primitives.DoubleGeneratorIterator;
@@ -16,12 +17,11 @@ import org.hzt.utils.iterators.primitives.DoubleSkipWhileIterator;
 import org.hzt.utils.iterators.primitives.DoubleTakeWhileIterator;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.hzt.utils.numbers.DoubleX;
+import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.SkipTakeSequence;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
-import org.hzt.utils.It;
-import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
@@ -48,7 +48,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     static DoubleSequence of(Iterable<Double> iterable) {
-        if (iterable instanceof final DoubleIterable doubleIterable) {
+        if (iterable instanceof PrimitiveIterable.OfDouble doubleIterable) {
             return doubleIterable::iterator;
         }
         return of(iterable, It::asDouble);
@@ -79,11 +79,16 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     default DoubleSequence plus(double @NotNull ... values) {
-        return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(DoubleIterable::forEachDouble);
+        return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(PrimitiveIterable.OfDouble::forEachDouble);
     }
 
     default DoubleSequence plus(@NotNull Iterable<Double> values) {
-        return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(DoubleIterable::forEachDouble);
+        return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(PrimitiveIterable.OfDouble::forEachDouble);
+    }
+
+    @Override
+    default DoubleSequence distinct() {
+        return () -> PrimitiveIterators.distinctIterator(iterator());
     }
 
     @Override

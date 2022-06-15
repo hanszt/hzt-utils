@@ -1,7 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.primitves.PrimitiveSort;
-import org.hzt.utils.iterables.primitives.DoubleIterable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.jetbrains.annotations.NotNull;
@@ -30,8 +30,8 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
 
     DoubleArrayList(Iterable<Double> iterable) {
         this();
-        if (iterable instanceof DoubleIterable doubleIterable) {
-            final var iterator = doubleIterable.iterator();
+        if (iterable instanceof PrimitiveIterable.OfDouble) {
+            final var iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextDouble());
             }

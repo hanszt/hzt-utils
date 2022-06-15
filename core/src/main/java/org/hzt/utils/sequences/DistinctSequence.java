@@ -1,11 +1,12 @@
 package org.hzt.utils.sequences;
 
-import org.hzt.utils.iterators.functional_iterator.IteratorX;
+import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -14,15 +15,17 @@ record DistinctSequence<T, K>(Sequence<T> upstream, Function<T, K> selector) imp
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        final Iterator<T> iterator = upstream.iterator();
+        final AtomicIterator<T> iterator = AtomicIterator.of(upstream.iterator());
          final Set<K> observed = new HashSet<>();
 
-            return ((IteratorX<T>) action -> nextDistinctValue(iterator, observed, action)).asIterator();
+            final AtomicIterator<T> atomicIterator = action -> nextDistinctValue(iterator, observed, action);
+        return atomicIterator.asIterator();
     }
 
-    private boolean nextDistinctValue(Iterator<T> iterator, Set<K> observed, Consumer<? super T> action) {
-        while (iterator.hasNext()) {
-            T next = iterator.next();
+    private boolean nextDistinctValue(AtomicIterator<T> iterator, Set<K> observed, Consumer<? super T> action) {
+        AtomicReference<T> reference = new AtomicReference<>();
+        while (iterator.tryAdvance(reference::set)) {
+            T next = reference.get();
             if (observed.add(selector.apply(next))) {
                 action.accept(next);
                 return true;

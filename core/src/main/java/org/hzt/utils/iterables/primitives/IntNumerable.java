@@ -9,7 +9,7 @@ import java.util.PrimitiveIterator;
 import java.util.function.IntPredicate;
 
 @FunctionalInterface
-public interface IntNumerable extends IntIterable, PrimitiveNumerable<IntPredicate> {
+public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerable<IntPredicate> {
 
     @Override
     default long count() {

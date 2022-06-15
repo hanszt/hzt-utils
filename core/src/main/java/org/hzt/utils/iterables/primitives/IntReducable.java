@@ -13,7 +13,7 @@ import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 
 @FunctionalInterface
-public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, IntBinaryOperator, IntPredicate, OptionalInt> {
+public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducable<Integer, IntBinaryOperator, IntPredicate, OptionalInt> {
 
     default int reduce(int initial, IntBinaryOperator operator) {
         int accumulator = initial;
@@ -139,6 +139,7 @@ public interface IntReducable extends IntIterable, PrimitiveReducable<Integer, I
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }
+        @SuppressWarnings("squid:S1941")
         int single = iterator.nextInt();
         if (iterator.hasNext()) {
             throw new IllegalArgumentException("Sequence has more than one element");

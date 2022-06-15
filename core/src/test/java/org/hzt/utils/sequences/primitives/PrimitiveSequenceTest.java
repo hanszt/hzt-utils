@@ -18,7 +18,7 @@ class PrimitiveSequenceTest {
     void testLongRangeToListGetBigDecimalAverage() {
         final var longs = LongSequence.of(0, 1000).boxed().toListX();
 
-        final var average = longs.toBigDecimalXAverage(BigDecimalX::of);
+        final var average = longs.bigDecimalAverageOf(BigDecimalX::of);
 
         It.println("average = " + average);
 

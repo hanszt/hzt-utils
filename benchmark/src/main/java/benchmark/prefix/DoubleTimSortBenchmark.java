@@ -32,7 +32,7 @@ public class DoubleTimSortBenchmark {
     @SuppressWarnings("squid:S1612")
     final MutableListX<Double> inputList = IntRange.of(0, LIST_SIZE)
             .mapToObj(It::asDouble)
-            .intersperse(() -> RANDOM.nextDouble())
+            .intersperse(RANDOM::nextDouble)
             .toMutableList();
 
     final DoubleMutableListX primitiveList = inputList.mapToDouble(It::asDouble).toMutableList();

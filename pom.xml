@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.hzt.utils</groupId>
-    <artifactId>commons</artifactId>
+    <artifactId>hzt-utils</artifactId>
     <version>0.7.5.17</version>
     <packaging>pom</packaging>
 
@@ -52,6 +52,11 @@
                 <artifactId>test-data-generator</artifactId>
                 <version>${project.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hzt.utils</groupId>
+                <artifactId>core</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.awaitility/awaitility -->
             <dependency>

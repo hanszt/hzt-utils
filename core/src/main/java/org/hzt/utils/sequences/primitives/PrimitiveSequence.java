@@ -15,6 +15,8 @@ public interface PrimitiveSequence<T extends Number, C, F, P, B> extends Stringa
 
     Sequence<T> boxed();
 
+    PrimitiveSequence<T, C, F, P, B> distinct();
+
     PrimitiveSequence<T, C, F, P, B> plus(@NotNull Iterable<T> values);
 
     PrimitiveSequence<T, C, F, P, B> filter(@NotNull P predicate);

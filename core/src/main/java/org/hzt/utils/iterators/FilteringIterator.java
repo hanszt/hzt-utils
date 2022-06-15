@@ -7,18 +7,18 @@ import java.util.function.Predicate;
 public final class FilteringIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
-    private final Predicate<T> predicate;
+    private final Predicate<? super T> predicate;
     private final boolean sendWhen;
     private State nextState = State.NEXT_UNKNOWN;
     private T nextItem = null;
 
-    private FilteringIterator(Iterator<T> iterator, Predicate<T> predicate, boolean sendWhen) {
+    private FilteringIterator(Iterator<T> iterator, Predicate<? super T> predicate, boolean sendWhen) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.sendWhen = sendWhen;
     }
 
-    public static <T> FilteringIterator<T> of(Iterator<T> iterator, Predicate<T> predicate, boolean sendWhen) {
+    public static <T> FilteringIterator<T> of(Iterator<T> iterator, Predicate<? super T> predicate, boolean sendWhen) {
         return new FilteringIterator<>(iterator, predicate, sendWhen);
     }
 

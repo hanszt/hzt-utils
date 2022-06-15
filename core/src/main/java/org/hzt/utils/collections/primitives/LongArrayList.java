@@ -1,7 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.primitves.PrimitiveSort;
-import org.hzt.utils.iterables.primitives.LongIterable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
 
     LongArrayList(Iterable<Long> iterable) {
         this();
-        if (iterable instanceof LongIterable longIterable) {
+        if (iterable instanceof PrimitiveIterable.OfLong longIterable) {
             final var iterator = longIterable.iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextLong());

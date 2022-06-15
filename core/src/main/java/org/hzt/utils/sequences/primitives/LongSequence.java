@@ -1,13 +1,14 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.primitives.LongCollectable;
 import org.hzt.utils.iterables.primitives.LongGroupable;
-import org.hzt.utils.iterables.primitives.LongIterable;
 import org.hzt.utils.iterables.primitives.LongNumerable;
 import org.hzt.utils.iterables.primitives.LongReducable;
 import org.hzt.utils.iterables.primitives.LongStreamable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.LongFilteringIterator;
 import org.hzt.utils.iterators.primitives.LongGeneratorIterator;
@@ -16,12 +17,11 @@ import org.hzt.utils.iterators.primitives.LongSkipWhileIterator;
 import org.hzt.utils.iterators.primitives.LongTakeWhileIterator;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.hzt.utils.numbers.LongX;
+import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.SkipTakeSequence;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
-import org.hzt.utils.It;
-import org.hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
@@ -48,7 +48,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     static LongSequence of(Iterable<Long> iterable) {
-        if (iterable instanceof final LongIterable longIterable) {
+        if (iterable instanceof PrimitiveIterable.OfLong longIterable) {
             return longIterable::iterator;
         }
         return of(iterable, It::asLong);
@@ -83,11 +83,16 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence plus(long @NotNull ... values) {
-        return Sequence.of(this, LongSequence.of(values)).mapMultiToLong(LongIterable::forEachLong);
+        return Sequence.of(this, LongSequence.of(values)).mapMultiToLong(PrimitiveIterable.OfLong::forEachLong);
     }
 
     default LongSequence plus(@NotNull Iterable<Long> values) {
-        return Sequence.of(this, LongSequence.of(values)).mapMultiToLong(LongIterable::forEachLong);
+        return Sequence.of(this, LongSequence.of(values)).mapMultiToLong(PrimitiveIterable.OfLong::forEachLong);
+    }
+
+    @Override
+    default LongSequence distinct() {
+        return () -> PrimitiveIterators.distinctIterator(iterator());
     }
 
     default LongSequence map(@NotNull LongUnaryOperator unaryOperator) {

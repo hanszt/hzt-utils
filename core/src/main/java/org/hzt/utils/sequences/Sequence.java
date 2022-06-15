@@ -63,21 +63,21 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return new EmptySequence<>();
     }
 
+    @SafeVarargs
+    static <T> Sequence<T> of(T... values) {
+        return () -> ArrayIterator.of(values);
+    }
+
     static <T> Sequence<T> of(@NotNull Iterable<T> iterable) {
         return iterable::iterator;
     }
 
-    static <T> Sequence<T> of(@NotNull Stream<T> stream) {
+    static <T> Sequence<T> ofStream(@NotNull Stream<T> stream) {
         return stream::iterator;
     }
 
-    static <K, V> EntrySequence<K, V> of(Map<K, V> map) {
+    static <K, V> EntrySequence<K, V> ofMap(Map<K, V> map) {
         return map.entrySet()::iterator;
-    }
-
-    @SafeVarargs
-    static <T> Sequence<T> of(T... values) {
-        return () -> ArrayIterator.of(values);
     }
 
     static <T> Sequence<T> ofNullable(@Nullable T value) {
@@ -174,7 +174,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return filter(aClass::isInstance).map(aClass::cast);
     }
 
-    default Sequence<T> filter(@NotNull Predicate<T> predicate) {
+    default Sequence<T> filter(@NotNull Predicate<? super T> predicate) {
         return SequenceHelper.filteringSequence(this, predicate);
     }
 
@@ -263,11 +263,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         }
     }
 
-    default Sequence<T> takeWhile(@NotNull Predicate<T> predicate) {
+    default Sequence<T> takeWhile(@NotNull Predicate<? super T> predicate) {
         return () -> TakeWhileIterator.of(iterator(), predicate, false);
     }
 
-    default Sequence<T> takeWhileInclusive(@NotNull Predicate<T> predicate) {
+    default Sequence<T> takeWhileInclusive(@NotNull Predicate<? super T> predicate) {
         return () -> TakeWhileIterator.of(iterator(), predicate, true);
     }
 
@@ -298,7 +298,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default Sequence<T> sorted(Comparator<T> comparator) {
+    default Sequence<T> sorted(Comparator<? super T> comparator) {
         return () -> IterableX.super.sorted(comparator).iterator();
     }
 

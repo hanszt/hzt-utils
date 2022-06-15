@@ -13,7 +13,8 @@ import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 
 @FunctionalInterface
-public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Double, DoubleBinaryOperator, DoublePredicate, OptionalDouble> {
+public interface DoubleReducable extends PrimitiveIterable.OfDouble,
+        PrimitiveReducable<Double, DoubleBinaryOperator, DoublePredicate, OptionalDouble> {
 
     default double reduce(double initial, DoubleBinaryOperator operator) {
         double accumulator = initial;
@@ -138,6 +139,7 @@ public interface DoubleReducable extends DoubleIterable, PrimitiveReducable<Doub
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }
+        @SuppressWarnings("squid:S1941")
         double single = iterator.nextDouble();
         if (iterator.hasNext()) {
             throw new IllegalArgumentException("Sequence has more than one element");

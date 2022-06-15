@@ -9,7 +9,7 @@ import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 
 @FunctionalInterface
-public interface DoubleGroupable extends PrimitiveGroupable<Double, DoubleMutableListX, DoublePredicate>, DoubleIterable {
+public interface DoubleGroupable extends PrimitiveGroupable<Double, DoubleMutableListX, DoublePredicate>, PrimitiveIterable.OfDouble {
 
     @Override
     default MapX<Double, DoubleMutableListX> group() {

@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
  * @param <P> The primitive predicate
  * @param <O> The primitive optional
  */
-public interface PrimitiveReducable<T, B, P, O> extends Iterable<T> {
+interface PrimitiveReducable<T, B, P, O> extends Iterable<T> {
 
     @NotNull O reduce(@NotNull B operator);
 

@@ -31,8 +31,8 @@ public final class DoubleTimSort extends PrimitiveTimSort<double[], DoubleCompar
         final int nRemaining = toIndex - fromIndex;
         if (nRemaining >= 2) {
             if (nRemaining < MIN_MERGE) {
-                final int initRunLen = PrimitiveSort.countRunAndMakeAscending(array, fromIndex, toIndex, comparator);
-                PrimitiveSort.binarySort(array, fromIndex, toIndex, fromIndex + initRunLen, comparator);
+                final int initRunLen = PrimitiveArrays.countRunAndMakeAscending(array, fromIndex, toIndex, comparator);
+                PrimitiveArrays.binarySort(array, fromIndex, toIndex, fromIndex + initRunLen, comparator);
             } else {
                 DoubleTimSort timSort = new DoubleTimSort(array, comparator);
                 final int minRun = minRunLength(nRemaining);
@@ -49,10 +49,10 @@ public final class DoubleTimSort extends PrimitiveTimSort<double[], DoubleCompar
     }
 
     protected int getRunLen(double[] array, int lo, int hi, DoubleComparator comparator, int nRemaining, int minRun) {
-        int runLen = PrimitiveSort.countRunAndMakeAscending(array, lo, hi, comparator);
+        int runLen = PrimitiveArrays.countRunAndMakeAscending(array, lo, hi, comparator);
         if (runLen < minRun) {
             final int force = Math.min(nRemaining, minRun);
-            PrimitiveSort.binarySort(array, lo, lo + force, lo + runLen, comparator);
+            PrimitiveArrays.binarySort(array, lo, lo + force, lo + runLen, comparator);
             runLen = force;
         }
         return runLen;

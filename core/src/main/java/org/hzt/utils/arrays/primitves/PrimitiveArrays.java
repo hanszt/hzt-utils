@@ -1,15 +1,124 @@
 package org.hzt.utils.arrays.primitves;
 
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.function.primitives.DoubleToByteFunction;
+import org.hzt.utils.function.primitives.DoubleToFloatFunction;
+import org.hzt.utils.function.primitives.DoubleToShortFunction;
+import org.hzt.utils.function.primitives.IntToByteFunction;
+import org.hzt.utils.function.primitives.IntToFloatFunction;
+import org.hzt.utils.function.primitives.IntToShortFunction;
+import org.hzt.utils.function.primitives.LongToByteFunction;
+import org.hzt.utils.function.primitives.LongToFloatFunction;
+import org.hzt.utils.function.primitives.LongToShortFunction;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("DuplicatedCode")
-public final class PrimitiveSort {
+import java.util.function.DoublePredicate;
+import java.util.function.IntPredicate;
+import java.util.function.LongPredicate;
 
-    private PrimitiveSort() {
+@SuppressWarnings("DuplicatedCode")
+public final class PrimitiveArrays {
+
+    private PrimitiveArrays() {
+    }
+
+    public static boolean[] toBooleanArray(int @NotNull [] array, @NotNull IntPredicate predicate) {
+        boolean[] result = new boolean[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = predicate.test(array[i]);
+        }
+        return result;
+    }
+
+    public static boolean[] toBooleanArray(long @NotNull [] array, @NotNull LongPredicate predicate) {
+        boolean[] result = new boolean[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = predicate.test(array[i]);
+        }
+        return result;
+    }
+
+    public static boolean[] toBooleanArray(double @NotNull [] array, @NotNull DoublePredicate predicate) {
+        boolean[] result = new boolean[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = predicate.test(array[i]);
+        }
+        return result;
+    }
+
+    public static byte[] toByteArray(int @NotNull [] array, @NotNull IntToByteFunction function) {
+        byte[] result = new byte[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = function.applyAsByte(array[i]);
+        }
+        return result;
+    }
+
+    public static byte[] toByteArray(long @NotNull [] array, @NotNull LongToByteFunction function) {
+        byte[] result = new byte[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = function.applyAsByte(array[i]);
+        }
+        return result;
+    }
+
+    public static byte[] toByteArray(double @NotNull [] array, @NotNull DoubleToByteFunction function) {
+        byte[] result = new byte[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = function.applyAsByte(array[i]);
+        }
+        return result;
+    }
+
+    public static short[] toShortArray(int @NotNull [] array, @NotNull IntToShortFunction function) {
+        short[] result = new short[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = function.applyAsShort(array[i]);
+        }
+        return result;
+    }
+
+    public static short[] toShortArray(long @NotNull [] array, @NotNull LongToShortFunction function) {
+        short[] result = new short[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = function.applyAsShort(array[i]);
+        }
+        return result;
+    }
+
+    public static short[] toShortArray(double @NotNull [] array, @NotNull DoubleToShortFunction function) {
+        short[] result = new short[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = function.applyAsShort(array[i]);
+        }
+        return result;
+    }
+
+    public static float[] toFloatArray(int @NotNull [] array, @NotNull IntToFloatFunction function) {
+        float[] result = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = function.applyAsFloat(array[i]);
+        }
+        return result;
+    }
+
+    public static float[] toFloatArray(long @NotNull [] array, @NotNull LongToFloatFunction function) {
+        float[] result = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = function.applyAsFloat(array[i]);
+        }
+        return result;
+    }
+
+    public static float[] toFloatArray(double @NotNull [] array, @NotNull DoubleToFloatFunction function) {
+        float[] result = new float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = function.applyAsFloat(array[i]);
+        }
+        return result;
     }
 
     public static void sort(int @NotNull [] array, @NotNull IntComparator comparator) {

@@ -1,6 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.arrays.primitves.PrimitiveSort;
+import org.hzt.utils.arrays.primitves.PrimitiveArrays;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
@@ -202,7 +202,7 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
 
     @Override
     public void sort(LongComparator comparator) {
-        PrimitiveSort.sort(elementData, 0, size, comparator);
+        PrimitiveArrays.sort(elementData, 0, size, comparator);
     }
 
     @Override

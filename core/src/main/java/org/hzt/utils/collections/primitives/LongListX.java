@@ -1,6 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.arrays.primitves.PrimitiveSort;
+import org.hzt.utils.arrays.primitves.PrimitiveArrays;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.numbers.LongX;
@@ -56,7 +56,7 @@ public interface LongListX extends LongCollection, PrimitiveSortable<LongCompara
     @Override
     default LongListX sorted(LongComparator comparator) {
         final var longs = toArray();
-        PrimitiveSort.sort(longs, comparator);
+        PrimitiveArrays.sort(longs, comparator);
         return LongListX.of(longs);
     }
 

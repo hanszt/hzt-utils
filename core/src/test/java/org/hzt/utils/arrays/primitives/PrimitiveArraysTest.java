@@ -1,6 +1,6 @@
 package org.hzt.utils.arrays.primitives;
 
-import org.hzt.utils.arrays.primitves.PrimitiveSort;
+import org.hzt.utils.arrays.primitves.PrimitiveArrays;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.collections.primitives.DoubleListX;
@@ -17,9 +17,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PrimitiveSortTest {
+class PrimitiveArraysTest {
 
     @Test
     void testIntTimSort() {
@@ -31,7 +32,7 @@ class PrimitiveSortTest {
 
         It.println(Arrays.toString(array));
 
-        PrimitiveSort.sort(array, Integer::compare);
+        PrimitiveArrays.sort(array, Integer::compare);
 
         It.println(Arrays.toString(array));
 
@@ -48,7 +49,7 @@ class PrimitiveSortTest {
 
         It.println(Arrays.toString(array));
 
-        PrimitiveSort.sort(array, IntComparator.reverseOrder());
+        PrimitiveArrays.sort(array, IntComparator.reverseOrder());
 
         It.println(Arrays.toString(array));
 
@@ -65,7 +66,7 @@ class PrimitiveSortTest {
 
         It.println(Arrays.toString(array));
 
-        PrimitiveSort.sort(array, Long::compare);
+        PrimitiveArrays.sort(array, Long::compare);
 
         It.println(Arrays.toString(array));
 
@@ -81,7 +82,7 @@ class PrimitiveSortTest {
 
         It.println(Arrays.toString(array));
 
-        PrimitiveSort.sort(array, LongComparator.reverseOrder());
+        PrimitiveArrays.sort(array, LongComparator.reverseOrder());
 
         It.println(Arrays.toString(array));
 
@@ -98,7 +99,7 @@ class PrimitiveSortTest {
 
         It.println(Arrays.toString(array));
 
-        PrimitiveSort.sort(array, Double::compare);
+        PrimitiveArrays.sort(array, Double::compare);
 
         It.println(Arrays.toString(array));
 
@@ -123,7 +124,7 @@ class PrimitiveSortTest {
 
         It.println(Arrays.toString(array));
 
-        PrimitiveSort.sort(array, DoubleComparator.reverseOrder());
+        PrimitiveArrays.sort(array, DoubleComparator.reverseOrder());
 
         It.println(Arrays.toString(array));
 
@@ -131,6 +132,38 @@ class PrimitiveSortTest {
         final var actual = DoubleSequence.of(array).take(6).toListX().mapToObj(DoubleX::toRoundedString);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testIntArrayToBooleanArray() {
+        int[] input = {1, 4, 5, 3, 6, 7, 2, 7};
+
+        final var booleans = PrimitiveArrays.toBooleanArray(input, i -> i < 4);
+
+        final boolean[] expected = {true, false, false, true, false, false, true, false};
+
+        assertArrayEquals(expected, booleans);
+    }
+    @Test
+    void testLongArrayToBooleanArray() {
+        long[] input = {1, 4, 5, 3, 6, 7, 2, Long.MAX_VALUE};
+
+        final var booleans = PrimitiveArrays.toBooleanArray(input, l -> l < 4);
+
+        final boolean[] expected = {true, false, false, true, false, false, true, false};
+
+        assertArrayEquals(expected, booleans);
+    }
+
+    @Test
+    void testDoubleArrayToBooleanArray() {
+        double[] input = {Double.NEGATIVE_INFINITY, 1, 4, 5, Math.PI, 6, 7, Math.E, 7e1, Double.POSITIVE_INFINITY};
+
+        final var booleans = PrimitiveArrays.toBooleanArray(input, d -> d < 4);
+
+        final boolean[] expected = {true, true, false, false, true, false, false, true, false, false};
+
+        assertArrayEquals(expected, booleans);
     }
 
 }

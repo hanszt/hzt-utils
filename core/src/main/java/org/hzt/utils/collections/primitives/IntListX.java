@@ -1,6 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.arrays.primitves.PrimitiveSort;
+import org.hzt.utils.arrays.primitves.PrimitiveArrays;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.numbers.IntX;
@@ -68,7 +68,7 @@ public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator
     @Override
     default IntListX sorted(IntComparator comparator) {
         final var array = toArray();
-        PrimitiveSort.sort(array, comparator);
+        PrimitiveArrays.sort(array, comparator);
         return IntListX.of(array);
     }
 

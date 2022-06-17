@@ -19,7 +19,6 @@ import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.sequences.SkipTakeSequence;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
@@ -132,7 +131,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
             return PrimitiveIterators::emptyDoubleIterator;
-        } else if (this instanceof SkipTakeSequence) {
+        } else if (this instanceof DoubleSkipTakeSequence) {
             DoubleSkipTakeSequence skipTakeSequence = (DoubleSkipTakeSequence) this;
             return skipTakeSequence.take(n);
         } else {

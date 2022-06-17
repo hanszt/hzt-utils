@@ -19,7 +19,6 @@ import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.sequences.SkipTakeSequence;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
@@ -135,7 +134,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
             return PrimitiveIterators::emptyIntIterator;
-        } else if (this instanceof SkipTakeSequence) {
+        } else if (this instanceof IntSkipTakeSequence) {
             IntSkipTakeSequence skipTakeSequence = (IntSkipTakeSequence) this;
             return skipTakeSequence.take(n);
         } else {

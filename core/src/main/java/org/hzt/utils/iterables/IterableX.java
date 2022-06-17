@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
@@ -125,5 +126,16 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
 
     default double[] toDoubleArray(@NotNull ToDoubleFunction<? super T> mapper) {
         return asSequence().mapToDouble(mapper).toArray();
+    }
+
+    default boolean[] toBooleanArray(@NotNull Predicate<? super T> mapper) {
+        int size = (int) count();
+        boolean[] result = new boolean[size];
+        int counter = 0;
+        for (T value : this) {
+            result[counter] = mapper.test(value);
+            counter++;
+        }
+        return result;
     }
 }

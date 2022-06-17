@@ -960,9 +960,18 @@ class IterableXTest {
         strings.iterator().forEachRemaining(expected::add);
         final var stringIteratorX = strings.atomicIterator();
         //noinspection StatementWithEmptyBody
-        while(stringIteratorX.tryAdvance(actual::add));
+        while (stringIteratorX.tryAdvance(actual::add)) ;
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testToBooleanArray() {
+        final var sequence = Sequence.of("This", "is", "a", "test");
+
+        final var booleans = sequence.toBooleanArray(s -> s.contains("i"));
+
+        assertArrayEquals(new boolean[]{true, true, false, false}, booleans);
     }
 
 }

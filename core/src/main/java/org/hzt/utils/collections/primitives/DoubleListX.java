@@ -1,6 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.arrays.primitves.PrimitiveSort;
+import org.hzt.utils.arrays.primitves.PrimitiveArrays;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.numbers.DoubleX;
@@ -58,7 +58,7 @@ public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleC
     @Override
     default DoubleListX sorted(DoubleComparator comparator) {
         final var array = toArray();
-        PrimitiveSort.sort(array, comparator);
+        PrimitiveArrays.sort(array, comparator);
         return DoubleListX.of(array);
     }
 

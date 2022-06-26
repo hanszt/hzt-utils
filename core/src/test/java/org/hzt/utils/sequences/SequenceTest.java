@@ -134,7 +134,7 @@ class SequenceTest {
 
         final var sum = Sequence.of(list)
                 .mapNotNull(BankAccount::getBalance)
-                .toListX();
+                .toMutableList();
 
         assertFalse(sum.contains(null));
     }
@@ -165,6 +165,7 @@ class SequenceTest {
     @Test
     void testMapFilterReduceToSet() {
         var list = ListX.of("Hallo", "dit", "is", "een", "test");
+
         final var result = list.asSequence()
                 .map(String::length)
                 .toSetX();

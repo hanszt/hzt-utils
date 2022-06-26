@@ -41,6 +41,10 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
 
     @Override
     default MutableListX<E> plus(@NotNull Iterable<E> iterable) {
+        if (iterable instanceof Collection<?>) {
+            addAll((Collection<? extends E>) iterable);
+            return this;
+        }
         for (E item : iterable) {
             add(item);
         }

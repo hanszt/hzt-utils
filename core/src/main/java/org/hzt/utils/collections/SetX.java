@@ -3,7 +3,7 @@ package org.hzt.utils.collections;
 import org.hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -12,22 +12,24 @@ import java.util.function.Function;
 public interface SetX<E> extends CollectionX<E>, Transformable<SetX<E>> {
 
     static <E> SetX<E> empty() {
-        return new HashSetX<>();
+        return new ImmutableSetX<>();
     }
 
     static <E> SetX<E> of(Iterable<E> iterable) {
-        return new HashSetX<>(iterable);
+        return new ImmutableSetX<>(iterable);
     }
 
     @SafeVarargs
     static <E> SetX<E> of(E... values) {
-        MutableSetX<E> resultSet = MutableSetX.of(values);
-        resultSet.addAll(Arrays.asList(values));
-        return resultSet;
+        return new ImmutableSetX<>(values);
     }
 
     static <E> SetX<E> copyOf(Iterable<E> iterable) {
-        return new HashSetX<>(iterable);
+        return new ImmutableSetX<>(iterable);
+    }
+
+    static <E> SetX<E> copyOf(Collection<E> collection) {
+        return new ImmutableSetX<>(collection);
     }
 
     @Override

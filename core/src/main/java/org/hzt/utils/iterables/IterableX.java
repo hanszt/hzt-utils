@@ -90,7 +90,7 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         final var intersection = toMutableSet();
         final var otherCollection = other instanceof Collectable<?> ? (Collection<T>) other : MutableListX.of(other);
         intersection.retainAll(otherCollection);
-        return intersection;
+        return SetX.of(intersection);
     }
 
     default <S, I extends Iterable<S>, R> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper,
@@ -106,7 +106,7 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         MutableSetX<T> union = MutableSetX.empty();
         forEach(union::add);
         other.forEach(union::add);
-        return union;
+        return SetX.copyOf(union);
     }
 
     default <R> SetX<R> union(@NotNull Iterable<T> other, @NotNull Function<? super T, ? extends R> mapper) {

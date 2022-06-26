@@ -206,7 +206,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default ListX<T> toListX() {
-        return toMutableList();
+        return ListX.copyOf(toMutableList());
     }
 
     default List<T> toList() {
@@ -222,7 +222,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default SetX<T> toSetX() {
-        return toMutableSet();
+        return SetX.copyOf(toMutableSet());
     }
 
     default <R> SetX<R> toSetXOf(@NotNull Function<? super T, ? extends R> transform) {

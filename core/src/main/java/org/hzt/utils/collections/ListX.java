@@ -1,11 +1,12 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.PreConditions;
-import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.Transformable;
+import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Random;
@@ -30,30 +31,30 @@ import static org.hzt.utils.PreConditions.require;
 public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
 
     static <E> ListX<E> empty() {
-        return new ArrayListX<>();
+        return new ImmutableListX<>();
     }
 
     static <E> ListX<E> of(Iterable<E> iterable) {
-        return new ArrayListX<>(iterable);
-    }
-
-    static <E> ListX<E> of(Collection<E> iterable) {
-        return new ArrayListX<>(iterable);
+        return new ImmutableListX<>(iterable);
     }
 
     @SafeVarargs
     static <E> ListX<E> of(E... values) {
-        return new ArrayListX<>(values);
+        return new ImmutableListX<>(values);
     }
 
     static <E> ListX<E> build(Consumer<MutableListX<E>> mutableListConsumer) {
         MutableListX<E> list = MutableListX.empty();
         mutableListConsumer.accept(list);
-        return list;
+        return copyOf(list);
     }
 
-    static <E> ListX<E> copyOf(Iterable<E> iterable) {
-        return new ArrayListX<>(iterable);
+    static <E> ListX<E> copyOf(Collection<E> collection) {
+        return new ImmutableListX<>(collection);
+    }
+
+    static <E> ListX<E> copyOfNullsAllowed(List<E> list) {
+        return new ImmutableListX<>(list);
     }
 
     default <R> R foldRight(@NotNull R initial, @NotNull BiFunction<E, R, R> operation) {
@@ -90,7 +91,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
     }
 
     default ListX<E> takeLast(int n) {
-        return takeLastTo(MutableListX::withInitCapacity, n);
+        return ListX.copyOfNullsAllowed(takeLastTo(MutableListX::withInitCapacity, n));
     }
 
     Optional<E> findRandom();
@@ -184,12 +185,12 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
     }
 
     default ListX<E> skipLast(int n) {
-        return takeTo(MutableListX::empty, Math.max((size() - n), 0));
+        return ListX.copyOf(takeTo(MutableListX::empty, Math.max((size() - n), 0)));
     }
 
     default ListX<E> skipLastWhile(@NotNull Predicate<E> predicate) {
         if (isEmpty()) {
-            return MutableListX.empty();
+            return ListX.empty();
         }
         ListIterator<E> iterator = listIterator(size());
         while (iterator.hasPrevious()) {
@@ -197,11 +198,11 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
                 return take(iterator.nextIndex() + 1L);
             }
         }
-        return MutableListX.empty();
+        return ListX.empty();
     }
 
     default ListX<E> takeLastWhile(@NotNull Predicate<E> predicate) {
-        return takeLastWhileTo(MutableListX::withInitCapacity, predicate);
+        return ListX.copyOf(takeLastWhileTo(MutableListX::withInitCapacity, predicate));
     }
 
     default <C extends Collection<E>> C takeLastWhileTo(@NotNull IntFunction<C> collectionFactory, @NotNull Predicate<E> predicate) {

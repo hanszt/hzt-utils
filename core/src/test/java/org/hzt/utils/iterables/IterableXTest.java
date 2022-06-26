@@ -13,6 +13,7 @@ import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collectors.BigDecimalCollectors;
+import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
@@ -129,7 +130,7 @@ class IterableXTest {
 
         It.println("sumsOfThree = " + sumsOfThree);
 
-        assertEquals(Arrays.asList(3L, 6L, 9L, 12L, 15L, 18L, 21L), sumsOfThree);
+        assertIterableEquals(Arrays.asList(3L, 6L, 9L, 12L, 15L, 18L, 21L), sumsOfThree);
     }
 
     @Test
@@ -143,7 +144,7 @@ class IterableXTest {
 
         It.println("sumsOfThree = " + sumsOfThree);
 
-        assertEquals(Arrays.asList(3L, 6L), sumsOfThree);
+        assertIterableEquals(Arrays.asList(3L, 6L), sumsOfThree);
     }
 
     @Test
@@ -498,7 +499,7 @@ class IterableXTest {
 
         It.println("integers = " + integers);
 
-        assertEquals(Arrays.asList(1, 2, 10, 4, 5, 10), integers);
+        assertIterableEquals(Arrays.asList(1, 2, 10, 4, 5, 10), integers);
     }
 
     @Test
@@ -708,9 +709,9 @@ class IterableXTest {
     void testSkippingToSet() {
         final ListX<Book> bookList = ListX.of(TestSampleGenerator.createBookList());
 
-        final Set<Book> expected = bookList.stream()
+        final SetX<Book> expected = bookList.stream()
                 .filter(book -> !book.isAboutProgramming())
-                .collect(Collectors.toSet());
+                .collect(CollectorsX.toSetX());
 
         final SetX<Book> actual = bookList.filterNot(Book::isAboutProgramming).toSetX();
 
@@ -833,7 +834,7 @@ class IterableXTest {
                 .mapNotNull(Painting::name)
                 .zipWithNext(String::compareTo);
 
-        assertEquals(Arrays.asList(-5, 83, -1, 5, -5, 1, 8), integers);
+        assertIterableEquals(Arrays.asList(-5, 83, -1, 5, -5, 1, 8), integers);
     }
 
     @Test
@@ -873,7 +874,7 @@ class IterableXTest {
 
         It.println("stringXES = " + actual);
 
-        assertEquals(expected, actual);
+        assertIterableEquals(expected, actual);
     }
 
     private void printEvery10_000stElement(int i) {
@@ -908,7 +909,7 @@ class IterableXTest {
 
         It.println("list = " + list);
 
-        assertEquals(expected, list);
+        assertIterableEquals(expected, list);
     }
 
     @Test

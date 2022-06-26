@@ -1,23 +1,26 @@
 package org.hzt.utils.collections;
 
-import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.test.Generator;
-import org.hzt.utils.test.model.PaintingAuction;
-import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
+import org.hzt.utils.It;
+import org.hzt.utils.iterables.Collectable;
+import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.test.Generator;
+import org.hzt.utils.test.model.PaintingAuction;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
-import static org.hzt.utils.collectors.CollectorsX.toListX;
 import static java.util.stream.Collectors.collectingAndThen;
+import static org.hzt.utils.collectors.CollectorsX.toListX;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ListXTest {
@@ -120,17 +123,19 @@ class ListXTest {
     }
 
     @Test
-    void testListWithAll() {
+    void testListPlusOtherIterable() {
         final MutableListX<PaintingAuction> auctions = Generator.createAuctions().toMutableList();
 
-        final List<LocalDate> expected = auctions.stream()
+        final List<LocalDate> datesFromStream = auctions.stream()
                 .map(PaintingAuction::getDateOfOpening)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        expected.add(LocalDate.MIN);
-        expected.add(LocalDate.MAX);
+        datesFromStream.add(LocalDate.MIN);
+        datesFromStream.add(LocalDate.MAX);
+        ListX<LocalDate> expected = ListX.of(datesFromStream);
 
         final ListX<LocalDate> dates = auctions
-                .map(PaintingAuction::getDateOfOpening)
+                .mapNotNull(PaintingAuction::getDateOfOpening)
                 .plus(ListX.of(LocalDate.MIN, LocalDate.MAX));
 
         It.println("dates = " + dates);
@@ -188,13 +193,15 @@ class ListXTest {
 
         final List<LocalDate> expected = museums.stream()
                 .map(PaintingAuction::getDateOfOpening)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        final ListX<LocalDate> dates = museums
+        final List<LocalDate> dates = museums
                 .map(PaintingAuction::getDateOfOpening)
                 .when(ListX::isNotEmpty, It::println)
                 .when(list -> list.size() > 3, It::println)
                 .takeIf(ListX::isNotEmpty)
+                .map(Collectable::toMutableList)
                 .orElseThrow();
 
         It.println("dates = " + dates);
@@ -229,6 +236,22 @@ class ListXTest {
                 () -> assertNotEquals(input, shuffled),
                 () -> assertTrue(shuffled.containsAll(input)),
                 () -> assertTrue(input.containsAll(shuffled))
+        );
+    }
+
+    @Test
+    void testListXCanNotBeCastToMutableListXToModifyItsInternalContent() {
+        final var integers = ListX.of(1, 2, 3, 4, 5, 6);
+        final var initSize = integers.size();
+
+        final Executable executable = () -> {
+            final var mutableList = (MutableListX<Integer>) integers;
+            System.out.println("mutableList = " + mutableList);
+        };
+
+        assertAll(
+                () -> assertThrows(ClassCastException.class, executable),
+                () -> assertEquals(initSize, integers.size())
         );
     }
 

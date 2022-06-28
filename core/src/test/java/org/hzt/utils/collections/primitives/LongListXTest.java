@@ -39,4 +39,15 @@ class LongListXTest {
         assertThrows(IndexOutOfBoundsException.class, () -> list.get(14));
     }
 
+    @Test
+    void testBinarySearch() {
+        final LongListX sortedList = LongListX.of(-1, 0, 1, 2, 3, 4, 5);
+
+        int valueToSearchFor = 2;
+
+        final int indexInSortedList = sortedList.binarySearch(value -> Long.compare(value, valueToSearchFor));
+
+        assertEquals(3, indexInSortedList);
+    }
+
 }

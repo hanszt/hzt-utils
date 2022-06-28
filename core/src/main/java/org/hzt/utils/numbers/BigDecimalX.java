@@ -1,6 +1,7 @@
 package org.hzt.utils.numbers;
 
 import org.hzt.utils.collections.ListX;
+import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 @SuppressWarnings("unused")
-public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>, Transformable<BigDecimalX> {
+public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>, Transformable<BigDecimalX>, ComparableX<BigDecimal> {
 
     private static final long serialVersionUID = 234;
 

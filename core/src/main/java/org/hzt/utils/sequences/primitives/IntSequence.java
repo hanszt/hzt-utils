@@ -196,6 +196,16 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return sorted((IntX::compareReversed));
     }
 
+    @Override
+    default boolean isSorted(IntComparator comparator) {
+        return zipWithNext(comparator::compareInt).all(comparison -> comparison <= 0);
+    }
+
+    @Override
+    default boolean isSorted() {
+        return isSorted(Integer::compare);
+    }
+
     default IntSequence shuffled() {
         return () -> toListX().shuffled().iterator();
     }

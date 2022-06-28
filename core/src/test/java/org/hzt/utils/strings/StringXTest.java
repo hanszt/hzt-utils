@@ -13,11 +13,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class StringXTest {
 
@@ -148,5 +144,21 @@ class StringXTest {
         return s1.chars()
                 .mapToObj(i -> (char) i)
                 .collect(Collectors.groupingBy(Function.identity()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "this is a test -> This is a test",
+            "hANS -> Hans",
+            "1233 -> 1233",
+            "THIS IS A LITTLE TO MUCH! -> This is a little to much!"})
+    void testCapitalized(String string) {
+        final ListX<String> split = StringX.of(string).split(" -> ");
+        final String input = split.first();
+        final String expected = split.last();
+
+        final String actual = StringX.capitalized(input);
+
+        assertEquals(expected, actual);
     }
 }

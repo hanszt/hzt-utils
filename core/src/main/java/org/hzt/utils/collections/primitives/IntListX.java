@@ -3,14 +3,17 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.arrays.primitves.PrimitiveArrays;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
+import org.hzt.utils.markerinterfaces.BinarySearchable;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
 
 import java.util.Arrays;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
+import java.util.function.IntUnaryOperator;
+import java.util.function.ToIntFunction;
 
-public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator> {
+public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator>, BinarySearchable<IntUnaryOperator> {
 
     static IntListX empty() {
         return new IntArrayList();
@@ -77,5 +80,34 @@ public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator
         return sorted(IntX::compareReversed);
     }
 
+    @Override
+    default boolean isSorted(IntComparator comparator) {
+        final var iterator = iterator();
+        if (iterator.hasNext()) {
+            var first = iterator.nextInt();
+            while (iterator.hasNext()) {
+                final var second = iterator.nextInt();
+                if (comparator.compareInt(first, second) > 0) {
+                    return false;
+                }
+                first = second;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    default boolean isSorted() {
+        return isSorted(Integer::compare);
+    }
+
     IntListX shuffled();
+
+    /**
+     * @see org.hzt.utils.markerinterfaces.BinarySearchable#binarySearch(int, int, Object)
+     * @see java.util.Arrays#binarySearch(int[], int)
+     */
+    default int binarySearch(int fromIndex, int toIndex, IntUnaryOperator comparison) {
+        return PrimitiveListHelper.binarySearch(size(), this::get, fromIndex, toIndex, comparison);
+    }
 }

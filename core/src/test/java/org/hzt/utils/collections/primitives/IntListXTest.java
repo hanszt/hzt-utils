@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 
@@ -60,5 +61,16 @@ class IntListXTest {
         System.out.println("shuffled = " + shuffled);
 
         assertNotEquals(intListX, shuffled);
+    }
+
+    @Test
+    void testBinarySearch() {
+        final IntListX sortedList = IntListX.of(-1, 0, 1, 2, 3, 4, 5);
+
+        int valueToSearchFor = 2;
+
+        final int indexInSortedList = sortedList.binarySearch(value -> value - valueToSearchFor);
+
+        assertEquals(3, indexInSortedList);
     }
 }

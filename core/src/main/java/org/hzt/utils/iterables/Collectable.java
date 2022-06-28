@@ -286,12 +286,12 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <C extends Collection<T>> C filterNotTo(@NotNull Supplier<C> collectionFactory,
-                                                    @NotNull Predicate<T> predicate) {
+                                                    @NotNull Predicate<? super T> predicate) {
         return filterTo(collectionFactory, predicate.negate());
     }
 
     default <C extends Collection<T>> C filterIndexedTo(@NotNull Supplier<C> collectionFactory,
-                                                        @NotNull BiPredicate<Integer, T> predicate) {
+                                                        @NotNull BiPredicate<? super Integer, ? super T> predicate) {
         C collection = collectionFactory.get();
         final Iterable<IndexedValue<T>> indexedIterable = this::indexedIterator;
         for (IndexedValue<T> indexedValue : indexedIterable) {

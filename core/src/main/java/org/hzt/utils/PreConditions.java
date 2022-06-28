@@ -57,4 +57,16 @@ public final class PreConditions {
             throw new IllegalArgumentException();
         }
     }
+
+    public static void rangeCheck(int size, int fromIndex, int toIndex) {
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException("fromIndex (" + fromIndex + ") is greater than toIndex (" + toIndex + ").");
+        }
+        if (fromIndex < 0) {
+            throw new IndexOutOfBoundsException("fromIndex (" + fromIndex + ") is less than zero.");
+        }
+        if (toIndex > size) {
+            throw new IndexOutOfBoundsException("toIndex (" + toIndex + ") is greater than size (" + size + ").");
+        }
+    }
 }

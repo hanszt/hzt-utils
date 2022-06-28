@@ -55,11 +55,6 @@ final class ImmutableListX<T> implements ListX<T> {
     }
 
     @Override
-    public int binarySearch(int fromIndex, int toIndex, ToIntFunction<T> comparison) {
-        return ListHelper.binarySearch(size(), immutableList::get, fromIndex, toIndex, comparison);
-    }
-
-    @Override
     public int size() {
         return immutableList.size();
     }

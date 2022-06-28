@@ -199,6 +199,16 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return sorted(LongX::compareReversed);
     }
 
+    @Override
+    default boolean isSorted(LongComparator comparator) {
+        return zipWithNext(comparator::compareLong).all(comparison -> comparison <= 0);
+    }
+
+    @Override
+    default boolean isSorted() {
+        return isSorted(Long::compare);
+    }
+
     default @NotNull LongSequence onEach(@NotNull LongConsumer consumer) {
         return map(l -> {
             consumer.accept(l);

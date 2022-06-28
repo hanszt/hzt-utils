@@ -1,5 +1,7 @@
 package org.hzt.test.model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Arrays;
@@ -11,7 +13,7 @@ import java.util.Optional;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 
-public class Painter implements Comparable<Painter>, Iterable<Painting> {
+public final class Painter extends Person implements Comparable<Painter>, Iterable<Painting> {
 
     private final String firstName;
     private final String lastname;
@@ -20,6 +22,7 @@ public class Painter implements Comparable<Painter>, Iterable<Painting> {
     private LocalDate dateOfDeath;
 
     public Painter(String firstName, String lastname, LocalDate dateOfBirth) {
+        super(firstName + " " + lastname);
         this.firstName = firstName;
         this.lastname = lastname;
         this.dateOfBirth = dateOfBirth;
@@ -80,7 +83,7 @@ public class Painter implements Comparable<Painter>, Iterable<Painting> {
     }
 
     @Override
-    public Iterator<Painting> iterator() {
+    public @NotNull Iterator<Painting> iterator() {
         return paintingList.iterator();
     }
 

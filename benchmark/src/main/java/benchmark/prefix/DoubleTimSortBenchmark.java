@@ -29,10 +29,10 @@ public class DoubleTimSortBenchmark {
     @Param({LIST_SIZE_AS_STRING})
     private int nrOfIterations;
 
-    @SuppressWarnings("squid:S1612")
+    @SuppressWarnings({"squid:S1612", "Convert2MethodRef"})
     final MutableListX<Double> inputList = IntRange.of(0, LIST_SIZE)
             .mapToObj(It::asDouble)
-            .intersperse(RANDOM::nextDouble)
+            .intersperse(() -> RANDOM.nextDouble())
             .toMutableList();
 
     final DoubleMutableListX primitiveList = inputList.mapToDouble(It::asDouble).toMutableList();

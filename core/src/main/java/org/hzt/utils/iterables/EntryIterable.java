@@ -164,4 +164,31 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
     default <R> SetX<R> toSetXOf(@NotNull BiFunction<? super K, ? super V, ? extends R> transform) {
         return Sequence.of(this).toSetXOf(e -> transform.apply(e.getKey(), e.getValue()));
     }
+
+    default boolean any(BiPredicate<K, V> biPredicate) {
+        for (var e : this) {
+            if (biPredicate.test(e.getKey(), e.getValue())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    default boolean all(BiPredicate<K, V> biPredicate) {
+        for (var e : this) {
+            if (!biPredicate.test(e.getKey(), e.getValue())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    default boolean none(BiPredicate<K, V> biPredicate) {
+        for (var e : this) {
+            if (biPredicate.test(e.getKey(), e.getValue())) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

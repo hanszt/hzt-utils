@@ -2,10 +2,12 @@ package org.hzt.utils.collections;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
+import org.hzt.utils.markerinterfaces.BinarySearchable;
 import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
@@ -28,7 +30,7 @@ import static org.hzt.utils.PreConditions.require;
  * @param <E> the type of the elements
  * @author Hans Zuidervaart
  */
-public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
+public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, BinarySearchable<ToIntFunction<E>> {
 
     static <E> ListX<E> empty() {
         return new ImmutableListX<>();
@@ -110,37 +112,13 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
         return findRandom(random).orElseThrow();
     }
 
-    default int binarySearchTo(int toIndex, ToIntFunction<E> comparison) {
-        return binarySearch(0, toIndex, comparison);
-    }
-
-    default int binarySearchFrom(int fromIndex, ToIntFunction<E> comparison) {
-        return binarySearch(fromIndex, size(), comparison);
-    }
-
-    default int binarySearch(ToIntFunction<E> comparison) {
-        return binarySearch(0, size(), comparison);
-    }
-
     /**
-     * Searches this list or its range for an element for which the given [comparison] function
-     * returns zero using the binary search algorithm.
-     * <p>
-     * The list is expected to be sorted so that the signs of the [comparison] function's return values ascend on the list elements,
-     * i.e. negative values come before zero and zeroes come before positive values.
-     * Otherwise, the result is undefined.
-     * <p>
-     * If the list contains multiple elements for which [comparison] returns zero, there is no guarantee which one will be found.
-     *
-     * @param comparison function that returns zero when called on the list element being searched.
-     *                   On the elements coming before the target element, the function must return negative values;
-     *                   on the elements coming after the target element, the function must return positive values.
-     * @return the index of the found element, if it is contained in the list within the specified range;
-     * otherwise, the inverted insertion point `(-insertion point - 1)`.
-     * The insertion point is defined as the index at which the element should be inserted,
-     * so that the list (or the specified subrange of list) still remains sorted.
+     * @see org.hzt.utils.markerinterfaces.BinarySearchable#binarySearch(int, int, Object)
+     * @see java.util.Arrays#binarySearch(Object[], Object, Comparator)
      */
-    int binarySearch(int fromIndex, int toIndex, ToIntFunction<E> comparison);
+    default int binarySearch(int fromIndex, int toIndex, ToIntFunction<E> comparison) {
+        return ListHelper.binarySearch(size(), this::get, fromIndex, toIndex, comparison);
+    }
 
     @Override
     int size();

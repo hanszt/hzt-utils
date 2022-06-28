@@ -97,11 +97,11 @@ public interface CollectionX<E> extends IterableX<E> {
         return asSequence().filter(Objects::nonNull).filter(t -> predicate.test(selector.apply(t))).toListX();
     }
 
-    default ListX<E> filterIndexed(@NotNull BiPredicate<Integer, E> predicate) {
+    default ListX<E> filterIndexed(@NotNull BiPredicate<? super Integer, ? super E> predicate) {
         return ListX.copyOf(filterIndexedTo(() -> MutableListX.withInitCapacity(size()), predicate));
     }
 
-    default ListX<E> filterNot(@NotNull Predicate<E> predicate) {
+    default ListX<E> filterNot(@NotNull Predicate<? super E> predicate) {
         return ListX.copyOf(IterableX.super.filterNotTo(() -> MutableListX.withInitCapacity(size()), predicate));
     }
 
@@ -255,12 +255,12 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     @Override
-    default ListX<E> skipWhile(@NotNull Predicate<E> predicate) {
+    default ListX<E> skipWhile(@NotNull Predicate<? super E> predicate) {
         return ListX.copyOf(skipWhileTo(MutableListX::empty, predicate, false));
     }
 
     @Override
-    default ListX<E> skipWhileInclusive(@NotNull Predicate<E> predicate) {
+    default ListX<E> skipWhileInclusive(@NotNull Predicate<? super E> predicate) {
         return ListX.copyOf(skipWhileTo(MutableListX::empty, predicate, true));
     }
 

@@ -1,16 +1,25 @@
 package org.hzt.utils.iterables;
 
+import org.hzt.test.model.Person;
+import org.hzt.utils.Patterns;
+import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Comparator.reverseOrder;
+import static org.hzt.utils.Patterns.blankStringPattern;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SortableTest {
 
@@ -95,5 +104,38 @@ class SortableTest {
                 .toList();
 
         assertEquals(expectedDates, localDates);
+    }
+
+    @Test
+    void isSortedInReverseOrder() {
+        assertFalse(Sequence.of(1, 2, 3, 3, 4, 5, 6, 7, 8).isSorted(reverseOrder()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "Hans Huib  Sophie Ted",
+            "Dominic Hans Marlon Marnix  Rashied",
+            "Charlotte Hans Joop Marjolein  Matthijs Thom",
+            "Adi Hans Judith Koen Pauline  Ted"
+    })
+    void isSortedInNaturalOrder(String string) {
+        final var people = blankStringPattern.splitAsStream(string)
+                .map(Person::new)
+                .collect(CollectorsX.toListX());
+
+        assertTrue(people.isSortedBy(Person::getName));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "Sophie Huib Hans Ted",
+            "Dominic Marlon Hans Marnix  Rashied",
+            "Charlotte Hans Marjolein Joop  Matthijs Thom",
+            "Adi Judith Hans Koen Pauline  Ted"
+    })
+    void isNotSortedInNaturalOrder(String string) {
+        final var people = Patterns.splitAsSequence(blankStringPattern, string).map(Person::new);
+
+        assertFalse(people.isSortedBy(Person::getName));
     }
 }

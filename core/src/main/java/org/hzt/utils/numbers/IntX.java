@@ -1,6 +1,7 @@
 package org.hzt.utils.numbers;
 
 import org.hzt.utils.Transformable;
+import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.IntSequence;
@@ -10,7 +11,7 @@ import java.util.Objects;
 import java.util.function.IntPredicate;
 
 @SuppressWarnings({"unused", "squid:S1448"})
-public final class IntX extends Number implements NumberX<Integer>, Transformable<IntX> {
+public final class IntX extends Number implements NumberX<Integer>, Transformable<IntX>, ComparableX<IntX> {
 
     private static final long serialVersionUID = 20;
 
@@ -94,6 +95,14 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
 
     public static int parseInt(String s) throws NumberFormatException {
         return Integer.parseInt(s);
+    }
+
+    public static char asChar(int i) {
+        return (char) i;
+    }
+
+    public static String asString(int i) {
+        return String.valueOf(asChar(i));
     }
 
     public static int parseUnsignedInt(String s, int radix) throws NumberFormatException {
@@ -292,5 +301,10 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
     @Override
     public @NotNull Integer getValue() {
         return integer;
+    }
+
+    @Override
+    public int compareTo(@NotNull IntX o) {
+        return integer.compareTo(o.integer);
     }
 }

@@ -62,11 +62,6 @@ final class ArrayListX<E> implements MutableListX<E> {
     }
 
     @Override
-    public int binarySearch(int fromIndex, int toIndex, ToIntFunction<E> comparison) {
-        return ListHelper.binarySearch(size(), list::get, fromIndex, toIndex, comparison);
-    }
-
-    @Override
     public int size() {
         return list.size();
     }

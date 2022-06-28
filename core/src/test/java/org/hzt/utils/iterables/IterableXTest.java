@@ -814,14 +814,14 @@ class IterableXTest {
                 .filter(Objects::nonNull)
                 .map(BankAccount::getCustomer)
                 .filter(Objects::nonNull)
-                .map(Customer::getId)
+                .map(Customer::getCustomerId)
                 .filter(Objects::nonNull)
                 .max(Comparator.naturalOrder())
                 .orElseThrow();
 
         final String actual = bankAccounts
                 .mapNotNull(BankAccount::getCustomer)
-                .maxOf(Customer::getId);
+                .maxOf(Customer::getCustomerId);
 
         assertEquals(expected, actual);
     }

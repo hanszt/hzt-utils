@@ -4,6 +4,7 @@ import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.numbers.BigDecimalX;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.numbers.IntX;
@@ -29,7 +30,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @SuppressWarnings("squid:S1448")
-public final class StringX implements CharSequence, Sequence<Character>, Transformable<StringX> {
+public final class StringX implements CharSequence, Sequence<Character>, Transformable<StringX>, ComparableX<StringX> {
 
     private final String string;
 
@@ -128,6 +129,10 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     public static StringX of(double d) {
         return StringX.of(String.valueOf(d));
+    }
+
+    public static String capitalized(String string) {
+        return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
     }
 
     public StringX plus(String s) {
@@ -375,13 +380,13 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     /**
      * @param delimiter the delimiter
-     * @param limit the limit to which ti split
+     * @param limit the limit to which to split
      * @return a list with split strings
      *
      * This method is inspired by the Kotlin standard library
      */
     private ListX<String> split(String delimiter, int limit) {
-        PreConditions.require(limit >= 0, () -> "Limit must be non-negative, but was $limit");
+        PreConditions.require(limit >= 0, () -> "Limit must be non-negative, but was " + limit);
         var currentOffset = 0;
         var nextIndex = indexOf(delimiter, currentOffset);
         if (nextIndex == -1 || limit == 1) {
@@ -596,6 +601,10 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return StringX.of(String.format(string, args));
     }
 
+    public Stream<Character> boxedChars() {
+        return chars().mapToObj(c -> (char) c);
+    }
+
     public StringX repeat(int count) {
         return StringX.of(string.repeat(count));
     }
@@ -609,5 +618,10 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     @Override
     public Iterator<Character> iterator() {
         return charIterator();
+    }
+
+    @Override
+    public int compareTo(@NotNull StringX o) {
+        return string.compareTo(o.string);
     }
 }

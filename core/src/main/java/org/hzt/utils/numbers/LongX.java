@@ -70,6 +70,10 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         return l -> l % multiple == 0;
     }
 
+    public static long times(long value1, long value2) {
+        return value1 * value2;
+    }
+
     public boolean isMultipleOf(long multiple) {
         return multipleOf(multiple).test(thisLong);
     }
@@ -196,6 +200,7 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         return Long.getLong(nm, val);
     }
 
+    @SuppressWarnings("squid:S4351")
     public int compareTo(Long anotherLong) {
         return thisLong.compareTo(anotherLong);
     }

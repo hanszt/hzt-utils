@@ -1,13 +1,13 @@
 package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.It;
+import org.hzt.utils.function.primitives.IntBiFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
-import java.util.function.BiFunction;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
@@ -27,7 +27,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
     default <R> R reduceToTwo(
             int initial1, @NotNull IntBinaryOperator operator1,
             int initial2, @NotNull IntBinaryOperator operator2,
-            @NotNull BiFunction<Integer, Integer, R> finisher) {
+            @NotNull IntBiFunction<R> finisher) {
         PrimitiveIterator.OfInt iterator = iterator();
         int accumulator1 = initial1;
         int accumulator2 = initial2;
@@ -42,7 +42,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
     default <R> @NotNull Optional<R> reduceToTwo(
             @NotNull IntBinaryOperator operator1,
             @NotNull IntBinaryOperator operator2,
-            @NotNull BiFunction<Integer, Integer, R> finisher) {
+            @NotNull IntBiFunction<R> finisher) {
         PrimitiveIterator.OfInt iterator = iterator();
         if (iterator.hasNext()) {
             final var first = iterator.nextInt();

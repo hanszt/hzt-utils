@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -57,11 +56,6 @@ final class ImmutableListX<T> implements ListX<T> {
     @Override
     public int size() {
         return immutableList.size();
-    }
-
-    @Override
-    public int lastIndex() {
-        return size() - 1;
     }
 
     @Override

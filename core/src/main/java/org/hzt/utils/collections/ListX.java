@@ -123,7 +123,9 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
     @Override
     int size();
 
-    int lastIndex();
+    default int lastIndex() {
+        return size() - 1;
+    }
 
     @Override
     boolean isEmpty();
@@ -146,6 +148,18 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
     int indexOf(Object o);
 
     int lastIndexOf(Object o);
+
+    @Override
+    @NotNull
+    default E first() {
+        return get(0);
+    }
+
+    @Override
+    @NotNull
+    default E last() {
+        return get(lastIndex());
+    }
 
     ListIterator<E> listIterator();
 

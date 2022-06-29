@@ -1,6 +1,5 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 

@@ -58,9 +58,6 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
     MutableListX<E> subList(int fromIndex, int toIndex);
 
     @Override
-    int size();
-
-    @Override
     default boolean containsAll(@NotNull Iterable<E> iterable) {
         return ListX.super.containsAll(iterable);
     }

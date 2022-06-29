@@ -2,7 +2,6 @@ package org.hzt.utils.statistics;
 
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.It;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -12,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StatisticsTest {
 
+    @SuppressWarnings("squid:S5977")
     private static final Random RANDOM = new Random();
 
     @Test

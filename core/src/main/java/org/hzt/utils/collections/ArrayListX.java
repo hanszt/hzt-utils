@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
 
 final class ArrayListX<E> implements MutableListX<E> {
 
@@ -64,11 +63,6 @@ final class ArrayListX<E> implements MutableListX<E> {
     @Override
     public int size() {
         return list.size();
-    }
-
-    @Override
-    public int lastIndex() {
-        return size() - 1;
     }
 
     @Override

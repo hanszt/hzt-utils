@@ -92,6 +92,10 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
         return String.format(String.format("%%.%df", scale), d);
     }
 
+    public static double times(double value1, double value2) {
+        return value1 * value2;
+    }
+
     public String toHexString() {
         return Double.toHexString(thisDouble);
     }
@@ -171,6 +175,7 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
         return Double.longBitsToDouble(bits);
     }
 
+    @SuppressWarnings("squid:S4351")
     public int compareTo(Double anotherDouble) {
         return thisDouble.compareTo(anotherDouble);
     }

@@ -45,6 +45,20 @@ public interface LongListX extends LongCollection, PrimitiveSortable<LongCompara
 
     int lastIndexOf(long l);
 
+    default int lastIndex() {
+        return size() - 1;
+    }
+
+    @Override
+    default long first() {
+        return get(0);
+    }
+
+    @Override
+    default long last() {
+        return get(lastIndex());
+    }
+
     @Override
     ListX<Long> boxed();
 

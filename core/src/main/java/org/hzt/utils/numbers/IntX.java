@@ -81,6 +81,10 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return multipleOf(2).test(i);
     }
 
+    public static int times(int value1, int value2) {
+        return value1 * value2;
+    }
+
     public boolean isEven() {
         return isEven(integer);
     }
@@ -218,6 +222,7 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return Integer.decode(nm);
     }
 
+    @SuppressWarnings("squid:S4351")
     public int compareTo(Integer anotherInteger) {
         return integer.compareTo(anotherInteger);
     }

@@ -46,6 +46,20 @@ public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleC
 
     int lastIndexOf(double d);
 
+    default int lastIndex() {
+        return size() - 1;
+    }
+
+    @Override
+    default double first() {
+        return get(0);
+    }
+
+    @Override
+    default double last() {
+        return get(lastIndex());
+    }
+
     @Override
     default ListX<Double> boxed() {
         return asSequence().boxed().toListX();

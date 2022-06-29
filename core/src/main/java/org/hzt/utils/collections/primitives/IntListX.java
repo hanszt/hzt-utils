@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.function.IntUnaryOperator;
-import java.util.function.ToIntFunction;
 
 public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator>, BinarySearchable<IntUnaryOperator> {
 
@@ -46,6 +45,20 @@ public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator
     int indexOf(int i);
 
     int lastIndexOf(int i);
+
+    default int lastIndex() {
+        return size() - 1;
+    }
+
+    @Override
+    default int first() {
+        return get(0);
+    }
+
+    @Override
+    default int last() {
+        return get(lastIndex());
+    }
 
     default int random() {
         return findRandom().orElseThrow();

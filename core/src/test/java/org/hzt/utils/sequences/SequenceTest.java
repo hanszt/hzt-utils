@@ -14,7 +14,6 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collections.primitives.IntListX;
 import org.hzt.utils.collections.primitives.IntMutableListX;
-import org.hzt.utils.iterables.Reducable;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.ranges.IntRange;
@@ -81,8 +80,13 @@ class SequenceTest {
     @Test
     void testSimpleStreamWithFilterYieldsIteratorWithNext() {
         final ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6);
-        final Sequence<Integer> sequence = Sequence.of(list)
-                .filter(SequenceTest::filterNotCalledWhenNotConsumed);
+
+        final var sequence = Sequence.of(list)
+                .filter(SequenceTest::filterNotCalledWhenNotConsumed)
+                .withIndex()
+                .windowed(4);
+
+        System.out.println(sequence);
 
         assertNotNull(sequence);
     }
@@ -828,12 +832,10 @@ class SequenceTest {
 
         final var approximations = IntSequence.generate(900, i -> ++i)
                 .mapToObj(Generator::fibSumBd)
-                .windowed(2)
-                .map(w -> w.last().divide(w.first(), scale, RoundingMode.HALF_UP))
-                .windowed(2)
-                .takeWhileInclusive(approximation -> !approximation.first().equals(approximation.last()))
-                .filter(ListX::isNotEmpty)
-                .map(Reducable::last)
+                .zipWithNext((cur, next) -> next.divide(cur, scale, RoundingMode.HALF_UP))
+                .zipWithNext()
+                .takeWhileInclusive(It::notEquals)
+                .map(Map.Entry::getValue)
                 .take(MAX_ITERATIONS)
                 .toListX();
 

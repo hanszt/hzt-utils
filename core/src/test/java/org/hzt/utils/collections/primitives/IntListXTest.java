@@ -6,11 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class IntListXTest {
 
@@ -71,5 +67,24 @@ class IntListXTest {
         final int indexInSortedList = sortedList.binarySearch(value -> value - valueToSearchFor);
 
         assertEquals(3, indexInSortedList);
+    }
+
+    @Test
+    void testIndices() {
+        final var intList = IntListX.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
+        int[] indices1 = new int[intList.size()];
+        for (int i : intList.indices()) {
+            indices1[i] = i;
+        }
+        int[] indices2 = new int[intList.size()];
+        for (int i = 0; i < intList.size(); i++) {
+            indices2[i] = i;
+        }
+        int[] indices3 = intList.indicesAsStream().toArray();
+
+        assertAll(
+                () -> assertArrayEquals(indices1, indices2),
+                () -> assertArrayEquals(indices1, indices3)
+        );
     }
 }

@@ -4,6 +4,7 @@ import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.It;
+import org.hzt.utils.function.primitives.IndexedConsumer;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.EntrySequence;
 import org.hzt.utils.strings.StringX;
@@ -18,7 +19,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,7 +62,7 @@ class MapXTest {
     @Test
     void testForEachIndexed() {
         List<IndexedValue<Map.Entry<String, Museum>>> list = new ArrayList<>();
-        BiConsumer<Integer, Map.Entry<String, Museum>> biConsumer = (index, value) -> list.add(new IndexedValue<>(index, value));
+        IndexedConsumer<Map.Entry<String, Museum>> biConsumer = (index, value) -> list.add(new IndexedValue<>(index, value));
 
         final List<Museum> museumListContainingNulls = TestSampleGenerator.getMuseumListContainingNulls();
 

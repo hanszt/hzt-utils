@@ -7,7 +7,8 @@ import java.util.regex.Pattern;
 public final class Patterns {
 
     public static final Pattern commaPattern = Pattern.compile(",");
-
+    public static final Pattern arrowPattern = Pattern.compile(" -> ");
+    public static final Pattern pipePattern = Pattern.compile("\\| ");
     public static final Pattern blankStringPattern = Pattern.compile("\\s+", Pattern.UNICODE_CHARACTER_CLASS);
 
     /**

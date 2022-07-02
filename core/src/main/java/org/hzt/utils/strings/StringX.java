@@ -1,7 +1,7 @@
 package org.hzt.utils.strings;
 
-import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
+import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.comparables.ComparableX;
@@ -9,7 +9,9 @@ import org.hzt.utils.numbers.BigDecimalX;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.numbers.LongX;
+import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
@@ -28,6 +30,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static org.hzt.utils.PreConditions.require;
 
 @SuppressWarnings("squid:S1448")
 public final class StringX implements CharSequence, Sequence<Character>, Transformable<StringX>, ComparableX<StringX> {
@@ -373,7 +377,58 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return split(0, delimiter);
     }
 
-    public ListX<String> split(int limit, @NotNull CharSequence delimiter) {
+    public Sequence<String> splitToSequence(@NotNull String delimiters) {
+        return split(delimiters).asSequence();
+    }
+
+    public Sequence<String> splitToSequence(final boolean ignoreCase,
+                                            final int limit, @NotNull
+                                            final String... delimiters) {
+        return rangeDelimitedBy(string, delimiters, 0, ignoreCase, limit)
+                .map(range -> string.substring(range.start(), range.endInclusive()));
+    }
+
+    private static Sequence<IntRange> rangeDelimitedBy(final CharSequence charSequence,
+                                                       final String[] delimiters,
+                                                       final int startIndex,
+                                                       final boolean ignoreCase,
+                                                       final int limit) {
+        require(limit >= 0, () -> "Limit must be non-negative, but was " + limit);
+        return new DelimitedRangeSequence(charSequence, startIndex, limit,
+                (string, curIndex) -> findAnyOf(string, curIndex, ListX.of(delimiters), ignoreCase, false));
+    }
+
+    private static IndexedValue<String> findAnyOf(final String charSeq,
+                                                  final int startIndex,
+                                                  final CollectionX<String> strings,
+                                                  final boolean ignoreCase,
+                                                  final boolean last) {
+        if (!ignoreCase && strings.size() == 1) {
+            final String string = strings.single();
+            final int index = (!last) ? charSeq.indexOf(string, startIndex) : charSeq.lastIndexOf(string, startIndex);
+            return (index < 0) ? null : new IndexedValue<>(index, string);
+        }
+// TODO: 2-7-2022 Needs to be finished
+
+//        val indices = if (!last) startIndex.coerceAtLeast(0)..length else startIndex.coerceAtMost(lastIndex) downTo 0
+//
+//        if (this is String) {
+//            for (index in indices) {
+//                val matchingString = strings.firstOrNull { it.regionMatches(0, this, index, it.length, ignoreCase) }
+//                if (matchingString != null)
+//                    return index to matchingString
+//            }
+//        } else {
+//            for (index in indices) {
+//                val matchingString = strings.firstOrNull { it.regionMatchesImpl(0, this, index, it.length, ignoreCase) }
+//                if (matchingString != null)
+//                    return index to matchingString
+//            }
+//        }
+        return null;
+    }
+
+    public ListX<String> split(final int limit, @NotNull final CharSequence delimiter) {
         final var delimiterAsString = StringX.of(delimiter).toString();
         return split(delimiterAsString, limit);
     }
@@ -385,8 +440,8 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
      *
      * This method is inspired by the Kotlin standard library
      */
-    private ListX<String> split(String delimiter, int limit) {
-        PreConditions.require(limit >= 0, () -> "Limit must be non-negative, but was " + limit);
+    private ListX<String> split(final String delimiter, final int limit) {
+        require(limit >= 0, () -> "Limit must be non-negative, but was " + limit);
         var currentOffset = 0;
         var nextIndex = indexOf(delimiter, currentOffset);
         if (nextIndex == -1 || limit == 1) {

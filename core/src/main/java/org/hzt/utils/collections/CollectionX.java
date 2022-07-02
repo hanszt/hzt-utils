@@ -9,7 +9,6 @@ import org.hzt.utils.collections.primitives.LongListX;
 import org.hzt.utils.collections.primitives.LongMutableListX;
 import org.hzt.utils.iterables.IterableX;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.strings.StringX;
 import org.hzt.utils.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
@@ -155,10 +154,6 @@ public interface CollectionX<E> extends IterableX<E> {
 
     default ListX<IndexedValue<E>> withIndex() {
         return Sequence.of(this::indexedIterator).toListX();
-    }
-
-    default IntSequence indices() {
-        return asSequence().withIndex().mapToInt(IndexedValue::index);
     }
 
     @Override

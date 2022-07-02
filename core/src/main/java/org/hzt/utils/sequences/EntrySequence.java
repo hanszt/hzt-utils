@@ -1,8 +1,10 @@
 package org.hzt.utils.sequences;
 
-import org.hzt.utils.iterables.EntryIterable;
-import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.It;
+import org.hzt.utils.iterables.EntryIterable;
+import org.hzt.utils.iterators.SkipWhileIterator;
+import org.hzt.utils.iterators.TakeWhileIterator;
+import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -157,12 +159,28 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return EntrySequence.of(Sequence.super.skipWhile(e -> predicate.test(e.getValue())));
     }
 
+    default EntrySequence<K, V> skipWhile(@NotNull BiPredicate<? super K, ? super V> predicate) {
+        return () -> SkipWhileIterator.of(iterator(), e -> predicate.test(e.getKey(), e.getValue()), false);
+    }
+
+    default EntrySequence<K, V> skipWhileInclusive(@NotNull BiPredicate<? super K, ? super V> predicate) {
+        return () -> SkipWhileIterator.of(iterator(), e -> predicate.test(e.getKey(), e.getValue()), true);
+    }
+
     default EntrySequence<K, V> takeWhileKeys(Predicate<K> predicate) {
         return EntrySequence.of(Sequence.super.takeWhile(e -> predicate.test(e.getKey())));
     }
 
     default EntrySequence<K, V> takeWhileValues(Predicate<V> predicate) {
         return EntrySequence.of(Sequence.super.takeWhile(e -> predicate.test(e.getValue())));
+    }
+
+    default EntrySequence<K, V> takeWhile(@NotNull BiPredicate<? super K, ? super V> predicate) {
+        return () -> TakeWhileIterator.of(iterator(), e -> predicate.test(e.getKey(), e.getValue()), false);
+    }
+
+    default EntrySequence<K, V> takeWhileInclusive(@NotNull BiPredicate<? super K, ? super V> predicate) {
+        return () -> TakeWhileIterator.of(iterator(), e -> predicate.test(e.getKey(), e.getValue()), true);
     }
 
     @Override
@@ -174,4 +192,19 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     default EntrySequence<K, V> take(long n) {
         return EntrySequence.of(Sequence.super.take(n));
     }
+
+    default Sequence<V> merge() {
+        return flatMap(e -> Sequence.of(keyAsValueTypeOrThrow(e, "Merge not allowed"), e.getValue()));
+    }
+
+    private V keyAsValueTypeOrThrow(Map.Entry<K, V> entry, String message) {
+        K k = entry.getKey();
+        V v = entry.getValue();
+        if (k.getClass() == v.getClass()) {
+            //noinspection unchecked
+            return (V) k;
+        }
+        throw new IllegalStateException("Key and value not of same type. " + message);
+    }
+
 }

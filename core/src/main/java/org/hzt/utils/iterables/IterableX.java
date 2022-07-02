@@ -11,6 +11,7 @@ import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.PrimitiveIterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -33,7 +34,7 @@ import java.util.stream.StreamSupport;
  */
 public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, Takeable<T>, Zippable<T>, Windowable<T>,
         Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>,
-        Collectable<T>, Groupable<T>, Streamable<Stream<T>> {
+        Collectable<T>, Groupable<T>, Streamable<Stream<T>>, Indexable<T> {
 
     default AtomicIterator<T> atomicIterator() {
         return AtomicIterator.of(iterator());
@@ -137,5 +138,10 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
             counter++;
         }
         return result;
+    }
+
+    @Override
+    default PrimitiveIterator.@NotNull OfInt indexIterator() {
+        return Mappable.super.indexIterator();
     }
 }

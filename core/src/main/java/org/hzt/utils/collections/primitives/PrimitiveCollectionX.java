@@ -1,7 +1,9 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.CollectionX;
+import org.hzt.utils.iterables.Indexable;
 import org.hzt.utils.iterables.Stringable;
+import org.hzt.utils.iterators.IndexIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
@@ -12,7 +14,7 @@ import java.util.Spliterator;
  * @param <C> The PrimitiveConsumer
  * @param <A> The primitive array Type
  */
-public interface PrimitiveCollectionX<T, C, A> extends Stringable<T> {
+public interface PrimitiveCollectionX<T, C, A> extends Stringable<T>, Indexable<T> {
 
     int size();
 
@@ -38,4 +40,10 @@ public interface PrimitiveCollectionX<T, C, A> extends Stringable<T> {
     CollectionX<T> boxed();
 
     A toArray();
+
+    @Override
+    @NotNull
+    default PrimitiveIterator.OfInt indexIterator() {
+        return IndexIterator.of(iterator());
+    }
 }

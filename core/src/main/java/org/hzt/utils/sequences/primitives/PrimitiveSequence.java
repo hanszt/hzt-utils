@@ -1,5 +1,6 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.iterables.Indexable;
 import org.hzt.utils.iterables.Stringable;
 import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <P> The NumberPredicate
  * @param <B> The NumberBinaryOperator
  */
-public interface PrimitiveSequence<T extends Number, C, F, P, B> extends Stringable<T> {
+public interface PrimitiveSequence<T extends Number, C, F, P, B> extends Stringable<T>, Indexable<T> {
 
     Sequence<T> boxed();
 

@@ -167,7 +167,7 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
     @SuppressWarnings("squid:S1188")
     public PrimitiveListIterator.OfLong listIterator(int startIndex) {
         return new PrimitiveListIterator.OfLong() {
-            private int index = 0;
+            private int index = startIndex;
 
             @Override
             public boolean hasNext() {

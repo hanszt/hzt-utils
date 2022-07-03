@@ -1,8 +1,8 @@
 package org.hzt.utils.strings;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -13,7 +13,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StringXTest {
 
@@ -160,5 +164,25 @@ class StringXTest {
         final String actual = StringX.capitalized(input);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testSplitToSequence() {
+        String string = "hallo, this, is, a, test -> answer";
+        final var strings = StringX.of(string).splitToSequence(", ", " -> ");
+
+        strings.forEach(System.out::println);
+
+        assertIterableEquals(Sequence.of("hallo", "this", "is", "a", "test", "answer"), strings);
+    }
+
+    @Test
+    void testSplitToSequenceIgnoreCase() {
+        String string = "halloO thiso isO a, test -> answer";
+        final var strings = StringX.of(string).splitToSequence(true,", ", "o ", " -> ");
+
+        strings.forEach(System.out::println);
+
+        assertIterableEquals(Sequence.of("hallo", "this", "is", "a", "test", "answer"), strings);
     }
 }

@@ -2,7 +2,9 @@ package org.hzt.utils.progressions;
 
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.sequences.primitives.LongSequence;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.PrimitiveIterator;
 
 public class LongProgression implements LongSequence {
@@ -35,6 +37,23 @@ public class LongProgression implements LongSequence {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LongProgression longs = (LongProgression) o;
+        return start == longs.start && endInclusive == longs.endInclusive && step == longs.step;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, endInclusive, step);
+    }
+
+    @Override
     public PrimitiveIterator.OfLong iterator() {
         return new PrimitiveIterator.OfLong() {
             private long next = start;
@@ -52,11 +71,24 @@ public class LongProgression implements LongSequence {
         };
     }
 
-    protected Long start() {
+    public @NotNull Long start() {
         return start;
     }
 
-    protected Long endInclusive() {
+    public @NotNull Long endInclusive() {
         return endInclusive;
+    }
+
+    public long getStep() {
+        return step;
+    }
+
+    @Override
+    public String toString() {
+        return "LongProgression{" +
+                "start=" + start +
+                ", endInclusive=" + endInclusive +
+                ", step=" + step +
+                '}';
     }
 }

@@ -115,6 +115,10 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return findLast().orElseThrow();
     }
 
+    default int last(@NotNull IntPredicate predicate) {
+        return findLast(predicate).orElseThrow();
+    }
+
     default @NotNull OptionalInt findLast() {
         return findLast(It::noIntFilter);
     }

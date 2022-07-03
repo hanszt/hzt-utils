@@ -3,15 +3,22 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.arrays.primitves.PrimitiveArrays;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
+import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.markerinterfaces.BinarySearchable;
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.primitive_comparators.LongComparator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.OptionalLong;
 import java.util.function.Consumer;
+import java.util.function.LongPredicate;
 import java.util.function.LongToIntFunction;
 
-public interface LongListX extends LongCollection, PrimitiveSortable<LongComparator>, BinarySearchable<LongToIntFunction> {
+public interface LongListX extends LongCollection,
+        PrimitiveList<PrimitiveListIterator.OfLong>,
+        PrimitiveSortable<LongComparator>,
+        BinarySearchable<LongToIntFunction> {
 
     static LongListX empty() {
         return new LongArrayList();
@@ -57,6 +64,26 @@ public interface LongListX extends LongCollection, PrimitiveSortable<LongCompara
     @Override
     default long last() {
         return get(lastIndex());
+    }
+
+    @Override
+    @NotNull
+    default OptionalLong findLast() {
+        final var lastIndex = lastIndex();
+        return lastIndex < 0 ? OptionalLong.empty() : OptionalLong.of(get(lastIndex));
+    }
+
+    @Override
+    @NotNull
+    default OptionalLong findLast(@NotNull LongPredicate predicate) {
+        PrimitiveListIterator.OfLong iterator = listIterator(lastIndex());
+        while (iterator.hasPrevious()) {
+            final var previousLong = iterator.previousLong();
+            if (predicate.test(previousLong)) {
+                return OptionalLong.of(previousLong);
+            }
+        }
+        return OptionalLong.empty();
     }
 
     @Override

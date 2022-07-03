@@ -3,6 +3,8 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.sequences.primitives.LongSequence;
 import org.junit.jupiter.api.Test;
 
+import java.util.OptionalLong;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,6 +50,15 @@ class LongListXTest {
         final int indexInSortedList = sortedList.binarySearch(value -> Long.compare(value, valueToSearchFor));
 
         assertEquals(3, indexInSortedList);
+    }
+
+    @Test
+    void testFindLast() {
+        final var longs = LongListX.of(1, 2, 3, 4, 3, 5, 2, 5, 4, 3, 8, 2, 3, 4);
+
+        final var last = longs.findLast(l -> l > 4);
+
+        assertEquals(OptionalLong.of(8), last);
     }
 
 }

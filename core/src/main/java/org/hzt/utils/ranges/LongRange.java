@@ -44,14 +44,4 @@ public final class LongRange extends LongProgression implements ClosedRange<Long
     public boolean containsAll(long @NotNull ... array) {
         return LongSequence.of(array).all(this::contains);
     }
-
-    @Override
-    public @NotNull Long start() {
-        return super.start();
-    }
-
-    @Override
-    public @NotNull Long endInclusive() {
-        return super.endInclusive();
-    }
 }

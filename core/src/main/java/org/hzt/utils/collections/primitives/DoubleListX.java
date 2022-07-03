@@ -3,15 +3,21 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.arrays.primitves.PrimitiveArrays;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
+import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.markerinterfaces.BinarySearchable;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.OptionalDouble;
 import java.util.function.Consumer;
+import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
 
-public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleComparator>,
+public interface DoubleListX extends DoubleCollection,
+        PrimitiveList<PrimitiveListIterator.OfDouble>,
+        PrimitiveSortable<DoubleComparator>,
         BinarySearchable<DoubleToIntFunction> {
 
     static DoubleListX empty() {
@@ -58,6 +64,26 @@ public interface DoubleListX extends DoubleCollection, PrimitiveSortable<DoubleC
     @Override
     default double last() {
         return get(lastIndex());
+    }
+
+    @Override
+    @NotNull
+    default OptionalDouble findLast() {
+        final var lastIndex = lastIndex();
+        return lastIndex < 0 ? OptionalDouble.empty() : OptionalDouble.of(get(lastIndex));
+    }
+
+    @Override
+    @NotNull
+    default OptionalDouble findLast(@NotNull DoublePredicate predicate) {
+        PrimitiveListIterator.OfDouble iterator = listIterator(lastIndex());
+        while (iterator.hasPrevious()) {
+            final var previousDouble = iterator.previousDouble();
+            if (predicate.test(previousDouble)) {
+                return OptionalDouble.of(previousDouble);
+            }
+        }
+        return OptionalDouble.empty();
     }
 
     @Override

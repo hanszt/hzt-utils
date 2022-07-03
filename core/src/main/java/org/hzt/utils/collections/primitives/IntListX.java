@@ -3,16 +3,22 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.arrays.primitves.PrimitiveArrays;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
+import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.markerinterfaces.BinarySearchable;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
+import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
-public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator>, BinarySearchable<IntUnaryOperator> {
+public interface IntListX extends IntCollection,
+        PrimitiveList<PrimitiveListIterator.OfInt>,
+        PrimitiveSortable<IntComparator>,
+        BinarySearchable<IntUnaryOperator> {
 
     static IntListX empty() {
         return new IntArrayList();
@@ -58,6 +64,26 @@ public interface IntListX extends IntCollection, PrimitiveSortable<IntComparator
     @Override
     default int last() {
         return get(lastIndex());
+    }
+
+    @Override
+    @NotNull
+    default OptionalInt findLast() {
+        final var lastIndex = lastIndex();
+        return lastIndex < 0 ? OptionalInt.empty() : OptionalInt.of(get(lastIndex));
+    }
+
+    @Override
+    @NotNull
+    default OptionalInt findLast(@NotNull IntPredicate predicate) {
+        PrimitiveListIterator.OfInt iterator = listIterator(lastIndex());
+        while (iterator.hasPrevious()) {
+            final var previousInt = iterator.previousInt();
+            if (predicate.test(previousInt)) {
+                return OptionalInt.of(previousInt);
+            }
+        }
+        return OptionalInt.empty();
     }
 
     default int random() {

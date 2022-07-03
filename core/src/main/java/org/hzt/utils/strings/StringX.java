@@ -12,7 +12,9 @@ import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.IndexedValue;
+import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -33,7 +35,7 @@ import java.util.stream.Stream;
 
 import static org.hzt.utils.PreConditions.require;
 
-@SuppressWarnings("squid:S1448")
+@SuppressWarnings({"squid:S1448", "squid:S1200", "squid:S4351"})
 public final class StringX implements CharSequence, Sequence<Character>, Transformable<StringX>, ComparableX<StringX> {
 
     private final String string;
@@ -373,58 +375,63 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return ListX.of(string.split(regex.toString(), limit));
     }
 
-    public ListX<String> split(@NotNull CharSequence delimiter) {
+    public ListX<String> split(final @NotNull CharSequence delimiter) {
         return split(0, delimiter);
     }
 
-    public Sequence<String> splitToSequence(@NotNull String delimiters) {
-        return split(delimiters).asSequence();
+    public ListX<String> split(final @NotNull String... delimiters) {
+        return splitToSequence(false, delimiters).toListX();
     }
 
+    public Sequence<String> splitToSequence(final @NotNull String... delimiters) {
+        return splitToSequence(false, delimiters);
+    }
+
+    public Sequence<String> splitToSequence(final boolean ignoreCase, final String... delimiters) {
+        return splitToSequence(ignoreCase, 0, delimiters);
+    }
     public Sequence<String> splitToSequence(final boolean ignoreCase,
                                             final int limit, @NotNull
                                             final String... delimiters) {
-        return rangeDelimitedBy(string, delimiters, 0, ignoreCase, limit)
-                .map(range -> string.substring(range.start(), range.endInclusive()));
+        return rangeDelimitedBy(string, delimiters, ignoreCase, limit)
+                .map(range -> string.substring(range.start(), range.endInclusive() + 1));
     }
 
-    private static Sequence<IntRange> rangeDelimitedBy(final CharSequence charSequence,
+    private static Sequence<IntRange> rangeDelimitedBy(final String string,
                                                        final String[] delimiters,
-                                                       final int startIndex,
                                                        final boolean ignoreCase,
                                                        final int limit) {
         require(limit >= 0, () -> "Limit must be non-negative, but was " + limit);
-        return new DelimitedRangeSequence(charSequence, startIndex, limit,
-                (string, curIndex) -> findAnyOf(string, curIndex, ListX.of(delimiters), ignoreCase, false));
+        return new DelimitedRangesSequence(string, 0, limit,
+                (s, curIndex) -> findAnyOf(delimiters, ignoreCase, s, curIndex));
     }
 
-    private static IndexedValue<String> findAnyOf(final String charSeq,
+    @Nullable
+    private static Pair<Integer, Integer> findAnyOf(String[] delimiters, boolean ignoreCase, String s, Integer curIndex) {
+        final var indexedValue = findAnyOf(s, curIndex, ListX.of(delimiters), ignoreCase);
+        return indexedValue != null ? Pair.of(indexedValue.index(), indexedValue.value().length()) : null;
+    }
+
+    private static IndexedValue<String> findAnyOf(final String string,
                                                   final int startIndex,
                                                   final CollectionX<String> strings,
-                                                  final boolean ignoreCase,
-                                                  final boolean last) {
+                                                  final boolean ignoreCase) {
         if (!ignoreCase && strings.size() == 1) {
-            final String string = strings.single();
-            final int index = (!last) ? charSeq.indexOf(string, startIndex) : charSeq.lastIndexOf(string, startIndex);
-            return (index < 0) ? null : new IndexedValue<>(index, string);
+            final String singleString = strings.single();
+            final int index = string.indexOf(singleString, startIndex);
+            return (index < 0) ? null : new IndexedValue<>(index, singleString);
         }
-// TODO: 2-7-2022 Needs to be finished
 
-//        val indices = if (!last) startIndex.coerceAtLeast(0)..length else startIndex.coerceAtMost(lastIndex) downTo 0
-//
-//        if (this is String) {
-//            for (index in indices) {
-//                val matchingString = strings.firstOrNull { it.regionMatches(0, this, index, it.length, ignoreCase) }
-//                if (matchingString != null)
-//                    return index to matchingString
-//            }
-//        } else {
-//            for (index in indices) {
-//                val matchingString = strings.firstOrNull { it.regionMatchesImpl(0, this, index, it.length, ignoreCase) }
-//                if (matchingString != null)
-//                    return index to matchingString
-//            }
-//        }
+        final var indices = IntRange.closed(Math.max(startIndex, 0), string.length());
+
+        for (int index : indices) {
+            final String matchingString = strings
+                    .findFirst(s -> s.regionMatches(ignoreCase, 0, string, index, s.length()))
+                    .orElse(null);
+            if (matchingString != null) {
+                return new IndexedValue<>(index, matchingString);
+            }
+        }
         return null;
     }
 

@@ -29,12 +29,27 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return target > integer ? IntProgression.empty() : IntProgression.closed(integer, target, -1);
     }
 
-    public IntSequence upTo(int target) {
-        return target < integer ? IntSequence.empty() : IntRange.closed(integer, target);
+    public IntRange upTo(int target) {
+        return target < integer ? IntRange.empty() : IntRange.closed(integer, target);
     }
 
     public IntRange until(int bound) {
         return IntRange.of(integer, bound);
+    }
+
+    public int coerceIn(final  int minimumValue, final int maximumValue) {
+        return coerceIn(integer, minimumValue, maximumValue);
+    }
+
+    public static int coerceIn(int integer, int minimumValue, int maximumValue) {
+        if (minimumValue > maximumValue) {
+            throw new IllegalArgumentException("Cannot coerce value to an empty range: maximum " +
+                    maximumValue + " is less than minimum " + minimumValue);
+        }
+        if (integer < minimumValue) {
+            return minimumValue;
+        }
+        return Math.min(integer, maximumValue);
     }
 
     public static String toString(int i, int radix) {

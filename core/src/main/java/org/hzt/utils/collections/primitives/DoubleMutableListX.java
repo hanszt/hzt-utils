@@ -42,8 +42,6 @@ public interface DoubleMutableListX extends DoubleListX, DoubleMutableCollection
         return this;
     }
 
-    PrimitiveListIterator.OfDouble listIterator();
-
     default PrimitiveIterator.OfDouble iterator() {
         return listIterator();
     }

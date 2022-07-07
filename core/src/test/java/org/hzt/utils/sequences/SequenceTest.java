@@ -14,7 +14,6 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collections.primitives.IntListX;
 import org.hzt.utils.collections.primitives.IntMutableListX;
-import org.hzt.utils.iterables.Reducable;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.ranges.IntRange;
@@ -85,8 +84,13 @@ class SequenceTest {
     @Test
     void testSimpleStreamWithFilterYieldsIteratorWithNext() {
         final ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6);
-        final Sequence<Integer> sequence = Sequence.of(list)
-                .filter(SequenceTest::filterNotCalledWhenNotConsumed);
+
+        final var sequence = Sequence.of(list)
+                .filter(SequenceTest::filterNotCalledWhenNotConsumed)
+                .withIndex()
+                .windowed(4);
+
+        System.out.println(sequence);
 
         assertNotNull(sequence);
     }
@@ -127,7 +131,7 @@ class SequenceTest {
         final long sum = Sequence.of(list)
                 .map(String::length)
                 .filterIndexed((index, length) -> length > 2 && IntX.isOdd(index))
-                .sumOfLongs(It::self);
+                .longSumOf(It::self);
 
         assertEquals(6, sum);
     }
@@ -138,7 +142,7 @@ class SequenceTest {
 
         final ListX<BigDecimal> sum = Sequence.of(list)
                 .mapNotNull(BankAccount::getBalance)
-                .toListX();
+                .toMutableList();
 
         assertFalse(sum.contains(null));
     }
@@ -169,6 +173,7 @@ class SequenceTest {
     @Test
     void testMapFilterReduceToSet() {
        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+
         final SetX<Integer> result = list.asSequence()
                 .map(String::length)
                 .toSetX();
@@ -232,7 +237,7 @@ class SequenceTest {
         final ListX<Integer> result = Sequence.generate(0, i -> ++i)
                 .windowed(8, 3)
                 .onEach(windows::add)
-                .takeWhile(s -> s.sumOfInts(It::asInt) < 1_000_000)
+                .takeWhile(s -> s.intSumOf(It::asInt) < 1_000_000)
                 .<Integer>mapMulti(Iterable::forEach)
                 .toListX();
 
@@ -547,8 +552,8 @@ class SequenceTest {
     void testSequenceOfMap() {
         final MapX<Integer, String> map = MapX.of(1, "a", 2, "b", 3, "c", 4, "d");
 
-        final MapX<Integer, Character> entries = Sequence.of(map)
-                .mapValues(s -> StringX.of(s).first())
+        final MapX<Integer, Character> entries = Sequence.ofMap(map)
+                .mapByValues(s -> StringX.of(s).first())
                 .filterValues(Character::isLetter)
                 .filterKeys(IntX::isEven)
                 .toMapX();
@@ -563,7 +568,7 @@ class SequenceTest {
         final MapX<Integer, Character> map = list.asSequence()
                 .associateWith(String::valueOf)
                 .onEach(It::println)
-                .mapValues(s -> StringX.of(s).first())
+                .mapByValues(s -> StringX.of(s).first())
                 .filterKeys(IntX::isEven)
                 .onEachKey(It::println)
                 .toMapX();
@@ -586,7 +591,7 @@ class SequenceTest {
     void testSequenceFromStream() {
         final Stream<Integer> stream = IntStream.range(0, 100).boxed();
 
-        final List<IndexedValue<Integer>> list = Sequence.of(stream)
+        final List<IndexedValue<Integer>> list = Sequence.ofStream(stream)
                 .filter(IntX::isEven)
                 .sorted()
                 .windowed(3, true)
@@ -611,7 +616,7 @@ class SequenceTest {
 
         It.println("first = " + first);
         It.println("last = " + last);
-        final IntStatistics stats = leapYears.statsOfInts(Year::getValue);
+        final IntStatistics stats = leapYears.intStatsOf(Year::getValue);
 
         assertAll(
                 () -> assertEquals(Year.of(1904), first),
@@ -831,12 +836,10 @@ class SequenceTest {
 
         final ListX<BigDecimal> approximations = IntSequence.generate(900, i -> ++i)
                 .mapToObj(Generator::fibSumBd)
-                .windowed(2)
-                .map(w -> w.last().divide(w.first(), scale, RoundingMode.HALF_UP))
-                .windowed(2)
-                .takeWhileInclusive(approximation -> !approximation.first().equals(approximation.last()))
-                .filter(ListX::isNotEmpty)
-                .map(Reducable::last)
+                .zipWithNext((cur, next) -> next.divide(cur, scale, RoundingMode.HALF_UP))
+                .zipWithNext()
+                .takeWhileInclusive(It::notEquals)
+                .map(Map.Entry::getValue)
                 .take(MAX_ITERATIONS)
                 .toListX();
 

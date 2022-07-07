@@ -1,8 +1,8 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.PreConditions;
-import org.hzt.utils.arrays.primitves.PrimitiveSort;
-import org.hzt.utils.iterables.primitives.DoubleIterable;
+import org.hzt.utils.arrays.primitves.PrimitiveArrays;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.jetbrains.annotations.NotNull;
@@ -31,8 +31,8 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
 
     DoubleArrayList(Iterable<Double> iterable) {
         this();
-        if (iterable instanceof DoubleIterable) {
-            final PrimitiveIterator.OfDouble iterator = ((DoubleIterable) iterable).iterator();
+        if (iterable instanceof PrimitiveIterable.OfDouble) {
+            final PrimitiveIterator.OfDouble iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextDouble());
             }
@@ -210,7 +210,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
 
     @Override
     public void sort(DoubleComparator comparator) {
-        PrimitiveSort.sort(elementData, 0, size, comparator);
+        PrimitiveArrays.sort(0, size, comparator, elementData);
     }
 
     @Override

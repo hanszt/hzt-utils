@@ -14,7 +14,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
@@ -83,7 +82,7 @@ public final class IterableXHelper {
         return Optional.ofNullable(result);
     }
 
-    static <R, K extends Comparable<? super K>> K asComparableOrThrow(R key) {
+    public static <R, K extends Comparable<? super K>> K asComparableOrThrow(R key) {
         if (key instanceof Comparable) {
             Comparable<?> c = (Comparable<?>) key;
             //noinspection unchecked
@@ -145,10 +144,6 @@ public final class IterableXHelper {
             index--;
         }
         return Optional.empty();
-    }
-
-    public static double nextRandomDouble() {
-        return RANDOM.nextDouble();
     }
 
     @NotNull

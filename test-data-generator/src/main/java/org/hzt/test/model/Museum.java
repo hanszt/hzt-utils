@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class Museum implements Comparable<Museum>, Iterable<Painting> {
+public final class Museum implements Comparable<Museum>, Iterable<Painting> {
 
     private final String name;
     private final LocalDate dateOfOpening;
@@ -95,7 +95,7 @@ public class Museum implements Comparable<Museum>, Iterable<Painting> {
     }
 
     @Override
-    public Iterator<Painting> iterator() {
+    public @NotNull Iterator<Painting> iterator() {
         return paintingList.iterator();
     }
 

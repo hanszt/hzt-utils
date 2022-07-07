@@ -9,7 +9,6 @@ import org.hzt.utils.collections.primitives.LongListX;
 import org.hzt.utils.collections.primitives.LongMutableListX;
 import org.hzt.utils.iterables.IterableX;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.strings.StringX;
 import org.hzt.utils.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
@@ -65,7 +64,7 @@ public interface CollectionX<E> extends IterableX<E> {
     default ListX<E> plus(@NotNull E values) {
         final MutableListX<E> list = MutableListX.of(this);
         list.add(values);
-        return list;
+        return ListX.copyOf(list);
     }
 
     default ListX<E> plus(@NotNull Iterable<E> values) {
@@ -73,7 +72,7 @@ public interface CollectionX<E> extends IterableX<E> {
         for (E value : values) {
             list.add(value);
         }
-        return list;
+        return ListX.copyOfNullsAllowed(list);
     }
 
     default boolean containsNoneOf(@NotNull Iterable<E> iterable) {
@@ -81,27 +80,28 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> map(@NotNull Function<? super E, ? extends R> mapper) {
-        return mapTo(() -> MutableListX.withInitCapacity(size()), mapper);
+        final MutableListX<R> listX = mapTo(() -> MutableListX.withInitCapacity(size()), mapper);
+        return ListX.copyOfNullsAllowed(listX);
     }
 
     default <R> ListX<R> mapIndexed(@NotNull BiFunction<Integer, ? super E, ? extends R> mapper) {
-        return mapIndexedTo(() -> MutableListX.withInitCapacity(size()), mapper);
+        return ListX.copyOf(mapIndexedTo(() -> MutableListX.withInitCapacity(size()), mapper));
     }
 
-    default ListX<E> filter(@NotNull Predicate<E> predicate) {
-        return filterTo(() -> MutableListX.withInitCapacity(size()), predicate);
+    default ListX<E> filter(@NotNull Predicate<? super E> predicate) {
+        return ListX.copyOf(filterTo(() -> MutableListX.withInitCapacity(size()), predicate));
     }
 
     default <R> ListX<E> filterBy(@NotNull Function<? super E, ? extends R> selector, @NotNull Predicate<R> predicate) {
         return asSequence().filter(Objects::nonNull).filter(t -> predicate.test(selector.apply(t))).toListX();
     }
 
-    default ListX<E> filterIndexed(@NotNull BiPredicate<Integer, E> predicate) {
-        return filterIndexedTo(() -> MutableListX.withInitCapacity(size()), predicate);
+    default ListX<E> filterIndexed(@NotNull BiPredicate<? super Integer, ? super E> predicate) {
+        return ListX.copyOf(filterIndexedTo(() -> MutableListX.withInitCapacity(size()), predicate));
     }
 
-    default ListX<E> filterNot(@NotNull Predicate<E> predicate) {
-        return IterableX.super.filterNotTo(() -> MutableListX.withInitCapacity(size()), predicate);
+    default ListX<E> filterNot(@NotNull Predicate<? super E> predicate) {
+        return ListX.copyOf(IterableX.super.filterNotTo(() -> MutableListX.withInitCapacity(size()), predicate));
     }
 
     default <R> ListX<StringX> mapToStringX(@NotNull Function<? super E, ? extends R> mapper) {
@@ -136,15 +136,15 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends R>> mapper) {
-        return flatMapTo(() -> MutableListX.withInitCapacity(size()), mapper);
+        return ListX.copyOf(flatMapTo(() -> MutableListX.withInitCapacity(size()), mapper));
     }
 
     default <R> ListX<R> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<R>> mapper) {
-        return mapMultiTo(() -> MutableListX.withInitCapacity(size()), mapper);
+        return ListX.copyOf(mapMultiTo(() -> MutableListX.withInitCapacity(size()), mapper));
     }
 
     default <R> ListX<R> mapNotNull(@NotNull Function<? super E, ? extends R> mapper) {
-        return mapNotNullTo(() -> MutableListX.withInitCapacity(size()), mapper);
+        return ListX.copyOf(mapNotNullTo(() -> MutableListX.withInitCapacity(size()), mapper));
     }
 
     @Override
@@ -156,33 +156,34 @@ public interface CollectionX<E> extends IterableX<E> {
         return Sequence.of(this::indexedIterator).toListX();
     }
 
-    default IntSequence indices() {
-        return asSequence().withIndex().mapToInt(IndexedValue::index);
-    }
-
     @Override
     default ListX<E> sorted() {
-        return (ListX<E>) IterableX.super.sorted();
+        final var sorted = (MutableListX<E>) IterableX.super.sorted();
+        return ListX.copyOf(sorted);
     }
 
     @Override
     default <R extends Comparable<? super R>> ListX<E> sortedBy(@NotNull Function<? super E, ? extends R> selector) {
-        return (ListX<E>) IterableX.super.sortedBy(selector);
+        final var sorted = (MutableListX<E>) IterableX.super.sortedBy(selector);
+        return ListX.copyOf(sorted);
     }
 
     @Override
-    default ListX<E> sorted(Comparator<E> comparator) {
-        return (ListX<E>) IterableX.super.sorted(comparator);
+    default ListX<E> sorted(Comparator<? super E> comparator) {
+        final var sorted = (MutableListX<E>) IterableX.super.sorted(comparator);
+        return ListX.copyOf(sorted);
     }
 
     @Override
     default ListX<E> sortedDescending() {
-        return (ListX<E>) IterableX.super.sortedDescending();
+        final var listX = (MutableListX<E>) IterableX.super.sortedDescending();
+        return ListX.copyOf(listX);
     }
 
     @Override
     default <R extends Comparable<? super R>> ListX<E> sortedByDescending(@NotNull Function<? super E, ? extends R> selector) {
-        return (ListX<E>) IterableX.super.sortedByDescending(selector);
+        final var listX = (MutableListX<E>) IterableX.super.sortedByDescending(selector);
+        return ListX.copyOf(listX);
     }
 
     @Override
@@ -192,7 +193,7 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default <R> ListX<E> distinctBy(@NotNull Function<E, ? extends R> selector) {
-        return distinctTo(MutableListX::empty, selector);
+        return ListX.copyOf(distinctTo(MutableListX::empty, selector));
     }
 
     default ListX<ListX<E>> chunked(int size) {
@@ -229,46 +230,46 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default <A, R> ListX<R> zip(@NotNull Iterable<A> iterable, @NotNull BiFunction<? super E, ? super A, ? extends R> function) {
-        return zipTo(MutableListX::empty, iterable, function);
+        return ListX.copyOf(zipTo(MutableListX::empty, iterable, function));
     }
 
     default <R> ListX<R> zipWithNext(@NotNull BiFunction<? super E, ? super E, ? extends R> function) {
-        return zipWithNextTo(MutableListX::empty, function);
+        return ListX.copyOf(zipWithNextTo(MutableListX::empty, function));
     }
 
     default <K> MapX<K, E> associateBy(@NotNull Function<? super E, ? extends K> keyMapper) {
-        return toMutableMap(keyMapper, It::self);
+        return toMapX(keyMapper, It::self);
     }
 
     default <V> MapX<E, V> associateWith(@NotNull Function<? super E, ? extends V> valueMapper) {
-        return toMutableMap(It::self, valueMapper);
+        return toMapX(It::self, valueMapper);
     }
 
     default ListX<E> skip(long count) {
-        return skipTo(() -> MutableListX.withInitCapacity(size() - (int) count), (int) count);
+        return ListX.copyOf(skipTo(() -> MutableListX.withInitCapacity(size() - (int) count), (int) count));
     }
 
     @Override
-    default ListX<E> skipWhile(@NotNull Predicate<E> predicate) {
-        return skipWhileTo(MutableListX::empty, predicate, false);
+    default ListX<E> skipWhile(@NotNull Predicate<? super E> predicate) {
+        return ListX.copyOf(skipWhileTo(MutableListX::empty, predicate, false));
     }
 
     @Override
-    default ListX<E> skipWhileInclusive(@NotNull Predicate<E> predicate) {
-        return skipWhileTo(MutableListX::empty, predicate, true);
+    default ListX<E> skipWhileInclusive(@NotNull Predicate<? super E> predicate) {
+        return ListX.copyOf(skipWhileTo(MutableListX::empty, predicate, true));
     }
 
     @Override
     default ListX<E> take(long n) {
-        return takeTo(() -> MutableListX.withInitCapacity((int) n), n);
+        return ListX.copyOf(takeTo(() -> MutableListX.withInitCapacity((int) n), n));
     }
 
-    default ListX<E> takeWhile(@NotNull Predicate<E> predicate) {
-        return takeWhileTo(MutableListX::empty, predicate, false);
+    default ListX<E> takeWhile(@NotNull Predicate<? super E> predicate) {
+        return ListX.copyOf(takeWhileTo(MutableListX::empty, predicate, false));
     }
 
-    default ListX<E> takeWhileInclusive(@NotNull Predicate<E> predicate) {
-        return takeWhileTo(MutableListX::empty, predicate, true);
+    default ListX<E> takeWhileInclusive(@NotNull Predicate<? super E> predicate) {
+        return ListX.copyOf(takeWhileTo(MutableListX::empty, predicate, true));
     }
 
     @Override

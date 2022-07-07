@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+@SuppressWarnings("squid:S107")
 public interface MutableMapX<K, V> extends Map<K, V>, MapX<K, V>, Transformable<MutableMapX<K, V>> {
 
     static <K, V> MutableMapX<K, V> empty() {
@@ -18,7 +19,7 @@ public interface MutableMapX<K, V> extends Map<K, V>, MapX<K, V>, Transformable<
         return new HashMapX<>(capacity);
     }
 
-    static <K, V> MutableMapX<K, V> ofMap(Map<K, V> map) {
+    static <K, V> MutableMapX<K, V> ofMap(Map<? extends K, ? extends V> map) {
         return new HashMapX<>(map);
     }
 

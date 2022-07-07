@@ -1,9 +1,9 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.PreConditions;
-import org.hzt.utils.arrays.primitves.PrimitiveSort;
+import org.hzt.utils.arrays.primitves.PrimitiveArrays;
 import org.hzt.utils.iterables.IterableXHelper;
-import org.hzt.utils.iterables.primitives.IntIterable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
@@ -38,8 +38,8 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
 
     IntArrayList(@NotNull Iterable<Integer> iterable) {
         this();
-        if (iterable instanceof IntIterable) {
-            final PrimitiveIterator.OfInt iterator = ((IntIterable) iterable).iterator();
+        if (iterable instanceof PrimitiveIterable.OfInt) {
+            final PrimitiveIterator.OfInt iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextInt());
             }
@@ -221,7 +221,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
 
     @Override
     public void sort(IntComparator comparator) {
-        PrimitiveSort.sort(elementData, 0, size, comparator);
+        PrimitiveArrays.sort(0, size, comparator, elementData);
     }
 
     @Override

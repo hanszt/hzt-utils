@@ -23,9 +23,7 @@ import java.util.function.IntUnaryOperator;
 public interface IntCollection extends IntReducable, IntCollectable, IntNumerable, IntStreamable, IntGroupable,
         PrimitiveCollectionX<Integer, IntConsumer, int[]> {
 
-    default int size() {
-        return (int) count();
-    }
+    int size();
 
     default boolean isEmpty() {
         return none();

@@ -1,19 +1,19 @@
 package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.It;
+import org.hzt.utils.function.primitives.LongBiFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.PrimitiveIterator;
-import java.util.function.BiFunction;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
 
 @FunctionalInterface
-public interface LongReducable extends LongIterable, PrimitiveReducable<Long, LongBinaryOperator, LongPredicate, OptionalLong> {
+public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReducable<Long, LongBinaryOperator, LongPredicate, OptionalLong> {
 
     default long reduce(long initial, LongBinaryOperator operator) {
         PrimitiveIterator.OfLong iterator = iterator();
@@ -39,7 +39,7 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
     default <R> R reduceToTwo(
             long initial1, @NotNull LongBinaryOperator operator1,
             long initial2, @NotNull LongBinaryOperator operator2,
-            @NotNull BiFunction<Long, Long, R> finisher) {
+            @NotNull LongBiFunction<R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
         long accumulator1 = initial1;
         long accumulator2 = initial2;
@@ -51,10 +51,9 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
         return finisher.apply(accumulator1, accumulator2);
     }
 
-    @Override
     default @NotNull <R> Optional<R> reduceToTwo(@NotNull LongBinaryOperator operator1,
                                                  @NotNull LongBinaryOperator operator2,
-                                                 @NotNull BiFunction<Long, Long, R> finisher) {
+                                                 @NotNull LongBiFunction<R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
         if (iterator.hasNext()) {
             final long first = iterator.nextLong();
@@ -136,6 +135,7 @@ public interface LongReducable extends LongIterable, PrimitiveReducable<Long, Lo
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }
+        @SuppressWarnings("squid:S1941")
         long single = iterator.nextLong();
         if (iterator.hasNext()) {
             throw new IllegalArgumentException("Sequence has more than one element");

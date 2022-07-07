@@ -5,7 +5,6 @@ import org.hzt.utils.PreConditions;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.primitives.IntCollectable;
 import org.hzt.utils.iterables.primitives.IntGroupable;
-import org.hzt.utils.iterables.primitives.IntIterable;
 import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.iterables.primitives.IntReducable;
 import org.hzt.utils.iterables.primitives.IntStreamable;
@@ -19,7 +18,6 @@ import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.sequences.SkipTakeSequence;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
@@ -50,8 +48,8 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     static IntSequence of(Iterable<Integer> iterable) {
-        if (iterable instanceof IntIterable) {
-            final IntIterable intIterable = (IntIterable) iterable;
+        if (iterable instanceof OfInt) {
+            final IntIterable intIterable = (OfInt) iterable;
             return intIterable::iterator;
         }
         return of(iterable, It::asInt);
@@ -86,11 +84,16 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     default IntSequence plus(int @NotNull ... values) {
-        return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(IntIterable::forEachInt);
+        return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(OfInt::forEachInt);
     }
 
     default IntSequence plus(@NotNull Iterable<Integer> values) {
-        return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(IntIterable::forEachInt);
+        return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(OfInt::forEachInt);
+    }
+
+    @Override
+    default IntSequence distinct() {
+        return () -> PrimitiveIterators.distinctIterator(iterator());
     }
 
     @Override
@@ -98,8 +101,16 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return () -> PrimitiveIterators.intTransformingIterator(iterator(), mapper);
     }
 
-    default IntSequence flatMap(IntFunction<? extends IntSequence> flatMapper) {
-        return mapMulti((value, intConsumer) -> flatMapper.apply(value).forEachInt(intConsumer));
+    default IntSequence flatMap(IntFunction<? extends Iterable<Integer>> flatMapper) {
+        return mapMulti((value, intConsumer) -> consumeForEach(flatMapper.apply(value), intConsumer));
+    }
+
+    private static void consumeForEach(Iterable<Integer> iterable, IntConsumer consumer) {
+        if (iterable instanceof OfInt) {
+            ((OfInt) iterable).forEachInt(consumer);
+        } else {
+            iterable.forEach(consumer::accept);
+        }
     }
 
     default IntSequence mapMulti(IntMapMultiConsumer intMapMultiConsumer) {
@@ -132,7 +143,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
             return PrimitiveIterators::emptyIntIterator;
-        } else if (this instanceof SkipTakeSequence) {
+        } else if (this instanceof IntSkipTakeSequence) {
             IntSkipTakeSequence skipTakeSequence = (IntSkipTakeSequence) this;
             return skipTakeSequence.take(n);
         } else {
@@ -185,6 +196,16 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     @Override
     default IntSequence sortedDescending() {
         return sorted((IntX::compareReversed));
+    }
+
+    @Override
+    default boolean isSorted(IntComparator comparator) {
+        return zipWithNext(comparator::compareInt).all(comparison -> comparison <= 0);
+    }
+
+    @Override
+    default boolean isSorted() {
+        return isSorted(Integer::compare);
     }
 
     default IntSequence shuffled() {

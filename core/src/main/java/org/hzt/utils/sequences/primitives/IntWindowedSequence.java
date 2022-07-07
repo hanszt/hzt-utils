@@ -1,11 +1,11 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.IntListX;
-import org.hzt.utils.iterables.primitives.IntIterable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.IntWindowedIterator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.SequenceHelper;
-import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,7 +14,7 @@ import java.util.function.IntUnaryOperator;
 import java.util.function.ToIntFunction;
 
 @FunctionalInterface
-public interface IntWindowedSequence extends IntIterable {
+public interface IntWindowedSequence extends PrimitiveIterable.OfInt {
 
     default Sequence<IntListX> chunked(int size) {
         return windowed(size, size, true);

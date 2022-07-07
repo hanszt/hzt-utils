@@ -28,11 +28,11 @@ public class PrefixSequenceGroupingBenchmark {
 
     private static final int UPPER_BOUND_RANGE = 100_000;
 
+    public static final int GROUP_BY_VALUE = 10;
     private static final Set<Integer> fibonacciNrs = LongX.fibonacciSequence()
             .mapToObj(It::longAsInt)
             .takeWhile(i -> i >= 0)
             .toSet();
-    public static final int GROUP_BY_VALUE = 10;
 
     @Param({"100000"})
     private int nrOfIterations;

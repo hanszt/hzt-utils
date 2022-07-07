@@ -1,25 +1,24 @@
 package org.hzt.utils.collections;
 
+import org.hzt.test.TestSampleGenerator;
+import org.hzt.test.model.Museum;
+import org.hzt.test.model.Painting;
+import org.hzt.utils.It;
+import org.hzt.utils.function.primitives.IndexedConsumer;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.EntrySequence;
 import org.hzt.utils.strings.StringX;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
-import org.hzt.utils.It;
-import org.hzt.test.TestSampleGenerator;
-import org.hzt.test.model.Museum;
-import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Year;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,14 +31,14 @@ class MapXTest {
         final Map<String, Museum> museumMap = TestSampleGenerator.createMuseumMap();
 
         final Map<Museum, String> expected = museumMap.entrySet().stream()
-                .map(e -> new AbstractMap.SimpleEntry<>(e.getValue(), e.getKey()))
+                .map(e -> Map.entry(e.getValue(), e.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         final MapX<Museum, String> actual = MapX.of(museumMap).inverted();
 
         It.println("actual = " + actual);
 
-        assertEquals(expected, actual);
+        assertEquals(expected.entrySet(), actual.entrySet());
     }
 
     @Test
@@ -53,7 +52,7 @@ class MapXTest {
 
         final long actual = MapX.of(museumMap)
                 .mapValuesTo(MutableListX::empty, Museum::getDateOfOpening)
-                .sumOfInts(LocalDate::getDayOfMonth);
+                .intSumOf(LocalDate::getDayOfMonth);
 
         It.println("actual = " + actual);
 
@@ -63,7 +62,7 @@ class MapXTest {
     @Test
     void testForEachIndexed() {
         List<IndexedValue<Map.Entry<String, Museum>>> list = new ArrayList<>();
-        BiConsumer<Integer, Map.Entry<String, Museum>> biConsumer = (index, value) -> list.add(new IndexedValue<>(index, value));
+        IndexedConsumer<Map.Entry<String, Museum>> biConsumer = (index, value) -> list.add(new IndexedValue<>(index, value));
 
         final List<Museum> museumListContainingNulls = TestSampleGenerator.getMuseumListContainingNulls();
 
@@ -96,7 +95,7 @@ class MapXTest {
         map.put("2", 2);
         map.put("3", 3);
 
-        final MapX<String, Year> result = EntrySequence.of(map).mapValues(Year::of).toMapX();
+        final MapX<String, Year> result = EntrySequence.of(map).mapByValues(Year::of).toMapX();
 
         assertEquals(MapX.of("1", Year.of(1), "2", Year.of(2), "3", Year.of(3)), result);
     }
@@ -110,7 +109,7 @@ class MapXTest {
 
         It.println("map = " + mapX);
 
-        assertEquals(museumMap, mapX);
+        assertEquals(museumMap.entrySet(), mapX.entrySet());
     }
 
     @Test
@@ -144,11 +143,11 @@ class MapXTest {
     void testFlatMapToList() {
         final MapX<String, Museum> museumMapX = MapX.of(TestSampleGenerator.createMuseumMap());
 
-        final ListX<Painting> pairs = museumMapX.flatMap(e -> e.getValue().getPaintings());
+        final ListX<Painting> paintings = museumMapX.flatMap(e -> e.getValue().getPaintings());
 
         final String expected = "Meisje met de rode hoed";
 
-        final String actual = ListX.of(pairs).maxOf(Painting::name);
+        final String actual = ListX.of(paintings).maxOf(Painting::name);
 
         assertEquals(expected, actual);
     }
@@ -164,7 +163,7 @@ class MapXTest {
     @Test
     void testBuildMap() {
         final MapX<Integer, LocalDate> map = MapX.build(m ->
-                IntRange.of(1990, 2022).forEach(year -> m.put(year, LocalDate.of(year, 1, 1))));
+                IntRange.of(1990, 2022).forEachInt(year -> m.put(year, LocalDate.of(year, 1, 1))));
 
         map.forEach(It::println);
 

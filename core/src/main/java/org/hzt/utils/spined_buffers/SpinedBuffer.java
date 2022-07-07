@@ -1,5 +1,7 @@
 package org.hzt.utils.spined_buffers;
 
+import org.hzt.utils.PreConditions;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -27,6 +29,7 @@ import java.util.function.LongConsumer;
  *
  * @param <E> the type of elements in this list
  */
+@SuppressWarnings({"squid:S2972", "unused", "DuplicatedCode"})
 public class SpinedBuffer<E>
         extends AbstractSpinedBuffer
         implements Consumer<E>, Iterable<E> {
@@ -214,6 +217,7 @@ public class SpinedBuffer<E>
      * Return a {@link Spliterator} describing the contents of the buffer.
      */
     @Override
+    @SuppressWarnings({"squid:S3776", "squid:S138"})
     public Spliterator<E> spliterator() {
         class Splitr implements Spliterator<E> {
             // The current spine index
@@ -242,7 +246,7 @@ public class SpinedBuffer<E>
                 this.lastSpineIndex = lastSpineIndex;
                 this.splElementIndex = firstSpineElementIndex;
                 this.lastSpineElementFence = lastSpineElementFence;
-                assert (spine != null) || ((firstSpineIndex == 0) && (lastSpineIndex == 0));
+                PreConditions.require (spine != null || ((firstSpineIndex == 0) && (lastSpineIndex == 0)));
                 splChunk = (spine == null) ? curChunk : spine[firstSpineIndex];
             }
 
@@ -351,6 +355,7 @@ public class SpinedBuffer<E>
      * @param <T_ARR>  the array type for this primitive type
      * @param <T_CONS> the Consumer type for this primitive type
      */
+    @SuppressWarnings({"squid:S1699", "squid:S119"})
     abstract static class OfPrimitive<E, T_ARR, T_CONS>
             extends AbstractSpinedBuffer implements Iterable<E> {
 
@@ -400,7 +405,7 @@ public class SpinedBuffer<E>
         /**
          * Create a new array-of-array of the proper type and size
          */
-        protected abstract T_ARR[] newArrayArray(int size);
+        protected abstract T_ARR[] newArrayArray();
 
         /**
          * Create a new array of the proper type and size
@@ -426,7 +431,7 @@ public class SpinedBuffer<E>
 
         private void inflateSpine() {
             if (spine == null) {
-                spine = newArrayArray(MIN_SPINE_SIZE);
+                spine = newArrayArray();
                 priorElementCount = new long[MIN_SPINE_SIZE];
                 spine[0] = curChunk;
             }
@@ -476,6 +481,7 @@ public class SpinedBuffer<E>
             throw new IndexOutOfBoundsException(Long.toString(index));
         }
 
+        @SuppressWarnings("SuspiciousSystemArraycopy")
         public void copyInto(T_ARR array, int offset) {
             long finalOffset = offset + count();
             if ((finalOffset > arrayLength(array)) || (finalOffset < offset)) {
@@ -528,7 +534,6 @@ public class SpinedBuffer<E>
             spineIndex = 0;
         }
 
-        @SuppressWarnings("overloads")
         public void forEach(T_CONS consumer) {
             // completed chunks, if any
             for (int j = 0; j < spineIndex; j++) {
@@ -567,7 +572,7 @@ public class SpinedBuffer<E>
                 this.lastSpineIndex = lastSpineIndex;
                 this.splElementIndex = firstSpineElementIndex;
                 this.lastSpineElementFence = lastSpineElementFence;
-                assert (spine != null) || ((firstSpineIndex == 0) && (lastSpineIndex == 0));
+                PreConditions.require(spine != null || ((firstSpineIndex == 0) && (lastSpineIndex == 0)));
                 splChunk = (spine == null) ? curChunk : spine[firstSpineIndex];
             }
 
@@ -684,8 +689,8 @@ public class SpinedBuffer<E>
         }
 
         @Override
-        protected int[][] newArrayArray(int size) {
-            return new int[size][];
+        protected int[][] newArrayArray() {
+            return new int[AbstractSpinedBuffer.MIN_SPINE_SIZE][];
         }
 
         @Override
@@ -793,8 +798,8 @@ public class SpinedBuffer<E>
         }
 
         @Override
-        protected long[][] newArrayArray(int size) {
-            return new long[size][];
+        protected long[][] newArrayArray() {
+            return new long[AbstractSpinedBuffer.MIN_SPINE_SIZE][];
         }
 
         @Override
@@ -905,8 +910,8 @@ public class SpinedBuffer<E>
         }
 
         @Override
-        protected double[][] newArrayArray(int size) {
-            return new double[size][];
+        protected double[][] newArrayArray() {
+            return new double[AbstractSpinedBuffer.MIN_SPINE_SIZE][];
         }
 
         @Override

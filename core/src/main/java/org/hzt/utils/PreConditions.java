@@ -58,6 +58,18 @@ public final class PreConditions {
         }
     }
 
+    public static void rangeCheck(int size, int fromIndex, int toIndex) {
+        if (fromIndex > toIndex) {
+            throw new IllegalArgumentException("fromIndex (" + fromIndex + ") is greater than toIndex (" + toIndex + ").");
+        }
+        if (fromIndex < 0) {
+            throw new IndexOutOfBoundsException("fromIndex (" + fromIndex + ") is less than zero.");
+        }
+        if (toIndex > size) {
+            throw new IndexOutOfBoundsException("toIndex (" + toIndex + ") is greater than size (" + size + ").");
+        }
+    }
+
     public static <E extends RuntimeException> void requireOrThrow(boolean value, Supplier<E> runtimeException) {
         if (!value) {
             throw runtimeException.get();

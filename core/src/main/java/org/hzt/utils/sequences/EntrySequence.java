@@ -1,8 +1,10 @@
 package org.hzt.utils.sequences;
 
-import org.hzt.utils.iterables.EntryIterable;
-import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.It;
+import org.hzt.utils.iterables.EntryIterable;
+import org.hzt.utils.iterators.SkipWhileIterator;
+import org.hzt.utils.iterators.TakeWhileIterator;
+import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
@@ -31,6 +33,10 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return iterable::iterator;
     }
 
+    static <K, V> EntrySequence<K, V> ofMap(Map<K, V> map) {
+        return map.entrySet()::iterator;
+    }
+
     static <K, V> EntrySequence<K, V> ofPairs(Iterable<Pair<K, V>> pairIterable) {
         return () -> SequenceHelper.toEntryIterator(pairIterable.iterator());
     }
@@ -44,7 +50,8 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     @Override
-    default <K1, V1> EntrySequence<K1, V1> inverted(Function<K, V1> toValueMapper, Function<V, K1> toKeyMapper) {
+    default <K1, V1> EntrySequence<K1, V1> inverted(@NotNull Function<? super V, ? extends K1> toKeyMapper,
+                                                    @NotNull Function<? super K, ? extends V1> toValueMapper) {
         return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(toKeyMapper.apply(e.getValue()), toValueMapper.apply(e.getKey()))));
     }
 
@@ -53,7 +60,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return inverted(It::self, It::self);
     }
 
-    default <R> Sequence<R> map(@NotNull BiFunction<K, V, R> biFunction) {
+    default <R> Sequence<R> map(@NotNull BiFunction<? super K, ? super V, ? extends R> biFunction) {
         return map(e -> biFunction.apply(e.getKey(), e.getValue()));
     }
 
@@ -62,39 +69,39 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(keyMapper.apply(e.getKey()), valueMapper.apply(e.getValue()))));
     }
 
-    default <K1> EntrySequence<K1, V> mapKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
+    default <K1> EntrySequence<K1, V> mapByKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
         return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(keyMapper.apply(e.getKey()), e.getValue())));
     }
 
     @Override
-    default <K1> EntryIterable<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, K1> toKeyMapper) {
+    default <K1> EntrySequence<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, ? extends K1> toKeyMapper) {
         return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(toKeyMapper.apply(e.getKey(), e.getValue()), e.getValue())));
     }
 
-    default <V1> EntrySequence<K, V1> mapValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
+    default <V1> EntrySequence<K, V1> mapByValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
         return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), valueMapper.apply(e.getValue()))));
     }
 
     @Override
-    default <V1> EntryIterable<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, V1> toValueMapper) {
+    default <V1> EntrySequence<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, ? extends V1> toValueMapper) {
         return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), toValueMapper.apply(e.getKey(), e.getValue()))));
     }
 
-    default EntrySequence<K, V> filter(@NotNull BiPredicate<K, V> biPredicate) {
+    default EntrySequence<K, V> filter(@NotNull BiPredicate<? super K, ? super V> biPredicate) {
         return EntrySequence.of(Sequence.super.filter(e -> biPredicate.test(e.getKey(), e.getValue())));
     }
 
-    default EntrySequence<K, V> filterKeys(@NotNull Predicate<K> predicate) {
+    default EntrySequence<K, V> filterKeys(@NotNull Predicate<? super K> predicate) {
         return EntrySequence.of(Sequence.super.filter(e -> predicate.test(e.getKey())));
     }
 
-    default EntrySequence<K, V> filterValues(@NotNull Predicate<V> predicate) {
+    default EntrySequence<K, V> filterValues(@NotNull Predicate<? super V> predicate) {
         return EntrySequence.of(Sequence.super.filter(e -> predicate.test(e.getValue())));
     }
 
     @Override
     default EntrySequence<K, V> onEachKey(@NotNull Consumer<? super K> consumer) {
-        return mapKeys(key -> {
+        return mapByKeys(key -> {
             consumer.accept(key);
             return key;
         });
@@ -102,7 +109,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
 
     @Override
     default EntryIterable<K, V> onEachValue(@NotNull Consumer<? super V> consumer) {
-        return EntrySequence.of(mapValues(value -> {
+        return EntrySequence.of(mapByValues(value -> {
             consumer.accept(value);
             return value;
         }));
@@ -136,12 +143,28 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return EntrySequence.of(Sequence.super.skipWhile(e -> predicate.test(e.getValue())));
     }
 
+    default EntrySequence<K, V> skipWhile(@NotNull BiPredicate<? super K, ? super V> predicate) {
+        return () -> SkipWhileIterator.of(iterator(), e -> predicate.test(e.getKey(), e.getValue()), false);
+    }
+
+    default EntrySequence<K, V> skipWhileInclusive(@NotNull BiPredicate<? super K, ? super V> predicate) {
+        return () -> SkipWhileIterator.of(iterator(), e -> predicate.test(e.getKey(), e.getValue()), true);
+    }
+
     default EntrySequence<K, V> takeWhileKeys(Predicate<K> predicate) {
         return EntrySequence.of(Sequence.super.takeWhile(e -> predicate.test(e.getKey())));
     }
 
     default EntrySequence<K, V> takeWhileValues(Predicate<V> predicate) {
         return EntrySequence.of(Sequence.super.takeWhile(e -> predicate.test(e.getValue())));
+    }
+
+    default EntrySequence<K, V> takeWhile(@NotNull BiPredicate<? super K, ? super V> predicate) {
+        return () -> TakeWhileIterator.of(iterator(), e -> predicate.test(e.getKey(), e.getValue()), false);
+    }
+
+    default EntrySequence<K, V> takeWhileInclusive(@NotNull BiPredicate<? super K, ? super V> predicate) {
+        return () -> TakeWhileIterator.of(iterator(), e -> predicate.test(e.getKey(), e.getValue()), true);
     }
 
     @Override
@@ -153,4 +176,26 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     default EntrySequence<K, V> take(long n) {
         return EntrySequence.of(Sequence.super.take(n));
     }
+
+    default Sequence<V> mergeKeys(Function<? super K, ? extends V> toValueTypeMapper) {
+        return flatMap(e -> Sequence.of(toValueTypeMapper.apply(e.getKey()), e.getValue()));
+    }
+
+    default Sequence<K> mergeValues(Function<? super V, ? extends K> toKeyTypeMapper) {
+        return flatMap(e -> Sequence.of(e.getKey(), toKeyTypeMapper.apply(e.getValue())));
+    }
+    default Sequence<V> merge() {
+        return flatMap(e -> Sequence.of(keyAsValueTypeOrThrow(e), e.getValue()));
+    }
+
+    private V keyAsValueTypeOrThrow(Map.Entry<K, V> entry) {
+        K k = entry.getKey();
+        V v = entry.getValue();
+        if (k.getClass() == v.getClass()) {
+            //noinspection unchecked
+            return (V) k;
+        }
+        throw new IllegalStateException("Key and value not of same type. Merge not allowed");
+    }
+
 }

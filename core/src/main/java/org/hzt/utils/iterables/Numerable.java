@@ -28,7 +28,7 @@ public interface Numerable<T> extends Iterable<T> {
         return count(It::noFilter);
     }
 
-    default long sumOfInts(@NotNull ToIntFunction<? super T> selector) {
+    default long intSumOf(@NotNull ToIntFunction<? super T> selector) {
         long sum = 0;
         for (T t : this) {
             if (t != null) {
@@ -38,7 +38,7 @@ public interface Numerable<T> extends Iterable<T> {
         return sum;
     }
 
-    default long sumOfLongs(@NotNull ToLongFunction<? super T> selector) {
+    default long longSumOf(@NotNull ToLongFunction<? super T> selector) {
         long sum = 0;
         for (T t : this) {
             if (t != null) {
@@ -48,7 +48,7 @@ public interface Numerable<T> extends Iterable<T> {
         return sum;
     }
 
-    default double sumOfDoubles(@NotNull ToDoubleFunction<? super T> selector) {
+    default double doubleSumOf(@NotNull ToDoubleFunction<? super T> selector) {
         double sum = 0;
         for (T t : this) {
             if (t != null) {
@@ -58,7 +58,7 @@ public interface Numerable<T> extends Iterable<T> {
         return sum;
     }
 
-    default BigDecimalX bigDecimalSum(@NotNull Function<? super T, ? extends BigDecimal> selector) {
+    default BigDecimalX bigDecimalSumOf(@NotNull Function<? super T, ? extends BigDecimal> selector) {
         BigDecimal sum = BigDecimal.ZERO;
         for (T t : this) {
             if (t != null) {
@@ -84,12 +84,12 @@ public interface Numerable<T> extends Iterable<T> {
         return (counter != 0) ? (sum / counter) : 0;
     }
 
-    default BigDecimalX toBigDecimalXAverage(@NotNull Function<? super T, ? extends BigDecimal> selector) {
-        return toBigDecimalXAverage(selector, 2, RoundingMode.HALF_UP);
+    default BigDecimalX bigDecimalAverageOf(@NotNull Function<? super T, ? extends BigDecimal> selector) {
+        return bigDecimalAverageOf(selector, 2, RoundingMode.HALF_UP);
     }
 
-    default BigDecimalX toBigDecimalXAverage(@NotNull Function<? super T, ? extends BigDecimal> selector, int scale,
-                                             @NotNull RoundingMode roundingMode) {
+    default BigDecimalX bigDecimalAverageOf(@NotNull Function<? super T, ? extends BigDecimal> selector, int scale,
+                                            @NotNull RoundingMode roundingMode) {
         BigDecimal sum = BigDecimal.ZERO;
         long counter = 0;
         for (T t : this) {
@@ -124,25 +124,25 @@ public interface Numerable<T> extends Iterable<T> {
         return IterableXHelper.comparisonOf(iterator(), selector, i -> i < 0);
     }
 
-    default IntStatistics statsOfInts(@NotNull ToIntFunction<? super T> mapper) {
+    default IntStatistics intStatsOf(@NotNull ToIntFunction<? super T> mapper) {
         IntStatistics statistics = new IntStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> statistics.accept(mapper.applyAsInt(v)));
         return statistics;
     }
 
-    default LongStatistics statsOfLongs(@NotNull ToLongFunction<? super T> mapper) {
+    default LongStatistics longStatsOf(@NotNull ToLongFunction<? super T> mapper) {
         LongStatistics statistics = new LongStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> statistics.accept(mapper.applyAsLong(v)));
         return statistics;
     }
 
-    default DoubleStatistics statsOfDoubles(@NotNull ToDoubleFunction<? super T> mapper) {
+    default DoubleStatistics doubleStatsOf(@NotNull ToDoubleFunction<? super T> mapper) {
         DoubleStatistics statistics = new DoubleStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> statistics.accept(mapper.applyAsDouble(v)));
         return statistics;
     }
 
-    default BigDecimalStatistics statsOfBigDecimals(@NotNull Function<T, ? extends BigDecimal> mapper) {
+    default BigDecimalStatistics bigDecimalStatsOf(@NotNull Function<T, ? extends BigDecimal> mapper) {
         BigDecimalStatistics statistics = new BigDecimalStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> {
             final BigDecimal bigDecimal = mapper.apply(v);

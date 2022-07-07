@@ -7,7 +7,6 @@ import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.ranges.LongRange;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

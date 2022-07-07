@@ -11,12 +11,10 @@ import org.jetbrains.annotations.NotNull;
  * @see java.util.TimSort;
  */
 @SuppressWarnings({"DuplicatedCode", "JavadocReference"})
-public final class LongTimSort extends PrimitiveTimSort {
+public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> {
 
     private final LongComparator longComparator;
     private final long[] longArray;
-    private final int[] runBase;
-    private final int[] runLen;
     private long[] tempArray;
 
     @SuppressWarnings("squid:S2384")
@@ -24,11 +22,7 @@ public final class LongTimSort extends PrimitiveTimSort {
         super(longArray.length);
         this.longArray = longArray;
         this.longComparator = longComparator;
-        this.tempArray = new long[tempLength];
-
-        int stackLen = getStackLength(longArray.length);
-        this.runBase = new int[stackLen];
-        this.runLen = new int[stackLen];
+        this.tempArray = new long[getInitTempLength(longArray.length)];
     }
 
     static void sort(long @NotNull [] array, int fromIndex, int toIndex, @NotNull LongComparator comparator) {
@@ -37,15 +31,15 @@ public final class LongTimSort extends PrimitiveTimSort {
         final int nRemaining = toIndex - fromIndex;
         if (nRemaining >= 2) {
             if (nRemaining < MIN_MERGE) {
-                int initRunLen = countRunAndMakeAscending(array, fromIndex, toIndex, comparator);
-                binarySort(array, fromIndex, toIndex, fromIndex + initRunLen, comparator);
+                final int initRunLen = PrimitiveArrays.countRunAndMakeAscending(array, fromIndex, toIndex, comparator);
+                PrimitiveArrays.binarySort(array, fromIndex, toIndex, fromIndex + initRunLen, comparator);
             } else {
                 LongTimSort timSort = new LongTimSort(array, comparator);
                 final int minRun = minRunLength(nRemaining);
 
-                fromIndex = getLo(array, fromIndex, toIndex, comparator, nRemaining, timSort, minRun);
+                final int loIndex = timSort.getLo(array, fromIndex, toIndex, comparator, nRemaining, minRun);
 
-                PreConditions.require(fromIndex == toIndex);
+                PreConditions.require(loIndex == toIndex);
 
                 timSort.mergeForceCollapse();
 
@@ -54,174 +48,61 @@ public final class LongTimSort extends PrimitiveTimSort {
         }
     }
 
-    private static int getLo(long[] array, int lo, int hi, LongComparator c, int nRemaining, LongTimSort ts, int minRun) {
-        do {
-            int runLen = countRunAndMakeAscending(array, lo, hi, c);
-            if (runLen < minRun) {
-                int force = Math.min(nRemaining, minRun);
-                binarySort(array, lo, lo + force, lo + runLen, c);
-                runLen = force;
-            }
-
-            ts.pushRun(lo, runLen);
-            ts.mergeCollapse();
-            lo += runLen;
-            nRemaining -= runLen;
-        } while (nRemaining != 0);
-        return lo;
+    protected int getRunLen(long[] array, int lo, int hi, LongComparator comparator, int nRemaining, int minRun) {
+        int runLen = PrimitiveArrays.countRunAndMakeAscending(array, lo, hi, comparator);
+        if (runLen < minRun) {
+            final int force = Math.min(nRemaining, minRun);
+            PrimitiveArrays.binarySort(array, lo, lo + force, lo + runLen, comparator);
+            runLen = force;
+        }
+        return runLen;
     }
 
-    private static void binarySort(long[] array, int lo, int hi, int start, LongComparator comparator) {
-        PreConditions.require(lo <= start && start <= hi);
-        if (start == lo) {
-            ++start;
-        }
-        while (start < hi) {
-            long pivot = array[start];
-            int left = lo;
-            int right = start;
-
-            PreConditions.require(lo <= start);
-            while (left < right) {
-                int mid = (left + right) >>> 1;
-                if (comparator.compareLong(pivot, array[mid]) < 0) {
-                    right = mid;
-                } else {
-                    left = mid + 1;
-                }
-            }
-            PreConditions.require(left == right);
-
-            int n = start - left;
-            if (n == 2) {
-                array[left + 2] = array[left + 1];
-                array[left + 1] = array[left];
-            } else if (n == 1) {
-                array[left + 1] = array[left];
-            } else {
-                System.arraycopy(array, left, array, left + 1, n);
-            }
-            array[left] = pivot;
-            ++start;
-        }
-    }
-
-    private static int countRunAndMakeAscending(long[] a, int lo, int hi, LongComparator comparator) {
-        PreConditions.require(lo < hi);
-
-        int runHi = lo + 1;
-        if (runHi == hi) {
-            return 1;
-        }
-        if (comparator.compareLong(a[runHi++], a[lo]) >= 0) {
-            while (runHi < hi && comparator.compareLong(a[runHi], a[runHi - 1]) >= 0) {
-                ++runHi;
-            }
-        } else {
-            while (runHi < hi && comparator.compareLong(a[runHi], a[runHi - 1]) < 0) {
-                ++runHi;
-            }
-            reverseRange(a, lo, runHi);
-        }
-        return runHi - lo;
-    }
-
-    private static void reverseRange(long[] a, int lo, int hi) {
-        --hi;
-        while (lo < hi) {
-            long t = a[lo];
-            a[lo++] = a[hi];
-            a[hi--] = t;
-        }
-    }
-
-    private void pushRun(int runBase, int runLen) {
-        this.runBase[stackSize] = runBase;
-        this.runLen[stackSize] = runLen;
-        ++stackSize;
-    }
-
-    private void mergeCollapse() {
-        while (stackSize > 1) {
-            int n = stackSize - 2;
-            if (runLen[n] > runLen[n + 1]) {
-                return; // Invariant is established
-            }
-            final boolean b1 = n > 0 && runLen[n - 1] <= runLen[n] + runLen[n + 1];
-            final boolean b2 = n > 1 && runLen[n - 2] <= runLen[n - 1] + runLen[n];
-            if ((b1 || b2)) {
-                final boolean b3 = runLen[n - 1] < runLen[n + 1];
-                if (b3) {
-                    n--;
-                }
-            }
-            mergeAt(n);
-        }
-    }
-
-    private void mergeForceCollapse() {
-        while (stackSize > 1) {
-            int n = stackSize - 2;
-            if (n > 0 && runLen[n - 1] < runLen[n + 1]) {
-                --n;
-            }
-            mergeAt(n);
-        }
-    }
-
-    private void mergeAt(int i) {
+    protected void mergeAt(int i) {
         PreConditions.require(stackSize >= 2);
         PreConditions.require(i >= 0);
         PreConditions.require(i == stackSize - 2 || i == stackSize - 3);
 
         int base1 = runBase[i];
-        int len1 = runLen[i];
-        int base2 = runBase[i + 1];
-        int len2 = runLen[i + 1];
+        int len1 = runLength[i];
+        final int base2 = runBase[i + 1];
+        final int len2 = runLength[i + 1];
 
         PreConditions.require(len1 > 0 && len2 > 0);
         PreConditions.require(base1 + len1 == base2);
 
-        runLen[i] = len1 + len2;
+        runLength[i] = len1 + len2;
         if (i == stackSize - 3) {
             runBase[i + 1] = runBase[i + 2];
-            runLen[i + 1] = runLen[i + 2];
+            runLength[i + 1] = runLength[i + 2];
         }
 
         --stackSize;
-        int k = gallopRight(longArray[base2], longArray, base1, len1, 0, longComparator);
+        final int ofsRight = gallopRight(longArray[base2], longArray, base1, len1, 0, longComparator);
 
-        PreConditions.require(k >= 0);
+        PreConditions.require(ofsRight >= 0);
 
-        base1 += k;
-        len1 -= k;
+        base1 += ofsRight;
+        len1 -= ofsRight;
         if (len1 == 0) {
             return;
         }
-        len2 = gallopLeft(longArray[base1 + len1 - 1], longArray, base2, len2, len2 - 1, longComparator);
+        final int ofsLeft = gallopLeft(longArray[base1 + len1 - 1], longArray, base2, len2, len2 - 1, longComparator);
 
-        PreConditions.require(len2 >= 0);
-
-        if (len2 != 0) {
-            if (len1 <= len2) {
-                mergeLo(base1, len1, base2, len2);
-            } else {
-                mergeHi(base1, len1, base2, len2);
-            }
-        }
+        decideMergeStrategy(base1, len1, base2, ofsLeft);
     }
 
     //Suppress the warnings that have to do with to long and complex methods. In this case performance is more important
     @SuppressWarnings({"squid:S1541", "squid:S3776"})
-    private static int gallopLeft(long key, long[] a, int base, int len, int hint, LongComparator comparator) {
+    private static int gallopLeft(long key, long[] array, int base, int len, int hint, LongComparator comparator) {
         PreConditions.require(hint >= 0 && hint < len);
 
         int lastOfs = 0;
         int ofs = 1;
-        if (comparator.compareLong(key, a[base + hint]) > 0) {
+        if (comparator.compareLong(key, array[base + hint]) > 0) {
             final int maxOfs = len - hint;
 
-            while (ofs < maxOfs && comparator.compareLong(key, a[base + hint + ofs]) > 0) {
+            while (ofs < maxOfs && comparator.compareLong(key, array[base + hint + ofs]) > 0) {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
                 ofs = (ofs <= 0) ? maxOfs : ofs;
@@ -233,14 +114,14 @@ public final class LongTimSort extends PrimitiveTimSort {
         } else {
             final int maxOfs = hint + 1;
 
-            while (ofs < maxOfs && comparator.compareLong(key, a[base + hint - ofs]) <= 0) {
+            while (ofs < maxOfs && comparator.compareLong(key, array[base + hint - ofs]) <= 0) {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
                 ofs = (ofs <= 0) ? maxOfs : ofs;
             }
             ofs = Math.min(ofs, maxOfs);
 
-            int tmp = lastOfs;
+            final int tmp = lastOfs;
             lastOfs = hint - ofs;
             ofs = hint - tmp;
         }
@@ -250,7 +131,7 @@ public final class LongTimSort extends PrimitiveTimSort {
 
         while (lastOfs < ofs) {
             final int maxOfs = lastOfs + ((ofs - lastOfs) >>> 1);
-            if (comparator.compareLong(key, a[base + maxOfs]) > 0) {
+            if (comparator.compareLong(key, array[base + maxOfs]) > 0) {
                 lastOfs = maxOfs + 1;
             } else {
                 ofs = maxOfs;
@@ -276,18 +157,17 @@ public final class LongTimSort extends PrimitiveTimSort {
             }
             ofs = Math.min(ofs, maxOfs);
 
-            int tmp = lastOfs;
+            final int tmp = lastOfs;
             lastOfs = hint - ofs;
             ofs = hint - tmp;
         } else {
-            int maxOfs = len - hint;
+            final int maxOfs = len - hint;
 
             while (ofs < maxOfs && comparator.compareLong(key, array[base + hint + ofs]) >= 0) {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
                 ofs = (ofs <= 0) ? maxOfs : ofs;
             }
-
             ofs = Math.min(ofs, maxOfs);
 
             lastOfs += hint;
@@ -311,12 +191,12 @@ public final class LongTimSort extends PrimitiveTimSort {
 
     //Suppress the warnings that have to do with to long and complex methods. In this case performance is more important
     @SuppressWarnings({"squid:S134", "squid:S135", "squid:S138", "squid:S1119", "squid:S1541", "squid:S3776"})
-    private void mergeLo(int base1, int len1, int base2, int len2) {
+    protected void mergeLo(int base1, int len1, int base2, int len2) {
         PreConditions.require(len1 > 0 && len2 > 0 && base1 + len1 == base2);
         // Copy first run into temp array
         long[] array = longArray; // For performance
         long[] tmpArray = ensureCapacity(len1);
-        int cursor1 = tempBase; // Indexes into tmp array
+        int cursor1 = 0; // Indexes into tmp array
         int cursor2 = base2;   // Indexes int a
         int dest = base1;      // Indexes int a
         System.arraycopy(array, base1, tmpArray, cursor1, len1);
@@ -356,7 +236,6 @@ public final class LongTimSort extends PrimitiveTimSort {
                     }
                 }
             } while ((count1 | count2) < minGallop);
-
             /*
              * One run is winning so consistently that galloping may be a
              * huge win. So try that, and continue galloping until (if ever)
@@ -413,46 +292,42 @@ public final class LongTimSort extends PrimitiveTimSort {
     }
 
     @SuppressWarnings({"squid:S134", "squid:S135", "squid:S138", "squid:S1119", "squid:S1541", "squid:S3776"})
-    private void mergeHi(int base1, int len1, int base2, int len2) {
+    protected void mergeHi(int base1, int len1, int base2, int len2) {
         PreConditions.require(len1 > 0 && len2 > 0 && base1 + len1 == base2);
-
         // Copy second run into temp array
         long[] array = longArray; // For performance
-        long[] tmp = ensureCapacity(len2);
-        int tmpBase = this.tempBase;
-        System.arraycopy(array, base2, tmp, tmpBase, len2);
+        long[] tmpArray = ensureCapacity(len2);
+        System.arraycopy(array, base2, tmpArray, 0, len2);
 
         int cursor1 = base1 + len1 - 1;  // Indexes into a
         int dest = base2 + len2 - 1;     // Indexes into a
         // Move last element of first run and deal with degenerate cases
         array[dest--] = array[cursor1--];
         if (--len1 == 0) {
-            System.arraycopy(tmp, tmpBase, array, dest - (len2 - 1), len2);
+            System.arraycopy(tmpArray, 0, array, dest - (len2 - 1), len2);
             return;
         }
-        int cursor2 = tmpBase + len2 - 1; // Indexes into tmp array
+        int cursor2 = len2 - 1; // Indexes into tmp array
         if (len2 == 1) {
             dest -= len1;
             cursor1 -= len1;
             System.arraycopy(array, cursor1 + 1, array, dest + 1, len1);
-            array[dest] = tmp[cursor2];
+            array[dest] = tmpArray[cursor2];
             return;
         }
-
         LongComparator comparator = longComparator;  // Use local variable for performance
         int minGallop = this.minGallop;    //  "    "       "     "      "
         outer:
         while (true) {
             int count1 = 0; // Number of times in a row that first run won
             int count2 = 0; // Number of times in a row that second run won
-
             /*
              * Do the straightforward thing until (if ever) one run
              * appears to win consistently.
              */
             do {
                 PreConditions.require(len1 > 0 && len2 > 1);
-                if (comparator.compareLong(tmp[cursor2], array[cursor1]) < 0) {
+                if (comparator.compareLong(tmpArray[cursor2], array[cursor1]) < 0) {
                     array[dest--] = array[cursor1--];
                     count1++;
                     count2 = 0;
@@ -460,7 +335,7 @@ public final class LongTimSort extends PrimitiveTimSort {
                         break outer;
                     }
                 } else {
-                    array[dest--] = tmp[cursor2--];
+                    array[dest--] = tmpArray[cursor2--];
                     count2++;
                     count1 = 0;
                     if (--len2 == 1) {
@@ -476,7 +351,7 @@ public final class LongTimSort extends PrimitiveTimSort {
              */
             do {
                 PreConditions.require(len1 > 0 && len2 > 1);
-                count1 = len1 - gallopRight(tmp[cursor2], array, base1, len1, len1 - 1, comparator);
+                count1 = len1 - gallopRight(tmpArray[cursor2], array, base1, len1, len1 - 1, comparator);
                 if (count1 != 0) {
                     dest -= count1;
                     cursor1 -= count1;
@@ -486,16 +361,16 @@ public final class LongTimSort extends PrimitiveTimSort {
                         break outer;
                     }
                 }
-                array[dest--] = tmp[cursor2--];
+                array[dest--] = tmpArray[cursor2--];
                 if (--len2 == 1) {
                     break outer;
                 }
-                count2 = len2 - gallopLeft(array[cursor1], tmp, tmpBase, len2, len2 - 1, comparator);
+                count2 = len2 - gallopLeft(array[cursor1], tmpArray, 0, len2, len2 - 1, comparator);
                 if (count2 != 0) {
                     dest -= count2;
                     cursor2 -= count2;
                     len2 -= count2;
-                    System.arraycopy(tmp, cursor2 + 1, array, dest + 1, count2);
+                    System.arraycopy(tmpArray, cursor2 + 1, array, dest + 1, count2);
                     if (len2 <= 1) {
                         break outer;
                     }
@@ -516,22 +391,20 @@ public final class LongTimSort extends PrimitiveTimSort {
             dest -= len1;
             cursor1 -= len1;
             System.arraycopy(array, cursor1 + 1, array, dest + 1, len1);
-            array[dest] = tmp[cursor2];  // Move first elt of run2 to front of merge
+            array[dest] = tmpArray[cursor2];  // Move first elt of run2 to front of merge
         } else if (len2 == 0) {
             throw new IllegalArgumentException("Comparison method violates its general contract!");
         } else {
             PreConditions.require(len1 == 0);
-            System.arraycopy(tmp, tmpBase, array, dest - (len2 - 1), len2);
+            System.arraycopy(tmpArray, 0, array, dest - (len2 - 1), len2);
         }
     }
 
     @SuppressWarnings("squid:S2384")
     private long[] ensureCapacity(int minCapacity) {
-        if (tempLength < minCapacity) {
-            int newSize = calculateNewLength(minCapacity, longArray.length);
-            tempArray = new long[newSize];
-            tempLength = newSize;
-            tempBase = 0;
+        if (tempArray.length < minCapacity) {
+            final int newLength = calculateNewLength(minCapacity, longArray.length);
+            tempArray = new long[newLength];
         }
         return tempArray;
     }

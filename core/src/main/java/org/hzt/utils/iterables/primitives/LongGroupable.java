@@ -10,7 +10,7 @@ import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
 
 @FunctionalInterface
-public interface LongGroupable extends PrimitiveGroupable<Long, LongMutableListX, LongPredicate>, LongIterable {
+public interface LongGroupable extends PrimitiveGroupable<Long, LongMutableListX, LongPredicate>, PrimitiveIterable.OfLong {
 
     @Override
     default MapX<Long, LongMutableListX> group() {

@@ -1,7 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.MutableCollectionX;
-import org.hzt.utils.iterables.primitives.IntIterable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,8 +16,8 @@ public interface IntMutableCollection extends IntCollection,
 
     @Override
     default boolean addAll(@NotNull Iterable<Integer> iterable) {
-        if (iterable instanceof IntIterable) {
-            final PrimitiveIterator.OfInt iterator = ((IntIterable) iterable).iterator();
+        if (iterable instanceof PrimitiveIterable.OfInt) {
+            final PrimitiveIterator.OfInt iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
             while (iterator.hasNext()) {
                 final boolean added = add(iterator.nextInt());
                 if (!added) {
@@ -51,8 +51,8 @@ public interface IntMutableCollection extends IntCollection,
 
     @Override
     default boolean removeAll(@NotNull Iterable<Integer> iterable) {
-        if (iterable instanceof IntIterable) {
-            final PrimitiveIterator.OfInt iterator = ((IntIterable) iterable).iterator();
+        if (iterable instanceof PrimitiveIterable.OfInt) {
+            final PrimitiveIterator.OfInt iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
             while (iterator.hasNext()) {
                 final boolean removed = remove(iterator.nextInt());
                 if (!removed) {

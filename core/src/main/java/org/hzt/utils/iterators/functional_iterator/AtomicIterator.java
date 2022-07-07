@@ -10,16 +10,23 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 @FunctionalInterface
-public interface IteratorX<T> {
+@SuppressWarnings("squid:S1711")
+public interface AtomicIterator<T> {
 
-    static <T> IteratorX<T> of(Iterator<T> iterator) {
-        return action -> {
-            boolean hasNext = iterator.hasNext();
-            if (hasNext) {
-                action.accept(iterator.next());
-            }
-            return hasNext;
-        };
+    static <T> AtomicIterator<T> of(Iterator<T> iterator) {
+        return action -> acceptIfHasNext(iterator, action);
+    }
+
+    static <T> AtomicIterator<T> of(Spliterator<T> spliterator) {
+        return spliterator::tryAdvance;
+    }
+
+    private static <T> boolean acceptIfHasNext(Iterator<T> iterator, Consumer<? super T> action) {
+        boolean hasNext = iterator.hasNext();
+        if (hasNext) {
+            action.accept(iterator.next());
+        }
+        return hasNext;
     }
 
     boolean tryAdvance(Consumer<? super T> action);

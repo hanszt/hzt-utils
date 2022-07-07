@@ -7,7 +7,7 @@
 
     <parent>
         <groupId>org.hzt.utils</groupId>
-        <artifactId>commons</artifactId>
+        <artifactId>hzt-utils</artifactId>
         <version>0.7.5.1.8</version>
     </parent>
 
@@ -17,7 +17,6 @@
         <dependency>
             <groupId>org.hzt.utils</groupId>
             <artifactId>test-data-generator</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>

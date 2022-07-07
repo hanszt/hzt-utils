@@ -6,19 +6,19 @@ import java.util.function.Predicate;
 public final class SkipWhileIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
-    private final Predicate<T> predicate;
+    private final Predicate<? super T> predicate;
     private final boolean inclusive;
 
     private T nextItem = null;
     private SkipState state = SkipState.SKIPPING;
 
-    SkipWhileIterator(Iterator<T> iterator, Predicate<T> predicate, boolean inclusive) {
+    SkipWhileIterator(Iterator<T> iterator, Predicate<? super T> predicate, boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
     }
 
-    public static <T> SkipWhileIterator<T> of(Iterator<T> iterator, Predicate<T> predicate, boolean inclusive) {
+    public static <T> SkipWhileIterator<T> of(Iterator<T> iterator, Predicate<? super T> predicate, boolean inclusive) {
         return new SkipWhileIterator<>(iterator, predicate, inclusive);
     }
 

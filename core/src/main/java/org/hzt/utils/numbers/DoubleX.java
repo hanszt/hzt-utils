@@ -1,14 +1,50 @@
 package org.hzt.utils.numbers;
 
 import org.hzt.utils.Transformable;
+import org.hzt.utils.comparables.ComparableX;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
+import java.util.regex.Pattern;
 
-@SuppressWarnings("unused")
-public final class DoubleX extends Number implements NumberX<Double>, Transformable<DoubleX> {
+@SuppressWarnings({"unused", "squid:S1448"})
+public final class DoubleX extends Number implements NumberX<Double>, Transformable<DoubleX>, ComparableX<DoubleX> {
 
     private static final long serialVersionUID = 45;
+
+    private static final String DIGIT = "(\\d+)";
+    private static final String HEX_DIGITS = "(\\p{XDigit}+)";
+    // an exponent is 'e' or 'E' followed by an optionally
+    // signed decimal integer.
+    private static final String EXP = "[eE][+-]?" + DIGIT;
+    private static final String FP_REGEX =
+            ("[\\x00-\\x20]*" +  // Optional leading "whitespace"
+                    "[+-]?(" + // Optional sign character
+                    "NaN|" +           // "NaN" string
+                    "Infinity|" +      // "Infinity" string
+                    // A decimal floating-point string representing a finite positive
+                    // number without a leading sign has at most five basic pieces:
+                    // Digits . Digits ExponentPart FloatTypeSuffix
+                    //
+                    // Since this method allows integer-only strings as input
+                    // in addition to strings of floating-point literals, the
+                    // two sub-patterns below are simplifications of the grammar
+                    // productions from section 3.10.2 of
+                    // The Java Language Specification.
+                    // Digits ._opt Digits_opt ExponentPart_opt FloatTypeSuffix_opt
+                    "(((" + DIGIT + "(\\.)?(" + DIGIT + "?)(" + EXP + ")?)|" +
+                    // . Digits ExponentPart_opt FloatTypeSuffix_opt
+                    "(\\." + DIGIT + "(" + EXP + ")?)|" +
+                    // Hexadecimal strings
+                    "((" +
+                    // 0[xX] HexDigits ._opt BinaryExponent FloatTypeSuffix_opt
+                    "(0[xX]" + HEX_DIGITS + "(\\.)?)|" +
+                    // 0[xX] HexDigits_opt . HexDigits BinaryExponent FloatTypeSuffix_opt
+                    "(0[xX]" + HEX_DIGITS + "?(\\.)" + HEX_DIGITS + ")" +
+                    ")[pP][+-]?" + DIGIT + "))" +
+                    "[fFdD]?))" +
+                    "[\\x00-\\x20]*");// Optional trailing "whitespace"
+
+    private static final Pattern DOUBLE_PATTERN = Pattern.compile(FP_REGEX);
 
     private final Double thisDouble;
 
@@ -40,6 +76,10 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
         return Double.isInfinite(v);
     }
 
+    public static boolean isParsableDouble(CharSequence charSequence) {
+        return DOUBLE_PATTERN.matcher(charSequence).matches();
+    }
+
     public static boolean isFinite(double d) {
         return Double.isFinite(d);
     }
@@ -50,6 +90,10 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
 
     public static String toRoundedString(double d, int scale) {
         return String.format(String.format("%%.%df", scale), d);
+    }
+
+    public static double times(double value1, double value2) {
+        return value1 * value2;
     }
 
     public String toHexString() {
@@ -121,16 +165,17 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
         return Double.doubleToLongBits(value);
     }
 
-    
+
     public static long doubleToRawLongBits(double value) {
         return Double.doubleToRawLongBits(value);
     }
 
-    
+
     public static double longBitsToDouble(long bits) {
         return Double.longBitsToDouble(bits);
     }
 
+    @SuppressWarnings("squid:S4351")
     public int compareTo(Double anotherDouble) {
         return thisDouble.compareTo(anotherDouble);
     }
@@ -163,5 +208,10 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
     @Override
     public @NotNull Double getValue() {
         return thisDouble;
+    }
+
+    @Override
+    public int compareTo(@NotNull DoubleX o) {
+        return thisDouble.compareTo(o.thisDouble);
     }
 }

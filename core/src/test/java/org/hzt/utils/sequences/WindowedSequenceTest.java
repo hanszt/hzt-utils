@@ -24,7 +24,7 @@ class WindowedSequenceTest {
         final List<Pair<Long, Long>> sumDays = Sequence
                 .generate(LocalDate.of(1900, Month.JANUARY, 1), date -> date.plusMonths(1))
                 .chunked(12)
-                .map(dates -> dates.sumOfInts(LocalDate::getDayOfYear))
+                .map(dates -> dates.intSumOf(LocalDate::getDayOfYear))
                 .zipWithNext(Pair::of)
                 .takeWhileInclusive(p -> p.first().equals(p.second()))
                 .toList();

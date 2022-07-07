@@ -118,7 +118,7 @@ class CollectableTest {
 
         final Triple<Pair<ListX<Painter>,ListX<Painter>>, IntStatistics, Long> actual = paintingList.asSequence()
                 .toThree(s -> s.partitionMapping(Painting::isInMuseum, Painting::painter),
-                        s -> s.statsOfInts(Painting::ageInYears),
+                        s -> s.intStatsOf(Painting::ageInYears),
                         Sequence::count);
 
         final IntSummaryStatistics expectedStats = expected.second();
@@ -152,7 +152,7 @@ class CollectableTest {
                 .toFour(Sequence::count,
                         s -> s.minOf(It::self),
                         s -> s.maxOf(It::self),
-                        s -> s.sumOfInts(It::self),
+                        s -> s.intSumOf(It::self),
                         ListX::of);
 
         assertAll(
@@ -183,7 +183,7 @@ class CollectableTest {
                 .filter(IntX::isEven)
                 .map(Year::of);
 
-        final Sequence<Year> yearSequence = Sequence.of(yearStream);
+        final Sequence<Year> yearSequence = Sequence.ofStream(yearStream);
 
         assertAll(
                 () -> assertEquals(4, yearSequence.count()),
@@ -222,7 +222,7 @@ class CollectableTest {
                 summingInt(It::asInt),
                 ListX::of);
 
-        final IntStatistics stats = sequence.statsOfInts(It::asInt);
+        final IntStatistics stats = sequence.intStatsOf(It::asInt);
 
         assertAll(
                 () -> assertEquals(statistics.first().longValue(), stats.getCount()),
@@ -274,6 +274,5 @@ class CollectableTest {
                 () -> assertEquals(expected, result),
                 () -> assertEquals(expected2, result)
         );
-
     }
 }

@@ -1,15 +1,20 @@
 package org.hzt.utils.strings;
 
-import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
+import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.numbers.BigDecimalX;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.numbers.LongX;
+import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.tuples.IndexedValue;
+import org.hzt.utils.tuples.IntPair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -26,7 +31,10 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-public final class StringX implements CharSequence, Sequence<Character>, Transformable<StringX> {
+import static org.hzt.utils.PreConditions.require;
+
+@SuppressWarnings({"squid:S1448", "squid:S1200", "squid:S4351"})
+public final class StringX implements CharSequence, Sequence<Character>, Transformable<StringX>, ComparableX<StringX> {
 
     private final String string;
 
@@ -35,7 +43,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     private StringX(CharSequence charSequence) {
-        this(String.valueOf(charSequence));
+        this(charSequence.toString());
     }
 
     private StringX(Iterable<Character> characterIterable) {
@@ -125,6 +133,10 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     public static StringX of(double d) {
         return StringX.of(String.valueOf(d));
+    }
+
+    public static String capitalized(String string) {
+        return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
     }
 
     public StringX plus(String s) {
@@ -317,7 +329,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     @Override
-    public StringX filter(@NotNull Predicate<Character> predicate) {
+    public StringX filter(@NotNull Predicate<? super Character> predicate) {
         return StringX.of(Sequence.super.filter(predicate));
     }
 
@@ -353,24 +365,81 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return ListX.of(string.split(regex.toString(), limit));
     }
 
-    public ListX<String> split(@NotNull CharSequence delimiter) {
+    public ListX<String> split(final @NotNull CharSequence delimiter) {
         return split(0, delimiter);
     }
 
-    public ListX<String> split(int limit, @NotNull CharSequence delimiter) {
+    public ListX<String> split(final @NotNull CharSequence... delimiters) {
+        return splitToSequence(false, delimiters).toListX();
+    }
+
+    public Sequence<String> splitToSequence(final @NotNull CharSequence... delimiters) {
+        return splitToSequence(false, delimiters);
+    }
+
+    public Sequence<String> splitToSequence(final boolean ignoreCase, final CharSequence... delimiters) {
+        return splitToSequence(ignoreCase, 0, delimiters);
+    }
+    public Sequence<String> splitToSequence(final boolean ignoreCase,
+                                            final int limit, @NotNull
+                                            final CharSequence... delimiters) {
+        return rangeDelimitedBy(string, delimiters, ignoreCase, limit)
+                .map(range -> string.substring(range.start(), range.endInclusive() + 1));
+    }
+
+    private static Sequence<IntRange> rangeDelimitedBy(final String string,
+                                                       final CharSequence[] delimiters,
+                                                       final boolean ignoreCase,
+                                                       final int limit) {
+        require(limit >= 0, () -> "Limit must be non-negative, but was " + limit);
+        return new DelimitedRangesSequence(string, 0, limit,
+                (charSequence, curIndex) -> findAnyOf(delimiters, ignoreCase, charSequence, curIndex));
+    }
+
+    @Nullable
+    private static IntPair findAnyOf(CharSequence[] delimiters, boolean ignoreCase, CharSequence s, int curIndex) {
+        final var indexedValue = findAnyOf(s, curIndex, ListX.of(delimiters), ignoreCase);
+        return indexedValue != null ? IntPair.of(indexedValue.index(), indexedValue.value().length()) : null;
+    }
+
+    private static IndexedValue<CharSequence> findAnyOf(final CharSequence charSequence,
+                                                  final int startIndex,
+                                                  final CollectionX<CharSequence> delimiters,
+                                                  final boolean ignoreCase) {
+        final var stringX = StringX.of(charSequence);
+        if (!ignoreCase && delimiters.size() == 1) {
+            final CharSequence singleString = delimiters.single();
+            final int index = stringX.indexOf(singleString, startIndex);
+            return (index < 0) ? null : new IndexedValue<>(index, singleString);
+        }
+
+        final var indices = IntRange.closed(Math.max(startIndex, 0), charSequence.length());
+
+        for (int index : indices) {
+            final CharSequence matchingCharSequence = delimiters
+                    .findFirst(charSeq -> charSeq.toString().regionMatches(ignoreCase, 0, stringX.string, index, charSeq.length()))
+                    .orElse(null);
+            if (matchingCharSequence != null) {
+                return new IndexedValue<>(index, matchingCharSequence);
+            }
+        }
+        return null;
+    }
+
+    public ListX<String> split(final int limit, @NotNull final CharSequence delimiter) {
         final String delimiterAsString = StringX.of(delimiter).toString();
         return split(delimiterAsString, limit);
     }
 
     /**
      * @param delimiter the delimiter
-     * @param limit the limit to which ti split
+     * @param limit the limit to which to split
      * @return a list with split strings
      *
      * This method is inspired by the Kotlin standard library
      */
-    private ListX<String> split(String delimiter, int limit) {
-        PreConditions.require(limit >= 0, () -> "Limit must be non-negative, but was $limit");
+    private ListX<String> split(final String delimiter, final int limit) {
+        require(limit >= 0, () -> "Limit must be non-negative, but was " + limit);
         int currentOffset = 0;
         int nextIndex = indexOf(delimiter, currentOffset);
         if (nextIndex == -1 || limit == 1) {
@@ -565,6 +634,14 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return StringX.of(String.format(string, args));
     }
 
+    public Stream<Character> boxedChars() {
+        return chars().mapToObj(c -> (char) c);
+    }
+
+    public StringX repeat(int count) {
+        return StringX.of(string.repeat(count));
+    }
+
     @Override
     public @NotNull StringX get() {
         return this;
@@ -574,5 +651,10 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     @Override
     public Iterator<Character> iterator() {
         return charIterator();
+    }
+
+    @Override
+    public int compareTo(@NotNull StringX o) {
+        return string.compareTo(o.string);
     }
 }

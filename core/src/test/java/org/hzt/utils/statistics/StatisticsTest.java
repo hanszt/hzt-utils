@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StatisticsTest {
 
+    @SuppressWarnings("squid:S5977")
     private static final Random RANDOM = new Random(0);
 
     @Test

@@ -16,7 +16,7 @@ import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 
 @FunctionalInterface
-public interface DoubleCollectable extends DoubleIterable, PrimitiveCollectable<DoubleCollection> {
+public interface DoubleCollectable extends DoubleArrayable, PrimitiveCollectable<DoubleCollection> {
 
     default <R> R collect(Supplier<R> supplier, ObjDoubleConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
@@ -75,7 +75,7 @@ public interface DoubleCollectable extends DoubleIterable, PrimitiveCollectable<
         if (n == 0) {
             return collection;
         }
-        final DoubleIterable iterable = this;
+        final PrimitiveIterable.OfDouble iterable = this;
         if (iterable instanceof DoubleMutableCollection) {
             DoubleMutableCollection c = (DoubleMutableCollection) iterable;
             if (n >= c.size()) {

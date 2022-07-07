@@ -46,7 +46,7 @@ class TakeableTest {
 
         It.println("actual = " + actual);
 
-        assertEquals(expected, actual);
+        assertIterableEquals(expected, actual);
     }
 
     @Test

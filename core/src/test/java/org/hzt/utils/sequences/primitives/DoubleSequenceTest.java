@@ -153,7 +153,7 @@ class DoubleSequenceTest {
 
         final double[] sums2 = Sequence.generate(0, l -> ++l)
                 .take(1_000_000)
-                .windowed(1_000, 50, s -> s.sumOfDoubles(It::asDouble))
+                .windowed(1_000, 50, s -> s.doubleSumOf(It::asDouble))
                 .mapToDouble(It::asDouble)
                 .toArray();
 

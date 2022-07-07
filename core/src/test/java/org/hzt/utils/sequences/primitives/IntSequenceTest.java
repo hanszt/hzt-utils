@@ -239,4 +239,13 @@ class IntSequenceTest {
 
         assertArrayEquals(new long[]{4950, 14950, 24950, 34950, 44950}, longs);
     }
+
+    @Test
+    void testDistinctIntSequence() {
+        final var distinctArray = IntSequence.of(1, 2, 3, 4, 3, -51, 2, 1, 5, 4, 6, 3, 7, -1, -100, -100, -50)
+                .distinct()
+                .toArray();
+
+        assertArrayEquals(new int[] {1, 2, 3, 4, -51, 5, 6, 7, -1, -100, -50}, distinctArray);
+    }
 }

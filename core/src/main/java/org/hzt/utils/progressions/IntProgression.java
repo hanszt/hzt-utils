@@ -4,6 +4,7 @@ import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.PrimitiveIterator;
 
 public class IntProgression implements IntSequence {
@@ -40,15 +41,36 @@ public class IntProgression implements IntSequence {
         return new IntProgression(0, end, step);
     }
 
-    public static IntProgression downTo(int lower) {
-        if (lower > 0) {
+    public static IntProgression downTo(int endInclusive) {
+        if (endInclusive > 0) {
             return new IntProgression(0, 0, -1);
         }
-        return new IntProgression(0, lower, -1);
+        return new IntProgression(0, endInclusive, -1);
     }
 
     public static IntProgression closed(int start, int endInclusive, int step) {
         return new IntProgression(start, endInclusive, step);
+    }
+
+    public static IntProgression closed(int start, int endInclusive) {
+        return new IntProgression(start, endInclusive, -1);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        IntProgression integers = (IntProgression) o;
+        return start == integers.start && endInclusive == integers.endInclusive && getStep() == integers.getStep();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, endInclusive, getStep());
     }
 
     @Override
@@ -72,12 +94,16 @@ public class IntProgression implements IntSequence {
         };
     }
 
-    protected @NotNull Integer start() {
+    public @NotNull Integer start() {
         return start;
     }
 
-    protected @NotNull Integer endInclusive() {
+    public @NotNull Integer endInclusive() {
         return endInclusive;
+    }
+
+    public int getStep() {
+        return step;
     }
 
     @Override

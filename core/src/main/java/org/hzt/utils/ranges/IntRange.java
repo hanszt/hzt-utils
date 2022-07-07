@@ -16,7 +16,7 @@ public final class IntRange extends IntProgression implements ClosedRange<Intege
     }
 
     public static IntRange of(int start, int endExclusive, int step) {
-        return IntRange.closed(start, endExclusive - 1, step);
+        return IntRange.closed(start, endExclusive - step, step);
     }
 
     public static IntRange of(int start, int endExclusive) {

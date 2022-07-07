@@ -1,6 +1,8 @@
 package org.hzt.utils.numbers;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Locale;
 
@@ -19,4 +21,18 @@ class DoubleXTest {
 
         Locale.setDefault(locale);
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"8e3", "2.73", "10.34E4", "3", "3.0d", "4.8F", "NaN", "Infinity"})
+    void testIsParsableDouble(String string) {
+        assertTrue(DoubleX.isParsableDouble(string));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"8e3.3", "hallo", "3,123", "3.0e", "4.8q"})
+    void testIsNotAParsableDouble(String string) {
+        assertFalse(DoubleX.isParsableDouble(string));
+    }
+
+
 }

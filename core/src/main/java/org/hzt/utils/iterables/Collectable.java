@@ -75,7 +75,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
         return Collections.unmodifiableMap(toMutableMap(keyMapper, valueMapper));
     }
 
-    default <A, R> R collect(@NotNull Collector<? super T, A, R> collector) {
+    default <R, A> R collect(@NotNull Collector<? super T, A, R> collector) {
         final A result = collector.supplier().get();
         final BiConsumer<A, ? super T> accumulator = collector.accumulator();
         for (T item : this) {
@@ -206,7 +206,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default ListX<T> toListX() {
-        return toMutableList();
+        return ListX.copyOf(toMutableList());
     }
 
     default List<T> toList() {
@@ -223,7 +223,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default SetX<T> toSetX() {
-        return toMutableSet();
+        return SetX.copyOf(toMutableSet());
     }
 
     default <R> SetX<R> toSetXOf(@NotNull Function<? super T, ? extends R> transform) {
@@ -282,17 +282,17 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <C extends Collection<T>> C filterTo(@NotNull Supplier<C> collectionFactory,
-                                                 @NotNull Predicate<T> predicate) {
+                                                 @NotNull Predicate<? super T> predicate) {
         return IterableXHelper.mapFilteringTo(this, collectionFactory, predicate, It::self, It::noFilter);
     }
 
     default <C extends Collection<T>> C filterNotTo(@NotNull Supplier<C> collectionFactory,
-                                                    @NotNull Predicate<T> predicate) {
+                                                    @NotNull Predicate<? super T> predicate) {
         return filterTo(collectionFactory, predicate.negate());
     }
 
     default <C extends Collection<T>> C filterIndexedTo(@NotNull Supplier<C> collectionFactory,
-                                                        @NotNull BiPredicate<Integer, T> predicate) {
+                                                        @NotNull BiPredicate<? super Integer, ? super T> predicate) {
         C collection = collectionFactory.get();
         final Iterable<IndexedValue<T>> indexedIterable = this::indexedIterator;
         for (IndexedValue<T> indexedValue : indexedIterable) {
@@ -362,7 +362,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <C extends Collection<T>> C takeWhileTo(@NotNull Supplier<C> collectionFactory,
-                                                    @NotNull Predicate<T> predicate,
+                                                    @NotNull Predicate<? super T> predicate,
                                                     boolean inclusive) {
         final C collection = collectionFactory.get();
         for (T item : this) {

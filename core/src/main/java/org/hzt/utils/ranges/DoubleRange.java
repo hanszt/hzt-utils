@@ -25,14 +25,4 @@ public final class DoubleRange extends DoubleProgression implements ClosedRange<
     public boolean containsAll(double @NotNull ... array) {
         return DoubleSequence.of(array).all(this::contains);
     }
-
-    @Override
-    public @NotNull Double start() {
-        return super.start();
-    }
-
-    @Override
-    public @NotNull Double endInclusive() {
-        return super.endInclusive();
-    }
 }

@@ -6,6 +6,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.RandomAccess;
+import java.util.function.DoubleToIntFunction;
+import java.util.function.IntToDoubleFunction;
+import java.util.function.IntToLongFunction;
+import java.util.function.IntUnaryOperator;
+import java.util.function.LongToIntFunction;
 
 final class PrimitiveListHelper {
 
@@ -143,6 +148,75 @@ final class PrimitiveListHelper {
         int tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
+    }
+
+    static int binarySearch(
+            int size, IntUnaryOperator midValExtractor, int fromIndex, int toIndex, IntUnaryOperator comparison) {
+        PreConditions.rangeCheck(size, fromIndex, toIndex);
+
+        int low = fromIndex;
+        int high = toIndex - 1;
+
+        while (low <= high) {
+            final int mid = (low + high) >>> 1;
+            final int midVal = midValExtractor.applyAsInt(mid);
+            final int cmp = comparison.applyAsInt(midVal);
+
+            if (cmp < 0) {
+                low = mid + 1;
+            } else if (cmp > 0) {
+                high = mid - 1;
+            } else {
+                return mid; // key found
+            }
+        }
+        return -(low + 1);  // key not found
+    }
+
+    static int binarySearch(
+            int size, IntToLongFunction midValExtractor, int fromIndex, int toIndex, LongToIntFunction comparison) {
+        PreConditions.rangeCheck(size, fromIndex, toIndex);
+
+        int low = fromIndex;
+        int high = toIndex - 1;
+
+        while (low <= high) {
+            final int mid = (low + high) >>> 1;
+            final long midVal = midValExtractor.applyAsLong(mid);
+            final int cmp = comparison.applyAsInt(midVal);
+
+            if (cmp < 0) {
+                low = mid + 1;
+            } else if (cmp > 0) {
+                high = mid - 1;
+            } else {
+                return mid; // key found
+            }
+        }
+        return -(low + 1);  // key not found
+    }
+
+    static int binarySearch(
+            int size, IntToDoubleFunction midValExtractor, int fromIndex, int toIndex, DoubleToIntFunction comparison) {
+        PreConditions.rangeCheck(size, fromIndex, toIndex);
+
+        int low = fromIndex;
+        int high = toIndex - 1;
+
+        while (low <= high) {
+            final int mid = (low + high) >>> 1;
+            final double midVal = midValExtractor.applyAsDouble(mid);
+            final int cmp = comparison.applyAsInt(midVal);
+
+            if (cmp < 0) {
+                low = mid + 1;
+            } else if (cmp > 0) {
+                high = mid - 1;
+            } else {
+                return mid; // key found
+            }
+        }
+        return -(low + 1);  // key not found
     }
 
     static int checkIndex(int index, int length) {

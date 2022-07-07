@@ -64,25 +64,25 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return new EmptySequence<>();
     }
 
+    @SafeVarargs
+    static <T> Sequence<T> of(T... values) {
+        return () -> ArrayIterator.of(values);
+    }
+
     static <T> Sequence<T> of(@NotNull Iterable<T> iterable) {
         return iterable::iterator;
     }
 
-    static <T> Sequence<T> of(@NotNull Stream<T> stream) {
+    static <T> Sequence<T> ofStream(@NotNull Stream<T> stream) {
         return stream::iterator;
     }
 
-    static <K, V> EntrySequence<K, V> of(Map<K, V> map) {
+    static <K, V> EntrySequence<K, V> ofMap(Map<K, V> map) {
         return map.entrySet()::iterator;
     }
 
     static <K, V> EntrySequence<K, V> of(MapX<K, V> map) {
         return map.entrySet()::iterator;
-    }
-
-    @SafeVarargs
-    static <T> Sequence<T> of(T... values) {
-        return () -> ArrayIterator.of(values);
     }
 
     static <T> Sequence<T> ofNullable(@Nullable T value) {
@@ -179,11 +179,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return filter(aClass::isInstance).map(aClass::cast);
     }
 
-    default Sequence<T> filter(@NotNull Predicate<T> predicate) {
+    default Sequence<T> filter(@NotNull Predicate<? super T> predicate) {
         return SequenceHelper.filteringSequence(this, predicate);
     }
 
-    default Sequence<T> filterNot(@NotNull Predicate<T> predicate) {
+    default Sequence<T> filterNot(@NotNull Predicate<? super T> predicate) {
         return SequenceHelper.filteringSequence(this, predicate, false);
     }
 
@@ -192,7 +192,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default Sequence<T> filterIndexed(@NotNull BiPredicate<Integer, T> predicate) {
+    default Sequence<T> filterIndexed(@NotNull BiPredicate<? super Integer, ? super T> predicate) {
         return withIndex()
                 .filter(indexedValue -> predicate.test(indexedValue.index(), indexedValue.value()))
                 .map(IndexedValue::value);
@@ -252,11 +252,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         }
     }
 
-    default Sequence<T> takeWhile(@NotNull Predicate<T> predicate) {
+    default Sequence<T> takeWhile(@NotNull Predicate<? super T> predicate) {
         return () -> TakeWhileIterator.of(iterator(), predicate, false);
     }
 
-    default Sequence<T> takeWhileInclusive(@NotNull Predicate<T> predicate) {
+    default Sequence<T> takeWhileInclusive(@NotNull Predicate<? super T> predicate) {
         return () -> TakeWhileIterator.of(iterator(), predicate, true);
     }
 
@@ -273,12 +273,12 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default Sequence<T> skipWhile(@NotNull Predicate<T> predicate) {
+    default Sequence<T> skipWhile(@NotNull Predicate<? super T> predicate) {
         return () -> SkipWhileIterator.of(iterator(), predicate, false);
     }
 
     @Override
-    default Sequence<T> skipWhileInclusive(@NotNull Predicate<T> predicate) {
+    default Sequence<T> skipWhileInclusive(@NotNull Predicate<? super T> predicate) {
         return () -> SkipWhileIterator.of(iterator(), predicate, true);
     }
 
@@ -288,7 +288,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default Sequence<T> sorted(Comparator<T> comparator) {
+    default Sequence<T> sorted(Comparator<? super T> comparator) {
         return () -> IterableX.super.sorted(comparator).iterator();
     }
 
@@ -312,11 +312,12 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> IterableX.super.sortedByDescending(selector).iterator();
     }
 
-    default <K, V> EntrySequence<K, V> asEntrySequence(Function<T, K> keyMapper, Function<T, V> valueMapper) {
+    default <K, V> EntrySequence<K, V> asEntrySequence(@NotNull Function<? super T, ? extends K> keyMapper,
+                                                       @NotNull Function<? super T, ? extends V> valueMapper) {
         return EntrySequence.of(map(value -> new AbstractMap.SimpleEntry<>(keyMapper.apply(value), valueMapper.apply(value))));
     }
 
-    default <K, V> EntrySequence<K, V> asEntrySequence(Function<T, Pair<K, V>> toPairMapper) {
+    default <K, V> EntrySequence<K, V> asEntrySequence(Function<? super T, ? extends Pair<K, V>> toPairMapper) {
         return EntrySequence.ofPairs(map(toPairMapper));
     }
 

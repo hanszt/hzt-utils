@@ -10,7 +10,7 @@ import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 
 @FunctionalInterface
-public interface IntGroupable extends PrimitiveGroupable<Integer, IntMutableListX, IntPredicate>, IntIterable {
+public interface IntGroupable extends PrimitiveGroupable<Integer, IntMutableListX, IntPredicate>, PrimitiveIterable.OfInt {
 
     @Override
     default MapX<Integer, IntMutableListX> group() {

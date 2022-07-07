@@ -3,20 +3,25 @@ package org.hzt.utils.iterators.primitives;
 import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
+import java.util.Set;
 import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntBinaryOperator;
+import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongBinaryOperator;
+import java.util.function.LongConsumer;
 import java.util.function.LongFunction;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.LongToIntFunction;
@@ -25,6 +30,7 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
+@SuppressWarnings("squid:S1200")
 public final class PrimitiveIterators {
 
     private PrimitiveIterators() {
@@ -122,6 +128,7 @@ public final class PrimitiveIterators {
             }
 
             @Override
+            @SuppressWarnings("squid:S2272")
             public R next() {
                 return mapper.apply(iterator.nextInt());
             }
@@ -220,6 +227,7 @@ public final class PrimitiveIterators {
             }
 
             @Override
+            @SuppressWarnings("squid:S2272")
             public R next() {
                 return mapper.apply(iterator.nextLong());
             }
@@ -321,6 +329,7 @@ public final class PrimitiveIterators {
             }
 
             @Override
+            @SuppressWarnings("squid:S2272")
             public R next() {
                 return mapper.apply(iterator.nextDouble());
             }
@@ -415,6 +424,60 @@ public final class PrimitiveIterators {
                 return false;
             }
         };
+    }
+
+    @NotNull
+    public static PrimitiveIterator.OfInt distinctIterator(PrimitiveIterator.OfInt iterator) {
+        final Set<Integer> observed = new HashSet<>();
+        final PrimitiveAtomicIterator.OfInt iteratorX = action -> nextDistinctInt(iterator, observed, action);
+        return iteratorX.asIterator();
+    }
+
+    private static boolean nextDistinctInt(PrimitiveIterator.OfInt iterator, Set<Integer> observed, IntConsumer action) {
+        while (iterator.hasNext()) {
+            int next = iterator.nextInt();
+            if (observed.add(next)) {
+                action.accept(next);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @NotNull
+    public static PrimitiveIterator.OfLong distinctIterator(PrimitiveIterator.OfLong iterator) {
+        final Set<Long> observed = new HashSet<>();
+        final PrimitiveAtomicIterator.OfLong iteratorX = action -> nextDistinctLong(iterator, observed, action);
+        return iteratorX.asIterator();
+    }
+
+    private static boolean nextDistinctLong(PrimitiveIterator.OfLong iterator, Set<Long> observed, LongConsumer action) {
+        while (iterator.hasNext()) {
+            long next = iterator.nextLong();
+            if (observed.add(next)) {
+                action.accept(next);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @NotNull
+    public static PrimitiveIterator.OfDouble distinctIterator(PrimitiveIterator.OfDouble iterator) {
+        final Set<Double> observed = new HashSet<>();
+        final PrimitiveAtomicIterator.OfDouble iteratorX = action -> nextDistinctDouble(iterator, observed, action);
+        return iteratorX.asIterator();
+    }
+
+    private static boolean nextDistinctDouble(PrimitiveIterator.OfDouble iterator, Set<Double> observed, DoubleConsumer action) {
+        while (iterator.hasNext()) {
+            double next = iterator.nextDouble();
+            if (observed.add(next)) {
+                action.accept(next);
+                return true;
+            }
+        }
+        return false;
     }
 
     @NotNull

@@ -19,11 +19,11 @@ public final class SequenceHelper {
     private SequenceHelper() {
     }
 
-    static <T> Sequence<T> filteringSequence(Sequence<T> upstream, Predicate<T> predicate, boolean sendWhen) {
+    static <T> Sequence<T> filteringSequence(Sequence<T> upstream, Predicate<? super T> predicate, boolean sendWhen) {
         return () -> FilteringIterator.of(upstream.iterator(), predicate, sendWhen);
     }
 
-    static <T> Sequence<T> filteringSequence(Sequence<T> upstream, Predicate<T> predicate) {
+    static <T> Sequence<T> filteringSequence(Sequence<T> upstream, Predicate<? super T> predicate) {
         return filteringSequence(upstream, predicate, true);
     }
 

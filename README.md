@@ -24,7 +24,7 @@ Add the following dependency to your project:
 ````xml
     <dependency>
         <groupId>org.hzt.utils</groupId>
-        <artifactId>commons</artifactId>
+        <artifactId>hzt-utils</artifactId>
         <version>${hzt.utils.version}</version>
     </dependency>
 ````

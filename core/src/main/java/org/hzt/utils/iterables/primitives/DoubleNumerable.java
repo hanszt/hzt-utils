@@ -9,7 +9,7 @@ import java.util.PrimitiveIterator;
 import java.util.function.DoublePredicate;
 
 @FunctionalInterface
-public interface DoubleNumerable extends DoubleIterable, PrimitiveNumerable<DoublePredicate> {
+public interface DoubleNumerable extends PrimitiveIterable.OfDouble, PrimitiveNumerable<DoublePredicate> {
 
     @Override
     default long count() {

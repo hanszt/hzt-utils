@@ -1,7 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.MutableCollectionX;
-import org.hzt.utils.iterables.primitives.DoubleIterable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,8 +16,8 @@ public interface DoubleMutableCollection extends DoubleCollection,
 
     @Override
     default boolean addAll(@NotNull Iterable<Double> iterable) {
-        if (iterable instanceof DoubleIterable) {
-            final PrimitiveIterator.OfDouble iterator = ((DoubleIterable) iterable).iterator();
+        if (iterable instanceof PrimitiveIterable.OfDouble) {
+            final PrimitiveIterator.OfDouble iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
             while (iterator.hasNext()) {
                 final boolean added = add(iterator.nextDouble());
                 if (!added) {
@@ -51,8 +51,8 @@ public interface DoubleMutableCollection extends DoubleCollection,
 
     @Override
     default boolean removeAll(@NotNull Iterable<Double> iterable) {
-        if (iterable instanceof DoubleIterable) {
-            final PrimitiveIterator.OfDouble iterator = ((DoubleIterable) iterable).iterator();
+        if (iterable instanceof PrimitiveIterable.OfDouble) {
+            final PrimitiveIterator.OfDouble iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
             while (iterator.hasNext()) {
                 final boolean removed = remove(iterator.nextDouble());
                 if (!removed) {

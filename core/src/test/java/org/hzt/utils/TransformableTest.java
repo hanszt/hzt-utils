@@ -25,7 +25,7 @@ class TransformableTest {
         final Painting nijntje = Painting.of("Nijntje");
 
         final LocalDate localDate = Transformable.from(vanGoghAuction)
-                .apply(a -> a.setMostPopularPainting(nijntje))
+                .apply(auction -> auction.setMostPopularPainting(nijntje))
                 .let(PaintingAuction::getDateOfOpening);
 
         assertAll(

@@ -8,6 +8,7 @@ import org.hzt.utils.iterables.primitives.LongGroupable;
 import org.hzt.utils.iterables.primitives.LongNumerable;
 import org.hzt.utils.iterables.primitives.LongReducable;
 import org.hzt.utils.iterables.primitives.LongStreamable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.LongFilteringIterator;
 import org.hzt.utils.iterators.primitives.LongGeneratorIterator;

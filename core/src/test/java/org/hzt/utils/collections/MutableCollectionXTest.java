@@ -1,6 +1,5 @@
 package org.hzt.utils.collections;
 
-import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.junit.jupiter.api.Test;
@@ -8,9 +7,11 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toCollection;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class MutableCollectionXTest {
 
@@ -34,12 +35,15 @@ class MutableCollectionXTest {
     void testMapToListX() {
         final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        final ListX<LocalDate> expectedLocalDates = museumList.stream()
+        final List<LocalDate> expectedLocalDates = museumList.stream()
                 .map(Museum::getDateOfOpening)
-                .collect(CollectorsX.toListX());
+                .collect(Collectors.toList());
 
         final ListX<LocalDate> actualLocalDates = museumList
                 .mapTo(MutableListX::empty, Museum::getDateOfOpening);
+
+        System.out.println("actualLocalDates = " + actualLocalDates);
+        System.out.println("expectedLocalDates = " + expectedLocalDates);
 
         assertIterableEquals(expectedLocalDates, actualLocalDates);
     }

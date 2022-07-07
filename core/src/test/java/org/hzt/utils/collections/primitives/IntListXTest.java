@@ -6,11 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class IntListXTest {
 
@@ -60,5 +56,38 @@ class IntListXTest {
         System.out.println("shuffled = " + shuffled);
 
         assertNotEquals(intListX, shuffled);
+    }
+
+    @Test
+    void testBinarySearch() {
+        final IntListX sortedList = IntListX.of(-1, 0, 1, 2, 3, 4, 5);
+
+        int valueToSearchFor = 2;
+
+        final int indexInSortedList = sortedList.binarySearch(value -> value - valueToSearchFor);
+
+        assertEquals(3, indexInSortedList);
+    }
+
+    @Test
+    void testIndices() {
+        final var intList = IntListX.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
+        int[] indices1 = new int[intList.size()];
+        final var indices = intList.indices();
+        for (int i : indices) {
+            indices1[i] = i;
+        }
+        int[] indices2 = new int[intList.size()];
+        for (int i = 0; i < intList.size(); i++) {
+            indices2[i] = i;
+        }
+        int[] indices3 = intList.indicesAsStream().toArray();
+
+        assertAll(
+                () -> assertArrayEquals(indices1, indices2),
+                () -> assertArrayEquals(indices1, indices3),
+                () -> assertTrue(indices.contains(4)),
+                () -> assertFalse(indices.contains(intList.size()))
+        );
     }
 }

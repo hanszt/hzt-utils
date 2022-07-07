@@ -6,7 +6,7 @@ import java.util.function.IntUnaryOperator;
 import static java.lang.System.Logger.Level.*;
 
 @FunctionalInterface
-public interface IntComparator extends Comparator<Integer> {
+public interface IntComparator extends Comparator<Integer>, PrimitiveComparator {
 
     int compareInt(int i1, int i2);
 

@@ -3,7 +3,7 @@ package org.hzt.utils.iterables.primitives;
 import org.hzt.utils.statistics.NumberStatistics;
 import org.jetbrains.annotations.NotNull;
 
-public interface PrimitiveNumerable<P> {
+interface PrimitiveNumerable<P> {
 
     long count();
 

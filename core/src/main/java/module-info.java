@@ -7,6 +7,7 @@ open module hzt.utils.core {
     exports org.hzt.utils.collections.primitives;
     exports org.hzt.utils.function;
     exports org.hzt.utils.function.predicates;
+    exports org.hzt.utils.function.primitives;
     exports org.hzt.utils.sequences;
     exports org.hzt.utils.sequences.primitives;
     exports org.hzt.utils.streams;
@@ -25,4 +26,5 @@ open module hzt.utils.core {
     exports org.hzt.utils.progressions;
     exports org.hzt.utils.iterators.primitives;
     exports org.hzt.utils.arrays.primitves;
+    exports org.hzt.utils.arrays;
 }

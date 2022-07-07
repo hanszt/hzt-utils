@@ -5,6 +5,7 @@ import org.hzt.utils.strings.StringX;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,6 +75,19 @@ class IntXTest {
         return IntSequence.generate(2, i -> i + (i < 3 ? 1 : 2))
                 .takeWhile(i -> i <= upperPrimeSize)
                 .filter(i -> prime[i]);
+    }
+
+    @Test
+    void testAsChar() {
+        String s = "This is a string";
+
+        final var characters = s.chars()
+                .mapToObj(IntX::asChar)
+                .collect(Collectors.toList());
+
+        System.out.println(characters);
+
+        assertEquals(16, characters.size());
     }
 
 }

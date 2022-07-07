@@ -8,7 +8,6 @@ import org.hzt.utils.iterables.primitives.DoubleGroupable;
 import org.hzt.utils.iterables.primitives.DoubleNumerable;
 import org.hzt.utils.iterables.primitives.DoubleReducable;
 import org.hzt.utils.iterables.primitives.DoubleStreamable;
-import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.DoubleFilteringIterator;
 import org.hzt.utils.iterators.primitives.DoubleGeneratorIterator;
@@ -78,11 +77,11 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     default DoubleSequence plus(double @NotNull ... values) {
-        return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(PrimitiveIterable.OfDouble::forEachDouble);
+        return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(OfDouble::forEachDouble);
     }
 
     default DoubleSequence plus(@NotNull Iterable<Double> values) {
-        return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(PrimitiveIterable.OfDouble::forEachDouble);
+        return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(OfDouble::forEachDouble);
     }
 
     @Override
@@ -95,8 +94,16 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         return () -> PrimitiveIterators.doubleTransformingIterator(iterator(), mapper);
     }
 
-    default DoubleSequence flatMap(DoubleFunction<? extends DoubleSequence> flatMapper) {
-        return mapMulti((value, doubleConsumer) -> flatMapper.apply(value).forEachDouble(doubleConsumer));
+    default DoubleSequence flatMap(DoubleFunction<? extends Iterable<Double>> flatMapper) {
+        return mapMulti((value, doubleConsumer) -> consumeForEach(flatMapper.apply(value), doubleConsumer));
+    }
+
+    private static void consumeForEach(Iterable<Double> iterable, DoubleConsumer consumer) {
+        if (iterable instanceof OfDouble) {
+            ((OfDouble) iterable).forEachDouble(consumer);
+        } else {
+            iterable.forEach(consumer::accept);
+        }
     }
 
     default DoubleSequence mapMulti(DoubleMapMultiConsumer mapMultiConsumer) {
@@ -181,6 +188,16 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     @Override
     default DoubleSequence sortedDescending() {
         return sorted(DoubleX::compareReversed);
+    }
+
+    @Override
+    default boolean isSorted(DoubleComparator comparator) {
+        return zipWithNext(comparator::compareDouble).all(comparison -> comparison <= 0);
+    }
+
+    @Override
+    default boolean isSorted() {
+        return isSorted(Double::compare);
     }
 
     @Override

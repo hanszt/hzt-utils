@@ -4,6 +4,7 @@ import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.PrimitiveIterator;
 
 public class DoubleProgression implements DoubleSequence {
@@ -26,9 +27,29 @@ public class DoubleProgression implements DoubleSequence {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DoubleProgression doubles = (DoubleProgression) o;
+        return Double.compare(doubles.start, start) == 0 &&
+                Double.compare(doubles.endInclusive, endInclusive) == 0 &&
+                Double.compare(doubles.getStep(), getStep()) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, endInclusive, getStep());
+    }
+
+    @Override
     public PrimitiveIterator.OfDouble iterator() {
         return new PrimitiveIterator.OfDouble() {
             private double next = start;
+
             @Override
             public double nextDouble() {
                 final double value = next;
@@ -43,11 +64,24 @@ public class DoubleProgression implements DoubleSequence {
         };
     }
 
-    protected @NotNull Double start() {
+    public @NotNull Double start() {
         return start;
     }
 
-    protected @NotNull Double endInclusive() {
+    public @NotNull Double endInclusive() {
         return endInclusive;
+    }
+
+    public double getStep() {
+        return step;
+    }
+
+    @Override
+    public String toString() {
+        return "DoubleProgression{" +
+                "start=" + start +
+                ", endInclusive=" + endInclusive +
+                ", step=" + step +
+                '}';
     }
 }

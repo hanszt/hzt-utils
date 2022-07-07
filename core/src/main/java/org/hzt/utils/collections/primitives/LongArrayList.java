@@ -1,6 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.arrays.primitves.PrimitiveSort;
+import org.hzt.utils.arrays.primitves.PrimitiveArrays;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
@@ -167,7 +167,7 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
     @SuppressWarnings("squid:S1188")
     public PrimitiveListIterator.OfLong listIterator(int startIndex) {
         return new PrimitiveListIterator.OfLong() {
-            private int index = 0;
+            private int index = startIndex;
 
             @Override
             public boolean hasNext() {
@@ -202,7 +202,7 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
 
     @Override
     public void sort(LongComparator comparator) {
-        PrimitiveSort.sort(elementData, 0, size, comparator);
+        PrimitiveArrays.sort(0, size, comparator, elementData);
     }
 
     @Override

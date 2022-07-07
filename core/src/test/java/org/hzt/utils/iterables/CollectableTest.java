@@ -271,6 +271,5 @@ class CollectableTest {
                 () -> assertEquals(expected, result),
                 () -> assertEquals(expected2, result)
         );
-
     }
 }

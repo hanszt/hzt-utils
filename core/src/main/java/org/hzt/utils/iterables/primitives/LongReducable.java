@@ -1,13 +1,13 @@
 package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.It;
+import org.hzt.utils.function.primitives.LongBiFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.PrimitiveIterator;
-import java.util.function.BiFunction;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongFunction;
 import java.util.function.LongPredicate;
@@ -39,7 +39,7 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
     default <R> R reduceToTwo(
             long initial1, @NotNull LongBinaryOperator operator1,
             long initial2, @NotNull LongBinaryOperator operator2,
-            @NotNull BiFunction<Long, Long, R> finisher) {
+            @NotNull LongBiFunction<R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
         long accumulator1 = initial1;
         long accumulator2 = initial2;
@@ -51,10 +51,9 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return finisher.apply(accumulator1, accumulator2);
     }
 
-    @Override
     default @NotNull <R> Optional<R> reduceToTwo(@NotNull LongBinaryOperator operator1,
                                                  @NotNull LongBinaryOperator operator2,
-                                                 @NotNull BiFunction<Long, Long, R> finisher) {
+                                                 @NotNull LongBiFunction<R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
         if (iterator.hasNext()) {
             final var first = iterator.nextLong();

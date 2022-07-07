@@ -1,7 +1,6 @@
 package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.ranges.DoubleRange;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

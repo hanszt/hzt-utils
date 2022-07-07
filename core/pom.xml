@@ -17,7 +17,6 @@
         <dependency>
             <groupId>org.hzt.utils</groupId>
             <artifactId>test-data-generator</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>

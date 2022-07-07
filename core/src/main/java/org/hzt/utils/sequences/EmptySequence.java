@@ -1,8 +1,8 @@
 package org.hzt.utils.sequences;
 
-import org.hzt.utils.iterators.EmptyIterator;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 final class EmptySequence<T> implements SkipTakeSequence<T> {
@@ -20,6 +20,6 @@ final class EmptySequence<T> implements SkipTakeSequence<T> {
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return new EmptyIterator<>();
+        return Collections.emptyIterator();
     }
 }

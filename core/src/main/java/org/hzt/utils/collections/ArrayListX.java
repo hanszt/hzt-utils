@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
 
 final class ArrayListX<E> implements MutableListX<E> {
 
@@ -61,18 +61,8 @@ final class ArrayListX<E> implements MutableListX<E> {
     }
 
     @Override
-    public int binarySearch(int fromIndex, int toIndex, ToIntFunction<E> comparison) {
-        return ListHelper.binarySearch(size(), list::get, fromIndex, toIndex, comparison);
-    }
-
-    @Override
     public int size() {
         return list.size();
-    }
-
-    @Override
-    public int lastIndex() {
-        return size() - 1;
     }
 
     @Override
@@ -110,13 +100,14 @@ final class ArrayListX<E> implements MutableListX<E> {
     }
 
     @Override
+    @SuppressWarnings("squid:S2250")
     public boolean remove(Object o) {
         return list.remove(o);
     }
 
     @Override
     public boolean containsAll(@NotNull Collection<?> c) {
-        return list.containsAll(c);
+        return new HashSet<>(list).containsAll(c);
     }
 
     @Override
@@ -218,7 +209,7 @@ final class ArrayListX<E> implements MutableListX<E> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(list);
+        return list.hashCode();
     }
 
     @Override
@@ -226,7 +217,4 @@ final class ArrayListX<E> implements MutableListX<E> {
         return list.toString();
     }
 
-    List<E> getList() {
-        return list;
-    }
 }

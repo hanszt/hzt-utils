@@ -6,7 +6,7 @@ import java.util.function.LongUnaryOperator;
 import static java.lang.System.Logger.Level.WARNING;
 
 @FunctionalInterface
-public interface LongComparator extends Comparator<Long> {
+public interface LongComparator extends Comparator<Long>, PrimitiveComparator {
 
     int compareLong(long l1, long l2);
 

@@ -1,7 +1,5 @@
 package org.hzt.utils;
 
-import static java.lang.System.out;
-
 /**
  * <p>
  * 'It' is a class to easily refer to itself in a method reference and for some other utility functions such as
@@ -26,6 +24,7 @@ import static java.lang.System.out;
  * in this case, a type witness needs to be used to declare the type
  *
  */
+@SuppressWarnings({"squid:S106", "squid:S1172"})
 public final class It {
 
     private It() {
@@ -85,18 +84,22 @@ public final class It {
     }
 
     public static void println() {
-        out.println();
+        System.out.println();
     }
 
     public static <T> void println(T value) {
-        out.println(value);
+        System.out.println(value);
     }
 
     public static <T> void print(T value) {
-        out.print(value);
+        System.out.print(value);
     }
 
     public static void printf(String format, Object... values) {
-        out.printf(format, values);
+        System.out.printf(format, values);
+    }
+
+    public static <T> boolean notEquals(T t1, T t2) {
+        return !t1.equals(t2);
     }
 }

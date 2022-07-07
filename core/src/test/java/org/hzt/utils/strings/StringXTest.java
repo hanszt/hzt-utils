@@ -1,8 +1,8 @@
 package org.hzt.utils.strings;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -148,5 +148,43 @@ class StringXTest {
         return s1.chars()
                 .mapToObj(i -> (char) i)
                 .collect(Collectors.groupingBy(Function.identity()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "this is a test -> This is a test",
+            "hANS -> Hans",
+            "1233 -> 1233",
+            "THIS IS A LITTLE TO MUCH! -> This is a little to much!"})
+    void testCapitalized(String string) {
+        final ListX<String> split = StringX.of(string).split(" -> ");
+        final String input = split.first();
+        final String expected = split.last();
+
+        final String actual = StringX.capitalized(input);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void testSplitToSequence() {
+        String string = "hallo, this, is, a, test -> answer";
+        final var comma = StringX.of(", ");
+        final var strings = StringX.of(string).splitToSequence(comma, " -> ");
+
+        strings.forEach(System.out::println);
+
+        assertIterableEquals(Sequence.of("hallo", "this", "is", "a", "test", "answer"), strings);
+    }
+
+    @Test
+    void testSplitToSequenceIgnoreCase() {
+        String string = "hallo O this o is O a, test -> answer";
+        final var oDelimiter = new StringBuilder(" o ");
+        final var strings = StringX.of(string).splitToSequence(true,", ", oDelimiter, " -> ");
+
+        strings.forEach(System.out::println);
+
+        assertIterableEquals(Sequence.of("hallo", "this", "is", "a", "test", "answer"), strings);
     }
 }

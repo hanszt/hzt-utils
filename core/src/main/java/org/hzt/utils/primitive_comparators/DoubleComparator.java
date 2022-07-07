@@ -6,7 +6,7 @@ import java.util.function.DoubleUnaryOperator;
 import static java.lang.System.Logger.Level.WARNING;
 
 @FunctionalInterface
-public interface DoubleComparator extends Comparator<Double> {
+public interface DoubleComparator extends Comparator<Double>, PrimitiveComparator {
 
     int compareDouble(double d1, double d2);
 

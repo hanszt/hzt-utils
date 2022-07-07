@@ -1,6 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.arrays.primitves.PrimitiveSort;
+import org.hzt.utils.arrays.primitves.PrimitiveArrays;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
@@ -209,7 +209,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
 
     @Override
     public void sort(DoubleComparator comparator) {
-        PrimitiveSort.sort(elementData, 0, size, comparator);
+        PrimitiveArrays.sort(0, size, comparator, elementData);
     }
 
     @Override

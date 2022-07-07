@@ -12,7 +12,7 @@ public interface Filterable<T> extends IndexedIterable<T> {
 
     <R> Filterable<T> filterBy(@NotNull Function<? super T, ? extends R> selector, @NotNull Predicate<R> predicate);
 
-    Filterable<T> filterNot(@NotNull Predicate<T> predicate);
+    Filterable<T> filterNot(@NotNull Predicate<? super T> predicate);
 
-    Filterable<T> filterIndexed(@NotNull BiPredicate<Integer, T> predicate);
+    Filterable<T> filterIndexed(@NotNull BiPredicate<? super Integer, ? super T> predicate);
 }

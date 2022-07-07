@@ -1,13 +1,14 @@
 package org.hzt.utils.numbers;
 
 import org.hzt.utils.Transformable;
+import org.hzt.utils.comparables.ComparableX;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 import java.io.Serial;
 
 @SuppressWarnings({"unused", "squid:S1448"})
-public final class DoubleX extends Number implements NumberX<Double>, Transformable<DoubleX> {
+public final class DoubleX extends Number implements NumberX<Double>, Transformable<DoubleX>, ComparableX<DoubleX> {
 
     @Serial
     private static final long serialVersionUID = 45;
@@ -93,6 +94,10 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
         return String.format(String.format("%%.%df", scale), d);
     }
 
+    public static double times(double value1, double value2) {
+        return value1 * value2;
+    }
+
     public String toHexString() {
         return Double.toHexString(thisDouble);
     }
@@ -172,6 +177,7 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
         return Double.longBitsToDouble(bits);
     }
 
+    @SuppressWarnings("squid:S4351")
     public int compareTo(Double anotherDouble) {
         return thisDouble.compareTo(anotherDouble);
     }
@@ -204,5 +210,10 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
     @Override
     public @NotNull Double getValue() {
         return thisDouble;
+    }
+
+    @Override
+    public int compareTo(@NotNull DoubleX o) {
+        return thisDouble.compareTo(o.thisDouble);
     }
 }

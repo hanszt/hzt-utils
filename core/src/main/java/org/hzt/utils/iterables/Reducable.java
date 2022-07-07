@@ -115,6 +115,7 @@ public interface Reducable<T> extends Iterable<T> {
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }
+        @SuppressWarnings("squid:S1941")
         T single = iterator.next();
         if (iterator.hasNext()) {
             throw new IllegalArgumentException("Sequence has more than one element");

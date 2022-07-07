@@ -25,11 +25,11 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     }
 
     static <K, V> MapX<K, V> of(Map<? extends K, ? extends V> map) {
-        return MutableMapX.ofMap(map);
+        return new ImmutableMapX<>(map);
     }
 
     static <K, V> MapX<K, V> of(Iterable<Map.Entry<K, V>> entries) {
-        return new HashMapX<>(entries);
+        return new ImmutableMapX<>(entries);
     }
 
     static <K, V> MapX<K, V> of(K k1, V v1) {
@@ -77,22 +77,22 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
 
     @SafeVarargs
     static <K, V> MapX<K, V> ofEntries(Map.Entry<? extends K, ? extends V>... entries) {
-        return new HashMapX<>(entries);
+        return new ImmutableMapX<>(entries);
     }
 
     static <K, V> MapX<K, V> ofPairs(Iterable<Pair<K, V>> pairs) {
-        return new HashMapX<>(EntrySequence.ofPairs(pairs));
+        return new ImmutableMapX<>(EntrySequence.ofPairs(pairs));
     }
 
     @SafeVarargs
     static <K, V> MapX<K, V> ofPairs(Pair<K, V>... pairs) {
-        return new HashMapX<>(pairs);
+        return new ImmutableMapX<>(pairs);
     }
 
     static <K, V> MapX<K, V> build(Consumer<MutableMapX<K, V>> mapConsumer) {
         MutableMapX<K, V> map = MutableMapX.empty();
         mapConsumer.accept(map);
-        return map;
+        return MapX.copyOf(map);
     }
 
     <K1, V1> MapX<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper,
@@ -215,6 +215,6 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     }
 
     static <K, V> MapX<K, V> copyOf(MapX<K, V> map) {
-        return new HashMapX<>(map);
+        return new ImmutableMapX<>(map);
     }
 }

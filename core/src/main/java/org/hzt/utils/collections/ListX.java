@@ -1,11 +1,15 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.PreConditions;
-import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.Transformable;
+import org.hzt.utils.markerinterfaces.BinarySearchable;
+import org.hzt.utils.ranges.IntRange;
+import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Random;
@@ -27,33 +31,33 @@ import static org.hzt.utils.PreConditions.require;
  * @param <E> the type of the elements
  * @author Hans Zuidervaart
  */
-public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
+public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, BinarySearchable<ToIntFunction<E>> {
 
     static <E> ListX<E> empty() {
-        return new ArrayListX<>();
+        return new ImmutableListX<>();
     }
 
     static <E> ListX<E> of(Iterable<E> iterable) {
-        return new ArrayListX<>(iterable);
-    }
-
-    static <E> ListX<E> of(Collection<E> iterable) {
-        return new ArrayListX<>(iterable);
+        return new ImmutableListX<>(iterable);
     }
 
     @SafeVarargs
     static <E> ListX<E> of(E... values) {
-        return new ArrayListX<>(values);
+        return new ImmutableListX<>(values);
     }
 
     static <E> ListX<E> build(Consumer<MutableListX<E>> mutableListConsumer) {
         MutableListX<E> list = MutableListX.empty();
         mutableListConsumer.accept(list);
-        return list;
+        return copyOf(list);
     }
 
-    static <E> ListX<E> copyOf(Iterable<E> iterable) {
-        return new ArrayListX<>(iterable);
+    static <E> ListX<E> copyOf(Collection<E> collection) {
+        return new ImmutableListX<>(collection);
+    }
+
+    static <E> ListX<E> copyOfNullsAllowed(List<E> list) {
+        return new ImmutableListX<>(list);
     }
 
     default <R> R foldRight(@NotNull R initial, @NotNull BiFunction<E, R, R> operation) {
@@ -90,7 +94,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
     }
 
     default ListX<E> takeLast(int n) {
-        return takeLastTo(MutableListX::withInitCapacity, n);
+        return ListX.copyOfNullsAllowed(takeLastTo(MutableListX::withInitCapacity, n));
     }
 
     Optional<E> findRandom();
@@ -109,42 +113,20 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
         return findRandom(random).orElseThrow();
     }
 
-    default int binarySearchTo(int toIndex, ToIntFunction<E> comparison) {
-        return binarySearch(0, toIndex, comparison);
-    }
-
-    default int binarySearchFrom(int fromIndex, ToIntFunction<E> comparison) {
-        return binarySearch(fromIndex, size(), comparison);
-    }
-
-    default int binarySearch(ToIntFunction<E> comparison) {
-        return binarySearch(0, size(), comparison);
-    }
-
     /**
-     * Searches this list or its range for an element for which the given [comparison] function
-     * returns zero using the binary search algorithm.
-     * <p>
-     * The list is expected to be sorted so that the signs of the [comparison] function's return values ascend on the list elements,
-     * i.e. negative values come before zero and zeroes come before positive values.
-     * Otherwise, the result is undefined.
-     * <p>
-     * If the list contains multiple elements for which [comparison] returns zero, there is no guarantee which one will be found.
-     *
-     * @param comparison function that returns zero when called on the list element being searched.
-     *                   On the elements coming before the target element, the function must return negative values;
-     *                   on the elements coming after the target element, the function must return positive values.
-     * @return the index of the found element, if it is contained in the list within the specified range;
-     * otherwise, the inverted insertion point `(-insertion point - 1)`.
-     * The insertion point is defined as the index at which the element should be inserted,
-     * so that the list (or the specified subrange of list) still remains sorted.
+     * @see org.hzt.utils.markerinterfaces.BinarySearchable#binarySearch(int, int, Object)
+     * @see java.util.Arrays#binarySearch(Object[], Object, Comparator)
      */
-    int binarySearch(int fromIndex, int toIndex, ToIntFunction<E> comparison);
+    default int binarySearch(int fromIndex, int toIndex, ToIntFunction<E> comparison) {
+        return ListHelper.binarySearch(size(), this::get, fromIndex, toIndex, comparison);
+    }
 
     @Override
     int size();
 
-    int lastIndex();
+    default int lastIndex() {
+        return size() - 1;
+    }
 
     @Override
     boolean isEmpty();
@@ -168,6 +150,18 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
 
     int lastIndexOf(Object o);
 
+    @Override
+    @NotNull
+    default E first() {
+        return get(0);
+    }
+
+    @Override
+    @NotNull
+    default E last() {
+        return get(lastIndex());
+    }
+
     ListIterator<E> listIterator();
 
     ListIterator<E> listIterator(int index);
@@ -184,12 +178,12 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
     }
 
     default ListX<E> skipLast(int n) {
-        return takeTo(MutableListX::empty, Math.max((size() - n), 0));
+        return ListX.copyOf(takeTo(MutableListX::empty, Math.max((size() - n), 0)));
     }
 
     default ListX<E> skipLastWhile(@NotNull Predicate<E> predicate) {
         if (isEmpty()) {
-            return MutableListX.empty();
+            return ListX.empty();
         }
         ListIterator<E> iterator = listIterator(size());
         while (iterator.hasPrevious()) {
@@ -197,11 +191,11 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
                 return take(iterator.nextIndex() + 1L);
             }
         }
-        return MutableListX.empty();
+        return ListX.empty();
     }
 
     default ListX<E> takeLastWhile(@NotNull Predicate<E> predicate) {
-        return takeLastWhileTo(MutableListX::withInitCapacity, predicate);
+        return ListX.copyOf(takeLastWhileTo(MutableListX::withInitCapacity, predicate));
     }
 
     default <C extends Collection<E>> C takeLastWhileTo(@NotNull IntFunction<C> collectionFactory, @NotNull Predicate<E> predicate) {
@@ -241,5 +235,10 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>> {
     @Override
     default Spliterator<E> spliterator() {
         return Spliterators.spliterator(iterator(), size(), Spliterator.ORDERED | Spliterator.IMMUTABLE);
+    }
+
+    @Override
+    default IntRange indices() {
+        return IntRange.of(0, size());
     }
 }

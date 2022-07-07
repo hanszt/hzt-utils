@@ -2,6 +2,7 @@ package org.hzt.utils.numbers;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
+import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.ranges.LongRange;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.LongSequence;
@@ -12,7 +13,7 @@ import java.util.Objects;
 import java.util.function.LongPredicate;
 
 @SuppressWarnings({"unused", "squid:S1448"})
-public final class LongX extends Number implements NumberX<Long>, Transformable<LongX> {
+public final class LongX extends Number implements NumberX<Long>, Transformable<LongX>, ComparableX<LongX> {
 
     @Serial
     private static final long serialVersionUID = 2;
@@ -69,6 +70,10 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
 
     public static LongPredicate multipleOf(long multiple) {
         return l -> l % multiple == 0;
+    }
+
+    public static long times(long value1, long value2) {
+        return value1 * value2;
     }
 
     public boolean isMultipleOf(long multiple) {
@@ -197,6 +202,7 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         return Long.getLong(nm, val);
     }
 
+    @SuppressWarnings("squid:S4351")
     public int compareTo(Long anotherLong) {
         return thisLong.compareTo(anotherLong);
     }
@@ -285,5 +291,10 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
     @Override
     public @NotNull Long getValue() {
         return thisLong;
+    }
+
+    @Override
+    public int compareTo(@NotNull LongX o) {
+        return thisLong.compareTo(o.thisLong);
     }
 }

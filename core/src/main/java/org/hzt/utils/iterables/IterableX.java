@@ -11,8 +11,10 @@ import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.PrimitiveIterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
@@ -32,7 +34,7 @@ import java.util.stream.StreamSupport;
  */
 public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, Takeable<T>, Zippable<T>, Windowable<T>,
         Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>,
-        Collectable<T>, Groupable<T>, Streamable<Stream<T>> {
+        Collectable<T>, Groupable<T>, Streamable<Stream<T>>, Indexable<T> {
 
     default AtomicIterator<T> atomicIterator() {
         return AtomicIterator.of(iterator());
@@ -89,7 +91,7 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         final var intersection = toMutableSet();
         final var otherCollection = other instanceof Collection<T> collection ? collection : MutableListX.of(other);
         intersection.retainAll(otherCollection);
-        return intersection;
+        return SetX.of(intersection);
     }
 
     default <S, I extends Iterable<S>, R> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper,
@@ -105,7 +107,7 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         MutableSetX<T> union = MutableSetX.empty();
         forEach(union::add);
         other.forEach(union::add);
-        return union;
+        return SetX.copyOf(union);
     }
 
     default <R> SetX<R> union(@NotNull Iterable<T> other, @NotNull Function<? super T, ? extends R> mapper) {
@@ -125,5 +127,21 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
 
     default double[] toDoubleArray(@NotNull ToDoubleFunction<? super T> mapper) {
         return asSequence().mapToDouble(mapper).toArray();
+    }
+
+    default boolean[] toBooleanArray(@NotNull Predicate<? super T> mapper) {
+        int size = (int) count();
+        boolean[] result = new boolean[size];
+        int counter = 0;
+        for (T value : this) {
+            result[counter] = mapper.test(value);
+            counter++;
+        }
+        return result;
+    }
+
+    @Override
+    default PrimitiveIterator.@NotNull OfInt indexIterator() {
+        return Mappable.super.indexIterator();
     }
 }

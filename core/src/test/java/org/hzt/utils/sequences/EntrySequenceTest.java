@@ -110,6 +110,16 @@ class EntrySequenceTest {
     }
 
     @Test
+    void testMergeValues() {
+        final var mergedZipWithNext = Sequence.of(1, 2, 3, 4, 5, 6, 7, 8)
+                .associateWith(String::valueOf)
+                .mergeValues(String::length)
+                .toList();
+
+        assertEquals(List.of(1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 1), mergedZipWithNext);
+    }
+
+    @Test
     void testTerminalOppMergeOfTwoDifferentTypesThrowsException() {
         final var map = Map.of(1, "2", 2, "2", 3, "3");
         final var stringSequence = EntrySequence.ofMap(map).merge();

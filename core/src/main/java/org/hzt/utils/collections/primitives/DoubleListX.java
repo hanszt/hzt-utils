@@ -7,6 +7,7 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.markerinterfaces.BinarySearchable;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
+import org.hzt.utils.ranges.IntRange;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -101,7 +102,7 @@ public interface DoubleListX extends DoubleCollection,
     @Override
     default DoubleListX sorted(DoubleComparator comparator) {
         final var array = toArray();
-        PrimitiveArrays.sort(array, comparator);
+        PrimitiveArrays.sort(comparator, array);
         return DoubleListX.of(array);
     }
 
@@ -138,5 +139,10 @@ public interface DoubleListX extends DoubleCollection,
     @Override
     default int binarySearch(int fromIndex, int toIndex, DoubleToIntFunction comparison) {
         return PrimitiveListHelper.binarySearch(size(), this::get, fromIndex, toIndex, comparison);
+    }
+
+    @Override
+    default IntRange indices() {
+        return IntRange.of(0, size());
     }
 }

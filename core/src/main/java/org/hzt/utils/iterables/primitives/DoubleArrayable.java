@@ -15,21 +15,21 @@ public interface DoubleArrayable extends
 
     @Override
     default boolean[] toBooleanArray(DoublePredicate mapper) {
-        return PrimitiveArrays.toBooleanArray(DoubleSequence.of(this).toArray(), mapper);
+        return PrimitiveArrays.toBooleanArray(mapper, DoubleSequence.of(this).toArray());
     }
 
     @Override
     default byte[] toByteArray(DoubleToByteFunction mapper) {
-        return PrimitiveArrays.toByteArray(DoubleSequence.of(this).toArray(), mapper);
+        return PrimitiveArrays.toByteArray(mapper, DoubleSequence.of(this).toArray());
     }
 
     @Override
     default short[] toShortArray(DoubleToShortFunction mapper) {
-        return PrimitiveArrays.toShortArray(DoubleSequence.of(this).toArray(), mapper);
+        return PrimitiveArrays.toShortArray(mapper, DoubleSequence.of(this).toArray());
     }
 
     @Override
     default float[] toFloatArray(DoubleToFloatFunction mapper) {
-        return PrimitiveArrays.toFloatArray(DoubleSequence.of(this).toArray(), mapper);
+        return PrimitiveArrays.toFloatArray(mapper, DoubleSequence.of(this).toArray());
     }
 }

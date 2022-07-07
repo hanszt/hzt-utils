@@ -73,7 +73,8 @@ class IntListXTest {
     void testIndices() {
         final var intList = IntListX.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
         int[] indices1 = new int[intList.size()];
-        for (int i : intList.indices()) {
+        final var indices = intList.indices();
+        for (int i : indices) {
             indices1[i] = i;
         }
         int[] indices2 = new int[intList.size()];
@@ -84,7 +85,9 @@ class IntListXTest {
 
         assertAll(
                 () -> assertArrayEquals(indices1, indices2),
-                () -> assertArrayEquals(indices1, indices3)
+                () -> assertArrayEquals(indices1, indices3),
+                () -> assertTrue(indices.contains(4)),
+                () -> assertFalse(indices.contains(intList.size()))
         );
     }
 }

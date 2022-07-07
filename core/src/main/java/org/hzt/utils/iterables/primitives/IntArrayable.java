@@ -14,21 +14,21 @@ public interface IntArrayable extends
 
     @Override
     default boolean[] toBooleanArray(IntPredicate mapper) {
-        return PrimitiveArrays.toBooleanArray(IntSequence.of(this).toArray(), mapper);
+        return PrimitiveArrays.toBooleanArray(mapper, IntSequence.of(this).toArray());
     }
 
     @Override
     default byte[] toByteArray(IntToByteFunction mapper) {
-        return PrimitiveArrays.toByteArray(IntSequence.of(this).toArray(), mapper);
+        return PrimitiveArrays.toByteArray(mapper, IntSequence.of(this).toArray());
     }
 
     @Override
     default short[] toShortArray(IntToShortFunction mapper) {
-        return PrimitiveArrays.toShortArray(IntSequence.of(this).toArray(), mapper);
+        return PrimitiveArrays.toShortArray(mapper, IntSequence.of(this).toArray());
     }
 
     @Override
     default float[] toFloatArray(IntToFloatFunction mapper) {
-        return PrimitiveArrays.toFloatArray(IntSequence.of(this).toArray(), mapper);
+        return PrimitiveArrays.toFloatArray(mapper, IntSequence.of(this).toArray());
     }
 }

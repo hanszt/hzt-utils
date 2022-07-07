@@ -1,24 +1,26 @@
 package org.hzt.utils.arrays.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.arrays.primitves.PrimitiveArrays;
-import org.hzt.utils.primitive_comparators.IntComparator;
-import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.collections.primitives.DoubleListX;
 import org.hzt.utils.collections.primitives.IntListX;
 import org.hzt.utils.collections.primitives.LongListX;
 import org.hzt.utils.numbers.DoubleX;
+import org.hzt.utils.primitive_comparators.DoubleComparator;
+import org.hzt.utils.primitive_comparators.IntComparator;
+import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.sequences.primitives.LongSequence;
-import org.hzt.utils.It;
-import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PrimitiveArraysTest {
 
@@ -32,7 +34,7 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        PrimitiveArrays.sort(array, Integer::compare);
+        PrimitiveArrays.sort(Integer::compare, array);
 
         It.println(Arrays.toString(array));
 
@@ -49,7 +51,7 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        PrimitiveArrays.sort(array, IntComparator.reverseOrder());
+        PrimitiveArrays.sort(IntComparator.reverseOrder(), array);
 
         It.println(Arrays.toString(array));
 
@@ -66,7 +68,7 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        PrimitiveArrays.sort(array, Long::compare);
+        PrimitiveArrays.sort(Long::compare, array);
 
         It.println(Arrays.toString(array));
 
@@ -82,7 +84,7 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        PrimitiveArrays.sort(array, LongComparator.reverseOrder());
+        PrimitiveArrays.sort(LongComparator.reverseOrder(), array);
 
         It.println(Arrays.toString(array));
 
@@ -99,7 +101,7 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        PrimitiveArrays.sort(array, Double::compare);
+        PrimitiveArrays.sort(Double::compare, array);
 
         It.println(Arrays.toString(array));
 
@@ -124,7 +126,7 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        PrimitiveArrays.sort(array, DoubleComparator.reverseOrder());
+        PrimitiveArrays.sort(DoubleComparator.reverseOrder(), array);
 
         It.println(Arrays.toString(array));
 
@@ -138,7 +140,7 @@ class PrimitiveArraysTest {
     void testIntArrayToBooleanArray() {
         int[] input = {1, 4, 5, 3, 6, 7, 2, 7};
 
-        final var booleans = PrimitiveArrays.toBooleanArray(input, i -> i < 4);
+        final var booleans = PrimitiveArrays.toBooleanArray(i -> i < 4, input);
 
         final boolean[] expected = {true, false, false, true, false, false, true, false};
 
@@ -148,7 +150,7 @@ class PrimitiveArraysTest {
     void testLongArrayToBooleanArray() {
         long[] input = {1, 4, 5, 3, 6, 7, 2, Long.MAX_VALUE};
 
-        final var booleans = PrimitiveArrays.toBooleanArray(input, l -> l < 4);
+        final var booleans = PrimitiveArrays.toBooleanArray(l -> l < 4, input);
 
         final boolean[] expected = {true, false, false, true, false, false, true, false};
 
@@ -159,11 +161,25 @@ class PrimitiveArraysTest {
     void testDoubleArrayToBooleanArray() {
         double[] input = {Double.NEGATIVE_INFINITY, 1, 4, 5, Math.PI, 6, 7, Math.E, 7e1, Double.POSITIVE_INFINITY};
 
-        final var booleans = PrimitiveArrays.toBooleanArray(input, d -> d < 4);
+        final var booleans = PrimitiveArrays.toBooleanArray(d -> d < 4, input);
 
         final boolean[] expected = {true, true, false, false, true, false, false, true, false, false};
 
         assertArrayEquals(expected, booleans);
+    }
+
+    @Test
+    void testIsSorted() {
+        final var sorted = PrimitiveArrays.isSorted(IntComparator.reverseOrder(), 10, 9, 7, 7, 7, 6, 5, 2, -1);
+
+        assertTrue(sorted);
+    }
+
+    @Test
+    void testIsNotSorted() {
+        final var sorted = PrimitiveArrays.isSorted(IntComparator.reverseOrder(), 10, 9, 7, 8, 7, 6, 4, 2, 5);
+
+        assertFalse(sorted);
     }
 
 }

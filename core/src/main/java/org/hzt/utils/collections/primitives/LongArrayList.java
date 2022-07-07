@@ -202,7 +202,7 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
 
     @Override
     public void sort(LongComparator comparator) {
-        PrimitiveArrays.sort(elementData, 0, size, comparator);
+        PrimitiveArrays.sort(0, size, comparator, elementData);
     }
 
     @Override

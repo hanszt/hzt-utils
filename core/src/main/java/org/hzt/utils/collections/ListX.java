@@ -3,6 +3,7 @@ package org.hzt.utils.collections;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
 import org.hzt.utils.markerinterfaces.BinarySearchable;
+import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
@@ -234,5 +235,10 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
     @Override
     default Spliterator<E> spliterator() {
         return Spliterators.spliterator(iterator(), size(), Spliterator.ORDERED | Spliterator.IMMUTABLE);
+    }
+
+    @Override
+    default IntRange indices() {
+        return IntRange.of(0, size());
     }
 }

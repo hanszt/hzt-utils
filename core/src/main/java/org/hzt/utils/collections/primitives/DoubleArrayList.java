@@ -209,7 +209,7 @@ final class DoubleArrayList extends PrimitiveAbstractCollection<Double> implemen
 
     @Override
     public void sort(DoubleComparator comparator) {
-        PrimitiveArrays.sort(elementData, 0, size, comparator);
+        PrimitiveArrays.sort(0, size, comparator, elementData);
     }
 
     @Override

@@ -64,9 +64,7 @@ class ReducableTest {
 
     @Test
     void testFoldTwoInOnePass() {
-        final var dateSequence = Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
-                .takeWhile(d -> d.getYear() <= 1980)
-                .filter(LocalDate::isLeapYear);
+        final Sequence<LocalDate> dateSequence = generateLeapYearDateSequence();
 
         final var iterations1 = new AtomicInteger();
 
@@ -91,9 +89,7 @@ class ReducableTest {
 
     @Test
     void testFoldThreeInOnePass() {
-        final var dateSequence = Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
-                .takeWhile(d -> d.getYear() <= 1980)
-                .filter(LocalDate::isLeapYear);
+        final Sequence<LocalDate> dateSequence = generateLeapYearDateSequence();
 
         final var iterations1 = new AtomicInteger();
 
@@ -119,9 +115,7 @@ class ReducableTest {
 
     @Test
     void tesReduceTwoInOnePass() {
-        final var dateSequence = Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
-                .takeWhile(d -> d.getYear() <= 1980)
-                .filter(LocalDate::isLeapYear);
+        final Sequence<LocalDate> dateSequence = generateLeapYearDateSequence();
 
         final var iterations1 = new AtomicInteger();
 
@@ -143,6 +137,12 @@ class ReducableTest {
                 () -> assertEquals(expected.second(), pair.second()),
                 () -> assertEquals(iterations1.get(), iterations2.get() + 1)
         );
+    }
+
+    private static Sequence<LocalDate> generateLeapYearDateSequence() {
+        return Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
+                .takeWhile(d -> d.getYear() <= 1980)
+                .filter(LocalDate::isLeapYear);
     }
 
     @Test

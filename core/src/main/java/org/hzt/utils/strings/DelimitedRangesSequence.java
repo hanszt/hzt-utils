@@ -4,31 +4,31 @@ import org.hzt.utils.iterators.State;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.tuples.Pair;
+import org.hzt.utils.tuples.IntPair;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.BiFunction;
 
-public class DelimitedRangesSequence implements Sequence<IntRange> {
+final class DelimitedRangesSequence implements Sequence<IntRange> {
 
-    private final String input;
+    private final CharSequence input;
     private final int startIndex;
     private final int limit;
-    private final BiFunction<String, Integer, Pair<Integer, Integer>> getNextMatch;
+    private final NextMatchFunction nextMatchFunction;
 
-    public DelimitedRangesSequence(String input,
+    DelimitedRangesSequence(CharSequence input,
                                    int startIndex,
                                    int limit,
-                                   BiFunction<String, Integer, Pair<Integer, Integer>> getNextMatch) {
+                                   NextMatchFunction nextMatchFunction) {
         this.input = input;
         this.startIndex = startIndex;
         this.limit = limit;
-        this.getNextMatch = getNextMatch;
+        this.nextMatchFunction = nextMatchFunction;
     }
 
     @Override
-    public Iterator<IntRange> iterator() {
+    public @NotNull Iterator<IntRange> iterator() {
         return new DelimitedRangesIterator();
     }
 
@@ -50,7 +50,7 @@ public class DelimitedRangesSequence implements Sequence<IntRange> {
                     nextItem = IntRange.of(currentStartIndex, input.length());
                     nextSearchIndex = -1;
                 } else {
-                    final var match = getNextMatch.apply(input, nextSearchIndex);
+                    final var match = nextMatchFunction.nextMatch(input, nextSearchIndex);
                     if (match == null) {
                         nextItem = IntRange.of(currentStartIndex, input.length());
                         nextSearchIndex = -1;
@@ -88,5 +88,11 @@ public class DelimitedRangesSequence implements Sequence<IntRange> {
             }
             return nextState == State.CONTINUE;
         }
+    }
+
+    @FunctionalInterface
+    interface NextMatchFunction {
+
+        IntPair nextMatch(CharSequence charSequence, int index);
     }
 }

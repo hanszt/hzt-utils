@@ -220,7 +220,7 @@ final class IntArrayList extends PrimitiveAbstractCollection<Integer> implements
 
     @Override
     public void sort(IntComparator comparator) {
-        PrimitiveArrays.sort(elementData, 0, size, comparator);
+        PrimitiveArrays.sort(0, size, comparator, elementData);
     }
 
     @Override

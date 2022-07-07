@@ -193,18 +193,25 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return EntrySequence.of(Sequence.super.take(n));
     }
 
-    default Sequence<V> merge() {
-        return flatMap(e -> Sequence.of(keyAsValueTypeOrThrow(e, "Merge not allowed"), e.getValue()));
+    default Sequence<V> mergeKeys(Function<? super K, ? extends V> toValueTypeMapper) {
+        return flatMap(e -> Sequence.of(toValueTypeMapper.apply(e.getKey()), e.getValue()));
     }
 
-    private V keyAsValueTypeOrThrow(Map.Entry<K, V> entry, String message) {
+    default Sequence<K> mergeValues(Function<? super V, ? extends K> toKeyTypeMapper) {
+        return flatMap(e -> Sequence.of(e.getKey(), toKeyTypeMapper.apply(e.getValue())));
+    }
+    default Sequence<V> merge() {
+        return flatMap(e -> Sequence.of(keyAsValueTypeOrThrow(e), e.getValue()));
+    }
+
+    private V keyAsValueTypeOrThrow(Map.Entry<K, V> entry) {
         K k = entry.getKey();
         V v = entry.getValue();
         if (k.getClass() == v.getClass()) {
             //noinspection unchecked
             return (V) k;
         }
-        throw new IllegalStateException("Key and value not of same type. " + message);
+        throw new IllegalStateException("Key and value not of same type. Merge not allowed");
     }
 
 }

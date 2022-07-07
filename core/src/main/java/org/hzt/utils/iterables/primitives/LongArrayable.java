@@ -14,21 +14,21 @@ public interface LongArrayable extends
 
     @Override
     default boolean[] toBooleanArray(LongPredicate mapper) {
-        return PrimitiveArrays.toBooleanArray(LongSequence.of(this).toArray(), mapper);
+        return PrimitiveArrays.toBooleanArray(mapper, LongSequence.of(this).toArray());
     }
 
     @Override
     default byte[] toByteArray(LongToByteFunction mapper) {
-        return PrimitiveArrays.toByteArray(LongSequence.of(this).toArray(), mapper);
+        return PrimitiveArrays.toByteArray(mapper, LongSequence.of(this).toArray());
     }
 
     @Override
     default short[] toShortArray(LongToShortFunction mapper) {
-        return PrimitiveArrays.toShortArray(LongSequence.of(this).toArray(), mapper);
+        return PrimitiveArrays.toShortArray(mapper, LongSequence.of(this).toArray());
     }
 
     @Override
     default float[] toFloatArray(LongToFloatFunction mapper) {
-        return PrimitiveArrays.toFloatArray(LongSequence.of(this).toArray(), mapper);
+        return PrimitiveArrays.toFloatArray(mapper, LongSequence.of(this).toArray());
     }
 }

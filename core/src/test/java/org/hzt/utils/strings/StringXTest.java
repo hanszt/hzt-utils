@@ -169,7 +169,8 @@ class StringXTest {
     @Test
     void testSplitToSequence() {
         String string = "hallo, this, is, a, test -> answer";
-        final var strings = StringX.of(string).splitToSequence(", ", " -> ");
+        final var comma = StringX.of(", ");
+        final var strings = StringX.of(string).splitToSequence(comma, " -> ");
 
         strings.forEach(System.out::println);
 
@@ -178,8 +179,9 @@ class StringXTest {
 
     @Test
     void testSplitToSequenceIgnoreCase() {
-        String string = "halloO thiso isO a, test -> answer";
-        final var strings = StringX.of(string).splitToSequence(true,", ", "o ", " -> ");
+        String string = "hallo O this o is O a, test -> answer";
+        final var oDelimiter = new StringBuilder(" o ");
+        final var strings = StringX.of(string).splitToSequence(true,", ", oDelimiter, " -> ");
 
         strings.forEach(System.out::println);
 

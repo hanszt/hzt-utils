@@ -29,7 +29,7 @@ class IntArrayableTest {
                 {3, 4, 2, 5}};
 
         final var booleans = Sequence.of(grid)
-                .toArrayOf(row -> toBooleanArray(row, i -> i < 4), boolean[][]::new);
+                .toArrayOf(row -> toBooleanArray(i -> i < 4, row), boolean[][]::new);
 
         assertEquals(4, booleans.length);
     }

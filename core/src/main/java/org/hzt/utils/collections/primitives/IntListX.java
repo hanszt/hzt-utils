@@ -7,6 +7,7 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.markerinterfaces.BinarySearchable;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
+import org.hzt.utils.ranges.IntRange;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -110,7 +111,7 @@ public interface IntListX extends IntCollection,
     @Override
     default IntListX sorted(IntComparator comparator) {
         final var array = toArray();
-        PrimitiveArrays.sort(array, comparator);
+        PrimitiveArrays.sort(comparator, array);
         return IntListX.of(array);
     }
 
@@ -148,5 +149,10 @@ public interface IntListX extends IntCollection,
      */
     default int binarySearch(int fromIndex, int toIndex, IntUnaryOperator comparison) {
         return PrimitiveListHelper.binarySearch(size(), this::get, fromIndex, toIndex, comparison);
+    }
+
+    @Override
+    default IntRange indices() {
+        return IntRange.of(0, size());
     }
 }

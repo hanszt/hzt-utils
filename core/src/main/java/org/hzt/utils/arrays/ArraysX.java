@@ -1,9 +1,7 @@
 package org.hzt.utils.arrays;
 
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.sequences.primitives.DoubleSequence;
-import org.hzt.utils.sequences.primitives.IntSequence;
-import org.hzt.utils.sequences.primitives.LongSequence;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.function.Predicate;
@@ -13,7 +11,8 @@ public final class ArraysX {
     private ArraysX() {
     }
 
-    public static <T> boolean[] toBooleanArray(T[] array, Predicate<? super T> predicate) {
+    @SafeVarargs
+    public static <T> boolean[] toBooleanArray(@NotNull Predicate<? super T> predicate, T @NotNull ... array) {
         boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
@@ -21,20 +20,14 @@ public final class ArraysX {
         return result;
     }
 
-    public static boolean isSorted(int[] array) {
-        return IntSequence.of(array).zipWithNext(Integer::compare).all(comparison -> comparison <= 0);
+    @SafeVarargs
+    public static <T extends Comparable<? super T>> boolean isSorted(T @NotNull ... array) {
+        return Sequence.of(array).zipWithNext().map(Comparable::compareTo).all((comparison -> comparison <= 0));
     }
 
-    public static boolean isSorted(long[] array) {
-        return LongSequence.of(array).zipWithNext(Long::compare).all(comparison -> comparison <= 0);
-    }
-
-    public static boolean isSorted(double[] array) {
-        return DoubleSequence.of(array).zipWithNext(Double::compare).all(comparison -> comparison <= 0);
-    }
-
-    public static <T> boolean isSorted(T[] array, Comparator<T> comparator) {
-        return Sequence.of(array).zipWithNext().all((first, second) -> comparator.compare(first, second) <= 0);
+    @SafeVarargs
+    public static <T> boolean isSorted(@NotNull Comparator<T> comparator, T @NotNull ... array) {
+        return Sequence.of(array).zipWithNext().map(comparator::compare).all((comparison -> comparison <= 0));
     }
 
 }

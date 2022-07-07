@@ -10,7 +10,7 @@ class ArraysXTest {
     void testToBooleanArray() {
         String[] strings = {"This", "is", "a", "test"};
 
-        boolean[] array = ArraysX.toBooleanArray(strings, s -> s.contains("i"));
+        boolean[] array = ArraysX.toBooleanArray(s -> s.contains("i"), strings);
 
         assertArrayEquals(new boolean[] {true, true, false, false}, array);
     }

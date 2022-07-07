@@ -8,6 +8,7 @@ import org.hzt.utils.iterables.primitives.IntGroupable;
 import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.iterables.primitives.IntReducable;
 import org.hzt.utils.iterables.primitives.IntStreamable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.IntFilteringIterator;
 import org.hzt.utils.iterators.primitives.IntGeneratorIterator;
@@ -22,7 +23,6 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -49,7 +49,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     static IntSequence of(Iterable<Integer> iterable) {
         if (iterable instanceof OfInt) {
-            final IntIterable intIterable = (OfInt) iterable;
+            final PrimitiveIterable.OfInt intIterable = (OfInt) iterable;
             return intIterable::iterator;
         }
         return of(iterable, It::asInt);
@@ -102,15 +102,14 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     default IntSequence flatMap(IntFunction<? extends Iterable<Integer>> flatMapper) {
-        return mapMulti((value, intConsumer) -> consumeForEach(flatMapper.apply(value), intConsumer));
-    }
-
-    private static void consumeForEach(Iterable<Integer> iterable, IntConsumer consumer) {
-        if (iterable instanceof OfInt) {
-            ((OfInt) iterable).forEachInt(consumer);
-        } else {
-            iterable.forEach(consumer::accept);
-        }
+        return mapMulti((value, consumer) -> {
+            final Iterable<Integer> iterable = flatMapper.apply(value);
+            if (iterable instanceof OfInt) {
+                ((OfInt) iterable).forEachInt(consumer);
+            } else {
+                iterable.forEach(consumer::accept);
+            }
+        });
     }
 
     default IntSequence mapMulti(IntMapMultiConsumer intMapMultiConsumer) {

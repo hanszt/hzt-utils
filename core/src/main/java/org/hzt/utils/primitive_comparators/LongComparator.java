@@ -3,16 +3,15 @@ package org.hzt.utils.primitive_comparators;
 import java.util.Comparator;
 import java.util.function.LongUnaryOperator;
 
-import static java.lang.System.Logger.Level.WARNING;
-
 @FunctionalInterface
 public interface LongComparator extends Comparator<Long>, PrimitiveComparator {
 
     int compareLong(long l1, long l2);
 
     @Override
+    @SuppressWarnings("squid:S106")
     default int compare(Long l1, Long l2) {
-        System.getLogger(getClass().getSimpleName()).log(WARNING, "Use `compareLong` instead");
+        System.err.println("Use `compareLong` instead");
         return compareLong(l1, l2);
     }
 

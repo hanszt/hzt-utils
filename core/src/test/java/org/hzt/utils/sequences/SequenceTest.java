@@ -85,7 +85,7 @@ class SequenceTest {
     void testSimpleStreamWithFilterYieldsIteratorWithNext() {
         final ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6);
 
-        final var sequence = Sequence.of(list)
+        final Sequence<ListX<IndexedValue<Integer>>> sequence = Sequence.of(list)
                 .filter(SequenceTest::filterNotCalledWhenNotConsumed)
                 .withIndex()
                 .windowed(4);
@@ -552,7 +552,7 @@ class SequenceTest {
     void testSequenceOfMap() {
         final MapX<Integer, String> map = MapX.of(1, "a", 2, "b", 3, "c", 4, "d");
 
-        final MapX<Integer, Character> entries = Sequence.ofMap(map)
+        final MapX<Integer, Character> entries = Sequence.of(map)
                 .mapByValues(s -> StringX.of(s).first())
                 .filterValues(Character::isLetter)
                 .filterKeys(IntX::isEven)

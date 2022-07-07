@@ -13,9 +13,9 @@ class IntArrayableTest {
 
     @Test
     void testToBooleanArray() {
-        final var booleans = IntSequence.of(1, 2, 3, 4).toBooleanArray(i -> i < 3);
+        final boolean[] booleans = IntSequence.of(1, 2, 3, 4).toBooleanArray(i -> i < 3);
 
-        final var expected = new boolean[]{true, true, false, false};
+        final boolean[] expected = new boolean[]{true, true, false, false};
 
         assertArrayEquals(expected, booleans);
     }
@@ -28,7 +28,7 @@ class IntArrayableTest {
                 {9, 3, 5, 2},
                 {3, 4, 2, 5}};
 
-        final var booleans = Sequence.of(grid)
+        final boolean[][] booleans = Sequence.of(grid)
                 .toArrayOf(row -> toBooleanArray(i -> i < 4, row), boolean[][]::new);
 
         assertEquals(4, booleans.length);

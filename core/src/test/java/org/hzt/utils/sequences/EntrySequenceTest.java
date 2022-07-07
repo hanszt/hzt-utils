@@ -10,10 +10,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
-import java.util.List;
-import java.util.Map;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -103,30 +102,30 @@ class EntrySequenceTest {
 
     @Test
     void testMerge() {
-        final var mergedZipWithNext = Sequence.of(1, 2, 3, 4, 5, 6, 7, 8)
+        final List<Integer> mergedZipWithNext = Sequence.of(1, 2, 3, 4, 5, 6, 7, 8)
                 .zipWithNext()
                 .merge()
                 .toList();
 
-        assertEquals(List.of(1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8), mergedZipWithNext);
+        assertEquals(Arrays.asList(1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8), mergedZipWithNext);
     }
 
     @Test
     void testMergeValues() {
-        final var mergedZipWithNext = Sequence.of(1, 2, 3, 4, 5, 6, 7, 8)
+        final List<Integer> mergedZipWithNext = Sequence.of(1, 2, 3, 4, 5, 6, 7, 8)
                 .associateWith(String::valueOf)
                 .mergeValues(String::length)
                 .toList();
 
-        assertEquals(List.of(1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 1), mergedZipWithNext);
+        assertEquals(Arrays.asList(1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 1), mergedZipWithNext);
     }
 
     @Test
     void testTerminalOppMergeOfTwoDifferentTypesThrowsException() {
-        final var map = Map.of(1, "2", 2, "2", 3, "3");
-        final var stringSequence = EntrySequence.ofMap(map).merge();
+        final MapX<Integer, String> map = MapX.of(1, "2", 2, "2", 3, "3");
+        final Sequence<String> stringSequence = EntrySequence.of(map).merge();
 
-        final var exception = assertThrows(IllegalStateException.class, stringSequence::toList);
+        final IllegalStateException exception = assertThrows(IllegalStateException.class, stringSequence::toList);
         assertEquals("Key and value not of same type. Merge not allowed", exception.getMessage());
     }
 

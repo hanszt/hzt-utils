@@ -14,7 +14,7 @@ import java.util.function.Function;
 public interface Sortable<T> extends Iterable<T> {
 
     default Sortable<T> shuffled() {
-        return IterableXHelper.toSortedListX(this, s -> IterableXHelper.nextRandomDouble());
+        return IterableXHelper.toSortedListX(this, s -> IterableXHelper.RANDOM.nextDouble());
     }
 
     default <R extends Comparable<R>> Sortable<T> sorted() {

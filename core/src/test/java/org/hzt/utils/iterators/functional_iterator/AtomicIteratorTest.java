@@ -33,7 +33,7 @@ class AtomicIteratorTest {
         //noinspection StatementWithEmptyBody
         while (stringIterator.tryAdvance(list1::add)) ;
 
-        final IteratorX<String> boundedIteratorX = getBoundedStringIteratorX(upperBound);
+        final AtomicIterator<String> boundedIteratorX = getBoundedStringIteratorX(upperBound);
         final Iterable<String> stringIterable = boundedIteratorX::asIterator;
         stringIterable.forEach(list2::add);
 
@@ -77,7 +77,7 @@ class AtomicIteratorTest {
     void testMappingIterator() {
         final ListX<String> strings = ListX.of("This", "is", "a", "test");
 
-        final IteratorX<String> stringIteratorX = strings.atomicIterator();
+        final AtomicIterator<String> stringIteratorX = strings.atomicIterator();
 
         final AtomicIterator<Integer> toLengthMapperIterator = action -> {
             final AtomicReference<String> consumer = new AtomicReference<>();

@@ -4,7 +4,6 @@ import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
-import java.util.Collections;
 import java.util.List;
 
 public interface WeightedNode<T> extends Sequence<WeightedEdge<T>> {

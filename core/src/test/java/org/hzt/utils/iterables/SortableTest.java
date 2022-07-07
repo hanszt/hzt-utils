@@ -2,6 +2,7 @@ package org.hzt.utils.iterables;
 
 import org.hzt.test.model.Person;
 import org.hzt.utils.Patterns;
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
@@ -120,7 +121,7 @@ class SortableTest {
             "Adi Hans Judith Koen Pauline  Ted"
     })
     void isSortedInNaturalOrder(String string) {
-        final var people = blankStringPattern.splitAsStream(string)
+        final ListX<Person> people = blankStringPattern.splitAsStream(string)
                 .map(Person::new)
                 .collect(CollectorsX.toListX());
 
@@ -135,7 +136,7 @@ class SortableTest {
             "Adi Judith Hans Koen Pauline  Ted"
     })
     void isNotSortedInNaturalOrder(String string) {
-        final var people = Patterns.splitAsSequence(blankStringPattern, string).map(Person::new);
+        final Sequence<Person> people = Patterns.splitAsSequence(blankStringPattern, string).map(Person::new);
 
         assertFalse(people.isSortedBy(Person::getName));
     }

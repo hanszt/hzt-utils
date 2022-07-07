@@ -10,7 +10,7 @@ class ComparableXTest {
 
     @Test
     void testSmallerOrEqual() {
-        final var isSortedInNaturalOrder = Sequence.of(IntX.of(1), IntX.of(2), IntX.of(3))
+        final boolean isSortedInNaturalOrder = Sequence.of(IntX.of(1), IntX.of(2), IntX.of(3))
                 .zipWithNext()
                 .all(IntX::smallerOrEqual);
 
@@ -19,7 +19,7 @@ class ComparableXTest {
 
     @Test
     void testGreaterOrEqual() {
-        final var isSortedInReverseOrder = Sequence.of(IntX.of(3), IntX.of(2), IntX.of(1))
+        final boolean isSortedInReverseOrder = Sequence.of(IntX.of(3), IntX.of(2), IntX.of(1))
                 .zipWithNext()
                 .all(IntX::greaterOrEqual);
 

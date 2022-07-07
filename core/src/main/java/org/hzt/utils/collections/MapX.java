@@ -6,6 +6,7 @@ import org.hzt.utils.sequences.EntrySequence;
 import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.AbstractMap;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,6 +94,10 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
         MutableMapX<K, V> map = MutableMapX.empty();
         mapConsumer.accept(map);
         return MapX.copyOf(map);
+    }
+    
+    static <K, V> Map.Entry<K, V> entry(K key, V value) {
+        return new AbstractMap.SimpleImmutableEntry<>(key, value);
     }
 
     <K1, V1> MapX<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper,

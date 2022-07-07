@@ -94,4 +94,8 @@ public final class Functions {
     public static <T, U> BiPredicate<T, U> not(BiPredicate<T, U> predicate) {
         return predicate.negate();
     }
+
+    public static <T> Predicate<T> not(Predicate<T> predicate) {
+        return predicate.negate();
+    }
 }

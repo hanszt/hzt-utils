@@ -23,7 +23,7 @@ class PatternsTest {
             "user_name@domain.com"})
     @DisplayName("Test valid email addresses")
     void testValidEmailAddresses(String mail) {
-        final var isValidMailAddress = emailPattern.matcher(mail).matches();
+        final boolean isValidMailAddress = emailPattern.matcher(mail).matches();
         assertTrue(isValidMailAddress);
     }
 
@@ -36,7 +36,7 @@ class PatternsTest {
             "username|test@domain.com"})
     @DisplayName("Test invalid email addresses")
     void testInValidEmailAddresses(String mail) {
-        final var isValidMailAddress = emailPattern.matcher(mail).matches();
+        final boolean isValidMailAddress = emailPattern.matcher(mail).matches();
         assertFalse(isValidMailAddress);
     }
 

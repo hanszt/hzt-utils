@@ -1,11 +1,11 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.MapX;
 import org.hzt.utils.iterators.FilteringIterator;
 import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -76,7 +76,7 @@ public final class SequenceHelper {
             @Override
             public Map.Entry<K, V> next() {
                 final Pair<K, V> next = iterator.next();
-                return new AbstractMap.SimpleEntry<>(next.first(), next.second());
+                return MapX.entry(next.first(), next.second());
             }
         };
     }
@@ -167,5 +167,15 @@ public final class SequenceHelper {
                 }
             }
         };
+    }
+
+    static <K, V> V keyAsValueTypeOrThrow(Map.Entry<K, V> entry) {
+        K k = entry.getKey();
+        V v = entry.getValue();
+        if (k.getClass() == v.getClass()) {
+            //noinspection unchecked
+            return (V) k;
+        }
+        throw new IllegalStateException("Key and value not of same type. Merge not allowed");
     }
 }

@@ -26,7 +26,6 @@ import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.AbstractMap;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
@@ -314,7 +313,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     default <K, V> EntrySequence<K, V> asEntrySequence(@NotNull Function<? super T, ? extends K> keyMapper,
                                                        @NotNull Function<? super T, ? extends V> valueMapper) {
-        return EntrySequence.of(map(value -> new AbstractMap.SimpleEntry<>(keyMapper.apply(value), valueMapper.apply(value))));
+        return EntrySequence.of(map(value -> MapX.entry(keyMapper.apply(value), valueMapper.apply(value))));
     }
 
     default <K, V> EntrySequence<K, V> asEntrySequence(Function<? super T, ? extends Pair<K, V>> toPairMapper) {

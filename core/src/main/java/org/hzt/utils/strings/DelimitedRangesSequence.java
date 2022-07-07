@@ -50,7 +50,7 @@ final class DelimitedRangesSequence implements Sequence<IntRange> {
                     nextItem = IntRange.of(currentStartIndex, input.length());
                     nextSearchIndex = -1;
                 } else {
-                    final var match = nextMatchFunction.nextMatch(input, nextSearchIndex);
+                    final IntPair match = nextMatchFunction.nextMatch(input, nextSearchIndex);
                     if (match == null) {
                         nextItem = IntRange.of(currentStartIndex, input.length());
                         nextSearchIndex = -1;

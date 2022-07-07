@@ -8,6 +8,7 @@ import org.hzt.utils.iterables.primitives.LongGroupable;
 import org.hzt.utils.iterables.primitives.LongNumerable;
 import org.hzt.utils.iterables.primitives.LongReducable;
 import org.hzt.utils.iterables.primitives.LongStreamable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.LongFilteringIterator;
 import org.hzt.utils.iterators.primitives.LongGeneratorIterator;
@@ -22,7 +23,6 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -49,7 +49,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
 
     static LongSequence of(Iterable<Long> iterable) {
         if (iterable instanceof OfLong) {
-            final LongIterable longIterable = (OfLong) iterable;
+            final PrimitiveIterable.OfLong longIterable = (OfLong) iterable;
             return longIterable::iterator;
         }
         return of(iterable, It::asLong);
@@ -101,15 +101,14 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence flatMap(LongFunction<? extends Iterable<Long>> flatMapper) {
-        return mapMulti((value, longConsumer) -> consumeForEach(flatMapper.apply(value), longConsumer));
-    }
-
-    private static void consumeForEach(Iterable<Long> iterable, LongConsumer consumer) {
-        if (iterable instanceof OfLong) {
-            ((OfLong) iterable).forEachLong(consumer);
-        } else {
-            iterable.forEach(consumer::accept);
-        }
+        return mapMulti((value, consumer) -> {
+            final Iterable<Long> iterable = flatMapper.apply(value);
+            if (iterable instanceof OfLong) {
+                ((OfLong) iterable).forEachLong(consumer);
+            } else {
+                iterable.forEach(consumer::accept);
+            }
+        });
     }
 
     default LongSequence mapMulti(LongMapMultiConsumer longMapMultiConsumer) {

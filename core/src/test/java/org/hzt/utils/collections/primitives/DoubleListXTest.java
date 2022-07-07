@@ -6,8 +6,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
 
-import static java.util.function.Predicate.not;
 import static org.hzt.utils.Patterns.commaPattern;
+import static org.hzt.utils.function.Functions.not;
 import static org.hzt.utils.primitive_comparators.DoubleComparator.reverseOrder;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,7 +47,7 @@ class DoubleListXTest {
 
         System.out.println(Arrays.toString(doubles));
 
-        final var isSorted = DoubleListX.of(doubles).isSorted();
+        final boolean isSorted = DoubleListX.of(doubles).isSorted();
 
         assertTrue(isSorted);
     }
@@ -63,7 +63,7 @@ class DoubleListXTest {
 
         System.out.println(Arrays.toString(doubles));
 
-        final var isSorted = DoubleListX.of(doubles).isSorted();
+        final boolean isSorted = DoubleListX.of(doubles).isSorted();
 
         assertFalse(isSorted);
     }

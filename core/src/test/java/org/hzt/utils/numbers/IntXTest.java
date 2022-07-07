@@ -5,6 +5,7 @@ import org.hzt.utils.strings.StringX;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -82,7 +83,7 @@ class IntXTest {
     void testAsChar() {
         String s = "This is a string";
 
-        final var characters = s.chars()
+        final List<Character> characters = s.chars()
                 .mapToObj(IntX::asChar)
                 .collect(Collectors.toList());
 

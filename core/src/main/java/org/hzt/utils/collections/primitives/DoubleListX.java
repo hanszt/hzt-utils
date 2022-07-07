@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.OptionalDouble;
+import java.util.PrimitiveIterator;
 import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
@@ -70,7 +71,7 @@ public interface DoubleListX extends DoubleCollection,
     @Override
     @NotNull
     default OptionalDouble findLast() {
-        final var lastIndex = lastIndex();
+        final int lastIndex = lastIndex();
         return lastIndex < 0 ? OptionalDouble.empty() : OptionalDouble.of(get(lastIndex));
     }
 
@@ -79,7 +80,7 @@ public interface DoubleListX extends DoubleCollection,
     default OptionalDouble findLast(@NotNull DoublePredicate predicate) {
         PrimitiveListIterator.OfDouble iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
-            final var previousDouble = iterator.previousDouble();
+            final double previousDouble = iterator.previousDouble();
             if (predicate.test(previousDouble)) {
                 return OptionalDouble.of(previousDouble);
             }
@@ -113,11 +114,11 @@ public interface DoubleListX extends DoubleCollection,
 
     @Override
     default boolean isSorted(DoubleComparator comparator) {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfDouble iterator = iterator();
         if (iterator.hasNext()) {
-            var first = iterator.nextDouble();
+            double first = iterator.nextDouble();
             while (iterator.hasNext()) {
-                final var second = iterator.nextDouble();
+                final double second = iterator.nextDouble();
                 if (comparator.compareDouble(first, second) > 0) {
                     return false;
                 }

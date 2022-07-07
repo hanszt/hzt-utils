@@ -240,11 +240,11 @@ class ListXTest {
 
     @Test
     void testListXCanNotBeCastToMutableListXToModifyItsInternalContent() {
-        final var integers = ListX.of(1, 2, 3, 4, 5, 6);
-        final var initSize = integers.size();
+        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6);
+        final int initSize = integers.size();
 
         final Executable executable = () -> {
-            final var mutableList = (MutableListX<Integer>) integers;
+            final MutableListX<Integer> mutableList = (MutableListX<Integer>) integers;
             System.out.println("mutableList = " + mutableList);
         };
 

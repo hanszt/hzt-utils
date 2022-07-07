@@ -53,10 +53,10 @@ class IteratorTests {
 
     @Test
     void testDistinctIteratorForEachRemaining() {
-        final var distinctSequence = Sequence.of(2, 2, 3, 4, 4, 5).distinct();
+        final Sequence<Integer> distinctSequence = Sequence.of(2, 2, 3, 4, 4, 5).distinct();
 
         List<Integer> list = new ArrayList<>();
-        final var iterator = distinctSequence.iterator();
+        final Iterator<Integer> iterator = distinctSequence.iterator();
         iterator.forEachRemaining(list::add);
 
         System.out.println("list = " + list);

@@ -2,6 +2,7 @@ package org.hzt.utils.streams;
 
 import org.hzt.utils.It;
 import org.hzt.utils.sequences.primitives.IntSequence;
+import org.hzt.utils.statistics.LongStatistics;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -11,13 +12,13 @@ class IntStreamXTest {
 
     @Test
     void testIntStreamX() {
-        final var stats = IntSequence.generate(0, i -> ++i)
+        final LongStatistics stats = IntSequence.generate(0, i -> ++i)
                 .skip(5)
                 .take(100_000)
                 .mapToLong(It::asLong)
                 .stats();
 
-        final var statistics = IntStreamX.generate(0, i -> ++i)
+        final LongStatistics statistics = IntStreamX.generate(0, i -> ++i)
                 .skip(5)
                 .limit(100_000)
                 .mapToLong(It::asLong)

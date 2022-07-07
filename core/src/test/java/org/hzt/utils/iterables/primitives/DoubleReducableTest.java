@@ -29,7 +29,7 @@ class DoubleReducableTest {
 
     @Test
     void testDoubleReducableReduceTwo() {
-        final var pair = DoubleSequence.generate(1.0, d -> d + .1)
+        final Pair<Double, Double> pair = DoubleSequence.generate(1.0, d -> d + .1)
                 .take(1_000_000)
                 .reduceToTwo(0.0, Double::sum, 1.0, DoubleX::times, Pair::of);
 

@@ -54,9 +54,9 @@ class LongListXTest {
 
     @Test
     void testFindLast() {
-        final var longs = LongListX.of(1, 2, 3, 4, 3, 5, 2, 5, 4, 3, 8, 2, 3, 4);
+        final LongListX longs = LongListX.of(1, 2, 3, 4, 3, 5, 2, 5, 4, 3, 8, 2, 3, 4);
 
-        final var last = longs.findLast(l -> l > 4);
+        final OptionalLong last = longs.findLast(l -> l > 4);
 
         assertEquals(OptionalLong.of(8), last);
     }

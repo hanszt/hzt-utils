@@ -3,16 +3,15 @@ package org.hzt.utils.primitive_comparators;
 import java.util.Comparator;
 import java.util.function.DoubleUnaryOperator;
 
-import static java.lang.System.Logger.Level.WARNING;
-
 @FunctionalInterface
 public interface DoubleComparator extends Comparator<Double>, PrimitiveComparator {
 
     int compareDouble(double d1, double d2);
 
     @Override
+    @SuppressWarnings("squid:S106")
     default int compare(Double d1, Double d2) {
-        System.getLogger(getClass().getSimpleName()).log(WARNING, "Use `compareDouble` instead");
+        System.err.println("Use `compareDouble` instead");
         return compareDouble(d1, d2);
     }
 

@@ -16,7 +16,6 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -38,7 +37,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-@SuppressWarnings({"DuplicatedCode"})
+@SuppressWarnings({"DuplicatedCode", "squid:S1200"})
 public final class CollectorsX {
 
     private CollectorsX() {
@@ -185,7 +184,7 @@ public final class CollectorsX {
     public static <T, R1, R2> Collector<T, ?, Map.Entry<R1, R2>> teeingToEntry(
             Collector<? super T, ?, R1> downstream1,
             Collector<? super T, ?, R2> downstream2) {
-        return teeing(downstream1, downstream2, AbstractMap.SimpleEntry::new);
+        return teeing(downstream1, downstream2, MapX::entry);
     }
 
     public static <T> Collector<T, ?, DoubleStatistics> toDoubleStatisticsBy(ToDoubleFunction<? super T> toDoubleFunction) {

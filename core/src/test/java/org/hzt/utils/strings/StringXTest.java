@@ -1,6 +1,5 @@
 package org.hzt.utils.strings;
 
-import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.It;
@@ -166,8 +165,8 @@ class StringXTest {
     @Test
     void testSplitToSequence() {
         String string = "hallo, this, is, a, test -> answer";
-        final var comma = StringX.of(", ");
-        final var strings = StringX.of(string).splitToSequence(comma, " -> ");
+        final StringX comma = StringX.of(", ");
+        final Sequence<String> strings = StringX.of(string).splitToSequence(comma, " -> ");
 
         strings.forEach(System.out::println);
 
@@ -177,8 +176,8 @@ class StringXTest {
     @Test
     void testSplitToSequenceIgnoreCase() {
         String string = "hallo O this o is O a, test -> answer";
-        final var oDelimiter = new StringBuilder(" o ");
-        final var strings = StringX.of(string).splitToSequence(true,", ", oDelimiter, " -> ");
+        final StringBuilder oDelimiter = new StringBuilder(" o ");
+        final Sequence<String> strings = StringX.of(string).splitToSequence(true,", ", oDelimiter, " -> ");
 
         strings.forEach(System.out::println);
 

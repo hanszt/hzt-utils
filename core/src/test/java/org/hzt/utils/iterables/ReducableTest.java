@@ -143,7 +143,7 @@ class ReducableTest {
     }
 
     private static Sequence<LocalDate> generateLeapYearDateSequence() {
-        return Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
+        return Sequence.generate(LocalDate.ofEpochDay(0), d -> d.plusDays(1))
                 .takeWhile(d -> d.getYear() <= 1980)
                 .filter(LocalDate::isLeapYear);
     }

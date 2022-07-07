@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.hzt.utils.PreConditions.require;
 
@@ -398,7 +399,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     @Nullable
     private static IntPair findAnyOf(CharSequence[] delimiters, boolean ignoreCase, CharSequence s, int curIndex) {
-        final var indexedValue = findAnyOf(s, curIndex, ListX.of(delimiters), ignoreCase);
+        final IndexedValue<CharSequence> indexedValue = findAnyOf(s, curIndex, ListX.of(delimiters), ignoreCase);
         return indexedValue != null ? IntPair.of(indexedValue.index(), indexedValue.value().length()) : null;
     }
 
@@ -406,14 +407,14 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
                                                   final int startIndex,
                                                   final CollectionX<CharSequence> delimiters,
                                                   final boolean ignoreCase) {
-        final var stringX = StringX.of(charSequence);
+        final StringX stringX = StringX.of(charSequence);
         if (!ignoreCase && delimiters.size() == 1) {
             final CharSequence singleString = delimiters.single();
             final int index = stringX.indexOf(singleString, startIndex);
             return (index < 0) ? null : new IndexedValue<>(index, singleString);
         }
 
-        final var indices = IntRange.closed(Math.max(startIndex, 0), charSequence.length());
+        final IntRange indices = IntRange.closed(Math.max(startIndex, 0), charSequence.length());
 
         for (int index : indices) {
             final CharSequence matchingCharSequence = delimiters
@@ -639,7 +640,11 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public StringX repeat(int count) {
-        return StringX.of(string.repeat(count));
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            sb.append(string);
+        }
+        return StringX.of(sb.toString());
     }
 
     @Override

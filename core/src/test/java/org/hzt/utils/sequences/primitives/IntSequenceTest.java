@@ -242,7 +242,7 @@ class IntSequenceTest {
 
     @Test
     void testDistinctIntSequence() {
-        final var distinctArray = IntSequence.of(1, 2, 3, 4, 3, -51, 2, 1, 5, 4, 6, 3, 7, -1, -100, -100, -50)
+        final int[] distinctArray = IntSequence.of(1, 2, 3, 4, 3, -51, 2, 1, 5, 4, 6, 3, 7, -1, -100, -100, -50)
                 .distinct()
                 .toArray();
 

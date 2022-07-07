@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
+import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -18,13 +19,13 @@ class PrimitiveIterableTest {
     void longStreamFromPrimitiveIterable() {
         PrimitiveIterable.OfLong longSequence = LongSequence.of(1, 2, 3, 4, 5).map(l -> l * 3);
 
-        final var count = LongSequence.of(longSequence).count();
+        final long count = LongSequence.of(longSequence).count();
 
         It.println("count = " + count);
 
-        final var longStream = StreamSupport.longStream(longSequence.spliterator(), false);
+        final LongStream longStream = StreamSupport.longStream(longSequence.spliterator(), false);
 
-        final var longs = longStream.toArray();
+        final long[] longs = longStream.toArray();
 
         It.println(Arrays.toString(longs));
 
@@ -35,10 +36,10 @@ class PrimitiveIterableTest {
     void testTripWire() {
         System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
-        final var integers = IntListX.of(1, 2, 3, 4, 9, 5, 6, 6);
+        final IntListX integers = IntListX.of(1, 2, 3, 4, 9, 5, 6, 6);
         integers.iterator().forEachRemaining((Consumer<? super Integer>) System.out::println);
 
-        final var property = System.getProperty("org.openjdk.java.util.stream.tripwire");
+        final String property = System.getProperty("org.openjdk.java.util.stream.tripwire");
         assertEquals("true", property);
 
         System.setProperty("org.openjdk.java.util.stream.tripwire", "false");

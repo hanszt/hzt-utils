@@ -13,8 +13,8 @@ import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collectors.BigDecimalCollectors;
-import org.hzt.utils.iterators.functional_iterator.IteratorX;
 import org.hzt.utils.collectors.CollectorsX;
+import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
@@ -41,6 +41,7 @@ import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -952,7 +953,7 @@ class IterableXTest {
         final ListX<String> strings = ListX.of("hello", "this", "is", "a", "test");
 
         strings.iterator().forEachRemaining(expected::add);
-        final IteratorX<String> stringIteratorX = strings.iteratorX();
+        final AtomicIterator<String> stringIteratorX = strings.atomicIterator();
         //noinspection StatementWithEmptyBody
         while(stringIteratorX.tryAdvance(actual::add));
 
@@ -961,9 +962,9 @@ class IterableXTest {
 
     @Test
     void testToBooleanArray() {
-        final var sequence = Sequence.of("This", "is", "a", "test");
+        final Sequence<String> sequence = Sequence.of("This", "is", "a", "test");
 
-        final var booleans = sequence.toBooleanArray(s -> s.contains("i"));
+        final boolean[] booleans = sequence.toBooleanArray(s -> s.contains("i"));
 
         assertArrayEquals(new boolean[]{true, true, false, false}, booleans);
     }

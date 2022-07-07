@@ -12,7 +12,7 @@ class SpinedBufferTest {
     void testIntBufferInitCapacity() {
         SpinedBuffer.OfInt intBuffer = new SpinedBuffer.OfInt(10);
         intBuffer.accept(1);
-        final var count = StreamSupport.intStream(intBuffer.spliterator(), false).count();
+        final long count = StreamSupport.intStream(intBuffer.spliterator(), false).count();
 
         assertEquals(1L, count);
     }

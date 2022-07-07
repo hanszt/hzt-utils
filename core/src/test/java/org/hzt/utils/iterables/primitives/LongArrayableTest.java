@@ -9,7 +9,7 @@ class LongArrayableTest {
 
     @Test
     void testToByteArray() {
-        final var bytes = generate(0, l -> ++l)
+        final byte[] bytes = generate(0, l -> ++l)
                 .take(10)
                 .toByteArray(l -> (byte) l);
 

@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 
@@ -72,9 +73,9 @@ class IntListXTest {
 
     @Test
     void testIndices() {
-        final var intList = IntListX.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
+        final IntListX intList = IntListX.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
         int[] indices1 = new int[intList.size()];
-        final var indices = intList.indices();
+        final IntRange indices = intList.indices();
         for (int i : indices) {
             indices1[i] = i;
         }

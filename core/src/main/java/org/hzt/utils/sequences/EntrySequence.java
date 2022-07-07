@@ -1,13 +1,13 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.It;
+import org.hzt.utils.collections.MapX;
 import org.hzt.utils.iterables.EntryIterable;
 import org.hzt.utils.iterators.SkipWhileIterator;
 import org.hzt.utils.iterators.TakeWhileIterator;
 import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -15,6 +15,8 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import static org.hzt.utils.sequences.SequenceHelper.keyAsValueTypeOrThrow;
 
 /**
  * A sequence is a simplified stream. It evaluates its operations in a lazy way.
@@ -52,7 +54,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     @Override
     default <K1, V1> EntrySequence<K1, V1> inverted(@NotNull Function<? super V, ? extends K1> toKeyMapper,
                                                     @NotNull Function<? super K, ? extends V1> toValueMapper) {
-        return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(toKeyMapper.apply(e.getValue()), toValueMapper.apply(e.getKey()))));
+        return EntrySequence.of(map(e -> MapX.entry(toKeyMapper.apply(e.getValue()), toValueMapper.apply(e.getKey()))));
     }
 
     @Override
@@ -66,25 +68,25 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
 
     default <K1, V1> EntrySequence<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper,
                                                @NotNull Function<? super V, ? extends V1> valueMapper) {
-        return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(keyMapper.apply(e.getKey()), valueMapper.apply(e.getValue()))));
+        return EntrySequence.of(map(e -> MapX.entry(keyMapper.apply(e.getKey()), valueMapper.apply(e.getValue()))));
     }
 
     default <K1> EntrySequence<K1, V> mapByKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
-        return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(keyMapper.apply(e.getKey()), e.getValue())));
+        return EntrySequence.of(map(e -> MapX.entry(keyMapper.apply(e.getKey()), e.getValue())));
     }
 
     @Override
     default <K1> EntrySequence<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, ? extends K1> toKeyMapper) {
-        return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(toKeyMapper.apply(e.getKey(), e.getValue()), e.getValue())));
+        return EntrySequence.of(map(e -> MapX.entry(toKeyMapper.apply(e.getKey(), e.getValue()), e.getValue())));
     }
 
     default <V1> EntrySequence<K, V1> mapByValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
-        return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), valueMapper.apply(e.getValue()))));
+        return EntrySequence.of(map(e -> MapX.entry(e.getKey(), valueMapper.apply(e.getValue()))));
     }
 
     @Override
     default <V1> EntrySequence<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, ? extends V1> toValueMapper) {
-        return EntrySequence.of(map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), toValueMapper.apply(e.getKey(), e.getValue()))));
+        return EntrySequence.of(map(e -> MapX.entry(e.getKey(), toValueMapper.apply(e.getKey(), e.getValue()))));
     }
 
     default EntrySequence<K, V> filter(@NotNull BiPredicate<? super K, ? super V> biPredicate) {
@@ -186,16 +188,6 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
     default Sequence<V> merge() {
         return flatMap(e -> Sequence.of(keyAsValueTypeOrThrow(e), e.getValue()));
-    }
-
-    private V keyAsValueTypeOrThrow(Map.Entry<K, V> entry) {
-        K k = entry.getKey();
-        V v = entry.getValue();
-        if (k.getClass() == v.getClass()) {
-            //noinspection unchecked
-            return (V) k;
-        }
-        throw new IllegalStateException("Key and value not of same type. Merge not allowed");
     }
 
 }

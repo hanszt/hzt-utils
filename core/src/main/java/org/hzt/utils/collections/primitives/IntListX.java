@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.OptionalInt;
+import java.util.PrimitiveIterator;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
@@ -71,7 +72,7 @@ public interface IntListX extends IntCollection,
     @Override
     @NotNull
     default OptionalInt findLast() {
-        final var lastIndex = lastIndex();
+        final int lastIndex = lastIndex();
         return lastIndex < 0 ? OptionalInt.empty() : OptionalInt.of(get(lastIndex));
     }
 
@@ -80,7 +81,7 @@ public interface IntListX extends IntCollection,
     default OptionalInt findLast(@NotNull IntPredicate predicate) {
         PrimitiveListIterator.OfInt iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
-            final var previousInt = iterator.previousInt();
+            final int previousInt = iterator.previousInt();
             if (predicate.test(previousInt)) {
                 return OptionalInt.of(previousInt);
             }
@@ -123,11 +124,11 @@ public interface IntListX extends IntCollection,
 
     @Override
     default boolean isSorted(IntComparator comparator) {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfInt iterator = iterator();
         if (iterator.hasNext()) {
-            var first = iterator.nextInt();
+            int first = iterator.nextInt();
             while (iterator.hasNext()) {
-                final var second = iterator.nextInt();
+                final int second = iterator.nextInt();
                 if (comparator.compareInt(first, second) > 0) {
                     return false;
                 }

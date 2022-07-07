@@ -1,22 +1,23 @@
 package org.hzt.utils.streams;
 
+import org.hzt.utils.collections.MapX;
+import org.hzt.utils.collections.SetX;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Map;
-import java.util.Set;
 import java.util.Spliterator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EntryStreamXTest {
 
     @Test
     void testEntryStreamFromMap() {
-        final var map = Map.of(1, "This", 2, "is", 3, "a", 4, "test");
+        final MapX<Integer, String> map = MapX.of(1, "This", 2, "is", 3, "a", 4, "test");
 
-        final var entries = EntryStreamX.ofMap(map)
+        final MapX<String, LocalDate> entries = EntryStreamX.of(map)
                 .mapByKeys(LocalDate::ofEpochDay)
                 .parallel()
                 .isParallel(System.out::println)
@@ -25,7 +26,7 @@ class EntryStreamXTest {
 
         System.out.println("entries = " + entries);
 
-        assertEquals(Set.of("This", "is", "a", "test"), entries.keySet());
+        assertTrue(entries.keySet().containsAll(SetX.of("This", "is", "a", "test")));
     }
 
     static class StreamableMap implements EntryStreamX<Integer, String> {

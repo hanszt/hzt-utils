@@ -8,6 +8,7 @@ import org.hzt.utils.iterables.primitives.DoubleGroupable;
 import org.hzt.utils.iterables.primitives.DoubleNumerable;
 import org.hzt.utils.iterables.primitives.DoubleReducable;
 import org.hzt.utils.iterables.primitives.DoubleStreamable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.DoubleFilteringIterator;
 import org.hzt.utils.iterators.primitives.DoubleGeneratorIterator;
@@ -22,7 +23,6 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -49,7 +49,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     static DoubleSequence of(Iterable<Double> iterable) {
         if (iterable instanceof OfDouble) {
-            final DoubleIterable doubleIterable = (OfDouble) iterable;
+            final PrimitiveIterable.OfDouble doubleIterable = (OfDouble) iterable;
             return doubleIterable::iterator;
         }
         return of(iterable, It::asDouble);
@@ -98,15 +98,14 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     default DoubleSequence flatMap(DoubleFunction<? extends Iterable<Double>> flatMapper) {
-        return mapMulti((value, doubleConsumer) -> consumeForEach(flatMapper.apply(value), doubleConsumer));
-    }
-
-    private static void consumeForEach(Iterable<Double> iterable, DoubleConsumer consumer) {
-        if (iterable instanceof OfDouble) {
-            ((OfDouble) iterable).forEachDouble(consumer);
-        } else {
-            iterable.forEach(consumer::accept);
-        }
+        return mapMulti((value, consumer) -> {
+            final Iterable<Double> iterable = flatMapper.apply(value);
+            if (iterable instanceof OfDouble) {
+                ((OfDouble) iterable).forEachDouble(consumer);
+            } else {
+                iterable.forEach(consumer::accept);
+            }
+        });
     }
 
     default DoubleSequence mapMulti(DoubleMapMultiConsumer mapMultiConsumer) {

@@ -19,10 +19,39 @@ public abstract class PrimitiveAbstractSet<T, A, T_CONST, I extends PrimitiveIte
         this.table = table;
     }
 
+    @Override
+    @SuppressWarnings("squid:S1166")
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        //noinspection unchecked
+        PrimitiveAbstractSet<T, A, T_CONST, I> that = (PrimitiveAbstractSet<T, A, T_CONST, I>) o;
+        if (size != that.size) {
+            return false;
+        }
+        return containsAll(that::iterator);
+    }
+
+    @Override
+    public int hashCode() {
+        final var i = iterator();
+        int hashCode = 0;
+        while (i.hasNext()) {
+            hashCode += nextHashCode(i);
+        }
+        return hashCode;
+    }
+
+    abstract int nextHashCode(I i);
+
     void rehash(PrimitiveNode[] table, PrimitiveNode[] newTable) {
         for (PrimitiveNode node : table) {
             while (node != null) {
-                final PrimitiveNode next = node.getNext();
+                final PrimitiveNode next = node.next;
                 final int rehashedIndex = rehash(node, newTable.length);
 
                 node.next = newTable[rehashedIndex];
@@ -51,7 +80,7 @@ public abstract class PrimitiveAbstractSet<T, A, T_CONST, I extends PrimitiveIte
             if (current == null) {
                 throw new NoSuchElementException();
             }
-            next = current.getNext();
+            next = current.next;
             if (next == null) {
                 PrimitiveNode[] t = table;
                 while (index < t.length) {
@@ -70,14 +99,12 @@ public abstract class PrimitiveAbstractSet<T, A, T_CONST, I extends PrimitiveIte
         }
     }
 
-    abstract static class PrimitiveNode {
+    static class PrimitiveNode {
 
         PrimitiveNode next;
 
         PrimitiveNode(PrimitiveNode next) {
             this.next = next;
         }
-
-        abstract PrimitiveNode getNext();
     }
 }

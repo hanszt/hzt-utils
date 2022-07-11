@@ -59,7 +59,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
             if (((CollisionChainNode) node).value == value) {
                 return true;
             }
-            node = node.getNext();
+            node = node.next;
         }
         return false;
     }
@@ -78,7 +78,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
 
         PrimitiveNode previous = null;
         while (current != null) {
-            var next = current.getNext();
+            var next = current.next;
             if (((CollisionChainNode) current).value == value) {
                 if (previous == null) {
                     table[targetCollisionChainIndex] = next;
@@ -139,6 +139,11 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
     }
 
     @Override
+    int nextHashCode(PrimitiveIterator.OfInt iterator) {
+        return Integer.hashCode(iterator.nextInt());
+    }
+
+    @Override
     int rehash(PrimitiveNode node, int newTableLength) {
         return ((CollisionChainNode) node).value & (newTableLength - 1);
     }
@@ -169,10 +174,6 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
         CollisionChainNode(int value, PrimitiveNode next) {
             super(next);
             this.value = value;
-        }
-
-        CollisionChainNode getNext() {
-            return (CollisionChainNode) next;
         }
 
         @Override

@@ -53,7 +53,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, long[], LongConsumer,
             if (((CollisionChainNode) node).value == value) {
                 return true;
             }
-            node = node.getNext();
+            node = node.next;
         }
         return false;
     }
@@ -72,7 +72,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, long[], LongConsumer,
 
         PrimitiveNode previous = null;
         while (current != null) {
-            var next = current.getNext();
+            var next = current.next;
             if (((CollisionChainNode) current).value == value) {
                 if (previous == null) {
                     table[targetCollisionChainIndex] = next;
@@ -133,6 +133,11 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, long[], LongConsumer,
     }
 
     @Override
+    int nextHashCode(PrimitiveIterator.OfLong iterator) {
+        return Long.hashCode(iterator.nextLong());
+    }
+
+    @Override
     int rehash(PrimitiveNode node, int newTableLength) {
         return Long.hashCode(((CollisionChainNode) node).value) & (newTableLength - 1);
     }
@@ -163,10 +168,6 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, long[], LongConsumer,
         CollisionChainNode(long value, PrimitiveNode next) {
             super(next);
             this.value = value;
-        }
-
-        CollisionChainNode getNext() {
-            return (CollisionChainNode) next;
         }
 
         @Override

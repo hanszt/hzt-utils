@@ -43,4 +43,29 @@ class LongMutableSetXTest {
         );
     }
 
+    @Test
+    void testRemoveAll() {
+        final var longs = LongMutableSet.of(2, 4, 3, 5, 4, 6, 5, 7, 6, 5, 4, 4);
+        final var removeAll = longs.removeAll(2, 3, 4, 3, 5);
+
+        assertAll(
+                () -> assertFalse(removeAll),
+                () -> assertEquals(LongMutableSet.of(7, 6, 5), longs)
+        );
+    }
+
+    @Test
+    void testNonEqualLongSetYieldsEqualsIsFalse() {
+        final var set1 = LongMutableSet.of(1, 2, 4, 5);
+        final var set2 = LongMutableSet.of(1, 2, 4, 6);
+        assertNotEquals(set1, set2);
+    }
+
+    @Test
+    void testIntSetAndLongSetAreNotEqual() {
+        final var set1 = LongMutableSet.of(1, 2, 4, 5);
+        final var set2 = IntMutableSet.of(1, 2, 4, 5);
+        assertNotEquals(set1, set2);
+    }
+
 }

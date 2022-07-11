@@ -53,7 +53,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, double[], DoubleC
             if (Double.compare(((CollisionChainNode) node).value, value) == 0) {
                 return true;
             }
-            node = node.getNext();
+            node = node.next;
         }
         return false;
     }
@@ -72,7 +72,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, double[], DoubleC
 
         PrimitiveNode previous = null;
         while (current != null) {
-            var next = current.getNext();
+            var next = current.next;
             if (Double.compare(((CollisionChainNode) current).value, value) == 0) {
                 if (previous == null) {
                     table[targetCollisionChainIndex] = next;
@@ -133,6 +133,11 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, double[], DoubleC
     }
 
     @Override
+    int nextHashCode(PrimitiveIterator.OfDouble iterator) {
+        return Double.hashCode(iterator.nextDouble());
+    }
+
+    @Override
     int rehash(PrimitiveNode node, int newTableLength) {
         return Double.hashCode(((CollisionChainNode) node).value) & (newTableLength - 1);
     }
@@ -163,10 +168,6 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, double[], DoubleC
         CollisionChainNode(double value, PrimitiveNode next) {
             super(next);
             this.value = value;
-        }
-
-        CollisionChainNode getNext() {
-            return (CollisionChainNode) next;
         }
 
         @Override

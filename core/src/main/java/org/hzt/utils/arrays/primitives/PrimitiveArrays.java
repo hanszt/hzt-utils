@@ -1,4 +1,4 @@
-package org.hzt.utils.arrays.primitves;
+package org.hzt.utils.arrays.primitives;
 
 import org.hzt.utils.function.primitives.DoubleToByteFunction;
 import org.hzt.utils.function.primitives.DoubleToFloatFunction;

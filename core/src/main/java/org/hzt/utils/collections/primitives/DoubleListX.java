@@ -1,6 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.arrays.primitves.PrimitiveArrays;
+import org.hzt.utils.arrays.primitives.PrimitiveArrays;
 import org.hzt.utils.collections.ListHelper;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;

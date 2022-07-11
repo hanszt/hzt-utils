@@ -25,6 +25,6 @@ open module hzt.utils.core {
     exports org.hzt.utils.ranges;
     exports org.hzt.utils.progressions;
     exports org.hzt.utils.iterators.primitives;
-    exports org.hzt.utils.arrays.primitves;
+    exports org.hzt.utils.arrays.primitives;
     exports org.hzt.utils.arrays;
 }

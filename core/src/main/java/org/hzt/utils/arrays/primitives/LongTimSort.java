@@ -1,4 +1,4 @@
-package org.hzt.utils.arrays.primitves;
+package org.hzt.utils.arrays.primitives;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.primitive_comparators.LongComparator;

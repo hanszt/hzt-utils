@@ -1,6 +1,6 @@
 package org.hzt.utils.iterables.primitives;
 
-import org.hzt.utils.arrays.primitves.PrimitiveArrays;
+import org.hzt.utils.arrays.primitives.PrimitiveArrays;
 import org.hzt.utils.function.primitives.DoubleToByteFunction;
 import org.hzt.utils.function.primitives.DoubleToFloatFunction;
 import org.hzt.utils.function.primitives.DoubleToShortFunction;

@@ -31,7 +31,7 @@ public interface PrimitiveCollectionX<T, C, A> extends Stringable<T>, Indexable<
 
     PrimitiveCollectionX<T, C, A> take(long n);
 
-    PrimitiveIterator<T, C> iterator();
+    @NotNull PrimitiveIterator<T, C> iterator();
 
     @Override
     Spliterator<T> spliterator();

@@ -4,37 +4,31 @@ import org.hzt.utils.collections.MutableSetX;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
-import java.util.function.IntConsumer;
+import java.util.function.LongConsumer;
 
 /**
- * This class implements a simple hash set for {@code int} values.
+ * This class implements a simple hash set for {@code long} values.
  * keep track of nodes that are being pointed to by fingers.
- *
- * @author Rodion "rodde" Efremov
- * @version 1.6 (Aug 29, 2021)
- * @since 1.6 (Aug 29, 2021)
- *
- * @see <a href="https://codereview.stackexchange.com/questions/266541/a-simple-java-integer-hash-set">A simple Java integer hash set</a>
  */
-final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer, PrimitiveIterator.OfInt>
-        implements IntMutableSetX {
+final class LongHashSet extends PrimitiveAbstractSet<Long, long[], LongConsumer, PrimitiveIterator.OfLong>
+        implements LongMutableSetX {
 
-    IntHashSet() {
+    LongHashSet() {
         this(0);
     }
 
-    public IntHashSet(int[] values) {
+    public LongHashSet(long[] values) {
         this(values.length > 0 ? 1 : 0);
-        for (int value : values) {
+        for (long value : values) {
             add(value);
         }
     }
 
-    public IntHashSet(int size) {
+    public LongHashSet(int size) {
         super(size, new CollisionChainNode[INITIAL_CAPACITY]);
     }
 
-    public boolean add(int value) {
+    public boolean add(long value) {
         if (contains(value)) {
             return false;
         }
@@ -44,15 +38,15 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
             expand();
         }
 
-        final int targetCollisionChainIndex = value & mask;
+        final int targetCollisionChainIndex = Long.hashCode(value) & mask;
         final var next = table[targetCollisionChainIndex];
         final PrimitiveNode newNode = new CollisionChainNode(value, next);
         table[targetCollisionChainIndex] = newNode;
         return true;
     }
 
-    public boolean contains(int value) {
-        final int collisionChainIndex = value & mask;
+    public boolean contains(long value) {
+        final int collisionChainIndex = Long.hashCode(value) & mask;
         var node = table[collisionChainIndex];
 
         while (node != null) {
@@ -64,7 +58,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
         return false;
     }
 
-    public boolean remove(int value) {
+    public boolean remove(long value) {
         if (!contains(value)) {
             return false;
         }
@@ -72,7 +66,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
         if (shouldContract()) {
             contract();
         }
-        final int targetCollisionChainIndex = value & mask;
+        final int targetCollisionChainIndex = Long.hashCode(value) & mask;
 
         var current = table[targetCollisionChainIndex];
 
@@ -94,12 +88,12 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
     }
 
     @Override
-    public MutableSetX<Integer> boxed() {
+    public MutableSetX<Long> boxed() {
         return MutableSetX.of(this);
     }
 
     @Override
-    public int[] toArray() {
+    public long[] toArray() {
         return asSequence().toArray();
     }
 
@@ -109,12 +103,12 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
         mask = table.length - 1;
     }
 
-    // Keep add(int) an amortized O(1)
+    // Keep add(long) an amortized O(1)
 
     private boolean shouldExpand() {
         return size > table.length * MAXIMUM_LOAD_FACTOR;
     }
-    // Keep remove(int) an amortized O(1)
+    // Keep remove(long) an amortized O(1)
 
     private boolean shouldContract() {
         if (table.length == INITIAL_CAPACITY) {
@@ -140,33 +134,33 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
 
     @Override
     int rehash(PrimitiveNode node, int newTableLength) {
-        return ((CollisionChainNode) node).value & (newTableLength - 1);
+        return Long.hashCode(((CollisionChainNode) node).value) & (newTableLength - 1);
     }
 
     @Override
-    int[] newArray(int length) {
-        return new int[length];
+    long[] newArray(int length) {
+        return new long[length];
     }
 
     @Override
-    public PrimitiveIterator.@NotNull OfInt iterator() {
-        return new IntHashIterator();
+    public PrimitiveIterator.@NotNull OfLong iterator() {
+        return new LongHashIterator();
     }
 
     @SuppressWarnings("squid:S2694")
-    private class IntHashIterator extends PrimitiveHashIterator implements PrimitiveIterator.OfInt {
+    private class LongHashIterator extends PrimitiveHashIterator implements PrimitiveIterator.OfLong {
 
         @Override
-        public int nextInt() {
+        public long nextLong() {
             return ((CollisionChainNode) nextNode()).value;
         }
     }
 
     private static final class CollisionChainNode extends PrimitiveNode {
 
-        private final int value;
+        private final long value;
 
-        CollisionChainNode(int value, PrimitiveNode next) {
+        CollisionChainNode(long value, PrimitiveNode next) {
             super(next);
             this.value = value;
         }
@@ -177,11 +171,11 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
 
         @Override
         public String toString() {
-            return "Chain node, integer = " + value;
+            return "Chain node, long = " + value;
         }
     }
     @Override
-    void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfInt iterator) {
-        sb.append(iterator.nextInt());
+    void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfLong iterator) {
+        sb.append(iterator.nextLong());
     }
 }

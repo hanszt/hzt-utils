@@ -11,7 +11,7 @@ import java.util.PrimitiveIterator;
  * @param <I> the primitive iterator
  */
 abstract class PrimitiveAbstractList<T, A, T_CONS, I extends PrimitiveIterator<T, T_CONS>>
-extends PrimitiveAbstractCollection<T, A, T_CONS, I> {
+extends PrimitiveAbstractCollection<T, A, T_CONS, I> implements PrimitiveCollectionX<T, T_CONS, A> {
 
     private static final int SOFT_MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
     static final int DEFAULT_CAPACITY = 10;

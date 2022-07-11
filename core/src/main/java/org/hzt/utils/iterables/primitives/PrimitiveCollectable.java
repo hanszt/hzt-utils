@@ -8,4 +8,6 @@ interface PrimitiveCollectable<C> {
     C toListX();
 
     C toMutableList();
+
+    C toMutableSetX();
 }

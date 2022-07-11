@@ -67,7 +67,10 @@ public interface Sortable<T> extends Iterable<T> {
     }
 
     default <R extends Comparable<? super R>> boolean isSortedBy(Function<? super T, ? extends R> selector) {
-        return Sequence.of(this).map(selector).zipWithNext().all(ComparableX::smallerOrEqual);
+        return Sequence.of(this)
+                .map(selector)
+                .zipWithNext()
+                .all(ComparableX::smallerOrEqual);
     }
 
     /**
@@ -81,6 +84,8 @@ public interface Sortable<T> extends Iterable<T> {
      * @return true if it is sorted else false
      */
     default boolean isSorted(Comparator<T> comparator) {
-        return Sequence.of(this).zipWithNext().all((first, second) -> comparator.compare(first, second) <= 0);
+        return Sequence.of(this)
+                .zipWithNext()
+                .all((first, second) -> comparator.compare(first, second) <= 0);
     }
 }

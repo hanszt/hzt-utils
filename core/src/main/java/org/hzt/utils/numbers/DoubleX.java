@@ -4,10 +4,13 @@ import org.hzt.utils.Transformable;
 import org.hzt.utils.comparables.ComparableX;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 @SuppressWarnings({"unused", "squid:S1448"})
 public final class DoubleX extends Number implements NumberX<Double>, Transformable<DoubleX>, ComparableX<DoubleX> {
+
+    public static final double GOLDEN_RATIO = (1 + Math.sqrt(5)) / 2.0;
 
     private static final long serialVersionUID = 45;
 
@@ -90,6 +93,14 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
 
     public static String toRoundedString(double d, int scale) {
         return String.format(String.format("%%.%df", scale), d);
+    }
+
+    public static String toRoundedString(double d, int scale, Locale locale) {
+        Locale defaultLocale = Locale.getDefault();
+        Locale.setDefault(locale);
+        final var format = String.format(String.format("%%.%df", scale), d);
+        Locale.setDefault(defaultLocale);
+        return format;
     }
 
     public static double times(double value1, double value2) {

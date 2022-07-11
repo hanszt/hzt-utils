@@ -6,6 +6,7 @@ import org.hzt.utils.collections.primitives.IntCollection;
 import org.hzt.utils.collections.primitives.IntListX;
 import org.hzt.utils.collections.primitives.IntMutableCollection;
 import org.hzt.utils.collections.primitives.IntMutableListX;
+import org.hzt.utils.collections.primitives.IntMutableSetX;
 import org.hzt.utils.collectors.primitves.IntCollector;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,6 +68,11 @@ public interface IntCollectable extends IntArrayable, PrimitiveCollectable<IntCo
 
     default IntMutableListX toMutableList() {
         return to(IntMutableListX::empty);
+    }
+
+    @Override
+    default IntMutableSetX toMutableSetX() {
+        return to(IntMutableSetX::empty);
     }
 
     default <C extends IntMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {

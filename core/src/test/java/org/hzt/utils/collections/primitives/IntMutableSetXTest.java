@@ -4,8 +4,11 @@ import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.ranges.IntRange;
 import org.junit.jupiter.api.Test;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IntMutableSetXTest {
@@ -20,8 +23,7 @@ class IntMutableSetXTest {
 
     @Test
     void testCountElementsInIntSetThroughSequence() {
-        IntMutableSetX set = IntMutableSetX.empty();
-        set.addAll(IntListX.of(1, 2, 3, 3, 4, 5, 6, 5));
+        IntMutableSetX set = IntMutableSetX.of(1, 2, 3, 3, 4, 5, 6, 5);
 
         final var count = set.asSequence().count();
 
@@ -44,6 +46,13 @@ class IntMutableSetXTest {
                 () -> assertTrue(ints.containsAll(evenInts)),
                 () -> assertEquals(50_001, evenInts.size())
         );
+    }
+
+    @Test
+    void testThrowsWhenIteratedOverEmptySet() {
+        IntMutableSetX set = IntMutableSetX.empty();
+        final var iterator = set.iterator();
+        assertThrows(NoSuchElementException.class, iterator::next);
     }
 
 }

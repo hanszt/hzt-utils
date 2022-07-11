@@ -1,5 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.PrimitiveIterator;
 
 /**
@@ -16,7 +18,7 @@ abstract class PrimitiveAbstractCollection<T, A, T_CONS, I extends PrimitiveIter
         this.size = size;
     }
 
-    abstract I iterator();
+    abstract @NotNull I iterator();
 
     abstract A newArray(int length);
 

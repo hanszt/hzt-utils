@@ -6,6 +6,7 @@ import org.hzt.utils.collections.primitives.LongCollection;
 import org.hzt.utils.collections.primitives.LongListX;
 import org.hzt.utils.collections.primitives.LongMutableCollection;
 import org.hzt.utils.collections.primitives.LongMutableListX;
+import org.hzt.utils.collections.primitives.LongMutableSetX;
 import org.hzt.utils.collectors.primitves.LongCollector;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,6 +68,11 @@ public interface LongCollectable extends LongArrayable, PrimitiveCollectable<Lon
 
     default LongMutableListX toMutableList() {
        return to(LongMutableListX::empty);
+    }
+
+    @Override
+    default LongMutableSetX toMutableSetX() {
+        return to(LongMutableSetX::empty);
     }
 
     default <C extends LongMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {

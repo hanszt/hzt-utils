@@ -22,22 +22,23 @@ class DoubleSequenceTest {
 
     @Test
     void doubleRangeFromDoubleArray() {
-        double[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+        double[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2, Math.PI};
 
         final var expected = DoubleStream.of(array)
+                .filter(d -> d > 3)
                 .mapToLong(d -> (long) d)
-                .filter(l -> l > 3)
                 .toArray();
 
-
-        final var longs = DoubleSequence.of(array)
+        final var actual = DoubleSequence.of(array)
+                .filter(d -> d > 3)
                 .mapToLong(It::doubleAsLong)
-                .filter(l -> l > 3)
                 .toArray();
+
+        System.out.println(Arrays.toString(actual));
 
         assertAll(
-                () -> assertArrayEquals(new long[]{4, 5, 4, 6, 4, 4}, longs),
-                () -> assertArrayEquals(expected, longs)
+                () -> assertArrayEquals(new long[]{4, 5, 4, 6, 4, 4, 3}, actual),
+                () -> assertArrayEquals(expected, actual)
         );
     }
 
@@ -235,4 +236,22 @@ class DoubleSequenceTest {
         );
     }
 
+    @Test
+    void testDistinct() {
+        final var array = DoubleSequence.of(Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Math.PI, Double.NaN, Double.NaN)
+                .distinct()
+                .toArray();
+
+        assertArrayEquals(new double[]{Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Double.NaN}, array);
+    }
+
+    @Test
+    void testDoublesToThree() {
+        final var triple = DoubleSequence
+                .of(Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Math.PI, Double.NaN, Double.NaN)
+                .filterNot(Double::isNaN)
+                .doublesToThree(DoubleSequence::sum, DoubleSequence::toMutableSetX, DoubleSequence::average);
+
+        assertEquals(10.619501124388526, triple.first());
+    }
 }

@@ -6,6 +6,7 @@ import org.hzt.utils.collections.primitives.DoubleCollection;
 import org.hzt.utils.collections.primitives.DoubleListX;
 import org.hzt.utils.collections.primitives.DoubleMutableCollection;
 import org.hzt.utils.collections.primitives.DoubleMutableListX;
+import org.hzt.utils.collections.primitives.DoubleMutableSetX;
 import org.hzt.utils.collectors.primitves.DoubleCollector;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,6 +68,11 @@ public interface DoubleCollectable extends DoubleArrayable, PrimitiveCollectable
 
     default DoubleMutableListX toMutableList() {
         return to(DoubleMutableListX::empty);
+    }
+
+    @Override
+    default DoubleMutableSetX toMutableSetX() {
+        return to(DoubleMutableSetX::empty);
     }
 
     default <C extends DoubleMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {

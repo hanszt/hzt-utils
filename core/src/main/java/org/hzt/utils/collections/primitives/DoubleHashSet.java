@@ -4,37 +4,31 @@ import org.hzt.utils.collections.MutableSetX;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
-import java.util.function.IntConsumer;
+import java.util.function.DoubleConsumer;
 
 /**
- * This class implements a simple hash set for {@code int} values.
+ * This class implements a simple hash set for {@code double} values.
  * keep track of nodes that are being pointed to by fingers.
- *
- * @author Rodion "rodde" Efremov
- * @version 1.6 (Aug 29, 2021)
- * @since 1.6 (Aug 29, 2021)
- *
- * @see <a href="https://codereview.stackexchange.com/questions/266541/a-simple-java-integer-hash-set">A simple Java integer hash set</a>
  */
-final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer, PrimitiveIterator.OfInt>
-        implements IntMutableSetX {
+final class DoubleHashSet extends PrimitiveAbstractSet<Double, double[], DoubleConsumer, PrimitiveIterator.OfDouble>
+        implements DoubleMutableSetX {
 
-    IntHashSet() {
+    DoubleHashSet() {
         this(0);
     }
 
-    public IntHashSet(int[] values) {
+    DoubleHashSet(double[] values) {
         this(values.length > 0 ? 1 : 0);
-        for (int value : values) {
+        for (double value : values) {
             add(value);
         }
     }
 
-    public IntHashSet(int size) {
+    public DoubleHashSet(int size) {
         super(size, new CollisionChainNode[INITIAL_CAPACITY]);
     }
 
-    public boolean add(int value) {
+    public boolean add(double value) {
         if (contains(value)) {
             return false;
         }
@@ -44,19 +38,19 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
             expand();
         }
 
-        final int targetCollisionChainIndex = value & mask;
+        final int targetCollisionChainIndex = Double.hashCode(value) & mask;
         final var next = table[targetCollisionChainIndex];
-        final PrimitiveNode newNode = new CollisionChainNode(value, next);
+        final CollisionChainNode newNode = new CollisionChainNode(value, next);
         table[targetCollisionChainIndex] = newNode;
         return true;
     }
 
-    public boolean contains(int value) {
-        final int collisionChainIndex = value & mask;
+    public boolean contains(double value) {
+        final int collisionChainIndex = Double.hashCode(value) & mask;
         var node = table[collisionChainIndex];
 
         while (node != null) {
-            if (((CollisionChainNode) node).value == value) {
+            if (Double.compare(((CollisionChainNode) node).value, value) == 0) {
                 return true;
             }
             node = node.getNext();
@@ -64,7 +58,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
         return false;
     }
 
-    public boolean remove(int value) {
+    public boolean remove(double value) {
         if (!contains(value)) {
             return false;
         }
@@ -72,14 +66,14 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
         if (shouldContract()) {
             contract();
         }
-        final int targetCollisionChainIndex = value & mask;
+        final int targetCollisionChainIndex = Double.hashCode(value) & mask;
 
         var current = table[targetCollisionChainIndex];
 
         PrimitiveNode previous = null;
         while (current != null) {
             var next = current.getNext();
-            if (((CollisionChainNode) current).value == value) {
+            if (Double.compare(((CollisionChainNode) current).value, value) == 0) {
                 if (previous == null) {
                     table[targetCollisionChainIndex] = next;
                 } else {
@@ -94,12 +88,12 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
     }
 
     @Override
-    public MutableSetX<Integer> boxed() {
+    public MutableSetX<Double> boxed() {
         return MutableSetX.of(this);
     }
 
     @Override
-    public int[] toArray() {
+    public double[] toArray() {
         return asSequence().toArray();
     }
 
@@ -109,12 +103,12 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
         mask = table.length - 1;
     }
 
-    // Keep add(int) an amortized O(1)
+    // Keep add(double) an amortized O(1)
 
     private boolean shouldExpand() {
         return size > table.length * MAXIMUM_LOAD_FACTOR;
     }
-    // Keep remove(int) an amortized O(1)
+    // Keep remove(double) an amortized O(1)
 
     private boolean shouldContract() {
         if (table.length == INITIAL_CAPACITY) {
@@ -140,33 +134,33 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
 
     @Override
     int rehash(PrimitiveNode node, int newTableLength) {
-        return ((CollisionChainNode) node).value & (newTableLength - 1);
+        return Double.hashCode(((CollisionChainNode) node).value) & (newTableLength - 1);
     }
 
     @Override
-    int[] newArray(int length) {
-        return new int[length];
+    double[] newArray(int length) {
+        return new double[length];
     }
 
     @Override
-    public PrimitiveIterator.@NotNull OfInt iterator() {
-        return new IntHashIterator();
+    public PrimitiveIterator.@NotNull OfDouble iterator() {
+        return new DoubleHashIterator();
     }
 
     @SuppressWarnings("squid:S2694")
-    private class IntHashIterator extends PrimitiveHashIterator implements PrimitiveIterator.OfInt {
+    private class DoubleHashIterator extends PrimitiveHashIterator implements PrimitiveIterator.OfDouble {
 
         @Override
-        public int nextInt() {
+        public double nextDouble() {
             return ((CollisionChainNode) nextNode()).value;
         }
     }
 
     private static final class CollisionChainNode extends PrimitiveNode {
 
-        private final int value;
+        private final double value;
 
-        CollisionChainNode(int value, PrimitiveNode next) {
+        CollisionChainNode(double value, PrimitiveNode next) {
             super(next);
             this.value = value;
         }
@@ -177,11 +171,11 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
 
         @Override
         public String toString() {
-            return "Chain node, integer = " + value;
+            return "Chain node, double = " + value;
         }
     }
     @Override
-    void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfInt iterator) {
-        sb.append(iterator.nextInt());
+    void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfDouble iterator) {
+        sb.append(iterator.nextDouble());
     }
 }

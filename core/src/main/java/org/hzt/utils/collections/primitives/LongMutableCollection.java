@@ -10,7 +10,7 @@ import java.util.function.LongConsumer;
 import java.util.function.LongPredicate;
 
 public interface LongMutableCollection extends LongCollection,
-        PrimitiveMutableCollectionX<Long, LongConsumer, LongPredicate, long[]> {
+        PrimitiveMutableCollection<Long, LongConsumer, LongPredicate, long[]> {
 
     boolean add(long l);
 
@@ -98,13 +98,13 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default LongMutableListX plus(@NotNull Iterable<Long> iterable) {
-        return (LongMutableListX) LongCollection.super.plus(iterable);
+    default LongMutableList plus(@NotNull Iterable<Long> iterable) {
+        return (LongMutableList) LongCollection.super.plus(iterable);
     }
 
     @Override
-    default LongMutableListX plus(long @NotNull ... array) {
-        return (LongMutableListX) LongCollection.super.plus(array);
+    default LongMutableList plus(long @NotNull ... array) {
+        return (LongMutableList) LongCollection.super.plus(array);
     }
 
     @Override

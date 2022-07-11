@@ -13,7 +13,7 @@ import java.util.Spliterator;
  * @param <C> The PrimitiveConsumer
  * @param <A> The primitive array Type
  */
-public interface PrimitiveCollectionX<T, C, A> extends Stringable<T>, Indexable<T> {
+public interface PrimitiveCollection<T, C, A> extends Stringable<T>, Indexable<T> {
 
     int size();
 
@@ -25,11 +25,11 @@ public interface PrimitiveCollectionX<T, C, A> extends Stringable<T>, Indexable<
 
     boolean containsAll(@NotNull A array);
 
-    PrimitiveCollectionX<T, C, A> plus(Iterable<T> iterable);
+    PrimitiveCollection<T, C, A> plus(Iterable<T> iterable);
 
-    PrimitiveCollectionX<T, C, A> plus(@NotNull A array);
+    PrimitiveCollection<T, C, A> plus(@NotNull A array);
 
-    PrimitiveCollectionX<T, C, A> take(long n);
+    PrimitiveCollection<T, C, A> take(long n);
 
     @NotNull PrimitiveIterator<T, C> iterator();
 

@@ -181,11 +181,11 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     @Override
     default DoubleSequence sorted() {
-        return () -> toListX().sorted().iterator();
+        return () -> toList().sorted().iterator();
     }
 
     default DoubleSequence sorted(DoubleComparator comparator) {
-        return () -> toListX().sorted(comparator).iterator();
+        return () -> toList().sorted(comparator).iterator();
     }
 
     @Override
@@ -239,7 +239,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     default double[] toArray() {
-        return toListX().toArray();
+        return toList().toArray();
     }
 
     default <R> R transform(@NotNull Function<? super DoubleSequence, ? extends R> resultMapper) {

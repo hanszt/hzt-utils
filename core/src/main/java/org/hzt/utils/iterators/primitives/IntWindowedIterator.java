@@ -1,14 +1,14 @@
 package org.hzt.utils.iterators.primitives;
 
-import org.hzt.utils.collections.primitives.IntListX;
-import org.hzt.utils.collections.primitives.IntMutableListX;
+import org.hzt.utils.collections.primitives.IntList;
+import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.iterators.AbstractIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.IntUnaryOperator;
 
-public final class IntWindowedIterator extends AbstractIterator<IntListX> {
+public final class IntWindowedIterator extends AbstractIterator<IntList> {
 
     private final PrimitiveIterator.OfInt iterator;
     private final int initSize;
@@ -19,7 +19,7 @@ public final class IntWindowedIterator extends AbstractIterator<IntListX> {
 
     private int size = 0;
     private int step = 0;
-    private IntMutableListX nextWindow = IntMutableListX.empty();
+    private IntMutableList nextWindow = IntMutableList.empty();
 
     private IntWindowedIterator(
             @NotNull PrimitiveIterator.OfInt iterator,
@@ -45,7 +45,7 @@ public final class IntWindowedIterator extends AbstractIterator<IntListX> {
         return new IntWindowedIterator(iterator, initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
     }
 
-    private IntMutableListX computeNextWindow() {
+    private IntMutableList computeNextWindow() {
         int windowInitCapacity = Math.min(size, 1024);
         final int gap = step - size;
         size = calculateNextSize(size);
@@ -69,7 +69,7 @@ public final class IntWindowedIterator extends AbstractIterator<IntListX> {
     }
 
     private void computeNextForWindowedSequenceOverlapping(int windowInitCapacity) {
-        nextWindow = nextWindow.isEmpty() ? IntMutableListX.withInitCapacity(windowInitCapacity) : IntMutableListX.of(nextWindow);
+        nextWindow = nextWindow.isEmpty() ? IntMutableList.withInitCapacity(windowInitCapacity) : IntMutableList.of(nextWindow);
         calculateNextOverlappingWindow();
         if (!partialWindows && nextWindow.size() < size) {
             nextWindow.clear();
@@ -89,7 +89,7 @@ public final class IntWindowedIterator extends AbstractIterator<IntListX> {
 
     private void computeNextForWindowedSequenceNoOverlap(int bufferInitCapacity, int gap) {
         int skip = gap;
-        nextWindow = IntMutableListX.withInitCapacity(bufferInitCapacity);
+        nextWindow = IntMutableList.withInitCapacity(bufferInitCapacity);
         while (iterator.hasNext()) {
             int item = iterator.nextInt();
             if (skip > 0) {

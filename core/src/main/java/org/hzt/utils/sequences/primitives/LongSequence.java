@@ -187,11 +187,11 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
 
     @Override
     default LongSequence sorted() {
-        return () -> toListX().sorted().iterator();
+        return () -> toList().sorted().iterator();
     }
 
     default LongSequence sorted(LongComparator longComparator) {
-        return () -> toListX().sorted(longComparator).iterator();
+        return () -> toList().sorted(longComparator).iterator();
     }
 
     @Override
@@ -233,7 +233,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default long[] toArray() {
-        return toListX().toArray();
+        return toList().toArray();
     }
 
     default <R> R transform(@NotNull Function<? super LongSequence, ? extends R> resultMapper) {

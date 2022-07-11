@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 
 public abstract class PrimitiveAbstractSet<T, A, T_CONST, I extends PrimitiveIterator<T, T_CONST>>
-        extends PrimitiveAbstractCollection<T, A, T_CONST, I> implements PrimitiveCollectionX<T, T_CONST, A> {
+        extends PrimitiveAbstractCollection<T, A, T_CONST, I> implements PrimitiveCollection<T, T_CONST, A> {
 
     static final float MAXIMUM_LOAD_FACTOR = 0.75F;
     static final int INITIAL_CAPACITY = 8;

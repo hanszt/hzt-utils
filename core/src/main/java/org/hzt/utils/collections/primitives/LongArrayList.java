@@ -12,14 +12,14 @@ import java.util.PrimitiveIterator;
 import java.util.function.LongConsumer;
 
 public final class LongArrayList extends PrimitiveAbstractList<Long, long[], LongConsumer, PrimitiveIterator.OfLong>
-        implements LongMutableListX {
+        implements LongMutableList {
 
     LongArrayList(int initCapacity) {
         super(0, new long[initCapacity]);
     }
 
-    LongArrayList(LongListX longListX) {
-        super(longListX.size(), longListX.toArray());
+    LongArrayList(LongList longList) {
+        super(longList.size(), longList.toArray());
     }
 
     LongArrayList() {
@@ -121,7 +121,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
         }
 
         PrimitiveIterator.OfLong iterator1 = iterator();
-        PrimitiveIterator.OfLong iterator2 = ((LongListX) o).iterator();
+        PrimitiveIterator.OfLong iterator2 = ((LongList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             long l1 = iterator1.nextLong();
             long l2 = iterator2.nextLong();
@@ -206,7 +206,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
     }
 
     @Override
-    public LongMutableListX toMutableList() {
+    public LongMutableList toMutableList() {
         return this;
     }
 

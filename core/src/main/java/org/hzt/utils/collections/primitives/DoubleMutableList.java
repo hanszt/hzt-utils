@@ -5,37 +5,37 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.jetbrains.annotations.NotNull;
 
-public interface DoubleMutableListX extends DoubleListX, DoubleMutableCollection,
+public interface DoubleMutableList extends DoubleList, DoubleMutableCollection,
         PrimitiveMutableList<PrimitiveListIterator.OfDouble, DoubleComparator> {
 
-    static DoubleMutableListX empty() {
+    static DoubleMutableList empty() {
         return new DoubleArrayList();
     }
 
-    static DoubleMutableListX of(Iterable<Double> iterable) {
+    static DoubleMutableList of(Iterable<Double> iterable) {
         return new DoubleArrayList(iterable);
     }
 
-    static DoubleMutableListX of(DoubleListX doubleListX) {
-        return new DoubleArrayList(doubleListX);
+    static DoubleMutableList of(DoubleList doubleList) {
+        return new DoubleArrayList(doubleList);
     }
 
-    static DoubleMutableListX of(double... array) {
+    static DoubleMutableList of(double... array) {
         return new DoubleArrayList(array);
     }
 
-    static DoubleMutableListX withInitCapacity(int capacity) {
+    static DoubleMutableList withInitCapacity(int capacity) {
         return new DoubleArrayList(capacity);
     }
 
     @Override
-    default DoubleMutableListX plus(@NotNull Iterable<Double> iterable) {
+    default DoubleMutableList plus(@NotNull Iterable<Double> iterable) {
         addAll(iterable);
         return this;
     }
 
     @Override
-    default DoubleMutableListX plus(double @NotNull ... iterable) {
+    default DoubleMutableList plus(double @NotNull ... iterable) {
         addAll(iterable);
         return this;
     }

@@ -2,7 +2,7 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.primitives.DoubleListX;
+import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
@@ -48,7 +48,7 @@ class DoubleSequenceTest {
 
         final double[] result = DoubleSequence.of(1, 3, 2, 5, 4, 2)
                 .plus(Math.E, 76, 5)
-                .plus(DoubleListX.of(array))
+                .plus(DoubleList.of(array))
                 .toArray();
 
         It.println(Arrays.toString(result));
@@ -111,7 +111,7 @@ class DoubleSequenceTest {
 
         final var windowed = DoubleSequence.of(array)
                 .windowed(5)
-                .map(DoubleListX::toArray)
+                .map(DoubleList::toArray)
                 .toTypedArray(double[][]::new);
 
         Sequence.of(windowed).map(Arrays::toString).forEach(It::println);
@@ -124,7 +124,7 @@ class DoubleSequenceTest {
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final var sums = DoubleSequence.of(array)
-                .windowed(3, DoubleListX::sum)
+                .windowed(3, DoubleList::sum)
                 .toArray();
 
         DoubleSequence.of(sums).forEachDouble(It::println);
@@ -137,7 +137,7 @@ class DoubleSequenceTest {
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final var sums = DoubleSequence.of(array)
-                .windowed(3, 2, true, DoubleListX::sum)
+                .windowed(3, 2, true, DoubleList::sum)
                 .toArray();
 
         DoubleSequence.of(sums).forEachDouble(It::println);
@@ -149,7 +149,7 @@ class DoubleSequenceTest {
     void testWindowedLargeDoubleSequence() {
         final var sums = DoubleSequence.generate(0, l -> ++l)
                 .take(1_000_000)
-                .windowed(1_000, 50, DoubleListX::sum)
+                .windowed(1_000, 50, DoubleList::sum)
                 .toArray();
 
         final var sums2 = Sequence.generate(0, l -> ++l)
@@ -226,7 +226,7 @@ class DoubleSequenceTest {
                 .takeWhileInclusive(approximation -> !DoubleX.toRoundedString(approximation, scale)
                         .equals(roundedGoldenRatio))
                 .onEach(s -> It.println(DoubleX.toRoundedString(s, scale)))
-                .toListX();
+                .toList();
 
         final var actual = DoubleX.toRoundedString(approximations.last(), scale);
 
@@ -250,7 +250,7 @@ class DoubleSequenceTest {
         final var triple = DoubleSequence
                 .of(Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Math.PI, Double.NaN, Double.NaN)
                 .filterNot(Double::isNaN)
-                .doublesToThree(DoubleSequence::sum, DoubleSequence::toMutableSetX, DoubleSequence::average);
+                .doublesToThree(DoubleSequence::sum, DoubleSequence::toMutableSet, DoubleSequence::average);
 
         assertEquals(10.619501124388526, triple.first());
     }

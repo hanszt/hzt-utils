@@ -12,14 +12,14 @@ import java.util.PrimitiveIterator;
 import java.util.function.DoubleConsumer;
 
 final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], DoubleConsumer, PrimitiveIterator.OfDouble>
-        implements DoubleMutableListX {
+        implements DoubleMutableList {
 
     DoubleArrayList(int initCapacity) {
         super(0, new double[initCapacity]);
     }
 
-    DoubleArrayList(DoubleListX doubleListX) {
-        super(doubleListX.size(), doubleListX.toArray());
+    DoubleArrayList(DoubleList doubleList) {
+        super(doubleList.size(), doubleList.toArray());
     }
 
     DoubleArrayList() {
@@ -115,7 +115,7 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
         }
 
         PrimitiveIterator.OfDouble iterator1 = iterator();
-        PrimitiveIterator.OfDouble iterator2 = ((DoubleListX) o).iterator();
+        PrimitiveIterator.OfDouble iterator2 = ((DoubleList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             double l1 = iterator1.nextDouble();
             double l2 = iterator2.nextDouble();
@@ -155,7 +155,7 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
     }
 
     @Override
-    public DoubleMutableListX toMutableList() {
+    public DoubleMutableList toMutableList() {
         return this;
     }
     

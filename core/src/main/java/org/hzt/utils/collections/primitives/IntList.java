@@ -17,29 +17,29 @@ import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
-public interface IntListX extends IntCollection,
+public interface IntList extends IntCollection,
         PrimitiveList<PrimitiveListIterator.OfInt>,
         PrimitiveSortable<IntComparator>,
         BinarySearchable<IntUnaryOperator> {
 
-    static IntListX empty() {
+    static IntList empty() {
         return new IntArrayList();
     }
 
-    static IntListX of(Iterable<Integer> iterable) {
+    static IntList of(Iterable<Integer> iterable) {
         return new IntArrayList(iterable);
     }
 
-    static IntListX of(IntListX intListX) {
-        return new IntArrayList(intListX);
+    static IntList of(IntList intList) {
+        return new IntArrayList(intList);
     }
 
-    static IntListX of(int... array) {
+    static IntList of(int... array) {
         return new IntArrayList(array);
     }
 
-    static IntListX build(Consumer<IntMutableListX> factory) {
-        final IntMutableListX listX = IntMutableListX.empty();
+    static IntList build(Consumer<IntMutableList> factory) {
+        final IntMutableList listX = IntMutableList.empty();
         factory.accept(listX);
         return listX;
     }
@@ -103,21 +103,21 @@ public interface IntListX extends IntCollection,
     }
 
     @Override
-    default IntListX sorted() {
+    default IntList sorted() {
         final var array = toArray();
         Arrays.sort(array);
-        return IntListX.of(array);
+        return IntList.of(array);
     }
 
     @Override
-    default IntListX sorted(IntComparator comparator) {
+    default IntList sorted(IntComparator comparator) {
         final var array = toArray();
         PrimitiveArrays.sort(comparator, array);
-        return IntListX.of(array);
+        return IntList.of(array);
     }
 
     @Override
-    default IntListX sortedDescending() {
+    default IntList sortedDescending() {
         return sorted(IntX::compareReversed);
     }
 
@@ -142,7 +142,7 @@ public interface IntListX extends IntCollection,
         return isSorted(Integer::compare);
     }
 
-    IntListX shuffled();
+    IntList shuffled();
 
     /**
      * @see org.hzt.utils.markerinterfaces.BinarySearchable#binarySearch(int, int, Object)

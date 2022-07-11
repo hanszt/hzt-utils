@@ -11,19 +11,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class IntMutableSetXTest {
+class IntMutableSetTest {
 
     @Test
     void testIntSetSize() {
-        IntMutableSetX set = IntMutableSetX.empty();
-        set.addAll(IntListX.of(-1, -2231, 0, 3, 3, 4, 5, 6, 5));
+        IntMutableSet set = IntMutableSet.empty();
+        set.addAll(IntList.of(-1, -2231, 0, 3, 3, 4, 5, 6, 5));
 
         assertEquals(7, set.size());
     }
 
     @Test
     void testCountElementsInIntSetThroughSequence() {
-        IntMutableSetX set = IntMutableSetX.of(1, 2, 3, 3, 4, 5, 6, 5);
+        IntMutableSet set = IntMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
 
         final var count = set.asSequence().count();
 
@@ -32,7 +32,7 @@ class IntMutableSetXTest {
 
     @Test
     void testSequenceToIntSet() {
-        IntMutableSetX ints = IntMutableSetX.empty();
+        IntMutableSet ints = IntMutableSet.empty();
         ints.addAll(IntRange.of(-10_000, 9_000));
         ints.addAll(IntRange.of(1_000, 90_000));
         ints.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
@@ -40,7 +40,7 @@ class IntMutableSetXTest {
 
         final var evenInts = ints.asSequence()
                 .filter(IntX::isEven)
-                .collect(IntMutableSetX::empty, IntMutableSetX::add);
+                .collect(IntMutableSet::empty, IntMutableSet::add);
 
         assertAll(
                 () -> assertTrue(ints.containsAll(evenInts)),
@@ -50,7 +50,7 @@ class IntMutableSetXTest {
 
     @Test
     void testThrowsWhenIteratedOverEmptySet() {
-        IntMutableSetX set = IntMutableSetX.empty();
+        IntMutableSet set = IntMutableSet.empty();
         final var iterator = set.iterator();
         assertThrows(NoSuchElementException.class, iterator::next);
     }

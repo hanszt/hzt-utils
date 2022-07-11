@@ -11,7 +11,7 @@ import java.util.function.LongConsumer;
  * keep track of nodes that are being pointed to by fingers.
  */
 final class LongHashSet extends PrimitiveAbstractSet<Long, long[], LongConsumer, PrimitiveIterator.OfLong>
-        implements LongMutableSetX {
+        implements LongMutableSet {
 
     LongHashSet() {
         this(0);

@@ -14,7 +14,7 @@ class IntMutableListXTest {
 
     @Test
     void testDifferentMethods() {
-        final var ints = IntMutableListX.empty();
+        final var ints = IntMutableList.empty();
         assertTrue(ints.isEmpty());
         ints.add(1);
         assertAll(
@@ -44,7 +44,7 @@ class IntMutableListXTest {
 
     @Test
     void testCopyConstructor() {
-        final var ints = IntMutableListX.empty();
+        final var ints = IntMutableList.empty();
         ints.add(2);
         ints.add(-43);
         ints.add(1231);
@@ -52,7 +52,7 @@ class IntMutableListXTest {
                 .take(10_000_000)
                 .forEachInt(ints::add);
 
-        final var intsCopy = IntMutableListX.of(ints);
+        final var intsCopy = IntMutableList.of(ints);
 
         assertAll(
                 () -> assertEquals(10_000_003, ints.size()),
@@ -69,7 +69,7 @@ class IntMutableListXTest {
 
         ints.sort();
 
-        assertEquals(IntListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ints.take(10));
+        assertEquals(IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ints.take(10));
     }
 
     @Test
@@ -81,7 +81,7 @@ class IntMutableListXTest {
 
         ints.sort(IntComparator.reverseOrder());
 
-        assertEquals(IntListX.of(-1, -2, -3, -4, -5, -6, -7, -8, -9, -10), ints.take(10));
+        assertEquals(IntList.of(-1, -2, -3, -4, -5, -6, -7, -8, -9, -10), ints.take(10));
     }
 
 }

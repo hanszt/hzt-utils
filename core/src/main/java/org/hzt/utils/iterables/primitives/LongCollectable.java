@@ -3,10 +3,10 @@ package org.hzt.utils.iterables.primitives;
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.primitives.LongCollection;
-import org.hzt.utils.collections.primitives.LongListX;
+import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableCollection;
-import org.hzt.utils.collections.primitives.LongMutableListX;
-import org.hzt.utils.collections.primitives.LongMutableSetX;
+import org.hzt.utils.collections.primitives.LongMutableList;
+import org.hzt.utils.collections.primitives.LongMutableSet;
 import org.hzt.utils.collectors.primitves.LongCollector;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +53,7 @@ public interface LongCollectable extends LongArrayable, PrimitiveCollectable<Lon
         return combiner.apply(downStream1.finisher().apply(result1), downStream2.finisher().apply(result2));
     }
 
-    default LongListX toListX() {
+    default LongList toList() {
         return toMutableList();
     }
 
@@ -66,13 +66,13 @@ public interface LongCollectable extends LongArrayable, PrimitiveCollectable<Lon
         return collection;
     }
 
-    default LongMutableListX toMutableList() {
-       return to(LongMutableListX::empty);
+    default LongMutableList toMutableList() {
+       return to(LongMutableList::empty);
     }
 
     @Override
-    default LongMutableSetX toMutableSetX() {
-        return to(LongMutableSetX::empty);
+    default LongMutableSet toMutableSet() {
+        return to(LongMutableSet::empty);
     }
 
     default <C extends LongMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {

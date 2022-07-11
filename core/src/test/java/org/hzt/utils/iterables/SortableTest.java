@@ -134,7 +134,9 @@ class SortableTest {
             "Adi Judith Hans Koen Pauline  Ted"
     })
     void isNotSortedInNaturalOrder(String string) {
-        final var people = Patterns.splitAsSequence(blankStringPattern, string).map(Person::new);
+        final var people = Patterns
+                .splitToSequence(blankStringPattern, string)
+                .map(Person::new);
 
         assertFalse(people.isSortedBy(Person::getName));
     }

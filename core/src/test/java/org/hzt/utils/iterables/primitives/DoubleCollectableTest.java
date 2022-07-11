@@ -16,7 +16,7 @@ class DoubleCollectableTest {
         final var doubles = DoubleSequence.generate(Double.MIN_VALUE, d -> d + Math.PI)
                 .take(10)
                 .plus(Math.E, Math.E, DoubleX.GOLDEN_RATIO)
-                .toMutableSetX();
+                .toMutableSet();
 
         doubles.forEachDouble(System.out::println);
 

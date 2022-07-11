@@ -12,14 +12,14 @@ final class PrimitiveListHelper {
     private PrimitiveListHelper() {
     }
 
-    public static void shuffle(IntMutableListX list) {
+    public static void shuffle(IntMutableList list) {
         if (random == null) {
             random = new Random(); // harmless race.
         }
         shuffle(list, random);
     }
 
-    public static void shuffle(IntMutableListX list, Random random) {
+    public static void shuffle(IntMutableList list, Random random) {
         int size = list.size();
         if (size < SHUFFLE_THRESHOLD || list instanceof RandomAccess) {
             for (int i = size; i > 1; i--) {
@@ -36,7 +36,7 @@ final class PrimitiveListHelper {
         }
     }
 
-    public static void swap(IntMutableListX list, int i, int j) {
+    public static void swap(IntMutableList list, int i, int j) {
         final var element = list.get(i);
         final var other = list.set(j, element);
         list.set(i, other);

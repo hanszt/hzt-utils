@@ -10,7 +10,7 @@ import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 
 public interface IntMutableCollection extends IntCollection,
-        PrimitiveMutableCollectionX<Integer, IntConsumer, IntPredicate, int[]>{
+        PrimitiveMutableCollection<Integer, IntConsumer, IntPredicate, int[]> {
 
     boolean add(int i);
 
@@ -97,13 +97,13 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default IntMutableListX plus(@NotNull Iterable<Integer> iterable) {
-        return (IntMutableListX) IntCollection.super.plus(iterable);
+    default IntMutableList plus(@NotNull Iterable<Integer> iterable) {
+        return (IntMutableList) IntCollection.super.plus(iterable);
     }
 
     @Override
-    default IntMutableListX plus(int @NotNull ... array) {
-        return (IntMutableListX) IntCollection.super.plus(array);
+    default IntMutableList plus(int @NotNull ... array) {
+        return (IntMutableList) IntCollection.super.plus(array);
     }
 
     @Override

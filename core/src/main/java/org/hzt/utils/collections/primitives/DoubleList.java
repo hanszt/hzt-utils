@@ -17,29 +17,29 @@ import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
 
-public interface DoubleListX extends DoubleCollection,
+public interface DoubleList extends DoubleCollection,
         PrimitiveList<PrimitiveListIterator.OfDouble>,
         PrimitiveSortable<DoubleComparator>,
         BinarySearchable<DoubleToIntFunction> {
 
-    static DoubleListX empty() {
+    static DoubleList empty() {
         return new DoubleArrayList();
     }
 
-    static DoubleListX of(Iterable<Double> iterable) {
+    static DoubleList of(Iterable<Double> iterable) {
         return new DoubleArrayList(iterable);
     }
 
-    static DoubleListX of(DoubleListX doubleListX) {
-        return new DoubleArrayList(doubleListX);
+    static DoubleList of(DoubleList doubleList) {
+        return new DoubleArrayList(doubleList);
     }
 
-    static DoubleListX of(double... array) {
+    static DoubleList of(double... array) {
         return new DoubleArrayList(array);
     }
 
-    static DoubleListX build(Consumer<DoubleMutableListX> factory) {
-        final DoubleMutableListX listX = DoubleMutableListX.empty();
+    static DoubleList build(Consumer<DoubleMutableList> factory) {
+        final DoubleMutableList listX = DoubleMutableList.empty();
         factory.accept(listX);
         return listX;
     }
@@ -94,21 +94,21 @@ public interface DoubleListX extends DoubleCollection,
     }
 
     @Override
-    default DoubleListX sorted() {
+    default DoubleList sorted() {
         final var array = toArray();
         Arrays.sort(array);
-        return DoubleListX.of(array);
+        return DoubleList.of(array);
     }
 
     @Override
-    default DoubleListX sorted(DoubleComparator comparator) {
+    default DoubleList sorted(DoubleComparator comparator) {
         final var array = toArray();
         PrimitiveArrays.sort(comparator, array);
-        return DoubleListX.of(array);
+        return DoubleList.of(array);
     }
 
     @Override
-    default DoubleListX sortedDescending() {
+    default DoubleList sortedDescending() {
         return sorted(DoubleX::compareReversed);
     }
 

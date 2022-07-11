@@ -14,14 +14,14 @@ import java.util.PrimitiveIterator;
 import java.util.function.IntConsumer;
 
 final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsumer, PrimitiveIterator.OfInt>
-        implements IntMutableListX {
+        implements IntMutableList {
 
     IntArrayList(int initCapacity) {
         super(0, new int[initCapacity]);
     }
 
-    IntArrayList(@NotNull IntListX intListX) {
-        super(intListX.size(), intListX.toArray());
+    IntArrayList(@NotNull IntList intList) {
+        super(intList.size(), intList.toArray());
     }
 
     IntArrayList() {
@@ -86,8 +86,8 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
     }
 
     @Override
-    public IntListX shuffled() {
-        final var mutableListX = IntMutableListX.of(this);
+    public IntList shuffled() {
+        final var mutableListX = IntMutableList.of(this);
         PrimitiveListHelper.shuffle(mutableListX);
         return mutableListX;
     }
@@ -127,7 +127,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
         }
 
         PrimitiveIterator.OfInt iterator1 = iterator();
-        PrimitiveIterator.OfInt iterator2 = ((IntListX) o).iterator();
+        PrimitiveIterator.OfInt iterator2 = ((IntList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             int l1 = iterator1.nextInt();
             int l2 = iterator2.nextInt();
@@ -167,7 +167,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
     }
 
     @Override
-    public IntMutableListX toMutableList() {
+    public IntMutableList toMutableList() {
         return this;
     }
 

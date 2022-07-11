@@ -11,7 +11,7 @@ import java.util.function.DoubleConsumer;
  * keep track of nodes that are being pointed to by fingers.
  */
 final class DoubleHashSet extends PrimitiveAbstractSet<Double, double[], DoubleConsumer, PrimitiveIterator.OfDouble>
-        implements DoubleMutableSetX {
+        implements DoubleMutableSet {
 
     DoubleHashSet() {
         this(0);

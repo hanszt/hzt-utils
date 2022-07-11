@@ -3,10 +3,10 @@ package org.hzt.utils.iterables.primitives;
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.primitives.IntCollection;
-import org.hzt.utils.collections.primitives.IntListX;
+import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableCollection;
-import org.hzt.utils.collections.primitives.IntMutableListX;
-import org.hzt.utils.collections.primitives.IntMutableSetX;
+import org.hzt.utils.collections.primitives.IntMutableList;
+import org.hzt.utils.collections.primitives.IntMutableSet;
 import org.hzt.utils.collectors.primitves.IntCollector;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +53,7 @@ public interface IntCollectable extends IntArrayable, PrimitiveCollectable<IntCo
         return combiner.apply(downStream1.finisher().apply(result1), downStream2.finisher().apply(result2));
     }
 
-    default IntListX toListX() {
+    default IntList toList() {
         return toMutableList();
     }
 
@@ -66,13 +66,13 @@ public interface IntCollectable extends IntArrayable, PrimitiveCollectable<IntCo
         return collection;
     }
 
-    default IntMutableListX toMutableList() {
-        return to(IntMutableListX::empty);
+    default IntMutableList toMutableList() {
+        return to(IntMutableList::empty);
     }
 
     @Override
-    default IntMutableSetX toMutableSetX() {
-        return to(IntMutableSetX::empty);
+    default IntMutableSet toMutableSet() {
+        return to(IntMutableSet::empty);
     }
 
     default <C extends IntMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {

@@ -12,8 +12,8 @@ import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
-import org.hzt.utils.collections.primitives.IntListX;
-import org.hzt.utils.collections.primitives.IntMutableListX;
+import org.hzt.utils.collections.primitives.IntList;
+import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.ranges.IntRange;
@@ -219,11 +219,11 @@ class SequenceTest {
                         .mapToInt(String::length)
                         .forEachInt(accept))
                 .filter(length -> length > 3)
-                .toListX();
+                .toList();
 
         It.println("result = " + result);
 
-        assertEquals(IntListX.of(5, 4), result);
+        assertEquals(IntList.of(5, 4), result);
     }
 
     @Test
@@ -370,18 +370,18 @@ class SequenceTest {
 
     @Test
     void testIterateRandomWithinBound() {
-        final IntListX integers = IntListX.of(1, 2, 3, 4, 5);
+        final IntList integers = IntList.of(1, 2, 3, 4, 5);
 
-        final MapX<Integer, IntMutableListX> group = IntSequence
+        final MapX<Integer, IntMutableList> group = IntSequence
                 .generate(integers::random)
                 .take(10_000_000)
                 .group();
 
-        group.values().forEach(IntListX::size, It::println);
+        group.values().forEach(IntList::size, It::println);
 
         assertAll(
                 () -> assertEquals(integers.size(), group.size()),
-                () -> group.values().forEach(IntListX::isNotEmpty, Assertions::assertTrue)
+                () -> group.values().forEach(IntList::isNotEmpty, Assertions::assertTrue)
         );
     }
 
@@ -653,7 +653,7 @@ class SequenceTest {
                 .generate(LocalDate.of(year, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhile(date -> date.getYear() == year)
                 .mapToInt(LocalDate::getDayOfMonth)
-                .toListX();
+                .toList();
 
 
         System.setProperty("org.openjdk.java.util.stream.tripwire", "false");
@@ -791,14 +791,14 @@ class SequenceTest {
                 .onEach(It::println)
                 .mapToInt(It::asInt);
 
-        final var integers = intSequence.toListX();
+        final var integers = intSequence.toList();
         final var sum = intSequence.sum();
 
         final var pair = intSequence.boxed()
-                .foldTwo(IntMutableListX.empty(), IntMutableListX::plus, 0, Integer::sum);
+                .foldTwo(IntMutableList.empty(), IntMutableList::plus, 0, Integer::sum);
 
         assertAll(
-                () -> assertEquals(IntListX.of(4, 204, 404, 604, 804), integers),
+                () -> assertEquals(IntList.of(4, 204, 404, 604, 804), integers),
                 () -> assertEquals(pair.first(), integers),
                 () -> assertEquals(2020, sum),
                 () -> assertEquals(pair.second().longValue(), sum)
@@ -856,7 +856,7 @@ class SequenceTest {
 
         final var integers = IntRange.of(0, 1_000)
                 .windowed(10)
-                .map(IntListX::iterator)
+                .map(IntList::iterator)
                 .flatMap(i -> () -> i)
                 .toListX();
 

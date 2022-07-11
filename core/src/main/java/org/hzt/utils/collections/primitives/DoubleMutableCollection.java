@@ -10,7 +10,7 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 
 public interface DoubleMutableCollection extends DoubleCollection,
-        PrimitiveMutableCollectionX<Double, DoubleConsumer, DoublePredicate, double[]> {
+        PrimitiveMutableCollection<Double, DoubleConsumer, DoublePredicate, double[]> {
 
     boolean add(double d);
 
@@ -98,13 +98,13 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default DoubleMutableListX plus(@NotNull Iterable<Double> iterable) {
-        return (DoubleMutableListX) DoubleCollection.super.plus(iterable);
+    default DoubleMutableList plus(@NotNull Iterable<Double> iterable) {
+        return (DoubleMutableList) DoubleCollection.super.plus(iterable);
     }
 
     @Override
-    default DoubleMutableListX plus(double @NotNull ... array) {
-        return (DoubleMutableListX) DoubleCollection.super.plus(array);
+    default DoubleMutableList plus(double @NotNull ... array) {
+        return (DoubleMutableList) DoubleCollection.super.plus(array);
     }
 
     @Override

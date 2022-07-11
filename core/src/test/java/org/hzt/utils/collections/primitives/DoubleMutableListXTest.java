@@ -14,7 +14,7 @@ class DoubleMutableListXTest {
 
     @Test
     void testDifferentMethods() {
-        final var doubles = DoubleMutableListX.empty();
+        final var doubles = DoubleMutableList.empty();
 
         assertTrue(doubles.isEmpty());
         doubles.add(Math.PI);
@@ -43,7 +43,7 @@ class DoubleMutableListXTest {
 
     @Test
     void testCopyConstructor() {
-        final var doubles = DoubleMutableListX.empty();
+        final var doubles = DoubleMutableList.empty();
         doubles.add(2);
         doubles.add(-43);
         doubles.add(Math.E);
@@ -51,7 +51,7 @@ class DoubleMutableListXTest {
                 .take(10_000_000)
                 .forEachDouble(doubles::add);
 
-        final var doublesCopy = DoubleMutableListX.of(doubles);
+        final var doublesCopy = DoubleMutableList.of(doubles);
 
         assertAll(
                 () -> assertEquals(10_000_003, doubles.size()),
@@ -61,14 +61,14 @@ class DoubleMutableListXTest {
 
     @Test
     void testRemove() {
-        final var list = DoubleMutableListX.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final var list = DoubleMutableList.of(1, 2, 3, 4, 5, 6, 7, 8);
 
         final var remove = list.remove(7);
         It.println("list = " + list);
 
         assertAll(
                 () -> assertTrue(remove),
-                () -> assertEquals(DoubleListX.of(1, 2, 3, 4, 5, 6, 8), list)
+                () -> assertEquals(DoubleList.of(1, 2, 3, 4, 5, 6, 8), list)
         );
     }
 
@@ -82,7 +82,7 @@ class DoubleMutableListXTest {
 
         doubles.forEachDouble(System.out::println);
 
-        assertEquals(DoubleListX.of(-9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0), doubles);
+        assertEquals(DoubleList.of(-9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0), doubles);
     }
     @Test
     void testSortDoubleList() {
@@ -92,7 +92,7 @@ class DoubleMutableListXTest {
 
         doubles.sort();
 
-        assertEquals(DoubleListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), doubles.take(10));
+        assertEquals(DoubleList.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), doubles.take(10));
     }
 
     @Test
@@ -103,6 +103,6 @@ class DoubleMutableListXTest {
 
         doubles.sort(DoubleComparator.reverseOrder());
 
-        assertEquals(DoubleListX.of(-1, -2, -3, -4, -5, -6, -7, -8, -9, -10), doubles.take(10));
+        assertEquals(DoubleList.of(-1, -2, -3, -4, -5, -6, -7, -8, -9, -10), doubles.take(10));
     }
 }

@@ -17,29 +17,29 @@ import java.util.function.Consumer;
 import java.util.function.LongPredicate;
 import java.util.function.LongToIntFunction;
 
-public interface LongListX extends LongCollection,
+public interface LongList extends LongCollection,
         PrimitiveList<PrimitiveListIterator.OfLong>,
         PrimitiveSortable<LongComparator>,
         BinarySearchable<LongToIntFunction> {
 
-    static LongListX empty() {
+    static LongList empty() {
         return new LongArrayList();
     }
 
-    static LongListX of(Iterable<Long> iterable) {
+    static LongList of(Iterable<Long> iterable) {
         return new LongArrayList(iterable);
     }
 
-    static LongListX of(LongListX longListX) {
-        return new LongArrayList(longListX);
+    static LongList of(LongList longList) {
+        return new LongArrayList(longList);
     }
 
-    static LongListX of(long... array) {
+    static LongList of(long... array) {
         return new LongArrayList(array);
     }
 
-    static LongListX build(Consumer<LongMutableListX> factory) {
-        final LongMutableListX listX = LongMutableListX.empty();
+    static LongList build(Consumer<LongMutableList> factory) {
+        final LongMutableList listX = LongMutableList.empty();
         factory.accept(listX);
         return listX;
     }
@@ -92,21 +92,21 @@ public interface LongListX extends LongCollection,
     ListX<Long> boxed();
 
     @Override
-    default LongListX sorted() {
+    default LongList sorted() {
         final var array = toArray();
         Arrays.sort(array);
-        return LongListX.of(array);
+        return LongList.of(array);
     }
 
     @Override
-    default LongListX sorted(LongComparator comparator) {
+    default LongList sorted(LongComparator comparator) {
         final var longs = toArray();
         PrimitiveArrays.sort(comparator, longs);
-        return LongListX.of(longs);
+        return LongList.of(longs);
     }
 
     @Override
-    default LongListX sortedDescending() {
+    default LongList sortedDescending() {
         return sorted(LongX::compareReversed);
     }
 

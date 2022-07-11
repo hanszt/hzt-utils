@@ -1,10 +1,10 @@
 package org.hzt.utils.iterators.primitives;
 
 import org.hzt.utils.It;
-import org.hzt.utils.collections.primitives.DoubleMutableSetX;
+import org.hzt.utils.collections.primitives.DoubleMutableSet;
 import org.hzt.utils.collections.primitives.IntMutableCollection;
-import org.hzt.utils.collections.primitives.IntMutableSetX;
-import org.hzt.utils.collections.primitives.LongMutableSetX;
+import org.hzt.utils.collections.primitives.IntMutableSet;
+import org.hzt.utils.collections.primitives.LongMutableSet;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -430,7 +430,7 @@ public final class PrimitiveIterators {
 
     @NotNull
     public static PrimitiveIterator.OfInt distinctIterator(PrimitiveIterator.OfInt iterator) {
-        final IntMutableSetX observed = IntMutableSetX.empty();
+        final IntMutableSet observed = IntMutableSet.empty();
         final PrimitiveAtomicIterator.OfInt iteratorX = action -> nextDistinctInt(iterator, observed, action);
         return iteratorX.asIterator();
     }
@@ -448,12 +448,12 @@ public final class PrimitiveIterators {
 
     @NotNull
     public static PrimitiveIterator.OfLong distinctIterator(PrimitiveIterator.OfLong iterator) {
-        final LongMutableSetX observed = LongMutableSetX.empty();
+        final LongMutableSet observed = LongMutableSet.empty();
         final PrimitiveAtomicIterator.OfLong iteratorX = action -> nextDistinctLong(iterator, observed, action);
         return iteratorX.asIterator();
     }
 
-    private static boolean nextDistinctLong(PrimitiveIterator.OfLong iterator, LongMutableSetX observed, LongConsumer action) {
+    private static boolean nextDistinctLong(PrimitiveIterator.OfLong iterator, LongMutableSet observed, LongConsumer action) {
         while (iterator.hasNext()) {
             long next = iterator.nextLong();
             if (observed.add(next)) {
@@ -466,12 +466,12 @@ public final class PrimitiveIterators {
 
     @NotNull
     public static PrimitiveIterator.OfDouble distinctIterator(PrimitiveIterator.OfDouble iterator) {
-        final DoubleMutableSetX observed = DoubleMutableSetX.empty();
+        final DoubleMutableSet observed = DoubleMutableSet.empty();
         final PrimitiveAtomicIterator.OfDouble iteratorX = action -> nextDistinctDouble(iterator, observed, action);
         return iteratorX.asIterator();
     }
 
-    private static boolean nextDistinctDouble(PrimitiveIterator.OfDouble iterator, DoubleMutableSetX observed, DoubleConsumer action) {
+    private static boolean nextDistinctDouble(PrimitiveIterator.OfDouble iterator, DoubleMutableSet observed, DoubleConsumer action) {
         while (iterator.hasNext()) {
             double next = iterator.nextDouble();
             if (observed.add(next)) {

@@ -1,9 +1,9 @@
 package org.hzt.utils.arrays.primitives;
 
 import org.hzt.utils.It;
-import org.hzt.utils.collections.primitives.DoubleListX;
-import org.hzt.utils.collections.primitives.IntListX;
-import org.hzt.utils.collections.primitives.LongListX;
+import org.hzt.utils.collections.primitives.DoubleList;
+import org.hzt.utils.collections.primitives.IntList;
+import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.primitive_comparators.IntComparator;
@@ -37,7 +37,7 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        assertEquals(IntListX.of(1, 2, 3, 4, 5, 6), IntSequence.of(array).take(6).toListX());
+        assertEquals(IntList.of(1, 2, 3, 4, 5, 6), IntSequence.of(array).take(6).toList());
     }
 
     @Test
@@ -54,7 +54,7 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        assertEquals(IntListX.of(999, 998, 997, 996, 995, 994), IntSequence.of(array).take(6).toListX());
+        assertEquals(IntList.of(999, 998, 997, 996, 995, 994), IntSequence.of(array).take(6).toList());
     }
 
     @Test
@@ -71,7 +71,7 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        assertEquals(LongListX.of(1, 2, 3, 4, 5, 6), LongSequence.of(array).take(6).toListX());
+        assertEquals(LongList.of(1, 2, 3, 4, 5, 6), LongSequence.of(array).take(6).toList());
     }
 
     @Test
@@ -88,7 +88,7 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        assertEquals(LongListX.of(999, 998, 997, 996, 995, 994), LongSequence.of(array).take(6).toListX());
+        assertEquals(LongList.of(999, 998, 997, 996, 995, 994), LongSequence.of(array).take(6).toList());
     }
 
     @Test
@@ -122,12 +122,12 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        final var expected = DoubleListX.of(.1, .2, .3, .4, .5, .6)
+        final var expected = DoubleList.of(.1, .2, .3, .4, .5, .6)
                 .mapToObj(DoubleX::toRoundedString);
 
         final var actual = DoubleSequence.of(array)
                 .take(6)
-                .toListX()
+                .toList()
                 .mapToObj(DoubleX::toRoundedString);
 
         assertEquals(expected, actual);
@@ -147,8 +147,8 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        final var expected = DoubleListX.of(99.9, 99.8, 99.7, 99.6, 99.5, 99.4).mapToObj(DoubleX::toRoundedString);
-        final var actual = DoubleSequence.of(array).take(6).toListX().mapToObj(DoubleX::toRoundedString);
+        final var expected = DoubleList.of(99.9, 99.8, 99.7, 99.6, 99.5, 99.4).mapToObj(DoubleX::toRoundedString);
+        final var actual = DoubleSequence.of(array).take(6).toList().mapToObj(DoubleX::toRoundedString);
 
         assertEquals(expected, actual);
     }

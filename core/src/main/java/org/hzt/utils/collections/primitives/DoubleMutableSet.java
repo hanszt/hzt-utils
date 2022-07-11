@@ -2,13 +2,13 @@ package org.hzt.utils.collections.primitives;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface DoubleMutableSetX extends DoubleMutableCollection {
+public interface DoubleMutableSet extends DoubleMutableCollection {
 
-    static DoubleMutableSetX empty() {
+    static DoubleMutableSet empty() {
         return new DoubleHashSet();
     }
 
-    static DoubleMutableSetX of(double @NotNull ... values) {
+    static DoubleMutableSet of(double @NotNull ... values) {
         return new DoubleHashSet(values);
     }
 }

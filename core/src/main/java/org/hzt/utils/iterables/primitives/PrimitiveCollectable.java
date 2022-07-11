@@ -5,9 +5,9 @@ package org.hzt.utils.iterables.primitives;
  */
 interface PrimitiveCollectable<C> {
 
-    C toListX();
+    C toList();
 
     C toMutableList();
 
-    C toMutableSetX();
+    C toMutableSet();
 }

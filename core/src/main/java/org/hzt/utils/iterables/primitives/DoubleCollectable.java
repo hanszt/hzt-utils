@@ -3,10 +3,10 @@ package org.hzt.utils.iterables.primitives;
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.primitives.DoubleCollection;
-import org.hzt.utils.collections.primitives.DoubleListX;
+import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.collections.primitives.DoubleMutableCollection;
-import org.hzt.utils.collections.primitives.DoubleMutableListX;
-import org.hzt.utils.collections.primitives.DoubleMutableSetX;
+import org.hzt.utils.collections.primitives.DoubleMutableList;
+import org.hzt.utils.collections.primitives.DoubleMutableSet;
 import org.hzt.utils.collectors.primitves.DoubleCollector;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +53,7 @@ public interface DoubleCollectable extends DoubleArrayable, PrimitiveCollectable
         return combiner.apply(downStream1.finisher().apply(result1), downStream2.finisher().apply(result2));
     }
 
-    default DoubleListX toListX() {
+    default DoubleList toList() {
         return toMutableList();
     }
 
@@ -66,13 +66,13 @@ public interface DoubleCollectable extends DoubleArrayable, PrimitiveCollectable
         return collection;
     }
 
-    default DoubleMutableListX toMutableList() {
-        return to(DoubleMutableListX::empty);
+    default DoubleMutableList toMutableList() {
+        return to(DoubleMutableList::empty);
     }
 
     @Override
-    default DoubleMutableSetX toMutableSetX() {
-        return to(DoubleMutableSetX::empty);
+    default DoubleMutableSet toMutableSet() {
+        return to(DoubleMutableSet::empty);
     }
 
     default <C extends DoubleMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {

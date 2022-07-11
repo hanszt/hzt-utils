@@ -2,7 +2,7 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.primitives.LongListX;
+import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.ranges.LongRange;
 import org.hzt.utils.sequences.Sequence;
@@ -45,7 +45,7 @@ class LongSequenceTest {
         final long[] result = LongSequence.of(1, 3, 2, 5, 4, 2)
                 .filter(LongX::isEven)
                 .plus(35, 76, 5)
-                .plus(LongListX.of(array))
+                .plus(LongList.of(array))
                 .toArray();
 
         It.println(Arrays.toString(result));
@@ -152,7 +152,7 @@ class LongSequenceTest {
 
         final var windowed = LongSequence.of(array)
                 .windowed(5)
-                .map(LongListX::toArray)
+                .map(LongList::toArray)
                 .toTypedArray(long[][]::new);
 
        Sequence.of(windowed).map(Arrays::toString).forEach(It::println);
@@ -165,7 +165,7 @@ class LongSequenceTest {
         long[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final var sums = LongSequence.of(array)
-                .windowed(3, LongListX::sum)
+                .windowed(3, LongList::sum)
                 .toArray();
 
         LongSequence.of(sums).forEachLong(It::println);
@@ -179,7 +179,7 @@ class LongSequenceTest {
 
         final var windows = LongSequence.of(array)
                 .windowed(3, 2, true)
-                .map(LongListX::toArray)
+                .map(LongList::toArray)
                 .toTypedArray(long[][]::new);
 
         Sequence.of(windows).map(Arrays::toString).forEach(It::println);
@@ -192,7 +192,7 @@ class LongSequenceTest {
         long[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final var sums = LongSequence.of(array)
-                .windowed(3, 2, true, LongListX::sum)
+                .windowed(3, 2, true, LongList::sum)
                 .toArray();
 
         LongSequence.of(sums).forEachLong(It::println);
@@ -207,7 +207,7 @@ class LongSequenceTest {
                 .chunked(10)
                 .chunked(10)
                 .map(chunk -> chunk
-                        .map(LongListX::toArray)
+                        .map(LongList::toArray)
                         .toTypedArray(long[][]::new))
                 .toTypedArray(long[][][]::new);
 
@@ -226,8 +226,8 @@ class LongSequenceTest {
     void testWindowedLargeLongSequence() {
         final var sums = LongSequence.generate(0, l -> ++l)
                 .take(1_000_000)
-                .windowed(1_000, 50, LongListX::sum)
-                .toListX();
+                .windowed(1_000, 50, LongList::sum)
+                .toList();
 
         assertAll(
                 () -> assertEquals(19981, sums.size()),
@@ -242,11 +242,11 @@ class LongSequenceTest {
                 .map(Generator::fib)
                 .skipWhileInclusive(l -> l < 3)
                 .takeWhileInclusive(l -> l < 55)
-                .toListX();
+                .toList();
 
         longs.forEachLong(It::println);
 
-        assertEquals(LongListX.of(5, 8, 13, 21, 34, 55), longs);
+        assertEquals(LongList.of(5, 8, 13, 21, 34, 55), longs);
     }
 
 }

@@ -5,37 +5,37 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
-public interface LongMutableListX extends LongListX, LongMutableCollection,
+public interface LongMutableList extends LongList, LongMutableCollection,
         PrimitiveMutableList<PrimitiveListIterator.OfLong, LongComparator> {
 
-    static LongMutableListX empty() {
+    static LongMutableList empty() {
         return new LongArrayList();
     }
 
-    static LongMutableListX of(Iterable<Long> iterable) {
+    static LongMutableList of(Iterable<Long> iterable) {
         return new LongArrayList(iterable);
     }
 
-    static LongMutableListX of(LongListX longListX) {
-        return new LongArrayList(longListX);
+    static LongMutableList of(LongList longList) {
+        return new LongArrayList(longList);
     }
 
-    static LongMutableListX of(long... array) {
+    static LongMutableList of(long... array) {
         return new LongArrayList(array);
     }
 
-    static LongMutableListX withInitCapacity(int capacity) {
+    static LongMutableList withInitCapacity(int capacity) {
         return new LongArrayList(capacity);
     }
 
     @Override
-    default LongMutableListX plus(@NotNull Iterable<Long> iterable) {
+    default LongMutableList plus(@NotNull Iterable<Long> iterable) {
         addAll(iterable);
         return this;
     }
 
     @Override
-    default LongMutableListX plus(long @NotNull ... array) {
+    default LongMutableList plus(long @NotNull ... array) {
         addAll(array);
         return this;
     }

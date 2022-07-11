@@ -8,19 +8,19 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class DoubleMutableSetXTest {
+class DoubleMutableSetTest {
 
     @Test
     void testDoubleSetSize() {
-        DoubleMutableSetX set = DoubleMutableSetX.empty();
-        set.addAll(DoubleListX.of(-1, -2231, 0, 3, 3, 4, 5, 6, 5));
+        DoubleMutableSet set = DoubleMutableSet.empty();
+        set.addAll(DoubleList.of(-1, -2231, 0, 3, 3, 4, 5, 6, 5));
 
         assertEquals(7, set.size());
     }
 
     @Test
     void testCountElementsInDoubleSetThroughSequence() {
-        DoubleMutableSetX set = DoubleMutableSetX.of(1, 2, 3, 3, 4, 5, 6, 5);
+        DoubleMutableSet set = DoubleMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
 
         final var count = set.asSequence().count();
 
@@ -29,7 +29,7 @@ class DoubleMutableSetXTest {
 
     @Test
     void testSequenceToDoubleSet() {
-        DoubleMutableSetX doubles = DoubleMutableSetX.empty();
+        DoubleMutableSet doubles = DoubleMutableSet.empty();
         doubles.addAll(DoubleSequence.generate(-10_000.0, d -> d + Math.E).take(90_000));
         doubles.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, Math.PI, -10_000.0);
         doubles.add(100_000.2342);
@@ -38,7 +38,7 @@ class DoubleMutableSetXTest {
 
         final var evenDoubles = doubles.asSequence()
                 .filter(DoubleX::isFinite)
-                .collect(DoubleMutableSetX::empty, DoubleMutableSetX::add);
+                .collect(DoubleMutableSet::empty, DoubleMutableSet::add);
 
         assertAll(
                 () -> assertTrue(doubles.containsAll(evenDoubles)),

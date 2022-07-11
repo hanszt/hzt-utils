@@ -10,58 +10,49 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class DoubleTimSort extends PrimitiveTimSort<double[], DoubleComparator> {
 
-    @SuppressWarnings("squid:S2384")
     private DoubleTimSort(double[] doubleArray, DoubleComparator doubleComparator) {
         super(doubleArray.length, doubleArray, new double[getInitTempLength(doubleArray.length)], doubleComparator);
     }
 
     static void sort(double @NotNull [] array, int fromIndex, int toIndex, @NotNull DoubleComparator comparator) {
         PreConditions.require(fromIndex >= 0 && fromIndex <= toIndex && toIndex <= array.length);
-
         final int nRemaining = toIndex - fromIndex;
         if (nRemaining >= 2) {
-            if (nRemaining < MIN_MERGE) {
-                final int initRunLen = PrimitiveArrays.countRunAndMakeAscending(array, fromIndex, toIndex, comparator);
-                PrimitiveArrays.binarySort(array, fromIndex, toIndex, fromIndex + initRunLen, comparator);
-            } else {
-                DoubleTimSort timSort = new DoubleTimSort(array, comparator);
-                final int minRun = minRunLength(nRemaining);
-
-                final int loIndex = timSort.getLo(array, fromIndex, toIndex, comparator, nRemaining, minRun);
-
-                PreConditions.require(loIndex == toIndex);
-
-                timSort.mergeForceCollapse();
-
-                PreConditions.require(timSort.stackSize == 1);
-            }
+            new DoubleTimSort(array, comparator)
+                    .sort(fromIndex, toIndex, nRemaining);
         }
-    }
-
-    protected int getRunLen(double[] array, int lo, int hi, DoubleComparator comparator, int nRemaining, int minRun) {
-        int runLen = PrimitiveArrays.countRunAndMakeAscending(array, lo, hi, comparator);
-        if (runLen < minRun) {
-            final int force = Math.min(nRemaining, minRun);
-            PrimitiveArrays.binarySort(array, lo, lo + force, lo + runLen, comparator);
-            runLen = force;
-        }
-        return runLen;
     }
 
     @Override
-    void setInDestinationArray(double[] sourceArray, int sourceIndex, double[] destArray, int destIndex) {
+    protected void updateArrayForBinarySort(double[] array, int left, int pivotIndex, int difStartLeft) {
+        final double pivot = array[pivotIndex];
+        updateArrayForBinarySort(array, left, difStartLeft);
+        array[left] = pivot;
+    }
+
+    @Override
+    protected void swap(double[] array, int index1, int index2) {
+        double temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+    }
+
+    @Override
+    protected void setArrayValue(double[] sourceArray, int sourceIndex, double[] destArray, int destIndex) {
         destArray[destIndex] = sourceArray[sourceIndex];
     }
 
-    @SuppressWarnings("squid:S2384")
-    double[] ensureCapacity(int minCapacity) {
-        if (tempArray.length < minCapacity) {
-            tempArray = new double[calculateNewLength(minCapacity, array.length)];
-        }
-        return tempArray;
+    @Override
+    protected int arrayLength(double[] array) {
+        return array.length;
     }
 
-    int compare(DoubleComparator comparator, double[] array1, int index1, double[] array2, int index2) {
+    @Override
+    protected double[] newArray(int length) {
+        return new double[length];
+    }
+
+    protected int compare(DoubleComparator comparator, double[] array1, int index1, double[] array2, int index2) {
         return comparator.compareDouble(array1[index1], array2[index2]);
     }
 }

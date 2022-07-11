@@ -22,8 +22,6 @@ import java.util.function.DoubleUnaryOperator;
 public interface DoubleCollection extends DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable, DoubleGroupable,
         PrimitiveCollectionX<Double, DoubleConsumer, double[]> {
 
-    int size();
-
     @Override
     default boolean isEmpty() {
         return none();

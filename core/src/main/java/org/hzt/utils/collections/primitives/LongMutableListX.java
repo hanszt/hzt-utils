@@ -5,8 +5,6 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
-
 public interface LongMutableListX extends LongListX, LongMutableCollection,
         PrimitiveMutableList<PrimitiveListIterator.OfLong, LongComparator> {
 
@@ -40,10 +38,6 @@ public interface LongMutableListX extends LongListX, LongMutableCollection,
     default LongMutableListX plus(long @NotNull ... array) {
         addAll(array);
         return this;
-    }
-
-    default PrimitiveIterator.OfLong iterator() {
-        return listIterator();
     }
 
     long set(int index, long value);

@@ -18,33 +18,35 @@ public interface LongMutableCollection extends LongCollection,
     default boolean addAll(@NotNull Iterable<Long> iterable) {
         if (iterable instanceof PrimitiveIterable.OfLong) {
             final var iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
+            boolean allAdded= true;
             while (iterator.hasNext()) {
                 final var added = add(iterator.nextLong());
                 if (!added) {
-                    return false;
+                    allAdded = false;
                 }
             }
-            return true;
+            return allAdded;
         }
+        boolean allAdded = true;
         for (long i : iterable) {
             final var added = add(i);
             if (!added) {
-                return false;
+                allAdded = false;
             }
         }
-        return true;
+        return allAdded;
     }
 
     @Override
     default boolean addAll(long @NotNull ... array) {
         final var iterator = PrimitiveIterators.longArrayIterator(array);
+        boolean allAdded = true;
         while (iterator.hasNext()) {
-            final var added = add(iterator.nextLong());
-            if (!added) {
-                return false;
+            if (!add(iterator.nextLong())) {
+                allAdded = false;
             }
         }
-        return true;
+        return allAdded;
     }
 
     boolean remove(long l);

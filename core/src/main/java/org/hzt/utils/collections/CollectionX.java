@@ -61,18 +61,14 @@ public interface CollectionX<E> extends IterableX<E> {
         return Sequence.of(iterable).all(this::contains);
     }
 
-    default ListX<E> plus(@NotNull E values) {
+    default ListX<E> plus(@NotNull E value) {
         final MutableListX<E> list = MutableListX.of(this);
-        list.add(values);
+        list.add(value);
         return ListX.copyOf(list);
     }
 
-    default ListX<E> plus(@NotNull Iterable<E> values) {
-        final MutableListX<E> list = MutableListX.of(this);
-        for (E value : values) {
-            list.add(value);
-        }
-        return ListX.copyOfNullsAllowed(list);
+    default ListX<E> plus(@NotNull Iterable<? extends E> values) {
+        return ListX.copyOfNullsAllowed(MutableListX.of(this).plus(values));
     }
 
     default boolean containsNoneOf(@NotNull Iterable<E> iterable) {

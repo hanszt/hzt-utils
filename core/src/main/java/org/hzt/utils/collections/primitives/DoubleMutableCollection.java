@@ -18,21 +18,23 @@ public interface DoubleMutableCollection extends DoubleCollection,
     default boolean addAll(@NotNull Iterable<Double> iterable) {
         if (iterable instanceof PrimitiveIterable.OfDouble) {
             final var iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
+            boolean allAdded = true;
             while (iterator.hasNext()) {
                 final var added = add(iterator.nextDouble());
                 if (!added) {
-                    return false;
+                    allAdded = false;
                 }
             }
-            return true;
+            return allAdded;
         }
+        boolean allAdded = true;
         for (double i : iterable) {
             final var added = add(i);
             if (!added) {
-                return false;
+                allAdded = false;
             }
         }
-        return true;
+        return allAdded;
     }
 
     boolean remove(double d);
@@ -40,13 +42,13 @@ public interface DoubleMutableCollection extends DoubleCollection,
     @Override
     default boolean addAll(double @NotNull ... array) {
         final var iterator = PrimitiveIterators.doubleArrayIterator(array);
+        boolean allAdded = true;
         while (iterator.hasNext()) {
-            final var added = add(iterator.nextDouble());
-            if (!added) {
-                return false;
+            if (!add(iterator.nextDouble())) {
+                allAdded = false;
             }
         }
-        return true;
+        return allAdded;
     }
 
     @Override

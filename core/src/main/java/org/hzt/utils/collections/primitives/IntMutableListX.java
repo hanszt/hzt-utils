@@ -5,8 +5,6 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
-
 public interface IntMutableListX extends IntListX, IntMutableCollection,
         PrimitiveMutableList<PrimitiveListIterator.OfInt, IntComparator> {
 
@@ -45,10 +43,6 @@ public interface IntMutableListX extends IntListX, IntMutableCollection,
     @Override
     default MutableListX<Integer> boxed() {
         return asSequence().boxed().toMutableList();
-    }
-
-    default PrimitiveIterator.OfInt iterator() {
-        return listIterator();
     }
 
     int set(int index, int value);

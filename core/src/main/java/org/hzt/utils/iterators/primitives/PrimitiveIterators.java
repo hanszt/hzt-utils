@@ -1,6 +1,8 @@
 package org.hzt.utils.iterators.primitives;
 
 import org.hzt.utils.It;
+import org.hzt.utils.collections.primitives.IntMutableCollection;
+import org.hzt.utils.collections.primitives.IntMutableSetX;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -428,12 +430,12 @@ public final class PrimitiveIterators {
 
     @NotNull
     public static PrimitiveIterator.OfInt distinctIterator(PrimitiveIterator.OfInt iterator) {
-        final Set<Integer> observed = new HashSet<>();
+        final IntMutableSetX observed = IntMutableSetX.empty();
         final PrimitiveAtomicIterator.OfInt iteratorX = action -> nextDistinctInt(iterator, observed, action);
         return iteratorX.asIterator();
     }
 
-    private static boolean nextDistinctInt(PrimitiveIterator.OfInt iterator, Set<Integer> observed, IntConsumer action) {
+    private static boolean nextDistinctInt(PrimitiveIterator.OfInt iterator, IntMutableCollection observed, IntConsumer action) {
         while (iterator.hasNext()) {
             int next = iterator.nextInt();
             if (observed.add(next)) {

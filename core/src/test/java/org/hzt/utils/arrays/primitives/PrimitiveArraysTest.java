@@ -80,7 +80,8 @@ class PrimitiveArraysTest {
         final var array = Sequence.generate(0, i -> ++i)
                 .take(1_000)
                 .shuffled()
-                .toLongArray(It::asLong);
+                .mapToLong(It::asLong)
+                .toArray();
 
         It.println(Arrays.toString(array));
 
@@ -89,6 +90,23 @@ class PrimitiveArraysTest {
         It.println(Arrays.toString(array));
 
         assertEquals(LongListX.of(999, 998, 997, 996, 995, 994), LongSequence.of(array).take(6).toListX());
+    }
+
+    @Test
+    void testLongTimSortReversedSmall() {
+        final var array = Sequence.generate(0, i -> ++i)
+                .take(10)
+                .shuffled()
+                .mapToLong(It::asLong)
+                .toArray();
+
+        It.println(Arrays.toString(array));
+
+        PrimitiveArrays.sort(LongComparator.reverseOrder(), array);
+
+        It.println(Arrays.toString(array));
+
+        assertArrayEquals(new long[] {9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, array);
     }
 
     @Test

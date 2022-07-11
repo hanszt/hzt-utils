@@ -5,8 +5,6 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
-
 public interface DoubleMutableListX extends DoubleListX, DoubleMutableCollection,
         PrimitiveMutableList<PrimitiveListIterator.OfDouble, DoubleComparator> {
 
@@ -40,10 +38,6 @@ public interface DoubleMutableListX extends DoubleListX, DoubleMutableCollection
     default DoubleMutableListX plus(double @NotNull ... iterable) {
         addAll(iterable);
         return this;
-    }
-
-    default PrimitiveIterator.OfDouble iterator() {
-        return listIterator();
     }
 
     @Override

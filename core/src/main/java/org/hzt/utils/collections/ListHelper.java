@@ -1,17 +1,19 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.PreConditions;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.IntFunction;
-import java.util.function.ToIntFunction;
+import java.util.function.IntUnaryOperator;
 
-final class ListHelper {
+public final class ListHelper {
 
     private ListHelper() {
     }
 
-    static <T> int binarySearch(
-            int size, IntFunction<T> midValExtractor, int fromIndex, int toIndex, ToIntFunction<T> comparison) {
+    public static int binarySearch(final int size,
+                                   final int fromIndex,
+                                   final int toIndex,
+                                   @NotNull final IntUnaryOperator midValComparison) {
         PreConditions.rangeCheck(size, fromIndex, toIndex);
 
         int low = fromIndex;
@@ -19,8 +21,7 @@ final class ListHelper {
 
         while (low <= high) {
             final int mid = (low + high) >>> 1;
-            final T midVal = midValExtractor.apply(mid);
-            final int cmp = comparison.applyAsInt(midVal);
+            final int cmp = midValComparison.applyAsInt(mid);
 
             if (cmp < 0) {
                 low = mid + 1;

@@ -100,7 +100,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return Sequence.of(this, Sequence.of(value)).flatMap(It::self);
     }
 
-    default Sequence<T> plus(@NotNull Iterable<T> values) {
+    default Sequence<T> plus(@NotNull Iterable<? extends T> values) {
         return Sequence.of(this, Sequence.of(values)).flatMap(It::self);
     }
 

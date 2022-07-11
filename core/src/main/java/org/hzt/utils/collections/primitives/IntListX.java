@@ -1,6 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.primitves.PrimitiveArrays;
+import org.hzt.utils.collections.ListHelper;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
@@ -148,7 +149,7 @@ public interface IntListX extends IntCollection,
      * @see java.util.Arrays#binarySearch(int[], int)
      */
     default int binarySearch(int fromIndex, int toIndex, IntUnaryOperator comparison) {
-        return PrimitiveListHelper.binarySearch(size(), this::get, fromIndex, toIndex, comparison);
+        return ListHelper.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
     }
 
     @Override

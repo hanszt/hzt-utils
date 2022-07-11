@@ -22,8 +22,6 @@ import java.util.function.LongUnaryOperator;
 public interface LongCollection extends LongReducable, LongCollectable, LongNumerable, LongStreamable, LongGroupable,
         PrimitiveCollectionX<Long, LongConsumer, long[]> {
 
-    int size();
-
     default boolean isEmpty() {
         return none();
     }

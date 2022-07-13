@@ -53,11 +53,11 @@ public final class FileX extends File {
         return readTextX(StandardCharsets.UTF_8);
     }
 
-    public <T> T useLines(Function<Sequence<StringX>, T> block) {
+    public <T> T useLines(Function<? super Sequence<StringX>, ? extends T> block) {
         return useLines(block, StandardCharsets.UTF_8);
     }
 
-    public <T> T useLines(Function<Sequence<StringX>, T> block, Charset charset) {
+    public <T> T useLines(Function<? super Sequence<StringX>, ? extends T> block, Charset charset) {
         try(Stream<String> lines = Files.lines(Path.of(getPath()), charset)) {
             return block.apply(Sequence.ofStream(lines).map(StringX::of));
         } catch (IOException e) {

@@ -1,6 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.arrays.primitves.PrimitiveArrays;
+import org.hzt.utils.arrays.primitives.PrimitiveArrays;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
@@ -9,28 +9,25 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.PrimitiveIterator;
+import java.util.function.LongConsumer;
 
-public final class LongArrayList extends PrimitiveAbstractCollection<Long> implements LongMutableListX {
-
-    private int size = 0;
-    private long[] elementData;
+public final class LongArrayList extends PrimitiveAbstractList<Long, long[], LongConsumer, PrimitiveIterator.OfLong>
+        implements LongMutableList {
 
     LongArrayList(int initCapacity) {
-        elementData = new long[initCapacity];
+        super(0, new long[initCapacity]);
     }
 
-    LongArrayList(LongListX longListX) {
-        size = longListX.size();
-        this.elementData = longListX.toArray();
+    LongArrayList(LongList longList) {
+        super(longList.size(), longList.toArray());
     }
 
     LongArrayList() {
-        elementData = new long[PrimitiveListHelper.DEFAULT_CAPACITY];
+        super(0, new long[DEFAULT_CAPACITY]);
     }
 
     LongArrayList(long... array) {
-        size = array.length;
-        elementData = Arrays.copyOf(array, size);
+        super(array.length, Arrays.copyOf(array, array.length));
     }
 
     LongArrayList(Iterable<Long> iterable) {
@@ -50,21 +47,11 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
     public boolean add(long l) {
         if (size == elementData.length) {
             final var isInitEmptyArray = elementData.length == 0;
-            elementData = PrimitiveListHelper.growArray(elementData, size, isInitEmptyArray);
+            elementData = growArray(size, isInitEmptyArray);
         }
         elementData[size] = l;
         size++;
         return true;
-    }
-
-    public void clear() {
-        size = 0;
-        elementData = new long[PrimitiveListHelper.DEFAULT_CAPACITY];
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return size == 0;
     }
 
     @Override
@@ -108,16 +95,20 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
         return -1;
     }
 
-    @Override
-    public int size() {
-        return size;
-    }
-
     public long removeAt(int index) {
         Objects.checkIndex(index, size);
         long oldValue = elementData[index];
-        size = PrimitiveListHelper.fastRemoveLong(elementData, size, index);
+        size = fastRemoveLong(elementData, size, index);
         return oldValue;
+    }
+
+    private static int fastRemoveLong(long[] array, int size, int index) {
+        final int newSize = size - 1;
+        if (newSize > index) {
+            System.arraycopy(array, index + 1, array, index, newSize - index);
+        }
+        array[newSize] = 0L;
+        return newSize;
     }
 
     @Override
@@ -143,19 +134,23 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(size);
-        result = 31 * result + Arrays.hashCode(elementData);
-        return result;
-    }
-
-    @Override
-    public long[] toArray() {
-        return Arrays.copyOf(elementData, size);
+        final int result = Objects.hash(size);
+        return  31 * result + Arrays.hashCode(elementData);
     }
 
     @Override
     public PrimitiveIterator.@NotNull OfLong iterator() {
         return listIterator();
+    }
+
+    @Override
+    long[] newArray(int length) {
+        return new long[length];
+    }
+
+    @Override
+    long[] copyElementData(int newLength) {
+        return Arrays.copyOf(elementData, newLength);
     }
 
     @Override
@@ -211,7 +206,12 @@ public final class LongArrayList extends PrimitiveAbstractCollection<Long> imple
     }
 
     @Override
-    public LongMutableListX toMutableList() {
+    public LongMutableList toMutableList() {
         return this;
+    }
+
+    @Override
+    void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfLong iterator) {
+        sb.append(iterator.nextLong());
     }
 }

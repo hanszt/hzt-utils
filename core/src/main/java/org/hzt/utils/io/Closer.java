@@ -7,14 +7,15 @@ import java.util.function.Predicate;
 public final class Closer<T> implements AutoCloseable {
 
     private final T resource;
-    private final ThrowingConsumer<T> closeable;
+    private final ThrowingConsumer<? super T> closeable;
 
-    private Closer(T resource, ThrowingConsumer<T> consumingAutoClosable) {
+    private Closer(T resource, ThrowingConsumer<? super T> consumingAutoClosable) {
         this.resource = resource;
         this.closeable = consumingAutoClosable;
     }
 
-    public static <T> Closer<T> forResource(@NotNull T resource, @NotNull ThrowingConsumer<T> consumingAutoClosable) {
+    public static <T> Closer<T> forResource(@NotNull T resource,
+                                            @NotNull ThrowingConsumer<? super T> consumingAutoClosable) {
         return new Closer<>(resource, consumingAutoClosable);
     }
 
@@ -27,7 +28,7 @@ public final class Closer<T> implements AutoCloseable {
         }
     }
 
-    public <R> R apply(@NotNull ThrowingFunction<T, R> function) {
+    public <R> R apply(@NotNull ThrowingFunction<? super T, ? extends R> function) {
         try {
             return function.apply(resource);
         } catch (Exception e) {
@@ -35,13 +36,13 @@ public final class Closer<T> implements AutoCloseable {
         }
     }
 
-    public <R> R applyAndClose(@NotNull ThrowingFunction<T, R> function) {
+    public <R> R applyAndClose(@NotNull ThrowingFunction<? super T, ? extends R> function) {
         try (this) {
             return apply(function);
         }
     }
 
-    public void execute(@NotNull ThrowingConsumer<T> consumer) {
+    public void execute(@NotNull ThrowingConsumer<? super T> consumer) {
         try {
             consumer.accept(resource);
         } catch (Exception e) {
@@ -49,17 +50,17 @@ public final class Closer<T> implements AutoCloseable {
         }
     }
 
-    public void executeAndClose(@NotNull ThrowingConsumer<T> consumer) {
+    public void executeAndClose(@NotNull ThrowingConsumer<? super T> consumer) {
         try (this) {
             execute(consumer);
         }
     }
 
-    public boolean test(@NotNull Predicate<T> predicate) {
+    public boolean test(@NotNull Predicate<? super T> predicate) {
         return predicate.test(resource);
     }
 
-    public boolean testAndClose(@NotNull Predicate<T> predicate) {
+    public boolean testAndClose(@NotNull Predicate<? super T> predicate) {
         try (this) {
             return predicate.test(resource);
         }

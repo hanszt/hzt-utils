@@ -1,8 +1,9 @@
 package benchmark.prefix;
 
 import org.hzt.utils.It;
+import org.hzt.utils.arrays.primitives.PrimitiveArrays;
 import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.primitives.DoubleMutableListX;
+import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -35,7 +36,7 @@ public class DoubleTimSortBenchmark {
             .intersperse(() -> RANDOM.nextDouble())
             .toMutableList();
 
-    final DoubleMutableListX primitiveList = inputList.mapToDouble(It::asDouble).toMutableList();
+    final DoubleMutableList primitiveList = inputList.mapToDouble(It::asDouble).toMutableList();
 
     final double[] array = primitiveList.toArray();
 
@@ -44,8 +45,8 @@ public class DoubleTimSortBenchmark {
     }
 
     @Benchmark
-    public DoubleMutableListX doubleListSort() {
-        final var list = DoubleMutableListX.of(primitiveList);
+    public DoubleMutableList doubleListSort() {
+        final var list = DoubleMutableList.of(primitiveList);
         list.sort();
         return list;
     }
@@ -67,8 +68,16 @@ public class DoubleTimSortBenchmark {
     }
 
     @Benchmark
-    public DoubleMutableListX doubleListSortReversed() {
-        final var list = DoubleMutableListX.of(primitiveList);
+    @SuppressWarnings("squid:S2384")
+    public double[] primitiveArraySortReversed() {
+        double[] copy = Arrays.copyOf(array, array.length);
+        PrimitiveArrays.sort(DoubleComparator.reverseOrder(), copy);
+        return copy;
+    }
+
+    @Benchmark
+    public DoubleMutableList doubleListSortReversed() {
+        final var list = DoubleMutableList.of(primitiveList);
         list.sort(DoubleComparator.reverseOrder());
         return list;
     }

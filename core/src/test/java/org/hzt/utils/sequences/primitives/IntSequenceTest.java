@@ -2,7 +2,7 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.primitives.IntListX;
+import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.ranges.IntRange;
@@ -25,9 +25,9 @@ class IntSequenceTest {
         var list = IntRange.until(15)
                 .step(4)
                 .onEach(System.out::println)
-                .toListX();
+                .toList();
 
-        assertEquals(IntListX.of(0, 4, 8, 12), list);
+        assertEquals(IntList.of(0, 4, 8, 12), list);
     }
 
     @Test
@@ -54,7 +54,7 @@ class IntSequenceTest {
         final int[] result = IntSequence.of(1, 3, 2, 5, 4, 2)
                 .filter(IntX::isEven)
                 .plus(35, 76, 5)
-                .plus(IntListX.of(array))
+                .plus(IntList.of(array))
                 .toArray();
 
         It.println(Arrays.toString(result));
@@ -232,7 +232,7 @@ class IntSequenceTest {
         final long[] longs = IntSequence.generate(0, i -> ++i)
                 .take(500)
                 .chunked(100)
-                .mapToLong(IntListX::sum)
+                .mapToLong(IntList::sum)
                 .toArray();
 
         assertArrayEquals(new long[]{4950, 14950, 24950, 34950, 44950}, longs);

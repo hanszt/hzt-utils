@@ -1,15 +1,15 @@
 package org.hzt.utils.collectors.primitves;
 
-import org.hzt.utils.collections.primitives.LongListX;
-import org.hzt.utils.collections.primitives.LongMutableListX;
+import org.hzt.utils.collections.primitives.LongList;
+import org.hzt.utils.collections.primitives.LongMutableList;
 
 public final class LongCollectors {
 
     private LongCollectors() {
     }
 
-    public static LongCollector<LongMutableListX, LongListX> toList() {
-        return LongCollector.of(LongMutableListX::empty,
-                LongMutableListX::add, LongMutableListX::plus, LongMutableListX::toListX);
+    public static LongCollector<LongMutableList, LongList> toList() {
+        return LongCollector.of(LongMutableList::empty,
+                LongMutableList::add, LongMutableList::plus, LongMutableList::toList);
     }
 }

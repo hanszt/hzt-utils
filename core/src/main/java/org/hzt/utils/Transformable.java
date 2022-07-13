@@ -38,7 +38,7 @@ public interface Transformable<T> extends Supplier<T> {
         return Transformable.from(also(block));
     }
 
-    default T when(@NotNull Predicate<T> predicate, @NotNull Consumer<? super T> block) {
+    default T when(@NotNull Predicate<? super T> predicate, @NotNull Consumer<? super T> block) {
         T t = get();
         if (predicate.test(t)) {
             block.accept(t);
@@ -46,24 +46,24 @@ public interface Transformable<T> extends Supplier<T> {
         return t;
     }
 
-    default T unless(@NotNull Predicate<T> predicate, @NotNull Consumer<? super T> block) {
+    default T unless(@NotNull Predicate<? super T> predicate, @NotNull Consumer<? super T> block) {
         return when(predicate.negate(), block);
     }
 
-    default Transformable<T> alsoWhen(@NotNull Predicate<T> predicate, Consumer<? super T> block) {
+    default Transformable<T> alsoWhen(@NotNull Predicate<? super T> predicate, Consumer<? super T> block) {
         return Transformable.from(when(predicate, block));
     }
 
-    default Transformable<T> alsoUnless(@NotNull Predicate<T> predicate, Consumer<? super T> block) {
+    default Transformable<T> alsoUnless(@NotNull Predicate<? super T> predicate, Consumer<? super T> block) {
         return Transformable.from(unless(predicate, block));
     }
 
-    default Optional<T> takeIf(@NotNull Predicate<T> predicate) {
+    default Optional<T> takeIf(@NotNull Predicate<? super T> predicate) {
         T t = get();
         return predicate.test(t) ? Optional.of(t) : Optional.empty();
     }
 
-    default Optional<T> takeUnless(@NotNull Predicate<T> predicate) {
+    default Optional<T> takeUnless(@NotNull Predicate<? super T> predicate) {
         T t = get();
         return predicate.test(t) ? Optional.empty() : Optional.of(t);
     }

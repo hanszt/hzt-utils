@@ -1,6 +1,6 @@
 package org.hzt.utils.sequences.primitives;
 
-import org.hzt.utils.collections.primitives.IntListX;
+import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ class IntWindowedSequenceTest {
         final var sizes = IntRange.of(0, 1000)
                 .chunked(chunkSize::incrementAndGet)
                 .onEach(It::println)
-                .mapToInt(IntListX::size)
+                .mapToInt(IntList::size)
                 .toArray();
 
         assertEquals(45, sizes.length);

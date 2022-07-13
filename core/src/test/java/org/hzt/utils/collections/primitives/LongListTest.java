@@ -9,18 +9,18 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class LongListXTest {
+class LongListTest {
 
     @Test
     void testSortedDescending() {
         final var longs = LongSequence.generate(0, l -> l + 5)
                 .take(1_000_000)
-                .toListX();
+                .toList();
 
         final var sorted = longs.sortedDescending();
 
-        final var expected = LongListX.of(4999995, 4999990, 4999985, 4999980);
-        final var actual = sorted.asSequence().take(4).toListX();
+        final var expected = LongList.of(4999995, 4999990, 4999985, 4999980);
+        final var actual = sorted.asSequence().take(4).toList();
 
         assertAll(
                 () -> assertEquals(1_000_000, longs.size()),
@@ -30,20 +30,20 @@ class LongListXTest {
 
     @Test
     void testGet() {
-        LongListX list = LongListX.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
+        LongList list = LongList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
         final var value = list.get(4);
         assertEquals(5L, value);
     }
 
     @Test
     void testGetOutsideRangeYieldsIndexOutOfBound() {
-        LongListX list = LongListX.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
+        LongList list = LongList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
         assertThrows(IndexOutOfBoundsException.class, () -> list.get(14));
     }
 
     @Test
     void testBinarySearch() {
-        final LongListX sortedList = LongListX.of(-1, 0, 1, 2, 3, 4, 5);
+        final LongList sortedList = LongList.of(-1, 0, 1, 2, 3, 4, 5);
 
         int valueToSearchFor = 2;
 
@@ -54,7 +54,7 @@ class LongListXTest {
 
     @Test
     void testFindLast() {
-        final var longs = LongListX.of(1, 2, 3, 4, 3, 5, 2, 5, 4, 3, 8, 2, 3, 4);
+        final var longs = LongList.of(1, 2, 3, 4, 3, 5, 2, 5, 4, 3, 8, 2, 3, 4);
 
         final var last = longs.findLast(l -> l > 4);
 

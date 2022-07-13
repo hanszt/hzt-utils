@@ -36,7 +36,7 @@ public class PrefixIntRangeSumBenchmark {
     @Benchmark
     public long intListXMapFilterSum() {
         return IntRange.of(0, UPPER_BOUND_RANGE)
-                .toListX()
+                .toList()
                 .map(i -> i * 2)
                 .filter(i -> i % 4 == 0)
                 .sum();

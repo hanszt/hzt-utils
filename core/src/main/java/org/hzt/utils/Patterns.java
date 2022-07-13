@@ -23,7 +23,7 @@ public final class Patterns {
     private Patterns() {
     }
 
-    public static Sequence<String> splitAsSequence(Pattern pattern, CharSequence charSequence) {
+    public static Sequence<String> splitToSequence(Pattern pattern, CharSequence charSequence) {
         return Sequence.ofStream(pattern.splitAsStream(charSequence));
     }
 }

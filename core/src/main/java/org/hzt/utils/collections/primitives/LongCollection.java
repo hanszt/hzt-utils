@@ -20,9 +20,7 @@ import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
 
 public interface LongCollection extends LongReducable, LongCollectable, LongNumerable, LongStreamable, LongGroupable,
-        PrimitiveCollectionX<Long, LongConsumer, long[]> {
-
-    int size();
+        PrimitiveCollection<Long, LongConsumer, long[]> {
 
     default boolean isEmpty() {
         return none();
@@ -44,8 +42,8 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     boolean contains(long l);
 
-    default LongListX filter(LongPredicate predicate) {
-        LongMutableListX longs = LongMutableListX.withInitCapacity(size());
+    default LongList filter(LongPredicate predicate) {
+        LongMutableList longs = LongMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             final var value = iterator.nextLong();
@@ -56,8 +54,8 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
         return longs;
     }
 
-    default LongListX map(LongUnaryOperator mapper) {
-        LongMutableListX longs = LongMutableListX.withInitCapacity(size());
+    default LongList map(LongUnaryOperator mapper) {
+        LongMutableList longs = LongMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextLong()));
@@ -65,8 +63,8 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
         return longs;
     }
 
-    default IntListX mapToInt(LongToIntFunction mapper) {
-        IntMutableListX ints = IntMutableListX.withInitCapacity(size());
+    default IntList mapToInt(LongToIntFunction mapper) {
+        IntMutableList ints = IntMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextLong()));
@@ -74,8 +72,8 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
         return ints;
     }
 
-    default DoubleListX mapToDouble(LongToDoubleFunction mapper) {
-        DoubleMutableListX doubles = DoubleMutableListX.withInitCapacity(size());
+    default DoubleList mapToDouble(LongToDoubleFunction mapper) {
+        DoubleMutableList doubles = DoubleMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextLong()));
@@ -93,22 +91,22 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
     }
 
     @Override
-    default LongListX plus(@NotNull Iterable<Long> values) {
-        LongMutableListX listX = toMutableList();
+    default LongList plus(@NotNull Iterable<Long> values) {
+        LongMutableList listX = toMutableList();
         listX.addAll(values);
         return listX;
     }
 
     @Override
-    default LongListX plus(long @NotNull ... array) {
-        LongMutableListX listX = toMutableList();
+    default LongList plus(long @NotNull ... array) {
+        LongMutableList listX = toMutableList();
         listX.addAll(array);
         return listX;
     }
 
     @Override
-    default PrimitiveCollectionX<Long, LongConsumer, long[]> take(long n) {
-        return takeTo(() -> LongMutableListX.withInitCapacity((int) n), n);
+    default PrimitiveCollection<Long, LongConsumer, long[]> take(long n) {
+        return takeTo(() -> LongMutableList.withInitCapacity((int) n), n);
     }
 
     default LongSequence asSequence() {
@@ -126,7 +124,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
     long[] toArray();
 
     @Override
-    default LongMutableListX toMutableList() {
-        return to(() -> LongMutableListX.withInitCapacity(size()));
+    default LongMutableList toMutableList() {
+        return to(() -> LongMutableList.withInitCapacity(size()));
     }
 }

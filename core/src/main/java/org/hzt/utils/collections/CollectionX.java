@@ -1,12 +1,14 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.It;
-import org.hzt.utils.collections.primitives.DoubleListX;
-import org.hzt.utils.collections.primitives.DoubleMutableListX;
-import org.hzt.utils.collections.primitives.IntListX;
-import org.hzt.utils.collections.primitives.IntMutableListX;
-import org.hzt.utils.collections.primitives.LongListX;
-import org.hzt.utils.collections.primitives.LongMutableListX;
+import org.hzt.utils.collections.primitives.DoubleList;
+import org.hzt.utils.collections.primitives.DoubleMutableList;
+import org.hzt.utils.collections.primitives.IntList;
+import org.hzt.utils.collections.primitives.IntMutableList;
+import org.hzt.utils.collections.primitives.LongList;
+import org.hzt.utils.collections.primitives.LongMutableList;
+import org.hzt.utils.function.IndexedFunction;
+import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.iterables.IterableX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.strings.StringX;
@@ -20,7 +22,6 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -61,18 +62,14 @@ public interface CollectionX<E> extends IterableX<E> {
         return Sequence.of(iterable).all(this::contains);
     }
 
-    default ListX<E> plus(@NotNull E values) {
+    default ListX<E> plus(@NotNull E value) {
         final MutableListX<E> list = MutableListX.of(this);
-        list.add(values);
+        list.add(value);
         return ListX.copyOf(list);
     }
 
-    default ListX<E> plus(@NotNull Iterable<E> values) {
-        final MutableListX<E> list = MutableListX.of(this);
-        for (E value : values) {
-            list.add(value);
-        }
-        return ListX.copyOfNullsAllowed(list);
+    default ListX<E> plus(@NotNull Iterable<? extends E> values) {
+        return ListX.copyOfNullsAllowed(MutableListX.of(this).plus(values));
     }
 
     default boolean containsNoneOf(@NotNull Iterable<E> iterable) {
@@ -84,7 +81,7 @@ public interface CollectionX<E> extends IterableX<E> {
         return ListX.copyOfNullsAllowed(listX);
     }
 
-    default <R> ListX<R> mapIndexed(@NotNull BiFunction<Integer, ? super E, ? extends R> mapper) {
+    default <R> ListX<R> mapIndexed(@NotNull IndexedFunction<? super E, ? extends R> mapper) {
         return ListX.copyOf(mapIndexedTo(() -> MutableListX.withInitCapacity(size()), mapper));
     }
 
@@ -92,11 +89,12 @@ public interface CollectionX<E> extends IterableX<E> {
         return ListX.copyOf(filterTo(() -> MutableListX.withInitCapacity(size()), predicate));
     }
 
-    default <R> ListX<E> filterBy(@NotNull Function<? super E, ? extends R> selector, @NotNull Predicate<R> predicate) {
-        return asSequence().filter(Objects::nonNull).filter(t -> predicate.test(selector.apply(t))).toListX();
+    default <R> ListX<E> filterBy(@NotNull Function<? super E, ? extends R> selector,
+                                  @NotNull Predicate<? super R> predicate) {
+        return filter(Objects::nonNull).filter(t -> predicate.test(selector.apply(t)));
     }
 
-    default ListX<E> filterIndexed(@NotNull BiPredicate<? super Integer, ? super E> predicate) {
+    default ListX<E> filterIndexed(@NotNull IndexedPredicate<? super E> predicate) {
         return ListX.copyOf(filterIndexedTo(() -> MutableListX.withInitCapacity(size()), predicate));
     }
 
@@ -109,8 +107,8 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     @Override
-    default IntListX mapToInt(@NotNull ToIntFunction<? super E> mapper) {
-        IntMutableListX intList = IntMutableListX.withInitCapacity(size());
+    default IntList mapToInt(@NotNull ToIntFunction<? super E> mapper) {
+        IntMutableList intList = IntMutableList.withInitCapacity(size());
         for (E e : this) {
             intList.add(mapper.applyAsInt(e));
         }
@@ -118,8 +116,8 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     @Override
-    default LongListX mapToLong(@NotNull ToLongFunction<? super E> mapper) {
-        LongMutableListX longList = LongMutableListX.withInitCapacity(size());
+    default LongList mapToLong(@NotNull ToLongFunction<? super E> mapper) {
+        LongMutableList longList = LongMutableList.withInitCapacity(size());
         for (E e : this) {
             longList.add(mapper.applyAsLong(e));
         }
@@ -127,8 +125,8 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     @Override
-    default DoubleListX mapToDouble(@NotNull ToDoubleFunction<? super E> mapper) {
-        DoubleMutableListX doubleList = DoubleMutableListX.withInitCapacity(size());
+    default DoubleList mapToDouble(@NotNull ToDoubleFunction<? super E> mapper) {
+        DoubleMutableList doubleList = DoubleMutableList.withInitCapacity(size());
         for (E e : this) {
             doubleList.add(mapper.applyAsDouble(e));
         }

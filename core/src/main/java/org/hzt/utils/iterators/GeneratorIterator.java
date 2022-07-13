@@ -7,18 +7,18 @@ import java.util.function.UnaryOperator;
 
 public final class GeneratorIterator<T> implements Iterator<T> {
 
-    private final Supplier<T> initSupplier;
+    private final Supplier<? extends T> initSupplier;
     private final UnaryOperator<T> nextValueSupplier;
 
     private T nextItem = null;
     private State nextState = State.INIT_UNKNOWN;
 
-    private GeneratorIterator(Supplier<T> initSupplier, UnaryOperator<T> nextValueSupplier) {
+    private GeneratorIterator(Supplier<? extends T> initSupplier, UnaryOperator<T> nextValueSupplier) {
         this.initSupplier = initSupplier;
         this.nextValueSupplier = nextValueSupplier;
     }
 
-    public static <T> GeneratorIterator<T> of(Supplier<T> initSupplier, UnaryOperator<T> nextValueSupplier) {
+    public static <T> GeneratorIterator<T> of(Supplier<? extends T> initSupplier, UnaryOperator<T> nextValueSupplier) {
         return new GeneratorIterator<>(initSupplier, nextValueSupplier);
     }
 

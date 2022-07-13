@@ -9,6 +9,8 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
+import org.hzt.utils.function.IndexedFunction;
+import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.sequences.Sequence;
@@ -26,7 +28,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -248,7 +249,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <R, C extends Collection<R>> C mapIndexedTo(@NotNull Supplier<C> collectionFactory,
-                                                        @NotNull BiFunction<Integer, ? super T, ? extends R> mapper) {
+                                                        @NotNull IndexedFunction<? super T, ? extends R> mapper) {
         return Sequence.of(this::indexedIterator)
                 .mapTo(collectionFactory, indexedValue -> mapper.apply(indexedValue.index(), indexedValue.value()));
     }
@@ -292,7 +293,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <C extends Collection<T>> C filterIndexedTo(@NotNull Supplier<C> collectionFactory,
-                                                        @NotNull BiPredicate<? super Integer, ? super T> predicate) {
+                                                        @NotNull IndexedPredicate<? super T> predicate) {
         C collection = collectionFactory.get();
         final Iterable<IndexedValue<T>> indexedIterable = this::indexedIterator;
         for (IndexedValue<T> indexedValue : indexedIterable) {

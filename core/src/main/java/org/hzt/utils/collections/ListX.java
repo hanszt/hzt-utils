@@ -47,7 +47,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
         return new ImmutableListX<>(values);
     }
 
-    static <E> ListX<E> build(Consumer<MutableListX<E>> mutableListConsumer) {
+    static <E> ListX<E> build(Consumer<? super MutableListX<E>> mutableListConsumer) {
         MutableListX<E> list = MutableListX.empty();
         mutableListConsumer.accept(list);
         return copyOf(list);
@@ -119,7 +119,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
      * @see java.util.Arrays#binarySearch(Object[], Object, Comparator)
      */
     default int binarySearch(int fromIndex, int toIndex, ToIntFunction<E> comparison) {
-        return ListHelper.binarySearch(size(), this::get, fromIndex, toIndex, comparison);
+        return ListHelper.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
     }
 
     @Override
@@ -182,7 +182,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
         return ListX.copyOf(takeTo(MutableListX::empty, Math.max((size() - n), 0)));
     }
 
-    default ListX<E> skipLastWhile(@NotNull Predicate<E> predicate) {
+    default ListX<E> skipLastWhile(@NotNull Predicate<? super E> predicate) {
         if (isEmpty()) {
             return ListX.empty();
         }
@@ -195,11 +195,12 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
         return ListX.empty();
     }
 
-    default ListX<E> takeLastWhile(@NotNull Predicate<E> predicate) {
+    default ListX<E> takeLastWhile(@NotNull Predicate<? super E> predicate) {
         return ListX.copyOf(takeLastWhileTo(MutableListX::withInitCapacity, predicate));
     }
 
-    default <C extends Collection<E>> C takeLastWhileTo(@NotNull IntFunction<C> collectionFactory, @NotNull Predicate<E> predicate) {
+    default <C extends Collection<E>> C takeLastWhileTo(@NotNull IntFunction<C> collectionFactory,
+                                                        @NotNull Predicate<? super E> predicate) {
         C collection = collectionFactory.apply(0);
         if (isEmpty()) {
             return collection;

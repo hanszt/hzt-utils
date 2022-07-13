@@ -14,7 +14,7 @@ class LongMutableListXTest {
 
     @Test
     void testDifferentMethods() {
-        final LongMutableListX longs = LongMutableListX.empty();
+        final LongMutableListX longs = LongMutableList.empty();
         assertTrue(longs.isEmpty());
         longs.add(1);
         assertAll(
@@ -42,7 +42,7 @@ class LongMutableListXTest {
 
     @Test
     void testCopyConstructor() {
-        final LongMutableListX longs = LongMutableListX.empty();
+        final LongMutableListX longs = LongMutableList.empty();
         longs.add(2);
         longs.add(-43);
         longs.add(1231);
@@ -50,7 +50,7 @@ class LongMutableListXTest {
                 .take(10_000_000)
                 .forEachLong(longs::add);
 
-        final LongMutableListX longsCopy = LongMutableListX.of(longs);
+        final LongMutableListX longsCopy = LongMutableList.of(longs);
 
         assertAll(
                 () -> assertEquals(10_000_003, longs.size()),
@@ -60,7 +60,7 @@ class LongMutableListXTest {
 
     @Test
     void testSet() {
-        final LongMutableListX list = LongMutableListX.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
+        final LongMutableListX list = LongMutableList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
         list.set(4, 14);
         final long value = list.get(4);
         assertEquals(14L, value);
@@ -74,7 +74,7 @@ class LongMutableListXTest {
 
         longs.sort();
 
-        assertEquals(LongListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), longs.take(10));
+        assertEquals(LongList.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), longs.take(10));
     }
 
     @Test
@@ -85,6 +85,6 @@ class LongMutableListXTest {
 
         longs.sort(LongComparator.reverseOrder());
 
-        assertEquals(LongListX.of(-1, -2, -3, -4, -5, -6, -7, -8, -9, -10), longs.take(10));
+        assertEquals(LongList.of(-1, -2, -3, -4, -5, -6, -7, -8, -9, -10), longs.take(10));
     }
 }

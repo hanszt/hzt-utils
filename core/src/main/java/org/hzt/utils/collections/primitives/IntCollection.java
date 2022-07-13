@@ -21,9 +21,7 @@ import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 
 public interface IntCollection extends IntReducable, IntCollectable, IntNumerable, IntStreamable, IntGroupable,
-        PrimitiveCollectionX<Integer, IntConsumer, int[]> {
-
-    int size();
+        PrimitiveCollection<Integer, IntConsumer, int[]> {
 
     default boolean isEmpty() {
         return none();
@@ -45,8 +43,8 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
 
     boolean contains(int i);
 
-    default IntListX filter(IntPredicate predicate) {
-        IntMutableListX ints = IntMutableListX.withInitCapacity(size());
+    default IntList filter(IntPredicate predicate) {
+        IntMutableList ints = IntMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             final int value = iterator.nextInt();
@@ -57,8 +55,8 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
         return ints;
     }
 
-    default IntListX map(IntUnaryOperator mapper) {
-        IntMutableListX ints = IntMutableListX.withInitCapacity(size());
+    default IntList map(IntUnaryOperator mapper) {
+        IntMutableList ints = IntMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextInt()));
@@ -66,8 +64,8 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
         return ints;
     }
 
-    default LongListX mapToLong(IntToLongFunction mapper) {
-        LongMutableListX longs = LongMutableListX.withInitCapacity(size());
+    default LongList mapToLong(IntToLongFunction mapper) {
+        LongMutableList longs = LongMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextInt()));
@@ -75,8 +73,8 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
         return longs;
     }
 
-    default DoubleListX mapToDouble(IntToDoubleFunction mapper) {
-        DoubleMutableListX doubles = DoubleMutableListX.withInitCapacity(size());
+    default DoubleList mapToDouble(IntToDoubleFunction mapper) {
+        DoubleMutableList doubles = DoubleMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextInt()));
@@ -94,22 +92,22 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
     }
 
     @Override
-    default IntListX plus(@NotNull Iterable<Integer> values) {
-        IntMutableListX list = toMutableList();
+    default IntList plus(@NotNull Iterable<Integer> values) {
+        IntMutableList list = toMutableList();
         list.addAll(values);
         return list;
     }
 
     @Override
-    default IntListX plus(int @NotNull ... array) {
-        IntMutableListX list = toMutableList();
+    default IntList plus(int @NotNull ... array) {
+        IntMutableList list = toMutableList();
         list.addAll(array);
         return list;
     }
 
     @Override
-    default IntListX take(long n) {
-        return takeTo(() -> IntMutableListX.withInitCapacity((int) n), n);
+    default IntList take(long n) {
+        return takeTo(() -> IntMutableList.withInitCapacity((int) n), n);
     }
 
     default IntSequence asSequence() {
@@ -124,8 +122,8 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
     }
 
     @Override
-    default IntMutableListX toMutableList() {
-        return to(() -> IntMutableListX.withInitCapacity(size()));
+    default IntMutableList toMutableList() {
+        return to(() -> IntMutableList.withInitCapacity(size()));
     }
 
     @Override

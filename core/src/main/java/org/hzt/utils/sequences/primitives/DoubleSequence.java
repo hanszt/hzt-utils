@@ -55,7 +55,8 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         return of(iterable, It::asDouble);
     }
 
-    static <T> DoubleSequence of(Iterable<T> iterable, ToDoubleFunction<T> mapper) {
+    static <T> DoubleSequence of(@NotNull Iterable<T> iterable,
+                                 @NotNull ToDoubleFunction<? super T> mapper) {
         return () -> PrimitiveIterators.doubleIteratorOf(iterable.iterator(), mapper);
     }
 
@@ -125,7 +126,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         return () -> PrimitiveIterators.doubleToLongIterator(iterator(), mapper);
     }
 
-    default <R> Sequence<R> mapToObj(@NotNull DoubleFunction<R> mapper) {
+    default <R> Sequence<R> mapToObj(@NotNull DoubleFunction<? extends R> mapper) {
         return () -> PrimitiveIterators.doubleToObjIterator(iterator(), mapper);
     }
 
@@ -182,11 +183,11 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     @Override
     default DoubleSequence sorted() {
-        return () -> toListX().sorted().iterator();
+        return () -> toList().sorted().iterator();
     }
 
     default DoubleSequence sorted(DoubleComparator comparator) {
-        return () -> toListX().sorted(comparator).iterator();
+        return () -> toList().sorted(comparator).iterator();
     }
 
     @Override
@@ -223,7 +224,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         });
     }
 
-    default DoubleSequence zip(@NotNull DoubleBinaryOperator merger, double... array) {
+    default DoubleSequence zip(@NotNull DoubleBinaryOperator merger, double @NotNull ... array) {
         final PrimitiveIterator.OfDouble iterator = PrimitiveIterators.doubleArrayIterator(array);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
@@ -240,7 +241,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     default double[] toArray() {
-        return toListX().toArray();
+        return toList().toArray();
     }
 
     default <R> R transform(@NotNull Function<? super DoubleSequence, ? extends R> resultMapper) {
@@ -254,7 +255,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     default <R1, R2, R> R doublesToTwo(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,
                                        @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2,
-                                       @NotNull BiFunction<R1, R2, R> merger) {
+                                       @NotNull BiFunction<? super R1, ? super R2, ? extends R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
     }
 
@@ -266,7 +267,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     default <R1, R2, R3, R> R doublesToThree(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,
                                              @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2,
                                              @NotNull Function<? super DoubleSequence, ? extends R3> resultMapper3,
-                                             @NotNull TriFunction<R1, R2, R3, R> merger) {
+                                             @NotNull TriFunction<? super R1, ? super R2, ? super R3, ? extends R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this), resultMapper3.apply(this));
     }
 

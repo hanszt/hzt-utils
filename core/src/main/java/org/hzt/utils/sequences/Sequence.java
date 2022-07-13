@@ -2,7 +2,8 @@ package org.hzt.utils.sequences;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
-import org.hzt.utils.collections.MapX;
+import org.hzt.utils.function.IndexedFunction;
+import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.IterableX;
@@ -31,7 +32,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.Function;
@@ -92,7 +92,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return seedValue == null ? new EmptySequence<>() : (() -> GeneratorIterator.of(() -> seedValue, nextFunction));
     }
 
-    static <T> Sequence<T> generate(@NotNull Supplier<T> nextFunction) {
+    static <T> Sequence<T> generate(@NotNull Supplier<? extends T> nextFunction) {
         return () -> GeneratorIterator.of(nextFunction, t -> nextFunction.get());
     }
 
@@ -104,7 +104,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return Sequence.of(this, Sequence.of(value)).mapMulti(Iterable::forEach);
     }
 
-    default Sequence<T> plus(@NotNull Iterable<T> values) {
+    default Sequence<T> plus(@NotNull Iterable<? extends T> values) {
         return Sequence.of(this, Sequence.of(values)).mapMulti(Iterable::forEach);
     }
 
@@ -145,7 +145,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default <R> Sequence<R> mapIndexed(@NotNull BiFunction<Integer, ? super T, ? extends R> mapper) {
+    default <R> Sequence<R> mapIndexed(@NotNull IndexedFunction<? super T, ? extends R> mapper) {
         return new TransformingIndexedSequence<>(this, mapper);
     }
 
@@ -186,12 +186,13 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return SequenceHelper.filteringSequence(this, predicate, false);
     }
 
-    default <R> Sequence<T> filterBy(@NotNull Function<? super T, ? extends R> selector, @NotNull Predicate<R> predicate) {
+    default <R> Sequence<T> filterBy(@NotNull Function<? super T, ? extends R> selector,
+                                     @NotNull Predicate<? super R> predicate) {
         return filter(Objects::nonNull).filter(t -> predicate.test(selector.apply(t)));
     }
 
     @Override
-    default Sequence<T> filterIndexed(@NotNull BiPredicate<? super Integer, ? super T> predicate) {
+    default Sequence<T> filterIndexed(@NotNull IndexedPredicate<? super T> predicate) {
         return withIndex()
                 .filter(indexedValue -> predicate.test(indexedValue.index(), indexedValue.value()))
                 .map(IndexedValue::value);
@@ -348,7 +349,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return resultMapper.apply(this);
     }
 
-    default Sequence<T> onSequence(Consumer<Sequence<T>> sequenceConsumer) {
+    default Sequence<T> onSequence(Consumer<? super Sequence<T>> sequenceConsumer) {
         sequenceConsumer.accept(this);
         return this;
     }

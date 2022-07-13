@@ -47,7 +47,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return map.entrySet()::iterator;
     }
 
-    default <R> Sequence<R> asSequence(BiFunction<K, V, R> biFunction) {
+    default <R> Sequence<R> asSequence(@NotNull BiFunction<? super K, ? super V, ? extends R> biFunction) {
         return map(e -> biFunction.apply(e.getKey(), e.getValue()));
     }
 

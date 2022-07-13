@@ -5,39 +5,37 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
-
-public interface IntMutableListX extends IntListX, IntMutableCollection,
+public interface IntMutableList extends IntList, IntMutableCollection,
         PrimitiveMutableList<PrimitiveListIterator.OfInt, IntComparator> {
 
-    static IntMutableListX empty() {
+    static IntMutableList empty() {
         return new IntArrayList();
     }
 
-    static IntMutableListX of(Iterable<Integer> iterable) {
+    static IntMutableList of(Iterable<Integer> iterable) {
         return new IntArrayList(iterable);
     }
 
-    static IntMutableListX of(IntListX intListX) {
-        return new IntArrayList(intListX);
+    static IntMutableList of(IntList intList) {
+        return new IntArrayList(intList);
     }
 
-    static IntMutableListX of(int... array) {
+    static IntMutableList of(int... array) {
         return new IntArrayList(array);
     }
 
-    static IntMutableListX withInitCapacity(int capacity) {
+    static IntMutableList withInitCapacity(int capacity) {
         return new IntArrayList(capacity);
     }
 
     @Override
-    default IntMutableListX plus(@NotNull Iterable<Integer> iterable) {
+    default IntMutableList plus(@NotNull Iterable<Integer> iterable) {
         addAll(iterable);
         return this;
     }
 
     @Override
-    default IntMutableListX plus(int @NotNull ... array) {
+    default IntMutableList plus(int @NotNull ... array) {
         addAll(array);
         return this;
     }
@@ -45,10 +43,6 @@ public interface IntMutableListX extends IntListX, IntMutableCollection,
     @Override
     default MutableListX<Integer> boxed() {
         return asSequence().boxed().toMutableList();
-    }
-
-    default PrimitiveIterator.OfInt iterator() {
-        return listIterator();
     }
 
     int set(int index, int value);

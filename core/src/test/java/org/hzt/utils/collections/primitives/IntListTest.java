@@ -10,11 +10,11 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class IntListXTest {
+class IntListTest {
 
     @Test
     void testIntListContains() {
-        final IntListX ints = IntListX.of(1, 2, 3, 4, 5, 6, 7, 8, 4, 3, 2, 5, 2, 2342, 3, 23);
+        final IntListX ints = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 4, 3, 2, 5, 2, 2342, 3, 23);
 
         assertAll(
                 () -> assertTrue(ints.contains(3)),
@@ -27,7 +27,7 @@ class IntListXTest {
     void testLargeIntList() {
         final IntListX ints = IntSequence.generate(0, i -> ++i)
                 .take(100_000)
-                .toListX();
+                .toList();
 
         final List<Integer> ints1 = IntStream.iterate(0, i -> ++i)
                 .limit(100_000)
@@ -42,7 +42,7 @@ class IntListXTest {
 
     @Test
     void testLastIndexOf() {
-        final IntListX intListX = IntListX.of(1, 2, 4, 3, 5, 4, 3);
+        final IntListX intListX = IntList.of(1, 2, 4, 3, 5, 4, 3);
 
         final int index = intListX.lastIndexOf(4);
 
@@ -51,7 +51,7 @@ class IntListXTest {
 
     @Test
     void testShuffled() {
-        final IntListX intListX = IntListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        final IntListX intListX = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
         final IntListX shuffled = intListX.shuffled();
 
@@ -62,7 +62,7 @@ class IntListXTest {
 
     @Test
     void testBinarySearch() {
-        final IntListX sortedList = IntListX.of(-1, 0, 1, 2, 3, 4, 5);
+        final IntList sortedList = IntList.of(-1, 0, 1, 2, 3, 4, 5);
 
         int valueToSearchFor = 2;
 
@@ -73,7 +73,7 @@ class IntListXTest {
 
     @Test
     void testIndices() {
-        final IntListX intList = IntListX.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
+        final IntListX intList = IntList.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
         int[] indices1 = new int[intList.size()];
         final IntRange indices = intList.indices();
         for (int i : indices) {

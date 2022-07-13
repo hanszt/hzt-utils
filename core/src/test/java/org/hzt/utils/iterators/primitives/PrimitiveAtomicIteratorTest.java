@@ -1,7 +1,7 @@
 package org.hzt.utils.iterators.primitives;
 
-import org.hzt.utils.collections.primitives.IntListX;
-import org.hzt.utils.collections.primitives.IntMutableListX;
+import org.hzt.utils.collections.primitives.IntList;
+import org.hzt.utils.collections.primitives.IntMutableList;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.IntConsumer;
@@ -12,11 +12,11 @@ class PrimitiveAtomicIteratorTest {
 
     @Test
     void testForEachRemaining() {
-        IntMutableListX listX = IntMutableListX.empty();
+        IntMutableList listX = IntMutableList.empty();
 
-        IntListX.of(1, 3, 5, 7, 8, 9).atomicIterator().forEachRemaining((IntConsumer) listX::add);
+        IntList.of(1, 3, 5, 7, 8, 9).atomicIterator().forEachRemaining((IntConsumer) listX::add);
 
-        assertEquals(IntListX.of(1, 3, 5, 7, 8, 9), listX);
+        assertEquals(IntList.of(1, 3, 5, 7, 8, 9), listX);
     }
 
 }

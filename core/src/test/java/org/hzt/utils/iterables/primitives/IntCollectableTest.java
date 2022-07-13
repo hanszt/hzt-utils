@@ -1,7 +1,7 @@
 package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.collections.primitives.IntListX;
-import org.hzt.utils.collections.primitives.IntMutableListX;
+import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.collectors.primitves.IntCollectors;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.tuples.Pair;
@@ -16,7 +16,7 @@ class IntCollectableTest {
     void testCollect() {
         final IntMutableListX listX = IntSequence.generate(0, i -> ++i)
                 .take(1_000)
-                .collect(IntMutableListX::empty, IntMutableListX::add);
+                .collect(IntMutableList::empty, IntMutableList::add);
 
         assertEquals(1_000, listX.size());
     }

@@ -3,9 +3,10 @@ package org.hzt.utils.iterables.primitives;
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.primitives.LongCollection;
-import org.hzt.utils.collections.primitives.LongListX;
+import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableCollection;
-import org.hzt.utils.collections.primitives.LongMutableListX;
+import org.hzt.utils.collections.primitives.LongMutableList;
+import org.hzt.utils.collections.primitives.LongMutableSet;
 import org.hzt.utils.collectors.primitves.LongCollector;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,11 +19,14 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface LongCollectable extends LongArrayable, PrimitiveCollectable<LongCollection> {
 
-    default <R> R collect(Supplier<R> supplier, ObjLongConsumer<R> accumulator) {
+    default <R> R collect(@NotNull Supplier<R> supplier,
+                          @NotNull ObjLongConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
     }
 
-    default <A, R> R collect(Supplier<A> supplier, ObjLongConsumer<A> accumulator, Function<A, R> finisher) {
+    default <A, R> R collect(@NotNull Supplier<A> supplier,
+                             @NotNull ObjLongConsumer<A> accumulator,
+                             @NotNull Function<A, R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
         final A result = supplier.get();
         while (iterator.hasNext()) {
@@ -31,7 +35,7 @@ public interface LongCollectable extends LongArrayable, PrimitiveCollectable<Lon
         return finisher.apply(result);
     }
 
-    default <A, R> R collect(LongCollector<A, R> collector) {
+    default <A, R> R collect(@NotNull LongCollector<A, R> collector) {
         return collect(collector.supplier(), collector.accumulator(), collector.finisher());
     }
 
@@ -52,7 +56,7 @@ public interface LongCollectable extends LongArrayable, PrimitiveCollectable<Lon
         return combiner.apply(downStream1.finisher().apply(result1), downStream2.finisher().apply(result2));
     }
 
-    default LongListX toListX() {
+    default LongList toList() {
         return toMutableList();
     }
 
@@ -65,8 +69,13 @@ public interface LongCollectable extends LongArrayable, PrimitiveCollectable<Lon
         return collection;
     }
 
-    default LongMutableListX toMutableList() {
-       return to(LongMutableListX::empty);
+    default LongMutableList toMutableList() {
+       return to(LongMutableList::empty);
+    }
+
+    @Override
+    default LongMutableSet toMutableSet() {
+        return to(LongMutableSet::empty);
     }
 
     default <C extends LongMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {

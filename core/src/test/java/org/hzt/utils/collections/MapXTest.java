@@ -4,7 +4,7 @@ import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.It;
-import org.hzt.utils.function.primitives.IndexedConsumer;
+import org.hzt.utils.function.IndexedConsumer;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.EntrySequence;
 import org.hzt.utils.strings.StringX;

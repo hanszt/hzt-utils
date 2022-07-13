@@ -2,7 +2,7 @@ package benchmark.prefix;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.primitives.IntMutableListX;
+import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -34,7 +34,7 @@ public class IntTimSortBenchmark {
             .intersperse(() -> RANDOM.nextInt(LIST_SIZE))
             .toMutableList();
 
-    final IntMutableListX primitiveList = inputList.mapToInt(It::asInt).toMutableList();
+    final IntMutableList primitiveList = inputList.mapToInt(It::asInt).toMutableList();
 
     final int[] array = primitiveList.toArray();
 
@@ -43,8 +43,8 @@ public class IntTimSortBenchmark {
     }
 
     @Benchmark
-    public IntMutableListX intListSort() {
-        final IntMutableListX list = IntMutableListX.of(primitiveList);
+    public IntMutableList intListSort() {
+        final IntMutableListX list = IntMutableList.of(primitiveList);
         list.sort();
         return list;
     }
@@ -66,8 +66,8 @@ public class IntTimSortBenchmark {
     }
 
     @Benchmark
-    public IntMutableListX intListSortReversed() {
-        final IntMutableListX list = IntMutableListX.of(primitiveList);
+    public IntMutableList intListSortReversed() {
+        final IntMutableListX list = IntMutableList.of(primitiveList);
         list.sort(IntComparator.reverseOrder());
         return list;
     }

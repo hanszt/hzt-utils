@@ -1,6 +1,5 @@
-package org.hzt.utils.arrays.primitves;
+package org.hzt.utils.arrays.primitives;
 
-import org.hzt.utils.PreConditions;
 import org.hzt.utils.function.primitives.DoubleToByteFunction;
 import org.hzt.utils.function.primitives.DoubleToFloatFunction;
 import org.hzt.utils.function.primitives.DoubleToShortFunction;
@@ -22,7 +21,6 @@ import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
 
-@SuppressWarnings("DuplicatedCode")
 public final class PrimitiveArrays {
 
     private PrimitiveArrays() {
@@ -124,6 +122,42 @@ public final class PrimitiveArrays {
         return result;
     }
 
+    public static void reverse(int[] array) {
+        for (int lowI = 0, highI = array.length - 1; lowI < array.length / 2; lowI++, highI--) {
+            swap(array, lowI, highI);
+        }
+    }
+
+    public static void swap(int[] array, int index1, int index2) {
+        final var temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+    }
+
+    public static void reverse(long[] array) {
+        for (int lowI = 0, highI = array.length - 1; lowI < array.length / 2; lowI++, highI--) {
+            swap(array, lowI, highI);
+        }
+    }
+
+    public static void swap(long[] array, int index1, int index2) {
+        final var temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+    }
+
+    public static void reverse(double[] array) {
+        for (int lowI = 0, highI = array.length - 1; lowI < array.length / 2; lowI++, highI--) {
+            swap(array, lowI, highI);
+        }
+    }
+
+    public static void swap(double[] array, int index1, int index2) {
+        final var temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+    }
+
     public static void sort(@NotNull IntComparator comparator, int @NotNull ... array) {
         sort(0, array.length, comparator, array);
     }
@@ -184,195 +218,6 @@ public final class PrimitiveArrays {
         }
         if (fromIndex > toIndex) {
             throw new IllegalArgumentException("fromIndex > toIndex");
-        }
-    }
-
-    static void binarySort(double[] array, int lo, int hi, int start, DoubleComparator comparator) {
-        PreConditions.require(lo <= start && start <= hi);
-        if (start == lo) {
-            ++start;
-        }
-        while (start < hi) {
-            double pivot = array[start];
-            int left = lo;
-            int right = start;
-
-            PreConditions.require(lo <= start);
-            while (left < right) {
-                int mid = (left + right) >>> 1;
-                if (comparator.compareDouble(pivot, array[mid]) < 0) {
-                    right = mid;
-                } else {
-                    left = mid + 1;
-                }
-            }
-            PreConditions.require(left == right);
-
-            int n = start - left;
-            if (n == 2) {
-                array[left + 2] = array[left + 1];
-                array[left + 1] = array[left];
-            } else if (n == 1) {
-                array[left + 1] = array[left];
-            } else {
-                System.arraycopy(array, left, array, left + 1, n);
-            }
-            array[left] = pivot;
-            ++start;
-        }
-    }
-
-    static void binarySort(int[] array, int lo, int hi, int start, IntComparator comparator) {
-        PreConditions.require(lo <= start && start <= hi);
-        if (start == lo) {
-            ++start;
-        }
-        while (start < hi) {
-            int pivot = array[start];
-            int left = lo;
-            int right = start;
-
-            PreConditions.require(lo <= start);
-            while (left < right) {
-                int mid = (left + right) >>> 1;
-                if (comparator.compareInt(pivot, array[mid]) < 0) {
-                    right = mid;
-                } else {
-                    left = mid + 1;
-                }
-            }
-            PreConditions.require(left == right);
-
-            int n = start - left;
-            if (n == 2) {
-                array[left + 2] = array[left + 1];
-                array[left + 1] = array[left];
-            } else if (n == 1) {
-                array[left + 1] = array[left];
-            } else {
-                System.arraycopy(array, left, array, left + 1, n);
-            }
-            array[left] = pivot;
-            ++start;
-        }
-    }
-
-    static void binarySort(long[] array, int lo, int hi, int start, LongComparator comparator) {
-        PreConditions.require(lo <= start && start <= hi);
-        if (start == lo) {
-            ++start;
-        }
-        while (start < hi) {
-            long pivot = array[start];
-            int left = lo;
-            int right = start;
-
-            PreConditions.require(lo <= start);
-            while (left < right) {
-                int mid = (left + right) >>> 1;
-                if (comparator.compareLong(pivot, array[mid]) < 0) {
-                    right = mid;
-                } else {
-                    left = mid + 1;
-                }
-            }
-            PreConditions.require(left == right);
-
-            int n = start - left;
-            if (n == 2) {
-                array[left + 2] = array[left + 1];
-                array[left + 1] = array[left];
-            } else if (n == 1) {
-                array[left + 1] = array[left];
-            } else {
-                System.arraycopy(array, left, array, left + 1, n);
-            }
-            array[left] = pivot;
-            ++start;
-        }
-    }
-
-    static int countRunAndMakeAscending(int[] array, int lo, int hi, IntComparator comparator) {
-        PreConditions.require(lo < hi);
-        int runHi = lo + 1;
-        if (runHi == hi) {
-            return 1;
-        }
-        if (comparator.compareInt(array[runHi++], array[lo]) >= 0) {
-            while (runHi < hi && comparator.compareInt(array[runHi], array[runHi - 1]) >= 0) {
-                ++runHi;
-            }
-        } else {
-            while (runHi < hi && comparator.compareInt(array[runHi], array[runHi - 1]) < 0) {
-                ++runHi;
-            }
-            reverseRange(array, lo, runHi);
-        }
-        return runHi - lo;
-    }
-
-    private static void reverseRange(int[] array, int lo, int hi) {
-        --hi;
-        while (lo < hi) {
-            int t = array[lo];
-            array[lo++] = array[hi];
-            array[hi--] = t;
-        }
-    }
-
-    static int countRunAndMakeAscending(long[] array, int lo, int hi, LongComparator comparator) {
-        PreConditions.require(lo < hi);
-        int runHi = lo + 1;
-        if (runHi == hi) {
-            return 1;
-        }
-        if (comparator.compareLong(array[runHi++], array[lo]) >= 0) {
-            while (runHi < hi && comparator.compareLong(array[runHi], array[runHi - 1]) >= 0) {
-                ++runHi;
-            }
-        } else {
-            while (runHi < hi && comparator.compareLong(array[runHi], array[runHi - 1]) < 0) {
-                ++runHi;
-            }
-            reverseRange(array, lo, runHi);
-        }
-        return runHi - lo;
-    }
-
-    private static void reverseRange(long[] array, int lo, int hi) {
-        --hi;
-        while (lo < hi) {
-            long t = array[lo];
-            array[lo++] = array[hi];
-            array[hi--] = t;
-        }
-    }
-
-    static int countRunAndMakeAscending(double[] array, int lo, int hi, DoubleComparator comparator) {
-        PreConditions.require(lo < hi);
-        int runHi = lo + 1;
-        if (runHi == hi) {
-            return 1;
-        }
-        if (comparator.compareDouble(array[runHi++], array[lo]) >= 0) {
-            while (runHi < hi && comparator.compareDouble(array[runHi], array[runHi - 1]) >= 0) {
-                ++runHi;
-            }
-        } else {
-            while (runHi < hi && comparator.compareDouble(array[runHi], array[runHi - 1]) < 0) {
-                ++runHi;
-            }
-            reverseRange(array, lo, runHi);
-        }
-        return runHi - lo;
-    }
-
-    private static void reverseRange(double[] array, int lo, int hi) {
-        --hi;
-        while (lo < hi) {
-            double t = array[lo];
-            array[lo++] = array[hi];
-            array[hi--] = t;
         }
     }
 }

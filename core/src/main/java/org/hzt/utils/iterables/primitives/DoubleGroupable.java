@@ -2,7 +2,7 @@ package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableMapX;
-import org.hzt.utils.collections.primitives.DoubleMutableListX;
+import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.tuples.Pair;
 
 import java.util.PrimitiveIterator;
@@ -10,33 +10,33 @@ import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 
 @FunctionalInterface
-public interface DoubleGroupable extends PrimitiveGroupable<Double, DoubleMutableListX, DoublePredicate>, PrimitiveIterable.OfDouble {
+public interface DoubleGroupable extends PrimitiveGroupable<Double, DoubleMutableList, DoublePredicate>, PrimitiveIterable.OfDouble {
 
     @Override
-    default MapX<Double, DoubleMutableListX> group() {
+    default MapX<Double, DoubleMutableList> group() {
         final PrimitiveIterator.OfDouble iterator = iterator();
-        final MutableMapX<Double, DoubleMutableListX> map = MutableMapX.empty();
+        final MutableMapX<Double, DoubleMutableList> map = MutableMapX.empty();
         while (iterator.hasNext()) {
             final double nextDouble = iterator.nextDouble();
-            map.computeIfAbsent(nextDouble, key -> DoubleMutableListX.empty()).add(nextDouble);
+            map.computeIfAbsent(nextDouble, key -> DoubleMutableList.empty()).add(nextDouble);
         }
         return map;
     }
 
-    default <K> MapX<K, DoubleMutableListX> groupBy(DoubleFunction<K> classifier) {
+    default <K> MapX<K, DoubleMutableList> groupBy(DoubleFunction<K> classifier) {
         final PrimitiveIterator.OfDouble iterator = iterator();
-        final MutableMapX<K, DoubleMutableListX> map = MutableMapX.empty();
+        final MutableMapX<K, DoubleMutableList> map = MutableMapX.empty();
         while (iterator.hasNext()) {
             final double nextDouble = iterator.nextDouble();
-            map.computeIfAbsent(classifier.apply(nextDouble), key -> DoubleMutableListX.empty()).add(nextDouble);
+            map.computeIfAbsent(classifier.apply(nextDouble), key -> DoubleMutableList.empty()).add(nextDouble);
         }
         return map;
     }
 
     @Override
-    default Pair<DoubleMutableListX, DoubleMutableListX> partition(DoublePredicate predicate) {
-        final DoubleMutableListX matchingList = DoubleMutableListX.empty();
-        final DoubleMutableListX nonMatchingList = DoubleMutableListX.empty();
+    default Pair<DoubleMutableList, DoubleMutableList> partition(DoublePredicate predicate) {
+        final DoubleMutableListX matchingList = DoubleMutableList.empty();
+        final DoubleMutableListX nonMatchingList = DoubleMutableList.empty();
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             final double nextDouble = iterator.nextDouble();

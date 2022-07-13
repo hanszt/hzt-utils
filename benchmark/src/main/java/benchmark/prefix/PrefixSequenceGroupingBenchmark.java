@@ -2,7 +2,7 @@ package benchmark.prefix;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.MapX;
-import org.hzt.utils.collections.primitives.IntMutableListX;
+import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.ranges.IntRange;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -42,7 +42,7 @@ public class PrefixSequenceGroupingBenchmark {
     }
 
     @Benchmark
-    public MapX<Integer, IntMutableListX> intRangeFilterGroup() {
+    public MapX<Integer, IntMutableList> intRangeFilterGroup() {
         return IntRange.of(0, UPPER_BOUND_RANGE)
                 .filter(fibonacciNrs::contains)
                 .groupBy(i -> i % GROUP_BY_VALUE);

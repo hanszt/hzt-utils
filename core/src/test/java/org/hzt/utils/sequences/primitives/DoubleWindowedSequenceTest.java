@@ -1,7 +1,7 @@
 package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.collections.ListX;
-import org.hzt.utils.collections.primitives.DoubleListX;
+import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
@@ -21,7 +21,7 @@ class DoubleWindowedSequenceTest {
 
         final double[][] windows = DoubleSequence.of(array)
                 .windowed(3, 2, true)
-                .map(DoubleListX::toArray)
+                .map(DoubleList::toArray)
                 .toTypedArray(double[][]::new);
 
         Sequence.of(windows).map(Arrays::toString).forEach(It::println);
@@ -68,7 +68,7 @@ class DoubleWindowedSequenceTest {
                 .mapToDouble(w -> (double) w.last() / w.first())
                 .takeWhileInclusive(gr -> !DoubleX.toRoundedString(gr, scale)
                         .equals(DoubleX.toRoundedString(goldenRatio, scale)))
-                .toListX();
+                .toList();
 
         final String expected = DoubleX.toRoundedString(goldenRatio, scale);
         final String actual = DoubleX.toRoundedString(approximations.last(), scale);

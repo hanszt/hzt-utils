@@ -12,32 +12,32 @@ class DoubleMutableCollectionTest {
 
     @Test
     void testRemoveAll() {
-        final DoubleMutableListX list = DoubleMutableListX.of(1, 4, 5, 3, Math.PI, 7, 5, 8, 9);
+        final DoubleMutableListX list = DoubleMutableList.of(1, 4, 5, 3, Math.PI, 7, 5, 8, 9);
         final boolean removedAll = list.removeAll( 3, 4, 5, 7, Math.PI);
 
         assertAll(
                 () -> assertTrue(removedAll),
-                () -> assertEquals(DoubleListX.of(1, 5, 8, 9), list)
+                () -> assertEquals(DoubleList.of(1, 5, 8, 9), list)
         );
     }
 
     @Test
     void testAddAll() {
-        final DoubleMutableListX list = DoubleMutableListX.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
+        final DoubleMutableListX list = DoubleMutableList.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
         final boolean addedAll = list.addAll( 3, 4, 6, 5, 7, 8, Math.E);
 
         assertAll(
                 () -> assertTrue(addedAll),
-                () -> assertEquals(DoubleListX.of(1, 4, 5, 3, 6, 7, 5, 8, 9, 3, 4, 6, 5, 7, 8, Math.E), list)
+                () -> assertEquals(DoubleList.of(1, 4, 5, 3, 6, 7, 5, 8, 9, 3, 4, 6, 5, 7, 8, Math.E), list)
         );
     }
 
     @Test
     void testStreamFromDoubleCollection() {
-        DoubleListX listX = IntSequence.generate(1, d -> d + 2)
+        DoubleList listX = IntSequence.generate(1, d -> d + 2)
                 .mapToDouble(i -> 1. / i)
                 .take(1_000_000)
-                .toListX();
+                .toList();
 
         final double sum = listX.stream().sum();
 
@@ -48,12 +48,12 @@ class DoubleMutableCollectionTest {
 
     @Test
     void testRemoveIf() {
-        final DoubleMutableListX list = DoubleMutableListX.of(Math.PI, 1, 4, 5, 3, 6, Math.E, 7, 5, 8, 9);
+        final DoubleMutableListX list = DoubleMutableList.of(Math.PI, 1, 4, 5, 3, 6, Math.E, 7, 5, 8, 9);
         final boolean removed = list.removeIf(l -> l % 2 == 0);
 
         assertAll(
                 () -> assertTrue(removed),
-                () -> assertEquals(DoubleListX.of(Math.PI, 1, 5, 3, Math.E, 7, 5, 9), list)
+                () -> assertEquals(DoubleList.of(Math.PI, 1, 5, 3, Math.E, 7, 5, 9), list)
         );
     }
 }

@@ -3,7 +3,6 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.iterables.Indexable;
 import org.hzt.utils.iterables.Stringable;
-import org.hzt.utils.iterators.IndexIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
@@ -14,7 +13,7 @@ import java.util.Spliterator;
  * @param <C> The PrimitiveConsumer
  * @param <A> The primitive array Type
  */
-public interface PrimitiveCollectionX<T, C, A> extends Stringable<T>, Indexable<T> {
+public interface PrimitiveCollection<T, C, A> extends Stringable<T>, Indexable<T> {
 
     int size();
 
@@ -26,13 +25,13 @@ public interface PrimitiveCollectionX<T, C, A> extends Stringable<T>, Indexable<
 
     boolean containsAll(@NotNull A array);
 
-    PrimitiveCollectionX<T, C, A> plus(Iterable<T> iterable);
+    PrimitiveCollection<T, C, A> plus(Iterable<T> iterable);
 
-    PrimitiveCollectionX<T, C, A> plus(@NotNull A array);
+    PrimitiveCollection<T, C, A> plus(@NotNull A array);
 
-    PrimitiveCollectionX<T, C, A> take(long n);
+    PrimitiveCollection<T, C, A> take(long n);
 
-    PrimitiveIterator<T, C> iterator();
+    @NotNull PrimitiveIterator<T, C> iterator();
 
     @Override
     Spliterator<T> spliterator();
@@ -40,10 +39,4 @@ public interface PrimitiveCollectionX<T, C, A> extends Stringable<T>, Indexable<
     CollectionX<T> boxed();
 
     A toArray();
-
-    @Override
-    @NotNull
-    default PrimitiveIterator.OfInt indexIterator() {
-        return IndexIterator.of(iterator());
-    }
 }

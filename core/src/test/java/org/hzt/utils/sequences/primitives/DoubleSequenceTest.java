@@ -2,7 +2,7 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.primitives.DoubleListX;
+import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
@@ -22,22 +22,24 @@ class DoubleSequenceTest {
 
     @Test
     void doubleRangeFromDoubleArray() {
-        double[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+        double[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2, Math.PI};
 
         final long[] expected = DoubleStream.of(array)
+                .filter(d -> d > 3)
                 .mapToLong(d -> (long) d)
-                .filter(l -> l > 3)
                 .toArray();
 
 
         final long[] longs = DoubleSequence.of(array)
+                .filter(d -> d > 3)
                 .mapToLong(It::doubleAsLong)
-                .filter(l -> l > 3)
                 .toArray();
 
+        System.out.println(Arrays.toString(actual));
+
         assertAll(
-                () -> assertArrayEquals(new long[]{4, 5, 4, 6, 4, 4}, longs),
-                () -> assertArrayEquals(expected, longs)
+                () -> assertArrayEquals(new long[]{4, 5, 4, 6, 4, 4, 3}, actual),
+                () -> assertArrayEquals(expected, actual)
         );
     }
 
@@ -47,7 +49,7 @@ class DoubleSequenceTest {
 
         final double[] result = DoubleSequence.of(1, 3, 2, 5, 4, 2)
                 .plus(Math.E, 76, 5)
-                .plus(DoubleListX.of(array))
+                .plus(DoubleList.of(array))
                 .toArray();
 
         It.println(Arrays.toString(result));
@@ -110,7 +112,7 @@ class DoubleSequenceTest {
 
         final double[][] windowed = DoubleSequence.of(array)
                 .windowed(5)
-                .map(DoubleListX::toArray)
+                .map(DoubleList::toArray)
                 .toTypedArray(double[][]::new);
 
         Sequence.of(windowed).map(Arrays::toString).forEach(It::println);
@@ -123,7 +125,7 @@ class DoubleSequenceTest {
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final double[] sums = DoubleSequence.of(array)
-                .windowed(3, DoubleListX::sum)
+                .windowed(3, DoubleList::sum)
                 .toArray();
 
         DoubleSequence.of(sums).forEachDouble(It::println);
@@ -136,7 +138,7 @@ class DoubleSequenceTest {
         double[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final double[] sums = DoubleSequence.of(array)
-                .windowed(3, 2, true, DoubleListX::sum)
+                .windowed(3, 2, true, DoubleList::sum)
                 .toArray();
 
         DoubleSequence.of(sums).forEachDouble(It::println);
@@ -148,7 +150,7 @@ class DoubleSequenceTest {
     void testWindowedLargeDoubleSequence() {
         final double[] sums = DoubleSequence.generate(0, l -> ++l)
                 .take(1_000_000)
-                .windowed(1_000, 50, DoubleListX::sum)
+                .windowed(1_000, 50, DoubleList::sum)
                 .toArray();
 
         final double[] sums2 = Sequence.generate(0, l -> ++l)
@@ -225,7 +227,7 @@ class DoubleSequenceTest {
                 .takeWhileInclusive(approximation -> !DoubleX.toRoundedString(approximation, scale)
                         .equals(roundedGoldenRatio))
                 .onEach(s -> It.println(DoubleX.toRoundedString(s, scale)))
-                .toListX();
+                .toList();
 
         final String actual = DoubleX.toRoundedString(approximations.last(), scale);
 
@@ -235,4 +237,22 @@ class DoubleSequenceTest {
         );
     }
 
+    @Test
+    void testDistinct() {
+        final var array = DoubleSequence.of(Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Math.PI, Double.NaN, Double.NaN)
+                .distinct()
+                .toArray();
+
+        assertArrayEquals(new double[]{Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Double.NaN}, array);
+    }
+
+    @Test
+    void testDoublesToThree() {
+        final var triple = DoubleSequence
+                .of(Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Math.PI, Double.NaN, Double.NaN)
+                .filterNot(Double::isNaN)
+                .doublesToThree(DoubleSequence::sum, DoubleSequence::toMutableSet, DoubleSequence::average);
+
+        assertEquals(10.619501124388526, triple.first());
+    }
 }

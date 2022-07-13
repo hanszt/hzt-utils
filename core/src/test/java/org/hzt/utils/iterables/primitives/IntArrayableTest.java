@@ -4,7 +4,7 @@ import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 
-import static org.hzt.utils.arrays.primitves.PrimitiveArrays.toBooleanArray;
+import static org.hzt.utils.arrays.primitives.PrimitiveArrays.toBooleanArray;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

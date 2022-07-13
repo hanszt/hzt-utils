@@ -1,6 +1,6 @@
 package org.hzt.utils.demo;
 
-import org.hzt.utils.collections.primitives.IntListX;
+import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.io.FileX;
 import org.hzt.utils.strings.StringX;
 import org.junit.jupiter.api.Test;
@@ -18,8 +18,8 @@ class Aoc2021SnippetsTest {
         return FileX.of("input/day1aoc2021.txt").useLines(lines ->
                 lines.mapToInt(StringX::toInt)
                         .windowed(3)
-                        .map(IntListX::sum)
-                        .zipWithNext()
-                        .count((x, y) -> x < y));
+                        .mapToLong(IntList::sum)
+                        .zipWithNext((sum, nextSum) -> sum - nextSum)
+                        .count(diff -> diff < 0));
     }
 }

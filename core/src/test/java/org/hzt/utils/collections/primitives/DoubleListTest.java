@@ -14,11 +14,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class DoubleListXTest {
+class DoubleListTest {
 
     @Test
     void testContainsAll() {
-        final DoubleListX doubles = DoubleListX.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
+        final DoubleListX doubles = DoubleList.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
 
         assertAll(
                 () -> assertTrue(doubles.containsAll(1, 4, 2, 6, 5)),
@@ -28,7 +28,7 @@ class DoubleListXTest {
 
     @Test
     void testLastIndexOf() {
-        final DoubleListX list = DoubleListX.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
+        final DoubleListX list = DoubleList.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
 
         final int index = list.lastIndexOf(4);
 
@@ -47,7 +47,7 @@ class DoubleListXTest {
 
         System.out.println(Arrays.toString(doubles));
 
-        final boolean isSorted = DoubleListX.of(doubles).isSorted();
+        final boolean isSorted = DoubleList.of(doubles).isSorted();
 
         assertTrue(isSorted);
     }
@@ -63,7 +63,7 @@ class DoubleListXTest {
 
         System.out.println(Arrays.toString(doubles));
 
-        final boolean isSorted = DoubleListX.of(doubles).isSorted();
+        final boolean isSorted = DoubleList.of(doubles).isSorted();
 
         assertFalse(isSorted);
     }
@@ -71,14 +71,14 @@ class DoubleListXTest {
     private double[] toDoubleArrayByCommaPattern(String string) {
         return commaPattern.splitAsStream(string)
                 .filter(not(String::isEmpty))
-                .map(String::trim)
+                .map(String::strip)
                 .mapToDouble(Double::parseDouble)
                 .toArray();
     }
 
     @Test
     void testBinarySearch() {
-        final DoubleListX reverseOrderSortedList = DoubleListX.of(Double.POSITIVE_INFINITY, 5, 4, Math.PI, Math.E, 1, 0, -1);
+        final DoubleList reverseOrderSortedList = DoubleList.of(Double.POSITIVE_INFINITY, 5, 4, Math.PI, Math.E, 1, 0, -1);
 
         double valueToSearchFor = Math.E;
 

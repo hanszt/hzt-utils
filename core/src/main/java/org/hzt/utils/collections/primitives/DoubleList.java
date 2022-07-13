@@ -1,11 +1,11 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.arrays.primitves.PrimitiveArrays;
+import org.hzt.utils.arrays.primitives.PrimitiveArrays;
+import org.hzt.utils.collections.ListHelper;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.markerinterfaces.BinarySearchable;
-import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.jetbrains.annotations.NotNull;
@@ -17,29 +17,29 @@ import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
 
-public interface DoubleListX extends DoubleCollection,
+public interface DoubleList extends DoubleCollection,
         PrimitiveList<PrimitiveListIterator.OfDouble>,
         PrimitiveSortable<DoubleComparator>,
         BinarySearchable<DoubleToIntFunction> {
 
-    static DoubleListX empty() {
+    static DoubleList empty() {
         return new DoubleArrayList();
     }
 
-    static DoubleListX of(Iterable<Double> iterable) {
+    static DoubleList of(Iterable<Double> iterable) {
         return new DoubleArrayList(iterable);
     }
 
-    static DoubleListX of(DoubleListX doubleListX) {
-        return new DoubleArrayList(doubleListX);
+    static DoubleList of(DoubleList doubleList) {
+        return new DoubleArrayList(doubleList);
     }
 
-    static DoubleListX of(double... array) {
+    static DoubleList of(double... array) {
         return new DoubleArrayList(array);
     }
 
-    static DoubleListX build(Consumer<DoubleMutableListX> factory) {
-        final DoubleMutableListX listX = DoubleMutableListX.empty();
+    static DoubleList build(Consumer<? super DoubleMutableList> factory) {
+        final DoubleMutableList listX = DoubleMutableList.empty();
         factory.accept(listX);
         return listX;
     }
@@ -94,22 +94,25 @@ public interface DoubleListX extends DoubleCollection,
     }
 
     @Override
-    default DoubleListX sorted() {
+    default DoubleList sorted() {
         final double[] array = toArray();
         Arrays.sort(array);
-        return DoubleListX.of(array);
+        return DoubleList.of(array);
     }
 
     @Override
-    default DoubleListX sorted(DoubleComparator comparator) {
+    default DoubleList sorted(DoubleComparator comparator) {
         final double[] array = toArray();
         PrimitiveArrays.sort(comparator, array);
-        return DoubleListX.of(array);
+        return DoubleList.of(array);
     }
 
     @Override
-    default DoubleListX sortedDescending() {
-        return sorted(DoubleX::compareReversed);
+    default DoubleList sortedDescending() {
+        final var array = toArray();
+        Arrays.sort(array);
+        PrimitiveArrays.reverse(array);
+        return DoubleList.of(array);
     }
 
     @Override
@@ -139,7 +142,7 @@ public interface DoubleListX extends DoubleCollection,
      */
     @Override
     default int binarySearch(int fromIndex, int toIndex, DoubleToIntFunction comparison) {
-        return PrimitiveListHelper.binarySearch(size(), this::get, fromIndex, toIndex, comparison);
+        return ListHelper.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
     }
 
     @Override

@@ -185,11 +185,11 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     @Override
     default IntSequence sorted() {
-        return () -> toListX().sorted().iterator();
+        return () -> toList().sorted().iterator();
     }
 
     default IntSequence sorted(IntComparator intComparator) {
-        return () -> toListX().sorted(intComparator).iterator();
+        return () -> toList().sorted(intComparator).iterator();
     }
 
     @Override
@@ -208,7 +208,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     default IntSequence shuffled() {
-        return () -> toListX().shuffled().iterator();
+        return () -> toList().shuffled().iterator();
     }
 
     @Override
@@ -244,7 +244,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     default int[] toArray() {
-        return toListX().toArray();
+        return toList().toArray();
     }
 
     default <R> R transform(@NotNull Function<? super IntSequence, ? extends R> resultMapper) {

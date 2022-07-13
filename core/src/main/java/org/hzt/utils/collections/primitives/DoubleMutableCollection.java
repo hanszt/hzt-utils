@@ -10,7 +10,7 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 
 public interface DoubleMutableCollection extends DoubleCollection,
-        PrimitiveMutableCollectionX<Double, DoubleConsumer, DoublePredicate, double[]> {
+        PrimitiveMutableCollection<Double, DoubleConsumer, DoublePredicate, double[]> {
 
     boolean add(double d);
 
@@ -18,21 +18,23 @@ public interface DoubleMutableCollection extends DoubleCollection,
     default boolean addAll(@NotNull Iterable<Double> iterable) {
         if (iterable instanceof PrimitiveIterable.OfDouble) {
             final PrimitiveIterator.OfDouble iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
+            boolean allAdded = true;
             while (iterator.hasNext()) {
                 final boolean added = add(iterator.nextDouble());
                 if (!added) {
-                    return false;
+                    allAdded = false;
                 }
             }
-            return true;
+            return allAdded;
         }
+        boolean allAdded = true;
         for (double i : iterable) {
             final boolean added = add(i);
             if (!added) {
-                return false;
+                allAdded = false;
             }
         }
-        return true;
+        return allAdded;
     }
 
     boolean remove(double d);
@@ -40,13 +42,14 @@ public interface DoubleMutableCollection extends DoubleCollection,
     @Override
     default boolean addAll(double @NotNull ... array) {
         final PrimitiveIterator.OfDouble iterator = PrimitiveIterators.doubleArrayIterator(array);
+        boolean allAdded = true;
         while (iterator.hasNext()) {
             final boolean added = add(iterator.nextDouble());
             if (!added) {
-                return false;
+                allAdded = false;
             }
         }
-        return true;
+        return allAdded;
     }
 
     @Override
@@ -96,13 +99,13 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default DoubleMutableListX plus(@NotNull Iterable<Double> iterable) {
-        return (DoubleMutableListX) DoubleCollection.super.plus(iterable);
+    default DoubleMutableList plus(@NotNull Iterable<Double> iterable) {
+        return (DoubleMutableList) DoubleCollection.super.plus(iterable);
     }
 
     @Override
-    default DoubleMutableListX plus(double @NotNull ... array) {
-        return (DoubleMutableListX) DoubleCollection.super.plus(array);
+    default DoubleMutableList plus(double @NotNull ... array) {
+        return (DoubleMutableList) DoubleCollection.super.plus(array);
     }
 
     @Override

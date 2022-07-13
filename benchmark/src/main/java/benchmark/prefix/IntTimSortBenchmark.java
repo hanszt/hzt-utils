@@ -44,7 +44,7 @@ public class IntTimSortBenchmark {
 
     @Benchmark
     public IntMutableList intListSort() {
-        final IntMutableListX list = IntMutableList.of(primitiveList);
+        final IntMutableList list = IntMutableList.of(primitiveList);
         list.sort();
         return list;
     }
@@ -67,7 +67,7 @@ public class IntTimSortBenchmark {
 
     @Benchmark
     public IntMutableList intListSortReversed() {
-        final IntMutableListX list = IntMutableList.of(primitiveList);
+        final IntMutableList list = IntMutableList.of(primitiveList);
         list.sort(IntComparator.reverseOrder());
         return list;
     }

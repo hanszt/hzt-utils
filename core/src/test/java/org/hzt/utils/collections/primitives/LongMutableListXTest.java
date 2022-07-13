@@ -14,7 +14,7 @@ class LongMutableListXTest {
 
     @Test
     void testDifferentMethods() {
-        final LongMutableListX longs = LongMutableList.empty();
+        final LongMutableList longs = LongMutableList.empty();
         assertTrue(longs.isEmpty());
         longs.add(1);
         assertAll(
@@ -42,7 +42,7 @@ class LongMutableListXTest {
 
     @Test
     void testCopyConstructor() {
-        final LongMutableListX longs = LongMutableList.empty();
+        final LongMutableList longs = LongMutableList.empty();
         longs.add(2);
         longs.add(-43);
         longs.add(1231);
@@ -50,7 +50,7 @@ class LongMutableListXTest {
                 .take(10_000_000)
                 .forEachLong(longs::add);
 
-        final LongMutableListX longsCopy = LongMutableList.of(longs);
+        final LongMutableList longsCopy = LongMutableList.of(longs);
 
         assertAll(
                 () -> assertEquals(10_000_003, longs.size()),
@@ -60,7 +60,7 @@ class LongMutableListXTest {
 
     @Test
     void testSet() {
-        final LongMutableListX list = LongMutableList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
+        final LongMutableList list = LongMutableList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
         list.set(4, 14);
         final long value = list.get(4);
         assertEquals(14L, value);
@@ -68,7 +68,7 @@ class LongMutableListXTest {
 
     @Test
     void testSortLongList() {
-        final LongMutableListX longs = LongSequence.generate(1_000_000, i -> --i)
+        final LongMutableList longs = LongSequence.generate(1_000_000, i -> --i)
                 .take(1_000_000)
                 .toMutableList();
 
@@ -79,7 +79,7 @@ class LongMutableListXTest {
 
     @Test
     void testSortReversedLongList() {
-        final LongMutableListX longs = LongSequence.generate(-1_000_000, i -> ++i)
+        final LongMutableList longs = LongSequence.generate(-1_000_000, i -> ++i)
                 .take(1_000_000)
                 .toMutableList();
 

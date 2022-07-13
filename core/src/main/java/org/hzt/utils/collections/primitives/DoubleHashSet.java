@@ -39,7 +39,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, double[], DoubleC
         }
 
         final int targetCollisionChainIndex = Double.hashCode(value) & mask;
-        final var next = table[targetCollisionChainIndex];
+        final PrimitiveNode next = table[targetCollisionChainIndex];
         final CollisionChainNode newNode = new CollisionChainNode(value, next);
         table[targetCollisionChainIndex] = newNode;
         return true;
@@ -47,7 +47,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, double[], DoubleC
 
     public boolean contains(double value) {
         final int collisionChainIndex = Double.hashCode(value) & mask;
-        var node = table[collisionChainIndex];
+        PrimitiveNode node = table[collisionChainIndex];
 
         while (node != null) {
             if (Double.compare(((CollisionChainNode) node).value, value) == 0) {
@@ -68,11 +68,11 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, double[], DoubleC
         }
         final int targetCollisionChainIndex = Double.hashCode(value) & mask;
 
-        var current = table[targetCollisionChainIndex];
+        PrimitiveNode current = table[targetCollisionChainIndex];
 
         PrimitiveNode previous = null;
         while (current != null) {
-            var next = current.next;
+            PrimitiveNode next = current.next;
             if (Double.compare(((CollisionChainNode) current).value, value) == 0) {
                 if (previous == null) {
                     table[targetCollisionChainIndex] = next;

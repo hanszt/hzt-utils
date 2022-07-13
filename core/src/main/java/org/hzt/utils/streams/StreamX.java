@@ -44,7 +44,7 @@ import static org.hzt.utils.streams.StreamXHelper.stream;
 @SuppressWarnings("squid:S1448")
 public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Spliterable<T> {
 
-    static <T> StreamX<T> generate(Supplier<? extends T> operator) {
+    static <T> StreamX<T> generate(Supplier<T> operator) {
         return StreamX.of(Stream.generate(operator));
     }
 
@@ -346,7 +346,7 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
         throw new UnsupportedOperationException("Not supported in StreamX interface");
     }
 
-    default <R> StreamX<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<? super R>> mapper) {
+    default <R> StreamX<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
         final Sequence<R> sequence = Sequence.ofStream(stream(this)).mapMulti(mapper);
         final boolean parallel = isParallel();
         return new StreamXImpl<>(parallel ? sequence.parallelStream() : sequence.stream());

@@ -35,8 +35,8 @@ public interface DoubleGroupable extends PrimitiveGroupable<Double, DoubleMutabl
 
     @Override
     default Pair<DoubleMutableList, DoubleMutableList> partition(DoublePredicate predicate) {
-        final DoubleMutableListX matchingList = DoubleMutableList.empty();
-        final DoubleMutableListX nonMatchingList = DoubleMutableList.empty();
+        final DoubleMutableList matchingList = DoubleMutableList.empty();
+        final DoubleMutableList nonMatchingList = DoubleMutableList.empty();
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             final double nextDouble = iterator.nextDouble();

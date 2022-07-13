@@ -1,7 +1,7 @@
 package benchmark.prefix;
 
 import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.primitives.DoubleMutableListX;
+import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,7 +12,7 @@ class DoubleTimSortBenchmarkTest {
 
     @Test
     void testDoubleListSortAndListSortYieldSameContent() {
-        final DoubleMutableListX doubleMutableListX = doubleTimSortBenchmark.doubleListSort();
+        final DoubleMutableList doubleMutableListX = doubleTimSortBenchmark.doubleListSort();
         final MutableListX<Double> mutableListX = doubleTimSortBenchmark.listSort();
         final double[] array = doubleTimSortBenchmark.arraySort();
 
@@ -30,7 +30,7 @@ class DoubleTimSortBenchmarkTest {
 
     @Test
     void testDoubleListAndListReverseSortYieldSameContent() {
-        final DoubleMutableListX doubleMutableListX = doubleTimSortBenchmark.doubleListSortReversed();
+        final DoubleMutableList doubleMutableListX = doubleTimSortBenchmark.doubleListSortReversed();
         final MutableListX<Double> mutableListX = doubleTimSortBenchmark.listSortReversed();
 
         doubleMutableListX.take(10).forEachDouble(System.out::println);

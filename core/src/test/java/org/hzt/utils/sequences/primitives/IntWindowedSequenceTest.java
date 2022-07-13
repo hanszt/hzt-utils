@@ -14,13 +14,13 @@ class IntWindowedSequenceTest {
 
     @Test
     void testLargeWindowedSequence() {
-        final ListX<IntListX> windows = IntRange.of(0, 1_000_000)
+        final ListX<IntList> windows = IntRange.of(0, 1_000_000)
                 .windowed(2_001, 23, true)
                 .toListX();
 
-        final IntListX lastWindow = windows.last();
+        final IntList lastWindow = windows.last();
 
-        final ListX<IntListX> tail = windows.tailFrom(windows.size() - 2);
+        final ListX<IntList> tail = windows.tailFrom(windows.size() - 2);
 
         It.println("tail = " + tail);
 
@@ -33,19 +33,19 @@ class IntWindowedSequenceTest {
 
     @Test
     void testLargeVariableWindowedSequence() {
-        final ListX<IntListX> windows = IntRange.of(0, 2_000_000)
+        final ListX<IntList> windows = IntRange.of(0, 2_000_000)
                 .windowed(2_000, size -> --size, 1, step -> ++step, true)
                 .toListX();
 
-        final IntListX lastWindow = windows.last();
+        final IntList lastWindow = windows.last();
 
-        final IntListX firstWindow = windows.first();
+        final IntList firstWindow = windows.first();
 
-        final ListX<IntListX> head = windows.headTo(5);
+        final ListX<IntList> head = windows.headTo(5);
 
         head.forEach(It::println);
 
-        final ListX<IntListX> tail = windows.tailFrom(windows.size() - 5);
+        final ListX<IntList> tail = windows.tailFrom(windows.size() - 5);
 
         tail.forEach(It::println);
 

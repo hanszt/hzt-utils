@@ -10,7 +10,7 @@ class IntMutableCollectionTest {
 
     @Test
     void testRemoveAll() {
-        final IntMutableListX list = IntMutableList.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
+        final IntMutableList list = IntMutableList.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
         final boolean removedAll = list.removeAll( 3, 4, 6, 5, 7, 8);
 
         assertAll(
@@ -21,7 +21,7 @@ class IntMutableCollectionTest {
 
     @Test
     void testAddAll() {
-        final IntMutableListX list = IntMutableList.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
+        final IntMutableList list = IntMutableList.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
         final boolean addedAll = list.addAll( 3, 4, 6, 5, 7, 8);
 
         assertAll(
@@ -32,7 +32,7 @@ class IntMutableCollectionTest {
 
     @Test
     void testRemoveIf() {
-        final IntMutableListX list = IntMutableList.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
+        final IntMutableList list = IntMutableList.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
         final boolean removed = list.removeIf(i -> i % 2 == 0);
 
         assertAll(

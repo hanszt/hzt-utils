@@ -88,9 +88,9 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
 
     @Override
     public IntList shuffled() {
-        final IntMutableListX mutableListX = IntMutableList.of(this);
-        PrimitiveListHelper.shuffle(mutableListX);
-        return mutableListX;
+        final IntMutableList mutableList = IntMutableList.of(this);
+        PrimitiveListHelper.shuffle(mutableList);
+        return mutableList;
     }
 
     private int lastIndexOfRange(int value, int end) {

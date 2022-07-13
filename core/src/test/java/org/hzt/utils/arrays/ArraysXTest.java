@@ -21,7 +21,7 @@ class ArraysXTest {
     @Test
     void testReverseArray() {
         String[] strings = {"this", "is", "a", "test"};
-        final var strings2 = ArraysX.copyOf(strings);
+        final String[] strings2 = ArraysX.copyOf(strings);
 
         Arrays.sort(strings, Comparator.reverseOrder());
         Arrays.sort(strings2);

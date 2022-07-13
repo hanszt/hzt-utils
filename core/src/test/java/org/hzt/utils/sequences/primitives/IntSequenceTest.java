@@ -25,7 +25,7 @@ class IntSequenceTest {
 
     @Test
     void testSteppedIntRange() {
-        IntListX list = IntRange.until(15)
+        IntList list = IntRange.until(15)
                 .step(4)
                 .onEach(System.out::println)
                 .toList();

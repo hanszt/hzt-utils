@@ -14,7 +14,7 @@ class IntListTest {
 
     @Test
     void testIntListContains() {
-        final IntListX ints = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 4, 3, 2, 5, 2, 2342, 3, 23);
+        final IntList ints = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 4, 3, 2, 5, 2, 2342, 3, 23);
 
         assertAll(
                 () -> assertTrue(ints.contains(3)),
@@ -25,7 +25,7 @@ class IntListTest {
 
     @Test
     void testLargeIntList() {
-        final IntListX ints = IntSequence.generate(0, i -> ++i)
+        final IntList ints = IntSequence.generate(0, i -> ++i)
                 .take(100_000)
                 .toList();
 
@@ -42,7 +42,7 @@ class IntListTest {
 
     @Test
     void testLastIndexOf() {
-        final IntListX intListX = IntList.of(1, 2, 4, 3, 5, 4, 3);
+        final IntList intListX = IntList.of(1, 2, 4, 3, 5, 4, 3);
 
         final int index = intListX.lastIndexOf(4);
 
@@ -51,9 +51,9 @@ class IntListTest {
 
     @Test
     void testShuffled() {
-        final IntListX intListX = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        final IntList intListX = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        final IntListX shuffled = intListX.shuffled();
+        final IntList shuffled = intListX.shuffled();
 
         System.out.println("shuffled = " + shuffled);
 
@@ -73,7 +73,7 @@ class IntListTest {
 
     @Test
     void testIndices() {
-        final IntListX intList = IntList.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
+        final IntList intList = IntList.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
         int[] indices1 = new int[intList.size()];
         final IntRange indices = intList.indices();
         for (int i : indices) {

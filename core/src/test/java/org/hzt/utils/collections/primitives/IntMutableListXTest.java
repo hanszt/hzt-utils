@@ -14,7 +14,7 @@ class IntMutableListXTest {
 
     @Test
     void testDifferentMethods() {
-        final IntMutableListX ints = IntMutableList.empty();
+        final IntMutableList ints = IntMutableList.empty();
         assertTrue(ints.isEmpty());
         ints.add(1);
         assertAll(
@@ -44,7 +44,7 @@ class IntMutableListXTest {
 
     @Test
     void testCopyConstructor() {
-        final IntMutableListX ints = IntMutableList.empty();
+        final IntMutableList ints = IntMutableList.empty();
         ints.add(2);
         ints.add(-43);
         ints.add(1231);
@@ -52,7 +52,7 @@ class IntMutableListXTest {
                 .take(10_000_000)
                 .forEachInt(ints::add);
 
-        final IntMutableListX intsCopy = IntMutableList.of(ints);
+        final IntMutableList intsCopy = IntMutableList.of(ints);
 
         assertAll(
                 () -> assertEquals(10_000_003, ints.size()),
@@ -62,7 +62,7 @@ class IntMutableListXTest {
 
     @Test
     void testSortIntList() {
-        final IntMutableListX ints = IntSequence.generate(10_000, i -> --i)
+        final IntMutableList ints = IntSequence.generate(10_000, i -> --i)
                 .take(10_000)
                 .shuffled()
                 .toMutableList();
@@ -74,7 +74,7 @@ class IntMutableListXTest {
 
     @Test
     void testSortReversedIntList() {
-        final IntMutableListX ints = IntSequence.generate(-10_000, i -> ++i)
+        final IntMutableList ints = IntSequence.generate(-10_000, i -> ++i)
                 .take(10_000)
                 .shuffled()
                 .toMutableList();

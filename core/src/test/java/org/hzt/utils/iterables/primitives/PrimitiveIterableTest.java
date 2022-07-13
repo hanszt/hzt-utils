@@ -36,7 +36,7 @@ class PrimitiveIterableTest {
     void testTripWire() {
         System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
-        final IntListX integers = IntList.of(1, 2, 3, 4, 9, 5, 6, 6);
+        final IntList integers = IntList.of(1, 2, 3, 4, 9, 5, 6, 6);
         integers.iterator().forEachRemaining((Consumer<? super Integer>) System.out::println);
 
         final String property = System.getProperty("org.openjdk.java.util.stream.tripwire");

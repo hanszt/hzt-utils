@@ -18,7 +18,7 @@ class DoubleListTest {
 
     @Test
     void testContainsAll() {
-        final DoubleListX doubles = DoubleList.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
+        final DoubleList doubles = DoubleList.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
 
         assertAll(
                 () -> assertTrue(doubles.containsAll(1, 4, 2, 6, 5)),
@@ -28,7 +28,7 @@ class DoubleListTest {
 
     @Test
     void testLastIndexOf() {
-        final DoubleListX list = DoubleList.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
+        final DoubleList list = DoubleList.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
 
         final int index = list.lastIndexOf(4);
 
@@ -71,7 +71,7 @@ class DoubleListTest {
     private double[] toDoubleArrayByCommaPattern(String string) {
         return commaPattern.splitAsStream(string)
                 .filter(not(String::isEmpty))
-                .map(String::strip)
+                .map(String::trim)
                 .mapToDouble(Double::parseDouble)
                 .toArray();
     }

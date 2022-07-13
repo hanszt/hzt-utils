@@ -46,7 +46,7 @@ public class DoubleTimSortBenchmark {
 
     @Benchmark
     public DoubleMutableList doubleListSort() {
-        final DoubleMutableListX list = DoubleMutableList.of(primitiveList);
+        final DoubleMutableList list = DoubleMutableList.of(primitiveList);
         list.sort();
         return list;
     }
@@ -77,7 +77,7 @@ public class DoubleTimSortBenchmark {
 
     @Benchmark
     public DoubleMutableList doubleListSortReversed() {
-        final DoubleMutableListX list = DoubleMutableList.of(primitiveList);
+        final DoubleMutableList list = DoubleMutableList.of(primitiveList);
         list.sort(DoubleComparator.reverseOrder());
         return list;
     }

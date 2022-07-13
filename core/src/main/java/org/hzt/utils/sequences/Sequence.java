@@ -2,6 +2,7 @@ package org.hzt.utils.sequences;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.MapX;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;

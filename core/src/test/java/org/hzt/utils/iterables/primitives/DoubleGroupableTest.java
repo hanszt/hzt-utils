@@ -1,7 +1,7 @@
 package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.collections.MapX;
-import org.hzt.utils.collections.primitives.DoubleMutableListX;
+import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.ranges.DoubleRange;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,7 @@ class DoubleGroupableTest {
 
     @Test
     void testGroupBy() {
-        final MapX<String, DoubleMutableListX> entries = DoubleRange
+        final MapX<String, DoubleMutableList> entries = DoubleRange
                 .closed(-10 * Math.PI, 10 * Math.PI, 0.5 * Math.PI)
                 .map(x -> x % (2 * Math.PI))
                 .groupBy(String::valueOf);

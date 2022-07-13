@@ -1,6 +1,6 @@
 package org.hzt.utils.iterables.primitives;
 
-import org.hzt.utils.collections.primitives.IntListX;
+import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.collectors.primitves.IntCollectors;
 import org.hzt.utils.sequences.primitives.IntSequence;
@@ -14,7 +14,7 @@ class IntCollectableTest {
 
     @Test
     void testCollect() {
-        final IntMutableListX listX = IntSequence.generate(0, i -> ++i)
+        final IntMutableList listX = IntSequence.generate(0, i -> ++i)
                 .take(1_000)
                 .collect(IntMutableList::empty, IntMutableList::add);
 
@@ -23,14 +23,14 @@ class IntCollectableTest {
 
     @Test
     void testTeeing() {
-        final Pair<IntListX, IntMutableListX> teeing = IntSequence.generate(0, i -> ++i)
+        final Pair<IntList, IntMutableList> teeing = IntSequence.generate(0, i -> ++i)
                 .take(1_000)
                 .teeing(IntCollectors.toList(),
                         IntCollectors.toMutableList(),
                         Pair::of);
 
-        final IntListX integers = teeing.first();
-        final IntMutableListX mutableIntList = teeing.second();
+        final IntList integers = teeing.first();
+        final IntMutableList mutableIntList = teeing.second();
 
         assertAll(
                 () -> assertEquals(1_000, integers.size()),

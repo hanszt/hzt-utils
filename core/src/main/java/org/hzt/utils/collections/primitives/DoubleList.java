@@ -109,7 +109,7 @@ public interface DoubleList extends DoubleCollection,
 
     @Override
     default DoubleList sortedDescending() {
-        final var array = toArray();
+        final double[] array = toArray();
         Arrays.sort(array);
         PrimitiveArrays.reverse(array);
         return DoubleList.of(array);

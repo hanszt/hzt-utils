@@ -3,9 +3,11 @@ package org.hzt.utils.sequences.primitives;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.DoubleList;
+import org.hzt.utils.collections.primitives.DoubleMutableSet;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
+import org.hzt.utils.tuples.Triple;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -30,7 +32,7 @@ class DoubleSequenceTest {
                 .toArray();
 
 
-        final long[] longs = DoubleSequence.of(array)
+        final long[] actual = DoubleSequence.of(array)
                 .filter(d -> d > 3)
                 .mapToLong(It::doubleAsLong)
                 .toArray();
@@ -220,7 +222,7 @@ class DoubleSequenceTest {
 
         It.println("roundedGoldenRatio = " + roundedGoldenRatio);
 
-        final DoubleListX approximations = IntSequence.generate(1, i -> ++i)
+        final DoubleList approximations = IntSequence.generate(1, i -> ++i)
                 .mapToLong(Generator::fibSum)
                 .windowed(2)
                 .mapToDouble(w -> (double) w.last() / w.first())
@@ -239,7 +241,7 @@ class DoubleSequenceTest {
 
     @Test
     void testDistinct() {
-        final var array = DoubleSequence.of(Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Math.PI, Double.NaN, Double.NaN)
+        final double[] array = DoubleSequence.of(Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Math.PI, Double.NaN, Double.NaN)
                 .distinct()
                 .toArray();
 
@@ -248,7 +250,7 @@ class DoubleSequenceTest {
 
     @Test
     void testDoublesToThree() {
-        final var triple = DoubleSequence
+        final Triple<Double, DoubleMutableSet, Double> triple = DoubleSequence
                 .of(Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Math.PI, Double.NaN, Double.NaN)
                 .filterNot(Double::isNaN)
                 .doublesToThree(DoubleSequence::sum, DoubleSequence::toMutableSet, DoubleSequence::average);

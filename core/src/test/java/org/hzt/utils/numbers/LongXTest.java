@@ -9,7 +9,7 @@ class LongXTest {
 
     @Test
     void testGenerateFibonacciNrs() {
-        final LongListX longs = LongX.fibonacciSequence()
+        final LongList longs = LongX.fibonacciSequence()
                 .take(10)
                 .toList();
 

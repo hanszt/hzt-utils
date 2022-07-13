@@ -2,9 +2,9 @@ package org.hzt.utils.statistics;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
-import org.hzt.utils.collections.primitives.DoubleListX;
-import org.hzt.utils.collections.primitives.IntListX;
-import org.hzt.utils.collections.primitives.LongListX;
+import org.hzt.utils.collections.primitives.DoubleList;
+import org.hzt.utils.collections.primitives.IntList;
+import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
 
@@ -25,9 +25,9 @@ class StatisticsTest {
                 .map(d -> (int) (d * 100))
                 .toListX();
 
-        final LongListX intRange = list.mapToLong(It::asLong);
-        final IntListX longRange = intRange.mapToInt(It::longAsInt);
-        final DoubleListX doubleRange = intRange.mapToDouble(It::asDouble);
+        final LongList intRange = list.mapToLong(It::asLong);
+        final IntList longRange = intRange.mapToInt(It::longAsInt);
+        final DoubleList doubleRange = intRange.mapToDouble(It::asDouble);
 
         final double standardDeviationIntRange = intRange.stats().getStandardDeviation();
 

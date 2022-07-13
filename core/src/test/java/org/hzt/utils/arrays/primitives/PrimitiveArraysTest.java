@@ -1,6 +1,7 @@
 package org.hzt.utils.arrays.primitives;
 
 import org.hzt.utils.It;
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.LongList;

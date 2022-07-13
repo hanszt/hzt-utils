@@ -12,7 +12,7 @@ class IntReducableTest {
 
     @Test
     void testReduceTwo() {
-        final IntListX integers = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        final IntList integers = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
         integers.forEachInt(It::println);
 

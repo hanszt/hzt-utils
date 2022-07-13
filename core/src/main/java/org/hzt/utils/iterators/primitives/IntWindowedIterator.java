@@ -108,7 +108,7 @@ public final class IntWindowedIterator extends AbstractIterator<IntList> {
 
     @Override
     protected void computeNext() {
-        final IntMutableListX next = computeNextWindow();
+        final IntMutableList next = computeNextWindow();
         if (next.isNotEmpty()) {
             setNext(next);
         } else {

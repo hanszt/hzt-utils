@@ -47,4 +47,11 @@ final class PrimitiveListHelper {
         arr[i] = arr[j];
         arr[j] = tmp;
     }
+
+    static int checkIndex(int index, int length) {
+        if (index < 0 || index >= length) {
+            throw new IndexOutOfBoundsException("Index out of range: " + index);
+        }
+        return index;
+    }
 }

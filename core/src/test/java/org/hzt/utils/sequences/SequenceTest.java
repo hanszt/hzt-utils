@@ -219,7 +219,7 @@ class SequenceTest {
         final ListX<CollectionX<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
                 SetX.of("test"));
 
-        final IntListX result = list.asSequence()
+        final IntList result = list.asSequence()
                 .mapMultiToInt((strings, accept) -> strings
                         .mapToInt(String::length)
                         .forEachInt(accept))
@@ -394,7 +394,7 @@ class SequenceTest {
         void testGenerateWindowedThenMapMultiToList() {
             MutableListX<ListX<Integer>> windows = MutableListX.empty();
 
-            final var result = Sequence.generate(0, i -> ++i)
+            final ListX<Integer> result = Sequence.generate(0, i -> ++i)
                     .windowed(8, 3)
                     .onEach(windows::add)
                     .takeWhile(s -> s.intSumOf(It::asInt) < 1_000_000)
@@ -658,7 +658,7 @@ class SequenceTest {
     void testSequenceAsIntRange() {
         final int year = 2020;
 
-        final IntListX daysOfYear = Sequence
+        final IntList daysOfYear = Sequence
                 .generate(LocalDate.of(year, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhile(date -> date.getYear() == year)
                 .mapToInt(LocalDate::getDayOfMonth)
@@ -800,10 +800,10 @@ class SequenceTest {
                 .onEach(It::println)
                 .mapToInt(It::asInt);
 
-        final IntListX integers = intSequence.toList();
+        final IntList integers = intSequence.toList();
         final long sum = intSequence.sum();
 
-        final Pair<IntMutableListX, Integer> pair = intSequence.boxed()
+        final Pair<IntMutableList, Integer> pair = intSequence.boxed()
                 .foldTwo(IntMutableList.empty(), IntMutableList::plus, 0, Integer::sum);
 
         assertAll(

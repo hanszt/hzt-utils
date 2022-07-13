@@ -35,8 +35,8 @@ public interface IntGroupable extends PrimitiveGroupable<Integer, IntMutableList
 
     @Override
     default Pair<IntMutableList, IntMutableList> partition(IntPredicate predicate) {
-        final IntMutableListX matchingList = IntMutableList.empty();
-        final IntMutableListX nonMatchingList = IntMutableList.empty();
+        final IntMutableList matchingList = IntMutableList.empty();
+        final IntMutableList nonMatchingList = IntMutableList.empty();
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             final int nextInt = iterator.nextInt();

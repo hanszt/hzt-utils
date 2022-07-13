@@ -224,7 +224,7 @@ class LongSequenceTest {
 
     @Test
     void testWindowedLargeLongSequence() {
-        final LongListX sums = LongSequence.generate(0, l -> ++l)
+        final LongList sums = LongSequence.generate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, LongList::sum)
                 .toList();
@@ -238,7 +238,7 @@ class LongSequenceTest {
 
     @Test
     void testSkipWhileInclusive() {
-        final LongListX longs = LongSequence.generate(0L, l -> ++l)
+        final LongList longs = LongSequence.generate(0L, l -> ++l)
                 .map(Generator::fib)
                 .skipWhileInclusive(l -> l < 3)
                 .takeWhileInclusive(l -> l < 55)

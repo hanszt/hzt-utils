@@ -38,7 +38,7 @@ public final class ArraysX {
     }
 
     public static <T> void swap(T[] array, int index1, int index2) {
-        final var temp = array[index1];
+        final T temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }

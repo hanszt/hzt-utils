@@ -35,8 +35,8 @@ public interface LongGroupable extends PrimitiveGroupable<Long, LongMutableList,
 
     @Override
     default Pair<LongMutableList, LongMutableList> partition(LongPredicate predicate) {
-        final LongMutableListX matchingList = LongMutableList.empty();
-        final LongMutableListX nonMatchingList = LongMutableList.empty();
+        final LongMutableList matchingList = LongMutableList.empty();
+        final LongMutableList nonMatchingList = LongMutableList.empty();
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             final long nextLong = iterator.nextLong();

@@ -1,16 +1,16 @@
 package org.hzt.utils.sequences;
 
+import org.hzt.utils.function.IndexedFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
-import java.util.function.BiFunction;
 
 final class TransformingIndexedSequence<T, R> implements Sequence<R> {
 
     private final Sequence<T> upStream;
-    private final BiFunction<Integer, ? super T, ? extends R> mapper;
+    private final IndexedFunction<? super T, ? extends R> mapper;
 
-    TransformingIndexedSequence(Sequence<T> upStream, BiFunction<Integer, ? super T, ? extends R> mapper) {
+    TransformingIndexedSequence(Sequence<T> upStream, IndexedFunction<? super T, ? extends R> mapper) {
         this.upStream = upStream;
         this.mapper = mapper;
     }

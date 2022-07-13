@@ -1,6 +1,6 @@
 package org.hzt.utils.iterables;
 
-import org.hzt.utils.function.primitives.IndexedConsumer;
+import org.hzt.utils.function.IndexedConsumer;
 import org.hzt.utils.iterators.IndexIterator;
 import org.hzt.utils.iterators.IndexedIterator;
 import org.hzt.utils.tuples.IndexedValue;

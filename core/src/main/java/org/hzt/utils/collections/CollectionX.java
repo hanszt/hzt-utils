@@ -7,6 +7,8 @@ import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableList;
+import org.hzt.utils.function.IndexedFunction;
+import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.iterables.IterableX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.strings.StringX;
@@ -20,7 +22,6 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -80,7 +81,7 @@ public interface CollectionX<E> extends IterableX<E> {
         return ListX.copyOfNullsAllowed(listX);
     }
 
-    default <R> ListX<R> mapIndexed(@NotNull BiFunction<Integer, ? super E, ? extends R> mapper) {
+    default <R> ListX<R> mapIndexed(@NotNull IndexedFunction<? super E, ? extends R> mapper) {
         return ListX.copyOf(mapIndexedTo(() -> MutableListX.withInitCapacity(size()), mapper));
     }
 
@@ -88,11 +89,12 @@ public interface CollectionX<E> extends IterableX<E> {
         return ListX.copyOf(filterTo(() -> MutableListX.withInitCapacity(size()), predicate));
     }
 
-    default <R> ListX<E> filterBy(@NotNull Function<? super E, ? extends R> selector, @NotNull Predicate<R> predicate) {
-        return asSequence().filter(Objects::nonNull).filter(t -> predicate.test(selector.apply(t))).toListX();
+    default <R> ListX<E> filterBy(@NotNull Function<? super E, ? extends R> selector,
+                                  @NotNull Predicate<? super R> predicate) {
+        return filter(Objects::nonNull).filter(t -> predicate.test(selector.apply(t)));
     }
 
-    default ListX<E> filterIndexed(@NotNull BiPredicate<? super Integer, ? super E> predicate) {
+    default ListX<E> filterIndexed(@NotNull IndexedPredicate<? super E> predicate) {
         return ListX.copyOf(filterIndexedTo(() -> MutableListX.withInitCapacity(size()), predicate));
     }
 

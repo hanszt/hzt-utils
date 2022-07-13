@@ -23,7 +23,9 @@ public interface DoubleCollectable extends DoubleArrayable, PrimitiveCollectable
         return collect(supplier, accumulator, It::self);
     }
 
-    default <A, R> R collect(Supplier<A> supplier, ObjDoubleConsumer<A> accumulator, Function<A, R> finisher) {
+    default <A, R> R collect(@NotNull Supplier<? extends A> supplier,
+                             @NotNull ObjDoubleConsumer<? super A> accumulator,
+                             @NotNull Function<? super A, ? extends R> finisher) {
         PrimitiveIterator.OfDouble iterator = iterator();
         final var result = supplier.get();
         while (iterator.hasNext()) {

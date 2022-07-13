@@ -42,6 +42,9 @@ public final class IntRange extends IntProgression implements ClosedRange<Intege
         return IntSequence.of(array).all(this::contains);
     }
 
+    public boolean contains(int value) {
+        return start() <= value && value <= endInclusive();
+    }
     @Override
     public @NotNull Integer start() {
         return super.start();

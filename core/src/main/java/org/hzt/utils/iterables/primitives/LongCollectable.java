@@ -19,11 +19,14 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface LongCollectable extends LongArrayable, PrimitiveCollectable<LongCollection> {
 
-    default <R> R collect(Supplier<R> supplier, ObjLongConsumer<R> accumulator) {
+    default <R> R collect(@NotNull Supplier<R> supplier,
+                          @NotNull ObjLongConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
     }
 
-    default <A, R> R collect(Supplier<A> supplier, ObjLongConsumer<A> accumulator, Function<A, R> finisher) {
+    default <A, R> R collect(@NotNull Supplier<A> supplier,
+                             @NotNull ObjLongConsumer<A> accumulator,
+                             @NotNull Function<A, R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
         final var result = supplier.get();
         while (iterator.hasNext()) {
@@ -32,7 +35,7 @@ public interface LongCollectable extends LongArrayable, PrimitiveCollectable<Lon
         return finisher.apply(result);
     }
 
-    default <A, R> R collect(LongCollector<A, R> collector) {
+    default <A, R> R collect(@NotNull LongCollector<A, R> collector) {
         return collect(collector.supplier(), collector.accumulator(), collector.finisher());
     }
 

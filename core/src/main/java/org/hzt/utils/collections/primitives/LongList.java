@@ -38,7 +38,7 @@ public interface LongList extends LongCollection,
         return new LongArrayList(array);
     }
 
-    static LongList build(Consumer<LongMutableList> factory) {
+    static LongList build(Consumer<? super LongMutableList> factory) {
         final LongMutableList listX = LongMutableList.empty();
         factory.accept(listX);
         return listX;

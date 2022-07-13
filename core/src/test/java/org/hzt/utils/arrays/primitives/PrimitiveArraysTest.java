@@ -12,6 +12,7 @@ import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.sequences.primitives.LongSequence;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -105,7 +106,7 @@ class PrimitiveArraysTest {
 
         It.println(Arrays.toString(array));
 
-        assertArrayEquals(new long[] {9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, array);
+        assertArrayEquals(new long[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, array);
     }
 
     @Test
@@ -163,6 +164,7 @@ class PrimitiveArraysTest {
 
         assertArrayEquals(expected, booleans);
     }
+
     @Test
     void testLongArrayToBooleanArray() {
         long[] input = {1, 4, 5, 3, 6, 7, 2, Long.MAX_VALUE};
@@ -199,4 +201,31 @@ class PrimitiveArraysTest {
         assertFalse(sorted);
     }
 
+    @Nested
+    class ReverseMethodTests {
+
+        @Test
+        void testSortAndReverseInts() {
+            int[] array = {1, 3, 4, 2, 5, 6, 7};
+            Arrays.sort(array);
+            PrimitiveArrays.reverse(array);
+            assertArrayEquals(new int[]{7, 6, 5, 4, 3, 2, 1}, array);
+        }
+
+        @Test
+        void testSortAndReverseLongs() {
+            long[] array = {1, 3, Long.MAX_VALUE, 4, 2, 5, 6, 7};
+            Arrays.sort(array);
+            PrimitiveArrays.reverse(array);
+            assertArrayEquals(new long[]{Long.MAX_VALUE, 7, 6, 5, 4, 3, 2, 1}, array);
+        }
+
+        @Test
+        void testSortAndReverseDoubles() {
+            double[] array = {1, 3, 4, Math.PI, 2, 5, DoubleX.GOLDEN_RATIO};
+            Arrays.sort(array);
+            PrimitiveArrays.reverse(array);
+            assertArrayEquals(new double[]{5, 4, Math.PI, 3, 2, DoubleX.GOLDEN_RATIO, 1}, array);
+        }
+    }
 }

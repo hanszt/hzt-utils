@@ -8,6 +8,7 @@ import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
+@SuppressWarnings("squid:S2384")
 public final class DoubleCollectorImpl<A, R> implements DoubleCollector<A, R> {
 
     private final Supplier<A> supplier;
@@ -28,7 +29,9 @@ public final class DoubleCollectorImpl<A, R> implements DoubleCollector<A, R> {
         this.characteristics = characteristics;
     }
 
-    DoubleCollectorImpl(Supplier<A> supplier, ObjDoubleConsumer<A> accumulator, Function<A, R> finisher) {
+    DoubleCollectorImpl(Supplier<A> supplier,
+                        ObjDoubleConsumer<A> accumulator,
+                        Function<A, R> finisher) {
         this(supplier, accumulator, (a, b) -> {
             throw new UnsupportedOperationException("This collector implementation does not support combining operations");
         }, finisher, Collections.emptySet());

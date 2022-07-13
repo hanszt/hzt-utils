@@ -46,7 +46,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
         return new ImmutableListX<>(values);
     }
 
-    static <E> ListX<E> build(Consumer<MutableListX<E>> mutableListConsumer) {
+    static <E> ListX<E> build(Consumer<? super MutableListX<E>> mutableListConsumer) {
         MutableListX<E> list = MutableListX.empty();
         mutableListConsumer.accept(list);
         return copyOf(list);

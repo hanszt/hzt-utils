@@ -38,7 +38,7 @@ public interface IntList extends IntCollection,
         return new IntArrayList(array);
     }
 
-    static IntList build(Consumer<IntMutableList> factory) {
+    static IntList build(Consumer<? super IntMutableList> factory) {
         final IntMutableList listX = IntMutableList.empty();
         factory.accept(listX);
         return listX;

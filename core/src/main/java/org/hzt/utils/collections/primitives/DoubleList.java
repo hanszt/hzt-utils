@@ -6,7 +6,6 @@ import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.markerinterfaces.BinarySearchable;
-import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +37,7 @@ public interface DoubleList extends DoubleCollection,
         return new DoubleArrayList(array);
     }
 
-    static DoubleList build(Consumer<DoubleMutableList> factory) {
+    static DoubleList build(Consumer<? super DoubleMutableList> factory) {
         final DoubleMutableList listX = DoubleMutableList.empty();
         factory.accept(listX);
         return listX;
@@ -109,7 +108,10 @@ public interface DoubleList extends DoubleCollection,
 
     @Override
     default DoubleList sortedDescending() {
-        return sorted(DoubleX::compareReversed);
+        final var array = toArray();
+        Arrays.sort(array);
+        PrimitiveArrays.reverse(array);
+        return DoubleList.of(array);
     }
 
     @Override

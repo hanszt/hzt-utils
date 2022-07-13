@@ -122,6 +122,42 @@ public final class PrimitiveArrays {
         return result;
     }
 
+    public static void reverse(int[] array) {
+        for (int lowI = 0, highI = array.length - 1; lowI < array.length / 2; lowI++, highI--) {
+            swap(array, lowI, highI);
+        }
+    }
+
+    public static void swap(int[] array, int index1, int index2) {
+        final var temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+    }
+
+    public static void reverse(long[] array) {
+        for (int lowI = 0, highI = array.length - 1; lowI < array.length / 2; lowI++, highI--) {
+            swap(array, lowI, highI);
+        }
+    }
+
+    public static void swap(long[] array, int index1, int index2) {
+        final var temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+    }
+
+    public static void reverse(double[] array) {
+        for (int lowI = 0, highI = array.length - 1; lowI < array.length / 2; lowI++, highI--) {
+            swap(array, lowI, highI);
+        }
+    }
+
+    public static void swap(double[] array, int index1, int index2) {
+        final var temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+    }
+
     public static void sort(@NotNull IntComparator comparator, int @NotNull ... array) {
         sort(0, array.length, comparator, array);
     }

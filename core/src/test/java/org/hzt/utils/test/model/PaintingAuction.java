@@ -1,5 +1,6 @@
 package org.hzt.utils.test.model;
 
+import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.Transformable;
 import org.hzt.test.model.Painting;
@@ -16,7 +17,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public final class PaintingAuction implements
-        Comparable<PaintingAuction>, Sequence<Painting>, Transformable<PaintingAuction> {
+        ComparableX<PaintingAuction>, Sequence<Painting>, Transformable<PaintingAuction> {
 
     private final String name;
     private final LocalDate dateOfOpening;

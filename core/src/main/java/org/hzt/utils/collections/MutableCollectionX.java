@@ -31,9 +31,9 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E> {
     }
 
     default boolean addAll(Iterable<? extends E> iterable) {
-        if (iterable instanceof Collection<?>) {
+        if (iterable instanceof Collection<?> c) {
             //noinspection unchecked
-            return addAll((Collection<? extends E>) iterable);
+            return addAll((Collection<? extends E>) c);
         }
         boolean allAdded = true;
         for (E item : iterable) {

@@ -103,8 +103,8 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     private static void consumeForEach(Iterable<Long> iterable, LongConsumer consumer) {
-        if (iterable instanceof OfLong) {
-            ((OfLong) iterable).forEachLong(consumer);
+        if (iterable instanceof OfLong iterableOfLong) {
+            iterableOfLong.forEachLong(consumer);
         } else {
             iterable.forEach(consumer::accept);
         }

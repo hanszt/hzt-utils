@@ -47,8 +47,8 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     static IntSequence of(Iterable<Integer> iterable) {
-        if (iterable instanceof PrimitiveIterable.OfInt intIterable) {
-            return intIterable::iterator;
+        if (iterable instanceof PrimitiveIterable.OfInt iterableOfInt) {
+            return iterableOfInt::iterator;
         }
         return of(iterable, It::asInt);
     }
@@ -104,8 +104,8 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     private static void consumeForEach(Iterable<Integer> iterable, IntConsumer consumer) {
-        if (iterable instanceof OfInt) {
-            ((OfInt) iterable).forEachInt(consumer);
+        if (iterable instanceof OfInt iterableOfInt) {
+            iterableOfInt.forEachInt(consumer);
         } else {
             iterable.forEach(consumer::accept);
         }

@@ -70,9 +70,9 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
         final Iterable<K> keyIterable = this::keyIterator;
         for (K e : keyIterable) {
             var iterable = mapper.apply(e);
-            if (iterable instanceof Collection<?>) {
+            if (iterable instanceof Collection<?> c) {
                 //noinspection unchecked
-                destination.addAll((Collection<R>) iterable);
+                destination.addAll((Collection<R>) c);
             } else {
                 iterable.forEach(destination::add);
             }
@@ -90,9 +90,9 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
         final Iterable<V> valueIterable = this::valueIterator;
         for (V e : valueIterable) {
             var iterable = mapper.apply(e);
-            if (iterable instanceof Collection<?>) {
+            if (iterable instanceof Collection<?> c) {
                 //noinspection unchecked
-                destination.addAll((Collection<R>) iterable);
+                destination.addAll((Collection<R>) c);
             } else {
                 iterable.forEach(destination::add);
             }

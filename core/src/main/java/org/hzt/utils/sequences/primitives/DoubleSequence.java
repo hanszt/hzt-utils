@@ -101,8 +101,8 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     private static void consumeForEach(Iterable<Double> iterable, DoubleConsumer consumer) {
-        if (iterable instanceof OfDouble) {
-            ((OfDouble) iterable).forEachDouble(consumer);
+        if (iterable instanceof OfDouble iterableOfDouble) {
+            iterableOfDouble.forEachDouble(consumer);
         } else {
             iterable.forEach(consumer::accept);
         }

@@ -1,4 +1,4 @@
-package org.hzt.utils.arrays.primitives;
+package org.hzt.utils.arrays;
 
 import org.hzt.utils.PreConditions;
 

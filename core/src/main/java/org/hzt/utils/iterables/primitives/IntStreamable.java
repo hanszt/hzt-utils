@@ -6,14 +6,9 @@ import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 @FunctionalInterface
-public interface IntStreamable extends PrimitiveIterable.OfInt, Streamable<IntStream> {
+public interface IntStreamable extends PrimitiveIterable.OfInt, Streamable<Integer, IntStream> {
     @Override
     default IntStream stream() {
         return StreamSupport.intStream(spliterator(), false);
-    }
-
-    @Override
-    default IntStream parallelStream() {
-        return StreamSupport.intStream(spliterator(), true);
     }
 }

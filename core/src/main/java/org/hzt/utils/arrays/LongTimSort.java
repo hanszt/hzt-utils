@@ -1,4 +1,4 @@
-package org.hzt.utils.arrays.primitives;
+package org.hzt.utils.arrays;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.primitive_comparators.LongComparator;
@@ -53,6 +53,6 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
     }
 
     protected int compare(LongComparator comparator, long[] array1, int index1, long[] array2, int index2) {
-        return comparator.compareLong(array1[index1], array2[index2]);
+        return comparator.compare(array1[index1], array2[index2]);
     }
 }

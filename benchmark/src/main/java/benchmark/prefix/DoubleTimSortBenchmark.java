@@ -1,7 +1,7 @@
 package benchmark.prefix;
 
 import org.hzt.utils.It;
-import org.hzt.utils.arrays.primitives.PrimitiveArrays;
+import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
@@ -71,7 +71,7 @@ public class DoubleTimSortBenchmark {
     @SuppressWarnings("squid:S2384")
     public double[] primitiveArraySortReversed() {
         double[] copy = Arrays.copyOf(array, array.length);
-        PrimitiveArrays.sort(DoubleComparator.reverseOrder(), copy);
+        ArraysX.sort(DoubleComparator.reverseOrder(), copy);
         return copy;
     }
 

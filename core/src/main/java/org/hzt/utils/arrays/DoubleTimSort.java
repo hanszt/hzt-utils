@@ -1,4 +1,4 @@
-package org.hzt.utils.arrays.primitives;
+package org.hzt.utils.arrays;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
@@ -53,6 +53,6 @@ public final class DoubleTimSort extends PrimitiveTimSort<double[], DoubleCompar
     }
 
     protected int compare(DoubleComparator comparator, double[] array1, int index1, double[] array2, int index2) {
-        return comparator.compareDouble(array1[index1], array2[index2]);
+        return comparator.compare(array1[index1], array2[index2]);
     }
 }

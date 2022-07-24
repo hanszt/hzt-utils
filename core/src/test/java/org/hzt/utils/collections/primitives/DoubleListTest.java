@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.arrays.ArraysX;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -47,7 +48,7 @@ class DoubleListTest {
 
         System.out.println(Arrays.toString(doubles));
 
-        final var isSorted = DoubleList.of(doubles).isSorted();
+        final var isSorted = ArraysX.isSorted(DoubleList.of(doubles).toArray());
 
         assertTrue(isSorted);
     }
@@ -63,7 +64,7 @@ class DoubleListTest {
 
         System.out.println(Arrays.toString(doubles));
 
-        final var isSorted = DoubleList.of(doubles).isSorted();
+        final var isSorted = ArraysX.isSorted(DoubleList.of(doubles).toArray());
 
         assertFalse(isSorted);
     }
@@ -83,7 +84,7 @@ class DoubleListTest {
         double valueToSearchFor = Math.E;
 
         final int indexInSortedList = reverseOrderSortedList
-                .binarySearch(value -> reverseOrder().compareDouble(value, valueToSearchFor));
+                .binarySearch(value -> reverseOrder().compare(value, valueToSearchFor));
 
         assertEquals(4, indexInSortedList);
     }

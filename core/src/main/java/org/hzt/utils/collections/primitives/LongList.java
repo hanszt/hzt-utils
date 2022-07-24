@@ -1,6 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.arrays.primitives.PrimitiveArrays;
+import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.collections.ListHelper;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
@@ -101,34 +101,13 @@ public interface LongList extends LongCollection,
     @Override
     default LongList sorted(LongComparator comparator) {
         final var longs = toArray();
-        PrimitiveArrays.sort(comparator, longs);
+        ArraysX.sort(comparator, longs);
         return LongList.of(longs);
     }
 
     @Override
     default LongList sortedDescending() {
         return sorted(LongX::compareReversed);
-    }
-
-    @Override
-    default boolean isSorted(LongComparator comparator) {
-        final var iterator = iterator();
-        if (iterator.hasNext()) {
-            var first = iterator.nextLong();
-            while (iterator.hasNext()) {
-                final var second = iterator.nextLong();
-                if (comparator.compareLong(first, second) > 0) {
-                    return false;
-                }
-                first = second;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    default boolean isSorted() {
-        return isSorted(Long::compare);
     }
 
     /**

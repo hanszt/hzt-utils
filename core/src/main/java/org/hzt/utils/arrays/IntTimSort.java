@@ -1,4 +1,4 @@
-package org.hzt.utils.arrays.primitives;
+package org.hzt.utils.arrays;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.primitive_comparators.IntComparator;
@@ -53,6 +53,6 @@ public final class IntTimSort extends PrimitiveTimSort<int[], IntComparator> {
     }
 
     protected int compare(IntComparator comparator, int[] array1, int index1, int[] array2, int index2) {
-        return comparator.compareInt(array1[index1], array2[index2]);
+        return comparator.compare(array1[index1], array2[index2]);
     }
 }

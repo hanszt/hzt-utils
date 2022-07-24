@@ -17,7 +17,7 @@ import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 
 @FunctionalInterface
-public interface LongCollectable extends LongArrayable, PrimitiveCollectable<LongCollection> {
+public interface LongCollectable extends PrimitiveCollectable<LongCollection>, PrimitiveIterable.OfLong {
 
     default <R> R collect(@NotNull Supplier<R> supplier,
                           @NotNull ObjLongConsumer<R> accumulator) {

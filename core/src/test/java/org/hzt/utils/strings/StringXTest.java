@@ -3,14 +3,18 @@ package org.hzt.utils.strings;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.Sequence;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -166,25 +170,89 @@ class StringXTest {
         assertEquals(expected, actual);
     }
 
-    @Test
-    void testSplitToSequence() {
-        String string = "hallo, this, is, a, test -> answer";
-        final var comma = StringX.of(", ");
-        final var strings = StringX.of(string).splitToSequence(comma, " -> ");
+    @Nested
+    class StringSplittingTests {
+        @Test
+        void testSplitToSequence() {
+            String string = "hallo, this, is, a, test -> answer";
+            final var comma = StringX.of(", ");
+            final var strings = StringX.of(string).splitToSequence(comma, " -> ");
 
-        strings.forEach(System.out::println);
+            strings.forEach(System.out::println);
 
-        assertIterableEquals(Sequence.of("hallo", "this", "is", "a", "test", "answer"), strings);
-    }
+            assertIterableEquals(Sequence.of("hallo", "this", "is", "a", "test", "answer"), strings);
+        }
 
-    @Test
-    void testSplitToSequenceIgnoreCase() {
-        String string = "hallo O this o is O a, test -> answer";
-        final var oDelimiter = new StringBuilder(" o ");
-        final var strings = StringX.of(string).splitToSequence(true,", ", oDelimiter, " -> ");
+        @Test
+        void testSplitToSequenceIgnoreCase() {
+            String string = "hallo O this o is O a, test -> answer";
+            final var oDelimiter = new StringBuilder(" o ");
+            final var strings = StringX.of(string).splitToSequence(true, ", ", oDelimiter, " -> ");
 
-        strings.forEach(System.out::println);
+            strings.forEach(System.out::println);
 
-        assertIterableEquals(Sequence.of("hallo", "this", "is", "a", "test", "answer"), strings);
+            assertIterableEquals(Sequence.of("hallo", "this", "is", "a", "test", "answer"), strings);
+        }
+
+        @Test
+        void testStringTokenizerVsSplitToSequence() {
+            final var testString = "This is a\ftest\tcontaining\ndefault\rseparators";
+
+            final var tokenizer = new StringTokenizer(testString);
+            final List<String> tokens = new ArrayList<>();
+            while (tokenizer.hasMoreTokens()) {
+                tokens.add(tokenizer.nextToken());
+            }
+
+            final var split = StringX.of(testString).split(" ", "\t", "\n", "\r", "\f");
+
+            final var expected = ListX.of("This", "is", "a", "test", "containing", "default", "separators");
+
+            assertAll(
+                    () -> assertEquals(expected, split),
+                    () -> assertEquals(expected.toList(), tokens)
+            );
+        }
+
+        @Test
+        void testSplitWithoutDelimitersDoesNotSplitInputString() {
+            final var testString = "This is a\ftest\tcontaining\ndefault\rseparators";
+
+            final var split = StringX.of(testString).split();
+
+            final var expected = ListX.of(testString);
+
+            assertEquals(expected, split);
+        }
+
+        @Test
+        void testSplitToSequenceByEmptyStringYieldsSeparateCharacters() {
+            final var testString = "Test";
+
+            final var split = StringX.of(testString).splitToSequence("");
+
+            final var expected = Sequence.of("", "T", "e", "s", "t", "");
+
+            assertIterableEquals(expected, split);
+        }
+
+        @Test
+        void testSplitByEmptyStringYieldsSeparateCharacters() {
+            final var testString = "Test";
+
+            final var split1 = StringX.of(testString).split("");
+
+            final var split2 = Pattern.compile("").splitAsStream(testString)
+                    .collect(Collectors.toList());
+            split2.add(0, "");
+            split2.add("");
+
+            final var expected = ListX.of("", "T", "e", "s", "t", "");
+
+            assertAll(
+                    () -> assertEquals(expected, split1),
+                    () -> assertEquals(expected, ListX.of(split2))
+            );
+        }
     }
 }

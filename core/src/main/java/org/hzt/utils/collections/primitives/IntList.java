@@ -1,6 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.arrays.primitives.PrimitiveArrays;
+import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.collections.ListHelper;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
@@ -112,34 +112,13 @@ public interface IntList extends IntCollection,
     @Override
     default IntList sorted(IntComparator comparator) {
         final var array = toArray();
-        PrimitiveArrays.sort(comparator, array);
+        ArraysX.sort(comparator, array);
         return IntList.of(array);
     }
 
     @Override
     default IntList sortedDescending() {
         return sorted(IntX::compareReversed);
-    }
-
-    @Override
-    default boolean isSorted(IntComparator comparator) {
-        final var iterator = iterator();
-        if (iterator.hasNext()) {
-            var first = iterator.nextInt();
-            while (iterator.hasNext()) {
-                final var second = iterator.nextInt();
-                if (comparator.compareInt(first, second) > 0) {
-                    return false;
-                }
-                first = second;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    default boolean isSorted() {
-        return isSorted(Integer::compare);
     }
 
     IntList shuffled();

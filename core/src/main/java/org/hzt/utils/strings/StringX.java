@@ -3,7 +3,6 @@ package org.hzt.utils.strings;
 import org.hzt.utils.Transformable;
 import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.collections.ListX;
-import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.numbers.BigDecimalX;
 import org.hzt.utils.numbers.DoubleX;
@@ -375,10 +374,6 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return ListX.of(string.split(regex.toString(), limit));
     }
 
-    public ListX<String> split(final @NotNull CharSequence delimiter) {
-        return split(0, delimiter);
-    }
-
     public ListX<String> split(final @NotNull CharSequence... delimiters) {
         return splitToSequence(false, delimiters).toListX();
     }
@@ -434,42 +429,6 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
             }
         }
         return null;
-    }
-
-    public ListX<String> split(final int limit, @NotNull final CharSequence delimiter) {
-        final var delimiterAsString = StringX.of(delimiter).toString();
-        return split(delimiterAsString, limit);
-    }
-
-    /**
-     * @param delimiter the delimiter
-     * @param limit the limit to which to split
-     * @return a list with split strings
-     *
-     * This method is inspired by the Kotlin standard library
-     */
-    private ListX<String> split(final String delimiter, final int limit) {
-        require(limit >= 0, () -> "Limit must be non-negative, but was " + limit);
-        var currentOffset = 0;
-        var nextIndex = indexOf(delimiter, currentOffset);
-        if (nextIndex == -1 || limit == 1) {
-            return ListX.of(this.toString());
-        }
-
-        boolean isLimited = limit > 0;
-        MutableListX<String> result = MutableListX.withInitCapacity(isLimited ? Math.min(limit, 10) : 10);
-        do {
-            result.add(string.substring(currentOffset, nextIndex));
-            currentOffset = nextIndex + delimiter.length();
-            // Do not search for next occurrence if we're reaching limit
-            if (isLimited && result.size() == limit - 1) {
-                break;
-            }
-            nextIndex = indexOf(delimiter, currentOffset);
-        } while (nextIndex != -1);
-
-        result.add(string.substring(currentOffset));
-        return result;
     }
 
     public static StringX join(CharSequence delimiter, CharSequence... elements) {

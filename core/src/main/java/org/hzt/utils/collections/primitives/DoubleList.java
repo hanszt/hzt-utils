@@ -1,6 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.arrays.primitives.PrimitiveArrays;
+import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.collections.ListHelper;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
@@ -102,7 +102,7 @@ public interface DoubleList extends DoubleCollection,
     @Override
     default DoubleList sorted(DoubleComparator comparator) {
         final var array = toArray();
-        PrimitiveArrays.sort(comparator, array);
+        ArraysX.sort(comparator, array);
         return DoubleList.of(array);
     }
 
@@ -110,29 +110,8 @@ public interface DoubleList extends DoubleCollection,
     default DoubleList sortedDescending() {
         final var array = toArray();
         Arrays.sort(array);
-        PrimitiveArrays.reverse(array);
+        ArraysX.reverse(array);
         return DoubleList.of(array);
-    }
-
-    @Override
-    default boolean isSorted(DoubleComparator comparator) {
-        final var iterator = iterator();
-        if (iterator.hasNext()) {
-            var first = iterator.nextDouble();
-            while (iterator.hasNext()) {
-                final var second = iterator.nextDouble();
-                if (comparator.compareDouble(first, second) > 0) {
-                    return false;
-                }
-                first = second;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    default boolean isSorted() {
-        return isSorted(Double::compare);
     }
 
     /**

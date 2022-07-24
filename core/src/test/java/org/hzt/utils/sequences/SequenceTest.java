@@ -14,6 +14,7 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
+import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.ranges.IntRange;
@@ -38,12 +39,16 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -870,5 +875,50 @@ class SequenceTest {
         System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
         assertEquals(9910, integers.size());
+    }
+
+    @Nested
+    class SequenceFromNonIterableTests {
+
+
+        @Test
+        void testSequenceFromNonIterable() {
+            final var nodes = new Nodes("hello", "this", "is", "a", "test");
+
+            final var index = new AtomicInteger();
+            final AtomicIterator<String> atomicIterator = action -> {
+                boolean hasNext = index.get() < nodes.size();
+                if (hasNext) {
+                    action.accept(nodes.get(index.getAndIncrement()));
+                }
+                return hasNext;
+            };
+
+            final var strings = Sequence.of(atomicIterator::asIterator)
+                    .filter(s -> !s.contains("e"))
+                    .toTypedArray(String[]::new);
+
+            assertAll(
+                    () -> assertEquals(3, strings.length),
+                    () -> assertArrayEquals(new String[]{"this", "is", "a"}, strings)
+            );
+        }
+
+        private class Nodes {
+
+            private final List<String> strings = new ArrayList<>();
+
+            public Nodes(String... strings) {
+                this.strings.addAll(Arrays.asList(strings));
+            }
+
+            private int size() {
+                return strings.size();
+            }
+
+            private String get(int index) {
+                return strings.get(index);
+            }
+        }
     }
 }

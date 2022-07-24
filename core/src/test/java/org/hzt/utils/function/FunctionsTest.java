@@ -1,9 +1,14 @@
 package org.hzt.utils.function;
 
+import org.hzt.test.model.Person;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.Stream;
+
+import static org.hzt.utils.function.Functions.distinctBy;
 import static org.hzt.utils.function.Functions.not;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class FunctionsTest {
@@ -19,5 +24,16 @@ class FunctionsTest {
         System.out.println("list = " + list);
 
         assertFalse(list.contains(8));
+    }
+
+    @Test
+    void testDistinctBy() {
+        final Person[] people1 = {new Person("Piet"), new Person("Piet"), new Person("Klaas")};
+
+        final var distinctByName = Stream.of(people1)
+                .filter(distinctBy(Person::getName))
+                .toArray(Person[]::new);
+
+        assertEquals(2, distinctByName.length);
     }
 }

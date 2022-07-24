@@ -887,9 +887,9 @@ class SequenceTest {
 
         @Test
         void testSequenceFromNonIterable() {
-            final var nodes = new Nodes("hello", "this", "is", "a", "test");
+            final Nodes nodes = new Nodes("hello", "this", "is", "a", "test");
 
-            final var index = new AtomicInteger();
+            final AtomicInteger index = new AtomicInteger();
             final AtomicIterator<String> atomicIterator = action -> {
                 boolean hasNext = index.get() < nodes.size();
                 if (hasNext) {
@@ -898,7 +898,7 @@ class SequenceTest {
                 return hasNext;
             };
 
-            final var strings = Sequence.of(atomicIterator::asIterator)
+            final String[] strings = Sequence.of(atomicIterator::asIterator)
                     .filter(s -> !s.contains("e"))
                     .toTypedArray(String[]::new);
 

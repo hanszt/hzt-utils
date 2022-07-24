@@ -31,7 +31,7 @@ class FunctionsTest {
     void testDistinctBy() {
         final Person[] people1 = {new Person("Piet"), new Person("Piet"), new Person("Klaas")};
 
-        final var distinctByName = Stream.of(people1)
+        final Person[] distinctByName = Stream.of(people1)
                 .filter(distinctBy(Person::getName))
                 .toArray(Person[]::new);
 

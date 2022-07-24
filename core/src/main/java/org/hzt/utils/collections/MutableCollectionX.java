@@ -17,7 +17,7 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E> {
 
     @Override
     default Stream<E> parallelStream() {
-        return Collection.super.stream();
+        return Collection.super.parallelStream();
     }
 
     @Override

@@ -413,7 +413,7 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static PrimitiveIterator.@NotNull OfLong emptyLongIterator() {
+    public static @NotNull PrimitiveIterator.OfLong emptyLongIterator() {
         return new PrimitiveIterator.OfLong() {
             @Override
             public long nextLong() {

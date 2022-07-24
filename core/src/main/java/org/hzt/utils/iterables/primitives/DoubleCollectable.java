@@ -17,7 +17,7 @@ import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 
 @FunctionalInterface
-public interface DoubleCollectable extends DoubleArrayable, PrimitiveCollectable<DoubleCollection> {
+public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection>, PrimitiveIterable.OfDouble {
 
     default <R> R collect(Supplier<R> supplier, ObjDoubleConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);

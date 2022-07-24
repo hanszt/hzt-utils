@@ -6,14 +6,9 @@ import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
 @FunctionalInterface
-public interface LongStreamable extends PrimitiveIterable.OfLong, Streamable<LongStream> {
+public interface LongStreamable extends PrimitiveIterable.OfLong, Streamable<Long, LongStream> {
     @Override
     default LongStream stream() {
         return StreamSupport.longStream(spliterator(), false);
-    }
-
-    @Override
-    default LongStream parallelStream() {
-        return StreamSupport.longStream(spliterator(), true);
     }
 }

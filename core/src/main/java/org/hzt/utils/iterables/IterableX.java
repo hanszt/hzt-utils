@@ -34,7 +34,7 @@ import java.util.stream.StreamSupport;
  */
 public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, Takeable<T>, Zippable<T>, Windowable<T>,
         Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>,
-        Collectable<T>, Groupable<T>, Streamable<Stream<T>>, Indexable<T> {
+        Collectable<T>, Groupable<T>, Streamable<T, Stream<T>>, Indexable<T> {
 
     default AtomicIterator<T> atomicIterator() {
         return AtomicIterator.of(iterator());
@@ -47,10 +47,6 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
     <R> IterableX<R> castIfInstanceOf(@NotNull Class<R> aClass);
 
     default Stream<T> stream() {
-        return StreamSupport.stream(spliterator(), false);
-    }
-
-    default Stream<T> parallelStream() {
         return StreamSupport.stream(spliterator(), false);
     }
 

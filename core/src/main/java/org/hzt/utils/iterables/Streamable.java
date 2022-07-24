@@ -1,11 +1,16 @@
 package org.hzt.utils.iterables;
 
+import java.util.stream.BaseStream;
+
 /**
- * @param <S> the Stream type
+ * @param <T> the type of the stream elements
+ * @param <S> the type of the stream implementing {@code BaseStream}
  */
-public interface Streamable<S> {
+public interface Streamable<T, S extends BaseStream<T, S>> {
 
     S stream();
 
-    S parallelStream();
+    default S parallelStream() {
+        return stream().parallel();
+    }
 }

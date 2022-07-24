@@ -1,7 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.PreConditions;
-import org.hzt.utils.arrays.primitives.PrimitiveArrays;
+import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
@@ -216,7 +216,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
 
     @Override
     public void sort(IntComparator comparator) {
-        PrimitiveArrays.sort(0, size, comparator, elementData);
+        ArraysX.sort(0, size, comparator, elementData);
     }
 
     @Override

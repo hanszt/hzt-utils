@@ -196,16 +196,6 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     @Override
-    default boolean isSorted(DoubleComparator comparator) {
-        return zipWithNext(comparator::compareDouble).all(comparison -> comparison <= 0);
-    }
-
-    @Override
-    default boolean isSorted() {
-        return isSorted(Double::compare);
-    }
-
-    @Override
     default @NotNull DoubleSequence filter(@NotNull DoublePredicate predicate) {
         return () -> DoubleFilteringIterator.of(iterator(), predicate, true);
     }

@@ -35,6 +35,9 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         @Override
         default boolean tryAdvance(Consumer<? super Integer> action) {
+            if (action instanceof IntConsumer) {
+                return tryAdvanceInt((IntConsumer) action);
+            }
             IteratorLogger.warn("Use tryAdvanceInt(IntConsumer) instead");
             return tryAdvanceInt(action::accept);
         }
@@ -51,6 +54,10 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         @Override
         default void forEachRemaining(Consumer<? super Integer> action) {
+            if (action instanceof IntConsumer) {
+                forEachRemaining((IntConsumer) action);
+                return;
+            }
             IteratorLogger.warn("Use forEachRemaining(IntConsumer) instead");
             PrimitiveAtomicIterator.super.forEachRemaining(action);
         }
@@ -81,6 +88,9 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         @Override
         default boolean tryAdvance(Consumer<? super Long> action) {
+            if (action instanceof IntConsumer) {
+                return tryAdvanceLong((LongConsumer) action);
+            }
             IteratorLogger.warn("Use tryAdvanceLong(LongConsumer) instead");
             return tryAdvanceLong(action::accept);
         }
@@ -97,6 +107,10 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         @Override
         default void forEachRemaining(Consumer<? super Long> action) {
+            if (action instanceof LongConsumer) {
+                tryAdvanceLong((LongConsumer) action);
+                return;
+            }
             IteratorLogger.warn("Use forEachRemaining(LongConsumer) instead");
             PrimitiveAtomicIterator.super.forEachRemaining(action);
         }
@@ -126,6 +140,9 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         @Override
         default boolean tryAdvance(Consumer<? super Double> action) {
+            if (action instanceof DoubleConsumer) {
+                return tryAdvanceDouble((DoubleConsumer) action);
+            }
             IteratorLogger.warn("Use tryAdvanceDouble(DoubleConsumer) instead");
             return tryAdvanceDouble(action::accept);
         }
@@ -142,6 +159,10 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         @Override
         default void forEachRemaining(Consumer<? super Double> action) {
+            if (action instanceof DoubleConsumer) {
+                tryAdvanceDouble((DoubleConsumer) action);
+                return;
+            }
             IteratorLogger.warn("Use forEachRemaining(DoubleConsumer) instead");
             PrimitiveAtomicIterator.super.forEachRemaining(action);
         }
@@ -189,6 +210,10 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
         };
     }
 
+    static PrimitiveAtomicIterator.OfInt of(Spliterator.OfInt spliterator) {
+        return spliterator::tryAdvance;
+    }
+
     static PrimitiveAtomicIterator.OfLong of(PrimitiveIterator.OfLong iterator) {
         return action -> {
             boolean hasNext = iterator.hasNext();
@@ -199,6 +224,9 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
         };
     }
 
+    static PrimitiveAtomicIterator.OfLong of(Spliterator.OfLong spliterator) {
+        return spliterator::tryAdvance;
+    }
 
     static PrimitiveAtomicIterator.OfDouble of(PrimitiveIterator.OfDouble iterator) {
         return action -> {
@@ -208,5 +236,9 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
             }
             return hasNext;
         };
+    }
+
+    static PrimitiveAtomicIterator.OfDouble of(Spliterator.OfDouble spliterator) {
+        return spliterator::tryAdvance;
     }
 }

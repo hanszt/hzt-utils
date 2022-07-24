@@ -1,10 +1,11 @@
 package org.hzt.utils.iterables.primitives;
 
+import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 
-import static org.hzt.utils.arrays.primitives.PrimitiveArrays.toBooleanArray;
+import static org.hzt.utils.arrays.ArraysX.toBooleanArray;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -13,7 +14,8 @@ class IntArrayableTest {
 
     @Test
     void testToBooleanArray() {
-        final boolean[] booleans = IntSequence.of(1, 2, 3, 4).toBooleanArray(i -> i < 3);
+        final boolean[] booleans = ArraysX
+                .toBooleanArray(i -> i < 3, IntSequence.of(1, 2, 3, 4).toArray());
 
         final boolean[] expected = new boolean[]{true, true, false, false};
 

@@ -19,11 +19,13 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface IntCollectable extends PrimitiveCollectable<IntCollection>, PrimitiveIterable.OfInt {
 
-    default <R> R collect(Supplier<R> supplier, ObjIntConsumer<R> accumulator) {
+    default <R> R collect(@NotNull Supplier<R> supplier, @NotNull ObjIntConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
     }
 
-    default <A, R> R collect(Supplier<A> supplier, ObjIntConsumer<A> accumulator, Function<A, R> finisher) {
+    default <A, R> R collect(@NotNull Supplier<A> supplier,
+                             @NotNull ObjIntConsumer<A> accumulator,
+                             @NotNull Function<? super A, ? extends R> finisher) {
         PrimitiveIterator.OfInt iterator = iterator();
         final var result = supplier.get();
         while (iterator.hasNext()) {
@@ -32,14 +34,14 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
         return finisher.apply(result);
     }
 
-    default <A, R> R collect(IntCollector<A, R> collector) {
+    default <A, R> R collect(@NotNull IntCollector<A, R> collector) {
         return collect(collector.supplier(), collector.accumulator(), collector.finisher());
     }
 
     default <A1, R1, A2, R2, R> R teeing(
-            @NotNull IntCollector<A1, R1> downStream1,
-            @NotNull IntCollector<A2, R2> downStream2,
-            @NotNull BiFunction<R1, R2, R> combiner) {
+            @NotNull IntCollector<A1, ? extends R1> downStream1,
+            @NotNull IntCollector<A2, ? extends R2> downStream2,
+            @NotNull BiFunction<? super R1, ? super R2, ? extends R> combiner) {
         final var result1 = downStream1.supplier().get();
         final var result2 = downStream2.supplier().get();
         final var accumulator1 = downStream1.accumulator();
@@ -57,7 +59,7 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
         return toMutableList();
     }
 
-    default <C extends IntMutableCollection> C to(Supplier<C> collectionFactory) {
+    default <C extends IntMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
         final var iterator = iterator();
         while(iterator.hasNext()) {
@@ -75,7 +77,7 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
         return to(IntMutableSet::empty);
     }
 
-    default <C extends IntMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {
+    default <C extends IntMutableCollection> C takeTo(@NotNull Supplier<C> collectionFactory, long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         C collection = collectionFactory.get();
         if (n == 0) {

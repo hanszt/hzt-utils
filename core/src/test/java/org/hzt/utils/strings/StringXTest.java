@@ -204,13 +204,18 @@ class StringXTest {
                 tokens.add(tokenizer.nextToken());
             }
 
+            final var strings = Sequence.of(() -> new StringTokenizer(testString).asIterator())
+                    .map(Object::toString)
+                    .toListX();
+
             final var split = StringX.of(testString).split(" ", "\t", "\n", "\r", "\f");
 
             final var expected = ListX.of("This", "is", "a", "test", "containing", "default", "separators");
 
             assertAll(
                     () -> assertEquals(expected, split),
-                    () -> assertEquals(expected.toList(), tokens)
+                    () -> assertEquals(expected, strings),
+                    () -> assertEquals(expected, ListX.of(tokens))
             );
         }
 

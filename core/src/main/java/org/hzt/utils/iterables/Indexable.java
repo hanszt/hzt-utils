@@ -2,7 +2,6 @@ package org.hzt.utils.iterables;
 
 import org.hzt.utils.sequences.primitives.IntSequence;
 
-import java.util.Spliterators;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
@@ -15,7 +14,6 @@ public interface Indexable<T> extends IndexedIterable<T> {
     }
 
     default IntStream indicesAsStream() {
-        final var indexSpliterator = Spliterators.spliteratorUnknownSize(indexIterator(), 0);
-        return StreamSupport.intStream(indexSpliterator, false);
+        return StreamSupport.intStream(indexSpliterator(), false);
     }
 }

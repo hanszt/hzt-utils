@@ -357,7 +357,7 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
         throw new UnsupportedOperationException("Not supported in StreamX interface");
     }
 
-    default <R> StreamX<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<? super R>> mapper) {
+    default <R> StreamX<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
         final var sequence = Sequence.ofStream(stream()).mapMulti(mapper);
         final var parallel = isParallel();
         return new StreamXImpl<>(parallel ? sequence.parallelStream() : sequence.stream());

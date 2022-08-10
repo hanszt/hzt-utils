@@ -4,6 +4,7 @@ import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.tuples.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
@@ -22,7 +23,7 @@ public interface IntGroupable extends PrimitiveGroupable<Integer, IntMutableList
         return map;
     }
 
-    default <K> MapX<K, IntMutableList> groupBy(IntFunction<K> classifier) {
+    default <K> MapX<K, IntMutableList> groupBy(@NotNull IntFunction<? extends K> classifier) {
         final var iterator = iterator();
         final MutableMapX<K, IntMutableList> map = MutableMapX.empty();
         while (iterator.hasNext()) {
@@ -33,7 +34,7 @@ public interface IntGroupable extends PrimitiveGroupable<Integer, IntMutableList
     }
 
     @Override
-    default Pair<IntMutableList, IntMutableList> partition(IntPredicate predicate) {
+    default Pair<IntMutableList, IntMutableList> partition(@NotNull IntPredicate predicate) {
         final var matchingList = IntMutableList.empty();
         final var nonMatchingList = IntMutableList.empty();
         final var iterator = iterator();

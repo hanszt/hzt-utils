@@ -19,7 +19,8 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection>, PrimitiveIterable.OfDouble {
 
-    default <R> R collect(Supplier<R> supplier, ObjDoubleConsumer<R> accumulator) {
+    default <R> R collect(@NotNull Supplier<R> supplier,
+                          @NotNull ObjDoubleConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
     }
 
@@ -34,7 +35,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return finisher.apply(result);
     }
 
-    default <A, R> R collect(DoubleCollector<A, R> collector) {
+    default <A, R> R collect(@NotNull DoubleCollector<A, R> collector) {
         return collect(collector.supplier(), collector.accumulator(), collector.finisher());
     }
 
@@ -59,7 +60,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return toMutableList();
     }
 
-    default <C extends DoubleMutableCollection> C to(Supplier<C> collectionFactory) {
+    default <C extends DoubleMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
         final var iterator = iterator();
         while(iterator.hasNext()) {
@@ -77,7 +78,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return to(DoubleMutableSet::empty);
     }
 
-    default <C extends DoubleMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {
+    default <C extends DoubleMutableCollection> C takeTo(@NotNull Supplier<C> collectionFactory, long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         C collection = collectionFactory.get();
         if (n == 0) {

@@ -16,9 +16,9 @@ public interface LongMutableCollection extends LongCollection,
 
     @Override
     default boolean addAll(@NotNull Iterable<Long> iterable) {
+        boolean allAdded= true;
         if (iterable instanceof PrimitiveIterable.OfLong longIterable) {
             final var iterator = longIterable.iterator();
-            boolean allAdded= true;
             while (iterator.hasNext()) {
                 final var added = add(iterator.nextLong());
                 if (!added) {
@@ -27,10 +27,8 @@ public interface LongMutableCollection extends LongCollection,
             }
             return allAdded;
         }
-        boolean allAdded = true;
         for (long i : iterable) {
-            final var added = add(i);
-            if (!added) {
+            if (!add(i)) {
                 allAdded = false;
             }
         }
@@ -53,35 +51,35 @@ public interface LongMutableCollection extends LongCollection,
 
     @Override
     default boolean removeAll(@NotNull Iterable<Long> iterable) {
+        boolean allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfLong longIterable) {
             final var iterator = longIterable.iterator();
             while (iterator.hasNext()) {
-                final var removed = remove(iterator.nextLong());
-                if (!removed) {
-                    return false;
+                if (!remove(iterator.nextLong())) {
+                    allRemoved = false;
                 }
             }
-            return true;
+            return allRemoved;
         }
         for (long i : iterable) {
-            final var removed = remove(i);
-            if (!removed) {
-                return false;
+            if (!remove(i)) {
+                allRemoved = false;
             }
         }
-        return true;
+        return allRemoved;
     }
 
     @Override
     default boolean removeAll(long @NotNull ... array) {
+        boolean allRemoved = true;
         final var iterator = PrimitiveIterators.longArrayIterator(array);
         while (iterator.hasNext()) {
             final var removed = remove(iterator.nextLong());
             if (!removed) {
-                return false;
+                allRemoved = false;
             }
         }
-        return true;
+        return allRemoved;
     }
 
     @Override
@@ -109,7 +107,4 @@ public interface LongMutableCollection extends LongCollection,
 
     @Override
     MutableCollectionX<Long> boxed();
-
-    @Override
-    long[] toArray();
 }

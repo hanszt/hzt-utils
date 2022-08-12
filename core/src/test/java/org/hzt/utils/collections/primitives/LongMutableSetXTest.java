@@ -4,7 +4,11 @@ import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.ranges.LongRange;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LongMutableSetXTest {
 
@@ -50,7 +54,7 @@ class LongMutableSetXTest {
 
         assertAll(
                 () -> assertFalse(removeAll),
-                () -> assertEquals(LongMutableSet.of(7, 6, 5), longs)
+                () -> assertEquals(LongMutableSet.of(7, 6), longs)
         );
     }
 

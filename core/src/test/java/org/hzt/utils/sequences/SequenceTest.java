@@ -43,12 +43,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -880,7 +878,6 @@ class SequenceTest {
     @Nested
     class SequenceFromNonIterableTests {
 
-
         @Test
         void testSequenceFromNonIterable() {
             final var nodes = new Nodes("hello", "this", "is", "a", "test");
@@ -919,6 +916,34 @@ class SequenceTest {
             private String get(int index) {
                 return strings.get(index);
             }
+        }
+    }
+
+    @Test
+    void testSequenceFromIndexedDataStructure() {
+        Nodes<String> nodes = new Nodes<>("This", "is", "a", "test");
+
+        final var strings = IntRange.of(0, nodes.size())
+                .mapToObj(nodes::get)
+                .toList();
+
+        assertEquals(List.of("This", "is", "a", "test"), strings);
+    }
+
+    private static final class Nodes<T> {
+
+        private final List<T> nodes = new ArrayList<>();
+
+        @SafeVarargs
+        public Nodes(T... values) {
+            Collections.addAll(nodes, values);
+        }
+        public int size() {
+            return nodes.size();
+        }
+
+        public T get(int index) {
+            return nodes.get(index);
         }
     }
 }

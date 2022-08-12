@@ -22,11 +22,9 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * This is an interface to transform smaller iterables including collections or arrays to some other state.
+ * This is a base interface to transform iterables to some other state.
  * <p>
- * Its use is very comparable to the streams api but with shorter syntax.
- * <p>
- * It is inspired by the functional methods provided for collections in Kotlin
+ * It is inspired by the Kotlin standard library
  * <p>
  *
  * @param <T> The Type of the Iterable in the IterableX object

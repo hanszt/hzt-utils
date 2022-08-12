@@ -26,7 +26,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
 
     default <A, R> R collect(@NotNull Supplier<A> supplier,
                              @NotNull ObjLongConsumer<A> accumulator,
-                             @NotNull Function<A, R> finisher) {
+                             @NotNull Function<? super A, ? extends R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
         final var result = supplier.get();
         while (iterator.hasNext()) {
@@ -42,7 +42,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
     default <A1, R1, A2, R2, R> R teeing(
             @NotNull LongCollector<A1, R1> downStream1,
             @NotNull LongCollector<A2, R2> downStream2,
-            @NotNull BiFunction<R1, R2, R> combiner) {
+            @NotNull BiFunction<? super R1, ? super R2, ? extends R> combiner) {
         final var result1 = downStream1.supplier().get();
         final var result2 = downStream2.supplier().get();
         final var accumulator1 = downStream1.accumulator();
@@ -60,7 +60,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         return toMutableList();
     }
 
-    default <C extends LongMutableCollection> C to(Supplier<C> collectionFactory) {
+    default <C extends LongMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
         final var iterator = iterator();
         while (iterator.hasNext()) {
@@ -78,7 +78,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         return to(LongMutableSet::empty);
     }
 
-    default <C extends LongMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {
+    default <C extends LongMutableCollection> C takeTo(@NotNull Supplier<C> collectionFactory, long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         C collection = collectionFactory.get();
         if (n == 0) {

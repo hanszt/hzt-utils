@@ -4,6 +4,7 @@ import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.tuples.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
@@ -22,7 +23,7 @@ public interface DoubleGroupable extends PrimitiveGroupable<Double, DoubleMutabl
         return map;
     }
 
-    default <K> MapX<K, DoubleMutableList> groupBy(DoubleFunction<K> classifier) {
+    default <K> MapX<K, DoubleMutableList> groupBy(@NotNull DoubleFunction<? extends K> classifier) {
         final var iterator = iterator();
         final MutableMapX<K, DoubleMutableList> map = MutableMapX.empty();
         while (iterator.hasNext()) {
@@ -33,7 +34,7 @@ public interface DoubleGroupable extends PrimitiveGroupable<Double, DoubleMutabl
     }
 
     @Override
-    default Pair<DoubleMutableList, DoubleMutableList> partition(DoublePredicate predicate) {
+    default Pair<DoubleMutableList, DoubleMutableList> partition(@NotNull DoublePredicate predicate) {
         final var matchingList = DoubleMutableList.empty();
         final var nonMatchingList = DoubleMutableList.empty();
         final var iterator = iterator();

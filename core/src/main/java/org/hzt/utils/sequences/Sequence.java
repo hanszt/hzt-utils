@@ -93,7 +93,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> GeneratorIterator.of(nextFunction, t -> nextFunction.get());
     }
 
-    static <T> Sequence<T> generate(@NotNull Supplier<T> seedFunction, @NotNull UnaryOperator<T> nextFunction) {
+    static <T> Sequence<T> generate(@NotNull Supplier<? extends T> seedFunction, @NotNull UnaryOperator<T> nextFunction) {
         return () -> GeneratorIterator.of(seedFunction, nextFunction);
     }
 
@@ -328,7 +328,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return EntrySequence.of(map(value -> Map.entry(keyMapper.apply(value), valueMapper.apply(value))));
     }
 
-    default <K, V> EntrySequence<K, V> asEntrySequence(Function<? super T, ? extends Pair<K, V>> toPairMapper) {
+    default <K, V> EntrySequence<K, V> asEntrySequence(Function<? super T, Pair<K, V>> toPairMapper) {
         return EntrySequence.ofPairs(map(toPairMapper));
     }
 

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -156,8 +157,11 @@ class MapXTest {
     void testMapOfPairs() {
         final var hallo = StringX.of("Hallo");
         final var map = MapX.ofPairs(hallo.to("s"), StringX.of("asd").to("asdd"));
-        assertEquals(2, map.size());
-        assertTrue(map.containsValue("asdd"));
+
+        assertAll(
+                () -> assertEquals(2, map.size()),
+                () -> assertTrue(map.containsValue("asdd"))
+        );
     }
 
     @Test

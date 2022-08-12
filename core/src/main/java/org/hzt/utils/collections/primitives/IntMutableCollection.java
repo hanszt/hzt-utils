@@ -16,9 +16,9 @@ public interface IntMutableCollection extends IntCollection,
 
     @Override
     default boolean addAll(@NotNull Iterable<Integer> iterable) {
+        boolean allAdded = true;
         if (iterable instanceof PrimitiveIterable.OfInt) {
             final var iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
-            boolean allAdded = true;
             while (iterator.hasNext()) {
                 final var added = add(iterator.nextInt());
                 if (!added) {
@@ -27,7 +27,6 @@ public interface IntMutableCollection extends IntCollection,
             }
             return allAdded;
         }
-        boolean allAdded = true;
         for (int i : iterable) {
             if (!add(i)) {
                 allAdded = false;
@@ -52,35 +51,35 @@ public interface IntMutableCollection extends IntCollection,
 
     @Override
     default boolean removeAll(@NotNull Iterable<Integer> iterable) {
+        boolean allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfInt) {
             final var iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
             while (iterator.hasNext()) {
-                final var removed = remove(iterator.nextInt());
-                if (!removed) {
-                    return false;
+                if (!remove(iterator.nextInt())) {
+                    allRemoved = false;
                 }
             }
-            return true;
+            return allRemoved;
         }
         for (int i : iterable) {
-            final var removed = remove(i);
-            if (!removed) {
-                return false;
+            if (!remove(i)) {
+                allRemoved = false;
             }
         }
-        return true;
+        return allRemoved;
     }
 
     @Override
     default boolean removeAll(int @NotNull ... array) {
+        boolean allRemoved = true;
         final var iterator = PrimitiveIterators.intArrayIterator(array);
         while (iterator.hasNext()) {
             final var removed = remove(iterator.nextInt());
             if (!removed) {
-                return false;
+                allRemoved = false;
             }
         }
-        return true;
+        return allRemoved;
     }
 
     @Override
@@ -108,7 +107,4 @@ public interface IntMutableCollection extends IntCollection,
 
     @Override
     MutableCollectionX<Integer> boxed();
-
-    @Override
-    int[] toArray();
 }

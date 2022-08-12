@@ -124,8 +124,16 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return () -> PrimitiveIterators.intToLongIterator(iterator(), mapper);
     }
 
+    default LongSequence asLongSequence() {
+        return mapToLong(i -> i);
+    }
+
     default DoubleSequence mapToDouble(IntToDoubleFunction mapper) {
         return () -> PrimitiveIterators.intToDoubleIterator(iterator(), mapper);
+    }
+
+    default DoubleSequence asDoubleSequence() {
+        return mapToDouble(i -> i);
     }
 
     default <R> Sequence<R> mapToObj(@NotNull IntFunction<R> function) {

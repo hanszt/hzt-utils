@@ -918,4 +918,32 @@ class SequenceTest {
             }
         }
     }
+
+    @Test
+    void testSequenceFromIndexedDataStructure() {
+        Nodes<String> nodes = new Nodes<>("This", "is", "a", "test");
+
+        final var strings = IntRange.of(0, nodes.size())
+                .mapToObj(nodes::get)
+                .toList();
+
+        assertEquals(List.of("This", "is", "a", "test"), strings);
+    }
+
+    private static final class Nodes<T> {
+
+        private final List<T> nodes = new ArrayList<>();
+
+        @SafeVarargs
+        public Nodes(T... values) {
+            Collections.addAll(nodes, values);
+        }
+        public int size() {
+            return nodes.size();
+        }
+
+        public T get(int index) {
+            return nodes.get(index);
+        }
+    }
 }

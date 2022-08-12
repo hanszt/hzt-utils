@@ -3,6 +3,7 @@ package org.hzt.utils.sequences;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterators.FilteringIterator;
 import org.hzt.utils.numbers.IntX;
+import org.hzt.utils.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
@@ -110,9 +111,9 @@ class CustomSequenceTest {
         @NotNull
         private String next(int index, String current, int modulo, String string) {
             int value = index + 1;
-            final var isInteger = current.codePoints().allMatch(Character::isDigit);
+            final var isNaturalNr = current.codePoints().allMatch(Character::isDigit);
             final var match = value % modulo == 0;
-            if (isInteger) {
+            if (isNaturalNr) {
                 return match ? string : String.valueOf(value);
             }
             return match ? current + string : current;
@@ -125,6 +126,13 @@ class CustomSequenceTest {
                     .bizz()
                     .even()
                     .buzz();
+
+            for (final var s : LongSequence.generate(0L, i -> ++i)
+                    .mapToObj(String::valueOf)
+                    .withIndex()
+                    .filter(indexedValue -> indexedValue.index() % 10_000_000 == 0)) {
+                System.out.println("s = " + s);
+            }
 
             final var count = fizzBuzzer
                     .take(100_000)

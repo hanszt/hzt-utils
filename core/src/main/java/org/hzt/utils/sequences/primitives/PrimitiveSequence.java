@@ -6,19 +6,21 @@ import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * @param <T> The number type
- * @param <C> The NumberConsumer
- * @param <F> The NumberUnaryOperator
- * @param <P> The NumberPredicate
- * @param <B> The NumberBinaryOperator
+ * @param <T> The primitive type
+ * @param <C> The PrimitiveConsumer
+ * @param <F> The PrimitiveUnaryOperator
+ * @param <P> The PrimitivePredicate
+ * @param <B> The PrimitiveBinaryOperator
  */
-public interface PrimitiveSequence<T extends Number, C, F, P, B> extends Stringable<T>, Indexable<T> {
+public interface PrimitiveSequence<T, C, F, P, B> extends Stringable<T>, Indexable<T> {
 
     Sequence<T> boxed();
 
     PrimitiveSequence<T, C, F, P, B> distinct();
 
     PrimitiveSequence<T, C, F, P, B> plus(@NotNull Iterable<T> values);
+
+    PrimitiveSequence<T, C, F, P, B> minus(@NotNull Iterable<T> values);
 
     PrimitiveSequence<T, C, F, P, B> filter(@NotNull P predicate);
 

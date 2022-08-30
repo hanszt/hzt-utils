@@ -14,8 +14,10 @@ import org.junit.jupiter.api.function.Executable;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
@@ -150,6 +152,15 @@ class ListXTest {
         final var integers = list.skipLast(2);
 
         assertEquals(ListX.of(1, 2, 3, 4, 5), integers);
+    }
+
+    @Test
+    void testSkipLastTo() {
+        final var list = ListX.of(1, 2, 2, 3, 4, 5, 6, 5);
+
+        final var integers = list.skipLastTo(HashSet::new, 2);
+
+        assertEquals(Set.of(1, 2, 3, 4, 5), integers);
     }
 
     @Test

@@ -42,6 +42,10 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
 
     IterableX<T> plus(@NotNull Iterable<? extends T> values);
 
+    IterableX<T> minus(@NotNull T value);
+
+    IterableX<T> minus(@NotNull Iterable<T> values);
+
     <R> IterableX<R> castIfInstanceOf(@NotNull Class<R> aClass);
 
     default Stream<T> stream() {

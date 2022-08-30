@@ -6,10 +6,13 @@ import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleConsumer;
 import java.util.stream.DoubleStream;
 
@@ -19,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class DoubleSequenceTest {
+
+    public static final String REPEATED_TEST_DISPLAY_NAME = RepeatedTest.CURRENT_REPETITION_PLACEHOLDER + "/" + RepeatedTest.TOTAL_REPETITIONS_PLACEHOLDER;
 
     @Test
     void doubleRangeFromDoubleArray() {
@@ -146,23 +151,25 @@ class DoubleSequenceTest {
     }
 
     @Test
+    @Timeout(value = 600, unit = TimeUnit.MILLISECONDS)
     void testWindowedLargeDoubleSequence() {
         final var sums = DoubleSequence.generate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, DoubleList::sum)
                 .toArray();
 
+       assertEquals(19981, sums.length);
+    }
+
+    @Test
+    @Timeout(value = 1_000, unit = TimeUnit.MILLISECONDS)
+    void testWindowedLargeBoxedDoubleSequence() {
         final var sums2 = Sequence.generate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, s -> s.doubleSumOf(It::asDouble))
-                .mapToDouble(It::asDouble)
-                .toArray();
+                .toTypedArray(Double[]::new);
 
-        assertAll(
-                () -> assertEquals(19981, sums.length),
-                () -> assertArrayEquals(sums, sums2)
-        );
-
+        assertEquals(19981, sums2.length);
     }
 
     @Test
@@ -242,10 +249,12 @@ class DoubleSequenceTest {
                 .distinct()
                 .toArray();
 
-        assertArrayEquals(new double[]{Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Double.NaN}, array);
+        final double[] expected = {Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Double.NaN};
+
+        assertArrayEquals(expected, array);
     }
 
-    @Test
+    @RepeatedTest(value = 2, name = REPEATED_TEST_DISPLAY_NAME)
     void testDoublesToThree() {
         final var triple = DoubleSequence
                 .of(Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Math.PI, Double.NaN, Double.NaN)
@@ -253,5 +262,15 @@ class DoubleSequenceTest {
                 .doublesToThree(DoubleSequence::sum, DoubleSequence::toMutableSet, DoubleSequence::average);
 
         assertEquals(10.619501124388526, triple.first());
+    }
+
+    @Test
+    void testMapIndexed() {
+        final var list = DoubleSequence.generate(1, i -> i * DoubleX.GOLDEN_RATIO)
+                .mapIndexed((i, d) -> d - i)
+                .takeWhile(d -> d < 10)
+                .toList();
+
+        assertEquals(DoubleList.of(1.0, 0.6180339887498949, 0.6180339887498949, 1.2360679774997898, 2.8541019662496847, 6.0901699437494745), list);
     }
 }

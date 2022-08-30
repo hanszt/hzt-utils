@@ -115,9 +115,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     @Override
     default Spliterator.OfLong spliterator() {
-        final var array = toArray();
-        return Spliterators.spliterator(array, 0, array.length,
-                Spliterator.ORDERED | Spliterator.NONNULL);
+        return Spliterators.spliterator(iterator(), size(), Spliterator.ORDERED | Spliterator.NONNULL);
     }
 
     @Override

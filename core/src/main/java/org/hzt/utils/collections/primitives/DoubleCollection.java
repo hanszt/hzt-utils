@@ -112,9 +112,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
 
     @Override
     default Spliterator.OfDouble spliterator() {
-        final var array = toArray();
-        return Spliterators.spliterator(array, 0, array.length,
-                Spliterator.ORDERED | Spliterator.NONNULL);
+        return Spliterators.spliterator(iterator(), size(), Spliterator.ORDERED | Spliterator.NONNULL);
     }
 
     default DoubleList take(long n) {

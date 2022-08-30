@@ -2,7 +2,9 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.primitives.LongMutableSet;
 import org.hzt.utils.function.TriFunction;
+import org.hzt.utils.function.primitives.LongIndexedFunction;
 import org.hzt.utils.iterables.primitives.LongCollectable;
 import org.hzt.utils.iterables.primitives.LongGroupable;
 import org.hzt.utils.iterables.primitives.LongNumerable;
@@ -22,6 +24,8 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -35,6 +39,7 @@ import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
 import java.util.function.ToLongFunction;
 import java.util.stream.LongStream;
+import java.util.stream.StreamSupport;
 
 @FunctionalInterface
 public interface LongSequence extends LongWindowedSequence, LongReducable, LongCollectable, LongNumerable, LongStreamable,
@@ -89,13 +94,28 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return Sequence.of(this, LongSequence.of(values)).mapMultiToLong(OfLong::forEachLong);
     }
 
+    default LongSequence minus(long @NotNull... values) {
+        final var others = LongSequence.of(values).toMutableSet();
+        return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
+
+    }
+
+    default LongSequence minus(@NotNull Iterable<Long> values) {
+        final var others = values instanceof LongMutableSet ? (LongMutableSet) values : LongSequence.of(values).toMutableSet();
+        return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
+    }
     @Override
     default LongSequence distinct() {
         return () -> PrimitiveIterators.distinctIterator(iterator());
     }
 
+    @Override
     default LongSequence map(@NotNull LongUnaryOperator unaryOperator) {
         return () -> PrimitiveIterators.longTransformingIterator(iterator(), unaryOperator);
+    }
+
+    default LongSequence mapIndexed(@NotNull LongIndexedFunction longIndexedFunction) {
+        return () -> PrimitiveIterators.longIndexedTransformingIterator(iterator(), longIndexedFunction);
     }
 
     default LongSequence flatMap(LongFunction<? extends Iterable<Long>> flatMapper) {
@@ -127,20 +147,16 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return () -> PrimitiveIterators.longToDoubleIterator(iterator(), mapper);
     }
 
+    default DoubleSequence aDoubleSequence() {
+        return mapToDouble(l -> l);
+    }
+
     default <R> Sequence<R> mapToObj(@NotNull LongFunction<R> mapper) {
         return () -> PrimitiveIterators.longToObjIterator(iterator(), mapper);
     }
 
     default Sequence<Long> boxed() {
         return mapToObj(Long::valueOf);
-    }
-
-    default LongSequence filter(@NotNull LongPredicate predicate) {
-        return () -> LongFilteringIterator.of(iterator(), predicate, true);
-    }
-
-    default @NotNull LongSequence filterNot(@NotNull LongPredicate predicate) {
-        return () -> LongFilteringIterator.of(iterator(), predicate, false);
     }
 
     default LongSequence take(long n) {
@@ -176,6 +192,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         }
     }
 
+    @Override
     default LongSequence skipWhile(@NotNull LongPredicate longPredicate) {
         return () -> LongSkipWhileIterator.of(iterator(), longPredicate, false);
     }
@@ -197,6 +214,14 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     @Override
     default LongSequence sortedDescending() {
         return sorted(LongX::compareReversed);
+    }
+
+    default LongSequence filter(@NotNull LongPredicate predicate) {
+        return () -> LongFilteringIterator.of(iterator(), predicate, true);
+    }
+
+    default @NotNull LongSequence filterNot(@NotNull LongPredicate predicate) {
+        return () -> LongFilteringIterator.of(iterator(), predicate, false);
     }
 
     default @NotNull LongSequence onEach(@NotNull LongConsumer consumer) {
@@ -228,6 +253,12 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
 
     default <R> R transform(@NotNull Function<? super LongSequence, ? extends R> resultMapper) {
         return resultMapper.apply(this);
+    }
+
+    @Override
+    default LongStream stream() {
+        final var ordered = Spliterator.ORDERED;
+        return StreamSupport.longStream(() -> Spliterators.spliteratorUnknownSize(iterator(), ordered), ordered, false);
     }
 
     default LongSequence onSequence(Consumer<? super LongSequence> consumer) {

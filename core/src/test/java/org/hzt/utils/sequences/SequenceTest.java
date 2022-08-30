@@ -14,6 +14,8 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
+import org.hzt.utils.iterables.Numerable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.numbers.LongX;
@@ -51,6 +53,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.lang.System.setProperty;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SequenceTest {
@@ -58,10 +61,11 @@ class SequenceTest {
     @Test
     void testSimpleStreamWithMapYieldsIteratorWithNext() {
         ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+
         final Sequence<Integer> sequence = Sequence.of(list)
                 .map(SequenceTest::lengthMappingNotCalledWhenNotConsumed);
 
-        assertTrue(sequence.iterator().hasNext());
+        assertTrue(sequence.iterator()::hasNext);
     }
 
     private static int lengthMappingNotCalledWhenNotConsumed(String s) {
@@ -609,6 +613,15 @@ class SequenceTest {
     }
 
     @Test
+    void testSequenceVsStreamAsIterable() {
+        final var intRange = IntRange.of(0, 2_000);
+        final var intStream = IntStream.range(0, 2_000);
+        final PrimitiveIterable.OfInt iterable = intStream::iterator;
+
+        assertIterableEquals(intRange, iterable);
+    }
+
+    @Test
     void testGeneratedSequenceCanBeConsumedMultipleTimes() {
         var leapYears = IntRange.from(1900).upTo(2000).step(2)
                 .boxed()
@@ -664,9 +677,9 @@ class SequenceTest {
                 .toList();
 
 
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "false");
+        setProperty("org.openjdk.java.util.stream.tripwire", "false");
         It.println(daysOfYear.joinToString());
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
+        setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
         It.println("daysOfYear.min() = " + daysOfYear.min());
 
@@ -733,8 +746,7 @@ class SequenceTest {
 
     @Test
     void testIntersperseBySupplier() {
-        @SuppressWarnings("squid:S5977")
-        final Random random = new Random(0);
+        @SuppressWarnings("squid:S5977") final Random random = new Random(0);
 
         final var integers = Sequence.generate(0, i -> --i)
                 .take(10)
@@ -860,7 +872,7 @@ class SequenceTest {
 
     @Test
     void testFlatmapIterator() {
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "false");
+        setProperty("org.openjdk.java.util.stream.tripwire", "false");
 
         final var integers = IntRange.of(0, 1_000)
                 .windowed(10)
@@ -870,9 +882,37 @@ class SequenceTest {
 
         It.println("integers = " + integers);
 
-        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
+        setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
         assertEquals(9910, integers.size());
+    }
+
+    @Test
+    void testSequenceMinus() {
+        final var pair = IntRange.of(0, 10)
+                .boxed()
+                .minus(2)
+                .toTwo(Sequence::toList, Numerable::count);
+
+        assertAll(
+                () -> assertEquals(List.of(0, 1, 3, 4, 5, 6, 7, 8, 9), pair.first()),
+                () -> assertEquals(9, pair.second())
+        );
+    }
+
+    @Test
+    void testSequenceMinusOtherIterable() {
+        List<Integer> intsToRemove = List.of(1, 34, 3, 5);
+
+        final var pair = IntRange.of(0, 10)
+                .boxed()
+                .minus(intsToRemove)
+                .toTwo(Sequence::toList, Numerable::count);
+
+        assertAll(
+                () -> assertEquals(List.of(0, 2, 4, 6, 7, 8, 9), pair.first()),
+                () -> assertEquals(7, pair.second())
+        );
     }
 
     @Nested
@@ -938,6 +978,7 @@ class SequenceTest {
         public Nodes(T... values) {
             Collections.addAll(nodes, values);
         }
+
         public int size() {
             return nodes.size();
         }

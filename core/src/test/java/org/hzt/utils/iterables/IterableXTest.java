@@ -26,6 +26,7 @@ import org.hzt.utils.tuples.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
@@ -94,6 +95,14 @@ class IterableXTest {
         final Map<String, List<Painting>> actualMap = museumList.toMap(Museum::getName, Museum::getPaintings);
 
         assertEquals(expectedMap, actualMap);
+    }
+
+    @Test
+    void testToLongArray() {
+        final var longs = ListX.of(BigInteger.ONE, BigInteger.TWO, BigInteger.TEN)
+                .toLongArray(BigInteger::longValue);
+
+        assertArrayEquals(new long[]{1L, 2L, 10L}, longs);
     }
 
     @Test

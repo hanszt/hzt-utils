@@ -2,6 +2,7 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.primitives.IntMutableSet;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.primitives.IntCollectable;
 import org.hzt.utils.iterables.primitives.IntGroupable;
@@ -22,6 +23,8 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -35,6 +38,7 @@ import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ToIntFunction;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 @FunctionalInterface
 public interface IntSequence extends IntWindowedSequence, IntReducable, IntCollectable, IntNumerable, IntStreamable,
@@ -89,6 +93,17 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(OfInt::forEachInt);
     }
 
+    default IntSequence minus(int @NotNull... values) {
+        final var others = IntSequence.of(values).toMutableSet();
+        return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
+
+    }
+
+    default IntSequence minus(@NotNull Iterable<Integer> values) {
+        final var others = values instanceof IntMutableSet ? (IntMutableSet) values : IntSequence.of(values).toMutableSet();
+        return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
+    }
+
     @Override
     default IntSequence distinct() {
         return () -> PrimitiveIterators.distinctIterator(iterator());
@@ -97,6 +112,10 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     @Override
     default IntSequence map(@NotNull IntUnaryOperator mapper) {
         return () -> PrimitiveIterators.intTransformingIterator(iterator(), mapper);
+    }
+
+    default IntSequence mapIndexed(@NotNull IntBinaryOperator indexedFunction) {
+        return () -> PrimitiveIterators.intIndexedTransformingIterator(iterator(), indexedFunction);
     }
 
     default IntSequence flatMap(IntFunction<? extends Iterable<Integer>> flatMapper) {
@@ -130,6 +149,10 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     default DoubleSequence mapToDouble(IntToDoubleFunction mapper) {
         return () -> PrimitiveIterators.intToDoubleIterator(iterator(), mapper);
+    }
+
+    default DoubleSequence aDoubleSequence() {
+        return mapToDouble(i -> i);
     }
 
     default DoubleSequence asDoubleSequence() {
@@ -246,6 +269,12 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     default <R> R transform(@NotNull Function<? super IntSequence, ? extends R> resultMapper) {
         return resultMapper.apply(this);
+    }
+
+    @Override
+    default IntStream stream() {
+        final var ordered = Spliterator.ORDERED;
+        return StreamSupport.intStream(() -> Spliterators.spliteratorUnknownSize(iterator(), ordered), ordered, false);
     }
 
     default IntSequence onSequence(Consumer<? super IntSequence> consumer) {

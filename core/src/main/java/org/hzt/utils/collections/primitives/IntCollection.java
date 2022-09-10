@@ -115,9 +115,7 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
 
     @Override
     default Spliterator.OfInt spliterator() {
-        final var array = toArray();
-        return Spliterators.spliterator(array, 0, array.length,
-                Spliterator.ORDERED | Spliterator.NONNULL);
+        return Spliterators.spliterator(iterator(), size(), Spliterator.ORDERED | Spliterator.NONNULL);
     }
 
     @Override

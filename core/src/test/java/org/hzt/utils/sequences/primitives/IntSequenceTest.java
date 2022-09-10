@@ -66,6 +66,34 @@ class IntSequenceTest {
     }
 
     @Test
+    void testIntSequenceMinusArray() {
+        final int[] result = IntSequence.of(1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2)
+                .minus(2, 76, 5)
+                .toArray();
+
+        It.println(Arrays.toString(result));
+
+        assertAll(
+                () -> assertEquals(8, result.length),
+                () -> assertArrayEquals(new int[]{1, 3, 4, 4, 6, 4, 3, 4}, result)
+        );
+    }
+
+    @Test
+    void testIntSequenceMinusIntList() {
+        final int[] result = IntSequence.of(1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2)
+                .minus(IntList.of(2, 76, 5))
+                .toArray();
+
+        It.println(Arrays.toString(result));
+
+        assertAll(
+                () -> assertEquals(8, result.length),
+                () -> assertArrayEquals(new int[]{1, 3, 4, 4, 6, 4, 3, 4}, result)
+        );
+    }
+
+    @Test
     void testIntSequencePlusIterable() {
         final IntSequence ints = IntSequence.of(1, 2, 3, 4, 5, 6, 7, 6);
 
@@ -147,13 +175,13 @@ class IntSequenceTest {
         int[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
         final var expected = IntStream.of(array)
-                .mapToLong(It::asLong)
+                .asLongStream()
                 .filter(l -> l > 3)
                 .toArray();
 
 
         final var longs = IntSequence.of(array)
-                .mapToLong(It::asLong)
+                .asLongSequence()
                 .filter(l -> l > 3)
                 .toArray();
 
@@ -245,5 +273,15 @@ class IntSequenceTest {
                 .toArray();
 
         assertArrayEquals(new int[] {1, 2, 3, 4, -51, 5, 6, 7, -1, -100, -50}, distinctArray);
+    }
+
+    @Test
+    void testMapIndexed() {
+        final var list = IntSequence.generate(1, i -> i * 2)
+                .mapIndexed(Integer::sum)
+                .takeWhile(i -> i < 100)
+                .toList();
+
+        assertEquals(IntList.of(1, 3, 6, 11, 20, 37, 70), list);
     }
 }

@@ -72,6 +72,16 @@ public interface CollectionX<E> extends IterableX<E> {
         return ListX.copyOfNullsAllowed(MutableListX.of(this).plus(values));
     }
 
+    @Override
+    default ListX<E> minus(@NotNull E value) {
+        return asSequence().minus(value).toListX();
+    }
+
+    @Override
+    default ListX<E> minus(@NotNull Iterable<E> values) {
+        return asSequence().minus(values).toListX();
+    }
+
     default boolean containsNoneOf(@NotNull Iterable<E> iterable) {
         return Sequence.of(iterable).none(this::contains);
     }

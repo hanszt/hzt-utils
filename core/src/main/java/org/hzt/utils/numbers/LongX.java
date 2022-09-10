@@ -9,6 +9,7 @@ import org.hzt.utils.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.LongPredicate;
 
@@ -119,15 +120,19 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
     public static LongSequence fibonacciSequence() {
         return Sequence.generate(new long[]{0, 1L}, longs -> new long[]{longs[1], longs[0] + longs[1]})
                 .mapToLong(longs -> longs[0])
-                .takeWhile(l -> l >= 0);
+                .mapIndexed((index, fibNr) -> {
+                    if (fibNr < 0) {
+                        throw new NoSuchElementException("term n>=" + (index + 1) + " would yield value larger than Long.MAX_VALUE");
+                    }
+                    return fibNr;
+                });
     }
 
     public static long nthFibonacciNumber(int n) {
-        PreConditions.require(n >= 0, () -> "n must be greater than 0");
+        PreConditions.require(n > 0, () -> "n must be greater than 0");
         return fibonacciSequence()
                 .take(n)
-                .reduce((first, second) -> second)
-                .orElseThrow(() -> new IllegalArgumentException("term n=" + n + " would yield value larger than Long.MAX_VALUE"));
+                .reduce(0, (first, second) -> second);
     }
 
     public static Long decode(String nm) throws NumberFormatException {

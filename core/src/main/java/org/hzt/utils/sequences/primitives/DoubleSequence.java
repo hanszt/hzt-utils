@@ -2,7 +2,9 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.primitives.DoubleMutableSet;
 import org.hzt.utils.function.TriFunction;
+import org.hzt.utils.function.primitives.DoubleIndexedFunction;
 import org.hzt.utils.iterables.primitives.DoubleCollectable;
 import org.hzt.utils.iterables.primitives.DoubleGroupable;
 import org.hzt.utils.iterables.primitives.DoubleNumerable;
@@ -23,6 +25,8 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.DoubleBinaryOperator;
@@ -36,6 +40,7 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.DoubleStream;
+import java.util.stream.StreamSupport;
 
 @FunctionalInterface
 public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable,
@@ -86,6 +91,17 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(OfDouble::forEachDouble);
     }
 
+    default DoubleSequence minus(double @NotNull... values) {
+        final var others = DoubleSequence.of(values).toMutableSet();
+        return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
+
+    }
+
+    default DoubleSequence minus(@NotNull Iterable<Double> values) {
+        final var others = values instanceof DoubleMutableSet ? (DoubleMutableSet) values : DoubleSequence.of(values).toMutableSet();
+        return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
+    }
+
     @Override
     default DoubleSequence distinct() {
         return () -> PrimitiveIterators.distinctIterator(iterator());
@@ -94,6 +110,10 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     @Override
     default DoubleSequence map(@NotNull DoubleUnaryOperator mapper) {
         return () -> PrimitiveIterators.doubleTransformingIterator(iterator(), mapper);
+    }
+
+    default DoubleSequence mapIndexed(@NotNull DoubleIndexedFunction indexedFunction) {
+        return () -> PrimitiveIterators.doubleIndexedTransformingIterator(iterator(), indexedFunction);
     }
 
     default DoubleSequence flatMap(DoubleFunction<? extends Iterable<Double>> flatMapper) {
@@ -233,6 +253,12 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     default <R> R transform(@NotNull Function<? super DoubleSequence, ? extends R> resultMapper) {
         return resultMapper.apply(this);
+    }
+
+    @Override
+    default DoubleStream stream() {
+        final var ordered = Spliterator.ORDERED;
+        return StreamSupport.doubleStream(() -> Spliterators.spliteratorUnknownSize(iterator(), ordered), ordered, false);
     }
 
     default DoubleSequence onSequence(Consumer<? super DoubleSequence> consumer) {

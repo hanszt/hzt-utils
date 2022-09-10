@@ -5,6 +5,8 @@ import org.hzt.utils.collections.primitives.DoubleMutableSet;
 import org.hzt.utils.collections.primitives.IntMutableCollection;
 import org.hzt.utils.collections.primitives.IntMutableSet;
 import org.hzt.utils.collections.primitives.LongMutableSet;
+import org.hzt.utils.function.primitives.DoubleIndexedFunction;
+import org.hzt.utils.function.primitives.LongIndexedFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -34,6 +36,8 @@ import java.util.function.ToLongFunction;
 
 @SuppressWarnings("squid:S1200")
 public final class PrimitiveIterators {
+
+    private static final String ITERATOR_INDEX_OVERFLOW = "Iterator index overflow";
 
     private PrimitiveIterators() {
     }
@@ -85,6 +89,26 @@ public final class PrimitiveIterators {
             @Override
             public int nextInt() {
                 return mapper.applyAsInt(iterator.nextInt());
+            }
+
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+        };
+    }
+
+    @NotNull
+    public static PrimitiveIterator.OfInt intIndexedTransformingIterator(PrimitiveIterator.OfInt iterator, IntBinaryOperator mapper) {
+        return new PrimitiveIterator.OfInt() {
+
+            int index = 0;
+            @Override
+            public int nextInt() {
+                if (index < 0) {
+                    throw new NoSuchElementException(ITERATOR_INDEX_OVERFLOW);
+                }
+                return mapper.applyAsInt(index++, iterator.nextInt());
             }
 
             @Override
@@ -197,6 +221,26 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
+    public static PrimitiveIterator.OfLong longIndexedTransformingIterator(PrimitiveIterator.OfLong iterator, LongIndexedFunction mapper) {
+        return new PrimitiveIterator.OfLong() {
+
+            int index = 0;
+            @Override
+            public long nextLong() {
+                if (index < 0) {
+                    throw new NoSuchElementException(ITERATOR_INDEX_OVERFLOW);
+                }
+                return mapper.applyAsLong(index++, iterator.nextLong());
+            }
+
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+        };
+    }
+
+    @NotNull
     public static PrimitiveIterator.OfInt longToIntIterator(@NotNull PrimitiveIterator.OfLong iterator,
                                                             @NotNull LongToIntFunction mapper) {
         return new PrimitiveIterator.OfInt() {
@@ -296,6 +340,27 @@ public final class PrimitiveIterators {
             @Override
             public double nextDouble() {
                 return mapper.applyAsDouble(iterator.nextDouble());
+            }
+
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+        };
+    }
+
+    @NotNull
+    public static PrimitiveIterator.OfDouble doubleIndexedTransformingIterator(@NotNull PrimitiveIterator.OfDouble iterator,
+                                                                             @NotNull DoubleIndexedFunction mapper) {
+        return new PrimitiveIterator.OfDouble() {
+
+            int index = 0;
+            @Override
+            public double nextDouble() {
+                if (index < 0) {
+                    throw new NoSuchElementException(ITERATOR_INDEX_OVERFLOW);
+                }
+                return mapper.applyAsDouble(index++, iterator.nextDouble());
             }
 
             @Override

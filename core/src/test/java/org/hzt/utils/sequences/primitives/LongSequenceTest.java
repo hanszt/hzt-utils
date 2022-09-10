@@ -57,6 +57,20 @@ class LongSequenceTest {
     }
 
     @Test
+    void testLongSequenceMinusArray() {
+        final long[] result = LongSequence.of(Long.MAX_VALUE, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2)
+                .minus(2, 76, 5)
+                .toArray();
+
+        It.println(Arrays.toString(result));
+
+        assertAll(
+                () -> assertEquals(8, result.length),
+                () -> assertArrayEquals(new long[]{Long.MAX_VALUE, 3, 4, 4, 6, 4, 3, 4}, result)
+        );
+    }
+
+    @Test
     void positiveLongRangeStepped() {
         final var end = 10_000_000;
         final var expected = LongStream.range(0, end).filter(l -> l % 4 == 0).toArray();
@@ -234,6 +248,19 @@ class LongSequenceTest {
                 () -> assertEquals(999499500L, sums.last())
         );
 
+    }
+
+    @Test
+    void testSkipWhile() {
+        final var longs = LongSequence.generate(0L, l -> ++l)
+                .map(Generator::fib)
+                .skipWhile(l -> l < 3)
+                .takeWhileInclusive(l -> l < 55)
+                .toList();
+
+        longs.forEachLong(It::println);
+
+        assertEquals(LongList.of(3, 5, 8, 13, 21, 34, 55), longs);
     }
 
     @Test

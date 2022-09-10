@@ -31,6 +31,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -45,6 +48,9 @@ import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static java.util.Spliterator.ORDERED;
 
 /**
  * A sequence is a simplified stream. It evaluates its operations in a lazy way.
@@ -103,6 +109,28 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     default Sequence<T> plus(@NotNull Iterable<? extends T> values) {
         return Sequence.of(this, Sequence.of(values)).flatMap(It::self);
+    }
+
+    default Sequence<T> minus(@NotNull T value) {
+        return () -> removingIterator(value);
+    }
+
+    @NotNull
+    private Iterator<T> removingIterator(@NotNull T value) {
+        final AtomicBoolean removed = new AtomicBoolean();
+        return filter(e -> {
+            if (!removed.get() && e == value) {
+                removed.set(true);
+                return false;
+            } else {
+                return true;
+            }
+        }).iterator();
+    }
+
+    default Sequence<T> minus(@NotNull Iterable<T> values) {
+        final var others = values instanceof Set<?> ? (Set<T>) values : Sequence.of(values).toMutableSet();
+        return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
 
     default Sequence<T> intersperse(T value) {
@@ -394,6 +422,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     default <R> R transform(@NotNull Function<? super Sequence<T>, ? extends R> resultMapper) {
         return resultMapper.apply(this);
+    }
+
+    @Override
+    default Stream<T> stream() {
+        return StreamSupport.stream(() -> Spliterators.spliteratorUnknownSize(iterator(), ORDERED), ORDERED, false);
     }
 
     default Sequence<T> onSequence(Consumer<? super Sequence<T>> sequenceConsumer) {

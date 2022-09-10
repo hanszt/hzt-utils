@@ -25,11 +25,11 @@ public interface IndexedIterable<T> extends Iterable<T> {
     }
 
     default Spliterator<IndexedValue<T>> indexedSpliterator() {
-        return Spliterators.spliteratorUnknownSize(indexedIterator(), 0);
+        return Spliterators.spliteratorUnknownSize(indexedIterator(), Spliterator.ORDERED);
     }
 
     default Spliterator.OfInt indexSpliterator() {
-        return Spliterators.spliteratorUnknownSize(indexIterator(), 0);
+        return Spliterators.spliteratorUnknownSize(indexIterator(), Spliterator.ORDERED);
     }
 
     default void forEachIndex(@NotNull IntConsumer action) {

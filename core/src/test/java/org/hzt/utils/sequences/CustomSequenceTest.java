@@ -135,11 +135,20 @@ class CustomSequenceTest {
             return mapIndexed((index, value) -> next(index, value, 2, "even"))::iterator;
         }
 
+        default FizzBuzzer odd() {
+            return mapIndexed((index, value) -> next(index, value, 2, 1, "odd"))::iterator;
+        }
+
         @NotNull
-        private String next(int index, String current, int modulo, String string) {
+        private String next(int index, String current, int modulo,  String string) {
+            return next(index, current, modulo, 0, string);
+        }
+
+        @NotNull
+        private String next(int index, String current, int modulo, int offSet, String string) {
             int value = index + 1;
-            final var isNaturalNr = current.codePoints().allMatch(Character::isDigit);
-            final var match = value % modulo == 0;
+            final var isNaturalNr = current.chars().allMatch(Character::isDigit);
+            final var match = value % modulo == offSet;
             if (isNaturalNr) {
                 return match ? string : String.valueOf(value);
             }
@@ -152,7 +161,8 @@ class CustomSequenceTest {
                     .fizz()
                     .bizz()
                     .even()
-                    .buzz();
+                    .buzz()
+                    .odd();
 
             final var count = fizzBuzzer
                     .take(100_000)
@@ -164,7 +174,7 @@ class CustomSequenceTest {
                     .skip(3)
                     .joinToString(", ");
 
-            It.println(fizzBuzzer.take(2_000_000).joinToString());
+            It.println(fizzBuzzer.take(2_000).joinToString());
             It.println("count = " + count);
             It.println("actual = " + actual);
         }

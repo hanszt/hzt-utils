@@ -28,11 +28,54 @@ class CustomSequenceTest {
         assertEquals(18, probableFibNrPrimeCount);
     }
 
+    @Test
+    void testBigIntFibonacciSequenceV2Primes() {
+        final var probableFibNrPrimeCount = fibonacciSequenceV2()
+                .filter(fibNr -> fibNr.isProbablePrime(100))
+                .map(BigInteger::toString)
+                .onEach(It::println)
+                .takeWhile(fibNr -> fibNr.length() <= 100)
+                .count();
+
+        assertEquals(18, probableFibNrPrimeCount);
+    }
+
+    @Test
+    void testBigIntTribonacciSequencePrimes() {
+        final var probableFibNrPrimeCount = tribonacciSequence()
+                .filter(nr -> nr.isProbablePrime(100))
+                .map(BigInteger::toString)
+                .onEach(It::println)
+                .takeWhile(nr -> nr.length() <= 200)
+                .count();
+
+        assertEquals(7, probableFibNrPrimeCount);
+    }
+
     static Sequence<BigInteger> fibonacciSequence() {
         final BigInteger[] seedValue = {BigInteger.ZERO, BigInteger.ONE};
         return Sequence
                 .generate(seedValue, pair -> new BigInteger[]{pair[1], pair[0].add(pair[1])})
                 .map(pair -> pair[0]);
+    }
+
+    static Sequence<BigInteger> fibonacciSequenceV2() {
+        record Pair(BigInteger first, BigInteger second) {
+            private Pair next() {
+                return new Pair(second, first.add(second));
+            }
+        }
+        return Sequence.generate(new Pair(BigInteger.ZERO, BigInteger.ONE), Pair::next).map(Pair::first);
+    }
+
+    static Sequence<BigInteger> tribonacciSequence() {
+        record Triple(BigInteger first, BigInteger second, BigInteger third) {
+            private Triple next() {
+                return new Triple(second, third, first.add(second).add(third));
+            }
+        }
+        final Triple seed = new Triple(BigInteger.ZERO, BigInteger.ONE, BigInteger.ONE);
+        return Sequence.generate(seed, Triple::next).map(Triple::first);
     }
 
     @Test
@@ -140,7 +183,7 @@ class CustomSequenceTest {
         }
 
         @NotNull
-        private String next(int index, String current, int modulo,  String string) {
+        private String next(int index, String current, int modulo, String string) {
             return next(index, current, modulo, 0, string);
         }
 

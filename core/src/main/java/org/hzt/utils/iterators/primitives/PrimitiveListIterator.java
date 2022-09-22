@@ -3,6 +3,7 @@ package org.hzt.utils.iterators.primitives;
 import java.util.ListIterator;
 import java.util.PrimitiveIterator;
 
+@SuppressWarnings({"squid:S2972", "squid:S2272"})
 public interface PrimitiveListIterator<T> extends ListIterator<T> {
 
     interface OfInt extends PrimitiveIterator.OfInt, PrimitiveListIterator<Integer> {

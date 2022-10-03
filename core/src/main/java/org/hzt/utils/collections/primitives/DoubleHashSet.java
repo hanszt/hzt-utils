@@ -143,7 +143,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, double[], DoubleC
     }
 
     @Override
-    double[] newArray(int length) {
+    protected double[] newArray(int length) {
         return new double[length];
     }
 
@@ -176,7 +176,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, double[], DoubleC
         }
     }
     @Override
-    void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfDouble iterator) {
+    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfDouble iterator) {
         sb.append(iterator.nextDouble());
     }
 }

@@ -12,15 +12,15 @@ import java.util.PrimitiveIterator;
  */
 abstract class PrimitiveAbstractCollection<T, A, T_CONS, I extends PrimitiveIterator<T, T_CONS>> {
 
-    int size;
+    protected int size;
 
     PrimitiveAbstractCollection(int size) {
         this.size = size;
     }
 
-    abstract @NotNull I iterator();
+    protected abstract @NotNull I iterator();
 
-    abstract A newArray(int length);
+    protected abstract A newArray(int length);
 
     @Override
     public String toString() {
@@ -48,5 +48,5 @@ abstract class PrimitiveAbstractCollection<T, A, T_CONS, I extends PrimitiveIter
         return size == 0;
     }
 
-    abstract void appendNextPrimitive(StringBuilder sb, I iterator);
+    protected abstract void appendNextPrimitive(StringBuilder sb, I iterator);
 }

@@ -10,19 +10,19 @@ import java.util.PrimitiveIterator;
  * @param <T_CONS> The primitive consumer
  * @param <I> the primitive iterator
  */
-abstract class PrimitiveAbstractList<T, A, T_CONS, I extends PrimitiveIterator<T, T_CONS>>
+public abstract class PrimitiveAbstractList<T, A, T_CONS, I extends PrimitiveIterator<T, T_CONS>>
 extends PrimitiveAbstractCollection<T, A, T_CONS, I> implements PrimitiveCollection<T, T_CONS, A> {
 
     private static final int SOFT_MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
-    static final int DEFAULT_CAPACITY = 10;
-    A elementData;
+    protected static final int DEFAULT_CAPACITY = 10;
+    protected A elementData;
 
-    PrimitiveAbstractList(int size, A elementData) {
-        super(size);
+    protected PrimitiveAbstractList(int initSize, A elementData) {
+        super(initSize);
         this.elementData = elementData;
     }
 
-    abstract A copyElementData(int newLength);
+    protected abstract A copyElementData(int newLength);
 
     public A toArray() {
         return copyElementData(size);
@@ -38,7 +38,7 @@ extends PrimitiveAbstractCollection<T, A, T_CONS, I> implements PrimitiveCollect
      * @param isInitEmptyArray check if array empty
      * @return the grown array
      */
-    A growArray(int oldCapacity, boolean isInitEmptyArray) {
+    protected A growArray(int oldCapacity, boolean isInitEmptyArray) {
         int minCapacity = oldCapacity + 1;
         if (isInitEmptyArray) {
             return newArray(minCapacity);

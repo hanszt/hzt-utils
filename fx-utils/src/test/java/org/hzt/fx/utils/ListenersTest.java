@@ -21,7 +21,7 @@ class ListenersTest {
     }
 
     @Test
-    void testBindedProperty() {
+    void testBoundProperty() {
         IntegerProperty value1 = new SimpleIntegerProperty();
         IntegerProperty value2 = new SimpleIntegerProperty();
 

@@ -144,12 +144,12 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
     }
 
     @Override
-    long[] newArray(int length) {
+    protected long[] newArray(int length) {
         return new long[length];
     }
 
     @Override
-    long[] copyElementData(int newLength) {
+    protected long[] copyElementData(int newLength) {
         return Arrays.copyOf(elementData, newLength);
     }
 
@@ -211,7 +211,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
     }
 
     @Override
-    void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfLong iterator) {
+    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfLong iterator) {
         sb.append(iterator.nextLong());
     }
 }

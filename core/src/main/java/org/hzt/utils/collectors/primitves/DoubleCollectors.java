@@ -5,6 +5,7 @@ import org.hzt.utils.collections.primitives.DoubleMutableCollection;
 import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.Transformable;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class DoubleCollectors {
@@ -26,5 +27,14 @@ public final class DoubleCollectors {
         return DoubleCollector.of(DoubleMutableList::empty,
                 DoubleMutableCollection::add, DoubleMutableCollection::plus,
                 doubles -> Transformable.from(doubleCollectionFactory.get()).also(c -> c.addAll(doubles)));
+    }
+
+    public static <A, R, R1> DoubleCollector<A, R1> collectingAndThen(DoubleCollector<A, R> downStream, Function<R, R1> finisher) {
+        return new DoubleCollectorImpl<>(
+                downStream.supplier(),
+                downStream.accumulator(),
+                downStream.combiner(),
+                downStream.finisher().andThen(finisher),
+                downStream.characteristics());
     }
 }

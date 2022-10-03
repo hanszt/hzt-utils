@@ -1,5 +1,7 @@
 package org.hzt.utils.io;
 
+import org.hzt.utils.function.ThrowingConsumer;
+import org.hzt.utils.function.ThrowingFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
@@ -68,19 +70,5 @@ public final class Closer<T> implements AutoCloseable {
 
     public T getResource() {
         return resource;
-    }
-
-    @FunctionalInterface
-    public interface ThrowingConsumer<T> {
-
-        @SuppressWarnings("all")
-        void accept(T t) throws Exception;
-    }
-
-    @FunctionalInterface
-    public interface ThrowingFunction<T, R> {
-
-        @SuppressWarnings("all")
-        R apply(T t) throws Exception;
     }
 }

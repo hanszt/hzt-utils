@@ -150,12 +150,12 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
     }
 
     @Override
-    int[] newArray(int length) {
+    protected int[] newArray(int length) {
         return new int[length];
     }
 
     @Override
-    int[] copyElementData(int newLength) {
+    protected int[] copyElementData(int newLength) {
         return Arrays.copyOf(elementData, newLength);
     }
 
@@ -224,7 +224,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
     }
 
     @Override
-    void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfInt iterator) {
+    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfInt iterator) {
         sb.append(iterator.nextInt());
     }
 }

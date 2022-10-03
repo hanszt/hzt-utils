@@ -143,7 +143,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, long[], LongConsumer,
     }
 
     @Override
-    long[] newArray(int length) {
+    protected long[] newArray(int length) {
         return new long[length];
     }
 
@@ -176,7 +176,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, long[], LongConsumer,
         }
     }
     @Override
-    void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfLong iterator) {
+    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfLong iterator) {
         sb.append(iterator.nextLong());
     }
 }

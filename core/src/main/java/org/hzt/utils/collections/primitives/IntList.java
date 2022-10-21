@@ -1,11 +1,10 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.ArraysX;
-import org.hzt.utils.collections.ListHelper;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
-import org.hzt.utils.markerinterfaces.BinarySearchable;
+import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.ranges.IntRange;
@@ -124,11 +123,15 @@ public interface IntList extends IntCollection,
     IntList shuffled();
 
     /**
-     * @see org.hzt.utils.markerinterfaces.BinarySearchable#binarySearch(int, int, Object)
+     * @see BinarySearchable#binarySearch(int, int, Object)
      * @see java.util.Arrays#binarySearch(int[], int)
      */
     default int binarySearch(int fromIndex, int toIndex, IntUnaryOperator comparison) {
-        return ListHelper.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
+        return BinarySearchable.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
+    }
+
+    default int binarySearch(int valueToSearch) {
+        return binarySearch(0, size(), e -> Integer.compare(e, valueToSearch));
     }
 
     @Override

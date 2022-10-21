@@ -1,11 +1,10 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.ArraysX;
-import org.hzt.utils.collections.ListHelper;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
-import org.hzt.utils.markerinterfaces.BinarySearchable;
+import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.jetbrains.annotations.NotNull;
@@ -115,12 +114,16 @@ public interface DoubleList extends DoubleCollection,
     }
 
     /**
-     * @see org.hzt.utils.markerinterfaces.BinarySearchable#binarySearch(int, int, Object)
+     * @see BinarySearchable#binarySearch(int, int, Object)
      * @see java.util.Arrays#binarySearch(double[], double)
      */
     @Override
     default int binarySearch(int fromIndex, int toIndex, DoubleToIntFunction comparison) {
-        return ListHelper.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
+        return BinarySearchable.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
+    }
+
+    default int binarySearch(double valueToSearch) {
+        return binarySearch(0, size(), e -> Double.compare(e, valueToSearch));
     }
 
     @Override

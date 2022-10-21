@@ -16,6 +16,7 @@ import java.time.Month;
 import java.time.Year;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.LinkedTransferQueue;
@@ -86,8 +87,8 @@ class ListXTest {
     void testBinaryOfStringSearch() {
         final MutableListX<String> sortedList = MutableListX.of("adi", "hans", "huib", "sophie", "ted");
 
-        final int indexInSortedList = sortedList.binarySearch(string -> string.compareTo("sophie"));
-        final int invertedInsertionPoint = sortedList.binarySearch(string -> string.compareTo("matthijs"));
+        final int indexInSortedList = sortedList.binarySearchFor("sophie");
+        final int invertedInsertionPoint = sortedList.binarySearchFor("matthijs");
         // the inverted insertion point (-insertion point - 1)
         final int insertionIndex = -invertedInsertionPoint - 1;
 
@@ -95,6 +96,43 @@ class ListXTest {
                 () -> assertEquals(3, indexInSortedList),
                 () -> assertEquals(3, insertionIndex)
         );
+    }
+
+    @Test
+    void testBinarySearchTo() {
+        final MutableListX<String> sortedList = MutableListX.of("adi", "hans", "huib", "sophie", "ted");
+
+        final int indexInSortedList = sortedList.binarySearchTo(4, name -> name.compareTo("sophie"));
+        final int invertedInsertionPoint = sortedList.binarySearchTo(4, name -> name.compareTo("ted"));
+        // the inverted insertion point (-insertion point - 1)
+        final int insertionIndex = -invertedInsertionPoint - 1;
+
+        assertAll(
+                () -> assertEquals(3, indexInSortedList),
+                () -> assertEquals(4, insertionIndex)
+        );
+    }
+
+    @Test
+    void testBinarySearchFrom() {
+        final MutableListX<String> sortedList = MutableListX.of("adi", "hans", "huib", "sophie", "ted");
+
+        final int indexInSortedList = sortedList.binarySearchFrom(2, value ->  value.compareTo("sophie"));
+        final int invertedInsertionPoint = sortedList.binarySearchFrom(2, value -> value.compareTo("adi"));
+        // the inverted insertion point (-insertion point - 1)
+        final int insertionIndex = -invertedInsertionPoint - 1;
+
+        assertAll(
+                () -> assertEquals(3, indexInSortedList),
+                () -> assertEquals(2, insertionIndex)
+        );
+    }
+
+    @Test
+    void testBinarySearchInListWithNonComparableObjectsThrowsIllegalStateException() {
+        final var list = ListX.of(Locale.US, Locale.FRANCE, Locale.CANADA, Locale.GERMANY);
+        final var exception = assertThrows(IllegalStateException.class, () -> list.binarySearchFor(Locale.US));
+        assertEquals("Can not perform binary search by non comparable search value type: Locale", exception.getMessage());
     }
 
     @Test

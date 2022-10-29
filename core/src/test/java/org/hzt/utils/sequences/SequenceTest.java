@@ -768,7 +768,7 @@ class SequenceTest {
 
         noneWholeHourZoneOffsetSummaries.forEach(It::println);
 
-        assertEquals(25, noneWholeHourZoneOffsetSummaries.count());
+        assertEquals(23, noneWholeHourZoneOffsetSummaries.count());
     }
 
     private boolean nonWholeHourOffsets(Instant instant, ZoneId id) {

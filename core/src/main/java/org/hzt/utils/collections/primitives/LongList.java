@@ -1,11 +1,10 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.ArraysX;
-import org.hzt.utils.collections.ListHelper;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
-import org.hzt.utils.markerinterfaces.BinarySearchable;
+import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.ranges.IntRange;
@@ -111,12 +110,16 @@ public interface LongList extends LongCollection,
     }
 
     /**
-     * @see org.hzt.utils.markerinterfaces.BinarySearchable#binarySearch(int, int, Object)
+     * @see BinarySearchable#binarySearch(int, int, Object)
      * @see java.util.Arrays#binarySearch(long[], long)
      */
     @Override
     default int binarySearch(int fromIndex, int toIndex, LongToIntFunction comparison) {
-        return ListHelper.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
+        return BinarySearchable.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
+    }
+
+    default int binarySearch(int valueToSearch) {
+        return binarySearch(0, size(), e -> Long.compare(e, valueToSearch));
     }
 
     @Override

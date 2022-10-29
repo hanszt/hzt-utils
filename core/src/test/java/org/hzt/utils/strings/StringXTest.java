@@ -6,7 +6,9 @@ import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +19,8 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class StringXTest {
 
@@ -111,33 +110,36 @@ class StringXTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "bevoordelen -> voorbeelden",
-            "Laptop machines ->  Apple Macintosh",
-            "Avida Dollars ->  Salvador Dali",
-            "Altissimvm planetam tergeminvm observavi -> Salve vmbistinevm geminatvm Martia proles"})
-    void testStringIsAnagram(String string) {
-        final ListX<String> split = StringX.of(string).split(" -> ");
-        final String string1 = split.first();
-        final String string2 = split.last();
+    @MethodSource("anagrams")
+    void testStringsAreEachOthersAnagram(String string1, String string2) {
+        assertAll(
+                () -> assertTrue(StringX.of(string1).isAnagramOf(string2)),
+                () -> assertTrue(isAnagram(string1, string2))
+        );
+    }
 
-        assertTrue(StringX.of(string1).isAnagramOf(string2));
-        assertTrue(isAnagram(string1, string2));
+    private static Sequence<Arguments> anagrams() {
+        return Sequence.of(
+                arguments("bevoordelen", "voorbeelden"),
+                arguments("Laptop machines", "Apple Macintosh"),
+                arguments("Avida Dollars", "Salvador Dali"),
+                arguments("Altissimvm planetam tergeminvm observavi", "Salve vmbistinevm geminatvm Martia proles"),
+                arguments("O DRACONIAN DEVIL", "LEONARDO DA VINCI"),
+                arguments("Tom Marvolo Riddle", "I am Lord Voldemort")
+        );
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "bevoordelen -> bevoorraden",
-            "Laptop machines ->  Microsoft windows",
-            "Avida Dollars ->  Salvador Dalis",
-            "Altissimum planetam tergeminum observavi -> Salve umbistineum geminatum Martia proles"})
-    void testStringIsNotAnagram(String string) {
-        final ListX<String> split = StringX.of(string).split(" -> ");
-        final String string1 = split.first();
-        final String string2 = split.last();
-
-        assertFalse(StringX.of(string1).isAnagramOf(string2));
-        assertFalse(isAnagram(string1, string2));
+    @CsvSource({
+            "bevoordelen, bevoorraden",
+            "Laptop machines, Microsoft windows",
+            "Avida Dollars, Salvador Dalis",
+            "Altissimum planetam tergeminum observavi, Salve umbistineum geminatum Martia proles"})
+    void testStringIsNotAnagram(String string1, String string2) {
+        assertAll(
+                () -> assertFalse(StringX.of(string1).isAnagramOf(string2)),
+                () -> assertFalse(isAnagram(string1, string2))
+        );
     }
 
     private static boolean isAnagram(String s1, String s2) {
@@ -155,15 +157,12 @@ class StringXTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "this is a test -> This is a test",
-            "hANS -> Hans",
-            "1233 -> 1233",
-            "THIS IS A LITTLE TO MUCH! -> This is a little to much!"})
-    void testCapitalized(String string) {
-        final ListX<String> split = StringX.of(string).split(" -> ");
-        final String input = split.first();
-        final String expected = split.last();
+    @CsvSource({
+            "this is a test, This is a test",
+            "hANS, Hans",
+            "1233, 1233",
+            "THIS IS A LITTLE TO MUCH!, This is a little to much!"})
+    void testCapitalized(String input, String expected) {
 
         final String actual = StringX.capitalized(input);
 
@@ -172,6 +171,7 @@ class StringXTest {
 
     @Nested
     class StringSplittingTests {
+
         @Test
         void testSplitToSequence() {
             String string = "hallo, this, is, a, test -> answer";

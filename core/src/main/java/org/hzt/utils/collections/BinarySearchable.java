@@ -1,6 +1,10 @@
-package org.hzt.utils.markerinterfaces;
+package org.hzt.utils.collections;
+
+import org.hzt.utils.PreConditions;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
+import java.util.function.IntUnaryOperator;
 
 /**
  * @param <COMPARISON_FUNCTION> The comparison function
@@ -38,8 +42,41 @@ public interface BinarySearchable<COMPARISON_FUNCTION> {
      * otherwise, the inverted insertion point `(-insertion point - 1)`.
      * The insertion point is defined as the index at which the element should be inserted,
      * so that the list (or the specified subrange of list) still remains sorted.
-     *
      * @see java.util.Arrays#binarySearch(Object[], Object, Comparator)
      */
     int binarySearch(int fromIndex, int toIndex, COMPARISON_FUNCTION comparison);
+
+    /**
+     * This function only returns a valid value if the indexed collection to search in is sorted
+     *
+     * @param size               the size of the indexed collection to search in
+     * @param fromIndex          the index to search from
+     * @param toIndex            the index to search until
+     * @param comparisonFunction the function used to determine if the element is found
+     * @return the index of the element to be found, if not found: Returns the inverted insertion point.
+     * (The index it should have been as negative value)
+     */
+    static int binarySearch(final int size,
+                            final int fromIndex,
+                            final int toIndex,
+                            @NotNull final IntUnaryOperator comparisonFunction) {
+        PreConditions.rangeCheck(size, fromIndex, toIndex);
+
+        int low = fromIndex;
+        int high = toIndex - 1;
+
+        while (low <= high) {
+            final int mid = (low + high) >>> 1;
+            final int comparison = comparisonFunction.applyAsInt(mid);
+
+            if (comparison < 0) {
+                low = mid + 1;
+            } else if (comparison > 0) {
+                high = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+        return -(low + 1);
+    }
 }

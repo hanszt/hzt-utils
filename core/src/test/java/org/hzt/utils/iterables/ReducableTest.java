@@ -1,10 +1,10 @@
 package org.hzt.utils.iterables;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -60,6 +60,14 @@ class ReducableTest {
                 () -> assertEquals(LocalDate.of(2000, Month.APRIL, 10), localDate),
                 () -> assertEquals(expected, localDate)
         );
+    }
+
+    @Test
+    void testFoldToMutableList() {
+        final var listX = Sequence.of(1, 2, 3, 4, 5)
+                .fold(MutableListX.empty(), MutableListX::plus);
+
+        assertEquals(MutableListX.of(1, 2, 3 ,4, 5), listX);
     }
 
     @Test

@@ -138,12 +138,12 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
     }
 
     @Override
-    double[] newArray(int length) {
+    protected double[] newArray(int length) {
         return new double[length];
     }
 
     @Override
-    double[] copyElementData(int newLength) {
+    protected double[] copyElementData(int newLength) {
         return Arrays.copyOf(elementData, newLength);
     }
 
@@ -213,7 +213,7 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
     }
 
     @Override
-    void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfDouble iterator) {
+    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfDouble iterator) {
         sb.append(iterator.nextDouble());
     }
 }

@@ -29,7 +29,6 @@ import java.util.function.LongConsumer;
  *
  * @param <E> the type of elements in this list
  */
-@SuppressWarnings({"squid:S2972", "unused", "DuplicatedCode"})
 public class SpinedBuffer<E>
         extends AbstractSpinedBuffer
         implements Consumer<E>, Iterable<E> {
@@ -242,6 +241,7 @@ public class SpinedBuffer<E>
 
             Splitr(int firstSpineIndex, int lastSpineIndex,
                    int firstSpineElementIndex, int lastSpineElementFence) {
+                //noinspection DuplicatedCode
                 this.splSpineIndex = firstSpineIndex;
                 this.lastSpineIndex = lastSpineIndex;
                 this.splElementIndex = firstSpineElementIndex;
@@ -355,7 +355,7 @@ public class SpinedBuffer<E>
      * @param <T_ARR>  the array type for this primitive type
      * @param <T_CONS> the Consumer type for this primitive type
      */
-    @SuppressWarnings({"squid:S1699", "squid:S119"})
+    @SuppressWarnings({"squid:S1699", "squid:S119", "squid:S2972"})
     abstract static class OfPrimitive<E, T_ARR, T_CONS>
             extends AbstractSpinedBuffer implements Iterable<E> {
 
@@ -370,7 +370,7 @@ public class SpinedBuffer<E>
          *
          * The curChunk pointer is always valid.  The elementIndex is the index of
          * the next element to be written in curChunk; this may be past the end of
-         * curChunk so we have to check before writing. When we inflate the spine
+         * curChunk, so we have to check before writing. When we inflate the spine
          * array, curChunk becomes the first element in it.  When we clear the
          * buffer, we discard all chunks except the first one, which we clear,
          * restoring it to the initial single-chunk state.
@@ -568,6 +568,7 @@ public class SpinedBuffer<E>
 
             BaseSpliterator(int firstSpineIndex, int lastSpineIndex,
                             int firstSpineElementIndex, int lastSpineElementFence) {
+                //noinspection DuplicatedCode
                 this.splSpineIndex = firstSpineIndex;
                 this.lastSpineIndex = lastSpineIndex;
                 this.splElementIndex = firstSpineElementIndex;
@@ -670,6 +671,7 @@ public class SpinedBuffer<E>
     /**
      * An ordered collection of {@code int} values.
      */
+    @SuppressWarnings("squid:S2972")
     public static class OfInt extends SpinedBuffer.OfPrimitive<Integer, int[], IntConsumer>
             implements IntConsumer {
         public OfInt() {
@@ -779,6 +781,7 @@ public class SpinedBuffer<E>
     /**
      * An ordered collection of {@code long} values.
      */
+    @SuppressWarnings("squid:S2972")
     public static class OfLong extends SpinedBuffer.OfPrimitive<Long, long[], LongConsumer>
             implements LongConsumer {
         public OfLong() {
@@ -890,6 +893,7 @@ public class SpinedBuffer<E>
     /**
      * An ordered collection of {@code double} values.
      */
+    @SuppressWarnings("squid:S2972")
     public static class OfDouble
             extends SpinedBuffer.OfPrimitive<Double, double[], DoubleConsumer>
             implements DoubleConsumer {

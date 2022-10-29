@@ -2,7 +2,6 @@ package org.hzt.utils.collections;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
-import org.hzt.utils.markerinterfaces.BinarySearchable;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
@@ -114,11 +113,20 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
     }
 
     /**
-     * @see org.hzt.utils.markerinterfaces.BinarySearchable#binarySearch(int, int, Object)
+     * @see BinarySearchable#binarySearch(int, int, Object)
      * @see java.util.Arrays#binarySearch(Object[], Object, Comparator)
      */
     default int binarySearch(int fromIndex, int toIndex, ToIntFunction<E> comparison) {
-        return ListHelper.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
+        return BinarySearchable.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
+    }
+
+    default <T extends Comparable<? super T>> int binarySearchFor(E valueToSearch) {
+        if (valueToSearch instanceof Comparable<?>) {
+            //noinspection unchecked
+            return binarySearch(0, size(), (E e) -> ((T) e).compareTo((T) valueToSearch));
+        }
+        throw new IllegalStateException("Can not perform binary search by non comparable search value type: " +
+                valueToSearch.getClass().getSimpleName());
     }
 
     @Override

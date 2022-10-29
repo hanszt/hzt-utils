@@ -72,7 +72,7 @@ public final class LongWindowedIterator extends AbstractIterator<LongList> {
         nextWindow = nextWindow.isEmpty() ? LongMutableList.withInitCapacity(windowInitCapacity) : LongMutableList.of(nextWindow);
         calculateNextOverlappingWindow();
         if (!partialWindows && nextWindow.size() < size) {
-            nextWindow = LongMutableList.empty();
+            nextWindow.clear();
         }
     }
 

@@ -75,9 +75,9 @@ public interface Sortable<T> extends Iterable<T> {
 
     /**
      * This method offers O(1 - log(n)) time complexity when called against an unsorted sortable
-     *
+     * <p>
      * If it is sorted the method has time complexity O(n) (Worst case)
-     *
+     * <p>
      * Can for example be used before binarySearch
      *
      * @param comparator the comparator to use for testing weather the Sortable is sorted

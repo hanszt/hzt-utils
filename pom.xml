@@ -29,11 +29,11 @@
         <!--        dependencies-->
         <!--        test-->
         <junit.jupiter.version>5.9.0</junit.jupiter.version>
-        <awaitility.version>4.1.1</awaitility.version>
+        <awaitility.version>4.2.0</awaitility.version>
         <!--        dependency management-->
-        <javafx.version>17.0.2</javafx.version>
+        <javafx.version>19</javafx.version>
         <!--        other-->
-        <annotations.version>22.0.0</annotations.version>
+        <annotations.version>23.0.0</annotations.version>
         <!--plugins-->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
@@ -46,6 +46,7 @@
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
                 <version>${annotations.version}</version>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.hzt.utils</groupId>
@@ -57,6 +58,7 @@
                 <groupId>org.hzt.utils</groupId>
                 <artifactId>core</artifactId>
                 <version>${project.version}</version>
+                <scope>compile</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.awaitility/awaitility -->
             <dependency>

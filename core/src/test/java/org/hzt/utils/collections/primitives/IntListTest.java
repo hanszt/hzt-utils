@@ -63,7 +63,7 @@ class IntListTest {
 
         int valueToSearchFor = 2;
 
-        final int indexInSortedList = sortedList.binarySearch(value -> value - valueToSearchFor);
+        final int indexInSortedList = sortedList.binarySearch(valueToSearchFor);
 
         assertEquals(3, indexInSortedList);
     }

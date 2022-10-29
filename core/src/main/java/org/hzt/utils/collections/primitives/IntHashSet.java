@@ -149,7 +149,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
     }
 
     @Override
-    int[] newArray(int length) {
+    protected int[] newArray(int length) {
         return new int[length];
     }
 
@@ -182,7 +182,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
         }
     }
     @Override
-    void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfInt iterator) {
+    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfInt iterator) {
         sb.append(iterator.nextInt());
     }
 }

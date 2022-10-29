@@ -9,11 +9,7 @@ import java.util.Arrays;
 
 import static java.util.function.Predicate.not;
 import static org.hzt.utils.Patterns.commaPattern;
-import static org.hzt.utils.primitive_comparators.DoubleComparator.reverseOrder;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DoubleListTest {
 
@@ -79,12 +75,18 @@ class DoubleListTest {
 
     @Test
     void testBinarySearch() {
+        final DoubleList sortedList = DoubleList.of(-1, 0, 1, Math.E, Math.PI, 4, 5, Double.POSITIVE_INFINITY);
+
+        final int indexInSortedList = sortedList.binarySearch(Math.E);
+
+        assertEquals(3, indexInSortedList);
+    }
+
+    @Test
+    void testBinarySearchReversedSortedList() {
         final DoubleList reverseOrderSortedList = DoubleList.of(Double.POSITIVE_INFINITY, 5, 4, Math.PI, Math.E, 1, 0, -1);
 
-        double valueToSearchFor = Math.E;
-
-        final int indexInSortedList = reverseOrderSortedList
-                .binarySearch(value -> reverseOrder().compare(value, valueToSearchFor));
+        final int indexInSortedList = reverseOrderSortedList.binarySearch(value -> Double.compare(Math.E, value));
 
         assertEquals(4, indexInSortedList);
     }

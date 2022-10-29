@@ -28,6 +28,9 @@ target
 *.ipr
 help
 
+### Fleet ###
+.fleet
+
 ### Eclipse IDE ###
 .classpath
 .project

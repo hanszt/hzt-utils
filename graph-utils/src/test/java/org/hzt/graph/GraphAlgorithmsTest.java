@@ -1,11 +1,9 @@
 package org.hzt.graph;
 
+import org.hzt.utils.collections.MutableMapX;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -32,7 +30,7 @@ class GraphAlgorithmsTest {
     @Disabled("Needs to be fixed")
     @Test
     void testFindShortestPath() {
-        Map<String, WeightedNode<String>> graph = new HashMap<>();
+        MutableMapX<String, WeightedNode<String>> graph = MutableMapX.empty();
         WeightedNode<String> AB = WeightedNode.of("AB", 3);
         WeightedNode<String> BA = WeightedNode.of("BA", 3);
         WeightedNode<String> AC = WeightedNode.of("AC", 2);

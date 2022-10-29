@@ -47,7 +47,7 @@ class LongListTest {
 
         int valueToSearchFor = 2;
 
-        final int indexInSortedList = sortedList.binarySearch(value -> Long.compare(value, valueToSearchFor));
+        final int indexInSortedList = sortedList.binarySearch(valueToSearchFor);
 
         assertEquals(3, indexInSortedList);
     }

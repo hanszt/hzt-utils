@@ -6,10 +6,11 @@ public final class ReflectionUtils {
     }
 
     public static String getEnclosingMethodName() {
-        return StackWalker.getInstance()
-                .walk(frames -> frames.skip(1)
-                        .findFirst()
-                        .map(StackWalker.StackFrame::getMethodName)
-                        .orElseThrow(() -> new IllegalStateException("Method name could not be obtained")));
+        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        final int INDEX_OF_WANTED_ELEMENT = 2;
+        if (stackTrace.length > INDEX_OF_WANTED_ELEMENT) {
+            return stackTrace[INDEX_OF_WANTED_ELEMENT].getMethodName();
+        }
+        throw new IllegalStateException("Method name could not be obtained");
     }
 }

@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
@@ -33,7 +34,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
     LongArrayList(Iterable<Long> iterable) {
         this();
         if (iterable instanceof PrimitiveIterable.OfLong) {
-            final var iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
+            final PrimitiveIterator.OfLong iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextLong());
             }
@@ -46,7 +47,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
 
     public boolean add(long l) {
         if (size == elementData.length) {
-            final var isInitEmptyArray = elementData.length == 0;
+            final boolean isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
         }
         elementData[size] = l;
@@ -56,13 +57,13 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
 
     @Override
     public long get(int index) {
-        Objects.checkIndex(index, size);
+        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
         return elementData[index];
     }
 
     @Override
     public long set(int index, long value) {
-        Objects.checkIndex(index, size);
+        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
         elementData[index] = value;
         return value;
     }
@@ -96,7 +97,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
     }
 
     public long removeAt(int index) {
-        Objects.checkIndex(index, size);
+        PrimitiveListHelper.checkIndex(index, size);
         long oldValue = elementData[index];
         size = fastRemoveLong(elementData, size, index);
         return oldValue;

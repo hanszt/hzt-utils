@@ -1,5 +1,7 @@
 package benchmark.prefix;
 
+import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.collections.primitives.IntMutableList;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -14,9 +16,9 @@ class IntTimSortBenchmarkTest {
 
     @Test
     void testIntListSortAndListSortYieldSameContent() {
-        final var intMutableListX = intTimSortBenchmark.intListSort();
-        final var mutableListX = intTimSortBenchmark.listSort();
-        final var array = intTimSortBenchmark.arraySort();
+        final IntMutableList intMutableListX = intTimSortBenchmark.intListSort();
+        final MutableListX<Integer> mutableListX = intTimSortBenchmark.listSort();
+        final int[] array = intTimSortBenchmark.arraySort();
 
         intMutableListX.take(10).forEachInt(System.out::println);
 
@@ -32,8 +34,8 @@ class IntTimSortBenchmarkTest {
 
     @Test
     void testIntListAndListReverseSortYieldSameContent() {
-        final var intMutableListX = intTimSortBenchmark.intListSortReversed();
-        final var mutableListX = intTimSortBenchmark.listSortReversed();
+        final IntMutableList intMutableListX = intTimSortBenchmark.intListSortReversed();
+        final MutableListX<Integer> mutableListX = intTimSortBenchmark.listSortReversed();
 
         intMutableListX.take(10).forEachInt(System.out::println);
 

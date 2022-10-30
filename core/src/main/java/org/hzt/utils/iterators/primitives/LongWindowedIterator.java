@@ -108,7 +108,7 @@ public final class LongWindowedIterator extends AbstractIterator<LongList> {
 
     @Override
     protected void computeNext() {
-        final var next = computeNextWindow();
+        final LongMutableList next = computeNextWindow();
         if (next.isNotEmpty()) {
             setNext(next);
         } else {

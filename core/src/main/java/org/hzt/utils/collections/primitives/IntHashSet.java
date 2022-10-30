@@ -45,7 +45,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
         }
 
         final int targetCollisionChainIndex = value & mask;
-        final var next = table[targetCollisionChainIndex];
+        final PrimitiveNode next = table[targetCollisionChainIndex];
         final PrimitiveNode newNode = new CollisionChainNode(value, next);
         table[targetCollisionChainIndex] = newNode;
         return true;
@@ -53,7 +53,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
 
     public boolean contains(int value) {
         final int collisionChainIndex = value & mask;
-        var node = table[collisionChainIndex];
+        PrimitiveNode node = table[collisionChainIndex];
 
         while (node != null) {
             if (((CollisionChainNode) node).value == value) {
@@ -74,11 +74,11 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer,
         }
         final int targetCollisionChainIndex = value & mask;
 
-        var current = table[targetCollisionChainIndex];
+        PrimitiveNode current = table[targetCollisionChainIndex];
 
         PrimitiveNode previous = null;
         while (current != null) {
-            var next = current.next;
+            PrimitiveNode next = current.next;
             if (((CollisionChainNode) current).value == value) {
                 if (previous == null) {
                     table[targetCollisionChainIndex] = next;

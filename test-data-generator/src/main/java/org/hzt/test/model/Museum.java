@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -28,7 +29,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
         this.mostPopularPainting = paintingList.stream()
                 .filter(Objects::nonNull)
                 .findAny()
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public String getName() {
@@ -42,7 +43,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
     public Painting getOldestPainting() {
         return paintingList.stream()
                 .min(Comparator.comparing(Painting::getYearOfCreation))
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public Painting getMostPopularPainting() {

@@ -49,7 +49,7 @@ public interface DoubleMutableList extends DoubleList, DoubleMutableCollection,
 
     @Override
     default boolean remove(double d) {
-        final var index = indexOf(d);
+        final int index = indexOf(d);
         if (index >= 0) {
             removeAt(index);
             return true;

@@ -12,9 +12,9 @@ class PrefixIntRangeToArrayBenchmarkTest {
 
     @Test
     void testIntRangeAndIntStreamRangeMapFilterToArrayYieldSameResult() {
-        final var intsFromIntSequence = intRangeToArrayBenchmark.intRangeMapFilterToArray();
-        final var intsFromIntStream = intRangeToArrayBenchmark.streamMapFilterToArray();
-        final var intsFromLoop = intRangeToArrayBenchmark.loopMapFilterToArray();
+        final int[] intsFromIntSequence = intRangeToArrayBenchmark.intRangeMapFilterToArray();
+        final int[] intsFromIntStream = intRangeToArrayBenchmark.streamMapFilterToArray();
+        final int[] intsFromLoop = intRangeToArrayBenchmark.loopMapFilterToArray();
 
         System.out.println("Arrays.toString(intsFromIntSequence) = " + Arrays.toString(intsFromIntSequence));
 

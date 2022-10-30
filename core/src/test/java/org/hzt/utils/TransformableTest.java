@@ -25,7 +25,7 @@ class TransformableTest {
     @Test
     void testCreateATransformableOfSomethingAndUseTheDefaultFunctions() {
         final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
-        final var nijntje = Painting.of("Nijntje");
+        final Painting nijntje = Painting.of("Nijntje");
 
         final LocalDate localDate = Transformable.from(vanGoghAuction)
                 .apply(auction -> auction.setMostPopularPainting(nijntje))
@@ -43,27 +43,28 @@ class TransformableTest {
 
         final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
 
-        final var nijntje = "Nijntje";
+        final String nijntje = "Nijntje";
 
-        vanGoghAuction
+        final String name = vanGoghAuction
                 .apply(auction -> auction.setMostPopularPainting(Painting.of(nijntje)))
                 .run(PaintingAuction::getMostPopularPainting)
                 .apply(It::println)
                 .alsoUnless(Painting::isInMuseum, list::add)
                 .takeIf(Objects::nonNull)
                 .map(Painting::name)
-                .ifPresentOrElse(name -> assertAll(
-                        () -> assertTrue(list::isNotEmpty),
-                        () -> assertEquals(nijntje, name)
-                ), Assertions::fail);
+                .orElseThrow(NoSuchElementException::new);
 
+        assertAll(
+                () -> assertTrue(list::isNotEmpty),
+                () -> assertEquals(nijntje, name)
+        );
     }
 
     @Test
     void testToPair() {
-        final var hallo = StringX.of("Hallo");
+        final StringX hallo = StringX.of("Hallo");
 
-        final var pair = hallo.to("Joepie");
+        final Pair<StringX, String> pair = hallo.to("Joepie");
 
         assertEquals(Pair.of(hallo, "Joepie"), pair);
     }

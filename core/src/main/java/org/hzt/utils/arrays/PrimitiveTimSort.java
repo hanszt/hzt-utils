@@ -160,10 +160,10 @@ public abstract class PrimitiveTimSort<A, C> {
             if (runLength[n] > runLength[n + 1]) {
                 return; // Invariant is established
             }
-            final var b1 = n > 0 && runLength[n - 1] <= runLength[n] + runLength[n + 1];
-            final var b2 = n > 1 && runLength[n - 2] <= runLength[n - 1] + runLength[n];
+            final boolean b1 = n > 0 && runLength[n - 1] <= runLength[n] + runLength[n + 1];
+            final boolean b2 = n > 1 && runLength[n - 2] <= runLength[n - 1] + runLength[n];
             if ((b1 || b2)) {
-                final var b3 = runLength[n - 1] < runLength[n + 1];
+                final boolean b3 = runLength[n - 1] < runLength[n + 1];
                 if (b3) {
                     n--;
                 }

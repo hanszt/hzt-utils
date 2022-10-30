@@ -27,7 +27,7 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
                              @NotNull ObjIntConsumer<A> accumulator,
                              @NotNull Function<? super A, ? extends R> finisher) {
         PrimitiveIterator.OfInt iterator = iterator();
-        final var result = supplier.get();
+        final A result = supplier.get();
         while (iterator.hasNext()) {
             accumulator.accept(result, iterator.nextInt());
         }
@@ -42,13 +42,13 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
             @NotNull IntCollector<A1, ? extends R1> downStream1,
             @NotNull IntCollector<A2, ? extends R2> downStream2,
             @NotNull BiFunction<? super R1, ? super R2, ? extends R> combiner) {
-        final var result1 = downStream1.supplier().get();
-        final var result2 = downStream2.supplier().get();
-        final var accumulator1 = downStream1.accumulator();
-        final var accumulator2 = downStream2.accumulator();
+        final A1 result1 = downStream1.supplier().get();
+        final A2 result2 = downStream2.supplier().get();
+        final ObjIntConsumer<A1> accumulator1 = downStream1.accumulator();
+        final ObjIntConsumer<A2> accumulator2 = downStream2.accumulator();
         PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
-            final var value = iterator.nextInt();
+            final int value = iterator.nextInt();
             accumulator1.accept(result1, value);
             accumulator2.accept(result2, value);
         }
@@ -61,7 +61,7 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
 
     default <C extends IntMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
-        final var iterator = iterator();
+        final PrimitiveIterator.OfInt iterator = iterator();
         while(iterator.hasNext()) {
             collection.add(iterator.nextInt());
         }
@@ -92,7 +92,7 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
             }
         }
         int count = 0;
-        final var iterator = iterator();
+        final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             int value = iterator.nextInt();
             collection.add(value);

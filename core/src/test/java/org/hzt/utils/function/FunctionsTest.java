@@ -5,6 +5,7 @@ import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.Stream;
+import java.util.List;
 
 import static org.hzt.utils.function.Functions.distinctBy;
 import static org.hzt.utils.function.Functions.not;
@@ -15,7 +16,7 @@ class FunctionsTest {
 
     @Test
     void testBiPredicateNot() {
-        final var list = Sequence.of(1, 2, 3, 4, 4, 8, 10, 6, 5)
+        final List<Integer> list = Sequence.of(1, 2, 3, 4, 4, 8, 10, 6, 5)
                 .zipWithNext()
                 .takeWhile(not(Integer::equals))
                 .merge()
@@ -30,7 +31,7 @@ class FunctionsTest {
     void testDistinctBy() {
         final Person[] people1 = {new Person("Piet"), new Person("Piet"), new Person("Klaas")};
 
-        final var distinctByName = Stream.of(people1)
+        final Person[] distinctByName = Stream.of(people1)
                 .filter(distinctBy(Person::getName))
                 .toArray(Person[]::new);
 

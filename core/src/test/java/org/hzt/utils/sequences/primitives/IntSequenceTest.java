@@ -4,12 +4,15 @@ import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.numbers.IntX;
+import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.ranges.IntRange;
+import org.hzt.utils.statistics.IntStatistics;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.IntSummaryStatistics;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
@@ -22,7 +25,7 @@ class IntSequenceTest {
 
     @Test
     void testSteppedIntRange() {
-        var list = IntRange.until(15)
+        IntList list = IntRange.until(15)
                 .step(4)
                 .onEach(System.out::println)
                 .toList();
@@ -33,11 +36,11 @@ class IntSequenceTest {
     @Test
     @DisplayName("Test sum stream yields wrong result for large int value sums")
     void testSumStreamYieldsWrongResultForLargeIntValueSums() {
-        final var endExclusive = 100_000;
+        final int endExclusive = 100_000;
 
-        final var sumIntStream = IntStream.range(0, endExclusive).sum();
-        final var sumIntRange = IntRange.of(0, endExclusive).sum();
-        final var sumIntStreamUsingCollector = IntStream.range(0, endExclusive)
+        final int sumIntStream = IntStream.range(0, endExclusive).sum();
+        final long sumIntRange = IntRange.of(0, endExclusive).sum();
+        final long sumIntStreamUsingCollector = IntStream.range(0, endExclusive)
                 .summaryStatistics()
                 .getSum();
 
@@ -113,11 +116,10 @@ class IntSequenceTest {
 
     @Test
     void testDescendingSteppedIntRange() {
-        var list = MutableListX.<Integer>empty();
+        MutableListX<Integer> list = MutableListX.empty();
         IntRange.from(100).downTo(20).step(5)
                 .onEach(System.out::println)
                 .forEachInt(list::add);
-
         assertAll(
                 () -> assertEquals(17, list.size()),
                 () -> assertEquals(100, list.first())
@@ -126,7 +128,7 @@ class IntSequenceTest {
 
     @Test
     void testDescendingIntRange() {
-        final var integers = IntRange.from(100).downTo(20);
+        final IntProgression integers = IntRange.from(100).downTo(20);
         assertAll(
                 () -> assertEquals(81, integers.count()),
                 () -> assertEquals(100, integers.first())
@@ -140,9 +142,9 @@ class IntSequenceTest {
 
     @Test
     void testStats() {
-        final var expected = IntStream.range(0, 100).summaryStatistics();
+        final IntSummaryStatistics expected = IntStream.range(0, 100).summaryStatistics();
 
-        final var actual = IntRange.of(0, 100).stats();
+        final IntStatistics actual = IntRange.of(0, 100).stats();
 
         It.println("actual = " + actual);
 
@@ -156,9 +158,9 @@ class IntSequenceTest {
 
     @Test
     void testIntRangeFromIntStream() {
-        final var expected = IntStream.range(0, 100).summaryStatistics();
+        final IntSummaryStatistics expected = IntStream.range(0, 100).summaryStatistics();
 
-        final var actual = IntSequence.of(IntStream.range(0, 100)).stats();
+        final IntStatistics actual = IntSequence.of(IntStream.range(0, 100)).stats();
 
         It.println("actual = " + actual);
 
@@ -174,13 +176,13 @@ class IntSequenceTest {
     void intRangeFromIntArray() {
         int[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
-        final var expected = IntStream.of(array)
+        final long[] expected = IntStream.of(array)
                 .asLongStream()
                 .filter(l -> l > 3)
                 .toArray();
 
 
-        final var longs = IntSequence.of(array)
+        final long[] longs = IntSequence.of(array)
                 .asLongSequence()
                 .filter(l -> l > 3)
                 .toArray();
@@ -195,7 +197,7 @@ class IntSequenceTest {
     void testSortedDescending() {
         int[] array = {1, 4, 5, 3, 6, 7, 4, 8, 5, 9, 4};
 
-        final var sorted = IntSequence.of(array)
+        final int[] sorted = IntSequence.of(array)
                 .sortedDescending()
                 .toArray();
 
@@ -208,7 +210,7 @@ class IntSequenceTest {
     void testSortedThenComparingUnsignedUsingIntComparator() {
         int[] array = {-1, 4, -5, 3, -6, 7, -4, 8, -5, 9, -4};
 
-        final var sorted = IntSequence.of(array)
+        final int[] sorted = IntSequence.of(array)
                 .sorted(IntComparator.comparing(It::asInt)
                         .thenComparing(Integer::compareUnsigned))
                 .toArray();
@@ -222,7 +224,7 @@ class IntSequenceTest {
     void testParallelStreamFromIntSequence() {
         // a parallel stream does not maintain the sorted nature of the sequence
         // when using a sequential stream, then the order is maintained
-        final var doubles = IntSequence.generate(0, i -> i + 2)
+        final double[] doubles = IntSequence.generate(0, i -> i + 2)
                 .filter(IntX.multipleOf(4))
                 .take(10_000)
                 .sortedDescending()
@@ -242,7 +244,7 @@ class IntSequenceTest {
     @Test
     void testToByteArray() {
         AtomicInteger index = new AtomicInteger();
-        final var LENGTH = 10_000_000;
+        final int LENGTH = 10_000_000;
         byte[] array = new byte[LENGTH];
 
         IntSequence.generate(Byte.MIN_VALUE, i -> (i == Byte.MAX_VALUE) ? Byte.MIN_VALUE : ++i)
@@ -268,7 +270,7 @@ class IntSequenceTest {
 
     @Test
     void testDistinctIntSequence() {
-        final var distinctArray = IntSequence.of(1, 2, 3, 4, 3, -51, 2, 1, 5, 4, 6, 3, 7, -1, -100, -100, -50)
+        final int[] distinctArray = IntSequence.of(1, 2, 3, 4, 3, -51, 2, 1, 5, 4, 6, 3, 7, -1, -100, -100, -50)
                 .distinct()
                 .toArray();
 

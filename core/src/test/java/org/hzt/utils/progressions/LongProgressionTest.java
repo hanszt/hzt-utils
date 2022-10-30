@@ -13,14 +13,14 @@ class LongProgressionTest {
     @Test
     @Timeout(value = 1_000, unit = TimeUnit.MILLISECONDS)
     void negativeLongProgressionStepped() {
-        final var end = 10_000_000;
+        final int end = 10_000_000;
 
-        final var expected = LongStream.iterate(0, i -> --i)
+        final long[] expected = LongStream.iterate(0, i -> --i)
                 .limit(end)
                 .filter(l -> l % 4 == 0)
                 .toArray();
 
-        final var longs = LongProgression.downTo(-end).step(4).toArray();
+        final long[] longs = LongProgression.downTo(-end).step(4).toArray();
 
         assertArrayEquals(expected, longs);
     }

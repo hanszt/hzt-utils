@@ -3,6 +3,7 @@ package org.hzt.utils.strings;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.tuples.Pair;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,6 +12,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -58,7 +60,7 @@ class StringXTest {
 
     @Test
     void testStringXToListXThenFirstAndLast() {
-        final var characters = StringX.of("Hello").toListX();
+        final ListX<Character> characters = StringX.of("Hello").toListX();
 
         assertAll(
                 () -> assertEquals('H', characters.first()),
@@ -68,24 +70,23 @@ class StringXTest {
 
     @Test
     void testStringXOfCharIterable() {
-        final var characters = List.of('H', 'e', 'y', '!', '1', '2', '3');
+        final List<Character> characters = Arrays.asList('H', 'e', 'y', '!', '1', '2', '3');
 
         assertEquals("Hey!123", StringX.of(characters).toString());
     }
 
     @Test
     void testStringChainingX() {
-        final var characters = List.of('H', 'e', 'y', '!', '1', '2', '3');
+        final List<Character> characters = Arrays.asList('H', 'e', 'y', '!', '1', '2', '3');
 
-        final var actual = StringX.of(characters)
-                .concat("\nHallo")
+        final Pair<Long, String> actual = StringX.of(characters)
+                .concat("Hallo")
                 .replaceFirst("lo", "asd")
-                .lines()
                 .toTwo(Sequence::count, s -> s.joinToString(""));
 
         assertAll(
                 () -> assertEquals("Hey!123Halasd", actual.second()),
-                () -> assertEquals(2, actual.first()));
+                () -> assertEquals(13, actual.first()));
     }
 
     @Test
@@ -94,17 +95,12 @@ class StringXTest {
     }
 
     @Test
-    void testIfBlank() {
-        assertEquals("Test", StringX.of("  ").ifBlank(() -> "Test").toString());
-    }
-
-    @Test
     void flatMapToCharArrayAndFromCharArrayToStringX() {
-        final var characters = Sequence.of("hallo", "Wat is dat?", "Een test")
+        final char[] characters = Sequence.of("hallo", "Wat is dat?", "Een test")
                 .joinToStringX("")
                 .toCharArray();
 
-        final var stringX = StringX.of(characters);
+        final StringX stringX = StringX.of(characters);
 
         assertEquals("halloWat is dat?Een test", stringX.toString());
     }
@@ -175,8 +171,8 @@ class StringXTest {
         @Test
         void testSplitToSequence() {
             String string = "hallo, this, is, a, test -> answer";
-            final var comma = StringX.of(", ");
-            final var strings = StringX.of(string).splitToSequence(comma, " -> ");
+            final StringX comma = StringX.of(", ");
+            final Sequence<String> strings = StringX.of(string).splitToSequence(comma, " -> ");
 
             strings.forEach(System.out::println);
 
@@ -186,8 +182,8 @@ class StringXTest {
         @Test
         void testSplitToSequenceIgnoreCase() {
             String string = "hallo O this o is O a, test -> answer";
-            final var oDelimiter = new StringBuilder(" o ");
-            final var strings = StringX.of(string).splitToSequence(true, ", ", oDelimiter, " -> ");
+            final StringBuilder oDelimiter = new StringBuilder(" o ");
+            final Sequence<String> strings = StringX.of(string).splitToSequence(true, ", ", oDelimiter, " -> ");
 
             strings.forEach(System.out::println);
 
@@ -196,9 +192,9 @@ class StringXTest {
 
         @Test
         void testStringTokenizerVsSplitToSequence() {
-            final var testString = "This is a\ftest\tcontaining\ndefault\rseparators";
+            final String testString = "This is a\ftest\tcontaining\ndefault\rseparators";
 
-            final var tokenizer = new StringTokenizer(testString);
+            final StringTokenizer tokenizer = new StringTokenizer(testString);
             final List<String> tokens = new ArrayList<>();
             while (tokenizer.hasMoreTokens()) {
                 tokens.add(tokenizer.nextToken());
@@ -208,9 +204,9 @@ class StringXTest {
                     .map(Object::toString)
                     .toListX();
 
-            final var split = StringX.of(testString).split(" ", "\t", "\n", "\r", "\f");
+            final ListX<String> split = StringX.of(testString).split(" ", "\t", "\n", "\r", "\f");
 
-            final var expected = ListX.of("This", "is", "a", "test", "containing", "default", "separators");
+            final ListX<String> expected = ListX.of("This", "is", "a", "test", "containing", "default", "separators");
 
             assertAll(
                     () -> assertEquals(expected, split),
@@ -221,38 +217,38 @@ class StringXTest {
 
         @Test
         void testSplitWithoutDelimitersDoesNotSplitInputString() {
-            final var testString = "This is a\ftest\tcontaining\ndefault\rseparators";
+            final String testString = "This is a\ftest\tcontaining\ndefault\rseparators";
 
-            final var split = StringX.of(testString).split();
+            final ListX<String> split = StringX.of(testString).split();
 
-            final var expected = ListX.of(testString);
+            final ListX<String> expected = ListX.of(testString);
 
             assertEquals(expected, split);
         }
 
         @Test
         void testSplitToSequenceByEmptyStringYieldsSeparateCharacters() {
-            final var testString = "Test";
+            final String testString = "Test";
 
-            final var split = StringX.of(testString).splitToSequence("");
+            final Sequence<String> split = StringX.of(testString).splitToSequence("");
 
-            final var expected = Sequence.of("", "T", "e", "s", "t", "");
+            final Sequence<String> expected = Sequence.of("", "T", "e", "s", "t", "");
 
             assertIterableEquals(expected, split);
         }
 
         @Test
         void testSplitByEmptyStringYieldsSeparateCharacters() {
-            final var testString = "Test";
+            final String testString = "Test";
 
-            final var split1 = StringX.of(testString).split("");
+            final ListX<String> split1 = StringX.of(testString).split("");
 
-            final var split2 = Pattern.compile("").splitAsStream(testString)
+            final List<String> split2 = Pattern.compile("").splitAsStream(testString)
                     .collect(Collectors.toList());
             split2.add(0, "");
             split2.add("");
 
-            final var expected = ListX.of("", "T", "e", "s", "t", "");
+            final ListX<String> expected = ListX.of("", "T", "e", "s", "t", "");
 
             assertAll(
                     () -> assertEquals(expected, split1),

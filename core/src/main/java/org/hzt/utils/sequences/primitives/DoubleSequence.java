@@ -10,6 +10,7 @@ import org.hzt.utils.iterables.primitives.DoubleGroupable;
 import org.hzt.utils.iterables.primitives.DoubleNumerable;
 import org.hzt.utils.iterables.primitives.DoubleReducable;
 import org.hzt.utils.iterables.primitives.DoubleStreamable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.DoubleFilteringIterator;
 import org.hzt.utils.iterators.primitives.DoubleGeneratorIterator;
@@ -52,7 +53,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     static DoubleSequence of(Iterable<Double> iterable) {
         if (iterable instanceof OfDouble) {
-            final var doubleIterable = (OfDouble) iterable;
+            final PrimitiveIterable.OfDouble doubleIterable = (OfDouble) iterable;
             return doubleIterable::iterator;
         }
         return of(iterable, It::asDouble);
@@ -117,15 +118,14 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     default DoubleSequence flatMap(DoubleFunction<? extends Iterable<Double>> flatMapper) {
-        return mapMulti((value, doubleConsumer) -> consumeForEach(flatMapper.apply(value), doubleConsumer));
-    }
-
-    private static void consumeForEach(Iterable<Double> iterable, DoubleConsumer consumer) {
-        if (iterable instanceof OfDouble) {
-            ((OfDouble) iterable).forEachDouble(consumer);
-        } else {
-            iterable.forEach(consumer::accept);
-        }
+        return mapMulti((value, consumer) -> {
+            final Iterable<Double> iterable = flatMapper.apply(value);
+            if (iterable instanceof OfDouble) {
+                ((OfDouble) iterable).forEachDouble(consumer);
+            } else {
+                iterable.forEach(consumer::accept);
+            }
+        });
     }
 
     default DoubleSequence mapMulti(DoubleMapMultiConsumer mapMultiConsumer) {
@@ -234,13 +234,13 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     default DoubleSequence zip(@NotNull DoubleBinaryOperator merger, double @NotNull ... array) {
-        final var iterator = PrimitiveIterators.doubleArrayIterator(array);
+        final PrimitiveIterator.OfDouble iterator = PrimitiveIterators.doubleArrayIterator(array);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
     default DoubleSequence zip(@NotNull DoubleBinaryOperator merger, @NotNull Iterable<Double> other) {
-        final var iterator = PrimitiveIterators.doubleIteratorOf(other.iterator(), It::asDouble);
+        final PrimitiveIterator.OfDouble iterator = PrimitiveIterators.doubleIteratorOf(other.iterator(), It::asDouble);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 

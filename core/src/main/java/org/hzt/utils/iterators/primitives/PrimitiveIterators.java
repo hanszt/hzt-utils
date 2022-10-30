@@ -152,7 +152,7 @@ public final class PrimitiveIterators {
 
     public static <R> Iterator<R> intToObjIterator(@NotNull PrimitiveIterator.OfInt iterator,
                                                    @NotNull IntFunction<? extends R> mapper) {
-        return new Iterator<>() {
+        return new Iterator<R>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -274,7 +274,7 @@ public final class PrimitiveIterators {
 
     public static <R> Iterator<R> longToObjIterator(@NotNull PrimitiveIterator.OfLong iterator,
                                                     @NotNull LongFunction<? extends R> mapper) {
-        return new Iterator<>() {
+        return new Iterator<R>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -402,7 +402,7 @@ public final class PrimitiveIterators {
 
     public static <R> Iterator<R> doubleToObjIterator(@NotNull PrimitiveIterator.OfDouble iterator,
                                                       @NotNull DoubleFunction<? extends R> mapper) {
-        return new Iterator<>() {
+        return new Iterator<R>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();

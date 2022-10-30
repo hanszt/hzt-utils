@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.function.IntSupplier;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -20,7 +21,7 @@ class WindowedSequenceTest {
 
     @Test
     void testChunkedSequence() {
-        final var sumDays = Sequence
+        final List<Pair<Long, Long>> sumDays = Sequence
                 .generate(LocalDate.of(1900, Month.JANUARY, 1), date -> date.plusMonths(1))
                 .chunked(12)
                 .map(dates -> dates.intSumOf(LocalDate::getDayOfYear))
@@ -35,7 +36,7 @@ class WindowedSequenceTest {
 
     @Test
     void testChunkedMappingSequence() {
-        final var sumDays = Sequence
+        final List<Pair<Long, Long>> sumDays = Sequence
                 .generate(LocalDate.of(1900, Month.JANUARY, 1), date -> date.plusMonths(1))
                 .chunked(12)
                 .map(dates -> dates.mapToInt(LocalDate::getDayOfYear))
@@ -52,7 +53,7 @@ class WindowedSequenceTest {
 
     @Test
     void testVariableSizeChunkedSequenceSineShape() {
-        final var chunkSizes = Sequence.generate(0, i -> ++i)
+        final long[] chunkSizes = Sequence.generate(0, i -> ++i)
                 .chunked(sineWaveGenerator())
                 .take(20)
                 .onEach(It::println)
@@ -76,7 +77,7 @@ class WindowedSequenceTest {
 
     @Test
     void testVariableStepAndSizeWindowedSequence() {
-        final var windows = IntRange.closed(4, 50).boxed()
+        final ListX<ListX<Integer>> windows = IntRange.closed(4, 50).boxed()
                 .windowed(5, size -> ++size, 10, step -> --step, true)
                 .onSequence(w -> w
                         .zipWithNext()

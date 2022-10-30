@@ -10,6 +10,7 @@ import org.hzt.utils.iterables.primitives.LongStreamable;
 import org.hzt.utils.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.LongConsumer;
@@ -44,9 +45,9 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     default LongList filter(LongPredicate predicate) {
         LongMutableList longs = LongMutableList.withInitCapacity(size());
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
-            final var value = iterator.nextLong();
+            final long value = iterator.nextLong();
             if (predicate.test(value)) {
                 longs.add(value);
             }
@@ -56,7 +57,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     default LongList map(LongUnaryOperator mapper) {
         LongMutableList longs = LongMutableList.withInitCapacity(size());
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextLong()));
         }
@@ -65,7 +66,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     default IntList mapToInt(LongToIntFunction mapper) {
         IntMutableList ints = IntMutableList.withInitCapacity(size());
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextLong()));
         }
@@ -74,7 +75,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     default DoubleList mapToDouble(LongToDoubleFunction mapper) {
         DoubleMutableList doubles = DoubleMutableList.withInitCapacity(size());
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextLong()));
         }
@@ -83,7 +84,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     default <R> ListX<R> mapToObj(LongFunction<R> mapper) {
         MutableListX<R> doubles = MutableListX.withInitCapacity(size());
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.apply(iterator.nextLong()));
         }

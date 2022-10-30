@@ -71,13 +71,13 @@ public final class ArraysX {
     }
 
     public static <T> void swap(T[] array, int index1, int index2) {
-        final var temp = array[index1];
+        final T temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }
 
     public static void swap(int[] array, int index1, int index2) {
-        final var temp = array[index1];
+        final int temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }
@@ -89,7 +89,7 @@ public final class ArraysX {
     }
 
     public static void swap(long[] array, int index1, int index2) {
-        final var temp = array[index1];
+        final long temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }
@@ -101,7 +101,7 @@ public final class ArraysX {
     }
 
     public static void swap(double[] array, int index1, int index2) {
-        final var temp = array[index1];
+        final double temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }

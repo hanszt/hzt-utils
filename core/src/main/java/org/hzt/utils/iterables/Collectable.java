@@ -49,7 +49,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
                 list.add(mapper.apply(t));
             }
         }
-        return list.toArray(generator);
+        return list.toArray(generator.apply(0));
     }
 
     default <K, V> MutableMapX<K, V> toMutableMap(@NotNull Function<? super T, ? extends K> keyMapper,
@@ -73,7 +73,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
 
     default <K, V> Map<K, V> toMap(@NotNull Function<? super T, ? extends K> keyMapper,
                                    @NotNull Function<? super T, ? extends V> valueMapper) {
-        return Map.copyOf(toMutableMap(keyMapper, valueMapper));
+        return Collections.unmodifiableMap(toMutableMap(keyMapper, valueMapper));
     }
 
     default <R, A> R collect(@NotNull Collector<? super T, A, R> collector) {
@@ -131,8 +131,8 @@ public interface Collectable<T> extends IndexedIterable<T> {
                 accumulator2.accept(result2, item);
             }
         }
-        final var r1 = downstream1.finisher().apply(result1);
-        final var r2 = downstream2.finisher().apply(result2);
+        final R1 r1 = downstream1.finisher().apply(result1);
+        final R2 r2 = downstream2.finisher().apply(result2);
         return merger.apply(r1, r2);
     }
 
@@ -158,9 +158,9 @@ public interface Collectable<T> extends IndexedIterable<T> {
                 accumulator3.accept(result3, item);
             }
         }
-        final var r1 = downstream1.finisher().apply(result1);
-        final var r2 = downstream2.finisher().apply(result2);
-        final var r3 = downstream3.finisher().apply(result3);
+        final R1 r1 = downstream1.finisher().apply(result1);
+        final R2 r2 = downstream2.finisher().apply(result2);
+        final R3 r3 = downstream3.finisher().apply(result3);
         return merger.apply(r1, r2, r3);
     }
 
@@ -191,10 +191,10 @@ public interface Collectable<T> extends IndexedIterable<T> {
                 accumulator4.accept(result4, item);
             }
         }
-        final var r1 = downstream1.finisher().apply(result1);
-        final var r2 = downstream2.finisher().apply(result2);
-        final var r3 = downstream3.finisher().apply(result3);
-        final var r4 = downstream4.finisher().apply(result4);
+        final R1 r1 = downstream1.finisher().apply(result1);
+        final R2 r2 = downstream2.finisher().apply(result2);
+        final R3 r3 = downstream3.finisher().apply(result3);
+        final R4 r4 = downstream4.finisher().apply(result4);
         return merger.apply(r1, r2, r3, r4);
     }
 
@@ -211,11 +211,12 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default List<T> toList() {
-        return List.copyOf(toMutableList());
+        return Collections.unmodifiableList(toMutableList());
     }
 
     default <R> List<R> toListOf(@NotNull Function<? super T, ? extends R> transform) {
-        return List.copyOf(mapNotNullTo(MutableListX::empty, transform));
+        final List<? extends R> list = mapNotNullTo(MutableListX::empty, transform);
+        return Collections.unmodifiableList(list);
     }
 
     default MutableSetX<T> toMutableSet() {
@@ -231,7 +232,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default Set<T> toSet() {
-        return Set.copyOf(toMutableSet());
+        return Collections.unmodifiableSet(toMutableSet());
     }
 
     default <R> Set<R> toSetOf(@NotNull Function<? super T, ? extends R> transform) {
@@ -296,7 +297,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
         C collection = collectionFactory.get();
         final Iterable<IndexedValue<T>> indexedIterable = this::indexedIterator;
         for (IndexedValue<T> indexedValue : indexedIterable) {
-            final var value = indexedValue.value();
+            final T value = indexedValue.value();
             if (predicate.test(indexedValue.index(), value)) {
                 collection.add(value);
             }

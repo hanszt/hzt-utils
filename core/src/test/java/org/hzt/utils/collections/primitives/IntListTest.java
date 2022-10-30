@@ -1,8 +1,10 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -12,7 +14,7 @@ class IntListTest {
 
     @Test
     void testIntListContains() {
-        final var ints = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 4, 3, 2, 5, 2, 2342, 3, 23);
+        final IntList ints = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 4, 3, 2, 5, 2, 2342, 3, 23);
 
         assertAll(
                 () -> assertTrue(ints.contains(3)),
@@ -23,11 +25,11 @@ class IntListTest {
 
     @Test
     void testLargeIntList() {
-        final var ints = IntSequence.generate(0, i -> ++i)
+        final IntList ints = IntSequence.generate(0, i -> ++i)
                 .take(100_000)
                 .toList();
 
-        final var ints1 = IntStream.iterate(0, i -> ++i)
+        final List<Integer> ints1 = IntStream.iterate(0, i -> ++i)
                 .limit(100_000)
                 .boxed()
                 .collect(Collectors.toList());
@@ -40,18 +42,18 @@ class IntListTest {
 
     @Test
     void testLastIndexOf() {
-        final var intListX = IntList.of(1, 2, 4, 3, 5, 4, 3);
+        final IntList intListX = IntList.of(1, 2, 4, 3, 5, 4, 3);
 
-        final var index = intListX.lastIndexOf(4);
+        final int index = intListX.lastIndexOf(4);
 
         assertEquals(5, index);
     }
 
     @Test
     void testShuffled() {
-        final var intListX = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        final IntList intListX = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        final var shuffled = intListX.shuffled();
+        final IntList shuffled = intListX.shuffled();
 
         System.out.println("shuffled = " + shuffled);
 
@@ -71,9 +73,9 @@ class IntListTest {
 
     @Test
     void testIndices() {
-        final var intList = IntList.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
+        final IntList intList = IntList.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
         int[] indices1 = new int[intList.size()];
-        final var indices = intList.indices();
+        final IntRange indices = intList.indices();
         for (int i : indices) {
             indices1[i] = i;
         }

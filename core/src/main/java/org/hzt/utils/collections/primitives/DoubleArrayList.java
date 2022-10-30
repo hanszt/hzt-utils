@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
@@ -29,7 +30,7 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
     DoubleArrayList(Iterable<Double> iterable) {
         this();
         if (iterable instanceof PrimitiveIterable.OfDouble) {
-            final var iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
+            final PrimitiveIterator.OfDouble iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextDouble());
             }
@@ -47,7 +48,7 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
     @Override
     public boolean add(double value) {
         if (size == elementData.length) {
-            final var isInitEmptyArray = elementData.length == 0;
+            final boolean isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
         }
         elementData[size] = value;
@@ -57,7 +58,7 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
 
     @Override
     public double get(int index) {
-        Objects.checkIndex(index, size);
+        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
         return elementData[index];
     }
 
@@ -90,7 +91,7 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
 
     @Override
     public double removeAt(int index) {
-        Objects.checkIndex(index, size);
+        PrimitiveListHelper.checkIndex(index, size);
         double oldValue = elementData[index];
         size = fastRemoveDouble(elementData, size, index);
         return oldValue;
@@ -149,7 +150,7 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
 
     @Override
     public double set(int index, double value) {
-        Objects.checkIndex(index, size);
+        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
         elementData[index] = value;
         return value;
     }

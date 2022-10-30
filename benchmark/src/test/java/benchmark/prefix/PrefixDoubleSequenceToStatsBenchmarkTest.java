@@ -1,5 +1,6 @@
 package benchmark.prefix;
 
+import org.hzt.utils.statistics.DoubleStatistics;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -11,9 +12,9 @@ class PrefixDoubleSequenceToStatsBenchmarkTest {
 
     @Test
     void testLoopStreamAndSequenceToSummaryStatsYieldsSameResult() {
-        final var doubleStatistics = toStatsBenchmark.sequenceMapFilterToStats();
-        final var doubleStatistics1 = toStatsBenchmark.loopMapFilterToStats();
-        final var doubleStatistics2 = toStatsBenchmark.streamMapFilterToStats();
+        final DoubleStatistics doubleStatistics = toStatsBenchmark.sequenceMapFilterToStats();
+        final DoubleStatistics doubleStatistics1 = toStatsBenchmark.loopMapFilterToStats();
+        final DoubleStatistics doubleStatistics2 = toStatsBenchmark.streamMapFilterToStats();
 
         System.out.println("doubleStatistics = " + doubleStatistics);
 

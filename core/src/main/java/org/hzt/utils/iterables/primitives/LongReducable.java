@@ -56,7 +56,7 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
                                                  @NotNull LongBiFunction<R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
         if (iterator.hasNext()) {
-            final var first = iterator.nextLong();
+            final long first = iterator.nextLong();
             long accumulator1 = first;
             long accumulator2 = first;
             while (iterator.hasNext()) {
@@ -76,11 +76,11 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
     }
 
     default long first() {
-        return findFirst().orElseThrow();
+        return findFirst().orElseThrow(NoSuchElementException::new);
     }
 
     default long first(@NotNull LongPredicate predicate) {
-        return findFirst(predicate).orElseThrow();
+        return findFirst(predicate).orElseThrow(NoSuchElementException::new);
     }
 
     default long firstNot(@NotNull LongPredicate predicate) {
@@ -88,7 +88,7 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
     }
 
     default @NotNull OptionalLong findFirst() {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         return iterator.hasNext() ? OptionalLong.of(iterator.nextLong()) : OptionalLong.empty();
     }
 
@@ -104,11 +104,11 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
     }
 
     default long last() {
-        return findLast().orElseThrow();
+        return findLast().orElseThrow(NoSuchElementException::new);
     }
 
     default long last(@NotNull LongPredicate predicate) {
-        return findLast(predicate).orElseThrow();
+        return findLast(predicate).orElseThrow(NoSuchElementException::new);
     }
 
     default @NotNull OptionalLong findLast() {
@@ -116,7 +116,7 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
     }
 
     default @NotNull OptionalLong findLast(@NotNull LongPredicate predicate) {
-        var iterator = iterator();
+        PrimitiveIterator.OfLong iterator = iterator();
         long result = iterator.nextLong();
         if (!predicate.test(result) && !iterator.hasNext()) {
             return OptionalLong.empty();
@@ -131,7 +131,7 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
     }
 
     default long single() {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }

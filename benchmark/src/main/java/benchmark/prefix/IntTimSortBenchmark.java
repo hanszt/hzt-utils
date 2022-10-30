@@ -44,7 +44,7 @@ public class IntTimSortBenchmark {
 
     @Benchmark
     public IntMutableList intListSort() {
-        final var list = IntMutableList.of(primitiveList);
+        final IntMutableList list = IntMutableList.of(primitiveList);
         list.sort();
         return list;
     }
@@ -52,7 +52,7 @@ public class IntTimSortBenchmark {
     @Benchmark
     @SuppressWarnings("squid:S2384")
     public MutableListX<Integer> listSort() {
-        final var list = MutableListX.of(inputList);
+        final MutableListX<Integer> list = MutableListX.of(inputList);
         list.sort(Comparator.comparing(It::self));
         return list;
     }
@@ -67,7 +67,7 @@ public class IntTimSortBenchmark {
 
     @Benchmark
     public IntMutableList intListSortReversed() {
-        final var list = IntMutableList.of(primitiveList);
+        final IntMutableList list = IntMutableList.of(primitiveList);
         list.sort(IntComparator.reverseOrder());
         return list;
     }
@@ -75,7 +75,7 @@ public class IntTimSortBenchmark {
     @Benchmark
     @SuppressWarnings("squid:S2384")
     public MutableListX<Integer> listSortReversed() {
-        final var list = MutableListX.of(inputList);
+        final MutableListX<Integer> list = MutableListX.of(inputList);
         list.sort(Comparator.reverseOrder());
         return list;
     }

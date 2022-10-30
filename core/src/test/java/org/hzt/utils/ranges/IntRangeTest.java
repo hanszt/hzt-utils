@@ -13,7 +13,7 @@ class IntRangeTest {
 
     @Test
     void testIntRange() {
-        final var intRange = IntRange.of(1, 100);
+        final IntRange intRange = IntRange.of(1, 100);
 
         assertAll(
                 () -> assertTrue(intRange.contains(3)),
@@ -23,7 +23,7 @@ class IntRangeTest {
 
     @Test
     void testIterateIntRange() {
-        final var range = IntRange.of(2, 10);
+        final IntRange range = IntRange.of(2, 10);
         IntMutableList list = IntMutableList.empty();
         range.forEachInt(list::add);
         range.forEachInt(list::add);
@@ -32,13 +32,13 @@ class IntRangeTest {
 
     @Test
     void testRange() {
-        final var range = IntRange.of(2, 10).toList();
+        final IntList range = IntRange.of(2, 10).toList();
         assertEquals(IntList.of(2, 3, 4, 5, 6, 7, 8, 9), range);
     }
 
     @Test
     void testSteppedRange() {
-        final var range = IntRange.of(2, 20, 2).toList();
+        final IntList range = IntRange.of(2, 20, 2).toList();
 
         It.println("range = " + range);
         range.forEachInt(It::println);
@@ -48,13 +48,13 @@ class IntRangeTest {
 
     @Test
     void testRangeClosed() {
-        final var range = IntRange.closed(2, 10).toList();
+        final IntList range = IntRange.closed(2, 10).toList();
         assertEquals(IntList.of(2, 3, 4, 5, 6, 7, 8, 9, 10), range);
     }
 
     @Test
     void testSteppedRangeClosed() {
-        final var range = IntRange.closed(2, 20, 2);
+        final IntRange range = IntRange.closed(2, 20, 2);
 
         It.println("range = " + range);
         range.forEachInt(It::println);
@@ -73,7 +73,7 @@ class IntRangeTest {
 
     @Test
     void emptyIntRange() {
-        final var empty = IntRange.empty();
+        final IntRange empty = IntRange.empty();
         empty.forEach(It::println);
         assertTrue(empty.none());
     }

@@ -1,8 +1,10 @@
 package org.hzt.utils.ranges;
 
-import org.hzt.utils.numbers.LongX;
+import org.hzt.utils.sequences.primitives.LongSequence;
+import org.hzt.utils.statistics.LongStatistics;
 import org.junit.jupiter.api.Test;
 
+import java.util.LongSummaryStatistics;
 import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -13,7 +15,7 @@ class LongRangeTest {
 
     @Test
     void longRangeStatsGreaterThanIntegerMaxFasterThanSequentialStream() {
-        final var stats = LongRange.of(0, Integer.MAX_VALUE + 100_000L, 1000)
+        final LongStatistics stats = LongRange.of(0, Integer.MAX_VALUE + 100_000L, 1000)
                 .map(l -> l + 2 * l)
                 .stats();
 
@@ -25,7 +27,7 @@ class LongRangeTest {
 
     @Test
     void longStreamParallelStatsGreaterThanIntegerMax() {
-        final var stats = LongStream.range(0, Integer.MAX_VALUE + 100_000L)
+        final LongSummaryStatistics stats = LongStream.range(0, Integer.MAX_VALUE + 100_000L)
                 .parallel()
                 .filter(l -> l % 1_000 == 0)
                 .map(l -> l + 2 * l)
@@ -38,15 +40,26 @@ class LongRangeTest {
     }
 
     @Test
-    void testRangeWithInterval() {
-        assertArrayEquals(
-                LongStream.range(5, 10).filter(LongX::isOdd).toArray(),
-                LongRange.of(5, 10, 2).toArray());
+    void longRangeFromLongArray() {
+        long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+
+        final long[] expected = LongStream.of(array)
+                .filter(l -> l > 3)
+                .toArray();
+
+        final long[] longs = LongSequence.of(array)
+                .filter(l -> l > 3)
+                .toArray();
+
+        assertAll(
+                () -> assertArrayEquals(new long[]{4, 5, 4, 6, 4, 4}, longs),
+                () -> assertArrayEquals(expected, longs)
+        );
     }
 
     @Test
     void longRangeFromUntil() {
-        final var longs = LongRange.from(1).until(7).toArray();
+        final long[] longs = LongRange.from(1).until(7).toArray();
 
         assertArrayEquals(new long[] {1, 2, 3, 4, 5, 6}, longs);
     }

@@ -10,6 +10,7 @@ import org.hzt.utils.iterables.primitives.LongGroupable;
 import org.hzt.utils.iterables.primitives.LongNumerable;
 import org.hzt.utils.iterables.primitives.LongReducable;
 import org.hzt.utils.iterables.primitives.LongStreamable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.LongFilteringIterator;
 import org.hzt.utils.iterators.primitives.LongGeneratorIterator;
@@ -52,7 +53,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
 
     static LongSequence of(Iterable<Long> iterable) {
         if (iterable instanceof OfLong) {
-            final var longIterable = (OfLong) iterable;
+            final PrimitiveIterable.OfLong longIterable = (OfLong) iterable;
             return longIterable::iterator;
         }
         return of(iterable, It::asLong);
@@ -119,15 +120,14 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence flatMap(LongFunction<? extends Iterable<Long>> flatMapper) {
-        return mapMulti((value, longConsumer) -> consumeForEach(flatMapper.apply(value), longConsumer));
-    }
-
-    private static void consumeForEach(Iterable<Long> iterable, LongConsumer consumer) {
-        if (iterable instanceof OfLong) {
-            ((OfLong) iterable).forEachLong(consumer);
-        } else {
-            iterable.forEach(consumer::accept);
-        }
+        return mapMulti((value, consumer) -> {
+            final Iterable<Long> iterable = flatMapper.apply(value);
+            if (iterable instanceof OfLong) {
+                ((OfLong) iterable).forEachLong(consumer);
+            } else {
+                iterable.forEach(consumer::accept);
+            }
+        });
     }
 
     default LongSequence mapMulti(LongMapMultiConsumer longMapMultiConsumer) {
@@ -232,13 +232,13 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence zip(@NotNull LongBinaryOperator merger, long... array) {
-        final var iterator = PrimitiveIterators.longArrayIterator(array);
+        final PrimitiveIterator.OfLong iterator = PrimitiveIterators.longArrayIterator(array);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
     default LongSequence zip(@NotNull LongBinaryOperator merger, @NotNull Iterable<Long> other) {
-        final var iterator = PrimitiveIterators.longIteratorOf(other.iterator(), It::asLong);
+        final PrimitiveIterator.OfLong iterator = PrimitiveIterators.longIteratorOf(other.iterator(), It::asLong);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 

@@ -18,9 +18,9 @@ public interface LongMutableCollection extends LongCollection,
     default boolean addAll(@NotNull Iterable<Long> iterable) {
         boolean allAdded= true;
         if (iterable instanceof PrimitiveIterable.OfLong) {
-            final var iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
+            final PrimitiveIterator.OfLong iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
             while (iterator.hasNext()) {
-                final var added = add(iterator.nextLong());
+                final boolean added = add(iterator.nextLong());
                 if (!added) {
                     allAdded = false;
                 }
@@ -37,7 +37,7 @@ public interface LongMutableCollection extends LongCollection,
 
     @Override
     default boolean addAll(long @NotNull ... array) {
-        final var iterator = PrimitiveIterators.longArrayIterator(array);
+        final PrimitiveIterator.OfLong iterator = PrimitiveIterators.longArrayIterator(array);
         boolean allAdded = true;
         while (iterator.hasNext()) {
             if (!add(iterator.nextLong())) {
@@ -53,7 +53,7 @@ public interface LongMutableCollection extends LongCollection,
     default boolean removeAll(@NotNull Iterable<Long> iterable) {
         boolean allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfLong) {
-            final var iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
+            final PrimitiveIterator.OfLong iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
             while (iterator.hasNext()) {
                 if (!remove(iterator.nextLong())) {
                     allRemoved = false;
@@ -72,9 +72,9 @@ public interface LongMutableCollection extends LongCollection,
     @Override
     default boolean removeAll(long @NotNull ... array) {
         boolean allRemoved = true;
-        final var iterator = PrimitiveIterators.longArrayIterator(array);
+        final PrimitiveIterator.OfLong iterator = PrimitiveIterators.longArrayIterator(array);
         while (iterator.hasNext()) {
-            final var removed = remove(iterator.nextLong());
+            final boolean removed = remove(iterator.nextLong());
             if (!removed) {
                 allRemoved = false;
             }

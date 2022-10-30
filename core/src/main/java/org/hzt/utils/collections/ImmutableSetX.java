@@ -1,13 +1,15 @@
 package org.hzt.utils.collections;
 
+import org.hzt.utils.collectors.CollectorsX;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 final class ImmutableSetX<T> implements SetX<T> {
@@ -16,17 +18,17 @@ final class ImmutableSetX<T> implements SetX<T> {
 
     @SafeVarargs
     ImmutableSetX(T... values) {
-        this.immutableSet = Set.of(values);
+        this.immutableSet = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(values)));
     }
 
     ImmutableSetX(Iterable<T> iterable) {
         immutableSet = StreamSupport.stream(iterable.spliterator(), false)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toUnmodifiableSet());
+                .collect(CollectorsX.toUnmodifiableSet());
     }
 
     ImmutableSetX(Collection<T> collection) {
-        immutableSet = Set.copyOf(collection);
+        immutableSet = Collections.unmodifiableSet(new HashSet<>(collection));
     }
 
     ImmutableSetX(Set<T> set) {

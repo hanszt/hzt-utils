@@ -1,5 +1,6 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.Sequence;
@@ -18,7 +19,7 @@ class DoubleWindowedSequenceTest {
     void testPartialWindowedDoubleSequence() {
         double[] array = {1 * Math.PI, 2, 3, 4, 5, 6, 7};
 
-        final var windows = DoubleSequence.of(array)
+        final double[][] windows = DoubleSequence.of(array)
                 .windowed(3, 2, true)
                 .map(DoubleList::toArray)
                 .toTypedArray(double[][]::new);
@@ -30,23 +31,19 @@ class DoubleWindowedSequenceTest {
 
     @Test
     void testLargeVariableWindowedSequence() {
-        final var windows = DoubleSequence.generate(0, pi -> pi + Math.PI)
+        final ListX<DoubleList> windows = DoubleSequence.generate(0, pi -> pi + Math.PI)
                 .take(2_000_000)
                 .windowed(2000, size -> --size, 1, step -> ++step)
                 .onEach(w -> It.println(w.size()))
                 .toListX();
 
-        final var lastWindow = windows.last();
+        final DoubleList lastWindow = windows.last();
 
-        final var firstWindow = windows.first();
+        final DoubleList firstWindow = windows.first();
 
-        final var head = windows.headTo(3);
+        final ListX<DoubleList> head = windows.headTo(3);
 
         head.forEach(It::println);
-//
-//        final var tail = windows.tailFrom(windows.size() - 3);
-//
-//        tail.forEach(It::println);
 
         assertAll(
                 () -> assertEquals(2000, windows.size()),
@@ -59,9 +56,9 @@ class DoubleWindowedSequenceTest {
     @Test
     void testApproximateGoldenRatioUsingDoubleSequence() {
         double goldenRatio = (1 + Math.sqrt(5)) / 2;
-        final var scale = 20;
+        final int scale = 20;
 
-        final var approximations = IntSequence.generate(1, i -> ++i)
+        final DoubleList approximations = IntSequence.generate(1, i -> ++i)
                 .mapToLong(Generator::fibSum)
                 .windowed(2)
                 .mapToDouble(w -> (double) w.last() / w.first())
@@ -69,8 +66,8 @@ class DoubleWindowedSequenceTest {
                         .equals(DoubleX.toRoundedString(goldenRatio, scale)))
                 .toList();
 
-        final var expected = DoubleX.toRoundedString(goldenRatio, scale);
-        final var actual = DoubleX.toRoundedString(approximations.last(), scale);
+        final String expected = DoubleX.toRoundedString(goldenRatio, scale);
+        final String actual = DoubleX.toRoundedString(approximations.last(), scale);
 
         assertAll(
                 () -> assertEquals(75, approximations.size()),
@@ -80,7 +77,7 @@ class DoubleWindowedSequenceTest {
 
     @Test
     void testVariableSizedChunkedDoubleSequence() {
-        final var chunks = DoubleSequence.generate(0, i -> i + Math.E)
+        final ListX<DoubleList> chunks = DoubleSequence.generate(0, i -> i + Math.E)
                 .chunked(1, Generator::sawTooth)
                 .take(100)
                 .toListX();

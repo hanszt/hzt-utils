@@ -10,6 +10,7 @@ import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -69,7 +70,7 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
         C destination = collectionFactory.get();
         final Iterable<K> keyIterable = this::keyIterator;
         for (K e : keyIterable) {
-            var iterable = mapper.apply(e);
+            Iterable<? extends R> iterable = mapper.apply(e);
             if (iterable instanceof Collection<?>) {
                 //noinspection unchecked
                 destination.addAll((Collection<R>) iterable);
@@ -89,7 +90,7 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
         C destination = collectionFactory.get();
         final Iterable<V> valueIterable = this::valueIterator;
         for (V e : valueIterable) {
-            var iterable = mapper.apply(e);
+            Iterable<? extends R> iterable = mapper.apply(e);
             if (iterable instanceof Collection<?>) {
                 //noinspection unchecked
                 destination.addAll((Collection<R>) iterable);
@@ -107,7 +108,7 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
     @NotNull
     default Iterator<V> valueIterator() {
         Iterator<Map.Entry<K, V>> iterator = iterator();
-        return new Iterator<>() {
+        return new Iterator<V>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -123,7 +124,7 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
     @NotNull
     default Iterator<K> keyIterator() {
         Iterator<Map.Entry<K, V>> iterator = iterator();
-        return new Iterator<>() {
+        return new Iterator<K>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -149,7 +150,7 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
     }
 
     default Map<K, V> toMap() {
-        return Map.copyOf(MutableMapX.of(this));
+        return Collections.unmodifiableMap(MutableMapX.of(this));
     }
 
     default <R extends Comparable<? super R>> SortedMutableMapX<K, V> toSortedMap(
@@ -166,7 +167,7 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
     }
 
     default boolean any(BiPredicate<K, V> biPredicate) {
-        for (var e : this) {
+        for (Map.Entry<K, V> e : this) {
             if (biPredicate.test(e.getKey(), e.getValue())) {
                 return true;
             }
@@ -175,7 +176,7 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
     }
 
     default boolean all(BiPredicate<K, V> biPredicate) {
-        for (var e : this) {
+        for (Map.Entry<K, V> e : this) {
             if (!biPredicate.test(e.getKey(), e.getValue())) {
                 return false;
             }
@@ -184,7 +185,7 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
     }
 
     default boolean none(BiPredicate<K, V> biPredicate) {
-        for (var e : this) {
+        for (Map.Entry<K, V> e : this) {
             if (biPredicate.test(e.getKey(), e.getValue())) {
                 return false;
             }

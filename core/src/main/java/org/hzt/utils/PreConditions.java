@@ -69,4 +69,10 @@ public final class PreConditions {
             throw new IndexOutOfBoundsException("toIndex (" + toIndex + ") is greater than size (" + size + ").");
         }
     }
+
+    public static <E extends RuntimeException> void requireOrThrow(boolean value, Supplier<E> runtimeException) {
+        if (!value) {
+            throw runtimeException.get();
+        }
+    }
 }

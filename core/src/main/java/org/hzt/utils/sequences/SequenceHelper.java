@@ -1,10 +1,14 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.MapX;
 import org.hzt.utils.iterators.FilteringIterator;
+import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
+import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -28,7 +32,7 @@ public final class SequenceHelper {
     }
 
     private static <T, R> @NotNull Iterator<R> transformingIterator(Iterator<T> iterator, Function<? super T, ? extends R> mapper) {
-        return new Iterator<>() {
+        return new Iterator<R>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -43,7 +47,70 @@ public final class SequenceHelper {
 
     public static void checkInitWindowSizeAndStep(int size, int step) {
         PreConditions.require(size > 0 && step > 0, () -> getErrorMessage(size, step));
+    }
 
+    static <T, A, R> Iterator<R> mergingIterator(@NotNull Iterator<T> thisIterator,
+                                                 @NotNull Iterator<A> otherIterator,
+                                                 @NotNull BiFunction<? super T, ? super A, ? extends R> transform) {
+        return new Iterator<R>() {
+            @Override
+            public boolean hasNext() {
+                return thisIterator.hasNext() && otherIterator.hasNext();
+            }
+
+            @Override
+            public R next() {
+                return transform.apply(thisIterator.next(), otherIterator.next());
+            }
+        };
+    }
+
+    @NotNull
+    static <K, V> Iterator<Map.Entry<K, V>> toEntryIterator(final Iterator<Pair<K, V>> iterator) {
+        return new Iterator<Map.Entry<K, V>>() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public Map.Entry<K, V> next() {
+                final Pair<K, V> next = iterator.next();
+                return MapX.entry(next.first(), next.second());
+            }
+        };
+    }
+
+    @NotNull
+    static  <T, K> Iterator<Pair<K, T>> associateByIterator(@NotNull Iterator<T> iterator,
+                                                            @NotNull Function<? super T, ? extends K> keyMapper) {
+        return new Iterator<Pair<K, T>>() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+            @Override
+            public Pair<K, T> next() {
+                final T value = iterator.next();
+                return Pair.of(keyMapper.apply(value), value);
+            }
+        };
+    }
+
+    @NotNull
+    static <T, V> Iterator<Pair<T, V>> associateWithIterator(@NotNull Iterator<T> iterator,
+                                                             @NotNull Function<? super T, ? extends V> valueMapper) {
+        return new Iterator<Pair<T, V>>() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+            @Override
+            public Pair<T, V> next() {
+                final T key = iterator.next();
+                return Pair.of(key, valueMapper.apply(key));
+            }
+        };
     }
 
     private static String getErrorMessage(int size, int step) {
@@ -54,7 +121,7 @@ public final class SequenceHelper {
     }
 
     public static <T> Iterator<T> interspersingIterator(Iterator<T> iterator, UnaryOperator<T> operator) {
-        return new Iterator<>() {
+        return new Iterator<T>() {
             private T current = null;
 
             @Override
@@ -65,7 +132,7 @@ public final class SequenceHelper {
             @Override
             public T next() {
                 if (current != null) {
-                    final var valueToInsert = operator.apply(current);
+                    final T valueToInsert = operator.apply(current);
                     current = null;
                     return valueToInsert;
                 } else {
@@ -79,7 +146,7 @@ public final class SequenceHelper {
     public static <T> Iterator<T> interspersingIterator(Iterator<T> iterator,
                                                         Supplier<T> initValSupplier,
                                                         UnaryOperator<T> operator) {
-        return new Iterator<>() {
+        return new Iterator<T>() {
             private T valueToInsert = null;
             private boolean insertValue = false;
 
@@ -100,5 +167,15 @@ public final class SequenceHelper {
                 }
             }
         };
+    }
+
+    static <K, V> V keyAsValueTypeOrThrow(Map.Entry<K, V> entry) {
+        K k = entry.getKey();
+        V v = entry.getValue();
+        if (k.getClass() == v.getClass()) {
+            //noinspection unchecked
+            return (V) k;
+        }
+        throw new IllegalStateException("Key and value not of same type. Merge not allowed");
     }
 }

@@ -13,10 +13,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +38,7 @@ public final class TestSampleGenerator {
     private static final Random RANDOM = new Random();
     private static final String FICTION = "Fiction";
 
-    private static final List<Function<Integer, Number>> TO_NUMBER_TYPE_FUNCTIONS = List.of(
+    private static final List<Function<Integer, Number>> TO_NUMBER_TYPE_FUNCTIONS = Arrays.asList(
             Integer::byteValue,
             Integer::shortValue,
             Integer::valueOf,
@@ -55,7 +57,7 @@ public final class TestSampleGenerator {
     }
 
     public static List<Book> createBookList() {
-        return List.of(new Book("Harry Potter", FICTION),
+        return Arrays.asList(new Book("Harry Potter", FICTION),
                 new Book("Lord of the Rings", FICTION),
                 new Book("Pragmatic Programmer", "Programming"),
                 new Book("OCP 11 Volume 1", "Programming"),
@@ -85,7 +87,7 @@ public final class TestSampleGenerator {
         vermeer.addPaintings(meisje_met_de_parel, meisje_met_de_rode_hoed, het_melkmeisje);
         vanGogh.addPaintings(lenteTuin, de_sterrennacht);
 
-        return List.of(guernica, lesDemoiselles, le_reve, meisje_met_de_parel, het_melkmeisje,
+        return Arrays.asList(guernica, lesDemoiselles, le_reve, meisje_met_de_parel, het_melkmeisje,
                 meisje_met_de_rode_hoed, lenteTuin, de_sterrennacht
         );
     }
@@ -99,23 +101,23 @@ public final class TestSampleGenerator {
 
     public static List<Museum> createMuseumList() {
 
-        final var groupedByLastName = createPaintingList().stream()
+        final Map<String, List<Painting>> groupedByLastName = createPaintingList().stream()
                 .collect(Collectors.groupingBy(painting -> painting.painter().getLastname()));
 
         final List<Painting> vanGoghPaintings = groupedByLastName.get("van Gogh");
         final List<Painting> vermeerPaintings = groupedByLastName.get("Vermeer");
         final List<Painting> picassoPaintings = groupedByLastName.get("Picasso");
 
-        final var painter = new Painter("Hans", "Zuidervaart", LocalDate.of(1989, 10 ,18));
-        return List.of(
-                new Museum(null, null, List.of(new Painting("Test", painter, Year.of(1997), false))),
+        final Painter painter = new Painter("Hans", "Zuidervaart", LocalDate.of(1989, 10 ,18));
+        return Arrays.asList(
+                new Museum(null, null, Collections.singletonList(new Painting("Test", painter, Year.of(1997), false))),
                 new Museum("Van Gogh Museum", LocalDate.of(1992, Month.APRIL, 2), vanGoghPaintings),
                 new Museum("Vermeer Museum", LocalDate.of(1940, Month.JANUARY, 23), vermeerPaintings),
                 new Museum("Picasso Museum", LocalDate.of(1965, Month.AUGUST, 4), picassoPaintings));
     }
 
     public static List<BankAccount> createSampleBankAccountList() {
-        return List.of(
+        return Arrays.asList(
                 new BankAccount("NL43INGB0008541648", new Customer("1", "Zuidervaart"), BigDecimal.valueOf(-4323)),
                 new BankAccount("BL54ABNA0004536472", new Customer("2", "Jansen"), BigDecimal.valueOf(234235.34)),
                 new BankAccount("NL32BUNQ0004358592", new Customer("3", "Vullings"), BigDecimal.valueOf(2342)),
@@ -160,19 +162,19 @@ public final class TestSampleGenerator {
     public static Map<String, Museum> createMuseumMap() {
         return createMuseumList().stream()
                 .filter(e -> e.getName() != null)
-                .collect(Collectors.toUnmodifiableMap(Museum::getName, Function.identity()));
+                .collect(Collectors.toMap(Museum::getName, Function.identity()));
     }
 
     public static List<String> getEnglishNameList() {
-        final var name = "/english_names.txt";
-        final var path = Optional.ofNullable(TestSampleGenerator.class.getResource(name))
+        final String name = "/english_names.txt";
+        final Path path = Optional.ofNullable(TestSampleGenerator.class.getResource(name))
                 .map(URL::getFile)
                 .map(File::new)
                 .map(File::toPath)
                 .orElseThrow(() -> new NoSuchElementException("Could not find resource " + name));
 
         try (Stream<String> s = Files.lines(path)) {
-            return s.collect(Collectors.toUnmodifiableList());
+            return s.collect(Collectors.toList());
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

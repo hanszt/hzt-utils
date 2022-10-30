@@ -45,7 +45,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
             @NotNull IntBiFunction<R> finisher) {
         PrimitiveIterator.OfInt iterator = iterator();
         if (iterator.hasNext()) {
-            final var first = iterator.nextInt();
+            final int first = iterator.nextInt();
             int accumulator1 = first;
             int accumulator2 = first;
             while (iterator.hasNext()) {
@@ -77,7 +77,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
     }
 
     default int first() {
-        return findFirst().orElseThrow();
+        return findFirst().orElseThrow(NoSuchElementException::new);
     }
 
     default int first(@NotNull IntPredicate predicate) {
@@ -96,7 +96,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
     }
 
     default @NotNull OptionalInt findFirst() {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfInt iterator = iterator();
         return iterator.hasNext() ? OptionalInt.of(iterator.nextInt()) : OptionalInt.empty();
     }
 
@@ -112,11 +112,11 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
     }
 
     default int last() {
-        return findLast().orElseThrow();
+        return findLast().orElseThrow(NoSuchElementException::new);
     }
 
     default int last(@NotNull IntPredicate predicate) {
-        return findLast(predicate).orElseThrow();
+        return findLast(predicate).orElseThrow(NoSuchElementException::new);
     }
 
     default @NotNull OptionalInt findLast() {
@@ -124,7 +124,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
     }
 
     default @NotNull OptionalInt findLast(@NotNull IntPredicate predicate) {
-        var iterator = iterator();
+        PrimitiveIterator.OfInt iterator = iterator();
         int result = iterator.nextInt();
         if (!predicate.test(result) && !iterator.hasNext()) {
             return OptionalInt.empty();
@@ -139,7 +139,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
     }
 
     default int single() {
-        final var iterator = iterator();
+        final PrimitiveIterator.OfInt iterator = iterator();
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }

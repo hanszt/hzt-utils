@@ -8,7 +8,7 @@ class ReflectionUtilsTest {
 
     @Test
     void testEnclosingMethodName() {
-        final var enclosingMethodName = ReflectionUtils.getEnclosingMethodName();
+        final String enclosingMethodName = ReflectionUtils.getEnclosingMethodName();
         assertEquals("testEnclosingMethodName", enclosingMethodName);
     }
 

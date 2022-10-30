@@ -13,14 +13,14 @@ class LongListTest {
 
     @Test
     void testSortedDescending() {
-        final var longs = LongSequence.generate(0, l -> l + 5)
+        final LongList longs = LongSequence.generate(0, l -> l + 5)
                 .take(1_000_000)
                 .toList();
 
-        final var sorted = longs.sortedDescending();
+        final LongList sorted = longs.sortedDescending();
 
-        final var expected = LongList.of(4999995, 4999990, 4999985, 4999980);
-        final var actual = sorted.asSequence().take(4).toList();
+        final LongList expected = LongList.of(4999995, 4999990, 4999985, 4999980);
+        final LongList actual = sorted.asSequence().take(4).toList();
 
         assertAll(
                 () -> assertEquals(1_000_000, longs.size()),
@@ -31,7 +31,7 @@ class LongListTest {
     @Test
     void testGet() {
         LongList list = LongList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
-        final var value = list.get(4);
+        final long value = list.get(4);
         assertEquals(5L, value);
     }
 
@@ -54,9 +54,9 @@ class LongListTest {
 
     @Test
     void testFindLast() {
-        final var longs = LongList.of(1, 2, 3, 4, 3, 5, 2, 5, 4, 3, 8, 2, 3, 4);
+        final LongList longs = LongList.of(1, 2, 3, 4, 3, 5, 2, 5, 4, 3, 8, 2, 3, 4);
 
-        final var last = longs.findLast(l -> l > 4);
+        final OptionalLong last = longs.findLast(l -> l > 4);
 
         assertEquals(OptionalLong.of(8), last);
     }

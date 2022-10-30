@@ -12,6 +12,7 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -22,39 +23,39 @@ class ReducableTest {
 
     @Test
     void testSingle() {
-        final var singleton = SetX.of(10);
-        final var single = singleton.single();
+        final SetX<Integer> singleton = SetX.of(10);
+        final Integer single = singleton.single();
         assertEquals(10, single);
     }
 
     @Test
     void testSingleConditional() {
-        final var set = SetX.of(10, 3, 6, 2);
-        final var single = set.single(i -> i < 3);
+        final SetX<Integer> set = SetX.of(10, 3, 6, 2);
+        final Integer single = set.single(i -> i < 3);
         assertEquals(2, single);
     }
 
     @Test
     void testSingleCallOnEmptyIterableYieldsNoSuchElementException() {
-        final var set = SetX.empty();
+        final SetX<Object> set = SetX.empty();
         assertThrows(NoSuchElementException.class, set::single);
     }
 
     @Test
     void testSingleCallOnIterableHavingMoreThanOneElementYieldsIllegalArgumentException() {
-        final var set = SetX.of(10, 9);
+        final SetX<Integer> set = SetX.of(10, 9);
         assertThrows(IllegalArgumentException.class, set::single);
     }
 
     @Test
     void foldYearDayAddition() {
-        final var initDate = LocalDate.of(2000, Month.JANUARY, 1);
+        final LocalDate initDate = LocalDate.of(2000, Month.JANUARY, 1);
 
-        final var localDate = Sequence.generate(1, It::self)
+        final LocalDate localDate = Sequence.generate(1, It::self)
                 .take(100)
                 .fold(initDate, LocalDate::plusDays);
 
-        final var expected = initDate.plusDays(100);
+        final LocalDate expected = initDate.plusDays(100);
 
         assertAll(
                 () -> assertEquals(LocalDate.of(2000, Month.APRIL, 10), localDate),
@@ -74,18 +75,18 @@ class ReducableTest {
     void testFoldTwoInOnePass() {
         final Sequence<LocalDate> dateSequence = generateLeapYearDateSequence();
 
-        final var iterations1 = new AtomicInteger();
+        final AtomicInteger iterations1 = new AtomicInteger();
 
-        final var expected = dateSequence
+        final Pair<Long, LocalDate> expected = dateSequence
                 .onEach(d -> iterations1.incrementAndGet())
                 .toTwo(Numerable::count, Reducable::last);
 
-        final var iterations2 = new AtomicInteger();
+        final AtomicInteger iterations2 = new AtomicInteger();
 
-        final var actual = dateSequence
+        final Pair<Long, LocalDate> actual = dateSequence
                 .onEach(d -> iterations2.incrementAndGet())
                 .foldTwo(0L, (acc, date) -> ++acc,
-                        LocalDate.EPOCH, (first, second) -> second);
+                        LocalDate.ofEpochDay(0), (first, second) -> second);
 
         It.println("pair = " + actual);
 
@@ -99,19 +100,19 @@ class ReducableTest {
     void testFoldThreeInOnePass() {
         final Sequence<LocalDate> dateSequence = generateLeapYearDateSequence();
 
-        final var iterations1 = new AtomicInteger();
+        final AtomicInteger iterations1 = new AtomicInteger();
 
-        final var expected = dateSequence
+        final Triple<MutableListX<LocalDate>, Long, LocalDate> expected = dateSequence
                 .onEach(d -> iterations1.incrementAndGet())
                 .toThree(Sequence::toMutableList, Numerable::count, Reducable::last);
 
-        final var iterations2 = new AtomicInteger();
+        final AtomicInteger iterations2 = new AtomicInteger();
 
-        final var actual = dateSequence
+        final Triple<MutableListX<Object>, Long, LocalDate> actual = dateSequence
                 .onEach(d -> iterations2.incrementAndGet())
                 .foldToThree(MutableListX.empty(), MutableListX::plus,
                         0L, (a, b) -> ++a,
-                        LocalDate.EPOCH, (first, second) -> second);
+                        LocalDate.ofEpochDay(0), (first, second) -> second);
 
         It.println("pair = " + actual);
 
@@ -125,19 +126,19 @@ class ReducableTest {
     void tesReduceTwoInOnePass() {
         final Sequence<LocalDate> dateSequence = generateLeapYearDateSequence();
 
-        final var iterations1 = new AtomicInteger();
+        final AtomicInteger iterations1 = new AtomicInteger();
 
-        final var expected = dateSequence
+        final Pair<LocalDate, LocalDate> expected = dateSequence
                 .onEach(d -> iterations1.incrementAndGet())
                 .toTwo(Reducable::last, Reducable::first);
 
-        final var iterations2 = new AtomicInteger();
+        final AtomicInteger iterations2 = new AtomicInteger();
 
-        final var actual = dateSequence
+        final Optional<Pair<LocalDate, LocalDate>> actual = dateSequence
                 .onEach(d -> iterations2.incrementAndGet())
                 .reduceToTwo((a, last) -> last, (first, b) -> first);
 
-        final var pair = actual.orElseThrow();
+        final Pair<LocalDate, LocalDate> pair = actual.orElseThrow(NoSuchElementException::new);
         It.println("pair = " + pair);
 
         assertAll(
@@ -148,21 +149,21 @@ class ReducableTest {
     }
 
     private static Sequence<LocalDate> generateLeapYearDateSequence() {
-        return Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
+        return Sequence.generate(LocalDate.ofEpochDay(0), d -> d.plusDays(1))
                 .takeWhile(d -> d.getYear() <= 1980)
                 .filter(LocalDate::isLeapYear);
     }
 
     @Test
     void testReduce() {
-        final var result = Sequence.of(ZoneId.getAvailableZoneIds())
+        final String result = Sequence.of(ZoneId.getAvailableZoneIds())
                 .reduce("", (acc, s) -> acc.length() > s.length() ? acc : s);
 
-        final var expected = Sequence.of(ZoneId.getAvailableZoneIds())
+        final String expected = Sequence.of(ZoneId.getAvailableZoneIds())
                 .maxBy(String::length)
                 .orElse("");
 
-        final var expected2 = ZoneId.getAvailableZoneIds().stream()
+        final String expected2 = ZoneId.getAvailableZoneIds().stream()
                 .max(Comparator.comparing(String::length))
                 .orElse("");
 
@@ -175,8 +176,8 @@ class ReducableTest {
 
     @Test
     void testFindLast() {
-        var list = ListX.of("hi", "hello", "this", "is", "a", "test");
-        final var last = list.last(s -> s.contains("i"));
+        ListX<String> list = ListX.of("hi", "hello", "this", "is", "a", "test");
+        final String last = list.last(s -> s.contains("i"));
 
         assertEquals("is", last);
     }

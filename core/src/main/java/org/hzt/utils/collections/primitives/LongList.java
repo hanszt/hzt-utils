@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.OptionalLong;
+import java.util.PrimitiveIterator;
 import java.util.function.Consumer;
 import java.util.function.LongPredicate;
 import java.util.function.LongToIntFunction;
@@ -70,7 +71,7 @@ public interface LongList extends LongCollection,
     @Override
     @NotNull
     default OptionalLong findLast() {
-        final var lastIndex = lastIndex();
+        final int lastIndex = lastIndex();
         return lastIndex < 0 ? OptionalLong.empty() : OptionalLong.of(get(lastIndex));
     }
 
@@ -79,7 +80,7 @@ public interface LongList extends LongCollection,
     default OptionalLong findLast(@NotNull LongPredicate predicate) {
         PrimitiveListIterator.OfLong iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
-            final var previousLong = iterator.previousLong();
+            final long previousLong = iterator.previousLong();
             if (predicate.test(previousLong)) {
                 return OptionalLong.of(previousLong);
             }
@@ -92,14 +93,14 @@ public interface LongList extends LongCollection,
 
     @Override
     default LongList sorted() {
-        final var array = toArray();
+        final long[] array = toArray();
         Arrays.sort(array);
         return LongList.of(array);
     }
 
     @Override
     default LongList sorted(LongComparator comparator) {
-        final var longs = toArray();
+        final long[] longs = toArray();
         ArraysX.sort(comparator, longs);
         return LongList.of(longs);
     }

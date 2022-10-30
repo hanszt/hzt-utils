@@ -86,8 +86,8 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
     }
 
     default SetX<T> intersect(@NotNull Iterable<T> other) {
-        final var intersection = toMutableSet();
-        final var otherCollection = other instanceof Collectable<?> ? (Collection<T>) other : MutableListX.of(other);
+        final MutableSetX<T> intersection = toMutableSet();
+        final Collection<T> otherCollection = other instanceof Collectable<?> ? (Collection<T>) other : MutableListX.of(other);
         intersection.retainAll(otherCollection);
         return SetX.of(intersection);
     }

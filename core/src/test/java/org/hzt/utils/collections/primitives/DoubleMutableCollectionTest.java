@@ -12,8 +12,8 @@ class DoubleMutableCollectionTest {
 
     @Test
     void testRemoveAll() {
-        final var list = DoubleMutableList.of(1, 4, 5, 3, Math.PI, 7, 5, 8, 9);
-        final var removedAll = list.removeAll( 3, 4, 5, 7, Math.PI);
+        final DoubleMutableList list = DoubleMutableList.of(1, 4, 5, 3, Math.PI, 7, 5, 8, 9);
+        final boolean removedAll = list.removeAll( 3, 4, 5, 7, Math.PI);
 
         assertAll(
                 () -> assertTrue(removedAll),
@@ -23,8 +23,8 @@ class DoubleMutableCollectionTest {
 
     @Test
     void testAddAll() {
-        final var list = DoubleMutableList.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
-        final var addedAll = list.addAll( 3, 4, 6, 5, 7, 8, Math.E);
+        final DoubleMutableList list = DoubleMutableList.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
+        final boolean addedAll = list.addAll( 3, 4, 6, 5, 7, 8, Math.E);
 
         assertAll(
                 () -> assertTrue(addedAll),
@@ -39,7 +39,7 @@ class DoubleMutableCollectionTest {
                 .take(1_000_000)
                 .toList();
 
-        final var sum = listX.stream().sum();
+        final double sum = listX.stream().sum();
 
         It.println("sum = " + sum);
 
@@ -48,7 +48,7 @@ class DoubleMutableCollectionTest {
 
     @Test
     void testRemoveIf() {
-        final var list = DoubleMutableList.of(Math.PI, 1, 4, 5, 3, 6, Math.E, 7, 5, 8, 9);
+        final DoubleMutableList list = DoubleMutableList.of(Math.PI, 1, 4, 5, 3, 6, Math.E, 7, 5, 8, 9);
         final boolean removed = list.removeIf(l -> l % 2 == 0);
 
         assertAll(

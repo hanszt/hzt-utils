@@ -1,8 +1,11 @@
 package org.hzt.utils.collections;
 
+import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.iterables.IterableXHelper;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -10,7 +13,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 final class ImmutableListX<T> implements ListX<T> {
@@ -19,17 +21,17 @@ final class ImmutableListX<T> implements ListX<T> {
 
     @SafeVarargs
     ImmutableListX(T... values) {
-        this.immutableList = List.of(values);
+        this.immutableList = Collections.unmodifiableList(Arrays.asList(values));
     }
 
     ImmutableListX(Iterable<T> iterable) {
         immutableList = StreamSupport.stream(iterable.spliterator(), false)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(CollectorsX.toUnmodifiableList());
     }
 
     ImmutableListX(Collection<T> collection) {
-        immutableList = List.copyOf(collection);
+        immutableList = Collections.unmodifiableList(new ArrayList<>(collection));
     }
 
     ImmutableListX(List<T> list) {
@@ -48,7 +50,7 @@ final class ImmutableListX<T> implements ListX<T> {
 
     @Override
     public ListX<T> shuffled() {
-        final var listX = to(MutableListX::empty);
+        final MutableListX<T> listX = to(MutableListX::empty);
         Collections.shuffle(listX);
         return ListX.copyOf(listX);
     }

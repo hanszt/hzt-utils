@@ -71,7 +71,7 @@ public class PrefixSequenceGroupingBenchmark {
         for (int i = 0; i < UPPER_BOUND_RANGE; i++) {
             if (fibonacciNrs.contains(i)) {
                 int groupingNr = i % GROUP_BY_VALUE;
-                final var integers = grouping.computeIfAbsent(groupingNr, integer -> new ArrayList<>());
+                final List<Integer> integers = grouping.computeIfAbsent(groupingNr, integer -> new ArrayList<>());
                 integers.add(i);
             }
         }

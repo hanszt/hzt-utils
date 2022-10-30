@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,7 +33,7 @@ class MapXTest {
         final Map<String, Museum> museumMap = TestSampleGenerator.createMuseumMap();
 
         final Map<Museum, String> expected = museumMap.entrySet().stream()
-                .map(e -> Map.entry(e.getValue(), e.getKey()))
+                .map(e -> MapX.entry(e.getValue(), e.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         final MapX<Museum, String> actual = MapX.of(museumMap).inverted();
@@ -78,11 +79,11 @@ class MapXTest {
     void flatMapToListOf() {
         final Map<String, Museum> museumMap = TestSampleGenerator.createMuseumMap();
 
-        final List<Painting> expected = museumMap.entrySet().stream()
+        final Set<Painting> expected = museumMap.entrySet().stream()
                 .flatMap(e -> e.getValue().getPaintings().stream())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
-        final List<Painting> actual = MapX.of(museumMap).flatMapValuesTo(MutableListX::empty, Museum::getPaintings);
+        final Set<Painting> actual = MapX.of(museumMap).flatMapValuesTo(MutableSetX::empty, Museum::getPaintings);
 
         It.println("actual = " + actual);
 
@@ -96,9 +97,10 @@ class MapXTest {
         map.put("2", 2);
         map.put("3", 3);
 
-        final var result = EntrySequence.of(map).mapByValues(Year::of).toMapX();
+        final MapX<String, Year> result = EntrySequence.of(map).mapByValues(Year::of).toMapX();
 
-        assertEquals(MapX.of("1", Year.of(1), "2", Year.of(2), "3", Year.of(3)), result);
+        final MapX<String, Year> expected = MapX.of("1", Year.of(1), "2", Year.of(2), "3", Year.of(3));
+        assertEquals(expected.entrySet(), result.entrySet());
     }
 
     @Test
@@ -155,8 +157,8 @@ class MapXTest {
 
     @Test
     void testMapOfPairs() {
-        final var hallo = StringX.of("Hallo");
-        final var map = MapX.ofPairs(hallo.to("s"), StringX.of("asd").to("asdd"));
+        final StringX hallo = StringX.of("Hallo");
+        final MapX<StringX, String> map = MapX.ofPairs(hallo.to("s"), StringX.of("asd").to("asdd"));
 
         assertAll(
                 () -> assertEquals(2, map.size()),

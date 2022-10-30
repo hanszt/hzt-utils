@@ -33,9 +33,9 @@ public interface LongCollector<A, R> {
                                          @NotNull ObjLongConsumer<A> accumulator,
                                          @NotNull BinaryOperator<A> combiner,
                                          @NotNull Collector.Characteristics... characteristics) {
-        final var identityFinish = Collector.Characteristics.IDENTITY_FINISH;
+        final Collector.Characteristics identityFinish = Collector.Characteristics.IDENTITY_FINISH;
         Set<Collector.Characteristics> cs = (characteristics.length == 0)
-                ? Set.of(identityFinish)
+                ? Collections.singleton(identityFinish)
                 : Collections.unmodifiableSet(EnumSet.of(identityFinish, characteristics));
         return new LongCollectorImpl<>(supplier, accumulator, combiner, cs);
     }

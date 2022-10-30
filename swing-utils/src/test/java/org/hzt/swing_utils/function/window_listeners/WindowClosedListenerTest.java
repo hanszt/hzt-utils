@@ -13,7 +13,7 @@ class WindowClosedListenerTest {
 
     @Test
     void testWindowClosedListener() {
-        final var thread = new Thread(this::testWindowClosed);
+        final Thread thread = new Thread(this::testWindowClosed);
         thread.start();
         await().until(() -> !thread.isAlive());
     }

@@ -37,9 +37,9 @@ class CustomSequenceTest {
 
     @Test
     void testSumOfFloats() {
-        final var strings = ListX.of("This", "is", "processed", "by", "a", "custom", "Sequence");
+        final ListX<String> strings = ListX.of("This", "is", "processed", "by", "a", "custom", "Sequence");
 
-        final var sum = CustomSequence.of(strings)
+        final float sum = CustomSequence.of(strings)
                 .map(String::length)
                 .filter(IntX::isEven)
                 .floatSumOf(Integer::floatValue);

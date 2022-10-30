@@ -28,7 +28,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
                              @NotNull ObjLongConsumer<A> accumulator,
                              @NotNull Function<? super A, ? extends R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
-        final var result = supplier.get();
+        final A result = supplier.get();
         while (iterator.hasNext()) {
             accumulator.accept(result, iterator.nextLong());
         }
@@ -43,13 +43,13 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
             @NotNull LongCollector<A1, R1> downStream1,
             @NotNull LongCollector<A2, R2> downStream2,
             @NotNull BiFunction<? super R1, ? super R2, ? extends R> combiner) {
-        final var result1 = downStream1.supplier().get();
-        final var result2 = downStream2.supplier().get();
-        final var accumulator1 = downStream1.accumulator();
-        final var accumulator2 = downStream2.accumulator();
+        final A1 result1 = downStream1.supplier().get();
+        final A2 result2 = downStream2.supplier().get();
+        final ObjLongConsumer<A1> accumulator1 = downStream1.accumulator();
+        final ObjLongConsumer<A2> accumulator2 = downStream2.accumulator();
         PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
-            final var value = iterator.nextLong();
+            final long value = iterator.nextLong();
             accumulator1.accept(result1, value);
             accumulator2.accept(result2, value);
         }
@@ -62,7 +62,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
 
     default <C extends LongMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             collection.add(iterator.nextLong());
         }
@@ -93,7 +93,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
             }
         }
         int count = 0;
-        final var iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             long value = iterator.nextLong();
             collection.add(value);

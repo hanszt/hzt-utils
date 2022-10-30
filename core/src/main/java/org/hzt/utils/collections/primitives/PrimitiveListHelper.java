@@ -37,8 +37,8 @@ final class PrimitiveListHelper {
     }
 
     public static void swap(IntMutableList list, int i, int j) {
-        final var element = list.get(i);
-        final var other = list.set(j, element);
+        final int element = list.get(i);
+        final int other = list.set(j, element);
         list.set(i, other);
     }
 
@@ -46,5 +46,12 @@ final class PrimitiveListHelper {
         int tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
+    }
+
+    static int checkIndex(int index, int length) {
+        if (index < 0 || index >= length) {
+            throw new IndexOutOfBoundsException("Index out of range: " + index);
+        }
+        return index;
     }
 }

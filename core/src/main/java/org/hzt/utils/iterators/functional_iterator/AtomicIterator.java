@@ -14,19 +14,17 @@ import java.util.function.Consumer;
 public interface AtomicIterator<T> {
 
     static <T> AtomicIterator<T> of(Iterator<T> iterator) {
-        return action -> acceptIfHasNext(iterator, action);
+        return action -> {
+            boolean hasNext = iterator.hasNext();
+            if (hasNext) {
+                action.accept(iterator.next());
+            }
+            return hasNext;
+        };
     }
 
     static <T> AtomicIterator<T> of(Spliterator<T> spliterator) {
         return spliterator::tryAdvance;
-    }
-
-    private static <T> boolean acceptIfHasNext(Iterator<T> iterator, Consumer<? super T> action) {
-        boolean hasNext = iterator.hasNext();
-        if (hasNext) {
-            action.accept(iterator.next());
-        }
-        return hasNext;
     }
 
     boolean tryAdvance(Consumer<? super T> action);
@@ -44,7 +42,7 @@ public interface AtomicIterator<T> {
      * @return an iterator object from a iteratorX object
      */
     default @NotNull Iterator<T> asIterator() {
-        return new Iterator<>() {
+        return new Iterator<T>() {
 
             private final AtomicReference<T> sink = new AtomicReference<>();
 
@@ -55,7 +53,7 @@ public interface AtomicIterator<T> {
 
             @Override
             public T next() {
-                final var value = sink.get();
+                final T value = sink.get();
                 sink.set(null);
                 if (value == null) {
                     throw new NoSuchElementException();

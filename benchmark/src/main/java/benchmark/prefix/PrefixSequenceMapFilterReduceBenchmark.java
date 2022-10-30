@@ -26,7 +26,7 @@ public class PrefixSequenceMapFilterReduceBenchmark {
 
     private final List<String> list = IntStream.range(0, Integer.parseInt(LIST_SIZE))
             .mapToObj(String::valueOf)
-            .collect(Collectors.toUnmodifiableList());
+            .collect(Collectors.toList());
 
     public PrefixSequenceMapFilterReduceBenchmark() {
         super();

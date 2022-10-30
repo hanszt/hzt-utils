@@ -12,6 +12,8 @@ import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
+import org.hzt.utils.statistics.IntStatistics;
+import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.junit.jupiter.api.Test;
 
@@ -19,10 +21,11 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -39,18 +42,18 @@ class CollectableTest {
 
     @Test
     void testTeeingYieldsTwoValuesWhileOnlyGoingThroughPipelineOnce() {
-        final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
 
-        final var toTwoCounter = new AtomicInteger();
+        final AtomicInteger toTwoCounter = new AtomicInteger();
 
-        final var pair = integers.asSequence()
+        final Pair<Long, Double> pair = integers.asSequence()
                 .onEach(i -> toTwoCounter.incrementAndGet())
                 .mapToInt(It::asInt)
                 .intsToTwo(IntSequence::sum, IntSequence::average);
 
-        final var collectorCounter = new AtomicInteger();
+        final AtomicInteger collectorCounter = new AtomicInteger();
 
-        final var collectedPair = integers.asSequence()
+        final Pair<Long, Double> collectedPair = integers.asSequence()
                 .onEach(i -> collectorCounter.incrementAndGet())
                 .teeing(summingLong(It::asInt), averagingInt(It::asInt));
 
@@ -63,18 +66,18 @@ class CollectableTest {
 
     @Test
     void testBranchingYieldsThreeValuesWhileOnlyGoingThroughPipelineOnce() {
-        final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
 
-        final var toThreeCounter = new AtomicInteger();
+        final AtomicInteger toThreeCounter = new AtomicInteger();
 
-        final var triple = integers.asSequence()
+        final Triple<Long, Double, Double> triple = integers.asSequence()
                 .onEach(i -> toThreeCounter.incrementAndGet())
                 .mapToInt(It::asInt)
                 .intsToThree(IntSequence::sum, IntSequence::average, IntSequence::stdDev);
 
-        final var branchingCounter = new AtomicInteger();
+        final AtomicInteger branchingCounter = new AtomicInteger();
 
-        final var collectedTriple = integers.asSequence()
+        final Triple<Long, Double, Double> collectedTriple = integers.asSequence()
                 .onEach(i -> branchingCounter.incrementAndGet())
                 .branching(
                         summingLong(It::asInt),
@@ -90,7 +93,7 @@ class CollectableTest {
 
     @Test
     void testBranchSequence() {
-        final var leepYearResult = Sequence
+        final Pair<List<LocalDate>, LocalDate> leepYearResult = Sequence
                 .generate(LocalDate.of(1950, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhileInclusive(date -> date.getYear() <= 2000)
                 .filter(LocalDate::isLeapYear)
@@ -113,7 +116,7 @@ class CollectableTest {
                         summarizingInt(Painting::ageInYears),
                         counting()));
 
-        final var actual = paintingList.asSequence()
+        final Triple<Pair<ListX<Painter>,ListX<Painter>>, IntStatistics, Long> actual = paintingList.asSequence()
                 .toThree(s -> s.partitionMapping(Painting::isInMuseum, Painting::painter),
                         s -> s.intStatsOf(Painting::ageInYears),
                         Sequence::count);
@@ -131,7 +134,7 @@ class CollectableTest {
 
     @Test
     void testBranchSequenceToThree() {
-        final var triple = IntRange.from(0).until(100)
+        final Triple<int[], IntSequence, IntStatistics> triple = IntRange.from(0).until(100)
                 .intsToThree(IntSequence::toArray, s -> s.filter(IntX::isEven), IntSequence::stats);
 
         assertAll(
@@ -143,30 +146,30 @@ class CollectableTest {
 
     @Test
     void testBranchSequenceToFour() {
-        final var actual = IntProgression.from(0).until(100)
+        final ListX<? extends Number> actual = IntProgression.from(0).until(100)
                 .filter(It::noFilter)
                 .boxed()
                 .toFour(Sequence::count,
                         s -> s.minOf(It::self),
                         s -> s.maxOf(It::self),
                         s -> s.intSumOf(It::self),
-                        IntSummaryStatistics::new);
+                        ListX::of);
 
         assertAll(
-                () -> assertEquals(100, actual.getCount()),
-                () -> assertEquals(4950, actual.getSum()),
-                () -> assertEquals(49.5, actual.getAverage()),
-                () -> assertEquals(99, actual.getMax())
+                () -> assertEquals(100, actual.first().longValue()),
+                () -> assertEquals(0, actual.get(1).intValue()),
+                () -> assertEquals(99, actual.get(2).intValue()),
+                () -> assertEquals(4950, actual.last().longValue())
         );
     }
 
     @Test
     void testStreamCanOnlyBeConsumedOnce() {
-        final var yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
+        final Stream<Year> yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
                 .filter(IntX::isEven)
                 .map(Year::of);
 
-        final var years = yearStream.collect(toList());
+        final List<Year> years = yearStream.collect(toList());
 
         assertAll(
                 () -> assertEquals(4, years.size()),
@@ -176,11 +179,11 @@ class CollectableTest {
 
     @Test
     void testSequenceOfStreamCanOnlyBeConsumedOnce() {
-        final var yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
+        final Stream<Year> yearStream = Stream.of(1, 2, 3, 4, 5, 3, -1, 6, 12)
                 .filter(IntX::isEven)
                 .map(Year::of);
 
-        final var yearSequence = Sequence.ofStream(yearStream);
+        final Sequence<Year> yearSequence = Sequence.ofStream(yearStream);
 
         assertAll(
                 () -> assertEquals(4, yearSequence.count()),
@@ -190,17 +193,17 @@ class CollectableTest {
 
     private void assertStreamCanOnlyBeConsumedOnce(Stream<Year> yearStream) {
         //noinspection ResultOfMethodCallIgnored
-        final var exception = assertThrows(IllegalStateException.class, yearStream::findFirst);
+        final IllegalStateException exception = assertThrows(IllegalStateException.class, yearStream::findFirst);
         assertEquals("stream has already been operated upon or closed", exception.getMessage());
     }
 
     @Test
     void testFrom3DStringArrayToTripleIntArray() {
         String[][][] grid = {{{"1"}, {"2"}, {"3"}}};
-        final var expected = Arrays.stream(grid).map(g -> Arrays.stream(g).map(row -> Stream.of(row)
+        final int[][][] expected = Arrays.stream(grid).map(g -> Arrays.stream(g).map(row -> Stream.of(row)
                 .mapToInt(Integer::parseInt).toArray()).toArray(int[][]::new)).toArray(int[][][]::new);
 
-        final var actual = Sequence.of(grid).map(g -> Sequence.of(g).map(row -> Sequence.of(row)
+        final int[][][] actual = Sequence.of(grid).map(g -> Sequence.of(g).map(row -> Sequence.of(row)
                 .toIntArray(Integer::parseInt)).toTypedArray(int[][]::new)).toTypedArray(int[][][]::new);
 
         Sequence.of(actual).map(g -> Sequence.of(g).map(Arrays::toString)).map(Stringable::joinToString).forEach(It::println);
@@ -210,30 +213,30 @@ class CollectableTest {
 
     @Test
     void testBranchToFour() {
-        final var sequence = Sequence.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        final Sequence<Integer> sequence = Sequence.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        final var statistics = sequence.branching(
+        final ListX<? extends Number> statistics = sequence.branching(
                 counting(),
-                collectingAndThen(minBy(comparing(It::asInt)), Optional::orElseThrow),
-                collectingAndThen(maxBy(comparing(It::asInt)), Optional::orElseThrow),
+                collectingAndThen(minBy(comparing(It::asInt)), integer -> integer.orElseThrow(NoSuchElementException::new)),
+                collectingAndThen(maxBy(comparing(It::asInt)), integer1 -> integer1.orElseThrow(NoSuchElementException::new)),
                 summingInt(It::asInt),
-                IntSummaryStatistics::new);
+                ListX::of);
 
-        final var stats = sequence.intStatsOf(It::asInt);
+        final IntStatistics stats = sequence.intStatsOf(It::asInt);
 
         assertAll(
-                () -> assertEquals(statistics.getCount(), stats.getCount()),
-                () -> assertEquals(statistics.getMin(), stats.getMin()),
-                () -> assertEquals(statistics.getMax(), stats.getMax()),
-                () -> assertEquals(statistics.getSum(), stats.getSum())
+                () -> assertEquals(statistics.first().longValue(), stats.getCount()),
+                () -> assertEquals(statistics.get(1).intValue(), stats.getMin()),
+                () -> assertEquals(statistics.get(2).intValue(), stats.getMax()),
+                () -> assertEquals(statistics.last().longValue(), stats.getSum())
         );
     }
 
     @Test
     void testToDoubleArray() {
-        final var museums = TestSampleGenerator.getMuseumListContainingNulls();
+        final List<Museum> museums = TestSampleGenerator.getMuseumListContainingNulls();
 
-        final var averages = Sequence.of(museums)
+        final double[] averages = Sequence.of(museums)
                 .map(Museum::getPaintings)
                 .map(Sequence::of)
                 .map(s -> s.mapToInt(Painting::ageInYears))
@@ -244,13 +247,13 @@ class CollectableTest {
 
     @Test
     void testToTypedArray() {
-        final var museums = TestSampleGenerator.getMuseumListContainingNulls();
+        final List<Museum> museums = TestSampleGenerator.getMuseumListContainingNulls();
 
-        final var expected = museums.stream()
+        final Painting[] expected = museums.stream()
                 .map(Museum::getMostPopularPainting)
                 .toArray(Painting[]::new);
 
-        final var museumArray = Sequence.of(museums)
+        final Painting[] museumArray = Sequence.of(museums)
                 .map(Museum::getMostPopularPainting)
                 .toTypedArray(Painting[]::new);
 
@@ -259,13 +262,13 @@ class CollectableTest {
 
     @Test
     void testCollectJoining() {
-        var strings = Set.of("collect", "joining", "requires",
+        Set<String> strings = new HashSet<>(Arrays.asList("collect", "joining", "requires",
                 "Collector<? super T, A, R>", "as", "collector", "definition",
-                "instead", "of", "Collector<T, A, R>");
+                "instead", "of", "Collector<T, A, R>"));
 
-        final var expected = String.join(", ", strings);
-        final var expected2 = Sequence.of(strings).joinToString();
-        final var result = Sequence.of(strings).collect(joining(", "));
+        final String expected = String.join(", ", strings);
+        final String expected2 = Sequence.of(strings).joinToString();
+        final String result = Sequence.of(strings).collect(joining(", "));
 
         assertAll(
                 () -> assertEquals(expected, result),

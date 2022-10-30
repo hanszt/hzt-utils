@@ -1,5 +1,6 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.numbers.BigDecimalX;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.ranges.LongRange;
@@ -16,16 +17,16 @@ class PrimitiveSequenceTest {
 
     @Test
     void testLongRangeToListGetBigDecimalAverage() {
-        final var longs = LongSequence.of(0, 1000).boxed().toListX();
+        final ListX<Long> longs = LongSequence.of(0, 1000).boxed().toListX();
 
-        final var average = longs.bigDecimalAverageOf(BigDecimalX::of);
+        final BigDecimalX average = longs.bigDecimalAverageOf(BigDecimalX::of);
 
         It.println("average = " + average);
 
         Locale defaultLocale = Locale.getDefault();
         Locale.setDefault(Locale.ENGLISH);
 
-        final var length = average.toStringX().filter(c -> c != '.').length();
+        final int length = average.toStringX().filter(c -> c != '.').length();
 
         Locale.setDefault(defaultLocale);
 

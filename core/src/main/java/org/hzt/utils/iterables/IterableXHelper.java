@@ -1,13 +1,20 @@
 package org.hzt.utils.iterables;
 
+import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.collections.MutableSetX;
+import org.hzt.utils.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
@@ -19,6 +26,11 @@ public final class IterableXHelper {
     public static final Random RANDOM = new Random();
 
     private IterableXHelper() {
+    }
+
+    static <T, R extends Comparable<? super R>> ListX<T> toSortedListX(@NotNull Iterable<T> iterable,
+                                                                       @NotNull Function<? super T, ? extends R> selector) {
+        return toMutableListXSortedBy(selector, iterable);
     }
 
     static <T> long count(Iterable<T> iterable, @NotNull Predicate<T> predicate) {
@@ -140,11 +152,57 @@ public final class IterableXHelper {
         return new NoSuchElementException("No value present");
     }
 
-    static <T> void exposeNonNullVal(@NotNull Iterable<T> iterable, @NotNull Consumer<T> consumer) {
+    static <T> void exposeIndexedNonNullVal(@NotNull Iterable<T> iterable, @NotNull BiConsumer<Integer, T> consumer) {
+        int counter = 0;
         for (T value : iterable) {
             if (value != null) {
-                consumer.accept(value);
+                consumer.accept(counter, value);
+                counter++;
             }
         }
+    }
+
+    static <T> void exposeNonNullVal(@NotNull Iterable<T> iterable, @NotNull Consumer<T> consumer) {
+        exposeIndexedNonNullVal(iterable, (i, v) -> consumer.accept(v));
+    }
+
+    public static <T> Iterator<IndexedValue<T>> indexedIterator(Iterator<T> iterator) {
+        return new Iterator<IndexedValue<T>>() {
+            private int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public IndexedValue<T> next() {
+                int prevIndex = index;
+                if (prevIndex < 0) {
+                    throw new IllegalStateException("indexed iterator index overflow");
+                }
+                return new IndexedValue<>(index++, iterator.next());
+            }
+        };
+    }
+
+    static <T, R extends Comparable<? super R>> MutableListX<T> toMutableListXSortedBy(
+            @NotNull Function<? super T, ? extends R> selector, Iterable<T> iterable) {
+        MutableListX<T> list = MutableListX.of(iterable);
+        list.sort(Comparator.comparing(selector));
+        return list;
+    }
+
+    static <T, R> MutableSetX<R> toMutableSetNotNullOf(Iterable<T> iterable, @NotNull Function<? super T, ? extends R> transform) {
+        return toCollectionNotNullOf(iterable, MutableSetX::empty, transform);
+    }
+
+    static <T, R, C extends Collection<R>> C toCollectionNotNullOf(Iterable<T> iterable,@NotNull Supplier<C> collectionFactory,
+                                                                 @NotNull Function<? super T, ? extends R> mapper) {
+        return mapFilteringTo(iterable, collectionFactory, Objects::nonNull, mapper, Objects::nonNull);
+    }
+
+    static <T, R> MutableListX<R> toMutableListXNotNullOf(Iterable<T> iterable, @NotNull Function<? super T, ? extends R> transform) {
+        return IterableXHelper.toCollectionNotNullOf(iterable, MutableListX::empty, transform);
     }
 }

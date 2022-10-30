@@ -1,6 +1,7 @@
 package org.hzt.utils.arrays;
 
 import org.hzt.utils.It;
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.LongList;
@@ -34,7 +35,7 @@ class ArraysXTest {
     @Test
     void testReverseArray() {
         String[] strings = {"this", "is", "a", "test"};
-        final var strings2 = ArraysX.copyOf(strings);
+        final String[] strings2 = ArraysX.copyOf(strings);
 
         Arrays.sort(strings, Comparator.reverseOrder());
         Arrays.sort(strings2);
@@ -49,7 +50,7 @@ class ArraysXTest {
 
         @Test
         void testIntTimSort() {
-            final var array = Sequence.generate(1_000, i -> --i)
+            final int[] array = Sequence.generate(1_000, i -> --i)
                     .take(1_000)
                     .shuffled()
                     .mapToInt(It::asInt)
@@ -66,7 +67,7 @@ class ArraysXTest {
 
         @Test
         void testIntTimSortReversed() {
-            final var array = Sequence.generate(0, i -> ++i)
+            final int[] array = Sequence.generate(0, i -> ++i)
                     .take(1_000)
                     .shuffled()
                     .mapToInt(It::asInt)
@@ -83,7 +84,7 @@ class ArraysXTest {
 
         @Test
         void testLongTimSort() {
-            final var array = Sequence.generate(1_000, i -> --i)
+            final long[] array = Sequence.generate(1_000, i -> --i)
                     .take(1_000)
                     .shuffled()
                     .mapToLong(It::asLong)
@@ -100,7 +101,7 @@ class ArraysXTest {
 
         @Test
         void testLongTimSortReversed() {
-            final var array = Sequence.generate(0, i -> ++i)
+            final long[] array = Sequence.generate(0, i -> ++i)
                     .take(1_000)
                     .shuffled()
                     .mapToLong(It::asLong)
@@ -117,7 +118,7 @@ class ArraysXTest {
 
         @Test
         void testLongTimSortReversedSmall() {
-            final var array = Sequence.generate(0, i -> ++i)
+            final long[] array = Sequence.generate(0, i -> ++i)
                     .take(10)
                     .shuffled()
                     .mapToLong(It::asLong)
@@ -134,7 +135,7 @@ class ArraysXTest {
 
         @Test
         void testDoubleTimSort() {
-            final var array = Sequence.generate(100.0, i -> i - .1)
+            final double[] array = Sequence.generate(100.0, i -> i - .1)
                     .take(1_000)
                     .shuffled()
                     .mapToDouble(It::asDouble)
@@ -146,10 +147,10 @@ class ArraysXTest {
 
             It.println(Arrays.toString(array));
 
-            final var expected = DoubleList.of(.1, .2, .3, .4, .5, .6)
+            final ListX<String> expected = DoubleList.of(.1, .2, .3, .4, .5, .6)
                     .mapToObj(DoubleX::toRoundedString);
 
-            final var actual = DoubleSequence.of(array)
+            final ListX<String> actual = DoubleSequence.of(array)
                     .take(6)
                     .toList()
                     .mapToObj(DoubleX::toRoundedString);
@@ -159,7 +160,7 @@ class ArraysXTest {
 
         @Test
         void testDoubleTimSortReversed() {
-            final var array = Sequence.generate(0.0, i -> i + .1)
+            final double[] array = Sequence.generate(0.0, i -> i + .1)
                     .take(1_000)
                     .shuffled()
                     .mapToDouble(It::asDouble)
@@ -171,8 +172,8 @@ class ArraysXTest {
 
             It.println(Arrays.toString(array));
 
-            final var expected = DoubleList.of(99.9, 99.8, 99.7, 99.6, 99.5, 99.4).mapToObj(DoubleX::toRoundedString);
-            final var actual = DoubleSequence.of(array).take(6).toList().mapToObj(DoubleX::toRoundedString);
+            final ListX<String> expected = DoubleList.of(99.9, 99.8, 99.7, 99.6, 99.5, 99.4).mapToObj(DoubleX::toRoundedString);
+            final ListX<String> actual = DoubleSequence.of(array).take(6).toList().mapToObj(DoubleX::toRoundedString);
 
             assertEquals(expected, actual);
         }
@@ -181,7 +182,7 @@ class ArraysXTest {
         void testIntArrayToBooleanArray() {
             int[] input = {1, 4, 5, 3, 6, 7, 2, 7};
 
-            final var booleans = ArraysX.toBooleanArray(i -> i < 4, input);
+            final boolean[] booleans = ArraysX.toBooleanArray(i -> i < 4, input);
 
             final boolean[] expected = {true, false, false, true, false, false, true, false};
 
@@ -192,7 +193,7 @@ class ArraysXTest {
         void testLongArrayToBooleanArray() {
             long[] input = {1, 4, 5, 3, 6, 7, 2, Long.MAX_VALUE};
 
-            final var booleans = ArraysX.toBooleanArray(l -> l < 4, input);
+            final boolean[] booleans = ArraysX.toBooleanArray(l -> l < 4, input);
 
             final boolean[] expected = {true, false, false, true, false, false, true, false};
 
@@ -203,7 +204,7 @@ class ArraysXTest {
         void testDoubleArrayToBooleanArray() {
             double[] input = {Double.NEGATIVE_INFINITY, 1, 4, 5, Math.PI, 6, 7, Math.E, 7e1, Double.POSITIVE_INFINITY};
 
-            final var booleans = ArraysX.toBooleanArray(d -> d < 4, input);
+            final boolean[] booleans = ArraysX.toBooleanArray(d -> d < 4, input);
 
             final boolean[] expected = {true, true, false, false, true, false, false, true, false, false};
 
@@ -212,14 +213,14 @@ class ArraysXTest {
 
         @Test
         void testIsSorted() {
-            final var sorted = ArraysX.isSorted(IntComparator.reverseOrder(), 10, 9, 7, 7, 7, 6, 5, 2, -1);
+            final boolean sorted = ArraysX.isSorted(IntComparator.reverseOrder(), 10, 9, 7, 7, 7, 6, 5, 2, -1);
 
             assertTrue(sorted);
         }
 
         @Test
         void testIsNotSorted() {
-            final var sorted = ArraysX.isSorted(IntComparator.reverseOrder(), 10, 9, 7, 8, 7, 6, 4, 2, 5);
+            final boolean sorted = ArraysX.isSorted(IntComparator.reverseOrder(), 10, 9, 7, 8, 7, 6, 4, 2, 5);
 
             assertFalse(sorted);
         }

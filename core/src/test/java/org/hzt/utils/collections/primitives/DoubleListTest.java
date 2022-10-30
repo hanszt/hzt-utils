@@ -7,15 +7,19 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
 
-import static java.util.function.Predicate.not;
 import static org.hzt.utils.Patterns.commaPattern;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hzt.utils.function.Functions.not;
+import static org.hzt.utils.primitive_comparators.DoubleComparator.reverseOrder;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DoubleListTest {
 
     @Test
     void testContainsAll() {
-        final var doubles = DoubleList.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
+        final DoubleList doubles = DoubleList.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
 
         assertAll(
                 () -> assertTrue(doubles.containsAll(1, 4, 2, 6, 5)),
@@ -25,9 +29,9 @@ class DoubleListTest {
 
     @Test
     void testLastIndexOf() {
-        final var list = DoubleList.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
+        final DoubleList list = DoubleList.of(1, 2, 3, 4, 5, 4, 6, 7, 4, 5);
 
-        final var index = list.lastIndexOf(4);
+        final int index = list.lastIndexOf(4);
 
         assertEquals(8, index);
     }
@@ -44,7 +48,7 @@ class DoubleListTest {
 
         System.out.println(Arrays.toString(doubles));
 
-        final var isSorted = ArraysX.isSorted(DoubleList.of(doubles).toArray());
+        final boolean isSorted = ArraysX.isSorted(DoubleList.of(doubles).toArray());
 
         assertTrue(isSorted);
     }
@@ -60,7 +64,7 @@ class DoubleListTest {
 
         System.out.println(Arrays.toString(doubles));
 
-        final var isSorted = ArraysX.isSorted(DoubleList.of(doubles).toArray());
+        final boolean isSorted = ArraysX.isSorted(DoubleList.of(doubles).toArray());
 
         assertFalse(isSorted);
     }
@@ -68,7 +72,7 @@ class DoubleListTest {
     private double[] toDoubleArrayByCommaPattern(String string) {
         return commaPattern.splitAsStream(string)
                 .filter(not(String::isEmpty))
-                .map(String::strip)
+                .map(String::trim)
                 .mapToDouble(Double::parseDouble)
                 .toArray();
     }

@@ -2,6 +2,7 @@ package org.hzt.utils.sequences;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.MapX;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
@@ -28,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -87,6 +87,10 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return map.entrySet()::iterator;
     }
 
+    static <K, V> EntrySequence<K, V> of(MapX<K, V> map) {
+        return map.entrySet()::iterator;
+    }
+
     static <T> Sequence<T> ofNullable(@Nullable T value) {
         return value != null ? Sequence.of(value) : new EmptySequence<>();
     }
@@ -104,11 +108,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default Sequence<T> plus(@NotNull T value) {
-        return Sequence.of(this, Sequence.of(value)).flatMap(It::self);
+        return Sequence.of(this, Sequence.of(value)).mapMulti(Iterable::forEach);
     }
 
     default Sequence<T> plus(@NotNull Iterable<? extends T> values) {
-        return Sequence.of(this, Sequence.of(values)).flatMap(It::self);
+        return Sequence.of(this, Sequence.of(values)).mapMulti(Iterable::forEach);
     }
 
     default Sequence<T> minus(@NotNull T value) {
@@ -261,24 +265,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default <A, R> Sequence<R> zip(@NotNull Iterable<A> other, @NotNull BiFunction<? super T, ? super A, ? extends R> function) {
-        return () -> mergingIterator(other.iterator(), function);
-    }
-
-    private <A, R> Iterator<R> mergingIterator(@NotNull Iterator<A> otherIterator,
-                                               @NotNull BiFunction<? super T, ? super A, ? extends R> transform) {
-        return new Iterator<>() {
-            private final Iterator<T> thisIterator = iterator();
-
-            @Override
-            public boolean hasNext() {
-                return thisIterator.hasNext() && otherIterator.hasNext();
-            }
-
-            @Override
-            public R next() {
-                return transform.apply(thisIterator.next(), otherIterator.next());
-            }
-        };
+        return () -> SequenceHelper.mergingIterator(iterator(), other.iterator(), function);
     }
 
     @Override
@@ -344,6 +331,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> IterableX.super.sortedDescending().iterator();
     }
 
+    @Override
     default Sequence<T> shuffled() {
         return () -> toListX().shuffled().iterator();
     }
@@ -355,7 +343,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     default <K, V> EntrySequence<K, V> asEntrySequence(@NotNull Function<? super T, ? extends K> keyMapper,
                                                        @NotNull Function<? super T, ? extends V> valueMapper) {
-        return EntrySequence.of(map(value -> Map.entry(keyMapper.apply(value), valueMapper.apply(value))));
+        return EntrySequence.of(map(value -> MapX.entry(keyMapper.apply(value), valueMapper.apply(value))));
     }
 
     default <K, V> EntrySequence<K, V> asEntrySequence(Function<? super T, Pair<K, V>> toPairMapper) {
@@ -364,47 +352,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     @Override
     default <K> EntrySequence<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper) {
-        return EntrySequence.ofPairs(() -> associateByIterator(keyMapper));
-    }
-
-    @NotNull
-    private <K> Iterator<Pair<K, T>> associateByIterator(@NotNull Function<? super T, ? extends K> keyMapper) {
-        return new Iterator<>() {
-            private final Iterator<T> iterator = iterator();
-
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public Pair<K, T> next() {
-                final var value = iterator.next();
-                return Pair.of(keyMapper.apply(value), value);
-            }
-        };
+        return EntrySequence.ofPairs(() -> SequenceHelper.associateByIterator(iterator(), keyMapper));
     }
 
     default <V> EntrySequence<T, V> associateWith(@NotNull Function<? super T, ? extends V> valueMapper) {
-        return EntrySequence.ofPairs(() -> associateWithIterator(valueMapper));
-    }
-
-    @NotNull
-    private <V> Iterator<Pair<T, V>> associateWithIterator(@NotNull Function<? super T, ? extends V> valueMapper) {
-        return new Iterator<>() {
-            private final Iterator<T> iterator = iterator();
-
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public Pair<T, V> next() {
-                final var key = iterator.next();
-                return Pair.of(key, valueMapper.apply(key));
-            }
-        };
+        return EntrySequence.ofPairs(() -> SequenceHelper.associateWithIterator(iterator(), valueMapper));
     }
 
     @Override
@@ -465,10 +417,10 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
                                          @NotNull Function<? super Sequence<T>, ? extends R3> resultMapper3,
                                          @NotNull Function<? super Sequence<T>, ? extends R4> resultMapper4,
                                          @NotNull QuadFunction<R1, R2, R3, R4, R> merger) {
-        final var r1 = resultMapper1.apply(this);
-        final var r2 = resultMapper2.apply(this);
-        final var r3 = resultMapper3.apply(this);
-        final var r4 = resultMapper4.apply(this);
+        final R1 r1 = resultMapper1.apply(this);
+        final R2 r2 = resultMapper2.apply(this);
+        final R3 r3 = resultMapper3.apply(this);
+        final R4 r4 = resultMapper4.apply(this);
         return merger.apply(r1, r2, r3, r4);
     }
 }

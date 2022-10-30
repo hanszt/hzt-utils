@@ -14,7 +14,7 @@ class ClosedRangeTest {
 
     @Test
     void testClosedRangeOfDatesContains() {
-        final var dateRange = new LocalDateRange(LocalDate.EPOCH, LocalDate.of(2020, Month.JANUARY, 1));
+        final LocalDateRange dateRange = new LocalDateRange(LocalDate.ofEpochDay(0), LocalDate.of(2020, Month.JANUARY, 1));
 
         assertAll(
                 () -> assertTrue(dateRange.contains(LocalDate.ofEpochDay(100))),
@@ -24,10 +24,10 @@ class ClosedRangeTest {
 
     @Test
     void testClosedRangeOfDatesIsEmpty() {
-        final var dateRange = new LocalDateRange(LocalDate.EPOCH, LocalDate.of(2020, Month.JANUARY, 1));
+        final LocalDateRange dateRange = new LocalDateRange(LocalDate.ofEpochDay(0), LocalDate.of(2020, Month.JANUARY, 1));
 
         assertAll(
-                () -> assertTrue(new LocalDateRange(LocalDate.now(), LocalDate.EPOCH).isEmpty()),
+                () -> assertTrue(new LocalDateRange(LocalDate.now(), LocalDate.ofEpochDay(0)).isEmpty()),
                 () -> assertTrue(dateRange.isNotEmpty())
         );
     }

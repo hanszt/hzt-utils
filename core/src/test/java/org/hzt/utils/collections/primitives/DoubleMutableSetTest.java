@@ -22,7 +22,7 @@ class DoubleMutableSetTest {
     void testCountElementsInDoubleSetThroughSequence() {
         DoubleMutableSet set = DoubleMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
 
-        final var count = set.asSequence().count();
+        final long count = set.asSequence().count();
 
         assertEquals(6L, count);
     }
@@ -36,7 +36,7 @@ class DoubleMutableSetTest {
         doubles.add(Double.POSITIVE_INFINITY);
         doubles.add(Double.NEGATIVE_INFINITY);
 
-        final var evenDoubles = doubles.asSequence()
+        final DoubleMutableSet evenDoubles = doubles.asSequence()
                 .filter(DoubleX::isFinite)
                 .collect(DoubleMutableSet::empty, DoubleMutableSet::add);
 

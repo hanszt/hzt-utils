@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toCollection;
@@ -17,7 +16,7 @@ class MutableCollectionXTest {
 
     @Test
     void testFilterAndMapToArrayDeque() {
-        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final var museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final Deque<LocalDate> expectedLocalDates = museumList.stream()
                 .filter(museum -> museum.getPaintings().size() > 3)
@@ -33,9 +32,9 @@ class MutableCollectionXTest {
 
     @Test
     void testMapToListX() {
-        final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final var museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        final List<LocalDate> expectedLocalDates = museumList.stream()
+        final var expectedLocalDates = museumList.stream()
                 .map(Museum::getDateOfOpening)
                 .collect(Collectors.toList());
 

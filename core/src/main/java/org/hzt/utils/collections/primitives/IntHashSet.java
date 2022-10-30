@@ -25,7 +25,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
 
     public IntHashSet(int[] values) {
         this(values.length > 0 ? 1 : 0);
-        for (int value : values) {
+        for (var value : values) {
             add(value);
         }
     }
@@ -44,7 +44,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
             expand();
         }
 
-        final int targetCollisionChainIndex = value & mask;
+        final var targetCollisionChainIndex = value & mask;
         final var next = table[targetCollisionChainIndex];
         final PrimitiveNode newNode = new CollisionChainNode(value, next);
         table[targetCollisionChainIndex] = newNode;
@@ -52,7 +52,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
     }
 
     public boolean contains(int value) {
-        final int collisionChainIndex = value & mask;
+        final var collisionChainIndex = value & mask;
         var node = table[collisionChainIndex];
 
         while (node != null) {
@@ -72,7 +72,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
         if (shouldContract()) {
             contract();
         }
-        final int targetCollisionChainIndex = value & mask;
+        final var targetCollisionChainIndex = value & mask;
 
         var current = table[targetCollisionChainIndex];
 
@@ -124,7 +124,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
         return MAXIMUM_LOAD_FACTOR * size * 4 < table.length;
     }
     private void expand() {
-        CollisionChainNode[] newTable = new CollisionChainNode[table.length * 2];
+        var newTable = new CollisionChainNode[table.length * 2];
 
         rehash(table, newTable);
         table = newTable;
@@ -132,7 +132,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
     }
 
     private void contract() {
-        CollisionChainNode[] newTable = new CollisionChainNode[table.length / 4];
+        var newTable = new CollisionChainNode[table.length / 4];
         rehash(table, newTable);
         table = newTable;
         mask = table.length - 1;

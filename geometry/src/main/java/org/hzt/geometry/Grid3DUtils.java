@@ -14,9 +14,9 @@ public final class Grid3DUtils {
 
     public static <T> List<List<List<T>>> toListGrid(T[][][] grid) {
         List<List<List<T>>> newGrid = new ArrayList<>();
-        for (T[][] plane : grid) {
+        for (var plane : grid) {
             List<List<T>> newPlane = new ArrayList<>();
-            for (T[] row : plane) {
+            for (var row : plane) {
                 List<T> newRow = new ArrayList<>();
                 Collections.addAll(newRow, row);
                 newPlane.add(newRow);
@@ -28,11 +28,11 @@ public final class Grid3DUtils {
 
     public static <T> List<List<List<T>>> toListGrid(int[][][] grid, IntFunction<T> mapper) {
         List<List<List<T>>> newGrid = new ArrayList<>();
-        for (int[][] plane : grid) {
+        for (var plane : grid) {
             List<List<T>> newPlane = new ArrayList<>();
-            for (int[] row : plane) {
+            for (var row : plane) {
                 List<T> newRow = new ArrayList<>();
-                for (int value : row) {
+                for (var value : row) {
                     newRow.add(mapper.apply(value));
                 }
                 newPlane.add(newRow);
@@ -43,9 +43,9 @@ public final class Grid3DUtils {
     }
 
     public static <T> boolean anyInGrid(T[][][] grid, Predicate<T> predicate) {
-        for (T[][] plane : grid) {
-            for (T[] row : plane) {
-                for (T item : row) {
+        for (var plane : grid) {
+            for (var row : plane) {
+                for (var item : row) {
                     if (predicate.test(item)) {
                         return true;
                     }
@@ -56,9 +56,9 @@ public final class Grid3DUtils {
     }
 
     public static <T> boolean noneInGrid(T[][][] grid, Predicate<T> predicate) {
-        for (T[][] plane : grid) {
-            for (T[] row : plane) {
-                for (T item : row) {
+        for (var plane : grid) {
+            for (var row : plane) {
+                for (var item : row) {
                     if (predicate.test(item)) {
                         return false;
                     }
@@ -69,9 +69,9 @@ public final class Grid3DUtils {
     }
 
     public static <T> boolean allInGrid(T[][][] grid, Predicate<T> predicate) {
-        for (T[][] plane : grid) {
-            for (T[] row : plane) {
-                for (T item : row) {
+        for (var plane : grid) {
+            for (var row : plane) {
+                for (var item : row) {
                     if (!predicate.test(item)) {
                         return false;
                     }

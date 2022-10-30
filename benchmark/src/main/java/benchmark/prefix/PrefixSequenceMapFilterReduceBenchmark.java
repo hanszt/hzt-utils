@@ -8,7 +8,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.List;
@@ -58,9 +57,9 @@ public class PrefixSequenceMapFilterReduceBenchmark {
 
     @Benchmark
     public int imperativeMapFilterReduce() {
-        int product = 1;
-        for (String s : list) {
-            int length = s.length();
+        var product = 1;
+        for (var s : list) {
+            var length = s.length();
             if (IntX.isEven(length)) {
                 product *= length;
             }
@@ -69,7 +68,7 @@ public class PrefixSequenceMapFilterReduceBenchmark {
     }
 
     public static void main(String[] args) {
-        Options options = new OptionsBuilder()
+        var options = new OptionsBuilder()
                 .include(PrefixSequenceMapFilterReduceBenchmark.class.getSimpleName())
                 .forks(2)
                 .warmupIterations(2)

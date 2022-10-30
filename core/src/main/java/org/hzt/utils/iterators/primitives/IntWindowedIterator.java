@@ -46,8 +46,8 @@ public final class IntWindowedIterator extends AbstractIterator<IntList> {
     }
 
     private IntMutableList computeNextWindow() {
-        int windowInitCapacity = Math.min(size, 1024);
-        final int gap = step - size;
+        var windowInitCapacity = Math.min(size, 1024);
+        final var gap = step - size;
         size = calculateNextSize(size);
         if (gap >= 0) {
             computeNextForWindowedSequenceNoOverlap(windowInitCapacity, gap);
@@ -59,12 +59,12 @@ public final class IntWindowedIterator extends AbstractIterator<IntList> {
     }
 
     private int calculateNextSize(int cur) {
-        int next = cur <= 0 ? initSize : nextSizeSupplier.applyAsInt(cur);
+        var next = cur <= 0 ? initSize : nextSizeSupplier.applyAsInt(cur);
         return (next > 0) ? next : 1;
     }
 
     private int calculateNextStep(int cur) {
-        int next = cur <= 0 ? initStep : nextStepSupplier.applyAsInt(cur);
+        var next = cur <= 0 ? initStep : nextStepSupplier.applyAsInt(cur);
         return (next > 0) ? next : 1;
     }
 
@@ -77,7 +77,7 @@ public final class IntWindowedIterator extends AbstractIterator<IntList> {
     }
 
     private void calculateNextOverlappingWindow() {
-        int stepCount = 0;
+        var stepCount = 0;
         while (stepCount < step && nextWindow.isNotEmpty()) {
             nextWindow.removeFirst();
             stepCount++;
@@ -88,10 +88,10 @@ public final class IntWindowedIterator extends AbstractIterator<IntList> {
     }
 
     private void computeNextForWindowedSequenceNoOverlap(int bufferInitCapacity, int gap) {
-        int skip = gap;
+        var skip = gap;
         nextWindow = IntMutableList.withInitCapacity(bufferInitCapacity);
         while (iterator.hasNext()) {
-            int item = iterator.nextInt();
+            var item = iterator.nextInt();
             if (skip > 0) {
                 skip--;
                 continue;

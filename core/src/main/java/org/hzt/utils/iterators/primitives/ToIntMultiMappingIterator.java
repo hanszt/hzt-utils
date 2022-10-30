@@ -48,9 +48,9 @@ public final class ToIntMultiMappingIterator<T> implements PrimitiveIterator.OfI
             if (!iterator.hasNext()) {
                 return false;
             }
-            SpinedBuffer.OfInt intBuffer = new SpinedBuffer.OfInt();
+            var intBuffer = new SpinedBuffer.OfInt();
             mapper.accept(iterator.next(), intBuffer);
-            final OfInt nextItemIterator = intBuffer.iterator();
+            final var nextItemIterator = intBuffer.iterator();
             if (nextItemIterator.hasNext()) {
                 itemIterator = nextItemIterator;
                 return true;

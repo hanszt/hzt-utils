@@ -44,9 +44,9 @@ public final class DoubleMultiMappingIterator implements PrimitiveIterator.OfDou
             if (!iterator.hasNext()) {
                 return false;
             }
-            SpinedBuffer.OfDouble doubleBuffer = new SpinedBuffer.OfDouble();
+            var doubleBuffer = new SpinedBuffer.OfDouble();
             mapper.accept(iterator.nextDouble(), doubleBuffer);
-            final OfDouble nextItemIterator = doubleBuffer.iterator();
+            final var nextItemIterator = doubleBuffer.iterator();
             if (nextItemIterator.hasNext()) {
                 itemIterator = nextItemIterator;
                 return true;

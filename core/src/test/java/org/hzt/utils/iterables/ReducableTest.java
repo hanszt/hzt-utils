@@ -72,7 +72,7 @@ class ReducableTest {
 
     @Test
     void testFoldTwoInOnePass() {
-        final Sequence<LocalDate> dateSequence = generateLeapYearDateSequence();
+        final var dateSequence = generateLeapYearDateSequence();
 
         final var iterations1 = new AtomicInteger();
 
@@ -97,7 +97,7 @@ class ReducableTest {
 
     @Test
     void testFoldThreeInOnePass() {
-        final Sequence<LocalDate> dateSequence = generateLeapYearDateSequence();
+        final var dateSequence = generateLeapYearDateSequence();
 
         final var iterations1 = new AtomicInteger();
 
@@ -123,7 +123,7 @@ class ReducableTest {
 
     @Test
     void tesReduceTwoInOnePass() {
-        final Sequence<LocalDate> dateSequence = generateLeapYearDateSequence();
+        final var dateSequence = generateLeapYearDateSequence();
 
         final var iterations1 = new AtomicInteger();
 

@@ -28,7 +28,7 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
         }
 
         default void forEachInt(@NotNull IntConsumer action) {
-            PrimitiveIterator.OfInt intIterator = iterator();
+            var intIterator = iterator();
             while (intIterator.hasNext()) {
                 action.accept(intIterator.nextInt());
             }
@@ -36,7 +36,7 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
 
         @Override
         default void forEach(Consumer<? super Integer> action) {
-            PrimitiveIterator.OfInt intIterator = iterator();
+            var intIterator = iterator();
             if (intIterator.hasNext()) {
                 throw new UnsupportedOperationException("Use forEachInt instead");
             }
@@ -58,7 +58,7 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
         }
 
         default void forEachLong(@NotNull LongConsumer action) {
-            PrimitiveIterator.OfLong intIterator = iterator();
+            var intIterator = iterator();
             while (intIterator.hasNext()) {
                 action.accept(intIterator.nextLong());
             }
@@ -66,7 +66,7 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
 
         @Override
         default void forEach(Consumer<? super Long> action) {
-            PrimitiveIterator.OfLong intIterator = iterator();
+            var intIterator = iterator();
             if (intIterator.hasNext()) {
                 throw new UnsupportedOperationException("Use forEachLong instead");
             }
@@ -88,7 +88,7 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
         }
 
         default void forEachDouble(@NotNull DoubleConsumer action) {
-            PrimitiveIterator.OfDouble intIterator = iterator();
+            var intIterator = iterator();
             while (intIterator.hasNext()) {
                 action.accept(intIterator.nextDouble());
             }
@@ -96,7 +96,7 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
 
         @Override
         default void forEach(Consumer<? super Double> action) {
-            PrimitiveIterator.OfDouble intIterator = iterator();
+            var intIterator = iterator();
             if (intIterator.hasNext()) {
                 throw new UnsupportedOperationException("Use forEachDouble instead");
             }

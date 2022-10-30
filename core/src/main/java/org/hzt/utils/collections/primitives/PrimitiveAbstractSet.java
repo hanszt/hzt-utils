@@ -29,7 +29,7 @@ public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIte
             return false;
         }
         //noinspection unchecked
-        PrimitiveAbstractSet<T, T_CONST, A, I> that = (PrimitiveAbstractSet<T, T_CONST, A, I>) o;
+        var that = (PrimitiveAbstractSet<T, T_CONST, A, I>) o;
         if (size != that.size) {
             return false;
         }
@@ -39,7 +39,7 @@ public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIte
     @Override
     public int hashCode() {
         final var i = iterator();
-        int hashCode = 0;
+        var hashCode = 0;
         while (i.hasNext()) {
             hashCode += nextHashCode(i);
         }
@@ -49,10 +49,10 @@ public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIte
     abstract int nextHashCode(I i);
 
     void rehash(PrimitiveNode[] table, PrimitiveNode[] newTable) {
-        for (PrimitiveNode node : table) {
+        for (var node : table) {
             while (node != null) {
-                final PrimitiveNode next = node.next;
-                final int rehashedIndex = rehash(node, newTable.length);
+                final var next = node.next;
+                final var rehashedIndex = rehash(node, newTable.length);
 
                 node.next = newTable[rehashedIndex];
                 newTable[rehashedIndex] = node;
@@ -82,7 +82,7 @@ public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIte
             }
             next = current.next;
             if (next == null) {
-                PrimitiveNode[] t = table;
+                var t = table;
                 while (index < t.length) {
                     next = t[index];
                     index++;

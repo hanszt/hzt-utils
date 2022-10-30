@@ -18,13 +18,13 @@ final class DoubleSkipSequence implements DoubleSkipTakeSequence {
 
     @Override
     public DoubleSequence skip(long n) {
-        final long n1 = count + n;
+        final var n1 = count + n;
         return n1 < 0 ? new DoubleSkipSequence(this, n) : new DoubleSkipSequence(upstream, n1);
     }
 
     @Override
     public DoubleSequence take(long n) {
-        final long n1 = count + n;
+        final var n1 = count + n;
         return n1 < 0 ? new DoubleTakeSequence(this, n) : new DoubleSubSequence(upstream, count, n1);
     }
 

@@ -34,7 +34,7 @@ class DoubleMutableCollectionTest {
 
     @Test
     void testStreamFromDoubleCollection() {
-        DoubleList listX = IntSequence.generate(1, d -> d + 2)
+        var listX = IntSequence.generate(1, d -> d + 2)
                 .mapToDouble(i -> 1. / i)
                 .take(1_000_000)
                 .toList();
@@ -49,7 +49,7 @@ class DoubleMutableCollectionTest {
     @Test
     void testRemoveIf() {
         final var list = DoubleMutableList.of(Math.PI, 1, 4, 5, 3, 6, Math.E, 7, 5, 8, 9);
-        final boolean removed = list.removeIf(l -> l % 2 == 0);
+        final var removed = list.removeIf(l -> l % 2 == 0);
 
         assertAll(
                 () -> assertTrue(removed),

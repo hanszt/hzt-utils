@@ -7,7 +7,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.stream.IntStream;
@@ -26,10 +25,10 @@ public class PrefixIntRangeToArrayBenchmark {
 
     @Benchmark
     public int[] loopMapFilterToArray() {
-        int[] array = new int[UPPER_BOUND_RANGE / 2];
-        int index = 0;
-        for (int i = 0; i < UPPER_BOUND_RANGE; i++) {
-            int i2 = i * 2;
+        var array = new int[UPPER_BOUND_RANGE / 2];
+        var index = 0;
+        for (var i = 0; i < UPPER_BOUND_RANGE; i++) {
+            var i2 = i * 2;
             if (i2 % 4 == 0) {
                 array[index] = i2;
                 index++;
@@ -64,7 +63,7 @@ public class PrefixIntRangeToArrayBenchmark {
     }
 
     public static void main(String[] args) {
-        Options options = new OptionsBuilder()
+        var options = new OptionsBuilder()
                 .include(PrefixIntRangeToArrayBenchmark.class.getSimpleName())
                 .forks(2)
                 .warmupIterations(2)

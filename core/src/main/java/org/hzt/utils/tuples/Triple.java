@@ -41,7 +41,7 @@ public final class Triple<A, B, C> implements Transformable<Triple<A, B, C>> {
             return false;
         }
         //noinspection unchecked
-        Triple<A, B, C> that = (Triple<A, B, C>) obj;
+        var that = (Triple<A, B, C>) obj;
         return Objects.equals(this.first, that.first) &&
                 Objects.equals(this.second, that.second) &&
                 Objects.equals(this.third, that.third);

@@ -191,7 +191,7 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LongX longX = (LongX) o;
+        var longX = (LongX) o;
         return Objects.equals(thisLong, longX.thisLong);
     }
 

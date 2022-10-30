@@ -79,7 +79,7 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
     @NotNull
     default <R> IterableX<T> onEach(@NotNull Function<? super T, ? extends R> selector,
                                 @NotNull Consumer<? super R> consumer) {
-        for (T t : this) {
+        for (var t : this) {
             consumer.accept(t != null ? selector.apply(t) : null);
         }
         return this;
@@ -128,10 +128,10 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
     }
 
     default boolean[] toBooleanArray(@NotNull Predicate<? super T> mapper) {
-        int size = (int) count();
-        boolean[] result = new boolean[size];
-        int counter = 0;
-        for (T value : this) {
+        var size = (int) count();
+        var result = new boolean[size];
+        var counter = 0;
+        for (var value : this) {
             result[counter] = mapper.test(value);
             counter++;
         }

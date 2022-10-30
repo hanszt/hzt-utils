@@ -19,19 +19,19 @@ class SortedMutableSetXTest {
 
     @Test
     void testGetNavigableSet() {
-        final SetX<Museum> museumListContainingNulls = SetX.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final var museumListContainingNulls = SetX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        final TreeSet<String> expected = museumListContainingNulls.stream()
+        final var expected = museumListContainingNulls.stream()
                 .map(Museum::getName)
                 .filter(Objects::nonNull)
                 .sorted()
                 .collect(Collectors.toCollection(TreeSet::new));
 
-        final SortedMutableSetX<String> names = museumListContainingNulls.toSortedSetOf(Museum::getName);
+        final var names = museumListContainingNulls.toSortedSetOf(Museum::getName);
 
         MutableListX<Integer> list = MutableListX.empty();
 
-        final double average = names
+        final var average = names
                 .onEach(String::length, It
                         .<Consumer<Integer>>self(It::println)
                         .andThen(list::add))
@@ -50,14 +50,14 @@ class SortedMutableSetXTest {
 
     @Test
     void testToSetSortedBy() {
-        final SetX<Museum> museumListContainingNulls = SetX.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final var museumListContainingNulls = SetX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final NavigableSet<Museum> expected = museumListContainingNulls.stream()
                 .filter(i -> i != null && i.getName() != null)
                 .sorted(Comparator.comparing(Museum::getName))
                 .collect(Collectors.toCollection(TreeSet::new));
 
-        final SortedMutableSetX<Museum> sortedMuseums = museumListContainingNulls.toSortedSet(Museum::getName);
+        final var sortedMuseums = museumListContainingNulls.toSortedSet(Museum::getName);
 
         sortedMuseums.forEach(It::println);
 

@@ -33,7 +33,7 @@ class IntMutableCollectionTest {
     @Test
     void testRemoveIf() {
         final var list = IntMutableList.of(1, 4, 5, 3, 6, 7, 5, 8, 9);
-        final boolean removed = list.removeIf(i -> i % 2 == 0);
+        final var removed = list.removeIf(i -> i % 2 == 0);
 
         assertAll(
                 () -> assertTrue(removed),

@@ -24,7 +24,7 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
     @Override
     public void accept(double value) {
         super.accept(value);
-        double squareValue = value * value;
+        var squareValue = value * value;
         simpleSumOfSquare += squareValue;
         sumOfSquareWithCompensation(squareValue);
     }
@@ -38,14 +38,14 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
     }
 
     private void sumOfSquareWithCompensation(double value) {
-        double tmp = value - sumOfSquareCompensation;
-        double velvel = sumOfSquare + tmp; // Little wolf of rounding error
+        var tmp = value - sumOfSquareCompensation;
+        var velvel = sumOfSquare + tmp; // Little wolf of rounding error
         sumOfSquareCompensation = (velvel - sumOfSquare) - tmp;
         sumOfSquare = velvel;
     }
 
     public double getSumOfSquare() {
-        double correctedSumOfSquare =  sumOfSquare + sumOfSquareCompensation;
+        var correctedSumOfSquare =  sumOfSquare + sumOfSquareCompensation;
         if (Double.isNaN(correctedSumOfSquare) && Double.isInfinite(simpleSumOfSquare)) {
             return simpleSumOfSquare;
         }
@@ -53,7 +53,7 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
     }
 
     public Double getStandardDeviation() {
-        final double average = getAverage();
+        final var average = getAverage();
         return getCount() > 0 ? Math.sqrt((getSumOfSquare() / getCount()) - average * average) : 0.0D;
     }
 
@@ -65,7 +65,7 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DoubleStatistics that = (DoubleStatistics) o;
+        var that = (DoubleStatistics) o;
         return getCount() == that.getCount() &&
                 Double.compare(getAverage(), that.getAverage()) == 0 &&
                 Double.compare(that.getSumOfSquare(), getSumOfSquare()) == 0 &&

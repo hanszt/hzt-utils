@@ -12,7 +12,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.Arrays;
@@ -62,7 +61,7 @@ public class DoubleTimSortBenchmark {
     @Benchmark
     @SuppressWarnings("squid:S2384")
     public double[] arraySort() {
-        double[] copy = Arrays.copyOf(array, array.length);
+        var copy = Arrays.copyOf(array, array.length);
         Arrays.sort(copy);
         return copy;
     }
@@ -70,7 +69,7 @@ public class DoubleTimSortBenchmark {
     @Benchmark
     @SuppressWarnings("squid:S2384")
     public double[] primitiveArraySortReversed() {
-        double[] copy = Arrays.copyOf(array, array.length);
+        var copy = Arrays.copyOf(array, array.length);
         ArraysX.sort(DoubleComparator.reverseOrder(), copy);
         return copy;
     }
@@ -91,7 +90,7 @@ public class DoubleTimSortBenchmark {
     }
 
     public static void main(String[] args) {
-        Options options = new OptionsBuilder()
+        var options = new OptionsBuilder()
                 .include(DoubleTimSortBenchmark.class.getSimpleName())
                 .forks(2)
                 .warmupIterations(2)

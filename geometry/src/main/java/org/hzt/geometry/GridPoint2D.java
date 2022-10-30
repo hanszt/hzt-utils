@@ -70,10 +70,10 @@ public interface GridPoint2D {
     }
 
     default double angle(double x, double y) {
-        final int ax = getX();
-        final int ay = getY();
+        final var ax = getX();
+        final var ay = getY();
 
-        final double delta = (ax * x + ay * y) / Math.sqrt(
+        final var delta = (ax * x + ay * y) / Math.sqrt(
                 (ax * ax + ay * ay) * (x * x + y * y));
 
         if (delta > 1.0) {
@@ -95,8 +95,8 @@ public interface GridPoint2D {
     }
 
     default GridPoint3D crossProduct(int x, int y) {
-        final int ax = getX();
-        final int ay = getY();
+        final var ax = getX();
+        final var ay = getY();
         return new GridPoint3DImpl(0, 0, ax * y - ay * x);
     }
 

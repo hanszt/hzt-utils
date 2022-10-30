@@ -31,18 +31,18 @@ class GraphAlgorithmsTest {
     @Test
     void testFindShortestPath() {
         MutableMapX<String, WeightedNode<String>> graph = MutableMapX.empty();
-        WeightedNode<String> AB = WeightedNode.of("AB", 3);
-        WeightedNode<String> BA = WeightedNode.of("BA", 3);
-        WeightedNode<String> AC = WeightedNode.of("AC", 2);
-        WeightedNode<String> CA = WeightedNode.of("CA", 2);
-        WeightedNode<String> AD = WeightedNode.of("AD", 6);
-        WeightedNode<String> DA = WeightedNode.of("DA", 6);
-        WeightedNode<String> BD = WeightedNode.of("BD", 5);
-        WeightedNode<String> DB = WeightedNode.of("DB", 5);
-        WeightedNode<String> CD = WeightedNode.of("CD", 1);
-        WeightedNode<String> DC = WeightedNode.of("DC", 1);
-        WeightedNode<String> DE = WeightedNode.of("DE", 7);
-        WeightedNode<String> BE = WeightedNode.of("BE", 4);
+        var AB = WeightedNode.of("AB", 3);
+        var BA = WeightedNode.of("BA", 3);
+        var AC = WeightedNode.of("AC", 2);
+        var CA = WeightedNode.of("CA", 2);
+        var AD = WeightedNode.of("AD", 6);
+        var DA = WeightedNode.of("DA", 6);
+        var BD = WeightedNode.of("BD", 5);
+        var DB = WeightedNode.of("DB", 5);
+        var CD = WeightedNode.of("CD", 1);
+        var DC = WeightedNode.of("DC", 1);
+        var DE = WeightedNode.of("DE", 7);
+        var BE = WeightedNode.of("BE", 4);
         fail("Not implemented");
     }
 

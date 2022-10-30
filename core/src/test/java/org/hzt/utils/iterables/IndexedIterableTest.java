@@ -41,7 +41,7 @@ class IndexedIterableTest {
                 .map(IndexedValue::value)
                 .toArray(String[]::new);
 
-        final String[] expected = {"This", "a", "test"};
+        final var expected = new String[]{"This", "a", "test"};
 
         assertArrayEquals(expected, integers);
     }

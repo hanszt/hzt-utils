@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,7 +43,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
 
     default <R> R[] toArrayOf(@NotNull Function<? super T, ? extends R> mapper, @NotNull IntFunction<R[]> generator) {
         MutableListX<R> list = MutableListX.empty();
-        for (T t : this) {
+        for (var t : this) {
             if (t != null) {
                 list.add(mapper.apply(t));
             }
@@ -55,9 +54,9 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <K, V> MutableMapX<K, V> toMutableMap(@NotNull Function<? super T, ? extends K> keyMapper,
                                                   @NotNull Function<? super T, ? extends V> valueMapper) {
         MutableMapX<K, V> map = MutableMapX.empty();
-        for (T t : this) {
+        for (var t : this) {
             if (t != null) {
-                final K key = keyMapper.apply(t);
+                final var key = keyMapper.apply(t);
                 if (key != null) {
                     map.put(key, valueMapper.apply(t));
                 }
@@ -77,9 +76,9 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <R, A> R collect(@NotNull Collector<? super T, A, R> collector) {
-        final A result = collector.supplier().get();
-        final BiConsumer<A, ? super T> accumulator = collector.accumulator();
-        for (T item : this) {
+        final var result = collector.supplier().get();
+        final var accumulator = collector.accumulator();
+        for (var item : this) {
             if (item != null) {
                 accumulator.accept(result, item);
             }
@@ -106,10 +105,10 @@ public interface Collectable<T> extends IndexedIterable<T> {
                                 @NotNull Predicate<U> resultFilter,
                                 @NotNull BiConsumer<A, ? super U> accumulator,
                                 @NotNull Function<A, R> finisher) {
-        A result = supplier.get();
-        for (T item : this) {
+        var result = supplier.get();
+        for (var item : this) {
             if (filter.test(item)) {
-                U u = mapper.apply(item);
+                var u = mapper.apply(item);
                 if (resultFilter.test(u)) {
                     accumulator.accept(result, u);
                 }
@@ -121,11 +120,11 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <R1, A1, R2, A2, R> R teeing(@NotNull Collector<? super T, A1, R1> downstream1,
                                  @NotNull Collector<? super T, A2, R2> downstream2,
                                  @NotNull BiFunction<? super R1, ? super R2, R> merger) {
-        A1 result1 = downstream1.supplier().get();
-        A2 result2 = downstream2.supplier().get();
-        final BiConsumer<A1, ? super T> accumulator1 = downstream1.accumulator();
-        final BiConsumer<A2, ? super T> accumulator2 = downstream2.accumulator();
-        for (T item : this) {
+        var result1 = downstream1.supplier().get();
+        var result2 = downstream2.supplier().get();
+        final var accumulator1 = downstream1.accumulator();
+        final var accumulator2 = downstream2.accumulator();
+        for (var item : this) {
             if (item != null) {
                 accumulator1.accept(result1, item);
                 accumulator2.accept(result2, item);
@@ -145,13 +144,13 @@ public interface Collectable<T> extends IndexedIterable<T> {
                                         @NotNull Collector<? super T, A2, R2> downstream2,
                                         @NotNull Collector<? super T, A3, R3> downstream3,
                                         @NotNull TriFunction<? super R1, ? super R2, ? super R3, R> merger) {
-        A1 result1 = downstream1.supplier().get();
-        A2 result2 = downstream2.supplier().get();
-        A3 result3 = downstream3.supplier().get();
-        final BiConsumer<A1, ? super T> accumulator1 = downstream1.accumulator();
-        final BiConsumer<A2, ? super T> accumulator2 = downstream2.accumulator();
-        final BiConsumer<A3, ? super T> accumulator3 = downstream3.accumulator();
-        for (T item : this) {
+        var result1 = downstream1.supplier().get();
+        var result2 = downstream2.supplier().get();
+        var result3 = downstream3.supplier().get();
+        final var accumulator1 = downstream1.accumulator();
+        final var accumulator2 = downstream2.accumulator();
+        final var accumulator3 = downstream3.accumulator();
+        for (var item : this) {
             if (item != null) {
                 accumulator1.accept(result1, item);
                 accumulator2.accept(result2, item);
@@ -175,15 +174,15 @@ public interface Collectable<T> extends IndexedIterable<T> {
                                         @NotNull Collector<? super T, A3, R3> downstream3,
                                         @NotNull Collector<? super T, A4, R4> downstream4,
                                         @NotNull QuadFunction<? super R1, ? super R2, ? super R3, ? super R4, R> merger) {
-        A1 result1 = downstream1.supplier().get();
-        A2 result2 = downstream2.supplier().get();
-        A3 result3 = downstream3.supplier().get();
-        A4 result4 = downstream4.supplier().get();
-        final BiConsumer<A1, ? super T> accumulator1 = downstream1.accumulator();
-        final BiConsumer<A2, ? super T> accumulator2 = downstream2.accumulator();
-        final BiConsumer<A3, ? super T> accumulator3 = downstream3.accumulator();
-        final BiConsumer<A4, ? super T> accumulator4 = downstream4.accumulator();
-        for (T item : this) {
+        var result1 = downstream1.supplier().get();
+        var result2 = downstream2.supplier().get();
+        var result3 = downstream3.supplier().get();
+        var result4 = downstream4.supplier().get();
+        final var accumulator1 = downstream1.accumulator();
+        final var accumulator2 = downstream2.accumulator();
+        final var accumulator3 = downstream3.accumulator();
+        final var accumulator4 = downstream4.accumulator();
+        for (var item : this) {
             if (item != null) {
                 accumulator1.accept(result1, item);
                 accumulator2.accept(result2, item);
@@ -256,9 +255,9 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <R, I extends Iterable<? extends R>, C extends Collection<R>> C flatMapTo(
             @NotNull Supplier<C> collectionSupplier,
             @NotNull Function<? super T, ? extends I> mapper) {
-        final C collection = collectionSupplier.get();
-        for (T item : this) {
-            final I c = mapper.apply(item);
+        final var collection = collectionSupplier.get();
+        for (var item : this) {
+            final var c = mapper.apply(item);
             if (c == null) {
                 continue;
             }
@@ -274,8 +273,8 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <R, C extends Collection<R>> C mapMultiTo(
             @NotNull Supplier<C> collectionSupplier,
             @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
-        C collection = collectionSupplier.get();
-        for (T item : this) {
+        var collection = collectionSupplier.get();
+        for (var item : this) {
             mapper.accept(item, (Consumer<R>) collection::add);
         }
         return collection;
@@ -293,9 +292,9 @@ public interface Collectable<T> extends IndexedIterable<T> {
 
     default <C extends Collection<T>> C filterIndexedTo(@NotNull Supplier<C> collectionFactory,
                                                         @NotNull IndexedPredicate<? super T> predicate) {
-        C collection = collectionFactory.get();
+        var collection = collectionFactory.get();
         final Iterable<IndexedValue<T>> indexedIterable = this::indexedIterator;
-        for (IndexedValue<T> indexedValue : indexedIterable) {
+        for (var indexedValue : indexedIterable) {
             final var value = indexedValue.value();
             if (predicate.test(indexedValue.index(), value)) {
                 collection.add(value);
@@ -305,9 +304,9 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <C extends Collection<T>> C skipTo(Supplier<C> collectionFactory, int count) {
-        C collection = collectionFactory.get();
-        int counter = 0;
-        for (T value : this) {
+        var collection = collectionFactory.get();
+        var counter = 0;
+        for (var value : this) {
             if (counter >= count) {
                 collection.add(value);
             }
@@ -320,9 +319,9 @@ public interface Collectable<T> extends IndexedIterable<T> {
             @NotNull Supplier<C> collectionFactory,
             @NotNull Predicate<? super T> predicate,
             boolean inclusive) {
-        boolean yielding = false;
-        C list = collectionFactory.get();
-        for (T item : this) {
+        var yielding = false;
+        var list = collectionFactory.get();
+        for (var item : this) {
             if (yielding) {
                 list.add(item);
                 continue;
@@ -339,7 +338,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
 
     default <C extends Collection<T>> C takeTo(Supplier<C> collectionFactory, long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
-        C collection = collectionFactory.get();
+        var collection = collectionFactory.get();
         if (n == 0) {
             return collection;
         }
@@ -350,8 +349,8 @@ public interface Collectable<T> extends IndexedIterable<T> {
                 return collection;
             }
         }
-        int count = 0;
-        for (T t : this) {
+        var count = 0;
+        for (var t : this) {
             collection.add(t);
             if (++count == n) {
                 break;
@@ -363,8 +362,8 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <C extends Collection<T>> C takeWhileTo(@NotNull Supplier<C> collectionFactory,
                                                     @NotNull Predicate<? super T> predicate,
                                                     boolean inclusive) {
-        final C collection = collectionFactory.get();
-        for (T item : this) {
+        final var collection = collectionFactory.get();
+        for (var item : this) {
             if (!predicate.test(item)) {
                 if (inclusive) {
                     collection.add(item);
@@ -378,11 +377,11 @@ public interface Collectable<T> extends IndexedIterable<T> {
 
     default <R, C extends Collection<T>> C distinctTo(@NotNull Supplier<C> collectionFactory,
                                                       @NotNull Function<? super T, ? extends R> selector) {
-        C c = collectionFactory.get();
+        var c = collectionFactory.get();
         MutableSetX<R> set = MutableLinkedSetX.empty();
-        for (T t : this) {
+        for (var t : this) {
             if (t != null) {
-                final R r = selector.apply(t);
+                final var r = selector.apply(t);
                 if (set.add(r)) {
                     c.add(t);
                 }
@@ -395,12 +394,12 @@ public interface Collectable<T> extends IndexedIterable<T> {
             @NotNull Supplier<C> collectionFactory,
             @NotNull Iterable<A> otherIterable,
             @NotNull BiFunction<? super T, ? super A, ? extends R> function) {
-        final Iterator<A> otherIterator = otherIterable.iterator();
-        final Iterator<T> iterator = iterator();
-        final C list = collectionFactory.get();
+        final var otherIterator = otherIterable.iterator();
+        final var iterator = iterator();
+        final var list = collectionFactory.get();
         while (iterator.hasNext() && otherIterator.hasNext()) {
-            final T next = iterator.next();
-            final A otherNext = otherIterator.next();
+            final var next = iterator.next();
+            final var otherNext = otherIterator.next();
             list.add(function.apply(next, otherNext));
         }
         return list;
@@ -408,14 +407,14 @@ public interface Collectable<T> extends IndexedIterable<T> {
 
     default <R, C extends Collection<R>> C zipWithNextTo(@NotNull Supplier<C> collectionFactory,
                                                          @NotNull BiFunction<? super T, ? super T, ? extends R> function) {
-        final Iterator<T> iterator = iterator();
+        final var iterator = iterator();
         if (!iterator.hasNext()) {
             return collectionFactory.get();
         }
-        final C list = collectionFactory.get();
-        T current = iterator.next();
+        final var list = collectionFactory.get();
+        var current = iterator.next();
         while (iterator.hasNext()) {
-            final T next = iterator.next();
+            final var next = iterator.next();
             list.add(function.apply(current, next));
             current = next;
         }

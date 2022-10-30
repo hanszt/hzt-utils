@@ -22,7 +22,7 @@ class PrimitiveSequenceTest {
 
         It.println("average = " + average);
 
-        Locale defaultLocale = Locale.getDefault();
+        var defaultLocale = Locale.getDefault();
         Locale.setDefault(Locale.ENGLISH);
 
         final var length = average.toStringX().filter(c -> c != '.').length();

@@ -24,7 +24,7 @@ class SortedMutableMapXTest {
         map.put("greetings", 3);
 
         final var mapX = MapX.of("hallo", 1, "greetings", 3, "Hi", 2);
-        final SortedMutableMapX<String, Integer> expected = SortedMutableMapX.of(mapX, String::length);
+        final var expected = SortedMutableMapX.of(mapX, String::length);
 
         map.forEach(It::println);
 
@@ -40,7 +40,7 @@ class SortedMutableMapXTest {
                 .filter(m -> m != null && m.getName() != null)
                 .collect(Collectors.toMap(Museum::getName, It::self)));
 
-        final SortedMutableMapX<String, Museum> actual = museumListContainingNulls
+        final var actual = museumListContainingNulls
                 .associateBy(Museum::getName)
                 .toSortedMap(It::self);
 
@@ -54,19 +54,19 @@ class SortedMutableMapXTest {
 
     @Test
     void testGetNavigableMapAssociatedWith() {
-        final MutableSetX<Museum> museumSetContainingNulls = MutableSetX
+        final var museumSetContainingNulls = MutableSetX
                 .of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final NavigableMap<Museum, String> expected = new TreeMap<>(museumSetContainingNulls.stream()
                 .filter(m -> m != null && m.getName() != null)
                 .collect(Collectors.toMap(It::self, Museum::getName)));
 
-        final SortedMutableMapX<Museum, String> actual = museumSetContainingNulls
+        final var actual = museumSetContainingNulls
                 .filterBy(Museum::getName, Objects::nonNull)
                 .associateWith(Museum::getName)
                 .toSortedMap(Museum::getName);
 
-        final Museum firstMuseum = actual.first().getKey();
+        final var firstMuseum = actual.first().getKey();
 
         It.println("firstMuseum = " + firstMuseum);
 

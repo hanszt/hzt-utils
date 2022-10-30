@@ -6,7 +6,6 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -18,8 +17,8 @@ import java.util.function.Predicate;
 public interface Reducable<T> extends Iterable<T> {
 
     default <R> @NotNull R fold(@NotNull R initial, @NotNull BiFunction<? super R, ? super T, ? extends R> operation) {
-        R accumulator = initial;
-        for (T t : this) {
+        var accumulator = initial;
+        for (var t : this) {
             if (t != null) {
                 accumulator = operation.apply(accumulator, t);
             }
@@ -37,9 +36,9 @@ public interface Reducable<T> extends Iterable<T> {
             @NotNull R1 initial1, @NotNull BiFunction<? super R1, ? super T, ? extends R1> operator1,
             @NotNull R2 initial2, @NotNull BiFunction<? super R2, ? super T, ? extends R2> operator2,
             @NotNull BiFunction<? super R1, ? super R2, ? extends R> finisher) {
-        R1 accumulator1 = initial1;
-        R2 accumulator2 = initial2;
-        for (T next : this) {
+        var accumulator1 = initial1;
+        var accumulator2 = initial2;
+        for (var next : this) {
             accumulator1 = operator1.apply(accumulator1, next);
             accumulator2 = operator2.apply(accumulator2, next);
         }
@@ -60,10 +59,10 @@ public interface Reducable<T> extends Iterable<T> {
             @NotNull R3 initial3, @NotNull BiFunction<? super R3, ? super T, ? extends R3> operator3,
             @NotNull TriFunction<? super R1, ? super R2, ? super R3, ? extends R> finisher
     ) {
-        R1 accumulator1 = initial1;
-        R2 accumulator2 = initial2;
-        R3 accumulator3 = initial3;
-        for (T next : this) {
+        var accumulator1 = initial1;
+        var accumulator2 = initial2;
+        var accumulator3 = initial3;
+        for (var next : this) {
             accumulator1 = operator1.apply(accumulator1, next);
             accumulator2 = operator2.apply(accumulator2, next);
             accumulator3 = operator3.apply(accumulator3, next);
@@ -95,11 +94,11 @@ public interface Reducable<T> extends Iterable<T> {
             @NotNull BinaryOperator<T> operator1,
             @NotNull BinaryOperator<T> operator2,
             @NotNull BiFunction<? super T, ? super T, ? extends R> finisher) {
-        Iterator<T> iterator = iterator();
+        var iterator = iterator();
         if (iterator.hasNext()) {
             final var first = iterator.next();
-            T accumulator1 = first;
-            T accumulator2 = first;
+            var accumulator1 = first;
+            var accumulator2 = first;
             while (iterator.hasNext()) {
                 final var next = iterator.next();
                 accumulator1 = operator1.apply(accumulator1, next);
@@ -116,7 +115,7 @@ public interface Reducable<T> extends Iterable<T> {
             throw new NoSuchElementException("Sequence is empty");
         }
         @SuppressWarnings("squid:S1941")
-        T single = iterator.next();
+        var single = iterator.next();
         if (iterator.hasNext()) {
             throw new IllegalArgumentException("Sequence has more than one element");
         }
@@ -125,7 +124,7 @@ public interface Reducable<T> extends Iterable<T> {
 
     default @NotNull T single(@NotNull Predicate<T> predicate) {
         T single = null;
-        for (T item : this) {
+        for (var item : this) {
             if (predicate.test(item)) {
                 if (single != null) {
                     throw new IllegalArgumentException("More than one element found matching condition");
@@ -144,7 +143,7 @@ public interface Reducable<T> extends Iterable<T> {
     }
 
     default @NotNull T first(@NotNull Predicate<T> predicate) {
-        for (T next : this) {
+        for (var next : this) {
             if (next != null && predicate.test(next)) {
                 return next;
             }
@@ -157,9 +156,9 @@ public interface Reducable<T> extends Iterable<T> {
     }
 
     default <R> @NotNull R firstOf(@NotNull Function<? super T, ? extends R> mapper) {
-        for (T next : this) {
+        for (var next : this) {
             if (next != null) {
-                final R result = mapper.apply(next);
+                final var result = mapper.apply(next);
                 if (result != null) {
                     return result;
                 }
@@ -173,7 +172,7 @@ public interface Reducable<T> extends Iterable<T> {
     }
 
     default @NotNull Optional<T> findFirst(@NotNull Predicate<T> predicate) {
-        for (T next : this) {
+        for (var next : this) {
             if (next != null && predicate.test(next)) {
                 return Optional.of(next);
             }
@@ -182,7 +181,7 @@ public interface Reducable<T> extends Iterable<T> {
     }
 
     default <R> @NotNull Optional<R> findFirstOf(@NotNull Function<? super T, ? extends R> mapper) {
-        for (T next : this) {
+        for (var next : this) {
             if (next != null) {
                 return Optional.of(next).map(mapper);
             }

@@ -27,7 +27,7 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
 
     LinkedHashSetX(Iterable<E> iterable) {
         set = new LinkedHashSet<>();
-        for (E e : iterable) {
+        for (var e : iterable) {
             set.add(e);
         }
     }
@@ -47,7 +47,7 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LinkedHashSetX<?> that = (LinkedHashSetX<?>) o;
+        var that = (LinkedHashSetX<?>) o;
         return set.equals(that.set);
     }
 

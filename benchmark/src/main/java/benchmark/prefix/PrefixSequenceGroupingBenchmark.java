@@ -11,7 +11,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.ArrayList;
@@ -68,9 +67,9 @@ public class PrefixSequenceGroupingBenchmark {
     @Benchmark
     public Map<Integer, List<Integer>> groupByImperative() {
         Map<Integer, List<Integer>> grouping = new HashMap<>();
-        for (int i = 0; i < UPPER_BOUND_RANGE; i++) {
+        for (var i = 0; i < UPPER_BOUND_RANGE; i++) {
             if (fibonacciNrs.contains(i)) {
-                int groupingNr = i % GROUP_BY_VALUE;
+                var groupingNr = i % GROUP_BY_VALUE;
                 final var integers = grouping.computeIfAbsent(groupingNr, integer -> new ArrayList<>());
                 integers.add(i);
             }
@@ -79,7 +78,7 @@ public class PrefixSequenceGroupingBenchmark {
     }
 
     public static void main(String[] args) {
-        Options options = new OptionsBuilder()
+        var options = new OptionsBuilder()
                 .include(PrefixSequenceGroupingBenchmark.class.getSimpleName())
                 .forks(2)
                 .warmupIterations(2)

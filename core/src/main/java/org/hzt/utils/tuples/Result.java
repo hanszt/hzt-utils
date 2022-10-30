@@ -26,7 +26,7 @@ public final class Result<T, R> {
     public static <T, R> Function<T, Result<T, R>> catching(ThrowingFunction<? super T, ? extends R> throwingFunction) {
         return t -> {
             try {
-                final R result = throwingFunction.apply(t);
+                final var result = throwingFunction.apply(t);
                 return new Result<>(t, result);
             } catch (Exception e) {
                 return new Result<>(t, e);

@@ -29,7 +29,7 @@ public interface Transformable<T> extends Supplier<T> {
     }
 
     default T also(@NotNull Consumer<? super T> block) {
-        final T t = get();
+        final var t = get();
         block.accept(t);
         return t;
     }
@@ -39,7 +39,7 @@ public interface Transformable<T> extends Supplier<T> {
     }
 
     default T when(@NotNull Predicate<? super T> predicate, @NotNull Consumer<? super T> block) {
-        T t = get();
+        var t = get();
         if (predicate.test(t)) {
             block.accept(t);
         }
@@ -59,12 +59,12 @@ public interface Transformable<T> extends Supplier<T> {
     }
 
     default Optional<T> takeIf(@NotNull Predicate<? super T> predicate) {
-        T t = get();
+        var t = get();
         return predicate.test(t) ? Optional.of(t) : Optional.empty();
     }
 
     default Optional<T> takeUnless(@NotNull Predicate<? super T> predicate) {
-        T t = get();
+        var t = get();
         return predicate.test(t) ? Optional.empty() : Optional.of(t);
     }
 

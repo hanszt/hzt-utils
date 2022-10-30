@@ -35,7 +35,7 @@ public interface IntCollector<A, R> {
                                         @NotNull BinaryOperator<A> combiner,
                                         @NotNull Collector.Characteristics... characteristics) {
         final var identityFinish = Collector.Characteristics.IDENTITY_FINISH;
-        Set<Collector.Characteristics> cs = (characteristics.length == 0)
+        var cs = (characteristics.length == 0)
                 ? Set.of(identityFinish)
                 : Collections.unmodifiableSet(EnumSet.of(identityFinish, characteristics));
         return new IntCollectorImpl<>(supplier, accumulator, combiner, cs);

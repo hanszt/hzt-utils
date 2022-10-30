@@ -35,7 +35,7 @@ public final class Pair<A, B> implements Transformable<Pair<A, B>> {
             return false;
         }
         //noinspection unchecked
-        Pair<A, B> that = (Pair<A ,B>) obj;
+        var that = (Pair<A ,B>) obj;
         return Objects.equals(this.first, that.first) &&
                 Objects.equals(this.second, that.second);
     }

@@ -85,7 +85,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public static StringX of(char first, char... chars) {
-        char[] charsArray = new char[chars.length + 1];
+        var charsArray = new char[chars.length + 1];
         charsArray[0] = first;
         System.arraycopy(chars, 0, charsArray, 1, charsArray.length - 1);
         return new StringX(charsArray);
@@ -150,7 +150,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public StringX replaceFirstChar(UnaryOperator<Character> replacer) {
-        char[] charArray = toCharArray();
+        var charArray = toCharArray();
         if (charArray.length > 0) {
             charArray[0] = replacer.apply(charArray[0]);
         }
@@ -171,7 +171,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
             @Override
             public Character next() {
-                int prevIndex = index;
+                var prevIndex = index;
                 if (prevIndex >= charArray.length) {
                     throw new NoSuchElementException();
                 }
@@ -243,7 +243,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        StringX that = (StringX) o;
+        var that = (StringX) o;
         return Objects.equals(string, that.string);
     }
 
@@ -414,15 +414,15 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
                                                   final boolean ignoreCase) {
         final var stringX = StringX.of(charSequence);
         if (!ignoreCase && delimiters.size() == 1) {
-            final CharSequence singleString = delimiters.single();
-            final int index = stringX.indexOf(singleString, startIndex);
+            final var singleString = delimiters.single();
+            final var index = stringX.indexOf(singleString, startIndex);
             return (index < 0) ? null : new IndexedValue<>(index, singleString);
         }
 
         final var indices = IntRange.closed(Math.max(startIndex, 0), charSequence.length());
 
         for (int index : indices) {
-            final CharSequence matchingCharSequence = delimiters
+            final var matchingCharSequence = delimiters
                     .findFirst(charSeq -> charSeq.toString().regionMatches(ignoreCase, 0, stringX.string, index, charSeq.length()))
                     .orElse(null);
             if (matchingCharSequence != null) {

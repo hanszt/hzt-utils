@@ -44,9 +44,9 @@ public final class LongMultiMappingIterator implements PrimitiveIterator.OfLong 
             if (!iterator.hasNext()) {
                 return false;
             }
-            SpinedBuffer.OfLong longBuffer = new SpinedBuffer.OfLong();
+            var longBuffer = new SpinedBuffer.OfLong();
             mapper.accept(iterator.nextLong(), longBuffer);
-            final OfLong nextItemIterator = longBuffer.iterator();
+            final var nextItemIterator = longBuffer.iterator();
             if (nextItemIterator.hasNext()) {
                 itemIterator = nextItemIterator;
                 return true;

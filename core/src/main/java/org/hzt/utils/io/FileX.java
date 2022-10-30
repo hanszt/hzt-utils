@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public final class FileX extends File {
 
@@ -58,7 +57,7 @@ public final class FileX extends File {
     }
 
     public <T> T useLines(Function<? super Sequence<StringX>, ? extends T> block, Charset charset) {
-        try(Stream<String> lines = Files.lines(Path.of(getPath()), charset)) {
+        try(var lines = Files.lines(Path.of(getPath()), charset)) {
             return block.apply(Sequence.ofStream(lines).map(StringX::of));
         } catch (IOException e) {
             throw new IllegalStateException(e);

@@ -25,7 +25,7 @@ public final class LongRangeIterator implements PrimitiveIterator.OfLong {
     @Override
     public long nextLong() {
         if (checkHasNext()) {
-            long current = nextLong;
+            var current = nextLong;
             nextLong = nextLong + (start < endInclusive ? step : -step);
             return current;
         }

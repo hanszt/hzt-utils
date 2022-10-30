@@ -210,7 +210,7 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
     }
 
     private static boolean acceptIfHasNext(PrimitiveIterator.OfInt iterator, IntConsumer action) {
-        boolean hasNext = iterator.hasNext();
+        var hasNext = iterator.hasNext();
         if (hasNext) {
             action.accept(iterator.nextInt());
         }
@@ -226,7 +226,7 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
     }
 
     private static boolean acceptIfHasNext(PrimitiveIterator.OfLong iterator, LongConsumer action) {
-        boolean hasNext = iterator.hasNext();
+        var hasNext = iterator.hasNext();
         if (hasNext) {
             action.accept(iterator.nextLong());
         }
@@ -242,7 +242,7 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
     }
 
     private static boolean acceptIfHasNext(PrimitiveIterator.OfDouble iterator, DoubleConsumer action) {
-        boolean hasNext = iterator.hasNext();
+        var hasNext = iterator.hasNext();
         if (hasNext) {
             action.accept(iterator.nextDouble());
         }

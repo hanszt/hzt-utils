@@ -22,7 +22,7 @@ public final class IntStatistics extends IntSummaryStatistics
     @Override
     public void accept(int value) {
         super.accept(value);
-        long squareValue = (long) value * (long) value;
+        var squareValue = (long) value * (long) value;
         sumOfSquare += squareValue;
     }
 
@@ -33,8 +33,8 @@ public final class IntStatistics extends IntSummaryStatistics
     }
 
     public Double getStandardDeviation() {
-        final double average = getAverage();
-        final double sumOfSquareAverage = (double) sumOfSquare / getCount();
+        final var average = getAverage();
+        final var sumOfSquareAverage = (double) sumOfSquare / getCount();
         return getCount() > 0 ? Math.sqrt(sumOfSquareAverage - average * average) : 0.0D;
     }
 
@@ -46,7 +46,7 @@ public final class IntStatistics extends IntSummaryStatistics
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        IntStatistics that = (IntStatistics) o;
+        var that = (IntStatistics) o;
         return getCount() == that.getCount() &&
                 Double.compare(getAverage(), that.getAverage()) == 0 &&
                 sumOfSquare == that.sumOfSquare;

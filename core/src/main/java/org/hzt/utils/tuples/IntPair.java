@@ -33,7 +33,7 @@ public final class IntPair implements Transformable<IntPair> {
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        IntPair that = (IntPair) obj;
+        var that = (IntPair) obj;
         return Objects.equals(this.first, that.first) &&
                 Objects.equals(this.second, that.second);
     }

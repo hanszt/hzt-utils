@@ -24,16 +24,16 @@ class ArraysXTest {
 
     @Test
     void testToBooleanArray() {
-        String[] strings = {"This", "is", "a", "test"};
+        var strings = new String[]{"This", "is", "a", "test"};
 
-        boolean[] array = ArraysX.toBooleanArray(s -> s.contains("i"), strings);
+        var array = ArraysX.toBooleanArray(s -> s.contains("i"), strings);
 
         assertArrayEquals(new boolean[] {true, true, false, false}, array);
     }
 
     @Test
     void testReverseArray() {
-        String[] strings = {"this", "is", "a", "test"};
+        var strings = new String[]{"this", "is", "a", "test"};
         final var strings2 = ArraysX.copyOf(strings);
 
         Arrays.sort(strings, Comparator.reverseOrder());
@@ -179,11 +179,11 @@ class ArraysXTest {
 
         @Test
         void testIntArrayToBooleanArray() {
-            int[] input = {1, 4, 5, 3, 6, 7, 2, 7};
+            var input = new int[]{1, 4, 5, 3, 6, 7, 2, 7};
 
             final var booleans = ArraysX.toBooleanArray(i -> i < 4, input);
 
-            final boolean[] expected = {true, false, false, true, false, false, true, false};
+            final var expected = new boolean[]{true, false, false, true, false, false, true, false};
 
             assertArrayEquals(expected, booleans);
         }
@@ -194,18 +194,18 @@ class ArraysXTest {
 
             final var booleans = ArraysX.toBooleanArray(l -> l < 4, input);
 
-            final boolean[] expected = {true, false, false, true, false, false, true, false};
+            final var expected = new boolean[]{true, false, false, true, false, false, true, false};
 
             assertArrayEquals(expected, booleans);
         }
 
         @Test
         void testDoubleArrayToBooleanArray() {
-            double[] input = {Double.NEGATIVE_INFINITY, 1, 4, 5, Math.PI, 6, 7, Math.E, 7e1, Double.POSITIVE_INFINITY};
+            var input = new double[]{Double.NEGATIVE_INFINITY, 1, 4, 5, Math.PI, 6, 7, Math.E, 7e1, Double.POSITIVE_INFINITY};
 
             final var booleans = ArraysX.toBooleanArray(d -> d < 4, input);
 
-            final boolean[] expected = {true, true, false, false, true, false, false, true, false, false};
+            final var expected = new boolean[]{true, true, false, false, true, false, false, true, false, false};
 
             assertArrayEquals(expected, booleans);
         }
@@ -229,7 +229,7 @@ class ArraysXTest {
 
             @Test
             void testSortAndReverseInts() {
-                int[] array = {1, 3, 4, 2, 5, 6, 7};
+                var array = new int[]{1, 3, 4, 2, 5, 6, 7};
                 Arrays.sort(array);
                 ArraysX.reverse(array);
                 assertArrayEquals(new int[]{7, 6, 5, 4, 3, 2, 1}, array);

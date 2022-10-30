@@ -40,7 +40,7 @@ public class Person {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Person person = (Person) o;
+        var person = (Person) o;
         return getId() == person.getId() && Objects.equals(getName(), person.getName());
     }
 

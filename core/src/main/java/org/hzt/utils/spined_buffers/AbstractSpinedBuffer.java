@@ -83,7 +83,7 @@ abstract class AbstractSpinedBuffer {
      * How big should the nth chunk be?
      */
     protected int chunkSize(int n) {
-        int power = ((n == 0) || (n == 1))
+        var power = ((n == 0) || (n == 1))
                 ? initialChunkPower
                 : Math.min((initialChunkPower + n) - 1, AbstractSpinedBuffer.MAX_CHUNK_POWER);
         return 1 << power;

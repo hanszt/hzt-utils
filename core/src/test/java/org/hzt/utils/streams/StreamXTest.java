@@ -26,7 +26,7 @@ class StreamXTest {
 
     @Test
     void mapFilterReduce() {
-        List<String> strings = List.of("This", "is", "a", "StreamX", "test");
+        var strings = List.of("This", "is", "a", "StreamX", "test");
 
         final var lengthSum = StreamX.of(strings)
                 .filter("This is a test"::contains)
@@ -38,7 +38,7 @@ class StreamXTest {
 
     @Test
     void testStreamXIsLazyAndSequential() {
-        List<String> strings = List.of("This", "is", "a", "StreamX", "test");
+        var strings = List.of("This", "is", "a", "StreamX", "test");
 
         final var streamX = StreamX.of(strings)
                 .filter(this::contained)
@@ -51,7 +51,7 @@ class StreamXTest {
 
     @Test
     void testStreamXIsLazyAndParallel() {
-        List<String> strings = List.of("This", "is", "a", "StreamX", "test");
+        var strings = List.of("This", "is", "a", "StreamX", "test");
 
         final var streamX = StreamX.parallel(strings)
                 .filter(this::contained)
@@ -64,7 +64,7 @@ class StreamXTest {
 
     @Test
     void testStreamXCanBeConsumedOnlyOnce() {
-        List<String> strings = List.of("This", "is", "a", "StreamX", "test");
+        var strings = List.of("This", "is", "a", "StreamX", "test");
 
         final var stream = StreamX.of(strings);
 
@@ -168,9 +168,9 @@ class StreamXTest {
                 .boxed())
                 .map(String::valueOf);
 
-        int counter = 0;
+        var counter = 0;
         //noinspection unused
-        for (String s : strings) {
+        for (var s : strings) {
             counter++;
         }
 

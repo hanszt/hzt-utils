@@ -53,7 +53,7 @@ public final class LongSkipWhileIterator implements OfLong {
             skip();
         }
         if (state == SkipState.NEXT_ITEM) {
-            long result = nextItem;
+            var result = nextItem;
             state = SkipState.NORMAL_ITERATION;
             return result;
         }

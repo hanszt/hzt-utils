@@ -38,7 +38,7 @@ public interface LongList extends LongCollection,
     }
 
     static LongList build(Consumer<? super LongMutableList> factory) {
-        final LongMutableList listX = LongMutableList.empty();
+        final var listX = LongMutableList.empty();
         factory.accept(listX);
         return listX;
     }
@@ -77,7 +77,7 @@ public interface LongList extends LongCollection,
     @Override
     @NotNull
     default OptionalLong findLast(@NotNull LongPredicate predicate) {
-        PrimitiveListIterator.OfLong iterator = listIterator(lastIndex());
+        var iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
             final var previousLong = iterator.previousLong();
             if (predicate.test(previousLong)) {
@@ -114,7 +114,7 @@ public interface LongList extends LongCollection,
 
     @Override
     default LongList sortedDescending() {
-        final long[] array = toArray();
+        final var array = toArray();
         Arrays.sort(array);
         ArraysX.reverse(array);
         return LongList.of(array);

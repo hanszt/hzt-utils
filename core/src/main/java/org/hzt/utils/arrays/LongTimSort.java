@@ -16,7 +16,7 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
 
     static void sort(long @NotNull [] array, int fromIndex, int toIndex, @NotNull LongComparator comparator) {
         PreConditions.require(fromIndex >= 0 && fromIndex <= toIndex && toIndex <= array.length);
-        final int nRemaining = toIndex - fromIndex;
+        final var nRemaining = toIndex - fromIndex;
         if (nRemaining >= 2) {
             new LongTimSort(array, comparator)
                     .sort(fromIndex, toIndex, nRemaining);
@@ -25,14 +25,14 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
 
     @Override
     protected void updateArrayForBinarySort(long[] array, int left, int pivotIndex, int difStartLeft) {
-        final long pivot = array[pivotIndex];
+        final var pivot = array[pivotIndex];
         updateArrayForBinarySort(array, left, difStartLeft);
         array[left] = pivot;
     }
 
     @Override
     protected void swap(long[] array, int index1, int index2) {
-        long temp = array[index1];
+        var temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }

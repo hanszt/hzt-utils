@@ -15,12 +15,12 @@ public final class GraphAlgorithms {
         Set<WeightedNode<T>> settled = new HashSet<>();
         unsettled.add(start);
         while (!unsettled.isEmpty()) {
-            WeightedNode<T> current = unsettled.stream()
+            var current = unsettled.stream()
                     .min(Comparator.comparing(WeightedNode::getCost))
                     .orElseThrow();
 
-            for (WeightedEdge<T> edge : current) {
-                WeightedNode<T> neighbor = edge.getOpposite(current);
+            for (var edge : current) {
+                var neighbor = edge.getOpposite(current);
                 if (!settled.contains(neighbor)) {
                     neighbor.setCost(current.getCost());
                     unsettled.add(neighbor);

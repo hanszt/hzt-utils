@@ -26,11 +26,11 @@ class IntArrayListTest {
 
     @Test
     void testConcurrentModExceptionInForLoopRemove() {
-        ArrayList<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6));
-        final ConcurrentModificationException exception =
+        var list = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6));
+        final var exception =
                 assertThrows(ConcurrentModificationException.class, () -> {
                     //noinspection Java8CollectionRemoveIf
-                    for (Integer integer : list) {
+                    for (var integer : list) {
                         if (integer == 3 || integer == 5) {
                             list.remove(integer);
                         }

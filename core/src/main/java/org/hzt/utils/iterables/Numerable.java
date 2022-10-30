@@ -30,7 +30,7 @@ public interface Numerable<T> extends Iterable<T> {
 
     default long intSumOf(@NotNull ToIntFunction<? super T> selector) {
         long sum = 0;
-        for (T t : this) {
+        for (var t : this) {
             if (t != null) {
                 sum += selector.applyAsInt(t);
             }
@@ -40,7 +40,7 @@ public interface Numerable<T> extends Iterable<T> {
 
     default long longSumOf(@NotNull ToLongFunction<? super T> selector) {
         long sum = 0;
-        for (T t : this) {
+        for (var t : this) {
             if (t != null) {
                 sum += selector.applyAsLong(t);
             }
@@ -50,7 +50,7 @@ public interface Numerable<T> extends Iterable<T> {
 
     default double doubleSumOf(@NotNull ToDoubleFunction<? super T> selector) {
         double sum = 0;
-        for (T t : this) {
+        for (var t : this) {
             if (t != null) {
                 sum += selector.applyAsDouble(t);
             }
@@ -60,9 +60,9 @@ public interface Numerable<T> extends Iterable<T> {
 
     default BigDecimalX bigDecimalSumOf(@NotNull Function<? super T, ? extends BigDecimal> selector) {
         var sum = BigDecimal.ZERO;
-        for (T t : this) {
+        for (var t : this) {
             if (t != null) {
-                final BigDecimal augend = selector.apply(t);
+                final var augend = selector.apply(t);
                 if (augend != null) {
                     sum = sum.add(augend);
                 }
@@ -74,9 +74,9 @@ public interface Numerable<T> extends Iterable<T> {
     default double averageOf(@NotNull Function<T, Number> selector) {
         double sum = 0;
         long counter = 0;
-        for (T t : this) {
+        for (var t : this) {
             if (t != null) {
-                final double value = selector.apply(t).doubleValue();
+                final var value = selector.apply(t).doubleValue();
                 sum += value;
                 counter++;
             }
@@ -90,11 +90,11 @@ public interface Numerable<T> extends Iterable<T> {
 
     default BigDecimalX bigDecimalAverageOf(@NotNull Function<? super T, ? extends BigDecimal> selector, int scale,
                                             @NotNull RoundingMode roundingMode) {
-        BigDecimal sum = BigDecimal.ZERO;
+        var sum = BigDecimal.ZERO;
         long counter = 0;
-        for (T t : this) {
+        for (var t : this) {
             if (t != null) {
-                final BigDecimal value = selector.apply(t);
+                final var value = selector.apply(t);
                 if (value != null) {
                     sum = sum.add(value);
                 }
@@ -145,7 +145,7 @@ public interface Numerable<T> extends Iterable<T> {
     default BigDecimalStatistics bigDecimalStatsOf(@NotNull Function<T, ? extends BigDecimal> mapper) {
         var statistics = new BigDecimalStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> {
-            final BigDecimal bigDecimal = mapper.apply(v);
+            final var bigDecimal = mapper.apply(v);
             if (bigDecimal != null) {
                 statistics.accept(bigDecimal);
             }

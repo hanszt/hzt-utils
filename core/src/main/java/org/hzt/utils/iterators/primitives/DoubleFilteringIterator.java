@@ -40,7 +40,7 @@ public final class DoubleFilteringIterator implements PrimitiveIterator.OfDouble
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        final double result = nextDouble;
+        final var result = nextDouble;
         nextDouble = 0L;
         nextState = State.NEXT_UNKNOWN;
         return result;
@@ -48,7 +48,7 @@ public final class DoubleFilteringIterator implements PrimitiveIterator.OfDouble
 
     private void calculateNext() {
         while (iterator.hasNext()) {
-            double next = iterator.nextDouble();
+            var next = iterator.nextDouble();
             if (predicate.test(next) == sendWhen) {
                 this.nextDouble = next;
                 nextState = State.CONTINUE;

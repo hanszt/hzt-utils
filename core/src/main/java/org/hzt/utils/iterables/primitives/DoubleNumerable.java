@@ -5,7 +5,6 @@ import org.hzt.utils.statistics.DoubleStatistics;
 import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.function.DoublePredicate;
 
 @FunctionalInterface
@@ -19,7 +18,7 @@ public interface DoubleNumerable extends PrimitiveIterable.OfDouble, PrimitiveNu
     @Override
     default long count(@NotNull DoublePredicate predicate) {
         long count = 0;
-        PrimitiveIterator.OfDouble iterator = this.iterator();
+        var iterator = this.iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextDouble())) {
                 count++;
@@ -54,7 +53,7 @@ public interface DoubleNumerable extends PrimitiveIterable.OfDouble, PrimitiveNu
 
     default double sum() {
         double sum = 0;
-        PrimitiveIterator.OfDouble iterator = iterator();
+        var iterator = iterator();
         while (iterator.hasNext()) {
             sum += iterator.nextDouble();
         }
@@ -74,8 +73,8 @@ public interface DoubleNumerable extends PrimitiveIterable.OfDouble, PrimitiveNu
     }
 
     default @NotNull DoubleStatistics stats() {
-        DoubleStatistics doubleStatistics = new DoubleStatistics();
-        PrimitiveIterator.OfDouble iterator = this.iterator();
+        var doubleStatistics = new DoubleStatistics();
+        var iterator = this.iterator();
         while (iterator.hasNext()) {
             doubleStatistics.accept(iterator.nextDouble());
         }

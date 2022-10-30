@@ -1,7 +1,6 @@
 package org.hzt.utils.collections;
 
 import org.hzt.test.TestSampleGenerator;
-import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.It;
 import org.hzt.utils.iterables.Collectable;
@@ -40,9 +39,9 @@ class ListXTest {
 
     @Test
     void testToMutableList() {
-        final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
+        final var museums = Generator.createAuctions().toMutableList();
 
-        final List<LocalDate> expected = museums.stream()
+        final var expected = museums.stream()
                 .map(PaintingAuction::getDateOfOpening)
                 .collect(Collectors.toList());
 
@@ -57,13 +56,13 @@ class ListXTest {
 
     @Test
     void testTakeWhile() {
-        final List<Museum> museumList = TestSampleGenerator.getMuseumListContainingNulls();
+        final var museumList = TestSampleGenerator.getMuseumListContainingNulls();
 
-        final List<Museum> expected = museumList.stream()
+        final var expected = museumList.stream()
                 .takeWhile(museum -> museum.getPaintings().size() < 3)
                 .collect(Collectors.toList());
 
-        final MutableListX<Museum> actual = Sequence.of(museumList)
+        final var actual = Sequence.of(museumList)
                 .takeWhile(museum -> museum.getPaintings().size() < 3)
                 .toMutableList();
 
@@ -74,23 +73,23 @@ class ListXTest {
 
     @Test
     void testBinarySearch() {
-        final ListX<Integer> sortedList = ListX.of(-1, 0, 1, 2, 3, 4, 5);
+        final var sortedList = ListX.of(-1, 0, 1, 2, 3, 4, 5);
 
-        int valueToSearchFor = 2;
+        var valueToSearchFor = 2;
 
-        final int indexInSortedList = sortedList.binarySearch(value -> value.compareTo(valueToSearchFor));
+        final var indexInSortedList = sortedList.binarySearch(value -> value.compareTo(valueToSearchFor));
 
         assertEquals(3, indexInSortedList);
     }
 
     @Test
     void testBinaryOfStringSearch() {
-        final MutableListX<String> sortedList = MutableListX.of("adi", "hans", "huib", "sophie", "ted");
+        final var sortedList = MutableListX.of("adi", "hans", "huib", "sophie", "ted");
 
-        final int indexInSortedList = sortedList.binarySearchFor("sophie");
-        final int invertedInsertionPoint = sortedList.binarySearchFor("matthijs");
+        final var indexInSortedList = sortedList.binarySearchFor("sophie");
+        final var invertedInsertionPoint = sortedList.binarySearchFor("matthijs");
         // the inverted insertion point (-insertion point - 1)
-        final int insertionIndex = -invertedInsertionPoint - 1;
+        final var insertionIndex = -invertedInsertionPoint - 1;
 
         assertAll(
                 () -> assertEquals(3, indexInSortedList),
@@ -100,12 +99,12 @@ class ListXTest {
 
     @Test
     void testBinarySearchTo() {
-        final MutableListX<String> sortedList = MutableListX.of("adi", "hans", "huib", "sophie", "ted");
+        final var sortedList = MutableListX.of("adi", "hans", "huib", "sophie", "ted");
 
-        final int indexInSortedList = sortedList.binarySearchTo(4, name -> name.compareTo("sophie"));
-        final int invertedInsertionPoint = sortedList.binarySearchTo(4, name -> name.compareTo("ted"));
+        final var indexInSortedList = sortedList.binarySearchTo(4, name -> name.compareTo("sophie"));
+        final var invertedInsertionPoint = sortedList.binarySearchTo(4, name -> name.compareTo("ted"));
         // the inverted insertion point (-insertion point - 1)
-        final int insertionIndex = -invertedInsertionPoint - 1;
+        final var insertionIndex = -invertedInsertionPoint - 1;
 
         assertAll(
                 () -> assertEquals(3, indexInSortedList),
@@ -115,12 +114,12 @@ class ListXTest {
 
     @Test
     void testBinarySearchFrom() {
-        final MutableListX<String> sortedList = MutableListX.of("adi", "hans", "huib", "sophie", "ted");
+        final var sortedList = MutableListX.of("adi", "hans", "huib", "sophie", "ted");
 
-        final int indexInSortedList = sortedList.binarySearchFrom(2, value ->  value.compareTo("sophie"));
-        final int invertedInsertionPoint = sortedList.binarySearchFrom(2, value -> value.compareTo("adi"));
+        final var indexInSortedList = sortedList.binarySearchFrom(2, value ->  value.compareTo("sophie"));
+        final var invertedInsertionPoint = sortedList.binarySearchFrom(2, value -> value.compareTo("adi"));
         // the inverted insertion point (-insertion point - 1)
-        final int insertionIndex = -invertedInsertionPoint - 1;
+        final var insertionIndex = -invertedInsertionPoint - 1;
 
         assertAll(
                 () -> assertEquals(3, indexInSortedList),
@@ -137,17 +136,17 @@ class ListXTest {
 
     @Test
     void testToListYieldsUnModifiableList() {
-        PaintingAuction auction = Generator.createVanGoghAuction();
-        final Year yearToAdd = Year.of(2000);
+        var auction = Generator.createVanGoghAuction();
+        final var yearToAdd = Year.of(2000);
 
-        final List<Year> years = auction.toListOf(Painting::getYearOfCreation);
+        final var years = auction.toListOf(Painting::getYearOfCreation);
 
         assertThrows(UnsupportedOperationException.class, () -> years.add(yearToAdd));
     }
 
     @Test
     void buildList() {
-        final ListX<String> strings = ListX.build(this::getStringList);
+        final var strings = ListX.build(this::getStringList);
 
         assertAll(
                 () -> assertEquals(101, strings.size()),
@@ -156,7 +155,7 @@ class ListXTest {
     }
 
     private void getStringList(MutableListX<String> list) {
-        for (int i = 0; i < 100; i++) {
+        for (var i = 0; i < 100; i++) {
             list.add(String.valueOf(i));
         }
         list.add(1, "Hallo");
@@ -164,17 +163,17 @@ class ListXTest {
 
     @Test
     void testListPlusOtherIterable() {
-        final MutableListX<PaintingAuction> auctions = Generator.createAuctions().toMutableList();
+        final var auctions = Generator.createAuctions().toMutableList();
 
-        final List<LocalDate> datesFromStream = auctions.stream()
+        final var datesFromStream = auctions.stream()
                 .map(PaintingAuction::getDateOfOpening)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         datesFromStream.add(LocalDate.MIN);
         datesFromStream.add(LocalDate.MAX);
-        ListX<LocalDate> expected = ListX.of(datesFromStream);
+        var expected = ListX.of(datesFromStream);
 
-        final ListX<LocalDate> dates = auctions
+        final var dates = auctions
                 .mapNotNull(PaintingAuction::getDateOfOpening)
                 .plus(ListX.of(LocalDate.MIN, LocalDate.MAX));
 
@@ -185,7 +184,7 @@ class ListXTest {
 
     @Test
     void testSkipLast() {
-        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+        var list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
         final var integers = list.skipLast(2);
 
@@ -203,7 +202,7 @@ class ListXTest {
 
     @Test
     void testTakeLast() {
-        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+        var list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
         final var integers = list.takeLast(2);
 
@@ -212,7 +211,7 @@ class ListXTest {
 
     @Test
     void testTakeLastTo() {
-        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+        var list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
         final var integers = list.takeLastTo(size -> new LinkedTransferQueue<>(), 5);
 
@@ -221,9 +220,9 @@ class ListXTest {
 
     @Test
     void testAlso() {
-        final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
+        final var museums = Generator.createAuctions().toMutableList();
 
-        final List<LocalDate> expected = museums.stream()
+        final var expected = museums.stream()
                 .map(PaintingAuction::getDateOfOpening)
                 .collect(Collectors.toList());
 
@@ -238,9 +237,9 @@ class ListXTest {
 
     @Test
     void testWhen() {
-        final MutableListX<PaintingAuction> museums = Generator.createAuctions().toMutableList();
+        final var museums = Generator.createAuctions().toMutableList();
 
-        final List<LocalDate> expected = museums.stream()
+        final var expected = museums.stream()
                 .map(PaintingAuction::getDateOfOpening)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -306,7 +305,7 @@ class ListXTest {
 
     @Test
     void testStreamCollectingAndThenEquivalent() {
-        final MutableListX<Integer> integers = MutableListX.of(1, 4, 5, 3, 7, 4, 2);
+        final var integers = MutableListX.of(1, 4, 5, 3, 7, 4, 2);
 
         final int expected = integers.stream()
                 .filter(n -> n > 4)

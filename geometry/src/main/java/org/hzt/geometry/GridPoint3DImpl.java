@@ -22,7 +22,7 @@ final class GridPoint3DImpl implements GridPoint3D {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        GridPoint3DImpl that = (GridPoint3DImpl) o;
+        var that = (GridPoint3DImpl) o;
         return x == that.x && y == that.y && z == that.z;
     }
 

@@ -24,7 +24,7 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
 
     ImmutableMapX(Iterable<Entry<K, V>> iterable) {
         final var hashMap = new HashMap<K, V>();
-        for (Entry<K, V> entry : iterable) {
+        for (var entry : iterable) {
             hashMap.put(entry.getKey(), entry.getValue());
         }
         this.map = Map.copyOf(hashMap);
@@ -33,7 +33,7 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
     @SafeVarargs
     ImmutableMapX(Pair<K, V>... pairs) {
         final Map<K, V> hashMap = new HashMap<>();
-        for (Pair<K, V> pair : pairs) {
+        for (var pair : pairs) {
             hashMap.put(pair.first(), pair.second());
         }
         this.map = Map.copyOf(hashMap);
@@ -41,8 +41,8 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
 
     @SafeVarargs
     ImmutableMapX(Entry<? extends K, ? extends V>... entries) {
-        final HashMap<K, V> hashMap = new HashMap<>();
-        for (Entry<? extends K, ? extends V> entry : entries) {
+        final var hashMap = new HashMap<K, V>();
+        for (var entry : entries) {
             hashMap.put(entry.getKey(), entry.getValue());
         }
         this.map = Map.copyOf(hashMap);
@@ -62,8 +62,8 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
     public <K1, V1> MapX<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper,
                                      @NotNull Function<? super V, ? extends V1> valueMapper) {
         Map<K1, V1> resultMap = new HashMap<>();
-        for (Map.Entry<K, V> entry : this) {
-            K key = entry.getKey();
+        for (var entry : this) {
+            var key = entry.getKey();
             if (key != null) {
                 resultMap.put(keyMapper.apply(key), valueMapper.apply(entry.getValue()));
             }
@@ -118,7 +118,7 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ImmutableMapX<?, ?> mapX = (ImmutableMapX<?, ?>) o;
+        var mapX = (ImmutableMapX<?, ?>) o;
         return map.equals(mapX.map);
     }
 

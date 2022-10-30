@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.OptionalDouble;
-import java.util.PrimitiveIterator;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
@@ -17,8 +16,8 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
         PrimitiveReducable<Double, DoubleBinaryOperator, DoublePredicate, OptionalDouble> {
 
     default double reduce(double initial, DoubleBinaryOperator operator) {
-        double accumulator = initial;
-        PrimitiveIterator.OfDouble iterator = iterator();
+        var accumulator = initial;
+        var iterator = iterator();
         while (iterator.hasNext()) {
             accumulator = operator.applyAsDouble(accumulator, iterator.nextDouble());
         }
@@ -28,9 +27,9 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
     @Override
     @NotNull
     default OptionalDouble reduce(@NotNull DoubleBinaryOperator operator) {
-        PrimitiveIterator.OfDouble iterator = iterator();
+        var iterator = iterator();
         if (iterator.hasNext()) {
-            double accumulator = iterator.nextDouble();
+            var accumulator = iterator.nextDouble();
             while (iterator.hasNext()) {
                 accumulator = operator.applyAsDouble(accumulator, iterator.nextDouble());
             }
@@ -43,11 +42,11 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
             double initial1, @NotNull DoubleBinaryOperator operator1,
             double initial2, @NotNull DoubleBinaryOperator operator2,
             @NotNull DoubleBiFunction<R> finisher) {
-        PrimitiveIterator.OfDouble iterator = iterator();
-        double accumulator1 = initial1;
-        double accumulator2 = initial2;
+        var iterator = iterator();
+        var accumulator1 = initial1;
+        var accumulator2 = initial2;
         while (iterator.hasNext()) {
-            double nextDouble = iterator.nextDouble();
+            var nextDouble = iterator.nextDouble();
             accumulator1 = operator1.applyAsDouble(accumulator1, nextDouble);
             accumulator2 = operator2.applyAsDouble(accumulator2, nextDouble);
         }
@@ -57,13 +56,13 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
     default @NotNull <R> Optional<R> reduceToTwo(@NotNull DoubleBinaryOperator operator1,
                                                  @NotNull DoubleBinaryOperator operator2,
                                                  @NotNull DoubleBiFunction<R> finisher) {
-        PrimitiveIterator.OfDouble iterator = iterator();
+        var iterator = iterator();
         if (iterator.hasNext()) {
             final var first = iterator.nextDouble();
-            double accumulator1 = first;
-            double accumulator2 = first;
+            var accumulator1 = first;
+            var accumulator2 = first;
             while (iterator.hasNext()) {
-                double nextDouble = iterator.nextDouble();
+                var nextDouble = iterator.nextDouble();
                 accumulator1 = operator1.applyAsDouble(accumulator1, nextDouble);
                 accumulator2 = operator2.applyAsDouble(accumulator2, nextDouble);
             }
@@ -94,9 +93,9 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
 
     @Override
     default OptionalDouble findFirst(DoublePredicate predicate) {
-        PrimitiveIterator.OfDouble iterator = this.iterator();
+        var iterator = this.iterator();
         while (iterator.hasNext()) {
-            double next = iterator.nextDouble();
+            var next = iterator.nextDouble();
             if (predicate.test(next)) {
                 return OptionalDouble.of(next);
             }
@@ -120,12 +119,12 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
     @Override
     default OptionalDouble findLast(DoublePredicate predicate) {
         var iterator = iterator();
-        double result = iterator.nextDouble();
+        var result = iterator.nextDouble();
         if (!predicate.test(result) && !iterator.hasNext()) {
             return OptionalDouble.empty();
         }
         while (iterator.hasNext()) {
-            double next = iterator.nextDouble();
+            var next = iterator.nextDouble();
             if (predicate.test(next)) {
                 result = next;
             }
@@ -139,7 +138,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
             throw new NoSuchElementException("Sequence is empty");
         }
         @SuppressWarnings("squid:S1941")
-        double single = iterator.nextDouble();
+        var single = iterator.nextDouble();
         if (iterator.hasNext()) {
             throw new IllegalArgumentException("Sequence has more than one element");
         }
@@ -148,7 +147,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
 
     @Override
     default boolean any(@NotNull DoublePredicate predicate) {
-        PrimitiveIterator.OfDouble iterator = iterator();
+        var iterator = iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextDouble())) {
                 return true;
@@ -159,7 +158,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
 
     @Override
     default boolean all(@NotNull DoublePredicate predicate) {
-        PrimitiveIterator.OfDouble iterator = iterator();
+        var iterator = iterator();
         while (iterator.hasNext()) {
             if (!predicate.test(iterator.nextDouble())) {
                 return false;
@@ -170,7 +169,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
 
     @Override
     default boolean none(@NotNull DoublePredicate predicate) {
-        PrimitiveIterator.OfDouble iterator = this.iterator();
+        var iterator = this.iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextDouble())) {
                 return false;

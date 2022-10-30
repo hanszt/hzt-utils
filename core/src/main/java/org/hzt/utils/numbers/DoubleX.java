@@ -98,7 +98,7 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
     }
 
     public static String toRoundedString(double d, int scale, Locale locale) {
-        Locale defaultLocale = Locale.getDefault();
+        var defaultLocale = Locale.getDefault();
         Locale.setDefault(locale);
         final var format = String.format(String.format("%%.%df", scale), d);
         Locale.setDefault(defaultLocale);
@@ -170,7 +170,7 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DoubleX doubleX = (DoubleX) o;
+        var doubleX = (DoubleX) o;
         return Double.compare(thisDouble, doubleX.thisDouble) == 0;
     }
 

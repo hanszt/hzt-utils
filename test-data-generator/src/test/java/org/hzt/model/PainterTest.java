@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -48,13 +47,13 @@ class PainterTest {
 
     @Test
     void testIterableOfPaintingInPainter() {
-        final Painter picasso = TestSampleGenerator.createPaintingList().stream()
+        final var picasso = TestSampleGenerator.createPaintingList().stream()
                 .map(Painting::painter)
                 .filter(painter -> painter.getLastname().equalsIgnoreCase("Picasso"))
                 .findFirst()
                 .orElseThrow();
 
-        final List<Painting> paintings = StreamSupport.stream(picasso.spliterator(), false)
+        final var paintings = StreamSupport.stream(picasso.spliterator(), false)
                 .collect(Collectors.toList());
 
         picasso.forEach(System.out::println);

@@ -23,7 +23,7 @@ final class FloatMutableList extends PrimitiveAbstractList<Float, FloatConsumer,
     }
 
     public boolean add(float l) {
-        final int size = this.size;
+        final var size = this.size;
         if (size == elementData.length) {
             final var isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
@@ -55,7 +55,7 @@ final class FloatMutableList extends PrimitiveAbstractList<Float, FloatConsumer,
 
     @Override
     public boolean addAll(@NotNull Iterable<Float> iterable) {
-        boolean allAdded = true;
+        var allAdded = true;
         if (iterable instanceof FloatMutableList) {
             final var iterator = ((FloatMutableList) iterable).iterator();
             while (iterator.hasNext()) {
@@ -96,7 +96,7 @@ final class FloatMutableList extends PrimitiveAbstractList<Float, FloatConsumer,
 
     @Override
     public FloatMutableList plus(@NotNull Iterable<Float> iterable) {
-        FloatMutableList list = new FloatMutableList();
+        var list = new FloatMutableList();
         list.addAll(iterable);
         return list;
     }

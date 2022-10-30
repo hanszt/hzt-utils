@@ -26,14 +26,14 @@ class StringXTest {
 
     @Test
     void testGroupStringX() {
-        final String hallo = "hallo";
+        final var hallo = "hallo";
 
-        final List<Integer> expected = groupByChars(hallo)
+        final var expected = groupByChars(hallo)
                 .values().stream()
                 .map(List::size)
                 .collect(Collectors.toList());
 
-        final ListX<Integer> characterCounts = StringX.of(hallo)
+        final var characterCounts = StringX.of(hallo)
                 .group()
                 .values()
                 .map(ListX::size);
@@ -45,14 +45,14 @@ class StringXTest {
 
     @Test
     void testReplaceFirstChar() {
-        final String hallo = StringX.of("hallo")
+        final var hallo = StringX.of("hallo")
                 .replaceFirstChar(c -> 'H').toString();
         assertEquals("Hallo", hallo);
     }
 
     @Test
     void testStringXPlus() {
-        final StringX stringX = StringX.of("Hallo").plus("Raar");
+        final var stringX = StringX.of("Hallo").plus("Raar");
         assertEquals("HalloRaar", stringX.toString());
     }
 
@@ -143,10 +143,10 @@ class StringXTest {
     }
 
     private static boolean isAnagram(String s1, String s2) {
-        final String parsed1 = s1.trim().toLowerCase(Locale.ROOT).replace(" ", "");
-        final String parsed2 = s2.trim().toLowerCase(Locale.ROOT).replace(" ", "");
-        final Map<Character, List<Character>> grouping1 = groupByChars(parsed1);
-        final Map<Character, List<Character>> grouping2 = groupByChars(parsed2);
+        final var parsed1 = s1.trim().toLowerCase(Locale.ROOT).replace(" ", "");
+        final var parsed2 = s2.trim().toLowerCase(Locale.ROOT).replace(" ", "");
+        final var grouping1 = groupByChars(parsed1);
+        final var grouping2 = groupByChars(parsed2);
         return grouping1.equals(grouping2);
     }
 
@@ -164,7 +164,7 @@ class StringXTest {
             "THIS IS A LITTLE TO MUCH!, This is a little to much!"})
     void testCapitalized(String input, String expected) {
 
-        final String actual = StringX.capitalized(input);
+        final var actual = StringX.capitalized(input);
 
         assertEquals(expected, actual);
     }
@@ -174,7 +174,7 @@ class StringXTest {
 
         @Test
         void testSplitToSequence() {
-            String string = "hallo, this, is, a, test -> answer";
+            var string = "hallo, this, is, a, test -> answer";
             final var comma = StringX.of(", ");
             final var strings = StringX.of(string).splitToSequence(comma, " -> ");
 
@@ -185,7 +185,7 @@ class StringXTest {
 
         @Test
         void testSplitToSequenceIgnoreCase() {
-            String string = "hallo O this o is O a, test -> answer";
+            var string = "hallo O this o is O a, test -> answer";
             final var oDelimiter = new StringBuilder(" o ");
             final var strings = StringX.of(string).splitToSequence(true, ", ", oDelimiter, " -> ");
 

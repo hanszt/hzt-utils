@@ -30,7 +30,7 @@ final class GridPoint2DImpl implements GridPoint2D {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        GridPoint2DImpl that = (GridPoint2DImpl) o;
+        var that = (GridPoint2DImpl) o;
         return x == that.x && y == that.y;
     }
 

@@ -19,7 +19,7 @@ class WindowDeactivatedListenerTest {
     }
 
     private void testWindowDeactivated() {
-        AtomicBoolean isCalled = new AtomicBoolean(false);
+        var isCalled = new AtomicBoolean(false);
         Window frame = new Frame();
         frame.addWindowListener((WindowDeactivatedListener) e -> isCalled.set(true));
         frame.setVisible(true);

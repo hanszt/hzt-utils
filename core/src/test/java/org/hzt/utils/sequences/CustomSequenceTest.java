@@ -53,7 +53,7 @@ class CustomSequenceTest {
     }
 
     static Sequence<BigInteger> fibonacciSequence() {
-        final BigInteger[] seedValue = {BigInteger.ZERO, BigInteger.ONE};
+        final var seedValue = new BigInteger[]{BigInteger.ZERO, BigInteger.ONE};
         return Sequence
                 .generate(seedValue, pair -> new BigInteger[]{pair[1], pair[0].add(pair[1])})
                 .map(pair -> pair[0]);
@@ -108,7 +108,7 @@ class CustomSequenceTest {
 
         default float floatSumOf(@NotNull ToFloatFunction<? super T> selector) {
             float sum = 0;
-            for (T t : this) {
+            for (var t : this) {
                 if (t != null) {
                     sum += selector.applyAsFloat(t);
                 }
@@ -189,7 +189,7 @@ class CustomSequenceTest {
 
         @NotNull
         private String next(int index, String current, int modulo, int offSet, String string) {
-            int value = index + 1;
+            var value = index + 1;
             final var isNaturalNr = current.chars().allMatch(Character::isDigit);
             final var match = value % modulo == offSet;
             if (isNaturalNr) {

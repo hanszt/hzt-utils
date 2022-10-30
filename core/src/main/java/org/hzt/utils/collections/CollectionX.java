@@ -63,7 +63,7 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default ListX<E> plus(@NotNull E value) {
-        final MutableListX<E> list = MutableListX.of(this);
+        final var list = MutableListX.of(this);
         list.add(value);
         return ListX.copyOf(list);
     }
@@ -118,8 +118,8 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default IntList mapToInt(@NotNull ToIntFunction<? super E> mapper) {
-        IntMutableList intList = IntMutableList.withInitCapacity(size());
-        for (E e : this) {
+        var intList = IntMutableList.withInitCapacity(size());
+        for (var e : this) {
             intList.add(mapper.applyAsInt(e));
         }
         return intList;
@@ -127,8 +127,8 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default LongList mapToLong(@NotNull ToLongFunction<? super E> mapper) {
-        LongMutableList longList = LongMutableList.withInitCapacity(size());
-        for (E e : this) {
+        var longList = LongMutableList.withInitCapacity(size());
+        for (var e : this) {
             longList.add(mapper.applyAsLong(e));
         }
         return longList;
@@ -136,8 +136,8 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default DoubleList mapToDouble(@NotNull ToDoubleFunction<? super E> mapper) {
-        DoubleMutableList doubleList = DoubleMutableList.withInitCapacity(size());
-        for (E e : this) {
+        var doubleList = DoubleMutableList.withInitCapacity(size());
+        for (var e : this) {
             doubleList.add(mapper.applyAsDouble(e));
         }
         return doubleList;

@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.hzt.utils.It.println;
+
 public final class Generator {
 
     private Generator() {
@@ -22,12 +24,12 @@ public final class Generator {
 
     public static MutableListX<PaintingAuction> createAuctions() {
 
-        final Map<String, List<Painting>> groupedByLastName = paintingsByName();
-        final List<Painting> vanGoghPaintings = groupedByLastName.get("van Gogh");
-        final List<Painting> vermeerPaintings = groupedByLastName.get("Vermeer");
-        final List<Painting> picassoPaintings = groupedByLastName.get("Picasso");
+        final var groupedByLastName = paintingsByName();
+        final var vanGoghPaintings = groupedByLastName.get("van Gogh");
+        final var vermeerPaintings = groupedByLastName.get("Vermeer");
+        final var picassoPaintings = groupedByLastName.get("Picasso");
 
-        final Painter painter = new Painter("Hans", "Zuidervaart", LocalDate.of(1989, 10, 18));
+        final var painter = new Painter("Hans", "Zuidervaart", LocalDate.of(1989, 10, 18));
         return MutableListX.of(
                 new PaintingAuction("Van Gogh Auction", LocalDate.of(1992, Month.APRIL, 2), vanGoghPaintings),
                 new PaintingAuction("Vermeer Auction", LocalDate.of(1940, Month.JANUARY, 23), vermeerPaintings),
@@ -41,19 +43,15 @@ public final class Generator {
     }
 
     public static PaintingAuction createVanGoghAuction() {
-        final Map<String, List<Painting>> groupedByLastName = paintingsByName();
-        final List<Painting> vanGoghPaintings = groupedByLastName.get("van Gogh");
+        final var groupedByLastName = paintingsByName();
+        final var vanGoghPaintings = groupedByLastName.get("van Gogh");
         return new PaintingAuction("Van Gogh Auction", LocalDate.of(1992, Month.APRIL, 2), vanGoghPaintings);
     }
 
-    public static String toStringIn50Millis(int integer) {
-        try {
-            Thread.sleep(50);
-            return "val " + integer;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return "error " + integer;
-        }
+    public static String printAndReturnAsString(int integer) {
+        final var s = "val " + integer;
+        println(s);
+        return s;
     }
 
     public static long fib(long n) {
@@ -62,8 +60,8 @@ public final class Generator {
         if (n == 0) {
             return first;
         }
-        for (int i = 2; i <= n; i++) {
-            long temp = first + next;
+        for (var i = 2; i <= n; i++) {
+            var temp = first + next;
             first = next;
             next = temp;
         }
@@ -74,15 +72,15 @@ public final class Generator {
         if (n <= 0) {
             return 0;
         }
-        long[] fib = new long[n + 1];
+        var fib = new long[n + 1];
         fib[0] = 0;
         fib[1] = 1;
 
         // Initialize result
-        long sum = fib[0] + fib[1];
+        var sum = fib[0] + fib[1];
 
         // Add remaining terms
-        for (int i = 2; i <= n; i++) {
+        for (var i = 2; i <= n; i++) {
             fib[i] = fib[i - 1] + fib[i - 2];
             sum += fib[i];
         }
@@ -93,15 +91,15 @@ public final class Generator {
         if (n <= 0) {
             return BigDecimal.ZERO;
         }
-        BigDecimal forLast = BigDecimal.ZERO;
-        BigDecimal last = BigDecimal.ONE;
+        var forLast = BigDecimal.ZERO;
+        var last = BigDecimal.ONE;
 
         // Initialize result
-        BigDecimal sum = forLast.add(last);
+        var sum = forLast.add(last);
 
         // Add remaining terms
-        for (int i = 2; i <= n; i++) {
-            BigDecimal next = last.add(forLast);
+        for (var i = 2; i <= n; i++) {
+            var next = last.add(forLast);
             sum = sum.add(next);
             forLast = last;
             last = next;

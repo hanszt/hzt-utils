@@ -23,7 +23,7 @@ public final class IndexedIterator<T> implements Iterator<IndexedValue<T>> {
     }
     @Override
     public IndexedValue<T> next() {
-        int prevIndex = index;
+        var prevIndex = index;
         if (prevIndex < 0) {
             throw new IllegalStateException("indexed iterator index overflow");
         }

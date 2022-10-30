@@ -30,7 +30,7 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
     }
     TreeMapX(Iterable<Entry<K, V>> iterable, Function<? super K, ? extends R> selector) {
         map = new TreeMap<>(Comparator.comparing(selector));
-        for (Map.Entry<K, V> entry : iterable) {
+        for (var entry : iterable) {
             map.put(entry.getKey(), entry.getValue());
         }
     }
@@ -39,7 +39,7 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
     TreeMapX(Function<? super K, ? extends R> selector, Entry<K, V> first, Entry<K, V>... others) {
         map = new TreeMap<>(Comparator.comparing(selector));
         map.put(first.getKey(), first.getValue());
-        for (Map.Entry<K, V> entry : others) {
+        for (var entry : others) {
             map.put(entry.getKey(), entry.getValue());
         }
     }
@@ -246,7 +246,7 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TreeMapX<?, ?, ?> treeMapX = (TreeMapX<?, ?, ?>) o;
+        var treeMapX = (TreeMapX<?, ?, ?>) o;
         return this.map.equals(treeMapX.map);
     }
 

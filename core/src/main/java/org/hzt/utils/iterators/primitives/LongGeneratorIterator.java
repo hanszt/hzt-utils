@@ -41,7 +41,7 @@ public final class LongGeneratorIterator implements PrimitiveIterator.OfLong {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        final long result = nextLong;
+        final var result = nextLong;
         // Do not clean nextItem (set item to 'null' to avoid keeping reference on yielded instance)
         // -- need to keep state for getNextValue
         nextState = State.NEXT_UNKNOWN;

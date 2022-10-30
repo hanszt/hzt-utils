@@ -38,7 +38,7 @@ public final class FilteringIterator<T> implements Iterator<T> {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        final T result = nextItem;
+        final var result = nextItem;
         nextItem = null;
         nextState = State.NEXT_UNKNOWN;
         return result;
@@ -46,7 +46,7 @@ public final class FilteringIterator<T> implements Iterator<T> {
 
     private void calculateNext() {
         while (iterator.hasNext()) {
-            T item = iterator.next();
+            var item = iterator.next();
             if (predicate.test(item) == sendWhen) {
                 nextItem = item;
                 nextState = State.CONTINUE;

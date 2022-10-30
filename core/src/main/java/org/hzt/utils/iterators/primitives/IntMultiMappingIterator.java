@@ -44,9 +44,9 @@ public final class IntMultiMappingIterator implements PrimitiveIterator.OfInt {
             if (!iterator.hasNext()) {
                 return false;
             }
-            SpinedBuffer.OfInt intBuffer = new SpinedBuffer.OfInt();
+            var intBuffer = new SpinedBuffer.OfInt();
             mapper.accept(iterator.nextInt(), intBuffer);
-            final OfInt nextItemIterator = intBuffer.iterator();
+            final var nextItemIterator = intBuffer.iterator();
             if (nextItemIterator.hasNext()) {
                 itemIterator = nextItemIterator;
                 return true;

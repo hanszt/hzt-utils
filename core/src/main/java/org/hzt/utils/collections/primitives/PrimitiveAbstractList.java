@@ -39,13 +39,13 @@ extends PrimitiveAbstractCollection<T, T_CONS, A, I> implements PrimitiveCollect
      * @return the grown array
      */
     protected A growArray(int oldCapacity, boolean isInitEmptyArray) {
-        int minCapacity = oldCapacity + 1;
+        var minCapacity = oldCapacity + 1;
         if (isInitEmptyArray) {
             return newArray(minCapacity);
         }
         final var minGrowth = minCapacity - oldCapacity;
         final var prefGrowth = oldCapacity >> 1;
-        int newCapacity = newLength(oldCapacity, minGrowth, prefGrowth);
+        var newCapacity = newLength(oldCapacity, minGrowth, prefGrowth);
         return copyElementData(newCapacity);
     }
 
@@ -53,7 +53,7 @@ extends PrimitiveAbstractCollection<T, T_CONS, A, I> implements PrimitiveCollect
         PreConditions.require(oldLength >= 0);
         PreConditions.require(minGrowth > 0);
         // might overflow
-        int prefLength = oldLength + Math.max(minGrowth, prefGrowth);
+        var prefLength = oldLength + Math.max(minGrowth, prefGrowth);
         if (0 < prefLength && prefLength <= SOFT_MAX_ARRAY_LENGTH) {
             return prefLength;
         }
@@ -61,7 +61,7 @@ extends PrimitiveAbstractCollection<T, T_CONS, A, I> implements PrimitiveCollect
     }
 
     private static int hugeLength(int oldLength, int minGrowth) {
-        int minLength = oldLength + minGrowth;
+        var minLength = oldLength + minGrowth;
         if (minLength < 0) { // overflow
             throw new OutOfMemoryError("Required array length " + oldLength + " + " + minGrowth + " is too large");
         }

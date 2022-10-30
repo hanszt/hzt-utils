@@ -28,7 +28,7 @@ class FunctionsTest {
 
     @Test
     void testDistinctBy() {
-        final Person[] people1 = {new Person("Piet"), new Person("Piet"), new Person("Klaas")};
+        final var people1 = new Person[]{new Person("Piet"), new Person("Piet"), new Person("Klaas")};
 
         final var distinctByName = Stream.of(people1)
                 .filter(distinctBy(Person::getName))

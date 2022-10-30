@@ -30,7 +30,7 @@ public final class TakeWhileIterator<T> implements Iterator<T> {
 
     private void calculateNext() {
         if (iterator.hasNext()) {
-            final T item = iterator.next();
+            final var item = iterator.next();
             if (predicate.test(item) && !inclusiveConsumed) {
                 nextState = State.CONTINUE;
                 nextItem = item;
@@ -62,7 +62,7 @@ public final class TakeWhileIterator<T> implements Iterator<T> {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        T result = nextItem;
+        var result = nextItem;
         // Clean next to avoid keeping reference on yielded instance
         nextItem = null;
         nextState = State.NEXT_UNKNOWN;

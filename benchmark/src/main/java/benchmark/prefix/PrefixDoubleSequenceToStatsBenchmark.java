@@ -9,7 +9,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.stream.IntStream;
@@ -58,9 +57,9 @@ public class PrefixDoubleSequenceToStatsBenchmark {
 
     @Benchmark
     public DoubleStatistics loopMapFilterToStats() {
-        DoubleStatistics statistics = new DoubleStatistics();
-        for (int i = 0; i < UPPER_BOUND_RANGE; i++) {
-            int i2 = i * TWO;
+        var statistics = new DoubleStatistics();
+        for (var i = 0; i < UPPER_BOUND_RANGE; i++) {
+            var i2 = i * TWO;
             if (i2 % SIX == 0) {
                 statistics.accept(i2);
             }
@@ -69,7 +68,7 @@ public class PrefixDoubleSequenceToStatsBenchmark {
     }
 
     public static void main(String[] args) {
-        Options options = new OptionsBuilder()
+        var options = new OptionsBuilder()
                 .include(PrefixDoubleSequenceToStatsBenchmark.class.getSimpleName())
                 .forks(1)
                 .warmupIterations(1)

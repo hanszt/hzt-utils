@@ -18,13 +18,13 @@ final class IntSkipSequence implements IntSkipTakeSequence {
 
     @Override
     public IntSequence skip(long n) {
-        final long n1 = count + n;
+        final var n1 = count + n;
         return n1 < 0 ? new IntSkipSequence(this, n) : new IntSkipSequence(upstream, n1);
     }
 
     @Override
     public IntSequence take(long n) {
-        final long n1 = count + n;
+        final var n1 = count + n;
         return n1 < 0 ? new IntTakeSequence(this, n) : new IntSubSequence(upstream, count, n1);
     }
 

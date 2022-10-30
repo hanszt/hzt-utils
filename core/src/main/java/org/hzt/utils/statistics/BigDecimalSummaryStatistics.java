@@ -52,7 +52,7 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
     }
 
     public BigDecimalX getAverage() {
-        final int SCALE = 2;
+        final var SCALE = 2;
         return getAverage(SCALE);
     }
 
@@ -61,7 +61,7 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
     }
 
     public BigDecimalX getAverage(int scale, RoundingMode roundingMode) {
-        BigDecimal countAsBD = BigDecimal.valueOf(this.count);
+        var countAsBD = BigDecimal.valueOf(this.count);
         return BigDecimalX.of(BigDecimal.ZERO.compareTo(countAsBD) == 0 ? BigDecimal.ZERO : sum.divide(countAsBD, scale, roundingMode));
     }
 

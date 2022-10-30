@@ -7,7 +7,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.stream.IntStream;
@@ -64,8 +63,8 @@ public class PrefixIntRangeSumBenchmark {
     @Benchmark
     public long loopMapFilterSum() {
         long sum = 0;
-        for (int i = 0; i < UPPER_BOUND_RANGE; i++) {
-            int i2 = i * 2;
+        for (var i = 0; i < UPPER_BOUND_RANGE; i++) {
+            var i2 = i * 2;
             if (i2 % 4 == 0) {
                 sum += i2;
             }
@@ -74,7 +73,7 @@ public class PrefixIntRangeSumBenchmark {
     }
 
     public static void main(String[] args) {
-        Options options = new OptionsBuilder()
+        var options = new OptionsBuilder()
                 .include(PrefixIntRangeSumBenchmark.class.getSimpleName())
                 .forks(1)
                 .warmupIterations(2)

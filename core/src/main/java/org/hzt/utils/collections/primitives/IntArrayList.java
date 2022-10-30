@@ -13,8 +13,14 @@ import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
 import java.util.function.IntConsumer;
 
-final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsumer, PrimitiveIterator.OfInt>
+import static java.util.Objects.checkIndex;
+
+final class IntArrayList extends PrimitiveAbstractList<Integer, IntConsumer, int[], PrimitiveIterator.OfInt>
         implements IntMutableList {
+
+    IntArrayList() {
+        super(0, new int[DEFAULT_CAPACITY]);
+    }
 
     IntArrayList(int initCapacity) {
         super(0, new int[initCapacity]);
@@ -22,10 +28,6 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
 
     IntArrayList(@NotNull IntList intList) {
         super(intList.size(), intList.toArray());
-    }
-
-    IntArrayList() {
-        super(0, new int[DEFAULT_CAPACITY]);
     }
 
     IntArrayList(int @NotNull ... array) {
@@ -41,29 +43,29 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
             }
             return;
         }
-        for (int aInt : iterable) {
-            add(aInt);
+        for (int value : iterable) {
+            add(value);
         }
     }
 
-    public boolean add(int l) {
+    public boolean add(int value) {
         if (size == elementData.length) {
             final var isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
         }
-        elementData[size] = l;
+        elementData[size] = value;
         size++;
         return true;
     }
 
     @Override
     public int get(int index) {
-        Objects.checkIndex(index, size);
+        checkIndex(index, size);
         return elementData[index];
     }
 
-    public int indexOf(int o) {
-        return indexOfRange(o, size);
+    public int indexOf(int value) {
+        return indexOfRange(value, size);
     }
 
     private int indexOfRange(int value, int end) {
@@ -76,8 +78,8 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
     }
 
     @Override
-    public int lastIndexOf(int i) {
-        return lastIndexOfRange(i, size);
+    public int lastIndexOf(int value) {
+        return lastIndexOfRange(value, size);
     }
 
     @Override
@@ -102,8 +104,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
     }
 
     public int removeAt(int index) {
-        Objects.checkIndex(index, size);
-        int oldValue = elementData[index];
+        int oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveInt(elementData, size, index);
         return oldValue;
     }
@@ -161,7 +162,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
 
     @Override
     public int set(int index, int value) {
-        Objects.checkIndex(index, size);
+        checkIndex(index, size);
         elementData[index] = value;
         return value;
     }
@@ -191,6 +192,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
             public int nextInt() {
                 return elementData[index++];
             }
+
             @Override
             public boolean hasPrevious() {
                 return index > 0;

@@ -10,7 +10,7 @@ import java.util.function.DoubleConsumer;
  * This class implements a simple hash set for {@code double} values.
  * keep track of nodes that are being pointed to by fingers.
  */
-final class DoubleHashSet extends PrimitiveAbstractSet<Double, double[], DoubleConsumer, PrimitiveIterator.OfDouble>
+final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, double[], PrimitiveIterator.OfDouble>
         implements DoubleMutableSet {
 
     DoubleHashSet() {

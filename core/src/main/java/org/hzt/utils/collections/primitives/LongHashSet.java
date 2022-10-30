@@ -10,7 +10,7 @@ import java.util.function.LongConsumer;
  * This class implements a simple hash set for {@code long} values.
  * keep track of nodes that are being pointed to by fingers.
  */
-final class LongHashSet extends PrimitiveAbstractSet<Long, long[], LongConsumer, PrimitiveIterator.OfLong>
+final class LongHashSet extends PrimitiveAbstractSet<Long, LongConsumer, long[], PrimitiveIterator.OfLong>
         implements LongMutableSet {
 
     LongHashSet() {

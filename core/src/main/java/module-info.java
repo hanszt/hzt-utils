@@ -16,6 +16,7 @@ open module hzt.utils.core {
     exports org.hzt.utils.numbers;
     exports org.hzt.utils.io;
     exports org.hzt.utils.iterators.functional_iterator;
+    exports org.hzt.utils.iterators.primitives;
     exports org.hzt.utils.iterables;
     exports org.hzt.utils.iterables.primitives;
     exports org.hzt.utils.tuples;

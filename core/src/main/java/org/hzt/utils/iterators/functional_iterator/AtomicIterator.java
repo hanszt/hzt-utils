@@ -33,8 +33,8 @@ public interface AtomicIterator<T> {
 
     default void forEachRemaining(Consumer<? super T> action) {
         //noinspection StatementWithEmptyBody
-        do {
-        } while (tryAdvance(action));
+        while (tryAdvance(action)) {
+        }
     }
 
     /**

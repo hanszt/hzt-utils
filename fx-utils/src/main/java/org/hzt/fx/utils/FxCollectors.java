@@ -20,7 +20,10 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+@SuppressWarnings(FxCollectors.USE_OF_WILD_CARD_GENERIC_TYPE)
 public final class FxCollectors {
+
+    static final String USE_OF_WILD_CARD_GENERIC_TYPE = "squid:S1452";
 
     private FxCollectors() {
     }
@@ -46,28 +49,29 @@ public final class FxCollectors {
         return IntCollectors.collectingAndThen(IntCollectors.toList(), l -> FXCollections.observableIntegerArray(l.toArray()));
     }
 
-    public static <T> Collector<T, FloatList, ObservableFloatArray> toObservableFloatArray(ToFloatFunction<? super T> toFloatFunction) {
-        return Collector.of(FloatList::new,
-                (floatList, value) -> floatList.add(toFloatFunction.applyAsFloat(value)),
-                FloatList::plus,
-                floatList -> FXCollections.observableFloatArray(floatList.toArray()));
+    public static <T> Collector<T, ?, ObservableFloatArray> toObservableFloatArray(
+            ToFloatFunction<? super T> toFloatFunction) {
+        return Collector.of(FloatMutableList::new,
+                (floatMutableList, value) -> floatMutableList.add(toFloatFunction.applyAsFloat(value)),
+                FloatMutableList::plus,
+                floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));
     }
 
-    public static IntCollector<FloatList, ObservableFloatArray> toObservableFloatArray(IntToFloatFunction mapper) {
-        return IntCollector.of(FloatList::new,
-                (floatList, value) -> floatList.add(mapper.applyAsFloat(value)),
-                floatList -> FXCollections.observableFloatArray(floatList.toArray()));
+    public static IntCollector<?, ObservableFloatArray> toObservableFloatArray(IntToFloatFunction mapper) {
+        return IntCollector.of(FloatMutableList::new,
+                (floatMutableList, value) -> floatMutableList.add(mapper.applyAsFloat(value)),
+                floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));
     }
 
-    public static LongCollector<FloatList, ObservableFloatArray> toObservableFloatArray(LongToFloatFunction mapper) {
-        return LongCollector.of(FloatList::new,
-                (floatList, value) -> floatList.add(mapper.applyAsFloat(value)),
-                floatList -> FXCollections.observableFloatArray(floatList.toArray()));
+    public static LongCollector<?, ObservableFloatArray> toObservableFloatArray(LongToFloatFunction mapper) {
+        return LongCollector.of(FloatMutableList::new,
+                (floatMutableList, value) -> floatMutableList.add(mapper.applyAsFloat(value)),
+                floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));
     }
-    public static DoubleCollector<FloatList, ObservableFloatArray> toObservableFloatArray(DoubleToFloatFunction mapper) {
-        return DoubleCollector.of(FloatList::new,
-                (floatList, value) -> floatList.add(mapper.applyAsFloat(value)),
-                floatList -> FXCollections.observableFloatArray(floatList.toArray()));
+    public static DoubleCollector<?, ObservableFloatArray> toObservableFloatArray(DoubleToFloatFunction mapper) {
+        return DoubleCollector.of(FloatMutableList::new,
+                (floatMutableList, value) -> floatMutableList.add(mapper.applyAsFloat(value)),
+                floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.Spliterator;
 
 /**
  * @param <T> The boxed type
- * @param <C> The PrimitiveConsumer
+ * @param <C> The primitive consumer
  * @param <A> The primitive array Type
  */
 public interface PrimitiveCollection<T, C, A> extends Stringable<T>, Indexable<T> {

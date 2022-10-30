@@ -10,7 +10,7 @@ import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 
 public interface IntMutableCollection extends IntCollection,
-        PrimitiveMutableCollection<Integer, IntConsumer, IntPredicate, int[]> {
+        PrimitiveMutableCollection<Integer, IntConsumer, int[], IntPredicate> {
 
     boolean add(int i);
 

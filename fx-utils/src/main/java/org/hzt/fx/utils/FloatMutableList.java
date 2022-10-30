@@ -11,8 +11,8 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Predicate;
 
-final class FloatMutableList extends PrimitiveAbstractList<Float, float[], FloatConsumer, FloatIterator>
-        implements PrimitiveMutableCollection<Float, FloatConsumer, Predicate<Float>, float[]> {
+final class FloatMutableList extends PrimitiveAbstractList<Float, FloatConsumer, float[], FloatIterator>
+        implements PrimitiveMutableCollection<Float, FloatConsumer, float[], Predicate<Float>> {
 
     FloatMutableList() {
         this(0, new float[DEFAULT_CAPACITY]);

@@ -10,7 +10,7 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 
 public interface DoubleMutableCollection extends DoubleCollection,
-        PrimitiveMutableCollection<Double, DoubleConsumer, DoublePredicate, double[]> {
+        PrimitiveMutableCollection<Double, DoubleConsumer, double[], DoublePredicate> {
 
     boolean add(double d);
 

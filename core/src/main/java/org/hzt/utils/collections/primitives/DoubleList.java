@@ -10,6 +10,7 @@ import org.hzt.utils.ranges.IntRange;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.OptionalDouble;
 import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
@@ -42,8 +43,8 @@ public interface DoubleList extends DoubleCollection,
         return listX;
     }
 
-    default boolean contains(double o) {
-        return indexOf(o) >= 0;
+    default boolean contains(double value) {
+        return indexOf(value) >= 0;
     }
 
     double get(int index);
@@ -86,6 +87,12 @@ public interface DoubleList extends DoubleCollection,
         return OptionalDouble.empty();
     }
 
+    default double random() {
+        return findRandom().orElseThrow(NoSuchElementException::new);
+    }
+
+    OptionalDouble findRandom();
+
     @Override
     default ListX<Double> boxed() {
         return asSequence().boxed().toListX();
@@ -112,6 +119,8 @@ public interface DoubleList extends DoubleCollection,
         ArraysX.reverse(array);
         return DoubleList.of(array);
     }
+
+    DoubleList shuffled();
 
     /**
      * @see BinarySearchable#binarySearch(int, int, Object)

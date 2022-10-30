@@ -5,12 +5,12 @@ import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.collections.BinarySearchable;
-import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.OptionalLong;
 import java.util.function.Consumer;
 import java.util.function.LongPredicate;
@@ -43,8 +43,8 @@ public interface LongList extends LongCollection,
         return listX;
     }
 
-    default boolean contains(long l) {
-        return indexOf(l) >= 0;
+    default boolean contains(long value) {
+        return indexOf(value) >= 0;
     }
 
     long get(int index);
@@ -87,8 +87,16 @@ public interface LongList extends LongCollection,
         return OptionalLong.empty();
     }
 
+    default long random() {
+        return findRandom().orElseThrow(NoSuchElementException::new);
+    }
+
+    OptionalLong findRandom();
+
     @Override
-    ListX<Long> boxed();
+    default ListX<Long> boxed() {
+        return asSequence().boxed().toListX();
+    }
 
     @Override
     default LongList sorted() {
@@ -106,8 +114,13 @@ public interface LongList extends LongCollection,
 
     @Override
     default LongList sortedDescending() {
-        return sorted(LongX::compareReversed);
+        final long[] array = toArray();
+        Arrays.sort(array);
+        ArraysX.reverse(array);
+        return LongList.of(array);
     }
+
+    LongList shuffled();
 
     /**
      * @see BinarySearchable#binarySearch(int, int, Object)

@@ -2,6 +2,7 @@ package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.ArraysX;
+import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
@@ -9,11 +10,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.OptionalLong;
 import java.util.PrimitiveIterator;
 import java.util.function.LongConsumer;
 
-public final class LongArrayList extends PrimitiveAbstractList<Long, long[], LongConsumer, PrimitiveIterator.OfLong>
+public final class LongArrayList extends PrimitiveAbstractList<Long, LongConsumer, long[], PrimitiveIterator.OfLong>
         implements LongMutableList {
+
+    LongArrayList() {
+        super(0, new long[DEFAULT_CAPACITY]);
+    }
 
     LongArrayList(int initCapacity) {
         super(0, new long[initCapacity]);
@@ -23,15 +29,11 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
         super(longList.size(), longList.toArray());
     }
 
-    LongArrayList() {
-        super(0, new long[DEFAULT_CAPACITY]);
-    }
-
-    LongArrayList(long... array) {
+    LongArrayList(long @NotNull... array) {
         super(array.length, Arrays.copyOf(array, array.length));
     }
 
-    LongArrayList(Iterable<Long> iterable) {
+    LongArrayList(@NotNull Iterable<Long> iterable) {
         this();
         if (iterable instanceof PrimitiveIterable.OfLong) {
             final PrimitiveIterator.OfLong iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
@@ -40,17 +42,17 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
             }
             return;
         }
-        for (long aLong : iterable) {
-            add(aLong);
+        for (long value : iterable) {
+            add(value);
         }
     }
 
-    public boolean add(long l) {
+    public boolean add(long value) {
         if (size == elementData.length) {
             final boolean isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
         }
-        elementData[size] = l;
+        elementData[size] = value;
         size++;
         return true;
     }
@@ -61,21 +63,13 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
         return elementData[index];
     }
 
-    @Override
-    public long set(int index, long value) {
-        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
-        elementData[index] = value;
-        return value;
+    public int indexOf(long value) {
+        return indexOfRange(value, size);
     }
 
-    @Override
-    public int indexOf(long l) {
-        return indexOfRange(l, size);
-    }
-
-    int indexOfRange(long l, int end) {
+    int indexOfRange(long value, int end) {
         for (int i = 0; i < end; i++) {
-            if (l == elementData[i]) {
+            if (value == elementData[i]) {
                 return i;
             }
         }
@@ -83,8 +77,20 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
     }
 
     @Override
-    public int lastIndexOf(long l) {
-        return lastIndexOfRange(l, size);
+    public int lastIndexOf(long value) {
+        return lastIndexOfRange(value, size);
+    }
+
+    @Override
+    public OptionalLong findRandom() {
+        return isNotEmpty() ? OptionalLong.of(get(IterableXHelper.RANDOM.nextInt(size()))) : OptionalLong.empty();
+    }
+
+    @Override
+    public LongList shuffled() {
+        final LongMutableList mutableList = LongMutableList.of(this);
+        PrimitiveListHelper.shuffle(mutableList);
+        return mutableList;
     }
 
     private int lastIndexOfRange(long value, int end) {
@@ -97,8 +103,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
     }
 
     public long removeAt(int index) {
-        PrimitiveListHelper.checkIndex(index, size);
-        long oldValue = elementData[index];
+        long oldValue = elementData[PrimitiveListHelper.checkIndex(index, size)];
         size = fastRemoveLong(elementData, size, index);
         return oldValue;
     }
@@ -155,6 +160,18 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
     }
 
     @Override
+    public long set(int index, long value) {
+        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
+        elementData[index] = value;
+        return value;
+    }
+
+    @Override
+    public LongMutableList toMutableList() {
+        return this;
+    }
+
+    @Override
     public PrimitiveListIterator.OfLong listIterator() {
         return listIterator(0);
     }
@@ -174,6 +191,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
             public long nextLong() {
                 return elementData[index++];
             }
+
             @Override
             public boolean hasPrevious() {
                 return index > 0;
@@ -204,11 +222,6 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, long[], Lon
     @Override
     public void sort() {
         Arrays.sort(elementData, 0, size);
-    }
-
-    @Override
-    public LongMutableList toMutableList() {
-        return this;
     }
 
     @Override

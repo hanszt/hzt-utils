@@ -10,7 +10,7 @@ import java.util.PrimitiveIterator;
  * @param <T_CONS> The primitive consumer
  * @param <I> the primitive iterator
  */
-abstract class PrimitiveAbstractCollection<T, A, T_CONS, I extends PrimitiveIterator<T, T_CONS>> {
+abstract class PrimitiveAbstractCollection<T, T_CONS, A, I extends PrimitiveIterator<T, T_CONS>> {
 
     protected int size;
 

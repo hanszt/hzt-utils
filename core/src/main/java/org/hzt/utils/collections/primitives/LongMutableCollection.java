@@ -10,7 +10,7 @@ import java.util.function.LongConsumer;
 import java.util.function.LongPredicate;
 
 public interface LongMutableCollection extends LongCollection,
-        PrimitiveMutableCollection<Long, LongConsumer, LongPredicate, long[]> {
+        PrimitiveMutableCollection<Long, LongConsumer, long[], LongPredicate> {
 
     boolean add(long l);
 

@@ -5,7 +5,6 @@ import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.collections.BinarySearchable;
-import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.jetbrains.annotations.NotNull;
@@ -44,8 +43,8 @@ public interface IntList extends IntCollection,
         return listX;
     }
 
-    default boolean contains(int i) {
-        return indexOf(i) >= 0;
+    default boolean contains(int value) {
+        return indexOf(value) >= 0;
     }
 
     int get(int index);
@@ -95,9 +94,6 @@ public interface IntList extends IntCollection,
     OptionalInt findRandom();
 
     @Override
-    int[] toArray();
-
-    @Override
     default ListX<Integer> boxed() {
         return asSequence().boxed().toListX();
     }
@@ -118,7 +114,10 @@ public interface IntList extends IntCollection,
 
     @Override
     default IntList sortedDescending() {
-        return sorted(IntX::compareReversed);
+        final int[] array = toArray();
+        Arrays.sort(array);
+        ArraysX.reverse(array);
+        return IntList.of(array);
     }
 
     IntList shuffled();

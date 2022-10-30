@@ -2,6 +2,7 @@ package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.ArraysX;
+import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
@@ -9,11 +10,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
 import java.util.function.DoubleConsumer;
 
-final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], DoubleConsumer, PrimitiveIterator.OfDouble>
+final class DoubleArrayList extends PrimitiveAbstractList<Double, DoubleConsumer, double[], PrimitiveIterator.OfDouble>
         implements DoubleMutableList {
+
+    DoubleArrayList() {
+        super(0, new double[DEFAULT_CAPACITY]);
+    }
 
     DoubleArrayList(int initCapacity) {
         super(0, new double[initCapacity]);
@@ -23,11 +29,11 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
         super(doubleList.size(), doubleList.toArray());
     }
 
-    DoubleArrayList() {
-        super(0, new double[DEFAULT_CAPACITY]);
+    DoubleArrayList(double @NotNull... array) {
+        super(array.length, Arrays.copyOf(array, array.length));
     }
 
-    DoubleArrayList(Iterable<Double> iterable) {
+    DoubleArrayList(@NotNull Iterable<Double> iterable) {
         this();
         if (iterable instanceof PrimitiveIterable.OfDouble) {
             final PrimitiveIterator.OfDouble iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
@@ -36,16 +42,11 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
             }
             return;
         }
-        for (double aDouble : iterable) {
-            add(aDouble);
+        for (double value : iterable) {
+            add(value);
         }
     }
 
-    DoubleArrayList(double... array) {
-        super(array.length, Arrays.copyOf(array, array.length));
-    }
-
-    @Override
     public boolean add(double value) {
         if (size == elementData.length) {
             final boolean isInitEmptyArray = elementData.length == 0;
@@ -62,13 +63,13 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
         return elementData[index];
     }
 
-    public int indexOf(double d) {
-        return indexOfRange(d, size);
+    public int indexOf(double value) {
+        return indexOfRange(value, size);
     }
 
-    int indexOfRange(double o, int end) {
+    int indexOfRange(double value, int end) {
         for (int i = 0; i < end; i++) {
-            if (Double.compare(o, elementData[i]) == 0) {
+            if (Double.compare(value, elementData[i]) == 0) {
                 return i;
             }
         }
@@ -76,8 +77,20 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
     }
 
     @Override
-    public int lastIndexOf(double d) {
-        return lastIndexOfRange(d, size);
+    public int lastIndexOf(double value) {
+        return lastIndexOfRange(value, size);
+    }
+
+    @Override
+    public OptionalDouble findRandom() {
+        return isNotEmpty() ? OptionalDouble.of(get(IterableXHelper.RANDOM.nextInt(size()))) : OptionalDouble.empty();
+    }
+
+    @Override
+    public DoubleList shuffled() {
+        final DoubleMutableList mutableList = DoubleMutableList.of(this);
+        PrimitiveListHelper.shuffle(mutableList);
+        return mutableList;
     }
 
     private int lastIndexOfRange(double value, int end) {
@@ -89,10 +102,8 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
         return -1;
     }
 
-    @Override
     public double removeAt(int index) {
-        PrimitiveListHelper.checkIndex(index, size);
-        double oldValue = elementData[index];
+        double oldValue = elementData[PrimitiveListHelper.checkIndex(index, size)];
         size = fastRemoveDouble(elementData, size, index);
         return oldValue;
     }
@@ -159,7 +170,7 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, double[], Doub
     public DoubleMutableList toMutableList() {
         return this;
     }
-    
+
     @Override
     public @NotNull PrimitiveListIterator.OfDouble listIterator() {
         return listIterator(0);

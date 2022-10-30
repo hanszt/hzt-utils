@@ -1,12 +1,10 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.PreConditions;
-import org.hzt.utils.iterators.FilteringIterator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
@@ -15,19 +13,7 @@ public final class SequenceHelper {
     private SequenceHelper() {
     }
 
-    static <T> Sequence<T> filteringSequence(Sequence<T> upstream, Predicate<? super T> predicate, boolean sendWhen) {
-        return () -> FilteringIterator.of(upstream.iterator(), predicate, sendWhen);
-    }
-
-    static <T> Sequence<T> filteringSequence(Sequence<T> upstream, Predicate<? super T> predicate) {
-        return filteringSequence(upstream, predicate, true);
-    }
-
-    static <T, R> Sequence<R> transformingSequence(Sequence<T> upstream, Function<? super T, ? extends R> mapper) {
-        return () -> transformingIterator(upstream.iterator(), mapper);
-    }
-
-    private static <T, R> @NotNull Iterator<R> transformingIterator(Iterator<T> iterator, Function<? super T, ? extends R> mapper) {
+    static <T, R> @NotNull Iterator<R> transformingIterator(Iterator<T> iterator, Function<? super T, ? extends R> mapper) {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {

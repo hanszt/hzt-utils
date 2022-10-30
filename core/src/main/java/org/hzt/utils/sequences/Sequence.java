@@ -8,6 +8,7 @@ import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.IterableX;
 import org.hzt.utils.iterators.ArrayIterator;
+import org.hzt.utils.iterators.FilteringIterator;
 import org.hzt.utils.iterators.FlatteningIterator;
 import org.hzt.utils.iterators.GeneratorIterator;
 import org.hzt.utils.iterators.MultiMappingIterator;
@@ -154,7 +155,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default <R> Sequence<R> map(@NotNull Function<? super T, ? extends R> mapper) {
-        return SequenceHelper.transformingSequence(this, mapper);
+        return () -> SequenceHelper.transformingIterator(iterator(), mapper);
     }
 
     @Override
@@ -163,10 +164,9 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default <R> Sequence<R> mapNotNull(@NotNull Function<? super T, ? extends R> mapper) {
-        return SequenceHelper.filteringSequence(
-                SequenceHelper.transformingSequence(
-                        SequenceHelper.filteringSequence(this,
-                                Objects::nonNull), mapper), Objects::nonNull);
+        return () -> FilteringIterator.of(SequenceHelper.transformingIterator(
+                FilteringIterator.of(iterator(),
+                        Objects::nonNull, true), mapper), Objects::nonNull, true);
     }
 
     @Override
@@ -204,11 +204,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default Sequence<T> filter(@NotNull Predicate<? super T> predicate) {
-        return SequenceHelper.filteringSequence(this, predicate);
+        return () -> FilteringIterator.of(iterator(), predicate, true);
     }
 
     default Sequence<T> filterNot(@NotNull Predicate<? super T> predicate) {
-        return SequenceHelper.filteringSequence(this, predicate, false);
+        return () -> FilteringIterator.of(iterator(), predicate, false);
     }
 
     default <R> Sequence<T> filterBy(@NotNull Function<? super T, ? extends R> selector,

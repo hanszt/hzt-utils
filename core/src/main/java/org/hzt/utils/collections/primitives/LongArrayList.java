@@ -13,6 +13,8 @@ import java.util.OptionalLong;
 import java.util.PrimitiveIterator;
 import java.util.function.LongConsumer;
 
+import static java.util.Objects.checkIndex;
+
 public final class LongArrayList extends PrimitiveAbstractList<Long, LongConsumer, long[], PrimitiveIterator.OfLong>
         implements LongMutableList {
 
@@ -58,7 +60,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, LongConsume
 
     @Override
     public long get(int index) {
-        Objects.checkIndex(index, size);
+        checkIndex(index, size);
         return elementData[index];
     }
 
@@ -102,7 +104,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, LongConsume
     }
 
     public long removeAt(int index) {
-        long oldValue = elementData[PrimitiveListHelper.checkIndex(index, size)];
+        long oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveLong(elementData, size, index);
         return oldValue;
     }
@@ -160,7 +162,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, LongConsume
 
     @Override
     public long set(int index, long value) {
-        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
+        checkIndex(index, size);
         elementData[index] = value;
         return value;
     }

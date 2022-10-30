@@ -13,6 +13,8 @@ import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
 import java.util.function.IntConsumer;
 
+import static java.util.Objects.checkIndex;
+
 final class IntArrayList extends PrimitiveAbstractList<Integer, IntConsumer, int[], PrimitiveIterator.OfInt>
         implements IntMutableList {
 
@@ -58,7 +60,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, IntConsumer, int
 
     @Override
     public int get(int index) {
-        Objects.checkIndex(index, size);
+        checkIndex(index, size);
         return elementData[index];
     }
 
@@ -102,7 +104,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, IntConsumer, int
     }
 
     public int removeAt(int index) {
-        int oldValue = elementData[PrimitiveListHelper.checkIndex(index, size)];
+        int oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveInt(elementData, size, index);
         return oldValue;
     }
@@ -160,7 +162,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, IntConsumer, int
 
     @Override
     public int set(int index, int value) {
-        Objects.checkIndex(index, size);
+        checkIndex(index, size);
         elementData[index] = value;
         return value;
     }

@@ -13,6 +13,8 @@ import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
 import java.util.function.DoubleConsumer;
 
+import static java.util.Objects.checkIndex;
+
 final class DoubleArrayList extends PrimitiveAbstractList<Double, DoubleConsumer, double[], PrimitiveIterator.OfDouble>
         implements DoubleMutableList {
 
@@ -58,7 +60,7 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, DoubleConsumer
 
     @Override
     public double get(int index) {
-        Objects.checkIndex(index, size);
+        checkIndex(index, size);
         return elementData[index];
     }
 
@@ -102,7 +104,7 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, DoubleConsumer
     }
 
     public double removeAt(int index) {
-        double oldValue = elementData[PrimitiveListHelper.checkIndex(index, size)];
+        double oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveDouble(elementData, size, index);
         return oldValue;
     }
@@ -160,7 +162,7 @@ final class DoubleArrayList extends PrimitiveAbstractList<Double, DoubleConsumer
 
     @Override
     public double set(int index, double value) {
-        Objects.checkIndex(index, size);
+        checkIndex(index, size);
         elementData[index] = value;
         return value;
     }

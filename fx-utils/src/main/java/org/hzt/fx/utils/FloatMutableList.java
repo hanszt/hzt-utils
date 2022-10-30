@@ -11,14 +11,14 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Predicate;
 
-public final class FloatList extends PrimitiveAbstractList<Float, float[], FloatConsumer, FloatIterator>
+final class FloatMutableList extends PrimitiveAbstractList<Float, float[], FloatConsumer, FloatIterator>
         implements PrimitiveMutableCollection<Float, FloatConsumer, Predicate<Float>, float[]> {
 
-    FloatList() {
+    FloatMutableList() {
         this(0, new float[DEFAULT_CAPACITY]);
     }
 
-    private FloatList(int initSize, float[] elementData) {
+    private FloatMutableList(int initSize, float[] elementData) {
         super(initSize, elementData);
     }
 
@@ -56,8 +56,8 @@ public final class FloatList extends PrimitiveAbstractList<Float, float[], Float
     @Override
     public boolean addAll(@NotNull Iterable<Float> iterable) {
         boolean allAdded = true;
-        if (iterable instanceof FloatList) {
-            final var iterator = ((FloatList) iterable).iterator();
+        if (iterable instanceof FloatMutableList) {
+            final var iterator = ((FloatMutableList) iterable).iterator();
             while (iterator.hasNext()) {
                 final var added = add(iterator.nextFloat());
                 if (!added) {
@@ -76,38 +76,38 @@ public final class FloatList extends PrimitiveAbstractList<Float, float[], Float
 
     @Override
     public boolean addAll(float @NotNull [] array) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean removeAll(@NotNull Iterable<Float> iterable) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean removeAll(float @NotNull [] array) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean removeIf(@NotNull Predicate<Float> predicate) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public FloatList plus(@NotNull Iterable<Float> iterable) {
-        FloatList list = new FloatList();
+    public FloatMutableList plus(@NotNull Iterable<Float> iterable) {
+        FloatMutableList list = new FloatMutableList();
         list.addAll(iterable);
         return list;
     }
 
     @Override
-    public FloatList plus(float @NotNull [] array) {
+    public FloatMutableList plus(float @NotNull [] array) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public FloatList take(long n) {
+    public FloatMutableList take(long n) {
         throw new UnsupportedOperationException();
     }
 
@@ -145,6 +145,6 @@ public final class FloatList extends PrimitiveAbstractList<Float, float[], Float
 
     @Override
     public MutableListX<Float> boxed() {
-        throw new UnsupportedOperationException();
+        return MutableListX.of(this);
     }
 }

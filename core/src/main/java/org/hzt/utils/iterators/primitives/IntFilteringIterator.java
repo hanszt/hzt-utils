@@ -40,7 +40,7 @@ public final class IntFilteringIterator implements PrimitiveIterator.OfInt {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        final int result = nextInt;
+        final var result = nextInt;
         nextInt = 0;
         nextState = State.NEXT_UNKNOWN;
         return result;
@@ -48,7 +48,7 @@ public final class IntFilteringIterator implements PrimitiveIterator.OfInt {
 
     private void calculateNext() {
         while (iterator.hasNext()) {
-            int next = iterator.nextInt();
+            var next = iterator.nextInt();
             if (predicate.test(next) == sendWhen) {
                 this.nextInt = next;
                 nextState = State.CONTINUE;

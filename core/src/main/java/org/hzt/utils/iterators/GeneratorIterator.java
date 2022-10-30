@@ -38,7 +38,7 @@ public final class GeneratorIterator<T> implements Iterator<T> {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        final T result = nextItem;
+        final var result = nextItem;
         // Do not clean nextItem (set item to 'null' to avoid keeping reference on yielded instance)
         // -- need to keep state for getNextValue
         nextState = State.NEXT_UNKNOWN;

@@ -24,7 +24,7 @@ class IntRangeTest {
     @Test
     void testIterateIntRange() {
         final var range = IntRange.of(2, 10);
-        IntMutableList list = IntMutableList.empty();
+        var list = IntMutableList.empty();
         range.forEachInt(list::add);
         range.forEachInt(list::add);
         assertEquals(IntList.of(2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9), list);

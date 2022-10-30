@@ -160,7 +160,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         if (n == 0) {
             return PrimitiveIterators::emptyDoubleIterator;
         } else if (this instanceof DoubleSkipTakeSequence) {
-            DoubleSkipTakeSequence skipTakeSequence = (DoubleSkipTakeSequence) this;
+            var skipTakeSequence = (DoubleSkipTakeSequence) this;
             return skipTakeSequence.take(n);
         } else {
             return new DoubleTakeSequence(this, n);
@@ -183,7 +183,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         if (n == 0) {
             return this;
         } else if (this instanceof DoubleSkipTakeSequence) {
-            DoubleSkipTakeSequence skipTakeSequence = (DoubleSkipTakeSequence) this;
+            var skipTakeSequence = (DoubleSkipTakeSequence) this;
             return skipTakeSequence.skip(n);
         } else {
             return new DoubleSkipSequence(this, n);

@@ -19,7 +19,7 @@ class WindowClosedListenerTest {
     }
 
     private void testWindowClosed() {
-        AtomicBoolean isCalled = new AtomicBoolean(false);
+        var isCalled = new AtomicBoolean(false);
         Window frame = new Frame();
         frame.addWindowListener((WindowClosedListener) e -> isCalled.set(true));
         frame.setVisible(true);

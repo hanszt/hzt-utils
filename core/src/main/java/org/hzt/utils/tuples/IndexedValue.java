@@ -27,7 +27,7 @@ public final class IndexedValue<T> {
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        IndexedValue<T> that = (IndexedValue<T>) obj;
+        var that = (IndexedValue<T>) obj;
         return this.index == that.index &&
                 Objects.equals(this.value, that.value);
     }

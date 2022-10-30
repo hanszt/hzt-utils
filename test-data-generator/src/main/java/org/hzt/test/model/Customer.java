@@ -30,7 +30,7 @@ public class Customer extends Person {
         if (!super.equals(o)) {
             return false;
         }
-        Customer customer = (Customer) o;
+        var customer = (Customer) o;
         return Objects.equals(getCustomerId(), customer.getCustomerId()) &&
                 Objects.equals(getBankAccounts(), customer.getBankAccounts());
     }

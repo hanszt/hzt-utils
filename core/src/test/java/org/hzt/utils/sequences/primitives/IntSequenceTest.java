@@ -49,9 +49,9 @@ class IntSequenceTest {
 
     @Test
     void testIntSequencePlusArray() {
-        int[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+        var array = new int[]{1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
-        final int[] result = IntSequence.of(1, 3, 2, 5, 4, 2)
+        final var result = IntSequence.of(1, 3, 2, 5, 4, 2)
                 .filter(IntX::isEven)
                 .plus(35, 76, 5)
                 .plus(IntList.of(array))
@@ -67,7 +67,7 @@ class IntSequenceTest {
 
     @Test
     void testIntSequenceMinusArray() {
-        final int[] result = IntSequence.of(1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2)
+        final var result = IntSequence.of(1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2)
                 .minus(2, 76, 5)
                 .toArray();
 
@@ -81,7 +81,7 @@ class IntSequenceTest {
 
     @Test
     void testIntSequenceMinusIntList() {
-        final int[] result = IntSequence.of(1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2)
+        final var result = IntSequence.of(1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2)
                 .minus(IntList.of(2, 76, 5))
                 .toArray();
 
@@ -95,9 +95,9 @@ class IntSequenceTest {
 
     @Test
     void testIntSequencePlusIterable() {
-        final IntSequence ints = IntSequence.of(1, 2, 3, 4, 5, 6, 7, 6);
+        final var ints = IntSequence.of(1, 2, 3, 4, 5, 6, 7, 6);
 
-        final int[] result = IntSequence.of(1, 3, 2, 5, 4, 2)
+        final var result = IntSequence.of(1, 3, 2, 5, 4, 2)
                 .filter(IntX::isEven)
                 .plus(35, 76, 5)
                 .plus(ints)
@@ -172,7 +172,7 @@ class IntSequenceTest {
 
     @Test
     void intRangeFromIntArray() {
-        int[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+        var array = new int[]{1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
         final var expected = IntStream.of(array)
                 .asLongStream()
@@ -193,7 +193,7 @@ class IntSequenceTest {
 
     @Test
     void testSortedDescending() {
-        int[] array = {1, 4, 5, 3, 6, 7, 4, 8, 5, 9, 4};
+        var array = new int[]{1, 4, 5, 3, 6, 7, 4, 8, 5, 9, 4};
 
         final var sorted = IntSequence.of(array)
                 .sortedDescending()
@@ -206,7 +206,7 @@ class IntSequenceTest {
 
     @Test
     void testSortedThenComparingUnsignedUsingIntComparator() {
-        int[] array = {-1, 4, -5, 3, -6, 7, -4, 8, -5, 9, -4};
+        var array = new int[]{-1, 4, -5, 3, -6, 7, -4, 8, -5, 9, -4};
 
         final var sorted = IntSequence.of(array)
                 .sorted(IntComparator.comparing(It::asInt)
@@ -241,9 +241,9 @@ class IntSequenceTest {
 
     @Test
     void testToByteArray() {
-        AtomicInteger index = new AtomicInteger();
+        var index = new AtomicInteger();
         final var LENGTH = 10_000_000;
-        byte[] array = new byte[LENGTH];
+        var array = new byte[LENGTH];
 
         IntSequence.generate(Byte.MIN_VALUE, i -> (i == Byte.MAX_VALUE) ? Byte.MIN_VALUE : ++i)
                 .take(LENGTH)
@@ -257,7 +257,7 @@ class IntSequenceTest {
 
     @Test
     void testChunked() {
-        final long[] longs = IntSequence.generate(0, i -> ++i)
+        final var longs = IntSequence.generate(0, i -> ++i)
                 .take(500)
                 .chunked(100)
                 .mapToLong(IntList::sum)

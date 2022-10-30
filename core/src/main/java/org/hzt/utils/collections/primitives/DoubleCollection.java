@@ -45,7 +45,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
     boolean contains(double o);
 
     default DoubleList filter(DoublePredicate predicate) {
-        DoubleMutableList doubles = DoubleMutableList.withInitCapacity(size());
+        var doubles = DoubleMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             final var value = iterator.nextDouble();
@@ -57,7 +57,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
     }
 
     default DoubleList map(DoubleUnaryOperator mapper) {
-        DoubleMutableList doubles = DoubleMutableList.withInitCapacity(size());
+        var doubles = DoubleMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextDouble()));
@@ -66,7 +66,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
     }
 
     default IntList mapToInt(DoubleToIntFunction mapper) {
-        IntMutableList ints = IntMutableList.withInitCapacity(size());
+        var ints = IntMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextDouble()));
@@ -75,7 +75,7 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
     }
 
     default LongList mapToLong(DoubleToLongFunction mapper) {
-        LongMutableList longs = LongMutableList.withInitCapacity(size());
+        var longs = LongMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextDouble()));
@@ -94,14 +94,14 @@ public interface DoubleCollection extends DoubleReducable, DoubleCollectable, Do
 
     @Override
     default DoubleList plus(@NotNull Iterable<Double> values) {
-        DoubleMutableList list = toMutableList();
+        var list = toMutableList();
         list.addAll(values);
         return list;
     }
 
     @Override
     default DoubleList plus(double @NotNull ... array) {
-        DoubleMutableList list = toMutableList();
+        var list = toMutableList();
         list.addAll(array);
         return list;
     }

@@ -22,7 +22,7 @@ public final class LongStatistics extends LongSummaryStatistics
     @Override
     public void accept(long value) {
         super.accept(value);
-        long squareValue = value * value;
+        var squareValue = value * value;
         sumOfSquare += squareValue;
     }
 
@@ -33,8 +33,8 @@ public final class LongStatistics extends LongSummaryStatistics
     }
 
     public Double getStandardDeviation() {
-        final double average = getAverage();
-        final double sumOfSquareAverage = (double) sumOfSquare / getCount();
+        final var average = getAverage();
+        final var sumOfSquareAverage = (double) sumOfSquare / getCount();
         return getCount() > 0 ? Math.sqrt(sumOfSquareAverage - average * average) : 0.0D;
     }
 
@@ -46,7 +46,7 @@ public final class LongStatistics extends LongSummaryStatistics
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LongStatistics that = (LongStatistics) o;
+        var that = (LongStatistics) o;
         return getCount() == that.getCount() &&
                 Double.compare(getAverage(), that.getAverage()) == 0 &&
                 sumOfSquare == that.sumOfSquare;

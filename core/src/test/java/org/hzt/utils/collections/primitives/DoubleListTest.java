@@ -40,7 +40,7 @@ class DoubleListTest {
             "1,1,1,1,1,1,1.1,2"
     })
     void testIsSorted(String string) {
-        final double[] doubles = toDoubleArrayByCommaPattern(string);
+        final var doubles = toDoubleArrayByCommaPattern(string);
 
         System.out.println(Arrays.toString(doubles));
 
@@ -56,7 +56,7 @@ class DoubleListTest {
             "2e10,1,1,1,1,1,1.1,2"
     })
     void testIsNotSorted(String string) {
-        final double[] doubles = toDoubleArrayByCommaPattern(string);
+        final var doubles = toDoubleArrayByCommaPattern(string);
 
         System.out.println(Arrays.toString(doubles));
 
@@ -75,18 +75,18 @@ class DoubleListTest {
 
     @Test
     void testBinarySearch() {
-        final DoubleList sortedList = DoubleList.of(-1, 0, 1, Math.E, Math.PI, 4, 5, Double.POSITIVE_INFINITY);
+        final var sortedList = DoubleList.of(-1, 0, 1, Math.E, Math.PI, 4, 5, Double.POSITIVE_INFINITY);
 
-        final int indexInSortedList = sortedList.binarySearch(Math.E);
+        final var indexInSortedList = sortedList.binarySearch(Math.E);
 
         assertEquals(3, indexInSortedList);
     }
 
     @Test
     void testBinarySearchReversedSortedList() {
-        final DoubleList reverseOrderSortedList = DoubleList.of(Double.POSITIVE_INFINITY, 5, 4, Math.PI, Math.E, 1, 0, -1);
+        final var reverseOrderSortedList = DoubleList.of(Double.POSITIVE_INFINITY, 5, 4, Math.PI, Math.E, 1, 0, -1);
 
-        final int indexInSortedList = reverseOrderSortedList.binarySearch(value -> Double.compare(Math.E, value));
+        final var indexInSortedList = reverseOrderSortedList.binarySearch(value -> Double.compare(Math.E, value));
 
         assertEquals(4, indexInSortedList);
     }

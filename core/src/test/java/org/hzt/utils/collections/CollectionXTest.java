@@ -76,7 +76,7 @@ class CollectionXTest {
     @Test
     void testIfEmpty() {
         final var list = ListX.<Integer>empty();
-        final MutableSetX<Integer> set2 = MutableSetX.of(1, 2, 3, 4, 5, 6);
+        final var set2 = MutableSetX.of(1, 2, 3, 4, 5, 6);
 
         assertAll(
                 () -> assertSame(set2, list.ifEmpty(() -> set2)),
@@ -86,7 +86,7 @@ class CollectionXTest {
 
     @Test
     void testCollectionWithIndex() {
-        final ListX<Integer> list = ListX.of(1, 2, 4, 8, 16, 32);
+        final var list = ListX.of(1, 2, 4, 8, 16, 32);
         final var indexedValues = list.withIndex();
 
         assertAll(

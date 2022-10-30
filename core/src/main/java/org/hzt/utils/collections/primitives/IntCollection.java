@@ -43,7 +43,7 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
     boolean contains(int i);
 
     default IntList filter(IntPredicate predicate) {
-        IntMutableList ints = IntMutableList.withInitCapacity(size());
+        var ints = IntMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             final var value = iterator.nextInt();
@@ -55,7 +55,7 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
     }
 
     default IntList map(IntUnaryOperator mapper) {
-        IntMutableList ints = IntMutableList.withInitCapacity(size());
+        var ints = IntMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextInt()));
@@ -64,7 +64,7 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
     }
 
     default LongList mapToLong(IntToLongFunction mapper) {
-        LongMutableList longs = LongMutableList.withInitCapacity(size());
+        var longs = LongMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextInt()));
@@ -73,7 +73,7 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
     }
 
     default DoubleList mapToDouble(IntToDoubleFunction mapper) {
-        DoubleMutableList doubles = DoubleMutableList.withInitCapacity(size());
+        var doubles = DoubleMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextInt()));
@@ -92,14 +92,14 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
 
     @Override
     default IntList plus(@NotNull Iterable<Integer> values) {
-        IntMutableList list = toMutableList();
+        var list = toMutableList();
         list.addAll(values);
         return list;
     }
 
     @Override
     default IntList plus(int @NotNull ... array) {
-        IntMutableList list = toMutableList();
+        var list = toMutableList();
         list.addAll(array);
         return list;
     }

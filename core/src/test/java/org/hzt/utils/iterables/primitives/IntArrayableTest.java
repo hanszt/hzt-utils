@@ -24,7 +24,7 @@ class IntArrayableTest {
 
     @Test
     void testIntGridToBooleanGrid() {
-        int[][] grid = {
+        var grid = new int[][]{
                 {1, 2, 3, 4},
                 {4, 3, 2, 1},
                 {9, 3, 5, 2},

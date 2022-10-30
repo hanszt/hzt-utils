@@ -32,7 +32,7 @@ final class HashSetX<E> implements MutableSetX<E> {
     @SafeVarargs
     HashSetX(E @NotNull ... values) {
         set = new HashSet<>();
-        for (E item : values) {
+        for (var item : values) {
             if (!set.add(item)) {
                 throw new IllegalStateException("Duplicate elements in set. This is not allowed");
             }
@@ -116,7 +116,7 @@ final class HashSetX<E> implements MutableSetX<E> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        HashSetX<?> hashSetX = (HashSetX<?>) o;
+        var hashSetX = (HashSetX<?>) o;
         return set.equals(hashSetX.set);
     }
 

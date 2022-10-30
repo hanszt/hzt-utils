@@ -28,7 +28,7 @@ abstract class PrimitiveAbstractCollection<T, T_CONS, A, I extends PrimitiveIter
         if (!iterator.hasNext()) {
             return "[]";
         }
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         sb.append('[');
         while (iterator.hasNext()) {
             appendNextPrimitive(sb, iterator);

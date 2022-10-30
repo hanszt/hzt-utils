@@ -5,7 +5,6 @@ import org.hzt.utils.statistics.LongStatistics;
 import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.function.LongPredicate;
 
 @FunctionalInterface
@@ -18,7 +17,7 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
 
     default long count(@NotNull LongPredicate predicate) {
         long count = 0;
-        PrimitiveIterator.OfLong iterator = iterator();
+        var iterator = iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextLong())) {
                 count++;
@@ -53,7 +52,7 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
 
     default long sum() {
         long sum = 0;
-        PrimitiveIterator.OfLong iterator = iterator();
+        var iterator = iterator();
         while (iterator.hasNext()) {
             sum += iterator.nextLong();
         }
@@ -73,8 +72,8 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
     }
 
     default @NotNull LongStatistics stats() {
-        LongStatistics longStatistics = new LongStatistics();
-        PrimitiveIterator.OfLong iterator = iterator();
+        var longStatistics = new LongStatistics();
+        var iterator = iterator();
         while (iterator.hasNext()) {
             longStatistics.accept(iterator.nextLong());
         }

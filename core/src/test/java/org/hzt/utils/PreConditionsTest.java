@@ -20,10 +20,10 @@ class PreConditionsTest {
 
     @Test
     void testRequireAllNonNull() {
-        final int integer = 4;
-        final double aDouble = 6.0;
+        final var integer = 4;
+        final var aDouble = 6.0;
 
-        final BigInteger bigInteger = BigInteger.valueOf(4);
+        final var bigInteger = BigInteger.valueOf(4);
         Throwable throwable = assertThrows(NullPointerException.class, () -> PreConditions
                 .requireAllNonNull(Number.class, integer, bigInteger, aDouble, null));
 
@@ -40,10 +40,10 @@ class PreConditionsTest {
 
     @Test
     void testObjectsRequireAllNonNull() {
-        final int integer = 4;
-        final double aDouble = 6.0;
+        final var integer = 4;
+        final var aDouble = 6.0;
 
-        final BigInteger bigInteger = BigInteger.valueOf(4);
+        final var bigInteger = BigInteger.valueOf(4);
         Throwable throwable = assertThrows(IllegalArgumentException.class, () -> PreConditions.requireAllNonNull(
                 integer, bigInteger, aDouble, null, "", null));
 

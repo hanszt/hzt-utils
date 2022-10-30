@@ -27,7 +27,7 @@ class AtomicIteratorTest {
 
         final var upperBound = 100;
 
-        AtomicIterator<String> stringIterator = getBoundedStringIteratorX(upperBound);
+        var stringIterator = getBoundedStringIteratorX(upperBound);
         //noinspection StatementWithEmptyBody
         while (stringIterator.tryAdvance(list1::add)) ;
 
@@ -44,7 +44,7 @@ class AtomicIteratorTest {
         List<String> list2 = new ArrayList<>();
 
         final var upperBound = 200;
-        AtomicIterator<String> stringIterator = getBoundedStringIteratorX(upperBound);
+        var stringIterator = getBoundedStringIteratorX(upperBound);
         stringIterator.forEachRemaining(list1::add);
         stringIterator.forEachRemaining(list2::add);
 
@@ -58,9 +58,9 @@ class AtomicIteratorTest {
     @DisplayName("Test get correct iterator from iteratorX instance")
     void testGetCorrectIteratorFromIteratorXInstance() {
         final var bound = 241;
-        AtomicInteger atomicInteger = new AtomicInteger();
+        var atomicInteger = new AtomicInteger();
 
-        AtomicIterator<String> stringIterator = getBoundedStringIteratorX(bound);
+        var stringIterator = getBoundedStringIteratorX(bound);
         stringIterator.asIterator().forEachRemaining(e -> atomicInteger.incrementAndGet());
 
         assertEquals(bound, atomicInteger.get());
@@ -118,7 +118,7 @@ class AtomicIteratorTest {
     @Test
     @DisplayName("Test as spliterator")
     void testAsSpliterator() {
-        final int upperBound = 9_000;
+        final var upperBound = 9_000;
 
         AtomicIterator<LocalDate> dateIterator = BoundedIterator.of(upperBound, LocalDate
                 .parse("2022-04-21")::minusDays)

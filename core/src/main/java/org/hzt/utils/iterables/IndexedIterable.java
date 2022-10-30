@@ -44,9 +44,9 @@ public interface IndexedIterable<T> extends Iterable<T> {
     }
 
     default void forEachIndexedValue(@NotNull Consumer<IndexedValue<T>> action) {
-        Iterator<IndexedValue<T>> iterator = indexedIterator();
+        var iterator = indexedIterator();
         while (iterator.hasNext()) {
-            final IndexedValue<T> next = iterator.next();
+            final var next = iterator.next();
             action.accept(next);
         }
     }

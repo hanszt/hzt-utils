@@ -27,7 +27,7 @@ final class TransformingIndexedSequence<T, R> implements Sequence<R> {
             }
             @Override
             public R next() {
-                int prevIndex = index;
+                var prevIndex = index;
                 if (prevIndex < 0) {
                     throw new IllegalStateException("indexed iterator index overflow");
                 }

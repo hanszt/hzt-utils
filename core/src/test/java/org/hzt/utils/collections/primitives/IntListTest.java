@@ -60,11 +60,11 @@ class IntListTest {
 
     @Test
     void testBinarySearch() {
-        final IntList sortedList = IntList.of(-1, 0, 1, 2, 3, 4, 5);
+        final var sortedList = IntList.of(-1, 0, 1, 2, 3, 4, 5);
 
-        int valueToSearchFor = 2;
+        var valueToSearchFor = 2;
 
-        final int indexInSortedList = sortedList.binarySearch(valueToSearchFor);
+        final var indexInSortedList = sortedList.binarySearch(valueToSearchFor);
 
         assertEquals(3, indexInSortedList);
     }
@@ -72,16 +72,16 @@ class IntListTest {
     @Test
     void testIndices() {
         final var intList = IntList.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
-        int[] indices1 = new int[intList.size()];
+        var indices1 = new int[intList.size()];
         final var indices = intList.indices();
         for (int i : indices) {
             indices1[i] = i;
         }
-        int[] indices2 = new int[intList.size()];
-        for (int i = 0; i < intList.size(); i++) {
+        var indices2 = new int[intList.size()];
+        for (var i = 0; i < intList.size(); i++) {
             indices2[i] = i;
         }
-        int[] indices3 = intList.indicesAsStream().toArray();
+        var indices3 = intList.indicesAsStream().toArray();
 
         assertAll(
                 () -> assertArrayEquals(indices1, indices2),

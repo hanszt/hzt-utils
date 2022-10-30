@@ -53,7 +53,7 @@ public final class DoubleSkipWhileIterator implements OfDouble {
             skip();
         }
         if (state == SkipState.NEXT_ITEM) {
-            double result = nextItem;
+            var result = nextItem;
             state = SkipState.NORMAL_ITERATION;
             return result;
         }

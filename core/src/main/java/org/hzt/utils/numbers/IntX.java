@@ -152,7 +152,7 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
 
     public static boolean isPrimeNr(long nrToCheck) {
         long counter = 0;
-        for (long num = nrToCheck; num >= 1; num--) {
+        for (var num = nrToCheck; num >= 1; num--) {
             if (nrToCheck % num == 0) {
                 counter++;
             }
@@ -212,7 +212,7 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        IntX intX = (IntX) o;
+        var intX = (IntX) o;
         return Objects.equals(integer, intX.integer);
     }
 

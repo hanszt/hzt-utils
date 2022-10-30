@@ -16,7 +16,7 @@ public final class IntTimSort extends PrimitiveTimSort<int[], IntComparator> {
 
     static void sort(int @NotNull [] array, int fromIndex, int toIndex, @NotNull IntComparator comparator) {
         PreConditions.require(fromIndex >= 0 && fromIndex <= toIndex && toIndex <= array.length);
-        final int nRemaining = toIndex - fromIndex;
+        final var nRemaining = toIndex - fromIndex;
         if (nRemaining >= 2) {
             new IntTimSort(array, comparator)
                     .sort(fromIndex, toIndex, nRemaining);
@@ -25,14 +25,14 @@ public final class IntTimSort extends PrimitiveTimSort<int[], IntComparator> {
 
     @Override
     protected void updateArrayForBinarySort(int[] array, int left, int pivotIndex, int difStartLeft) {
-        final int pivot = array[pivotIndex];
+        final var pivot = array[pivotIndex];
         updateArrayForBinarySort(array, left, difStartLeft);
         array[left] = pivot;
     }
 
     @Override
     protected void swap(int[] array, int index1, int index2) {
-        int temp = array[index1];
+        var temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }

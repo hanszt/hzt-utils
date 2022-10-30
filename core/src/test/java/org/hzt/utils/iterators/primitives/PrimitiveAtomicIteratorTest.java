@@ -14,7 +14,7 @@ class PrimitiveAtomicIteratorTest {
 
     @Test
     void testForEachRemaining() {
-        IntMutableList listX = IntMutableList.empty();
+        var listX = IntMutableList.empty();
 
         IntList.of(1, 3, 5, 7, 8, 9).atomicIterator().forEachRemaining((IntConsumer) listX::add);
 

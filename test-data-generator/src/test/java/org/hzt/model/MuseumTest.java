@@ -2,11 +2,9 @@ package org.hzt.model;
 
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
-import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -17,15 +15,15 @@ class MuseumTest {
 
     @Test
     void testIteratingOverPaintingsInMuseum() {
-        final List<Museum> museumList = TestSampleGenerator.getMuseumListContainingNulls();
+        final var museumList = TestSampleGenerator.getMuseumListContainingNulls();
 
-        final Museum firstMuseum = museumList.stream()
+        final var firstMuseum = museumList.stream()
                 .findFirst()
                 .orElseThrow();
 
         firstMuseum.forEach(System.out::println);
 
-        final List<Painting> paintings = museumList.stream()
+        final var paintings = museumList.stream()
                 .filter(museum -> Optional.ofNullable(museum).map(Museum::getDateOfOpening)
                         .filter(d -> d.isBefore(LocalDate.now()))
                         .isPresent())
@@ -40,13 +38,13 @@ class MuseumTest {
 
     @Test
     void testCreatingPaintingStreamFromMuseumSpliterator() {
-        final List<Museum> museumList = TestSampleGenerator.getMuseumListContainingNulls();
+        final var museumList = TestSampleGenerator.getMuseumListContainingNulls();
 
-        final Museum firstMuseum = museumList.stream()
+        final var firstMuseum = museumList.stream()
                 .findFirst()
                 .orElseThrow();
 
-        final List<Painting> paintings = StreamSupport.stream(firstMuseum.spliterator(), false)
+        final var paintings = StreamSupport.stream(firstMuseum.spliterator(), false)
                 .collect(Collectors.toList());
 
         assertFalse(paintings.isEmpty());

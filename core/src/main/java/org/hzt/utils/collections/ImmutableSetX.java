@@ -68,7 +68,7 @@ final class ImmutableSetX<T> implements SetX<T> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ImmutableSetX<?> that = (ImmutableSetX<?>) o;
+        var that = (ImmutableSetX<?>) o;
         return Objects.equals(immutableSet, that.immutableSet);
     }
 

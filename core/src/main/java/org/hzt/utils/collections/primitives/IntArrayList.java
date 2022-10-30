@@ -69,7 +69,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, IntConsumer, int
     }
 
     private int indexOfRange(int value, int end) {
-        for (int i = 0; i < end; i++) {
+        for (var i = 0; i < end; i++) {
             if (value == elementData[i]) {
                 return i;
             }
@@ -95,7 +95,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, IntConsumer, int
     }
 
     private int lastIndexOfRange(int value, int end) {
-        for (int i = end - 1; i >= 0; i--) {
+        for (var i = end - 1; i >= 0; i--) {
             if (value == elementData[i]) {
                 return i;
             }
@@ -104,13 +104,13 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, IntConsumer, int
     }
 
     public int removeAt(int index) {
-        int oldValue = elementData[checkIndex(index, size)];
+        var oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveInt(elementData, size, index);
         return oldValue;
     }
 
     static int fastRemoveInt(int[] array, int size, int index) {
-        final int newSize = size - 1;
+        final var newSize = size - 1;
         if (newSize > index) {
             System.arraycopy(array, index + 1, array, index, newSize - index);
         }
@@ -127,11 +127,11 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, IntConsumer, int
             return false;
         }
 
-        PrimitiveIterator.OfInt iterator1 = iterator();
-        PrimitiveIterator.OfInt iterator2 = ((IntList) o).iterator();
+        var iterator1 = iterator();
+        var iterator2 = ((IntList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            int l1 = iterator1.nextInt();
-            int l2 = iterator2.nextInt();
+            var l1 = iterator1.nextInt();
+            var l2 = iterator2.nextInt();
             if (l1 != l2) {
                 return false;
             }
@@ -141,7 +141,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, IntConsumer, int
 
     @Override
     public int hashCode() {
-        final int result = Objects.hash(size);
+        final var result = Objects.hash(size);
         return  31 * result + Arrays.hashCode(elementData);
     }
 

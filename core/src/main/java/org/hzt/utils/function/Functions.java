@@ -37,7 +37,7 @@ public final class Functions {
         Objects.requireNonNull(predicate);
         Objects.requireNonNull(mapper);
         return t -> {
-            final R r = mapper.apply(t);
+            final var r = mapper.apply(t);
             return r != null && predicate.test(r);
         };
     }
@@ -50,8 +50,8 @@ public final class Functions {
         Objects.requireNonNull(toUMapper);
         Objects.requireNonNull(toRMapper);
         return t -> {
-            final U u = toUMapper.apply(t);
-            final R r = u != null ? toRMapper.apply(u) : null;
+            final var u = toUMapper.apply(t);
+            final var r = u != null ? toRMapper.apply(u) : null;
             return r != null && predicate.test(r);
         };
     }
@@ -63,9 +63,9 @@ public final class Functions {
             Predicate<? super R> predicate) {
         PreConditions.requireAllNonNull(Object.class, toUMapper, toVMapper, toRMapper, predicate);
         return t -> {
-            final U u = toUMapper.apply(t);
-            final V v = u != null ? toVMapper.apply(u) : null;
-            final R r = u != null ? toRMapper.apply(v) : null;
+            final var u = toUMapper.apply(t);
+            final var v = u != null ? toVMapper.apply(u) : null;
+            final var r = u != null ? toRMapper.apply(v) : null;
             return r != null && predicate.test(r);
         };
     }

@@ -34,7 +34,7 @@ public interface DoubleCollector<A, R> {
                                           @NotNull BinaryOperator<A> combiner,
                                           @NotNull Collector.Characteristics... characteristics) {
         final var identityFinish = Collector.Characteristics.IDENTITY_FINISH;
-        Set<Collector.Characteristics> cs = (characteristics.length == 0)
+        var cs = (characteristics.length == 0)
                 ? Set.of(identityFinish)
                 : Collections.unmodifiableSet(EnumSet.of(identityFinish, characteristics));
         return new DoubleCollectorImpl<>(supplier, accumulator, combiner, cs);

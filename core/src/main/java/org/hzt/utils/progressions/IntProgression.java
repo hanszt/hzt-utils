@@ -64,7 +64,7 @@ public class IntProgression implements IntSequence {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        IntProgression integers = (IntProgression) o;
+        var integers = (IntProgression) o;
         return start == integers.start && endInclusive == integers.endInclusive && getStep() == integers.getStep();
     }
 
@@ -82,7 +82,7 @@ public class IntProgression implements IntSequence {
                 if (step == 0) {
                     throw new IllegalArgumentException("step may not be zero");
                 }
-                final int value = next;
+                final var value = next;
                 next += step;
                 return value;
             }

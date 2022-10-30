@@ -10,7 +10,6 @@ import org.hzt.utils.collections.primitives.LongMutableSet;
 import org.hzt.utils.collectors.primitves.LongCollector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ObjLongConsumer;
@@ -27,7 +26,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
     default <A, R> R collect(@NotNull Supplier<A> supplier,
                              @NotNull ObjLongConsumer<A> accumulator,
                              @NotNull Function<? super A, ? extends R> finisher) {
-        PrimitiveIterator.OfLong iterator = iterator();
+        var iterator = iterator();
         final var result = supplier.get();
         while (iterator.hasNext()) {
             accumulator.accept(result, iterator.nextLong());
@@ -47,7 +46,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         final var result2 = downStream2.supplier().get();
         final var accumulator1 = downStream1.accumulator();
         final var accumulator2 = downStream2.accumulator();
-        PrimitiveIterator.OfLong iterator = iterator();
+        var iterator = iterator();
         while (iterator.hasNext()) {
             final var value = iterator.nextLong();
             accumulator1.accept(result1, value);
@@ -61,7 +60,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
     }
 
     default <C extends LongMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {
-        C collection = collectionFactory.get();
+        var collection = collectionFactory.get();
         final var iterator = iterator();
         while (iterator.hasNext()) {
             collection.add(iterator.nextLong());
@@ -80,22 +79,22 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
 
     default <C extends LongMutableCollection> C takeTo(@NotNull Supplier<C> collectionFactory, long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
-        C collection = collectionFactory.get();
+        var collection = collectionFactory.get();
         if (n == 0) {
             return collection;
         }
         final PrimitiveIterable.OfLong iterable = this;
         if (iterable instanceof LongMutableCollection) {
-            LongMutableCollection c = (LongMutableCollection) iterable;
+            var c = (LongMutableCollection) iterable;
             if (n >= c.size()) {
                 collection.addAll(c);
                 return collection;
             }
         }
-        int count = 0;
+        var count = 0;
         final var iterator = iterator();
         while (iterator.hasNext()) {
-            long value = iterator.nextLong();
+            var value = iterator.nextLong();
             collection.add(value);
             if (++count == n) {
                 break;

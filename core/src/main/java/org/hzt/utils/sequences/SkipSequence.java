@@ -18,13 +18,13 @@ final class SkipSequence<T> implements SkipTakeSequence<T> {
 
     @Override
     public Sequence<T> skip(long n) {
-        final long n1 = count + n;
+        final var n1 = count + n;
         return n1 < 0 ? new SkipSequence<>(this, n) : new SkipSequence<>(upstream, n1);
     }
 
     @Override
     public Sequence<T> take(long n) {
-        final long n1 = count + n;
+        final var n1 = count + n;
         return n1 < 0 ? new TakeSequence<>(this, n) : new SubSequence<>(upstream, count, n1);
     }
 

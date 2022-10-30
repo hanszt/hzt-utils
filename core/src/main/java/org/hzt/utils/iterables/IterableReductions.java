@@ -22,8 +22,8 @@ public final class IterableReductions {
     }
 
     public static <T> T reduce(Iterable<T> iterable, T initial, BinaryOperator<T> operator) {
-        T accumulator = initial;
-        for (T t : iterable) {
+        var accumulator = initial;
+        for (var t : iterable) {
             accumulator = operator.apply(accumulator, t);
         }
         return accumulator;
@@ -31,7 +31,7 @@ public final class IterableReductions {
 
     public static <T> Optional<T> reduce(Iterator<T> iterator, BinaryOperator<T> operator) {
         if (iterator.hasNext()) {
-            T accumulator = iterator.next();
+            var accumulator = iterator.next();
             while (iterator.hasNext()) {
                 accumulator = operator.apply(accumulator, iterator.next());
             }
@@ -45,7 +45,7 @@ public final class IterableReductions {
             @NotNull Function<? super T, ? extends K> classifier,
             @NotNull Function<? super T, ? extends R> valueMapper) {
         MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
-        for (T t : iterable) {
+        for (var t : iterable) {
             groupedMap.computeIfAbsent(classifier.apply(t), key -> MutableListX.empty()).add(valueMapper.apply(t));
         }
         return groupedMap;
@@ -57,9 +57,9 @@ public final class IterableReductions {
             @NotNull Function<? super T, ? extends R> resultMapper) {
         MutableListX<R> matchingList = MutableListX.empty();
         MutableListX<R> nonMatchingList = MutableListX.empty();
-        for (T t : iterable) {
+        for (var t : iterable) {
             if (t != null) {
-                R r = resultMapper.apply(t);
+                var r = resultMapper.apply(t);
                 if (predicate.test(t)) {
                     matchingList.add(r);
                 } else {
@@ -75,11 +75,11 @@ public final class IterableReductions {
             @NotNull Function<? super T, ? extends I> toCollectionMapper,
             @NotNull Function<? super S, ? extends R> selector) {
         MutableSetX<R> common = MutableSetX.empty();
-        for (T t : iterable) {
-            final I otherIterable = toCollectionMapper.apply(t);
+        for (var t : iterable) {
+            final var otherIterable = toCollectionMapper.apply(t);
             final MutableListX<R> resultList = MutableListX.empty();
-            for (S s : otherIterable) {
-                final R r = selector.apply(s);
+            for (var s : otherIterable) {
+                final var r = selector.apply(s);
                 resultList.add(r);
             }
             if (common.isEmpty()) {
@@ -92,7 +92,7 @@ public final class IterableReductions {
     }
 
     public static <T> boolean any(@NotNull Iterable<T> iterable, @NotNull Predicate<T> predicate) {
-        for (T element : iterable) {
+        for (var element : iterable) {
             if (predicate.test(element)) {
                 return true;
             }
@@ -101,7 +101,7 @@ public final class IterableReductions {
     }
 
     public static <T> boolean all(@NotNull Iterable<T> iterable, @NotNull Predicate<T> predicate) {
-        for (T t : iterable) {
+        for (var t : iterable) {
             if (!predicate.test(t)) {
                 return false;
             }
@@ -110,7 +110,7 @@ public final class IterableReductions {
     }
 
     public static <T> boolean none(@NotNull Iterable<T> iterable, @NotNull Predicate<T> predicate) {
-        for (T t : iterable) {
+        for (var t : iterable) {
             if (predicate.test(t)) {
                 return false;
             }
@@ -119,14 +119,14 @@ public final class IterableReductions {
     }
 
     public static <T> Optional<T> findLastOf(Iterable<T> iterable) {
-        final Iterator<T> iterator = iterable.iterator();
+        final var iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             return Optional.empty();
         } else if (iterable instanceof List) {
-            List<T> list = (List<T>) iterable;
+            var list = (List<T>) iterable;
             return Optional.ofNullable(list.get(list.size() - 1));
         } else {
-            T result = iterator.next();
+            var result = iterator.next();
             while (iterator.hasNext()) {
                 result = iterator.next();
             }
@@ -135,7 +135,7 @@ public final class IterableReductions {
     }
 
     public static <T> Optional<T> findLast(Iterable<T> iterable, @NotNull Predicate<T> predicate) {
-        final Iterator<T> iterator = iterable.iterator();
+        final var iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             throw IterableXHelper.noValuePresentException();
         } else if (iterable instanceof List) {

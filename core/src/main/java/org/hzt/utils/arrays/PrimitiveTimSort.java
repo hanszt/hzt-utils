@@ -28,7 +28,7 @@ public abstract class PrimitiveTimSort<A, C> {
     private int stackSize = 0;
 
     protected PrimitiveTimSort(final int length, final A array, final A tempArray, final C comparator) {
-        final int stackLen = getStackLength(length);
+        final var stackLen = getStackLength(length);
         this.array = array;
         this.tempArray = tempArray;
         this.comparator = comparator;
@@ -38,11 +38,11 @@ public abstract class PrimitiveTimSort<A, C> {
 
     protected void sort(final int fromIndex, final int toIndex, final int nRemaining) {
         if (nRemaining < MIN_MERGE) {
-            final int initRunLen = countRunAndMakeAscending(array, fromIndex, toIndex, comparator);
+            final var initRunLen = countRunAndMakeAscending(array, fromIndex, toIndex, comparator);
             binarySort(array, fromIndex, toIndex, fromIndex + initRunLen, comparator);
         } else {
-            final int minRun = minRunLength(nRemaining);
-            final int loIndex = getLo(array, fromIndex, toIndex, comparator, nRemaining, minRun);
+            final var minRun = minRunLength(nRemaining);
+            final var loIndex = getLo(array, fromIndex, toIndex, comparator, nRemaining, minRun);
 
             PreConditions.require(loIndex == toIndex);
             mergeForceCollapse();
@@ -63,10 +63,10 @@ public abstract class PrimitiveTimSort<A, C> {
 
     private int getLo(final A array, final int initLo, final int hi, final C comparator,
                       final int initNRemaining, final int minRun) {
-        int nRemaining = initNRemaining;
-        int lo = initLo;
+        var nRemaining = initNRemaining;
+        var lo = initLo;
         do {
-            final int runLen = getRunLen(array, lo, hi, comparator, nRemaining, minRun);
+            final var runLen = getRunLen(array, lo, hi, comparator, nRemaining, minRun);
             pushRun(lo, runLen);
             mergeCollapse();
             lo += runLen;
@@ -77,18 +77,18 @@ public abstract class PrimitiveTimSort<A, C> {
 
     private void binarySort(final A array, final int lo, final int hi, final int initStart, final C comparator) {
         PreConditions.require(lo <= initStart && initStart <= hi);
-        int start = initStart;
+        var start = initStart;
         if (start == lo) {
             ++start;
         }
         while (start < hi) {
             PreConditions.require(lo <= start);
-            int left = lo;
-            int right = start;
+            var left = lo;
+            var right = start;
 
-            final int pivotIndex = start;
+            final var pivotIndex = start;
             while (left < right) {
-                final int mid = (left + right) >>> 1;
+                final var mid = (left + right) >>> 1;
                 if (compare(comparator, array, pivotIndex, mid) < 0) {
                     right = mid;
                 } else {
@@ -96,7 +96,7 @@ public abstract class PrimitiveTimSort<A, C> {
                 }
             }
             PreConditions.require(left == right);
-            final int difStartLeft = start - left;
+            final var difStartLeft = start - left;
             updateArrayForBinarySort(array, left, pivotIndex, difStartLeft);
             ++start;
         }
@@ -118,9 +118,9 @@ public abstract class PrimitiveTimSort<A, C> {
 
     protected int getRunLen(final A array, final int lo, final int hi, final C comparator,
                             final int nRemaining, final int minRun) {
-        int runLen = countRunAndMakeAscending(array, lo, hi, comparator);
+        var runLen = countRunAndMakeAscending(array, lo, hi, comparator);
         if (runLen < minRun) {
-            final int force = Math.min(nRemaining, minRun);
+            final var force = Math.min(nRemaining, minRun);
             binarySort(array, lo, lo + force, lo + runLen, comparator);
             runLen = force;
         }
@@ -129,7 +129,7 @@ public abstract class PrimitiveTimSort<A, C> {
 
     private int countRunAndMakeAscending(final A array, final int lo, final int hi, final C comparator) {
         PreConditions.require(lo < hi);
-        int runHi = lo + 1;
+        var runHi = lo + 1;
         if (runHi == hi) {
             return 1;
         }
@@ -147,8 +147,8 @@ public abstract class PrimitiveTimSort<A, C> {
     }
 
     private void reverseRange(final A array, final int initLo, final int initHi) {
-        int hi = initHi - 1;
-        int lo = initLo;
+        var hi = initHi - 1;
+        var lo = initLo;
         while (lo < hi) {
             swap(array, lo++, hi--);
         }
@@ -156,7 +156,7 @@ public abstract class PrimitiveTimSort<A, C> {
 
     private void mergeCollapse() {
         while (stackSize > 1) {
-            int n = stackSize - 2;
+            var n = stackSize - 2;
             if (runLength[n] > runLength[n + 1]) {
                 return; // Invariant is established
             }
@@ -174,7 +174,7 @@ public abstract class PrimitiveTimSort<A, C> {
 
     private void mergeForceCollapse() {
         while (stackSize > 1) {
-            int n = stackSize - 2;
+            var n = stackSize - 2;
             if (n > 0 && runLength[n - 1] < runLength[n + 1]) {
                 --n;
             }
@@ -187,10 +187,10 @@ public abstract class PrimitiveTimSort<A, C> {
         PreConditions.require(i >= 0);
         PreConditions.require(i == stackSize - 2 || i == stackSize - 3);
 
-        int base1 = runBase[i];
-        int len1 = runLength[i];
-        final int base2 = runBase[i + 1];
-        final int len2 = runLength[i + 1];
+        var base1 = runBase[i];
+        var len1 = runLength[i];
+        final var base2 = runBase[i + 1];
+        final var len2 = runLength[i + 1];
 
         PreConditions.require(len1 > 0 && len2 > 0);
         PreConditions.require(base1 + len1 == base2);
@@ -202,7 +202,7 @@ public abstract class PrimitiveTimSort<A, C> {
         }
 
         --stackSize;
-        final int ofsRight = gallopRight(array, base2, array, base1, len1, 0, comparator);
+        final var ofsRight = gallopRight(array, base2, array, base1, len1, 0, comparator);
 
         PreConditions.require(ofsRight >= 0);
 
@@ -211,7 +211,7 @@ public abstract class PrimitiveTimSort<A, C> {
         if (len1 == 0) {
             return;
         }
-        final int ofsLeft = gallopLeft(array, base1 + len1 - 1, array, base2, len2, len2 - 1, comparator);
+        final var ofsLeft = gallopLeft(array, base1 + len1 - 1, array, base2, len2, len2 - 1, comparator);
 
         merge(base1, len1, base2, ofsLeft);
     }
@@ -222,15 +222,15 @@ public abstract class PrimitiveTimSort<A, C> {
     private void mergeLo(final int base1, final int initLen1, final int base2, final int initLen2) {
         PreConditions.require(initLen1 > 0 && initLen2 > 0 && base1 + initLen1 == base2);
         // Copy first run into temp array
-        final A localArray = this.array; // For performance
-        final A tmpArray = ensureCapacity(initLen1);
-        int cursor1 = 0; // Indexes into tmp array
-        int cursor2 = base2;   // Indexes int a
-        int dest = base1;      // Indexes int a
+        final var localArray = this.array; // For performance
+        final var tmpArray = ensureCapacity(initLen1);
+        var cursor1 = 0; // Indexes into tmp array
+        var cursor2 = base2;   // Indexes int a
+        var dest = base1;      // Indexes int a
         System.arraycopy(localArray, base1, tmpArray, cursor1, initLen1);
         // Move first element of second run and deal with degenerate cases
         setArrayValue(localArray, cursor2++, dest++);
-        int len2 = initLen2;
+        var len2 = initLen2;
         if (--len2 == 0) {
             System.arraycopy(tmpArray, cursor1, localArray, dest, initLen1);
             return;
@@ -240,13 +240,13 @@ public abstract class PrimitiveTimSort<A, C> {
             setArrayValue(localArray, cursor1, dest + len2);
             return;
         }
-        final C localComparator = this.comparator;  // Use local variable for performance
-        int localMinGallop = this.minGallop;    //  "    "       "     "      "
-        int len1 = initLen1;
+        final var localComparator = this.comparator;  // Use local variable for performance
+        var localMinGallop = this.minGallop;    //  "    "       "     "      "
+        var len1 = initLen1;
         outer:
         while (true) {
-            int count1 = 0; // Number of times in a row that first run won
-            int count2 = 0; // Number of times in a row that second run won
+            var count1 = 0; // Number of times in a row that first run won
+            var count2 = 0; // Number of times in a row that second run won
             // Do the straightforward thing until (if ever) one run starts winning consistently.
             do {
                 PreConditions.require(len1 > 1 && len2 > 0);
@@ -325,20 +325,20 @@ public abstract class PrimitiveTimSort<A, C> {
     private void mergeHi(final int base1, final int initLen1, final int base2, final int initLen2) {
         PreConditions.require(initLen1 > 0 && initLen2 > 0 && base1 + initLen1 == base2);
         // Copy second run into temp array
-        final A localArray = this.array; // For performance
-        final A tmpArray = ensureCapacity(initLen2);
+        final var localArray = this.array; // For performance
+        final var tmpArray = ensureCapacity(initLen2);
         System.arraycopy(localArray, base2, tmpArray, 0, initLen2);
 
-        int cursor1 = base1 + initLen1 - 1;  // Indexes into a
-        int dest = base2 + initLen2 - 1;     // Indexes into a
+        var cursor1 = base1 + initLen1 - 1;  // Indexes into a
+        var dest = base2 + initLen2 - 1;     // Indexes into a
         // Move last element of first run and deal with degenerate cases
         setArrayValue(localArray, cursor1--, dest--);
-        int len1 = initLen1;
+        var len1 = initLen1;
         if (--len1 == 0) {
             System.arraycopy(tmpArray, 0, localArray, dest - (initLen2 - 1), initLen2);
             return;
         }
-        int cursor2 = initLen2 - 1; // Indexes into tmp array
+        var cursor2 = initLen2 - 1; // Indexes into tmp array
         if (initLen2 == 1) {
             dest -= len1;
             cursor1 -= len1;
@@ -346,13 +346,13 @@ public abstract class PrimitiveTimSort<A, C> {
             setArrayValue(tmpArray, cursor2, localArray, dest);
             return;
         }
-        final C localComparator = this.comparator;  // Use local variable for performance
-        int localMinGallop = this.minGallop;    //  "    "       "     "      "
-        int len2 = initLen2;
+        final var localComparator = this.comparator;  // Use local variable for performance
+        var localMinGallop = this.minGallop;    //  "    "       "     "      "
+        var len2 = initLen2;
         outer:
         while (true) {
-            int count1 = 0; // Number of times in a row that first run won
-            int count2 = 0; // Number of times in a row that second run won
+            var count1 = 0; // Number of times in a row that first run won
+            var count2 = 0; // Number of times in a row that second run won
             /*
              * Do the straightforward thing until (if ever) one run
              * appears to win consistently.
@@ -462,10 +462,10 @@ public abstract class PrimitiveTimSort<A, C> {
     private int gallopRight(final A array1, final int cursor, final A array2,
                             final int base, final int len, final int hint, final C comparator) {
         PreConditions.require(hint >= 0 && hint < len);
-        int ofs = 1;
-        int lastOfs = 0;
+        var ofs = 1;
+        var lastOfs = 0;
         if (compare(comparator, array1, cursor, array2, base + hint) < 0) {
-            final int maxOfs = hint + 1;
+            final var maxOfs = hint + 1;
 
             while (ofs < maxOfs && compare(comparator, array1, cursor, array2, base + hint - ofs) < 0) {
                 lastOfs = ofs;
@@ -474,11 +474,11 @@ public abstract class PrimitiveTimSort<A, C> {
             }
             ofs = Math.min(ofs, maxOfs);
 
-            final int tmp = lastOfs;
+            final var tmp = lastOfs;
             lastOfs = hint - ofs;
             ofs = hint - tmp;
         } else {
-            final int maxOfs = len - hint;
+            final var maxOfs = len - hint;
 
             while (ofs < maxOfs && compare(comparator, array1, cursor, array2, base + hint + ofs) >= 0) {
                 lastOfs = ofs;
@@ -495,7 +495,7 @@ public abstract class PrimitiveTimSort<A, C> {
         ++lastOfs;
 
         while (lastOfs < ofs) {
-            final int maxOfs = lastOfs + ((ofs - lastOfs) >>> 1);
+            final var maxOfs = lastOfs + ((ofs - lastOfs) >>> 1);
             if (compare(comparator, array1, cursor, array2, base + maxOfs) < 0) {
                 ofs = maxOfs;
             } else {
@@ -511,10 +511,10 @@ public abstract class PrimitiveTimSort<A, C> {
     private int gallopLeft(final A array1, final int cursor, final A array2,
                            final int base, final int len, final int hint, final C comparator) {
         PreConditions.require(hint >= 0 && hint < len);
-        int lastOfs = 0;
-        int ofs = 1;
+        var lastOfs = 0;
+        var ofs = 1;
         if (compare(comparator, array1, cursor, array2, base + hint) > 0) {
-            final int maxOfs = len - hint;
+            final var maxOfs = len - hint;
 
             while (ofs < maxOfs && compare(comparator, array1, cursor, array2, base + hint + ofs) > 0) {
                 lastOfs = ofs;
@@ -526,7 +526,7 @@ public abstract class PrimitiveTimSort<A, C> {
             lastOfs += hint;
             ofs += hint;
         } else {
-            final int maxOfs = hint + 1;
+            final var maxOfs = hint + 1;
 
             while (ofs < maxOfs && compare(comparator, array1, cursor, array2, base + hint - ofs) <= 0) {
                 lastOfs = ofs;
@@ -535,7 +535,7 @@ public abstract class PrimitiveTimSort<A, C> {
             }
             ofs = Math.min(ofs, maxOfs);
 
-            final int tmp = lastOfs;
+            final var tmp = lastOfs;
             lastOfs = hint - ofs;
             ofs = hint - tmp;
         }
@@ -544,7 +544,7 @@ public abstract class PrimitiveTimSort<A, C> {
         ++lastOfs;
 
         while (lastOfs < ofs) {
-            final int maxOfs = lastOfs + ((ofs - lastOfs) >>> 1);
+            final var maxOfs = lastOfs + ((ofs - lastOfs) >>> 1);
             if (compare(comparator, array1, cursor, array2, base + maxOfs) > 0) {
                 lastOfs = maxOfs + 1;
             } else {
@@ -563,8 +563,8 @@ public abstract class PrimitiveTimSort<A, C> {
 
     private static int minRunLength(final int initN) {
         PreConditions.require(initN >= 0);
-        int r = 0;
-        int n = initN;
+        var r = 0;
+        var n = initN;
         while (n >= MIN_MERGE) {
             r |= n & 1;
             n >>= 1;
@@ -584,7 +584,7 @@ public abstract class PrimitiveTimSort<A, C> {
     }
 
     private static int calculateNewLength(final int minCapacity, final int length) {
-        int newLength = minCapacity | (minCapacity >> 1);
+        var newLength = minCapacity | (minCapacity >> 1);
         newLength |= newLength >> 2;
         newLength |= newLength >> 4;
         newLength |= newLength >> 8;

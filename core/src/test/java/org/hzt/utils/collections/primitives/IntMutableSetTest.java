@@ -15,7 +15,7 @@ class IntMutableSetTest {
 
     @Test
     void testIntSetSize() {
-        IntMutableSet set = IntMutableSet.empty();
+        var set = IntMutableSet.empty();
         set.addAll(IntList.of(-1, -2231, 0, 3, 3, 4, 5, 6, 5));
 
         assertEquals(7, set.size());
@@ -23,7 +23,7 @@ class IntMutableSetTest {
 
     @Test
     void testCountElementsInIntSetThroughSequence() {
-        IntMutableSet set = IntMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
+        var set = IntMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
 
         final var count = set.asSequence().count();
 
@@ -32,7 +32,7 @@ class IntMutableSetTest {
 
     @Test
     void testSequenceToIntSet() {
-        IntMutableSet ints = IntMutableSet.empty();
+        var ints = IntMutableSet.empty();
         ints.addAll(IntRange.of(-10_000, 9_000));
         ints.addAll(IntRange.of(1_000, 90_000));
         ints.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
@@ -50,7 +50,7 @@ class IntMutableSetTest {
 
     @Test
     void testThrowsWhenIteratedOverEmptySet() {
-        IntMutableSet set = IntMutableSet.empty();
+        var set = IntMutableSet.empty();
         final var iterator = set.iterator();
         assertThrows(NoSuchElementException.class, iterator::next);
     }

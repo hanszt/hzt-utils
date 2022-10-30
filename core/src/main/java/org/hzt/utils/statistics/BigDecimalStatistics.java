@@ -24,7 +24,7 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
     @Override
     public void accept(BigDecimal value) {
         super.accept(value);
-        BigDecimal squareValue = value.multiply(value);
+        var squareValue = value.multiply(value);
         sumOfSquare = sumOfSquare.add(squareValue);
     }
 
@@ -52,9 +52,9 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
 
     public BigDecimalX getStandardDeviation(int scale, RoundingMode roundingMode, MathContext mathContext) {
         final BigDecimal average = getAverage(scale, roundingMode);
-        final BigDecimal subtract = (getSumOfSquare().divide(BigDecimal.valueOf(getCount()), scale, roundingMode))
+        final var subtract = (getSumOfSquare().divide(BigDecimal.valueOf(getCount()), scale, roundingMode))
                 .subtract(average.multiply(average));
-        final BigDecimal stdDeviation = getCount() > 0 ?
+        final var stdDeviation = getCount() > 0 ?
                 subtract.sqrt(mathContext) : BigDecimal.ZERO;
         return BigDecimalX.of(stdDeviation.setScale(scale, roundingMode));
     }

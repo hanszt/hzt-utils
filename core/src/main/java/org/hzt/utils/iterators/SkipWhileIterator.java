@@ -24,7 +24,7 @@ public final class SkipWhileIterator<T> implements Iterator<T> {
 
     private void skip() {
         while (iterator.hasNext()) {
-            T prev = nextItem;
+            var prev = nextItem;
             nextItem = iterator.next();
             if (!predicate.test(nextItem)) {
                 if (prev != null && inclusive && iterator.hasNext()) {
@@ -51,7 +51,7 @@ public final class SkipWhileIterator<T> implements Iterator<T> {
             skip();
         }
         if (state == SkipState.NEXT_ITEM) {
-            T result = nextItem;
+            var result = nextItem;
             nextItem = null;
             state = SkipState.NORMAL_ITERATION;
             return result;

@@ -28,7 +28,7 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
 
     HashMapX(Iterable<Entry<K, V>> iterable) {
         map = new LinkedHashMap<>();
-        for (Map.Entry<K, V> entry : iterable) {
+        for (var entry : iterable) {
             map.put(entry.getKey(), entry.getValue());
         }
     }
@@ -36,7 +36,7 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
     @SafeVarargs
     HashMapX(Pair<K, V>... pairs) {
         map = new HashMap<>();
-        for (Pair<K, V> pair : pairs) {
+        for (var pair : pairs) {
             map.put(pair.first(), pair.second());
         }
     }
@@ -44,7 +44,7 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
     @SafeVarargs
     HashMapX(Entry<? extends K, ? extends V>... entries) {
         map = new HashMap<>();
-        for (Entry<? extends K, ? extends V> entry : entries) {
+        for (var entry : entries) {
             map.put(entry.getKey(), entry.getValue());
         }
     }
@@ -124,7 +124,7 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        HashMapX<?, ?> mapX = (HashMapX<?, ?>) o;
+        var mapX = (HashMapX<?, ?>) o;
         return map.equals(mapX.map);
     }
 

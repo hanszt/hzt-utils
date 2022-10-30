@@ -3,7 +3,6 @@ package org.hzt.utils.sequences;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;
-import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.CollectionX;
@@ -60,9 +59,9 @@ class SequenceTest {
 
     @Test
     void testSimpleStreamWithMapYieldsIteratorWithNext() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        var list = ListX.of("Hallo", "dit", "is", "een", "test");
 
-        final Sequence<Integer> sequence = Sequence.of(list)
+        final var sequence = Sequence.of(list)
                 .map(SequenceTest::lengthMappingNotCalledWhenNotConsumed);
 
         assertTrue(sequence.iterator()::hasNext);
@@ -75,9 +74,9 @@ class SequenceTest {
 
     @Test
     void testMapReduce() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        var list = ListX.of("Hallo", "dit", "is", "een", "test");
 
-        final double sum = list
+        final var sum = list
                 .map(String::length)
                 .mapToDouble(Double::valueOf)
                 .sum();
@@ -87,7 +86,7 @@ class SequenceTest {
 
     @Test
     void testSimpleStreamWithFilterYieldsIteratorWithNext() {
-        final ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6);
+        final var list = ListX.of(1, 2, 3, 4, 5, 6);
 
         final var sequence = Sequence.of(list)
                 .filter(SequenceTest::filterNotCalledWhenNotConsumed)
@@ -106,7 +105,7 @@ class SequenceTest {
 
     @Test
     void testFilterReduce() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        var list = ListX.of("Hallo", "dit", "is", "een", "test");
         final int sum = Sequence.of(list)
                 .map(String::length)
                 .filter(l -> l > 3)
@@ -118,7 +117,7 @@ class SequenceTest {
 
     @Test
     void testMapFilterReduce() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        var list = ListX.of("Hallo", "dit", "is", "een", "test");
         final double sum = Sequence.of(list)
                 .map(String::length)
                 .map(Double::valueOf)
@@ -130,7 +129,7 @@ class SequenceTest {
 
     @Test
     void testFilterIndexed() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        var list = ListX.of("Hallo", "dit", "is", "een", "test");
 
         final var sum = Sequence.of(list)
                 .map(String::length)
@@ -153,9 +152,9 @@ class SequenceTest {
 
     @Test
     void testMapFilterReduceToIntArray() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        var list = ListX.of("Hallo", "dit", "is", "een", "test");
 
-        final int[] result = list
+        final var result = list
                 .mapToInt(String::length)
                 .filter(l -> l > 3)
                 .toArray();
@@ -165,8 +164,8 @@ class SequenceTest {
 
     @Test
     void testMapFilterReduceToList() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
-        final ListX<Integer> result = list.asSequence()
+        var list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final var result = list.asSequence()
                 .map(String::length)
                 .filter(l -> l > 3)
                 .toListX();
@@ -187,7 +186,7 @@ class SequenceTest {
 
     @Test
     void testFlatMapToList() {
-        final ListX<Iterable<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
+        final var list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
                 new ArrayDeque<>(Collections.singleton("test")));
 
         final var result = list.asSequence()
@@ -203,7 +202,7 @@ class SequenceTest {
 
     @Test
     void testMapMultiToList() {
-        final ListX<Iterable<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
+        final var list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
                 new ArrayDeque<>(Collections.singleton("test")));
 
         final var result = list.asSequence()
@@ -236,17 +235,17 @@ class SequenceTest {
 
     @Test
     void testCollectGroupingBy() {
-        final List<Museum> museumList = TestSampleGenerator.getMuseumListContainingNulls();
+        final var museumList = TestSampleGenerator.getMuseumListContainingNulls();
 
-        final Map<Painter, List<Painting>> expected = museumList.stream()
+        final var expected = museumList.stream()
                 .flatMap(m -> m.getPaintings().stream())
                 .collect(Collectors.groupingBy(Painting::painter));
 
-        final Map<Painter, List<Painting>> actual = Sequence.of(museumList)
+        final var actual = Sequence.of(museumList)
                 .flatMap(Museum::getPaintings)
                 .collect(Collectors.groupingBy(Painting::painter));
 
-        final MapX<Painter, MutableListX<Painting>> actual2 = Sequence.of(museumList)
+        final var actual2 = Sequence.of(museumList)
                 .flatMap(Museum::getPaintings)
                 .groupBy(Painting::painter);
 
@@ -297,7 +296,7 @@ class SequenceTest {
 
     @Test
     void testLargeSequence() {
-        final ListX<BigDecimal> bigDecimals = IntRange.of(0, 100_000)
+        final var bigDecimals = IntRange.of(0, 100_000)
                 .filter(IntX::isEven)
                 .boxed()
                 .map(BigDecimal::valueOf)
@@ -309,7 +308,7 @@ class SequenceTest {
 
     @Test
     void testTakeWhile() {
-        final ListX<String> strings = Sequence.generate(0, i -> ++i)
+        final var strings = Sequence.generate(0, i -> ++i)
                 .takeWhile(i -> i < 10)
                 .filter(LongX::isEven)
                 .onEach(It::println)
@@ -322,7 +321,7 @@ class SequenceTest {
 
     @Test
     void testTakeWhileInclusive() {
-        final ListX<String> strings = Sequence.generate(1, i -> i + 2)
+        final var strings = Sequence.generate(1, i -> i + 2)
                 .map(String::valueOf)
                 .takeWhileInclusive(s -> !s.contains("0"))
                 .onEach(It::println)
@@ -334,7 +333,7 @@ class SequenceTest {
 
     @Test
     void testSkipWhile() {
-        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         final var integers = list.asSequence()
                 .skipWhile(i -> i != 5)
@@ -347,7 +346,7 @@ class SequenceTest {
 
     @Test
     void testSkipWhileInclusive() {
-        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         final var integers = list.asSequence()
                 .skipWhileInclusive(i -> i != 5)
@@ -360,9 +359,9 @@ class SequenceTest {
 
     @Test
     void testIterateRandomWithinBound() {
-        final IntList integers = IntList.of(1, 2, 3, 4, 5);
+        final var integers = IntList.of(1, 2, 3, 4, 5);
 
-        final MapX<Integer, IntMutableList> group = IntSequence
+        final var group = IntSequence
                 .generate(integers::random)
                 .take(10_000_000)
                 .group();
@@ -530,10 +529,10 @@ class SequenceTest {
 
     @Test
     void testZipSequenceWithIterable() {
-        Sequence<Integer> values = Sequence.of(0, 1, 2, 3, 4, 5, 6, 7, 4);
-        List<Integer> others = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
+        var values = Sequence.of(0, 1, 2, 3, 4, 5, 6, 7, 4);
+        var others = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
 
-        final List<Integer> integers = values.zip(others, Integer::compareTo).toList();
+        final var integers = values.zip(others, Integer::compareTo).toList();
 
         assertEquals(Arrays.asList(-1, -1, -1, 0, 1, 1, 1), integers);
     }
@@ -668,7 +667,7 @@ class SequenceTest {
 
     @Test
     void testSequenceAsIntRange() {
-        final int year = 2020;
+        final var year = 2020;
 
         final var daysOfYear = Sequence
                 .generate(LocalDate.of(year, Month.JANUARY, 1), date -> date.plusDays(1))
@@ -695,7 +694,7 @@ class SequenceTest {
 
     @Test
     void testToSortedLocalDateTime() {
-        final LocalDateTime initDateTime = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0, 0);
+        final var initDateTime = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0, 0);
 
         final var sorted = IntRange.of(0, 1_000)
                 .mapToObj(initDateTime::plusDays)
@@ -746,7 +745,7 @@ class SequenceTest {
 
     @Test
     void testIntersperseBySupplier() {
-        @SuppressWarnings("squid:S5977") final Random random = new Random(0);
+        @SuppressWarnings("squid:S5977") final var random = new Random(0);
 
         final var integers = Sequence.generate(0, i -> --i)
                 .take(10)
@@ -760,8 +759,8 @@ class SequenceTest {
 
     @Test
     void testSequenceOfZoneIds() {
-        Instant now = Instant.now();
-        ZonedDateTime current = now.atZone(ZoneId.systemDefault());
+        var now = Instant.now();
+        var current = now.atZone(ZoneId.systemDefault());
         It.printf("Current time is %s%n%n", current);
 
         final var noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
@@ -777,11 +776,11 @@ class SequenceTest {
 
     @Test
     void testTimeZonesAntarctica() {
-        Instant now = Instant.now();
-        ZonedDateTime current = now.atZone(ZoneId.systemDefault());
+        var now = Instant.now();
+        var current = now.atZone(ZoneId.systemDefault());
         It.printf("Current time is %s%n%n", current);
 
-        final Sequence<String> timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.getId().contains("Antarctica"));
+        final var timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.getId().contains("Antarctica"));
 
         timeZonesAntarctica.forEach(It::println);
 
@@ -902,7 +901,7 @@ class SequenceTest {
 
     @Test
     void testSequenceMinusOtherIterable() {
-        List<Integer> intsToRemove = List.of(1, 34, 3, 5);
+        var intsToRemove = List.of(1, 34, 3, 5);
 
         final var pair = IntRange.of(0, 10)
                 .boxed()
@@ -924,7 +923,7 @@ class SequenceTest {
 
             final var index = new AtomicInteger();
             final AtomicIterator<String> atomicIterator = action -> {
-                boolean hasNext = index.get() < nodes.size();
+                var hasNext = index.get() < nodes.size();
                 if (hasNext) {
                     action.accept(nodes.get(index.getAndIncrement()));
                 }
@@ -961,7 +960,7 @@ class SequenceTest {
 
     @Test
     void testSequenceFromIndexedDataStructure() {
-        Nodes<String> nodes = new Nodes<>("This", "is", "a", "test");
+        var nodes = new Nodes<String>("This", "is", "a", "test");
 
         final var strings = IntRange.of(0, nodes.size())
                 .mapToObj(nodes::get)

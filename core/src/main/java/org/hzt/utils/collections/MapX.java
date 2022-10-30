@@ -165,8 +165,8 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     default <K1, V1> MapX<K1, V1> inverted(@NotNull Function<? super V, ? extends K1> toKeyMapper,
                                            @NotNull Function<? super K, ? extends V1> toValueMapper) {
         Map<K1, V1> resultMap = new HashMap<>();
-        for (Map.Entry<K, V> entry : this) {
-            V value = entry.getValue();
+        for (var entry : this) {
+            var value = entry.getValue();
             if (value != null) {
                 resultMap.put(toKeyMapper.apply(value), toValueMapper.apply(entry.getKey()));
             }
@@ -191,16 +191,16 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     MutableSetX<Map.Entry<K, V>> entrySet();
 
     default V getOrDefault(Object key, V defaultValue) {
-        V value = get(key);
+        var value = get(key);
         return (value != null || containsKey(key)) ? value : defaultValue;
     }
 
     default void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
         Objects.requireNonNull(action);
-        for (Map.Entry<K, V> entry : entrySet()) {
+        for (var entry : entrySet()) {
             try {
-                K k = entry.getKey();
-                V v = entry.getValue();
+                var k = entry.getKey();
+                var v = entry.getValue();
                 action.accept(k, v);
             } catch (IllegalStateException ise) {
                 // this usually means the entry is no longer in the map.

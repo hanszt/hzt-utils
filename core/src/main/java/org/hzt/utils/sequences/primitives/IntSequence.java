@@ -173,7 +173,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         if (n == 0) {
             return PrimitiveIterators::emptyIntIterator;
         } else if (this instanceof IntSkipTakeSequence) {
-            IntSkipTakeSequence skipTakeSequence = (IntSkipTakeSequence) this;
+            var skipTakeSequence = (IntSkipTakeSequence) this;
             return skipTakeSequence.take(n);
         } else {
             return new IntTakeSequence(this, n);
@@ -196,7 +196,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         if (n == 0) {
             return this;
         } else if (this instanceof IntSkipTakeSequence) {
-            IntSkipTakeSequence skipTakeSequence = (IntSkipTakeSequence) this;
+            var skipTakeSequence = (IntSkipTakeSequence) this;
             return skipTakeSequence.skip(n);
         } else {
             return new IntSkipSequence(this, n);

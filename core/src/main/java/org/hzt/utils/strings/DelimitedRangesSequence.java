@@ -55,8 +55,8 @@ final class DelimitedRangesSequence implements Sequence<IntRange> {
                         nextItem = IntRange.of(currentStartIndex, input.length());
                         nextSearchIndex = -1;
                     } else {
-                        final int index = match.first();
-                        final int length = match.second();
+                        final var index = match.first();
+                        final var length = match.second();
                         nextItem = IntRange.of(currentStartIndex, index);
                         currentStartIndex = index + length;
                         nextSearchIndex = currentStartIndex + ((length == 0) ? 1 : 0);
@@ -74,7 +74,7 @@ final class DelimitedRangesSequence implements Sequence<IntRange> {
             if (nextState == State.DONE) {
                 throw new NoSuchElementException("Iterator is done");
             }
-            final IntRange result = nextItem;
+            final var result = nextItem;
             // Clean next to avoid keeping reference on yielded instance
             nextItem = null;
             nextState = State.NEXT_UNKNOWN;

@@ -44,7 +44,7 @@ public class LongProgression implements LongSequence {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LongProgression longs = (LongProgression) o;
+        var longs = (LongProgression) o;
         return start == longs.start && endInclusive == longs.endInclusive && step == longs.step;
     }
 
@@ -59,7 +59,7 @@ public class LongProgression implements LongSequence {
             private long next = start;
             @Override
             public long nextLong() {
-                final long value = next;
+                final var value = next;
                 next += step;
                 return value;
             }

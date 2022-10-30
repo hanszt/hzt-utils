@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -24,10 +23,10 @@ class TransformableTest {
 
     @Test
     void testCreateATransformableOfSomethingAndUseTheDefaultFunctions() {
-        final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
+        final var vanGoghAuction = Generator.createVanGoghAuction();
         final var nijntje = Painting.of("Nijntje");
 
-        final LocalDate localDate = Transformable.from(vanGoghAuction)
+        final var localDate = Transformable.from(vanGoghAuction)
                 .apply(auction -> auction.setMostPopularPainting(nijntje))
                 .let(PaintingAuction::getDateOfOpening);
 
@@ -41,7 +40,7 @@ class TransformableTest {
     void testTransformablePipeline() {
         final MutableListX<Painting> list = MutableListX.empty();
 
-        final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
+        final var vanGoghAuction = Generator.createVanGoghAuction();
 
         final var nijntje = "Nijntje";
 

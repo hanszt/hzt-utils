@@ -5,7 +5,6 @@ import org.hzt.utils.statistics.IntStatistics;
 import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.function.IntPredicate;
 
 @FunctionalInterface
@@ -18,7 +17,7 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
 
     default long count(@NotNull IntPredicate predicate) {
         long count = 0;
-        PrimitiveIterator.OfInt iterator = this.iterator();
+        var iterator = this.iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextInt())) {
                 count++;
@@ -53,7 +52,7 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
 
     default long sum() {
         long sum = 0;
-        PrimitiveIterator.OfInt iterator = iterator();
+        var iterator = iterator();
         while (iterator.hasNext()) {
             sum += iterator.nextInt();
         }
@@ -73,8 +72,8 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
     }
 
     default @NotNull IntStatistics stats() {
-        IntStatistics intStatistics = new IntStatistics();
-        PrimitiveIterator.OfInt iterator = iterator();
+        var intStatistics = new IntStatistics();
+        var iterator = iterator();
         while (iterator.hasNext()) {
             intStatistics.accept(iterator.nextInt());
         }

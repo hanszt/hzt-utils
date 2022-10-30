@@ -25,7 +25,7 @@ public final class StringPredicates {
         return startsWith(Function.identity(), string);
     }
 
-    public static <T> Predicate<T> startsWith(Function<? super T, ? extends String> toStringMapper, String string) {
+    public static <T> Predicate<T> startsWith(Function<? super T, String> toStringMapper, String string) {
         return t -> toStringMapper.apply(t).startsWith(string);
     }
 
@@ -37,9 +37,9 @@ public final class StringPredicates {
         return contains(string, Function.identity());
     }
 
-    public static <T> Predicate<T> contains(String string, Function<? super T, ? extends String> toStringMapper) {
+    public static <T> Predicate<T> contains(String string, Function<? super T, String> toStringMapper) {
         return t -> {
-            final String mappedString = toStringMapper.apply(t);
+            final var mappedString = toStringMapper.apply(t);
             return mappedString != null && mappedString.contains(string);
         };
     }
@@ -72,7 +72,7 @@ public final class StringPredicates {
         return string -> !string.contains(other);
     }
 
-    public static <T> Predicate<T> doesntContain(String other, Function<? super T, ? extends String> toStringMapper) {
+    public static <T> Predicate<T> doesntContain(String other, Function<? super T, String> toStringMapper) {
         return t -> !toStringMapper.apply(t).contains(other);
     }
 

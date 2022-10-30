@@ -1,8 +1,5 @@
 package org.hzt.utils.collectors;
 
-import org.hzt.utils.statistics.BigDecimalStatistics;
-import org.hzt.utils.statistics.BigDecimalSummaryStatistics;
-import org.hzt.utils.statistics.DoubleStatistics;
 import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
@@ -10,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 import static org.hzt.utils.collectors.BigDecimalCollectors.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -20,11 +16,11 @@ class BigDecimalCollectorsTest {
 
     @Test
     void testSummarizingBigDecimal() {
-        final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
+        final var sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
         It.println("Sample bankaccountList:");
         sampleBankAccountList.forEach(It::println);
 
-        final BigDecimalSummaryStatistics bigDecimalSummaryStatistics = sampleBankAccountList.stream()
+        final var bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
 
         It.println("bigDecimalSummaryStatistics = " + bigDecimalSummaryStatistics);
@@ -40,14 +36,14 @@ class BigDecimalCollectorsTest {
 
     @Test
     void testAveragingBigDecimal() {
-        final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
+        final var sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
         It.println("Sample bankaccountList:");
         sampleBankAccountList.forEach(It::println);
 
-        final BigDecimalSummaryStatistics bigDecimalSummaryStatistics = sampleBankAccountList.stream()
+        final var bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
 
-        final BigDecimal average = sampleBankAccountList.stream()
+        final var average = sampleBankAccountList.stream()
                 .collect(averagingBigDecimal(BankAccount::getBalance));
 
         It.println("average = " + average);
@@ -58,22 +54,22 @@ class BigDecimalCollectorsTest {
 
     @Test
     void testStandardDeviatingBigDecimal() {
-        final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
+        final var sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
         It.println("Sample bankaccountList:");
         sampleBankAccountList.forEach(It::println);
 
-        final DoubleStatistics doubleStatistics = sampleBankAccountList.stream()
+        final var doubleStatistics = sampleBankAccountList.stream()
                 .map(BankAccount::getBalance)
                 .collect(CollectorsX.toDoubleStatisticsBy(BigDecimal::doubleValue));
 
-        final BigDecimal expectedStandardDeviationFromDouble = BigDecimal.valueOf(doubleStatistics.getStandardDeviation())
+        final var expectedStandardDeviationFromDouble = BigDecimal.valueOf(doubleStatistics.getStandardDeviation())
                 .setScale(2, RoundingMode.HALF_UP);
 
-        final BigDecimalStatistics bigDecimalStatistics = sampleBankAccountList.stream()
+        final var bigDecimalStatistics = sampleBankAccountList.stream()
                 .collect(toBigDecimalStatisticsBy(BankAccount::getBalance));
         final BigDecimal expected = bigDecimalStatistics.getStandardDeviation();
 
-        final BigDecimal standardDeviationBalances = sampleBankAccountList.stream()
+        final var standardDeviationBalances = sampleBankAccountList.stream()
                 .collect(standardDeviatingBigDecimal(BankAccount::getBalance));
 
         It.println("bigDecimalStatistics = " + bigDecimalStatistics);
@@ -87,10 +83,10 @@ class BigDecimalCollectorsTest {
 
     @Test
     void testStatisticsFromRandomGaussianDataset() {
-        BigDecimal targetMean = BigDecimal.valueOf(3);
-        BigDecimal targetStdDev = BigDecimal.valueOf(4);
+        var targetMean = BigDecimal.valueOf(3);
+        var targetStdDev = BigDecimal.valueOf(4);
 
-        final BigDecimalStatistics statistics = TestSampleGenerator
+        final var statistics = TestSampleGenerator
                 .gaussianDoubles(100_000, targetMean.doubleValue(), targetStdDev.doubleValue())
                 .mapToObj(BigDecimal::valueOf)
                 .collect(BigDecimalCollectors.toBigDecimalStatistics());
@@ -110,19 +106,19 @@ class BigDecimalCollectorsTest {
 
     @Test
     void testSummingBigDecimal() {
-        final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
+        final var sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
         It.println("Sample bankaccountList:");
         sampleBankAccountList.forEach(It::println);
 
-        final double sumAsDouble = sampleBankAccountList.stream()
+        final var sumAsDouble = sampleBankAccountList.stream()
                 .map(BankAccount::getBalance)
                 .mapToDouble(BigDecimal::doubleValue)
                 .sum();
 
-        final BigDecimalSummaryStatistics bigDecimalSummaryStatistics = sampleBankAccountList.stream()
+        final var bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
 
-        final BigDecimal sum = sampleBankAccountList.stream()
+        final var sum = sampleBankAccountList.stream()
                 .collect(summingBigDecimal(BankAccount::getBalance));
 
         It.println("sum = " + sum);
@@ -137,14 +133,14 @@ class BigDecimalCollectorsTest {
 
     @Test
     void testToMaxBigDecimal() {
-        final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
+        final var sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
         It.println("Sample bankaccountList:");
         sampleBankAccountList.forEach(It::println);
 
-        final BigDecimalSummaryStatistics bigDecimalSummaryStatistics = sampleBankAccountList.stream()
+        final var bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
 
-        final BigDecimal max = sampleBankAccountList.stream()
+        final var max = sampleBankAccountList.stream()
                 .collect(toMaxBigDecimal(BankAccount::getBalance));
 
         It.println("max = " + max);
@@ -155,14 +151,14 @@ class BigDecimalCollectorsTest {
 
     @Test
     void testToMinBigDecimal() {
-        final List<BankAccount> sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
+        final var sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
         It.println("Sample bankaccountList:");
         sampleBankAccountList.forEach(It::println);
 
-        final BigDecimalSummaryStatistics bigDecimalSummaryStatistics = sampleBankAccountList.stream()
+        final var bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
 
-        final BigDecimal min = sampleBankAccountList.stream()
+        final var min = sampleBankAccountList.stream()
                 .collect(toMinBigDecimal(BankAccount::getBalance));
 
         It.println("min = " + min);

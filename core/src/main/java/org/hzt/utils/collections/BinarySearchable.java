@@ -62,12 +62,12 @@ public interface BinarySearchable<COMPARISON_FUNCTION> {
                             @NotNull final IntUnaryOperator comparisonFunction) {
         PreConditions.rangeCheck(size, fromIndex, toIndex);
 
-        int low = fromIndex;
-        int high = toIndex - 1;
+        var low = fromIndex;
+        var high = toIndex - 1;
 
         while (low <= high) {
-            final int mid = (low + high) >>> 1;
-            final int comparison = comparisonFunction.applyAsInt(mid);
+            final var mid = (low + high) >>> 1;
+            final var comparison = comparisonFunction.applyAsInt(mid);
 
             if (comparison < 0) {
                 low = mid + 1;

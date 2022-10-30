@@ -25,9 +25,9 @@ class SortableTest {
 
     @Test
     void testSortedSequenceLazyEvaluation() {
-        final AtomicInteger counter = new AtomicInteger();
+        final var counter = new AtomicInteger();
 
-        final Sequence<Integer> sequence = Sequence.generate(9, i -> --i)
+        final var sequence = Sequence.generate(9, i -> --i)
                 .take(10)
                 .onEach(i -> counter.getAndIncrement())
                 .sorted();
@@ -44,9 +44,9 @@ class SortableTest {
 
     @Test
     void testSortedIntSequenceLazyEvaluation() {
-        final AtomicInteger counter = new AtomicInteger();
+        final var counter = new AtomicInteger();
 
-        final IntSequence sequence = IntSequence.generate(9, i -> --i)
+        final var sequence = IntSequence.generate(9, i -> --i)
                 .take(10)
                 .onEach(i -> counter.getAndIncrement())
                 .sorted();

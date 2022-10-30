@@ -10,7 +10,6 @@ import org.hzt.utils.collections.primitives.DoubleMutableSet;
 import org.hzt.utils.collectors.primitves.DoubleCollector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ObjDoubleConsumer;
@@ -27,7 +26,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
     default <A, R> R collect(@NotNull Supplier<? extends A> supplier,
                              @NotNull ObjDoubleConsumer<? super A> accumulator,
                              @NotNull Function<? super A, ? extends R> finisher) {
-        PrimitiveIterator.OfDouble iterator = iterator();
+        var iterator = iterator();
         final var result = supplier.get();
         while (iterator.hasNext()) {
             accumulator.accept(result, iterator.nextDouble());
@@ -47,7 +46,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         final var result2 = downStream2.supplier().get();
         final var accumulator1 = downStream1.accumulator();
         final var accumulator2 = downStream2.accumulator();
-        PrimitiveIterator.OfDouble iterator = iterator();
+        var iterator = iterator();
         while (iterator.hasNext()) {
             final var value = iterator.nextDouble();
             accumulator1.accept(result1, value);
@@ -61,7 +60,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
     }
 
     default <C extends DoubleMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {
-        C collection = collectionFactory.get();
+        var collection = collectionFactory.get();
         final var iterator = iterator();
         while(iterator.hasNext()) {
             collection.add(iterator.nextDouble());
@@ -80,22 +79,22 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
 
     default <C extends DoubleMutableCollection> C takeTo(@NotNull Supplier<C> collectionFactory, long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
-        C collection = collectionFactory.get();
+        var collection = collectionFactory.get();
         if (n == 0) {
             return collection;
         }
         final PrimitiveIterable.OfDouble iterable = this;
         if (iterable instanceof DoubleMutableCollection) {
-            DoubleMutableCollection c = (DoubleMutableCollection) iterable;
+            var c = (DoubleMutableCollection) iterable;
             if (n >= c.size()) {
                 collection.addAll(c);
                 return collection;
             }
         }
-        int count = 0;
+        var count = 0;
         final var iterator = iterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            var value = iterator.nextDouble();
             collection.add(value);
             if (++count == n) {
                 break;

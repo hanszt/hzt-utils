@@ -32,7 +32,7 @@ public final class DoubleTakeWhileIterator implements PrimitiveIterator.OfDouble
 
     private void calculateNext() {
         if (iterator.hasNext()) {
-            final double item = iterator.nextDouble();
+            final var item = iterator.nextDouble();
             if (predicate.test(item) && !inclusiveConsumed) {
                 nextState = State.CONTINUE;
                 nextLong = item;
@@ -64,7 +64,7 @@ public final class DoubleTakeWhileIterator implements PrimitiveIterator.OfDouble
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        double result = nextLong;
+        var result = nextLong;
         nextState = State.NEXT_UNKNOWN;
         return result;
     }

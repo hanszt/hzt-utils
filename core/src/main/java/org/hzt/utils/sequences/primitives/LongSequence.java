@@ -164,7 +164,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         if (n == 0) {
             return PrimitiveIterators::emptyLongIterator;
         } else if (this instanceof LongSkipTakeSequence) {
-            LongSkipTakeSequence skipTakeSequence = (LongSkipTakeSequence) this;
+            var skipTakeSequence = (LongSkipTakeSequence) this;
             return skipTakeSequence.take(n);
         } else {
             return new LongTakeSequence(this, n);
@@ -185,7 +185,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         if (n == 0) {
             return this;
         } else if (this instanceof LongSkipTakeSequence) {
-            LongSkipTakeSequence skipTakeSequence = (LongSkipTakeSequence) this;
+            var skipTakeSequence = (LongSkipTakeSequence) this;
             return skipTakeSequence.skip(n);
         } else {
             return new LongSkipSequence(this, n);

@@ -41,7 +41,7 @@ public final class DoubleGeneratorIterator implements PrimitiveIterator.OfDouble
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        final double result = nextDouble;
+        final var result = nextDouble;
         // Do not clean nextItem (set item to 'null' to avoid keeping reference on yielded instance)
         // -- need to keep state for getNextValue
         nextState = State.NEXT_UNKNOWN;

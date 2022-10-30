@@ -43,7 +43,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
     boolean contains(long l);
 
     default LongList filter(LongPredicate predicate) {
-        LongMutableList longs = LongMutableList.withInitCapacity(size());
+        var longs = LongMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             final var value = iterator.nextLong();
@@ -55,7 +55,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
     }
 
     default LongList map(LongUnaryOperator mapper) {
-        LongMutableList longs = LongMutableList.withInitCapacity(size());
+        var longs = LongMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextLong()));
@@ -64,7 +64,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
     }
 
     default IntList mapToInt(LongToIntFunction mapper) {
-        IntMutableList ints = IntMutableList.withInitCapacity(size());
+        var ints = IntMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextLong()));
@@ -73,7 +73,7 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
     }
 
     default DoubleList mapToDouble(LongToDoubleFunction mapper) {
-        DoubleMutableList doubles = DoubleMutableList.withInitCapacity(size());
+        var doubles = DoubleMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextLong()));
@@ -92,14 +92,14 @@ public interface LongCollection extends LongReducable, LongCollectable, LongNume
 
     @Override
     default LongList plus(@NotNull Iterable<Long> values) {
-        LongMutableList listX = toMutableList();
+        var listX = toMutableList();
         listX.addAll(values);
         return listX;
     }
 
     @Override
     default LongList plus(long @NotNull ... array) {
-        LongMutableList listX = toMutableList();
+        var listX = toMutableList();
         listX.addAll(array);
         return listX;
     }

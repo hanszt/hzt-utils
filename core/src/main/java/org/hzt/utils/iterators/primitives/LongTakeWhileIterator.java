@@ -32,7 +32,7 @@ public final class LongTakeWhileIterator implements PrimitiveIterator.OfLong {
 
     private void calculateNext() {
         if (iterator.hasNext()) {
-            final long item = iterator.nextLong();
+            final var item = iterator.nextLong();
             if (predicate.test(item) && !inclusiveConsumed) {
                 nextState = State.CONTINUE;
                 nextLong = item;
@@ -64,7 +64,7 @@ public final class LongTakeWhileIterator implements PrimitiveIterator.OfLong {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        long result = nextLong;
+        var result = nextLong;
         nextState = State.NEXT_UNKNOWN;
         return result;
     }

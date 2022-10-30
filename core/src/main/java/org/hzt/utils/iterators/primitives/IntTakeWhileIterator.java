@@ -32,7 +32,7 @@ public final class IntTakeWhileIterator implements PrimitiveIterator.OfInt {
 
     private void calculateNext() {
         if (iterator.hasNext()) {
-            final int item = iterator.nextInt();
+            final var item = iterator.nextInt();
             if (predicate.test(item) && !inclusiveConsumed) {
                 nextState = State.CONTINUE;
                 nextLong = item;
@@ -64,7 +64,7 @@ public final class IntTakeWhileIterator implements PrimitiveIterator.OfInt {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        int result = nextLong;
+        var result = nextLong;
         nextState = State.NEXT_UNKNOWN;
         return result;
     }

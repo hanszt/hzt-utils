@@ -53,7 +53,7 @@ public final class IntSkipWhileIterator implements OfInt {
             skip();
         }
         if (state == SkipState.NEXT_ITEM) {
-            int result = nextItem;
+            var result = nextItem;
             state = SkipState.NORMAL_ITERATION;
             return result;
         }

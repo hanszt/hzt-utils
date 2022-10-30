@@ -14,7 +14,7 @@ class IntXTest {
 
     @Test
     void testToDouble() {
-        final DoubleX doubleX = IntX.of(10).toDoubleX()
+        final var doubleX = IntX.of(10).toDoubleX()
                 .toStringX().toDoubleX();
 
         assertEquals(DoubleX.of(10), doubleX);
@@ -64,10 +64,10 @@ class IntXTest {
         final var prime = new boolean[upperPrimeSize + 1];
         Arrays.fill(prime, true);
 
-        for (int p = 2; p * p <= upperPrimeSize; p++) {
+        for (var p = 2; p * p <= upperPrimeSize; p++) {
             // If prime[p] is not changed, then it is a prime
             if (prime[p]) {
-                for (int i = p * p; i <= upperPrimeSize; i += p) {
+                for (var i = p * p; i <= upperPrimeSize; i += p) {
                     prime[i] = false;
                 }
             }
@@ -79,7 +79,7 @@ class IntXTest {
 
     @Test
     void testAsChar() {
-        String s = "This is a string";
+        var s = "This is a string";
 
         final var characters = s.chars()
                 .mapToObj(IntX::asChar)

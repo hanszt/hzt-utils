@@ -50,7 +50,7 @@ class DoubleSequenceTest {
     void testDoubleSequencePlusArray() {
         final double[] array = {1, Math.PI, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
-        final double[] result = DoubleSequence.of(1, 3, 2, 5, 4, 2)
+        final var result = DoubleSequence.of(1, 3, 2, 5, 4, 2)
                 .plus(Math.E, 76, 5)
                 .plus(DoubleList.of(array))
                 .toArray();
@@ -180,7 +180,7 @@ class DoubleSequenceTest {
 
         final var firstFour = DoubleSequence.of(doubles).take(4).mapToObj(this::rounded);
 
-        final double[] expected = {Math.PI, Math.PI + .1, Math.PI + .2, Math.PI + .3};
+        final var expected = new double[]{Math.PI, Math.PI + .1, Math.PI + .2, Math.PI + .3};
 
         final var expectedFirstFour = DoubleSequence.of(expected).mapToObj(this::rounded);
 
@@ -195,8 +195,8 @@ class DoubleSequenceTest {
     }
 
     private void doWork(final double input, final DoubleConsumer consumer) {
-        double output = input;
-        int counter = 0;
+        var output = input;
+        var counter = 0;
         while (counter < 100) {
             consumer.accept(output);
             output += .1;
@@ -225,7 +225,7 @@ class DoubleSequenceTest {
 
     @Test
     void testGoldenRatioConvergence() {
-        final double goldenRatio = (1 + Math.sqrt(5)) / 2;
+        final var goldenRatio = (1 + Math.sqrt(5)) / 2;
         final var scale = 20;
 
         final var roundedGoldenRatio = DoubleX.toRoundedString(goldenRatio, scale);
@@ -255,7 +255,7 @@ class DoubleSequenceTest {
                 .distinct()
                 .toArray();
 
-        final double[] expected = {Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Double.NaN};
+        final var expected = new double[]{Math.E, Math.PI, DoubleX.GOLDEN_RATIO, Double.NaN};
 
         assertArrayEquals(expected, array);
     }

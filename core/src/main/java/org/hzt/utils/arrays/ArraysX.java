@@ -27,32 +27,32 @@ public final class ArraysX {
 
     @SafeVarargs
     public static <T> boolean[] toBooleanArray(@NotNull Predicate<? super T> predicate, T @NotNull ... array) {
-        boolean[] result = new boolean[array.length];
-        for (int i = 0; i < array.length; i++) {
+        var result = new boolean[array.length];
+        for (var i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
         }
         return result;
     }
 
     public static boolean[] toBooleanArray(@NotNull IntPredicate predicate, int @NotNull ... array) {
-        boolean[] result = new boolean[array.length];
-        for (int i = 0; i < array.length; i++) {
+        var result = new boolean[array.length];
+        for (var i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
         }
         return result;
     }
 
     public static boolean[] toBooleanArray(@NotNull LongPredicate predicate, long @NotNull ... array) {
-        boolean[] result = new boolean[array.length];
-        for (int i = 0; i < array.length; i++) {
+        var result = new boolean[array.length];
+        for (var i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
         }
         return result;
     }
 
     public static boolean[] toBooleanArray(@NotNull DoublePredicate predicate, double @NotNull ... array) {
-        boolean[] result = new boolean[array.length];
-        for (int i = 0; i < array.length; i++) {
+        var result = new boolean[array.length];
+        for (var i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
         }
         return result;

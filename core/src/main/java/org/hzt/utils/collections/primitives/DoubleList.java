@@ -38,7 +38,7 @@ public interface DoubleList extends DoubleCollection,
     }
 
     static DoubleList build(Consumer<? super DoubleMutableList> factory) {
-        final DoubleMutableList listX = DoubleMutableList.empty();
+        final var listX = DoubleMutableList.empty();
         factory.accept(listX);
         return listX;
     }
@@ -77,7 +77,7 @@ public interface DoubleList extends DoubleCollection,
     @Override
     @NotNull
     default OptionalDouble findLast(@NotNull DoublePredicate predicate) {
-        PrimitiveListIterator.OfDouble iterator = listIterator(lastIndex());
+        var iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
             final var previousDouble = iterator.previousDouble();
             if (predicate.test(previousDouble)) {

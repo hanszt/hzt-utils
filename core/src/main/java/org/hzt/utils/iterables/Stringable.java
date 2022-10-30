@@ -3,7 +3,6 @@ package org.hzt.utils.iterables;
 import org.hzt.utils.strings.StringX;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.function.Function;
 
 @FunctionalInterface
@@ -22,10 +21,10 @@ public interface Stringable<T> extends Iterable<T> {
     }
 
     default <R> String joinToStringBy(@NotNull Function<? super T, ? extends R> selector, CharSequence delimiter) {
-        final StringBuilder sb = new StringBuilder();
-        final Iterator<T> iterator = iterator();
+        final var sb = new StringBuilder();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
-            final R r = selector.apply(iterator.next());
+            final var r = selector.apply(iterator.next());
             sb.append(r).append(iterator.hasNext() ? delimiter : "");
         }
         return sb.toString().trim();

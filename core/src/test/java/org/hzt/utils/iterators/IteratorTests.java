@@ -18,7 +18,7 @@ class IteratorTests {
     @Test
     void testGeneratingIterator() {
         Sequence<String> strings = () -> GeneratorIterator.of(() -> "h", s1 -> s1 + s1);
-        for (String s : strings) {
+        for (var s : strings) {
             final var length = s.length();
             It.println("s = " + s);
             assertTrue(() -> isPowerOfTwo(length));
@@ -26,7 +26,7 @@ class IteratorTests {
                 break;
             }
         }
-        final long count = strings.takeWhile(s -> s.length() < 32).count();
+        final var count = strings.takeWhile(s -> s.length() < 32).count();
         assertEquals(5, count);
     }
 

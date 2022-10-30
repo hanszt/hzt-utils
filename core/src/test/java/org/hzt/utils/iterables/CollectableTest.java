@@ -2,7 +2,6 @@ package org.hzt.utils.iterables;
 
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
-import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
@@ -12,7 +11,6 @@ import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
-import org.hzt.utils.tuples.Triple;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -20,8 +18,6 @@ import java.time.Month;
 import java.time.Year;
 import java.util.Arrays;
 import java.util.IntSummaryStatistics;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -105,9 +101,9 @@ class CollectableTest {
     @Test
     void testBranchingPaintingDataToThreeValues() {
         //arrange
-        final ListX<Painting> paintingList = ListX.of(TestSampleGenerator.createPaintingList());
+        final var paintingList = ListX.of(TestSampleGenerator.createPaintingList());
 
-        final Triple<Map<Boolean, List<Painter>>, IntSummaryStatistics, Long> expected = paintingList.stream()
+        final var expected = paintingList.stream()
                 .collect(branching(
                         partitioningBy(Painting::isInMuseum, mapping(Painting::painter, toList())),
                         summarizingInt(Painting::ageInYears),
@@ -118,7 +114,7 @@ class CollectableTest {
                         s -> s.intStatsOf(Painting::ageInYears),
                         Sequence::count);
 
-        final IntSummaryStatistics expectedStats = expected.second();
+        final var expectedStats = expected.second();
         final IntSummaryStatistics actualStats = actual.second();
 
         assertAll(
@@ -196,7 +192,7 @@ class CollectableTest {
 
     @Test
     void testFrom3DStringArrayToTripleIntArray() {
-        String[][][] grid = {{{"1"}, {"2"}, {"3"}}};
+        var grid = new String[][][]{{{"1"}, {"2"}, {"3"}}};
         final var expected = Arrays.stream(grid).map(g -> Arrays.stream(g).map(row -> Stream.of(row)
                 .mapToInt(Integer::parseInt).toArray()).toArray(int[][]::new)).toArray(int[][][]::new);
 

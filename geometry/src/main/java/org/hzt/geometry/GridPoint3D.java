@@ -81,9 +81,9 @@ public interface GridPoint3D {
     }
 
     default GridPoint3D crossProduct(int x, int y, int z) {
-        final int ax = getX();
-        final int ay = getY();
-        final int az = getZ();
+        final var ax = getX();
+        final var ay = getY();
+        final var az = getZ();
 
         return new GridPoint3DImpl(
                 ay * z - az * y,

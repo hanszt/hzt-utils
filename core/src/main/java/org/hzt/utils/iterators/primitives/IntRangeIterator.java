@@ -25,7 +25,7 @@ public final class IntRangeIterator implements PrimitiveIterator.OfInt {
     @Override
     public int nextInt() {
         if (checkHasNext()) {
-            int current = nextInt;
+            var current = nextInt;
             nextInt = nextInt + (start < endInclusive ? step : -step);
             return current;
         }

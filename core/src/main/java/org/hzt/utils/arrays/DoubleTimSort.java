@@ -16,7 +16,7 @@ public final class DoubleTimSort extends PrimitiveTimSort<double[], DoubleCompar
 
     static void sort(double @NotNull [] array, int fromIndex, int toIndex, @NotNull DoubleComparator comparator) {
         PreConditions.require(fromIndex >= 0 && fromIndex <= toIndex && toIndex <= array.length);
-        final int nRemaining = toIndex - fromIndex;
+        final var nRemaining = toIndex - fromIndex;
         if (nRemaining >= 2) {
             new DoubleTimSort(array, comparator)
                     .sort(fromIndex, toIndex, nRemaining);
@@ -25,14 +25,14 @@ public final class DoubleTimSort extends PrimitiveTimSort<double[], DoubleCompar
 
     @Override
     protected void updateArrayForBinarySort(double[] array, int left, int pivotIndex, int difStartLeft) {
-        final double pivot = array[pivotIndex];
+        final var pivot = array[pivotIndex];
         updateArrayForBinarySort(array, left, difStartLeft);
         array[left] = pivot;
     }
 
     @Override
     protected void swap(double[] array, int index1, int index2) {
-        double temp = array[index1];
+        var temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }

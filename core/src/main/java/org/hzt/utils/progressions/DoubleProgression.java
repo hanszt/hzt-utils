@@ -34,7 +34,7 @@ public class DoubleProgression implements DoubleSequence {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DoubleProgression doubles = (DoubleProgression) o;
+        var doubles = (DoubleProgression) o;
         return Double.compare(doubles.start, start) == 0 &&
                 Double.compare(doubles.endInclusive, endInclusive) == 0 &&
                 Double.compare(doubles.getStep(), getStep()) == 0;
@@ -52,7 +52,7 @@ public class DoubleProgression implements DoubleSequence {
 
             @Override
             public double nextDouble() {
-                final double value = next;
+                final var value = next;
                 next += step;
                 return value;
             }

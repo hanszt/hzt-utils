@@ -11,7 +11,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.Arrays;
@@ -60,7 +59,7 @@ public class IntTimSortBenchmark {
     @Benchmark
     @SuppressWarnings("squid:S2384")
     public int[] arraySort() {
-        int[] copy = Arrays.copyOf(array, array.length);
+        var copy = Arrays.copyOf(array, array.length);
         Arrays.sort(copy);
         return copy;
     }
@@ -81,7 +80,7 @@ public class IntTimSortBenchmark {
     }
 
     public static void main(String[] args) {
-        Options options = new OptionsBuilder()
+        var options = new OptionsBuilder()
                 .include(IntTimSortBenchmark.class.getSimpleName())
                 .forks(2)
                 .warmupIterations(2)

@@ -58,7 +58,7 @@ class IntWindowedSequenceTest {
 
     @Test
     void testChunkedVariableWindowSize() {
-        AtomicInteger chunkSize = new AtomicInteger();
+        var chunkSize = new AtomicInteger();
 
         final var sizes = IntRange.of(0, 1000)
                 .chunked(chunkSize::incrementAndGet)

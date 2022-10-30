@@ -60,10 +60,10 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
     }
 
     default <R> R foldRight(@NotNull R initial, @NotNull BiFunction<E, R, R> operation) {
-        ListX<E> list = this;
-        R accumulator = initial;
+        var list = this;
+        var accumulator = initial;
         if (list.isNotEmpty()) {
-            final ListIterator<E> listIterator = list.listIterator(list.size());
+            final var listIterator = list.listIterator(list.size());
             while (listIterator.hasPrevious()) {
                 accumulator = operation.apply(listIterator.previous(), accumulator);
             }
@@ -77,16 +77,16 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
         if (n == 0) {
             return emptyCollection;
         }
-        C collection = Sequence.of(this).to(() -> emptyCollection);
-        int size = collection.size();
+        var collection = Sequence.of(this).to(() -> emptyCollection);
+        var size = collection.size();
         if (n >= size) {
             return collection;
         }
         if (n == 1) {
             return Sequence.of(last()).to(() -> emptyCollection);
         }
-        C result = collectionFactory.apply(n);
-        for (int index = size - n; index < size; index++) {
+        var result = collectionFactory.apply(n);
+        for (var index = size - n; index < size; index++) {
             result.add(get(index));
         }
         return result;
@@ -193,7 +193,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
         if (isEmpty()) {
             return ListX.empty();
         }
-        ListIterator<E> iterator = listIterator(size());
+        var iterator = listIterator(size());
         while (iterator.hasPrevious()) {
             if (!predicate.test(iterator.previous())) {
                 return take(iterator.nextIndex() + 1L);
@@ -208,19 +208,19 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
 
     default <C extends Collection<E>> C takeLastWhileTo(@NotNull IntFunction<C> collectionFactory,
                                                         @NotNull Predicate<? super E> predicate) {
-        C collection = collectionFactory.apply(0);
+        var collection = collectionFactory.apply(0);
         if (isEmpty()) {
             return collection;
         }
-        ListIterator<E> iterator = listIterator(size());
+        var iterator = listIterator(size());
         while (iterator.hasPrevious()) {
             if (!predicate.test(iterator.previous())) {
                 iterator.next();
-                int expectedSize = size() - iterator.nextIndex();
+                var expectedSize = size() - iterator.nextIndex();
                 if (expectedSize == 0) {
                     return collection;
                 }
-                C result = collectionFactory.apply(expectedSize);
+                var result = collectionFactory.apply(expectedSize);
                 while (iterator.hasNext()) {
                     result.add(iterator.next());
                 }

@@ -37,7 +37,7 @@ public interface IntList extends IntCollection,
     }
 
     static IntList build(Consumer<? super IntMutableList> factory) {
-        final IntMutableList listX = IntMutableList.empty();
+        final var listX = IntMutableList.empty();
         factory.accept(listX);
         return listX;
     }
@@ -76,7 +76,7 @@ public interface IntList extends IntCollection,
     @Override
     @NotNull
     default OptionalInt findLast(@NotNull IntPredicate predicate) {
-        PrimitiveListIterator.OfInt iterator = listIterator(lastIndex());
+        var iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
             final var previousInt = iterator.previousInt();
             if (predicate.test(previousInt)) {
@@ -113,7 +113,7 @@ public interface IntList extends IntCollection,
 
     @Override
     default IntList sortedDescending() {
-        final int[] array = toArray();
+        final var array = toArray();
         Arrays.sort(array);
         ArraysX.reverse(array);
         return IntList.of(array);

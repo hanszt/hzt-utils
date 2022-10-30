@@ -32,7 +32,7 @@ final class ArrayListX<E> implements MutableListX<E> {
 
     ArrayListX(Iterable<E> iterable) {
         list = new ArrayList<>();
-        for (E e : iterable) {
+        for (var e : iterable) {
             list.add(e);
         }
     }
@@ -203,7 +203,7 @@ final class ArrayListX<E> implements MutableListX<E> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ArrayListX<?> that = (ArrayListX<?>) o;
+        var that = (ArrayListX<?>) o;
         return Objects.equals(list, that.list);
     }
 

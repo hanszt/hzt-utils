@@ -42,7 +42,7 @@ class LongSequenceTest {
     void testLongSequencePlusArray() {
         long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, Long.MAX_VALUE};
 
-        final long[] result = LongSequence.of(1, 3, 2, 5, 4, 2)
+        final var result = LongSequence.of(1, 3, 2, 5, 4, 2)
                 .filter(LongX::isEven)
                 .plus(35, 76, 5)
                 .plus(LongList.of(array))
@@ -58,7 +58,7 @@ class LongSequenceTest {
 
     @Test
     void testLongSequenceMinusArray() {
-        final long[] result = LongSequence.of(Long.MAX_VALUE, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2)
+        final var result = LongSequence.of(Long.MAX_VALUE, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2)
                 .minus(2, 76, 5)
                 .toArray();
 
@@ -225,7 +225,7 @@ class LongSequenceTest {
                         .toTypedArray(long[][]::new))
                 .toTypedArray(long[][][]::new);
 
-        final String cubeAsString = Sequence.of(cube)
+        final var cubeAsString = Sequence.of(cube)
                 .map(plane -> Sequence.of(plane)
                         .map(Arrays::toString))
                 .map(s -> s.joinToString(System.lineSeparator()))

@@ -18,13 +18,13 @@ final class LongSkipSequence implements LongSkipTakeSequence {
 
     @Override
     public LongSequence skip(long n) {
-        final long n1 = count + n;
+        final var n1 = count + n;
         return n1 < 0 ? new LongSkipSequence(this, n) : new LongSkipSequence(upstream, n1);
     }
 
     @Override
     public LongSequence take(long n) {
-        final long n1 = count + n;
+        final var n1 = count + n;
         return n1 < 0 ? new LongTakeSequence(this, n) : new LongSubSequence(upstream, count, n1);
     }
 

@@ -125,7 +125,7 @@ final class ImmutableListX<T> implements ListX<T> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ImmutableListX<?> that = (ImmutableListX<?>) o;
+        var that = (ImmutableListX<?>) o;
         return Objects.equals(immutableList, that.immutableList);
     }
 

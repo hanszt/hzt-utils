@@ -117,7 +117,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     @NotNull
     private Iterator<T> removingIterator(@NotNull T value) {
-        final AtomicBoolean removed = new AtomicBoolean();
+        final var removed = new AtomicBoolean();
         return filter(e -> {
             if (!removed.get() && e == value) {
                 removed.set(true);
@@ -287,7 +287,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         if (n == 0) {
             return new EmptySequence<>();
         } else if (this instanceof SkipTakeSequence) {
-            SkipTakeSequence<T> skipTakeSequence = (SkipTakeSequence<T>) this;
+            var skipTakeSequence = (SkipTakeSequence<T>) this;
             return skipTakeSequence.take(n);
         } else {
             return new TakeSequence<>(this, n);
@@ -307,7 +307,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         if (n == 0) {
             return this;
         } else if (this instanceof SkipTakeSequence) {
-            SkipTakeSequence<T> skipTakeSequence = (SkipTakeSequence<T>) this;
+            var skipTakeSequence = (SkipTakeSequence<T>) this;
             return skipTakeSequence.skip(n);
         } else {
             return new SkipSequence<>(this, n);

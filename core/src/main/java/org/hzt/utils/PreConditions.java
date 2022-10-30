@@ -12,8 +12,8 @@ public final class PreConditions {
 
     @SafeVarargs
     public static <T> void requireAllNonNull(final Class<T> aClass, T... objects) {
-        int counter = 1;
-        for (T t : objects) {
+        var counter = 1;
+        for (var t : objects) {
             Objects.requireNonNull(t, aClass.getSimpleName() + " " + counter + " is null");
             counter++;
         }
@@ -21,8 +21,8 @@ public final class PreConditions {
 
     public static void requireAllNonNull(Object... objects) {
         RuntimeException exception = new IllegalArgumentException("Some objects where null");
-        int counter = 1;
-        for (Object object : objects) {
+        var counter = 1;
+        for (var object : objects) {
             if (object == null) {
                 exception.addSuppressed(new NullPointerException("object " + counter + " is null"));
             }

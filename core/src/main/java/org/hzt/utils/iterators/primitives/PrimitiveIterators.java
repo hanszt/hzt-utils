@@ -54,7 +54,7 @@ public final class PrimitiveIterators {
 
             @Override
             public int nextInt() {
-                int prevIndex = index;
+                var prevIndex = index;
                 if (prevIndex < 0 || prevIndex >= array.length) {
                     throw new NoSuchElementException(getMessage(index));
                 }
@@ -178,7 +178,7 @@ public final class PrimitiveIterators {
 
             @Override
             public long nextLong() {
-                int prevIndex = index;
+                var prevIndex = index;
                 if (prevIndex < 0 || prevIndex >= array.length) {
                     throw new NoSuchElementException(getMessage(index));
                 }
@@ -300,7 +300,7 @@ public final class PrimitiveIterators {
 
             @Override
             public double nextDouble() {
-                int prevIndex = index;
+                var prevIndex = index;
                 if (prevIndex < 0 || prevIndex >= array.length) {
                     throw new NoSuchElementException(getMessage(index));
                 }
@@ -508,7 +508,7 @@ public final class PrimitiveIterators {
 
     @NotNull
     public static PrimitiveIterator.OfInt distinctIterator(@NotNull PrimitiveIterator.OfInt iterator) {
-        final IntMutableSet observed = IntMutableSet.empty();
+        final var observed = IntMutableSet.empty();
         final PrimitiveAtomicIterator.OfInt iteratorX = action -> nextDistinctInt(iterator, observed, action);
         return iteratorX.asIterator();
     }
@@ -517,7 +517,7 @@ public final class PrimitiveIterators {
                                            @NotNull IntMutableCollection observed,
                                            @NotNull IntConsumer action) {
         while (iterator.hasNext()) {
-            int next = iterator.nextInt();
+            var next = iterator.nextInt();
             if (observed.add(next)) {
                 action.accept(next);
                 return true;
@@ -528,7 +528,7 @@ public final class PrimitiveIterators {
 
     @NotNull
     public static PrimitiveIterator.OfLong distinctIterator(@NotNull PrimitiveIterator.OfLong iterator) {
-        final LongMutableSet observed = LongMutableSet.empty();
+        final var observed = LongMutableSet.empty();
         final PrimitiveAtomicIterator.OfLong iteratorX = action -> nextDistinctLong(iterator, observed, action);
         return iteratorX.asIterator();
     }
@@ -537,7 +537,7 @@ public final class PrimitiveIterators {
                                             @NotNull LongMutableSet observed,
                                             @NotNull LongConsumer action) {
         while (iterator.hasNext()) {
-            long next = iterator.nextLong();
+            var next = iterator.nextLong();
             if (observed.add(next)) {
                 action.accept(next);
                 return true;
@@ -548,7 +548,7 @@ public final class PrimitiveIterators {
 
     @NotNull
     public static PrimitiveIterator.OfDouble distinctIterator(@NotNull PrimitiveIterator.OfDouble iterator) {
-        final DoubleMutableSet observed = DoubleMutableSet.empty();
+        final var observed = DoubleMutableSet.empty();
         final PrimitiveAtomicIterator.OfDouble iteratorX = action -> nextDistinctDouble(iterator, observed, action);
         return iteratorX.asIterator();
     }
@@ -557,7 +557,7 @@ public final class PrimitiveIterators {
                                               @NotNull DoubleMutableSet observed,
                                               @NotNull DoubleConsumer action) {
         while (iterator.hasNext()) {
-            double next = iterator.nextDouble();
+            var next = iterator.nextDouble();
             if (observed.add(next)) {
                 action.accept(next);
                 return true;

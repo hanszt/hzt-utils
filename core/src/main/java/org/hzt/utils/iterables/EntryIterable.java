@@ -66,9 +66,9 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
 
     default <R, C extends Collection<R>> C flatMapKeysTo(@NotNull Supplier<C> collectionFactory,
                                                          @NotNull Function<? super K, ? extends Iterable<? extends R>> mapper) {
-        C destination = collectionFactory.get();
+        var destination = collectionFactory.get();
         final Iterable<K> keyIterable = this::keyIterator;
-        for (K e : keyIterable) {
+        for (var e : keyIterable) {
             var iterable = mapper.apply(e);
             if (iterable instanceof Collection<?>) {
                 //noinspection unchecked
@@ -86,9 +86,9 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
 
     default <R, C extends Collection<R>> C flatMapValuesTo(@NotNull Supplier<C> collectionFactory,
                                                            @NotNull Function<? super V, ? extends Iterable<? extends R>> mapper) {
-        C destination = collectionFactory.get();
+        var destination = collectionFactory.get();
         final Iterable<V> valueIterable = this::valueIterator;
-        for (V e : valueIterable) {
+        for (var e : valueIterable) {
             var iterable = mapper.apply(e);
             if (iterable instanceof Collection<?>) {
                 //noinspection unchecked
@@ -106,7 +106,7 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
 
     @NotNull
     default Iterator<V> valueIterator() {
-        Iterator<Map.Entry<K, V>> iterator = iterator();
+        var iterator = iterator();
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -122,7 +122,7 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
 
     @NotNull
     default Iterator<K> keyIterator() {
-        Iterator<Map.Entry<K, V>> iterator = iterator();
+        var iterator = iterator();
         return new Iterator<>() {
             @Override
             public boolean hasNext() {

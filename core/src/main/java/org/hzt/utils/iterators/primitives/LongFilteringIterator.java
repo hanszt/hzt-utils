@@ -40,7 +40,7 @@ public final class LongFilteringIterator implements PrimitiveIterator.OfLong {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        final long result = nextLong;
+        final var result = nextLong;
         nextLong = 0L;
         nextState = State.NEXT_UNKNOWN;
         return result;
@@ -48,7 +48,7 @@ public final class LongFilteringIterator implements PrimitiveIterator.OfLong {
 
     private void calculateNext() {
         while (iterator.hasNext()) {
-            long next = iterator.nextLong();
+            var next = iterator.nextLong();
             if (predicate.test(next) == sendWhen) {
                 this.nextLong = next;
                 nextState = State.CONTINUE;

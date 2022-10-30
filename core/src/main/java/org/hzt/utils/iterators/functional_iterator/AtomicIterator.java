@@ -22,7 +22,7 @@ public interface AtomicIterator<T> {
     }
 
     private static <T> boolean acceptIfHasNext(Iterator<T> iterator, Consumer<? super T> action) {
-        boolean hasNext = iterator.hasNext();
+        var hasNext = iterator.hasNext();
         if (hasNext) {
             action.accept(iterator.next());
         }

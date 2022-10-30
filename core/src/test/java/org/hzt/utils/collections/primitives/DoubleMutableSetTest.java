@@ -12,7 +12,7 @@ class DoubleMutableSetTest {
 
     @Test
     void testDoubleSetSize() {
-        DoubleMutableSet set = DoubleMutableSet.empty();
+        var set = DoubleMutableSet.empty();
         set.addAll(DoubleList.of(-1, -2231, 0, 3, 3, 4, 5, 6, 5));
 
         assertEquals(7, set.size());
@@ -20,7 +20,7 @@ class DoubleMutableSetTest {
 
     @Test
     void testCountElementsInDoubleSetThroughSequence() {
-        DoubleMutableSet set = DoubleMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
+        var set = DoubleMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
 
         final var count = set.asSequence().count();
 
@@ -29,7 +29,7 @@ class DoubleMutableSetTest {
 
     @Test
     void testSequenceToDoubleSet() {
-        DoubleMutableSet doubles = DoubleMutableSet.empty();
+        var doubles = DoubleMutableSet.empty();
         doubles.addAll(DoubleSequence.generate(-10_000.0, d -> d + Math.E).take(90_000));
         doubles.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, Math.PI, -10_000.0);
         doubles.add(100_000.2342);

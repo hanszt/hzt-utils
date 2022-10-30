@@ -221,7 +221,7 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TreeSetX<?, ?> treeSetX = (TreeSetX<?, ?>) o;
+        var treeSetX = (TreeSetX<?, ?>) o;
         return navigableSet.equals(treeSetX.navigableSet);
     }
 

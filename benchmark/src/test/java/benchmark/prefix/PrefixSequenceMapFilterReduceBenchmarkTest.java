@@ -11,10 +11,10 @@ class PrefixSequenceMapFilterReduceBenchmarkTest {
 
     @Test
     void testMapFilterReduceSameResult() {
-        int result1 = reduceBenchmark.imperativeMapFilterReduce();
-        int result2 = reduceBenchmark.sequenceOfListMapFilterReduce();
-        int result3 = reduceBenchmark.parallelStreamMapFilterReduce();
-        int result4 = reduceBenchmark.streamMapFilterReduce();
+        var result1 = reduceBenchmark.imperativeMapFilterReduce();
+        var result2 = reduceBenchmark.sequenceOfListMapFilterReduce();
+        var result3 = reduceBenchmark.parallelStreamMapFilterReduce();
+        var result4 = reduceBenchmark.streamMapFilterReduce();
 
         assertAll(
                 () -> assertEquals(result1, result2),

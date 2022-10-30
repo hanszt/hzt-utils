@@ -29,7 +29,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public final class TestSampleGenerator {
 
@@ -65,21 +64,21 @@ public final class TestSampleGenerator {
     }
 
     public static List<Painting> createPaintingList() {
-        final Painter picasso = new Painter("Pablo", "Picasso", LocalDate.of(1881, 10, 25));
+        final var picasso = new Painter("Pablo", "Picasso", LocalDate.of(1881, 10, 25));
         picasso.setDateOfDeath(LocalDate.of(1973, 4, 9));
-        final Painter vermeer = new Painter("Johannes", "Vermeer", LocalDate.of(1632, 10, 31));
+        final var vermeer = new Painter("Johannes", "Vermeer", LocalDate.of(1632, 10, 31));
         vermeer.setDateOfDeath(LocalDate.of(1675, 12, 1));
-        final Painter vanGogh = new Painter("Vincent", "van Gogh", LocalDate.of(1853, 3,20));
+        final var vanGogh = new Painter("Vincent", "van Gogh", LocalDate.of(1853, 3,20));
         vanGogh.setDateOfDeath(LocalDate.of(1890, 7, 29));
 
-        final Painting guernica = new Painting("Guernica", picasso, Year.of(1937), true);
-        final Painting lesDemoiselles = new Painting("Les Demoiselles d'Avignon", picasso, Year.of(1907), true);
-        final Painting le_reve = new Painting("Le Rêve", picasso, Year.of(1932), true);
-        final Painting meisje_met_de_parel = new Painting("Meisje met de parel", vermeer, Year.of(1665), true);
-        final Painting het_melkmeisje = new Painting("Het melkmeisje", vermeer, Year.of(1658), true);
-        final Painting meisje_met_de_rode_hoed = new Painting("Meisje met de rode hoed", vermeer, Year.of(1665), true);
-        final Painting lenteTuin = new Painting("Lentetuin, de pastorietuin te Nuenen in het voorjaar", vanGogh, Year.of(1884), false);
-        final Painting de_sterrennacht = new Painting("De sterrennacht", vanGogh, Year.of(1889), true);
+        final var guernica = new Painting("Guernica", picasso, Year.of(1937), true);
+        final var lesDemoiselles = new Painting("Les Demoiselles d'Avignon", picasso, Year.of(1907), true);
+        final var le_reve = new Painting("Le Rêve", picasso, Year.of(1932), true);
+        final var meisje_met_de_parel = new Painting("Meisje met de parel", vermeer, Year.of(1665), true);
+        final var het_melkmeisje = new Painting("Het melkmeisje", vermeer, Year.of(1658), true);
+        final var meisje_met_de_rode_hoed = new Painting("Meisje met de rode hoed", vermeer, Year.of(1665), true);
+        final var lenteTuin = new Painting("Lentetuin, de pastorietuin te Nuenen in het voorjaar", vanGogh, Year.of(1884), false);
+        final var de_sterrennacht = new Painting("De sterrennacht", vanGogh, Year.of(1889), true);
 
         picasso.addPaintings(guernica, lesDemoiselles, le_reve);
         vermeer.addPaintings(meisje_met_de_parel, meisje_met_de_rode_hoed, het_melkmeisje);
@@ -102,9 +101,9 @@ public final class TestSampleGenerator {
         final var groupedByLastName = createPaintingList().stream()
                 .collect(Collectors.groupingBy(painting -> painting.painter().getLastname()));
 
-        final List<Painting> vanGoghPaintings = groupedByLastName.get("van Gogh");
-        final List<Painting> vermeerPaintings = groupedByLastName.get("Vermeer");
-        final List<Painting> picassoPaintings = groupedByLastName.get("Picasso");
+        final var vanGoghPaintings = groupedByLastName.get("van Gogh");
+        final var vermeerPaintings = groupedByLastName.get("Vermeer");
+        final var picassoPaintings = groupedByLastName.get("Picasso");
 
         final var painter = new Painter("Hans", "Zuidervaart", LocalDate.of(1989, 10 ,18));
         return List.of(
@@ -171,7 +170,7 @@ public final class TestSampleGenerator {
                 .map(File::toPath)
                 .orElseThrow(() -> new NoSuchElementException("Could not find resource " + name));
 
-        try (Stream<String> s = Files.lines(path)) {
+        try (var s = Files.lines(path)) {
             return s.collect(Collectors.toUnmodifiableList());
         } catch (IOException e) {
             throw new IllegalStateException(e);

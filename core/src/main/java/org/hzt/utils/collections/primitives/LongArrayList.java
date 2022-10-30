@@ -69,7 +69,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, LongConsume
     }
 
     int indexOfRange(long value, int end) {
-        for (int i = 0; i < end; i++) {
+        for (var i = 0; i < end; i++) {
             if (value == elementData[i]) {
                 return i;
             }
@@ -89,13 +89,13 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, LongConsume
 
     @Override
     public LongList shuffled() {
-        final LongMutableList mutableList = LongMutableList.of(this);
+        final var mutableList = LongMutableList.of(this);
         PrimitiveListHelper.shuffle(mutableList);
         return mutableList;
     }
 
     private int lastIndexOfRange(long value, int end) {
-        for (int i = end - 1; i >= 0; i--) {
+        for (var i = end - 1; i >= 0; i--) {
             if (value == elementData[i]) {
                 return i;
             }
@@ -104,13 +104,13 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, LongConsume
     }
 
     public long removeAt(int index) {
-        long oldValue = elementData[checkIndex(index, size)];
+        var oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveLong(elementData, size, index);
         return oldValue;
     }
 
     private static int fastRemoveLong(long[] array, int size, int index) {
-        final int newSize = size - 1;
+        final var newSize = size - 1;
         if (newSize > index) {
             System.arraycopy(array, index + 1, array, index, newSize - index);
         }
@@ -127,11 +127,11 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, LongConsume
             return false;
         }
 
-        PrimitiveIterator.OfLong iterator1 = iterator();
-        PrimitiveIterator.OfLong iterator2 = ((LongList) o).iterator();
+        var iterator1 = iterator();
+        var iterator2 = ((LongList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            long l1 = iterator1.nextLong();
-            long l2 = iterator2.nextLong();
+            var l1 = iterator1.nextLong();
+            var l2 = iterator2.nextLong();
             if (l1 != l2) {
                 return false;
             }
@@ -141,7 +141,7 @@ public final class LongArrayList extends PrimitiveAbstractList<Long, LongConsume
 
     @Override
     public int hashCode() {
-        final int result = Objects.hash(size);
+        final var result = Objects.hash(size);
         return  31 * result + Arrays.hashCode(elementData);
     }
 

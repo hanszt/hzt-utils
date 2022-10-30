@@ -22,5 +22,9 @@
             <groupId>org.hzt.utils</groupId>
             <artifactId>core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.hzt.utils</groupId>
+            <artifactId>test-data-generator</artifactId>
+        </dependency>
     </dependencies>
 </project>

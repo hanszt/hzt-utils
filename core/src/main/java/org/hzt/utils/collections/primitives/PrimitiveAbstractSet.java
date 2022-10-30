@@ -5,8 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 
-public abstract class PrimitiveAbstractSet<T, A, T_CONST, I extends PrimitiveIterator<T, T_CONST>>
-        extends PrimitiveAbstractCollection<T, A, T_CONST, I> implements PrimitiveCollection<T, T_CONST, A> {
+public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIterator<T, T_CONST>>
+        extends PrimitiveAbstractCollection<T, T_CONST, A, I> implements PrimitiveCollection<T, T_CONST, A> {
 
     static final float MAXIMUM_LOAD_FACTOR = 0.75F;
     static final int INITIAL_CAPACITY = 8;
@@ -29,7 +29,7 @@ public abstract class PrimitiveAbstractSet<T, A, T_CONST, I extends PrimitiveIte
             return false;
         }
         //noinspection unchecked
-        PrimitiveAbstractSet<T, A, T_CONST, I> that = (PrimitiveAbstractSet<T, A, T_CONST, I>) o;
+        PrimitiveAbstractSet<T, T_CONST, A, I> that = (PrimitiveAbstractSet<T, T_CONST, A, I>) o;
         if (size != that.size) {
             return false;
         }

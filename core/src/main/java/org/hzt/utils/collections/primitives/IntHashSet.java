@@ -16,7 +16,7 @@ import java.util.function.IntConsumer;
  *
  * @see <a href="https://codereview.stackexchange.com/questions/266541/a-simple-java-integer-hash-set">A simple Java integer hash set</a>
  */
-final class IntHashSet extends PrimitiveAbstractSet<Integer, int[], IntConsumer, PrimitiveIterator.OfInt>
+final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[], PrimitiveIterator.OfInt>
         implements IntMutableSet {
 
     IntHashSet() {

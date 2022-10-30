@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -147,7 +148,7 @@ class StringXTest {
     }
 
     private static Map<Character, List<Character>> groupByChars(String s1) {
-        return s1.chars()
+        return StringX.of(s1).chars()
                 .mapToObj(i -> (char) i)
                 .collect(Collectors.groupingBy(Function.identity()));
     }
@@ -200,7 +201,7 @@ class StringXTest {
                 tokens.add(tokenizer.nextToken());
             }
 
-            final var strings = Sequence.of(() -> new StringTokenizer(testString).asIterator())
+            final ListX<String> strings = Sequence.of(Collections.list(new StringTokenizer(testString)))
                     .map(Object::toString)
                     .toListX();
 

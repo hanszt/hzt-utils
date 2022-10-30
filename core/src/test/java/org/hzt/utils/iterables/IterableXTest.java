@@ -24,6 +24,7 @@ import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
 import org.hzt.utils.test.model.PaintingAuction;
 import org.hzt.utils.tuples.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -100,7 +101,7 @@ class IterableXTest {
 
     @Test
     void testToLongArray() {
-        final var longs = ListX.of(BigInteger.ONE, BigInteger.TWO, BigInteger.TEN)
+        final long[] longs = ListX.of(BigInteger.ONE, BigInteger.valueOf(2), BigInteger.TEN)
                 .toLongArray(BigInteger::longValue);
 
         assertArrayEquals(new long[]{1L, 2L, 10L}, longs);
@@ -866,7 +867,7 @@ class IterableXTest {
 
         final List<Character> expected = bookList.stream()
                 .map(Book::getCategory)
-                .flatMapToInt(String::chars)
+                .flatMapToInt(IterableXTest::chars)
                 .mapToObj(c -> (char) c)
                 .collect(toList());
 
@@ -878,6 +879,11 @@ class IterableXTest {
         It.println("stringXES = " + actual);
 
         assertIterableEquals(expected, actual);
+    }
+
+    @NotNull
+    private static IntStream chars(String s) {
+        return s.chars();
     }
 
     private void printEvery10_000stElement(int i) {
@@ -964,7 +970,8 @@ class IterableXTest {
         strings.iterator().forEachRemaining(expected::add);
         final AtomicIterator<String> stringIteratorX = strings.atomicIterator();
         //noinspection StatementWithEmptyBody
-        while(stringIteratorX.tryAdvance(actual::add));
+        while(stringIteratorX.tryAdvance(actual::add)) {
+        }
 
         assertEquals(expected, actual);
     }

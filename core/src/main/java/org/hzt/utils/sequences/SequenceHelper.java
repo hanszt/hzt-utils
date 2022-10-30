@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -167,6 +168,19 @@ public final class SequenceHelper {
                 }
             }
         };
+    }
+
+    @NotNull
+    static <T> Iterator<T> removingIterator(Sequence<T> sequence, @NotNull T value) {
+        final AtomicBoolean removed = new AtomicBoolean();
+        return sequence.filter(e -> {
+            if (!removed.get() && e == value) {
+                removed.set(true);
+                return false;
+            } else {
+                return true;
+            }
+        }).iterator();
     }
 
     static <K, V> V keyAsValueTypeOrThrow(Map.Entry<K, V> entry) {

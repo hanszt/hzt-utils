@@ -279,7 +279,7 @@ class IntSequenceTest {
 
     @Test
     void testMapIndexed() {
-        final var list = IntSequence.generate(1, i -> i * 2)
+        final IntList list = IntSequence.generate(1, i -> i * 2)
                 .mapIndexed(Integer::sum)
                 .takeWhile(i -> i < 100)
                 .toList();

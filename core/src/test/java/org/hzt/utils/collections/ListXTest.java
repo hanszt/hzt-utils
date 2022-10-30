@@ -14,11 +14,13 @@ import org.junit.jupiter.api.function.Executable;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
@@ -126,8 +128,8 @@ class ListXTest {
 
     @Test
     void testBinarySearchInListWithNonComparableObjectsThrowsIllegalStateException() {
-        final var list = ListX.of(Locale.US, Locale.FRANCE, Locale.CANADA, Locale.GERMANY);
-        final var exception = assertThrows(IllegalStateException.class, () -> list.binarySearchFor(Locale.US));
+        final ListX<Locale> list = ListX.of(Locale.US, Locale.FRANCE, Locale.CANADA, Locale.GERMANY);
+        final IllegalStateException exception = assertThrows(IllegalStateException.class, () -> list.binarySearchFor(Locale.US));
         assertEquals("Can not perform binary search by non comparable search value type: Locale", exception.getMessage());
     }
 
@@ -190,11 +192,11 @@ class ListXTest {
 
     @Test
     void testSkipLastTo() {
-        final var list = ListX.of(1, 2, 2, 3, 4, 5, 6, 5);
+        final ListX<Integer> list = ListX.of(1, 2, 2, 3, 4, 5, 6, 5);
 
-        final var integers = list.skipLastTo(HashSet::new, 2);
+        final HashSet<Integer> integers = list.skipLastTo(HashSet::new, 2);
 
-        assertEquals(Set.of(1, 2, 3, 4, 5), integers);
+        assertEquals(new HashSet<>(Arrays.asList(1, 2, 3, 4, 5)), integers);
     }
 
     @Test

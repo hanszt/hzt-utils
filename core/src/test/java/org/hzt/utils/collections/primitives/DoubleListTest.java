@@ -9,7 +9,6 @@ import java.util.Arrays;
 
 import static org.hzt.utils.Patterns.commaPattern;
 import static org.hzt.utils.function.Functions.not;
-import static org.hzt.utils.primitive_comparators.DoubleComparator.reverseOrder;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

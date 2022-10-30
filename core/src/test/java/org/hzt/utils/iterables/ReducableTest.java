@@ -5,6 +5,8 @@ import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.tuples.Pair;
+import org.hzt.utils.tuples.Triple;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -65,7 +67,7 @@ class ReducableTest {
 
     @Test
     void testFoldToMutableList() {
-        final var listX = Sequence.of(1, 2, 3, 4, 5)
+        final MutableListX<Object> listX = Sequence.of(1, 2, 3, 4, 5)
                 .fold(MutableListX.empty(), MutableListX::plus);
 
         assertEquals(MutableListX.of(1, 2, 3 ,4, 5), listX);

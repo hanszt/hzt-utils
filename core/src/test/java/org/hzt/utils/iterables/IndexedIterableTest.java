@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Spliterator;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -33,10 +34,10 @@ class IndexedIterableTest {
 
     @Test
     void testIndexedSpliterator() {
-        final var indexedSpliterator = Sequence.of("This", "is", "a", "spliterator", "test")
+        final Spliterator<IndexedValue<String>> indexedSpliterator = Sequence.of("This", "is", "a", "spliterator", "test")
                 .indexedSpliterator();
 
-        final var integers = StreamSupport.stream(indexedSpliterator, false)
+        final String[] integers = StreamSupport.stream(indexedSpliterator, false)
                 .filter(i -> i.index() % 2 == 0)
                 .map(IndexedValue::value)
                 .toArray(String[]::new);

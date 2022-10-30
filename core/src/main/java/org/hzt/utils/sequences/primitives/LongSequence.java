@@ -25,6 +25,7 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiFunction;
@@ -96,13 +97,13 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence minus(long @NotNull... values) {
-        final var others = LongSequence.of(values).toMutableSet();
+        final LongMutableSet others = LongSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
 
     }
 
     default LongSequence minus(@NotNull Iterable<Long> values) {
-        final var others = values instanceof LongMutableSet ? (LongMutableSet) values : LongSequence.of(values).toMutableSet();
+        final LongMutableSet others = values instanceof LongMutableSet ? (LongMutableSet) values : LongSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
     @Override
@@ -257,7 +258,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
 
     @Override
     default LongStream stream() {
-        final var ordered = Spliterator.ORDERED;
+        final int ordered = Spliterator.ORDERED;
         return StreamSupport.longStream(() -> Spliterators.spliteratorUnknownSize(iterator(), ordered), ordered, false);
     }
 

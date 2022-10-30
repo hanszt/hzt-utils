@@ -1,6 +1,7 @@
 package org.hzt.utils.numbers;
 
 import org.hzt.utils.collections.primitives.LongList;
+import org.hzt.utils.sequences.primitives.LongSequence;
 import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
@@ -28,15 +29,15 @@ class LongXTest {
 
     @Test
     void testNthFibNrNoSuchElement() {
-        final var n = 94;
-        final var exception = assertThrows(NoSuchElementException.class, () -> LongX.nthFibonacciNumber(n));
+        final int n = 94;
+        final NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> LongX.nthFibonacciNumber(n));
         assertEquals("term n>=94 would yield value larger than Long.MAX_VALUE", exception.getMessage());
     }
 
     @Test
     void testUnBoundedFibSequenceThrowsNoSuchElement() {
-        final var fibonacciSequence = LongX.fibonacciSequence();
-        final var exception = assertThrows(NoSuchElementException.class, fibonacciSequence::sum);
+        final LongSequence fibonacciSequence = LongX.fibonacciSequence();
+        final NoSuchElementException exception = assertThrows(NoSuchElementException.class, fibonacciSequence::sum);
         assertEquals("term n>=94 would yield value larger than Long.MAX_VALUE", exception.getMessage());
     }
 

@@ -20,7 +20,8 @@ class SpliterableTest {
         Set<Integer> set = new HashSet<>();
 
         //noinspection StatementWithEmptyBody
-        while (atomicIterator.tryAdvance(set::add));
+        while (atomicIterator.tryAdvance(set::add)) {
+        }
 
         assertEquals(8, set.size());
     }

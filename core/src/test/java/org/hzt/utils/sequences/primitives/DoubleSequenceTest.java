@@ -4,9 +4,11 @@ import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.collections.primitives.DoubleMutableList;
+import org.hzt.utils.collections.primitives.DoubleMutableSet;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
+import org.hzt.utils.tuples.Triple;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -162,14 +164,14 @@ class DoubleSequenceTest {
     }
 
     @Test
-    @Timeout(value = 1_000, unit = TimeUnit.MILLISECONDS)
+    @Timeout(value = 1_500, unit = TimeUnit.MILLISECONDS)
     void testWindowedLargeBoxedDoubleSequence() {
-        final double[] sums2 = Sequence.generate(0, l -> ++l)
+        final Double[] sums2 = Sequence.generate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, s -> s.doubleSumOf(It::asDouble))
                 .toTypedArray(Double[]::new);
 
-        assertEquals(19981, sums2.length);
+        assertEquals(19_981, sums2.length);
     }
 
     @Test
@@ -207,8 +209,8 @@ class DoubleSequenceTest {
 
     @Test
     void testOnDoubleSequence() {
-        final var nrOfCycles = 1_234;
-        final var doubleMutableList = DoubleMutableList.empty();
+        final int nrOfCycles = 1_234;
+        final DoubleMutableList doubleMutableList = DoubleMutableList.empty();
 
         final double[] doubles = DoubleSequence.generate(0, d -> d + .1)
                 .take(nrOfCycles)
@@ -273,7 +275,7 @@ class DoubleSequenceTest {
 
     @Test
     void testMapIndexed() {
-        final var list = DoubleSequence.generate(1, i -> i * DoubleX.GOLDEN_RATIO)
+        final DoubleList list = DoubleSequence.generate(1, i -> i * DoubleX.GOLDEN_RATIO)
                 .mapIndexed((i, d) -> d - i)
                 .takeWhile(d -> d < 10)
                 .toList();

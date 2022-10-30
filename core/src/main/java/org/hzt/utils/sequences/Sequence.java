@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -116,24 +115,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default Sequence<T> minus(@NotNull T value) {
-        return () -> removingIterator(value);
-    }
-
-    @NotNull
-    private Iterator<T> removingIterator(@NotNull T value) {
-        final AtomicBoolean removed = new AtomicBoolean();
-        return filter(e -> {
-            if (!removed.get() && e == value) {
-                removed.set(true);
-                return false;
-            } else {
-                return true;
-            }
-        }).iterator();
+        return () -> SequenceHelper.removingIterator(this, value);
     }
 
     default Sequence<T> minus(@NotNull Iterable<T> values) {
-        final var others = values instanceof Set<?> ? (Set<T>) values : Sequence.of(values).toMutableSet();
+        final Set<T> others = values instanceof Set<?> ? (Set<T>) values : Sequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
 

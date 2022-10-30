@@ -58,6 +58,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.lang.System.setProperty;
+import static org.hzt.utils.It.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SequenceTest {
@@ -194,13 +195,14 @@ class SequenceTest {
         final ListX<Iterable<String>> list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
                 new ArrayDeque<>(Collections.singleton("test")));
 
+        //noinspection Convert2MethodRef
         final ListX<String> result = list.asSequence()
                 .flatMap(t -> It.self(t))
                 .filter(s -> s.length() > 3)
                 .filterNot(String::isEmpty)
                 .toListX();
 
-        It.println("result = " + result);
+        println("result = " + result);
 
         assertIterableEquals(ListX.of("Hallo", "test"), result);
     }
@@ -216,7 +218,7 @@ class SequenceTest {
                 .filterNot(String::isEmpty)
                 .toListX();
 
-        It.println("result = " + result);
+        println("result = " + result);
 
         assertEquals(ListX.of("Hallo", "test"), result);
     }
@@ -233,7 +235,7 @@ class SequenceTest {
                 .filter(length -> length > 3)
                 .toList();
 
-        It.println("result = " + result);
+        println("result = " + result);
 
         assertEquals(IntList.of(5, 4), result);
     }
@@ -344,7 +346,7 @@ class SequenceTest {
                 .skipWhile(i -> i != 5)
                 .toList();
 
-        It.println("integers = " + integers);
+        println("integers = " + integers);
 
         assertEquals(Arrays.asList(5, 10, 6, 5, 3, 5, 6), integers);
     }
@@ -357,7 +359,7 @@ class SequenceTest {
                 .skipWhileInclusive(i -> i != 5)
                 .toList();
 
-        It.println("integers = " + integers);
+        println("integers = " + integers);
 
         assertEquals(Arrays.asList(10, 6, 5, 3, 5, 6), integers);
     }
@@ -389,7 +391,7 @@ class SequenceTest {
                 .map(StringX::reversed)
                 .toListOf(StringX::toString);
 
-        It.println("strings = " + strings);
+        println("strings = " + strings);
 
         assertEquals(Arrays.asList("ollah", "eoh", "si"), strings);
     }
@@ -410,7 +412,7 @@ class SequenceTest {
 
             windows.filterIndexed((i, v) -> IntX.multipleOf(10_000).test(i)).forEach(It::println);
 
-            It.println("windows.last() = " + windows.last());
+            println("windows.last() = " + windows.last());
 
             assertEquals(333328, result.size());
         }
@@ -428,7 +430,7 @@ class SequenceTest {
                     .windowed(5, 6, true)
                     .toListX();
 
-            It.println("windows = " + windows);
+            println("windows = " + windows);
 
             new HashMap<>(0);
 
@@ -445,7 +447,7 @@ class SequenceTest {
                     .windowed(5, 6)
                     .toListX();
 
-            It.println("windows = " + windows);
+            println("windows = " + windows);
 
             assertAll(
                     () -> assertEquals(16, windows.size()),
@@ -461,7 +463,7 @@ class SequenceTest {
                     .windowed(5, 2, true)
                     .toListX();
 
-            It.println("windows = " + windows);
+            println("windows = " + windows);
 
             assertAll(
                     () -> assertEquals(6, windows.size()),
@@ -477,7 +479,7 @@ class SequenceTest {
                     .windowed(4, 2)
                     .toListX();
 
-            It.println("windows = " + windows);
+            println("windows = " + windows);
 
             assertAll(
                     () -> assertEquals(3, windows.size()),
@@ -493,7 +495,7 @@ class SequenceTest {
                     .windowed(1, n -> ++n, 4, true, It::self)
                     .toListX();
 
-            It.println("windows = " + windows);
+            println("windows = " + windows);
 
             assertAll(
                     () -> assertEquals(10, windows.size()),
@@ -509,7 +511,7 @@ class SequenceTest {
                     .windowed(10)
                     .toListX();
 
-            It.println("windows = " + windows);
+            println("windows = " + windows);
 
             assertTrue(windows.isEmpty());
         }
@@ -523,10 +525,10 @@ class SequenceTest {
                     .map(ListX::size)
                     .toListX();
 
-            It.println("sizes = " + sizes);
+            println("sizes = " + sizes);
 
-            It.println("windows.first() = " + sizes.findFirst());
-            It.println("windows.last() = " + sizes.findLast());
+            println("windows.first() = " + sizes.findFirst());
+            println("windows.last() = " + sizes.findLast());
 
             assertEquals(22, sizes.size());
         }
@@ -546,16 +548,16 @@ class SequenceTest {
     void testZipWithNext() {
         final ListX<Integer> sums = IntRange.of(0, 1_000)
                 .filter(IntX.multipleOf(10))
-                .onEach(i -> It.print(i + ", "))
+                .onEach(i -> print(i + ", "))
                 .boxed()
                 .zipWithNext(Integer::sum)
                 .toListX()
                 .shuffled();
 
-        It.println("\nsums = " + sums);
+        println("\nsums = " + sums);
 
-        It.println("sums.first() = " + sums.findFirst());
-        It.println("sums.last() = " + sums.findLast());
+        println("sums.first() = " + sums.findFirst());
+        println("sums.last() = " + sums.findLast());
 
         assertEquals(99, sums.size());
     }
@@ -603,6 +605,7 @@ class SequenceTest {
     void testSequenceFromStream() {
         final Stream<Integer> stream = IntStream.range(0, 100).boxed();
 
+        //noinspection Convert2MethodRef
         final List<IndexedValue<Integer>> list = Sequence.ofStream(stream)
                 .filter(IntX::isEven)
                 .sorted()
@@ -611,15 +614,15 @@ class SequenceTest {
                 .withIndex()
                 .toList();
 
-        It.println("list = " + list);
+        println("list = " + list);
 
         assertEquals(147, list.size());
     }
 
     @Test
     void testSequenceVsStreamAsIterable() {
-        final var intRange = IntRange.of(0, 2_000);
-        final var intStream = IntStream.range(0, 2_000);
+        final IntRange intRange = IntRange.of(0, 2_000);
+        final IntStream intStream = IntStream.range(0, 2_000);
         final PrimitiveIterable.OfInt iterable = intStream::iterator;
 
         assertIterableEquals(intRange, iterable);
@@ -635,8 +638,8 @@ class SequenceTest {
         final Year first = leapYears.first();
         final Year last = leapYears.last();
 
-        It.println("first = " + first);
-        It.println("last = " + last);
+        println("first = " + first);
+        println("last = " + last);
         final IntStatistics stats = leapYears.intStatsOf(Year::getValue);
 
         assertAll(
@@ -654,13 +657,13 @@ class SequenceTest {
                 .sorted();
 
         final Year first = names.first();
-        It.println("first = " + first);
-        It.println("first = " + names.first());
+        println("first = " + first);
+        println("first = " + names.first());
         final List<Year> nameList = names.toList();
         final Year last = names.last();
 
 
-        It.println("last = " + last);
+        println("last = " + last);
 
         assertAll(
                 () -> assertEquals(Year.of(-1), first),
@@ -682,12 +685,12 @@ class SequenceTest {
 
 
         setProperty("org.openjdk.java.util.stream.tripwire", "false");
-        It.println(daysOfYear.joinToString());
+        println(daysOfYear.joinToString());
         setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
-        It.println("daysOfYear.min() = " + daysOfYear.min());
+        println("daysOfYear.min() = " + daysOfYear.min());
 
-        It.println("daysOfYear.max() = " + daysOfYear.max());
+        println("daysOfYear.max() = " + daysOfYear.max());
 
         assertAll(
                 () -> assertTrue(Year.of(year).isLeap()),
@@ -766,7 +769,7 @@ class SequenceTest {
     void testSequenceOfZoneIds() {
         Instant now = Instant.now();
         ZonedDateTime current = now.atZone(ZoneId.systemDefault());
-        It.printf("Current time is %s%n%n", current);
+        printf("Current time is %s%n%n", current);
 
         final Sequence<String> noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
 
@@ -783,7 +786,7 @@ class SequenceTest {
     void testTimeZonesAntarctica() {
         Instant now = Instant.now();
         ZonedDateTime current = now.atZone(ZoneId.systemDefault());
-        It.printf("Current time is %s%n%n", current);
+        printf("Current time is %s%n%n", current);
 
         final Sequence<String> timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.getId().contains("Antarctica"));
 
@@ -850,7 +853,7 @@ class SequenceTest {
         final BigDecimal sqrtOf5 = BigDecimal.valueOf(Math.sqrt(5.0));
         BigDecimal goldenRatio = (BigDecimal.ONE.add(sqrtOf5)).divide(BigDecimal.valueOf(2), scale, RoundingMode.HALF_UP);
 
-        It.println("goldenRatio by sqrt = " + goldenRatio);
+        println("goldenRatio by sqrt = " + goldenRatio);
 
         final int MAX_ITERATIONS = 10_000;
 
@@ -864,7 +867,7 @@ class SequenceTest {
                 .toListX();
 
         final BigDecimal actual = approximations.last();
-        It.println("golden ratio by seq = " + actual);
+        println("golden ratio by seq = " + actual);
 
         approximations.forEach(It::println);
 
@@ -884,7 +887,7 @@ class SequenceTest {
                 .flatMap(i -> () -> i)
                 .toListX();
 
-        It.println("integers = " + integers);
+        println("integers = " + integers);
 
         setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
@@ -893,28 +896,28 @@ class SequenceTest {
 
     @Test
     void testSequenceMinus() {
-        final var pair = IntRange.of(0, 10)
+        final Pair<List<Integer>, Long> pair = IntRange.of(0, 10)
                 .boxed()
                 .minus(2)
                 .toTwo(Sequence::toList, Numerable::count);
 
         assertAll(
-                () -> assertEquals(List.of(0, 1, 3, 4, 5, 6, 7, 8, 9), pair.first()),
+                () -> assertEquals(Arrays.asList(0, 1, 3, 4, 5, 6, 7, 8, 9), pair.first()),
                 () -> assertEquals(9, pair.second())
         );
     }
 
     @Test
     void testSequenceMinusOtherIterable() {
-        List<Integer> intsToRemove = List.of(1, 34, 3, 5);
+        List<Integer> intsToRemove =Arrays.asList(1, 34, 3, 5);
 
-        final var pair = IntRange.of(0, 10)
+        final Pair<List<Integer>, Long> pair = IntRange.of(0, 10)
                 .boxed()
                 .minus(intsToRemove)
                 .toTwo(Sequence::toList, Numerable::count);
 
         assertAll(
-                () -> assertEquals(List.of(0, 2, 4, 6, 7, 8, 9), pair.first()),
+                () -> assertEquals(Arrays.asList(0, 2, 4, 6, 7, 8, 9), pair.first()),
                 () -> assertEquals(7, pair.second())
         );
     }
@@ -967,11 +970,11 @@ class SequenceTest {
     void testSequenceFromIndexedDataStructure() {
         Nodes<String> nodes = new Nodes<>("This", "is", "a", "test");
 
-        final var strings = IntRange.of(0, nodes.size())
+        final List<String> strings = IntRange.of(0, nodes.size())
                 .mapToObj(nodes::get)
                 .toList();
 
-        assertEquals(List.of("This", "is", "a", "test"), strings);
+        assertEquals(Arrays.asList("This", "is", "a", "test"), strings);
     }
 
     private static final class Nodes<T> {

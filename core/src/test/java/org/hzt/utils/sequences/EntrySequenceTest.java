@@ -13,11 +13,9 @@ import java.time.Year;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class EntrySequenceTest {
 
@@ -35,6 +33,17 @@ class EntrySequenceTest {
                 () -> assertEquals(3, resultMap.size()),
                 () -> assertEquals(new HashSet<>(Arrays.asList("1", "2", "3")), resultMap.keySet())
         );
+    }
+
+    @Test
+    void testEntrySequenceOfMap() {
+        final Map<Integer, String> map = MapX.of(1, "hallo", 2, "This", 3, "is", 4, "a", 5, "test").toMap();
+
+        final Map<Integer, String> integerStringMap = EntrySequence.ofMap(map)
+                .filterKeys(key -> key % 2 == 0)
+                .toMap();
+
+        assertEquals(2, integerStringMap.size());
     }
 
     @Test
@@ -71,6 +80,7 @@ class EntrySequenceTest {
 
     @Test
     void testToEntrySequenceFromPairSequence() {
+        //noinspection Convert2MethodRef
         final MutableMapX<Year, Integer> yearStringMap = Sequence.generate(1, i -> ++i)
                 .zipWithNext(Pair::of)
                 .asEntrySequence(t -> It.self(t))

@@ -25,6 +25,7 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiFunction;
@@ -93,13 +94,14 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     default DoubleSequence minus(double @NotNull... values) {
-        final var others = DoubleSequence.of(values).toMutableSet();
+        final DoubleMutableSet others = DoubleSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
 
     }
 
     default DoubleSequence minus(@NotNull Iterable<Double> values) {
-        final var others = values instanceof DoubleMutableSet ? (DoubleMutableSet) values : DoubleSequence.of(values).toMutableSet();
+        final DoubleMutableSet others = values instanceof DoubleMutableSet ?
+                (DoubleMutableSet) values : DoubleSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
 
@@ -259,7 +261,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     @Override
     default DoubleStream stream() {
-        final var ordered = Spliterator.ORDERED;
+        final int ordered = Spliterator.ORDERED;
         return StreamSupport.doubleStream(() -> Spliterators.spliteratorUnknownSize(iterator(), ordered), ordered, false);
     }
 

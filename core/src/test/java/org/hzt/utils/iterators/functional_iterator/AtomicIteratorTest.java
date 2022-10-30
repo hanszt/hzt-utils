@@ -31,7 +31,8 @@ class AtomicIteratorTest {
 
         AtomicIterator<String> stringIterator = getBoundedStringIteratorX(upperBound);
         //noinspection StatementWithEmptyBody
-        while (stringIterator.tryAdvance(list1::add)) ;
+        while (stringIterator.tryAdvance(list1::add)) {
+        }
 
         final AtomicIterator<String> boundedIteratorX = getBoundedStringIteratorX(upperBound);
         final Iterable<String> stringIterable = boundedIteratorX::asIterator;

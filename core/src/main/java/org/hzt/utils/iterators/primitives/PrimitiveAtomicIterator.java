@@ -49,7 +49,8 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         default void forEachRemaining(IntConsumer action) {
             //noinspection StatementWithEmptyBody
-            while (tryAdvanceInt(action));
+            while (tryAdvanceInt(action)) {
+            }
         }
 
         @Override
@@ -102,7 +103,8 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         default void forEachRemaining(LongConsumer action) {
             //noinspection StatementWithEmptyBody
-            while (tryAdvanceLong(action));
+            while (tryAdvanceLong(action)) {
+            }
         }
 
         @Override
@@ -154,7 +156,8 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         default void forEachRemaining(DoubleConsumer action) {
             //noinspection StatementWithEmptyBody
-            while (tryAdvanceDouble(action));
+            while (tryAdvanceDouble(action)) {
+            }
         }
 
         @Override

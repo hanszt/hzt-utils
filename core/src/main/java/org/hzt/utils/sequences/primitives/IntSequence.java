@@ -24,6 +24,7 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiFunction;
@@ -95,13 +96,13 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     default IntSequence minus(int @NotNull... values) {
-        final var others = IntSequence.of(values).toMutableSet();
+        final IntMutableSet others = IntSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
 
     }
 
     default IntSequence minus(@NotNull Iterable<Integer> values) {
-        final var others = values instanceof IntMutableSet ? (IntMutableSet) values : IntSequence.of(values).toMutableSet();
+        final IntMutableSet others = values instanceof IntMutableSet ? (IntMutableSet) values : IntSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
 
@@ -273,7 +274,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     @Override
     default IntStream stream() {
-        final var ordered = Spliterator.ORDERED;
+        final int ordered = Spliterator.ORDERED;
         return StreamSupport.intStream(() -> Spliterators.spliteratorUnknownSize(iterator(), ordered), ordered, false);
     }
 

@@ -20,8 +20,7 @@ public final class GraphAlgorithms {
                     .orElseThrow();
 
             for (WeightedEdge<T> edge : current) {
-                WeightedEdge<T> weightedEdge = edge;
-                WeightedNode<T> neighbor = weightedEdge.getOpposite(current);
+                WeightedNode<T> neighbor = edge.getOpposite(current);
                 if (!settled.contains(neighbor)) {
                     neighbor.setCost(current.getCost());
                     unsettled.add(neighbor);

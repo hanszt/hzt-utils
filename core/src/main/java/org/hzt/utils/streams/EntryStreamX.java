@@ -22,7 +22,6 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     }
 
     static <K, V> EntryStreamX<K, V> of(EntryIterable<K, V> iterable) {
-        //noinspection NullableProblems
         return iterable::spliterator;
     }
 

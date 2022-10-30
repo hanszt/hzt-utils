@@ -31,6 +31,7 @@ class CloserTest {
     void testCloserForResourceApplyAndClose() {
         final var resource = new Resource("Resource 1");
 
+        //noinspection resource
         final var result = Closer.forResource(resource, Resource::close).applyAndClose(Resource::read);
 
         assertAll(
@@ -45,6 +46,7 @@ class CloserTest {
 
         final var resource = new Resource("Resource 1");
 
+        //noinspection resource
         Closer.forResource(resource, Resource::close).executeAndClose(l -> list.add(l.read()));
 
         assertAll(
@@ -55,6 +57,7 @@ class CloserTest {
 
     @Test
     void testCloserCLosingFunctionThrowingException() {
+        //noinspection resource
         var closer = Closer.forResource(new Resource("Resource 1"), Resource::closeThrowingException);
         assertThrows(IllegalStateException.class, () -> closeThrowingException(closer));
 

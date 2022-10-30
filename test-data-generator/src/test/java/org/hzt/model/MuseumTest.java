@@ -7,12 +7,11 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MuseumTest {
 
@@ -22,7 +21,7 @@ class MuseumTest {
 
         final Museum firstMuseum = museumList.stream()
                 .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         firstMuseum.forEach(System.out::println);
 
@@ -30,7 +29,7 @@ class MuseumTest {
                 .filter(museum -> Optional.ofNullable(museum).map(Museum::getDateOfOpening)
                         .filter(d -> d.isBefore(LocalDate.now()))
                         .isPresent())
-                .flatMap(museum -> StreamSupport.stream(museum.spliterator(), false))
+                .flatMap(m -> StreamSupport.stream(m.spliterator(), false))
                 .filter(painting -> painting.ageInYears() > 200)
                 .collect(Collectors.toList());
 
@@ -45,7 +44,7 @@ class MuseumTest {
 
         final Museum firstMuseum = museumList.stream()
                 .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         final List<Painting> paintings = StreamSupport.stream(firstMuseum.spliterator(), false)
                 .collect(Collectors.toList());

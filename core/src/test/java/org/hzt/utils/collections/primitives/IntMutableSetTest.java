@@ -5,7 +5,6 @@ import org.hzt.utils.ranges.IntRange;
 import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
-import java.util.PrimitiveIterator;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,7 +25,7 @@ class IntMutableSetTest {
     void testCountElementsInIntSetThroughSequence() {
         IntMutableSet set = IntMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
 
-        final long count = set.asSequence().count();
+        final var count = set.asSequence().count();
 
         assertEquals(6L, count);
     }
@@ -39,7 +38,7 @@ class IntMutableSetTest {
         ints.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         ints.add(100_000);
 
-        final IntMutableSet evenInts = ints.asSequence()
+        final var evenInts = ints.asSequence()
                 .filter(IntX::isEven)
                 .collect(IntMutableSet::empty, IntMutableSet::add);
 
@@ -52,7 +51,7 @@ class IntMutableSetTest {
     @Test
     void testThrowsWhenIteratedOverEmptySet() {
         IntMutableSet set = IntMutableSet.empty();
-        final PrimitiveIterator.OfInt iterator = set.iterator();
+        final var iterator = set.iterator();
         assertThrows(NoSuchElementException.class, iterator::next);
     }
 

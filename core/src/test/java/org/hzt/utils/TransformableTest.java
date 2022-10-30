@@ -8,12 +8,11 @@ import org.hzt.utils.test.Generator;
 import org.hzt.utils.test.model.PaintingAuction;
 import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.NoSuchElementException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,7 +25,7 @@ class TransformableTest {
     @Test
     void testCreateATransformableOfSomethingAndUseTheDefaultFunctions() {
         final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
-        final Painting nijntje = Painting.of("Nijntje");
+        final var nijntje = Painting.of("Nijntje");
 
         final LocalDate localDate = Transformable.from(vanGoghAuction)
                 .apply(auction -> auction.setMostPopularPainting(nijntje))
@@ -44,40 +43,39 @@ class TransformableTest {
 
         final PaintingAuction vanGoghAuction = Generator.createVanGoghAuction();
 
-        final String nijntje = "Nijntje";
+        final var nijntje = "Nijntje";
 
-        final String name = vanGoghAuction
+        vanGoghAuction
                 .apply(auction -> auction.setMostPopularPainting(Painting.of(nijntje)))
                 .run(PaintingAuction::getMostPopularPainting)
                 .apply(It::println)
                 .alsoUnless(Painting::isInMuseum, list::add)
                 .takeIf(Objects::nonNull)
                 .map(Painting::name)
-                .orElseThrow(NoSuchElementException::new);
+                .ifPresentOrElse(name -> assertAll(
+                        () -> assertTrue(list::isNotEmpty),
+                        () -> assertEquals(nijntje, name)
+                ), Assertions::fail);
 
-        assertAll(
-                () -> assertTrue(list::isNotEmpty),
-                () -> assertEquals(nijntje, name)
-        );
     }
 
     @Test
     void testToPair() {
-        final StringX hallo = StringX.of("Hallo");
+        final var hallo = StringX.of("Hallo");
 
-        final Pair<StringX, String> pair = hallo.to("Joepie");
+        final var pair = hallo.to("Joepie");
 
         assertEquals(Pair.of(hallo, "Joepie"), pair);
     }
 
     @Test
     void testTransformableSequence() {
-        final Set<Integer> integers = TransformableSequence.of(Arrays.asList(1, 2, 3, 4, 3, 5))
+        final var integers = TransformableSequence.of(List.of(1, 2, 3, 4, 3, 5))
                 .alsoWhen(s -> s.count() > 10, s -> s.forEach(System.out::println))
                 .get()
                 .toSet();
 
-        assertEquals(new HashSet<>(Arrays.asList(1,2,3,4,5)), integers);
+        assertEquals(Set.of(1,2,3,4,5), integers);
     }
 
     interface TransformableSequence<T> extends Transformable<TransformableSequence<T>>, Sequence<T> {

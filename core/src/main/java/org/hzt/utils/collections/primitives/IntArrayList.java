@@ -1,6 +1,5 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
@@ -36,7 +35,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
     IntArrayList(@NotNull Iterable<Integer> iterable) {
         this();
         if (iterable instanceof PrimitiveIterable.OfInt) {
-            final PrimitiveIterator.OfInt iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
+            final var iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextInt());
             }
@@ -49,7 +48,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
 
     public boolean add(int l) {
         if (size == elementData.length) {
-            final boolean isInitEmptyArray = elementData.length == 0;
+            final var isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
         }
         elementData[size] = l;
@@ -59,7 +58,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
 
     @Override
     public int get(int index) {
-        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
+        Objects.checkIndex(index, size);
         return elementData[index];
     }
 
@@ -88,9 +87,9 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
 
     @Override
     public IntList shuffled() {
-        final IntMutableList mutableList = IntMutableList.of(this);
-        PrimitiveListHelper.shuffle(mutableList);
-        return mutableList;
+        final var mutableListX = IntMutableList.of(this);
+        PrimitiveListHelper.shuffle(mutableListX);
+        return mutableListX;
     }
 
     private int lastIndexOfRange(int value, int end) {
@@ -103,7 +102,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
     }
 
     public int removeAt(int index) {
-        PrimitiveListHelper.checkIndex(index, size);
+        Objects.checkIndex(index, size);
         int oldValue = elementData[index];
         size = fastRemoveInt(elementData, size, index);
         return oldValue;
@@ -162,7 +161,7 @@ final class IntArrayList extends PrimitiveAbstractList<Integer, int[], IntConsum
 
     @Override
     public int set(int index, int value) {
-        PreConditions.requireOrThrow(index < size, IndexOutOfBoundsException::new);
+        Objects.checkIndex(index, size);
         elementData[index] = value;
         return value;
     }

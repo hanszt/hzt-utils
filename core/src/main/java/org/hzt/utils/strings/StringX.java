@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -157,7 +158,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     @NotNull
     private Iterator<Character> charIterator() {
-        return new Iterator<Character>() {
+        return new Iterator<>() {
 
             private int index = 0;
             private final char[] charArray = string.toCharArray();
@@ -190,6 +191,14 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     public StringX ifEmpty(Supplier<CharSequence> defaultCsSupplier) {
         return isEmpty() ? StringX.of(defaultCsSupplier.get()) : this;
+    }
+
+    public boolean isBlank() {
+        return string.isBlank();
+    }
+
+    public StringX ifBlank(Supplier<CharSequence> defaultStringSupplier) {
+        return isBlank() ? StringX.of(defaultStringSupplier.get()) : this;
     }
 
     @Override
@@ -394,7 +403,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     @Nullable
     private static IntPair findAnyOf(CharSequence[] delimiters, boolean ignoreCase, CharSequence s, int curIndex) {
-        final IndexedValue<CharSequence> indexedValue = findAnyOf(s, curIndex, ListX.of(delimiters), ignoreCase);
+        final var indexedValue = findAnyOf(s, curIndex, ListX.of(delimiters), ignoreCase);
         return indexedValue != null ? IntPair.of(indexedValue.index(), indexedValue.value().length()) : null;
     }
 
@@ -402,14 +411,14 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
                                                   final int startIndex,
                                                   final CollectionX<CharSequence> delimiters,
                                                   final boolean ignoreCase) {
-        final StringX stringX = StringX.of(charSequence);
+        final var stringX = StringX.of(charSequence);
         if (!ignoreCase && delimiters.size() == 1) {
             final CharSequence singleString = delimiters.single();
             final int index = stringX.indexOf(singleString, startIndex);
             return (index < 0) ? null : new IndexedValue<>(index, singleString);
         }
 
-        final IntRange indices = IntRange.closed(Math.max(startIndex, 0), charSequence.length());
+        final var indices = IntRange.closed(Math.max(startIndex, 0), charSequence.length());
 
         for (int index : indices) {
             final CharSequence matchingCharSequence = delimiters
@@ -586,6 +595,26 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return string.replaceAll(regex, replacement);
     }
 
+    public StringX strip() {
+        return StringX.of(string.strip());
+    }
+
+    public StringX stripLeading() {
+        return StringX.of(string.stripLeading());
+    }
+
+    public StringX stripTrailing() {
+        return StringX.of(string.stripTrailing());
+    }
+
+    public Stream<StringX> linesAsStream() {
+        return string.lines().map(StringX::of);
+    }
+
+    public Sequence<StringX> lines() {
+        return Sequence.of(linesAsStream().collect(Collectors.toList()));
+    }
+
     public <R> R transformString(Function<? super String, ? extends R> f) {
         return f.apply(string);
     }
@@ -599,11 +628,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public StringX repeat(int count) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < count; i++) {
-            sb.append(string);
-        }
-        return StringX.of(sb.toString());
+        return StringX.of(string.repeat(count));
     }
 
     @Override

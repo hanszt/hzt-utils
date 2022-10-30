@@ -18,9 +18,9 @@ public interface DoubleMutableCollection extends DoubleCollection,
     default boolean addAll(@NotNull Iterable<Double> iterable) {
         boolean allAdded = true;
         if (iterable instanceof PrimitiveIterable.OfDouble) {
-            final PrimitiveIterator.OfDouble iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
+            final var iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
             while (iterator.hasNext()) {
-                final boolean added = add(iterator.nextDouble());
+                final var added = add(iterator.nextDouble());
                 if (!added) {
                     allAdded = false;
                 }
@@ -37,11 +37,10 @@ public interface DoubleMutableCollection extends DoubleCollection,
 
     @Override
     default boolean addAll(double @NotNull ... array) {
-        final PrimitiveIterator.OfDouble iterator = PrimitiveIterators.doubleArrayIterator(array);
+        final var iterator = PrimitiveIterators.doubleArrayIterator(array);
         boolean allAdded = true;
         while (iterator.hasNext()) {
-            final boolean added = add(iterator.nextDouble());
-            if (!added) {
+            if (!add(iterator.nextDouble())) {
                 allAdded = false;
             }
         }
@@ -54,7 +53,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
     default boolean removeAll(@NotNull Iterable<Double> iterable) {
         boolean allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfDouble) {
-            final PrimitiveIterator.OfDouble iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
+            final var iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
             while (iterator.hasNext()) {
                 if (!remove(iterator.nextDouble())) {
                     allRemoved = false;
@@ -73,9 +72,9 @@ public interface DoubleMutableCollection extends DoubleCollection,
     @Override
     default boolean removeAll(double @NotNull ... array) {
         boolean allRemoved = true;
-        final PrimitiveIterator.OfDouble iterator = PrimitiveIterators.doubleArrayIterator(array);
+        final var iterator = PrimitiveIterators.doubleArrayIterator(array);
         while (iterator.hasNext()) {
-            final boolean removed = remove(iterator.nextDouble());
+            final var removed = remove(iterator.nextDouble());
             if (!removed) {
                 allRemoved = false;
             }

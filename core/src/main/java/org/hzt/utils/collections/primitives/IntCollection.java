@@ -10,7 +10,6 @@ import org.hzt.utils.iterables.primitives.IntStreamable;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.IntConsumer;
@@ -45,9 +44,9 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
 
     default IntList filter(IntPredicate predicate) {
         IntMutableList ints = IntMutableList.withInitCapacity(size());
-        final PrimitiveIterator.OfInt iterator = iterator();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
-            final int value = iterator.nextInt();
+            final var value = iterator.nextInt();
             if (predicate.test(value)) {
                 ints.add(value);
             }
@@ -57,7 +56,7 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
 
     default IntList map(IntUnaryOperator mapper) {
         IntMutableList ints = IntMutableList.withInitCapacity(size());
-        final PrimitiveIterator.OfInt iterator = iterator();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextInt()));
         }
@@ -66,7 +65,7 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
 
     default LongList mapToLong(IntToLongFunction mapper) {
         LongMutableList longs = LongMutableList.withInitCapacity(size());
-        final PrimitiveIterator.OfInt iterator = iterator();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextInt()));
         }
@@ -75,7 +74,7 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
 
     default DoubleList mapToDouble(IntToDoubleFunction mapper) {
         DoubleMutableList doubles = DoubleMutableList.withInitCapacity(size());
-        final PrimitiveIterator.OfInt iterator = iterator();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextInt()));
         }
@@ -84,7 +83,7 @@ public interface IntCollection extends IntReducable, IntCollectable, IntNumerabl
 
     default <R> ListX<R> mapToObj(IntFunction<R> mapper) {
         MutableListX<R> listX = MutableListX.withInitCapacity(size());
-        final PrimitiveIterator.OfInt iterator = iterator();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             listX.add(mapper.apply(iterator.nextInt()));
         }

@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Spliterator;
@@ -74,7 +73,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
 
     default <C extends Collection<E>> C takeLastTo(IntFunction<C> collectionFactory, int n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
-        final C emptyCollection = collectionFactory.apply(0);
+        final var emptyCollection = collectionFactory.apply(0);
         if (n == 0) {
             return emptyCollection;
         }
@@ -102,7 +101,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
     ListX<E> shuffled();
 
     default E random() {
-        return findRandom().orElseThrow(NoSuchElementException::new);
+        return findRandom().orElseThrow();
     }
 
     default Optional<E> findRandom(Random random) {
@@ -110,7 +109,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
     }
 
     default E random(Random random) {
-        return findRandom(random).orElseThrow(NoSuchElementException::new);
+        return findRandom(random).orElseThrow();
     }
 
     /**

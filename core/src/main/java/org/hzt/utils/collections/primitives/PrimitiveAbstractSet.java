@@ -38,7 +38,7 @@ public abstract class PrimitiveAbstractSet<T, A, T_CONST, I extends PrimitiveIte
 
     @Override
     public int hashCode() {
-        final I i = iterator();
+        final var i = iterator();
         int hashCode = 0;
         while (i.hasNext()) {
             hashCode += nextHashCode(i);
@@ -76,7 +76,7 @@ public abstract class PrimitiveAbstractSet<T, A, T_CONST, I extends PrimitiveIte
         }
 
         @NotNull PrimitiveNode nextNode() {
-            final PrimitiveNode current = next;
+            final var current = next;
             if (current == null) {
                 throw new NoSuchElementException();
             }

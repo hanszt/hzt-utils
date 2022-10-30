@@ -6,19 +6,14 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableFloatArray;
-import javafx.collections.ObservableIntegerArray;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
-import org.hzt.utils.collections.MapX;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -30,9 +25,9 @@ class FxCollectorsTest {
 
     @Test
     void testCollectToObservableList() {
-        final AtomicBoolean changeListenerFired = new AtomicBoolean(false);
+        final var changeListenerFired = new AtomicBoolean(false);
 
-        final ObservableList<String> strings = IntStream.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
+        final var strings = IntStream.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
                 .sorted()
                 .filter(i -> i % 2 == 0)
                 .mapToObj(Integer::toString)
@@ -45,16 +40,16 @@ class FxCollectorsTest {
 
         assertAll(
                 () -> assertTrue(changeListenerFired.get()),
-                () -> assertEquals(Arrays.asList("2", "4", "4", "6", "Kaas"), strings),
+                () -> assertEquals(List.of("2", "4", "4", "6", "Kaas"), strings),
                 () -> assertEquals(5, size.get())
         );
     }
 
     @Test
     void testCollectToObservableSet() {
-        final AtomicBoolean changeListenerFired = new AtomicBoolean(false);
+        final var changeListenerFired = new AtomicBoolean(false);
 
-        final ObservableSet<String> strings = IntStream.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
+        final var strings = IntStream.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
                 .sorted()
                 .filter(i -> i % 2 == 0)
                 .mapToObj(Integer::toString)
@@ -67,16 +62,16 @@ class FxCollectorsTest {
 
         assertAll(
                 () -> assertTrue(changeListenerFired.get()),
-                () -> assertEquals(new HashSet<>(Arrays.asList("2", "4", "6", "Kaas")), strings),
+                () -> assertEquals(Set.of("2", "4", "6", "Kaas"), strings),
                 () -> assertEquals(4, size.get())
         );
     }
 
     @Test
     void testCollectToObservableMap() {
-        final AtomicBoolean changeListenerFired = new AtomicBoolean(false);
+        final var changeListenerFired = new AtomicBoolean(false);
 
-        final ObservableMap<Integer, String> map = IntStream.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
+        final var map = IntStream.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
                 .sorted()
                 .filter(i -> i % 2 == 0)
                 .distinct()
@@ -88,21 +83,18 @@ class FxCollectorsTest {
         map.put(5, "Kaas");
         size.bind(Bindings.size(map));
 
-        final MapX<Integer, String> expectedContent = MapX.of(2, "2", 4, "4", 6, "6", 5, "Kaas");
-
         assertAll(
                 () -> assertTrue(changeListenerFired.get()),
-                () -> assertTrue(expectedContent.containsAll(map.entrySet())),
-                () -> assertTrue(map.entrySet().containsAll(map.entrySet())),
+                () -> assertEquals(Map.of(2, "2", 4, "4", 6, "6", 5, "Kaas"), map),
                 () -> assertEquals(4, size.get())
         );
     }
 
     @Test
     void testCollectToObservableFloatArray() {
-        final AtomicBoolean changeListenerFired = new AtomicBoolean(false);
+        final var changeListenerFired = new AtomicBoolean(false);
 
-        final ObservableFloatArray floatArray = DoubleSequence.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
+        final var floatArray = DoubleSequence.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
                 .sorted()
                 .filter(i -> i % 2 == 0)
                 .distinct()
@@ -119,9 +111,9 @@ class FxCollectorsTest {
 
     @Test
     void testCollectToObservableIntArray() {
-        final AtomicBoolean changeListenerFired = new AtomicBoolean(false);
+        final var changeListenerFired = new AtomicBoolean(false);
 
-        final ObservableIntegerArray intArray = IntSequence.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
+        final var intArray = IntSequence.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
                 .sorted()
                 .filter(i -> i % 2 == 0)
                 .collect(toObservableIntArray());
@@ -129,7 +121,7 @@ class FxCollectorsTest {
         intArray.addListener((observableArray, sizeChanged, from, to) -> changeListenerFired.set(true));
         intArray.set(0, 3);
 
-        final int[] expected = new int[]{3, 4, 4, 6};
+        final var expected = new int[]{3, 4, 4, 6};
 
         assertAll(
                 () -> assertTrue(changeListenerFired.get()),
@@ -139,9 +131,9 @@ class FxCollectorsTest {
 
     @Test
     void testStreamCollectToObservableIntArray() {
-        final AtomicBoolean changeListenerFired = new AtomicBoolean(false);
+        final var changeListenerFired = new AtomicBoolean(false);
 
-        final ObservableIntegerArray intArray = FXCollections
+        final var intArray = FXCollections
                 .observableIntegerArray(IntStream.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
                         .sorted()
                         .filter(i -> i % 2 == 0)
@@ -150,7 +142,7 @@ class FxCollectorsTest {
         intArray.addListener((observableArray, sizeChanged, from, to) -> changeListenerFired.set(true));
         intArray.set(0, 3);
 
-        final int[] expected = new int[]{3, 4, 4, 6};
+        final var expected = new int[]{3, 4, 4, 6};
 
         assertAll(
                 () -> assertTrue(changeListenerFired.get()),
@@ -160,9 +152,9 @@ class FxCollectorsTest {
 
     @Test
     void testCollectBoxedTypeToObservableFloatArray() {
-        final AtomicBoolean changeListenerFired = new AtomicBoolean(false);
+        final var changeListenerFired = new AtomicBoolean(false);
 
-        final ObservableFloatArray floatArray = DoubleStream.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
+        final var floatArray = DoubleStream.of(1, 2, 3, 4, 5, 6, 7, 4, 5, 3)
                 .sorted()
                 .filter(i -> i % 2 == 0)
                 .distinct()

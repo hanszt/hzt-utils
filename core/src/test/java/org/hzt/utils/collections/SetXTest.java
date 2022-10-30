@@ -26,7 +26,7 @@ class SetXTest {
 
     @Test
     void testSetXCanNotBeCastToMutableSetX() {
-        final SetX<Integer> setX = SetX.of(1, 2, 3, 4, 5, 10);
+        final var setX = SetX.of(1, 2, 3, 4, 5, 10);
         //noinspection RedundantClassCall
         assertAll(
                 () -> assertThrows(ClassCastException.class, () -> MutableSetX.class.cast(setX)),

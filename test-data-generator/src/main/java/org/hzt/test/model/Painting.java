@@ -76,7 +76,7 @@ public final class Painting
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        Painting that = (Painting) obj;
+        var that = (Painting) obj;
         return Objects.equals(this.name, that.name) &&
                 Objects.equals(this.painter, that.painter) &&
                 Objects.equals(this.yearOfCreation, that.yearOfCreation) &&

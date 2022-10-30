@@ -10,7 +10,6 @@ import org.hzt.utils.iterables.primitives.LongGroupable;
 import org.hzt.utils.iterables.primitives.LongNumerable;
 import org.hzt.utils.iterables.primitives.LongReducable;
 import org.hzt.utils.iterables.primitives.LongStreamable;
-import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.LongFilteringIterator;
 import org.hzt.utils.iterators.primitives.LongGeneratorIterator;
@@ -25,7 +24,6 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiFunction;
@@ -54,7 +52,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
 
     static LongSequence of(Iterable<Long> iterable) {
         if (iterable instanceof OfLong) {
-            final PrimitiveIterable.OfLong longIterable = (OfLong) iterable;
+            final var longIterable = (OfLong) iterable;
             return longIterable::iterator;
         }
         return of(iterable, It::asLong);
@@ -97,13 +95,13 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence minus(long @NotNull... values) {
-        final LongMutableSet others = LongSequence.of(values).toMutableSet();
+        final var others = LongSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
 
     }
 
     default LongSequence minus(@NotNull Iterable<Long> values) {
-        final LongMutableSet others = values instanceof LongMutableSet ? (LongMutableSet) values : LongSequence.of(values).toMutableSet();
+        final var others = values instanceof LongMutableSet ? (LongMutableSet) values : LongSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
     @Override
@@ -121,14 +119,15 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence flatMap(LongFunction<? extends Iterable<Long>> flatMapper) {
-        return mapMulti((value, consumer) -> {
-            final Iterable<Long> iterable = flatMapper.apply(value);
-            if (iterable instanceof OfLong) {
-                ((OfLong) iterable).forEachLong(consumer);
-            } else {
-                iterable.forEach(consumer::accept);
-            }
-        });
+        return mapMulti((value, longConsumer) -> consumeForEach(flatMapper.apply(value), longConsumer));
+    }
+
+    private static void consumeForEach(Iterable<Long> iterable, LongConsumer consumer) {
+        if (iterable instanceof OfLong) {
+            ((OfLong) iterable).forEachLong(consumer);
+        } else {
+            iterable.forEach(consumer::accept);
+        }
     }
 
     default LongSequence mapMulti(LongMapMultiConsumer longMapMultiConsumer) {
@@ -233,13 +232,13 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence zip(@NotNull LongBinaryOperator merger, long... array) {
-        final PrimitiveIterator.OfLong iterator = PrimitiveIterators.longArrayIterator(array);
+        final var iterator = PrimitiveIterators.longArrayIterator(array);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
     default LongSequence zip(@NotNull LongBinaryOperator merger, @NotNull Iterable<Long> other) {
-        final PrimitiveIterator.OfLong iterator = PrimitiveIterators.longIteratorOf(other.iterator(), It::asLong);
+        final var iterator = PrimitiveIterators.longIteratorOf(other.iterator(), It::asLong);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
@@ -258,7 +257,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
 
     @Override
     default LongStream stream() {
-        final int ordered = Spliterator.ORDERED;
+        final var ordered = Spliterator.ORDERED;
         return StreamSupport.longStream(() -> Spliterators.spliteratorUnknownSize(iterator(), ordered), ordered, false);
     }
 

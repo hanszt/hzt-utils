@@ -1,6 +1,5 @@
 package org.hzt.utils.sequences.primitives;
 
-import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.It;
@@ -14,13 +13,13 @@ class IntWindowedSequenceTest {
 
     @Test
     void testLargeWindowedSequence() {
-        final ListX<IntList> windows = IntRange.of(0, 1_000_000)
+        final var windows = IntRange.of(0, 1_000_000)
                 .windowed(2_001, 23, true)
                 .toListX();
 
-        final IntList lastWindow = windows.last();
+        final var lastWindow = windows.last();
 
-        final ListX<IntList> tail = windows.tailFrom(windows.size() - 2);
+        final var tail = windows.tailFrom(windows.size() - 2);
 
         It.println("tail = " + tail);
 
@@ -33,19 +32,19 @@ class IntWindowedSequenceTest {
 
     @Test
     void testLargeVariableWindowedSequence() {
-        final ListX<IntList> windows = IntRange.of(0, 2_000_000)
+        final var windows = IntRange.of(0, 2_000_000)
                 .windowed(2_000, size -> --size, 1, step -> ++step, true)
                 .toListX();
 
-        final IntList lastWindow = windows.last();
+        final var lastWindow = windows.last();
 
-        final IntList firstWindow = windows.first();
+        final var firstWindow = windows.first();
 
-        final ListX<IntList> head = windows.headTo(5);
+        final var head = windows.headTo(5);
 
         head.forEach(It::println);
 
-        final ListX<IntList> tail = windows.tailFrom(windows.size() - 5);
+        final var tail = windows.tailFrom(windows.size() - 5);
 
         tail.forEach(It::println);
 
@@ -61,7 +60,7 @@ class IntWindowedSequenceTest {
     void testChunkedVariableWindowSize() {
         AtomicInteger chunkSize = new AtomicInteger();
 
-        final int[] sizes = IntRange.of(0, 1000)
+        final var sizes = IntRange.of(0, 1000)
                 .chunked(chunkSize::incrementAndGet)
                 .onEach(It::println)
                 .mapToInt(IntList::size)

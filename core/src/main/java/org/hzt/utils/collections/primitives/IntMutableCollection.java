@@ -18,9 +18,9 @@ public interface IntMutableCollection extends IntCollection,
     default boolean addAll(@NotNull Iterable<Integer> iterable) {
         boolean allAdded = true;
         if (iterable instanceof PrimitiveIterable.OfInt) {
-            final PrimitiveIterator.OfInt iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
+            final var iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
             while (iterator.hasNext()) {
-                final boolean added = add(iterator.nextInt());
+                final var added = add(iterator.nextInt());
                 if (!added) {
                     allAdded = false;
                 }
@@ -37,7 +37,7 @@ public interface IntMutableCollection extends IntCollection,
 
     @Override
     default boolean addAll(int @NotNull ... array) {
-        final PrimitiveIterator.OfInt iterator = PrimitiveIterators.intArrayIterator(array);
+        final var iterator = PrimitiveIterators.intArrayIterator(array);
         boolean allAdded = true;
         while (iterator.hasNext()) {
             if (!add(iterator.nextInt())) {
@@ -53,7 +53,7 @@ public interface IntMutableCollection extends IntCollection,
     default boolean removeAll(@NotNull Iterable<Integer> iterable) {
         boolean allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfInt) {
-            final PrimitiveIterator.OfInt iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
+            final var iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
             while (iterator.hasNext()) {
                 if (!remove(iterator.nextInt())) {
                     allRemoved = false;
@@ -72,9 +72,9 @@ public interface IntMutableCollection extends IntCollection,
     @Override
     default boolean removeAll(int @NotNull ... array) {
         boolean allRemoved = true;
-        final PrimitiveIterator.OfInt iterator = PrimitiveIterators.intArrayIterator(array);
+        final var iterator = PrimitiveIterators.intArrayIterator(array);
         while (iterator.hasNext()) {
-            final boolean removed = remove(iterator.nextInt());
+            final var removed = remove(iterator.nextInt());
             if (!removed) {
                 allRemoved = false;
             }

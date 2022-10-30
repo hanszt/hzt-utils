@@ -1,6 +1,5 @@
 package benchmark.prefix;
 
-import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.streams.StreamX;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -13,8 +12,8 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("unused")
@@ -27,7 +26,7 @@ public class PrefixStreamXMapFilterToListBenchmark {
 
     private final List<String> list = IntStream.range(0, Integer.parseInt(NR_OF_ITERATIONS))
             .mapToObj(String::valueOf)
-            .collect(CollectorsX.toUnmodifiableList());
+            .collect(Collectors.toUnmodifiableList());
 
     public PrefixStreamXMapFilterToListBenchmark() {
         super();
@@ -38,7 +37,7 @@ public class PrefixStreamXMapFilterToListBenchmark {
         return list.stream()
                 .map(String::length)
                 .filter(IntX::isEven)
-                .collect(CollectorsX.toUnmodifiableList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Benchmark
@@ -46,7 +45,7 @@ public class PrefixStreamXMapFilterToListBenchmark {
         return list.parallelStream()
                 .map(String::length)
                 .filter(IntX::isEven)
-                .collect(CollectorsX.toUnmodifiableList());
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Benchmark
@@ -74,7 +73,7 @@ public class PrefixStreamXMapFilterToListBenchmark {
                 result.add(length);
             }
         }
-        return Collections.unmodifiableList(result);
+        return List.copyOf(result);
     }
 
     public static void main(String[] args) {

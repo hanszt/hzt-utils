@@ -24,7 +24,7 @@ class LongMutableSetXTest {
     void testCountElementsInLongSetThroughSequence() {
         LongMutableSet set = LongMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
 
-        final long count = set.asSequence().count();
+        final var count = set.asSequence().count();
 
         assertEquals(6L, count);
     }
@@ -37,7 +37,7 @@ class LongMutableSetXTest {
         longs.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         longs.add(Long.MIN_VALUE);
 
-        final LongMutableSet evenLongs = longs.asSequence()
+        final var evenLongs = longs.asSequence()
                 .filter(LongX::isEven)
                 .collect(LongMutableSet::empty, LongMutableSet::add);
 
@@ -49,8 +49,8 @@ class LongMutableSetXTest {
 
     @Test
     void testRemoveAll() {
-        final LongMutableSet longs = LongMutableSet.of(2, 4, 3, 5, 4, 6, 5, 7, 6, 5, 4, 4);
-        final boolean removeAll = longs.removeAll(2, 3, 4, 3, 5);
+        final var longs = LongMutableSet.of(2, 4, 3, 5, 4, 6, 5, 7, 6, 5, 4, 4);
+        final var removeAll = longs.removeAll(2, 3, 4, 3, 5);
 
         assertAll(
                 () -> assertFalse(removeAll),
@@ -60,15 +60,15 @@ class LongMutableSetXTest {
 
     @Test
     void testNonEqualLongSetYieldsEqualsIsFalse() {
-        final LongMutableSet set1 = LongMutableSet.of(1, 2, 4, 5);
-        final LongMutableSet set2 = LongMutableSet.of(1, 2, 4, 6);
+        final var set1 = LongMutableSet.of(1, 2, 4, 5);
+        final var set2 = LongMutableSet.of(1, 2, 4, 6);
         assertNotEquals(set1, set2);
     }
 
     @Test
     void testIntSetAndLongSetAreNotEqual() {
-        final LongMutableSet set1 = LongMutableSet.of(1, 2, 4, 5);
-        final IntMutableSet set2 = IntMutableSet.of(1, 2, 4, 5);
+        final var set1 = LongMutableSet.of(1, 2, 4, 5);
+        final var set2 = IntMutableSet.of(1, 2, 4, 5);
         assertNotEquals(set1, set2);
     }
 

@@ -14,7 +14,7 @@ class DoubleMutableListXTest {
 
     @Test
     void testDifferentMethods() {
-        final DoubleMutableList doubles = DoubleMutableList.empty();
+        final var doubles = DoubleMutableList.empty();
 
         assertTrue(doubles.isEmpty());
         doubles.add(Math.PI);
@@ -26,14 +26,14 @@ class DoubleMutableListXTest {
         doubles.add(2);
         doubles.add(7);
         doubles.add(Math.E);
-        final double l = doubles.removeFirst();
+        final var l = doubles.removeFirst();
         assertAll(
                 () -> assertFalse(doubles.isEmpty()),
                 () -> assertEquals(2L, l),
                 () -> assertEquals(2, doubles.size())
         );
         It.println("doubles = " + doubles);
-        final double l2 = doubles.removeLast();
+        final var l2 = doubles.removeLast();
         assertAll(
                 () -> assertFalse(doubles.isEmpty()),
                 () -> assertEquals(Math.E, l2),
@@ -43,7 +43,7 @@ class DoubleMutableListXTest {
 
     @Test
     void testCopyConstructor() {
-        final DoubleMutableList doubles = DoubleMutableList.empty();
+        final var doubles = DoubleMutableList.empty();
         doubles.add(2);
         doubles.add(-43);
         doubles.add(Math.E);
@@ -51,7 +51,7 @@ class DoubleMutableListXTest {
                 .take(10_000_000)
                 .forEachDouble(doubles::add);
 
-        final DoubleMutableList doublesCopy = DoubleMutableList.of(doubles);
+        final var doublesCopy = DoubleMutableList.of(doubles);
 
         assertAll(
                 () -> assertEquals(10_000_003, doubles.size()),
@@ -61,9 +61,9 @@ class DoubleMutableListXTest {
 
     @Test
     void testRemove() {
-        final DoubleMutableList list = DoubleMutableList.of(1, 2, 3, 4, 5, 6, 7, 8);
+        final var list = DoubleMutableList.of(1, 2, 3, 4, 5, 6, 7, 8);
 
-        final boolean remove = list.remove(7);
+        final var remove = list.remove(7);
         It.println("list = " + list);
 
         assertAll(
@@ -74,7 +74,7 @@ class DoubleMutableListXTest {
 
     @Test
     void testSortSmallDoubleList() {
-        final DoubleMutableList doubles = DoubleSequence.generate(0, i -> --i)
+        final var doubles = DoubleSequence.generate(0, i -> --i)
                 .take(10)
                 .toMutableList();
 
@@ -86,7 +86,7 @@ class DoubleMutableListXTest {
     }
     @Test
     void testSortDoubleList() {
-        final DoubleMutableList doubles = DoubleSequence.generate(1_000_000, i -> --i)
+        final var doubles = DoubleSequence.generate(1_000_000, i -> --i)
                 .take(1_000_000)
                 .toMutableList();
 
@@ -97,7 +97,7 @@ class DoubleMutableListXTest {
 
     @Test
     void testSortReversedDoubleList() {
-        final DoubleMutableList doubles = DoubleSequence.generate(-1_000_000, i -> ++i)
+        final var doubles = DoubleSequence.generate(-1_000_000, i -> ++i)
                 .take(1_000_000)
                 .toMutableList();
 

@@ -49,7 +49,7 @@ public interface IntMutableList extends IntList, IntMutableCollection,
 
     @Override
     default boolean remove(int i) {
-        final int index = indexOf(i);
+        final var index = indexOf(i);
         if (index >= 0) {
             removeAt(index);
             return true;

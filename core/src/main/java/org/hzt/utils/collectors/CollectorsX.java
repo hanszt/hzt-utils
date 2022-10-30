@@ -16,6 +16,7 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -37,7 +38,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-@SuppressWarnings({"DuplicatedCode", "squid:S1200"})
+import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.stream.Collectors.toUnmodifiableMap;
+import static java.util.stream.Collectors.toUnmodifiableSet;
+
+@SuppressWarnings({"DuplicatedCode"})
 public final class CollectorsX {
 
     private CollectorsX() {
@@ -75,7 +80,7 @@ public final class CollectorsX {
 
     public static <T, U, A, R> Collector<T, ?, R> multiMapping(BiConsumer<? super T, ? super Consumer<U>> mapper,
                                                                Collector<? super U, A, R> downstream) {
-        return flatMapping(e -> {
+        return Collectors.flatMapping(e -> {
             SpinedBuffer<U> buffer = new SpinedBuffer<>();
             mapper.accept(e, buffer);
             return StreamSupport.stream(buffer.spliterator(), false);
@@ -89,7 +94,7 @@ public final class CollectorsX {
             BinaryOperator<A> combiner,
             Function<A, R> finisher,
             Set<Collector.Characteristics> characteristics) {
-        return Collector.of(supplier, accumulator, combiner, finisher, characteristics.toArray(new Collector.Characteristics[0]));
+        return Collector.of(supplier, accumulator, combiner, finisher, characteristics.toArray(Collector.Characteristics[]::new));
     }
 
     public static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> toMap() {
@@ -134,25 +139,12 @@ public final class CollectorsX {
 
     public static <T, A, K> Collector<T, ?, Map<K, List<T>>> groupingBy(Function<? super T, ? extends A> classifierPart1,
                                                                         Function<? super A, ? extends K> classifierPart2) {
+
         return Collectors.groupingBy(classifierPart1.andThen(classifierPart2));
     }
 
-    public static <T> Collector<T, ?, List<T>> toUnmodifiableList() {
-        return Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList);
-    }
-
-    public static <T> Collector<T, ?, Set<T>> toUnmodifiableSet() {
-        return Collectors.collectingAndThen(Collectors.toSet(), Collections::unmodifiableSet);
-    }
-
-    @SuppressWarnings("all")
-    public static <T, K, V> Collector<T, ?, Map<K, V>> toUnmodifiableMap(
-            Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
-        return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper), Collections::unmodifiableMap);
-    }
-
-    public static <T> Collector<T, ?, ListX<T>> toListX() {
-        return Collector.of((Supplier<MutableListX<T>>) MutableListX::of, List::add, CollectorsX::accumulate, ListX::of);
+    public static <T> Collector<T, MutableListX<T>, ListX<T>> toListX() {
+        return Collector.of(MutableListX::empty, List::add, MutableListX::plus, ListX::of);
     }
 
     public static <T, R> Collector<T, ?, ListX<R>> toListXOf(Function<T, R> mapper) {
@@ -167,11 +159,6 @@ public final class CollectorsX {
         return Collectors.mapping(mapper, toSetX());
     }
 
-    private static <T> MutableListX<T> accumulate(MutableListX<T> left, MutableListX<T> right) {
-        left.addAll(right);
-        return left;
-    }
-
     public static <T, K, V> Collector<T, ?, MapX<K, V>> toMapX(Function<T, K> keyMapper, Function<T, V> valueMapper) {
         return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper), MapX::of);
     }
@@ -184,7 +171,7 @@ public final class CollectorsX {
     public static <T, R1, R2> Collector<T, ?, Map.Entry<R1, R2>> teeingToEntry(
             Collector<? super T, ?, R1> downstream1,
             Collector<? super T, ?, R2> downstream2) {
-        return teeing(downstream1, downstream2, MapX::entry);
+        return teeing(downstream1, downstream2, AbstractMap.SimpleEntry::new);
     }
 
     public static <T> Collector<T, ?, DoubleStatistics> toDoubleStatisticsBy(ToDoubleFunction<? super T> toDoubleFunction) {

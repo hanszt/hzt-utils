@@ -39,10 +39,8 @@ public final class Closer<T> implements AutoCloseable {
     }
 
     public <R> R applyAndClose(@NotNull ThrowingFunction<? super T, ? extends R> function) {
-        try {
+        try (this) {
             return apply(function);
-        } finally {
-            close();
         }
     }
 
@@ -55,10 +53,8 @@ public final class Closer<T> implements AutoCloseable {
     }
 
     public void executeAndClose(@NotNull ThrowingConsumer<? super T> consumer) {
-        try {
+        try (this) {
             execute(consumer);
-        } finally {
-            close();
         }
     }
 
@@ -67,10 +63,8 @@ public final class Closer<T> implements AutoCloseable {
     }
 
     public boolean testAndClose(@NotNull Predicate<? super T> predicate) {
-        try {
+        try (this) {
             return predicate.test(resource);
-        } finally {
-            close();
         }
     }
 

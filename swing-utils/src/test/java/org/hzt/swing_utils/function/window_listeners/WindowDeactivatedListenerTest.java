@@ -13,7 +13,7 @@ class WindowDeactivatedListenerTest {
 
     @Test
     void testWindowDeactivatedListener() {
-        final Thread thread = new Thread(this::testWindowDeactivated);
+        final var thread = new Thread(this::testWindowDeactivated);
         thread.start();
         await().until(() -> !thread.isAlive());
     }

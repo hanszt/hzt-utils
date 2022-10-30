@@ -12,11 +12,11 @@ class IntReducableTest {
 
     @Test
     void testReduceTwo() {
-        final IntList integers = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        final var integers = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
         integers.forEachInt(It::println);
 
-        final Pair<Integer, Integer> pair = integers
+        final var pair = integers
                 .reduceToTwo(1, (acc, next) -> acc * next,
                         0, Integer::sum,
                         Pair::of);

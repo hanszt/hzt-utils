@@ -6,7 +6,6 @@ import org.hzt.utils.sequences.EntrySequence;
 import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractMap;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,46 +33,46 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     }
 
     static <K, V> MapX<K, V> of(K k1, V v1) {
-        return MutableMapX.of(k1, v1);
+        return MapX.of(Map.of(k1, v1));
     }
 
     static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2) {
-        return MutableMapX.of(k1, v1, k2, v2);
+        return MapX.of(Map.of(k1, v1, k2, v2));
     }
 
     static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3);
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3));
     }
 
     static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4);
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4));
     }
 
     static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5));
     }
 
     static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6);
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6));
     }
 
     static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7);
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7));
     }
 
     static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
                                 K k6, V v6, K k7, V v7, K k8, V v8) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8);
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8));
     }
 
     static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
                                 K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9);
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9));
     }
 
     static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
                                 K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9, k10, v10);
+        return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9, k10, v10));
     }
 
     @SafeVarargs
@@ -94,10 +93,6 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
         MutableMapX<K, V> map = MutableMapX.empty();
         mapConsumer.accept(map);
         return MapX.copyOf(map);
-    }
-    
-    static <K, V> Map.Entry<K, V> entry(K key, V value) {
-        return new AbstractMap.SimpleImmutableEntry<>(key, value);
     }
 
     <K1, V1> MapX<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper,

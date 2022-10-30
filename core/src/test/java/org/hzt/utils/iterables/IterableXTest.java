@@ -14,7 +14,6 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collectors.BigDecimalCollectors;
 import org.hzt.utils.collectors.CollectorsX;
-import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
@@ -24,12 +23,12 @@ import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
 import org.hzt.utils.test.model.PaintingAuction;
 import org.hzt.utils.tuples.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.Period;
 import java.time.Year;
 import java.util.ArrayDeque;
@@ -43,7 +42,6 @@ import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -101,7 +99,7 @@ class IterableXTest {
 
     @Test
     void testToLongArray() {
-        final long[] longs = ListX.of(BigInteger.ONE, BigInteger.valueOf(2), BigInteger.TEN)
+        final var longs = ListX.of(BigInteger.ONE, BigInteger.TWO, BigInteger.TEN)
                 .toLongArray(BigInteger::longValue);
 
         assertArrayEquals(new long[]{1L, 2L, 10L}, longs);
@@ -130,7 +128,7 @@ class IterableXTest {
     void testWithIndicesZipWithNext2() {
         final ListX<Museum> museums = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        final ListX<Long> sumsOfThree = museums
+        final var sumsOfThree = museums
                 .flatMap(Museum::getPaintings)
                 .indices()
                 .boxed()
@@ -161,7 +159,7 @@ class IterableXTest {
     @Test
     void testSortedIfOfComparableType() {
         MutableListX<Integer> list = MutableListX.of(1, 3, 5, 4, 2, 7, 214, 5, 8, 3, 4, 123);
-        final IterableX<Integer> sorted = list.sorted();
+        final var sorted = list.sorted();
         assertIterableEquals(ListX.of(1, 2, 3, 3, 4, 4, 5, 5, 7, 8, 123, 214), sorted);
     }
 
@@ -178,7 +176,7 @@ class IterableXTest {
         final BigDecimal expected = bankAccountList.stream()
                 .max(Comparator.comparing(BankAccount::getBalance))
                 .map(BankAccount::getBalance)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         final BigDecimal actual = bankAccountList.maxOf(BankAccount::getBalance);
 
@@ -194,7 +192,7 @@ class IterableXTest {
         final BigDecimal expected = list.stream()
                 .min(Comparator.comparing(BankAccount::getBalance))
                 .map(BankAccount::getBalance)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         final BigDecimal actual = list.minOf(BankAccount::getBalance);
 
@@ -212,7 +210,7 @@ class IterableXTest {
         final Painting expected = auction.getPaintings().stream()
                 .filter(painting -> !painting.isInMuseum())
                 .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         final Painting firstPaintingNotInMuseum = auction.firstNot(Painting::isInMuseum);
 
@@ -378,7 +376,7 @@ class IterableXTest {
     void testUnion() {
         ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
-        final SetX<Integer> union = list.union(Arrays.asList(2, 3, 4, 5, 7));
+        final var union = list.union(List.of(2, 3, 4, 5, 7));
 
         assertEquals(SetX.of(1, 2, 3, 4, 5, 6, 7, 10), union);
     }
@@ -420,10 +418,10 @@ class IterableXTest {
 
     @Test
     void testIntersect() {
-        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 7);
-        final List<Integer> otherInts = Arrays.asList(1, 4, 5, 6);
+        final var integers = ListX.of(1, 2, 3, 4, 5, 7);
+        final var otherInts = Arrays.asList(1, 4, 5, 6);
 
-        final SetX<Integer> intersect = integers.intersect(otherInts);
+        final var intersect = integers.intersect(otherInts);
 
         assertEquals(SetX.of(1, 4, 5), intersect);
     }
@@ -474,11 +472,11 @@ class IterableXTest {
 
     @Test
     void zipWithNextCanHandleSameParameterValues() {
-        final ListX<Integer> inputList = ListX.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
-        final Sequence<Integer> inputSequence = Sequence.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
+        final var inputList = ListX.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
+        final var inputSequence = Sequence.of(1, 1, 1, 2, 3, 2, 2, 2, 2);
 
-        final ListX<Pair<Integer, Integer>> zippedList = inputList.zipWithNext().toListXOf(Pair::of);
-        final ListX<Pair<Integer, Integer>> zippedSequence = inputSequence.zipWithNext().toListXOf(Pair::of);
+        final var zippedList = inputList.zipWithNext().toListXOf(Pair::of);
+        final var zippedSequence = inputSequence.zipWithNext().toListXOf(Pair::of);
 
         zippedSequence.forEach(It::println);
 
@@ -523,7 +521,7 @@ class IterableXTest {
 
         It.println("integers = " + integers);
 
-        assertIterableEquals(Arrays.asList(5, 10, 6, 5, 3, 5, 6), integers);
+        assertIterableEquals(List.of(5, 10, 6, 5, 3, 5, 6), integers);
     }
 
     @Test
@@ -536,7 +534,7 @@ class IterableXTest {
 
         It.println("integers = " + integers);
 
-        assertIterableEquals(Arrays.asList(10, 6, 5, 3, 5, 6), integers);
+        assertIterableEquals(List.of(10, 6, 5, 3, 5, 6), integers);
     }
 
     @Test
@@ -604,7 +602,7 @@ class IterableXTest {
     void testAverageOf() {
         ListX<Painting> list = ListX.of(TestSampleGenerator.createPaintingList());
 
-        final double expected = list.stream().mapToInt(Painting::ageInYears).average().orElseThrow(NoSuchElementException::new);
+        final double expected = list.stream().mapToInt(Painting::ageInYears).average().orElseThrow();
 
         final double actual = list.averageOf(Painting::ageInYears);
 
@@ -646,7 +644,7 @@ class IterableXTest {
 
         final Painting actual = paintings.stream()
                 .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         assertEquals(expected, actual);
     }
@@ -672,7 +670,7 @@ class IterableXTest {
 
         assertEquals("Lentetuin, de pastorietuin te Nuenen in het voorjaar", actual
                 .map(Painting::name)
-                .orElseThrow(NoSuchElementException::new));
+                .orElseThrow());
     }
 
     @Test
@@ -777,14 +775,14 @@ class IterableXTest {
                 .map(Painting::painter)
                 .map(Painter::getDateOfBirth)
                 .max(Comparator.naturalOrder())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         final LocalDate max = paintingList.stream()
                 .map(Painting::painter)
                 .collect(toListX())
                 .maxOf(Painter::getDateOfBirth);
 
-        final LocalDate actual = paintingList
+        final var actual = paintingList
                 .mapNotNull(Painting::painter)
                 .maxOf(Painter::getDateOfBirth);
 
@@ -802,11 +800,18 @@ class IterableXTest {
                 .map(Painting::painter)
                 .collect(Collectors.toMap(Painter::getDateOfBirth, Painter::getLastname, (a, b) -> a));
 
-        final MapX<LocalDate, String> actual =ListX.of(paintingList)
+        final Set<LocalDate> expectedLocalDates = expected.keySet().stream()
+                .flatMap(date -> date.datesUntil(LocalDate.of(2000, Month.JANUARY, 1)))
+                .collect(toSet());
+
+        final MapX<LocalDate, String> actual = Sequence.of(paintingList)
                 .map(Painting::painter)
                 .toMapX(Painter::getDateOfBirth, Painter::getLastname);
 
-        assertEquals(expected, actual);
+        assertAll(
+                () -> assertEquals(expected, actual),
+                () -> assertTrue(expectedLocalDates.containsAll(actual.keySet()))
+        );
     }
 
     @Test
@@ -821,7 +826,7 @@ class IterableXTest {
                 .map(Customer::getCustomerId)
                 .filter(Objects::nonNull)
                 .max(Comparator.naturalOrder())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         final String actual = bankAccounts
                 .mapNotNull(BankAccount::getCustomer)
@@ -867,7 +872,7 @@ class IterableXTest {
 
         final List<Character> expected = bookList.stream()
                 .map(Book::getCategory)
-                .flatMapToInt(IterableXTest::chars)
+                .flatMapToInt(String::chars)
                 .mapToObj(c -> (char) c)
                 .collect(toList());
 
@@ -879,11 +884,6 @@ class IterableXTest {
         It.println("stringXES = " + actual);
 
         assertIterableEquals(expected, actual);
-    }
-
-    @NotNull
-    private static IntStream chars(String s) {
-        return s.chars();
     }
 
     private void printEvery10_000stElement(int i) {
@@ -923,9 +923,9 @@ class IterableXTest {
 
     @Test
     void testDistinct() {
-        final ListX<Integer> integers = ListX.of(1, 1, 2, 3, 2, 4, 5, 3, 5, 6);
+        final var integers = ListX.of(1, 1, 2, 3, 2, 4, 5, 3, 5, 6);
 
-        final ListX<Integer> distinct = integers.distinct();
+        final var distinct = integers.distinct();
 
         assertEquals(ListX.of(1, 2, 3, 4, 5, 6), distinct);
     }
@@ -963,24 +963,23 @@ class IterableXTest {
 
     @Test
     void testIteratorX() {
-        final List<String> expected = new ArrayList<>();
-        final List<String> actual = new ArrayList<>();
-        final ListX<String> strings = ListX.of("hello", "this", "is", "a", "test");
+        final var expected = new ArrayList<String>();
+        final var actual = new ArrayList<String>();
+        final var strings = ListX.of("hello", "this", "is", "a", "test");
 
         strings.iterator().forEachRemaining(expected::add);
-        final AtomicIterator<String> stringIteratorX = strings.atomicIterator();
+        final var stringIteratorX = strings.atomicIterator();
         //noinspection StatementWithEmptyBody
-        while(stringIteratorX.tryAdvance(actual::add)) {
-        }
+        while (stringIteratorX.tryAdvance(actual::add)) ;
 
         assertEquals(expected, actual);
     }
 
     @Test
     void testToBooleanArray() {
-        final Sequence<String> sequence = Sequence.of("This", "is", "a", "test");
+        final var sequence = Sequence.of("This", "is", "a", "test");
 
-        final boolean[] booleans = sequence.toBooleanArray(s -> s.contains("i"));
+        final var booleans = sequence.toBooleanArray(s -> s.contains("i"));
 
         assertArrayEquals(new boolean[]{true, true, false, false}, booleans);
     }

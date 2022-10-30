@@ -70,7 +70,7 @@ public interface LongList extends LongCollection,
     @Override
     @NotNull
     default OptionalLong findLast() {
-        final int lastIndex = lastIndex();
+        final var lastIndex = lastIndex();
         return lastIndex < 0 ? OptionalLong.empty() : OptionalLong.of(get(lastIndex));
     }
 
@@ -79,7 +79,7 @@ public interface LongList extends LongCollection,
     default OptionalLong findLast(@NotNull LongPredicate predicate) {
         PrimitiveListIterator.OfLong iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
-            final long previousLong = iterator.previousLong();
+            final var previousLong = iterator.previousLong();
             if (predicate.test(previousLong)) {
                 return OptionalLong.of(previousLong);
             }
@@ -92,14 +92,14 @@ public interface LongList extends LongCollection,
 
     @Override
     default LongList sorted() {
-        final long[] array = toArray();
+        final var array = toArray();
         Arrays.sort(array);
         return LongList.of(array);
     }
 
     @Override
     default LongList sorted(LongComparator comparator) {
-        final long[] longs = toArray();
+        final var longs = toArray();
         ArraysX.sort(comparator, longs);
         return LongList.of(longs);
     }

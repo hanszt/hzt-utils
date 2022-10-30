@@ -2,7 +2,6 @@ package org.hzt.utils.iterables;
 
 import org.hzt.test.model.Person;
 import org.hzt.utils.Patterns;
-import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
@@ -11,7 +10,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -36,11 +34,11 @@ class SortableTest {
 
         assertEquals(0, counter.get());
 
-        final List<Integer> integers = sequence.toList();
+        final var integers = sequence.toList();
 
         assertAll(
                 () -> assertEquals(10, counter.get()),
-                () -> assertEquals(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), integers)
+                () -> assertEquals(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), integers)
         );
     }
 
@@ -55,7 +53,7 @@ class SortableTest {
 
         assertEquals(0, counter.get());
 
-        final int[] integers = sequence.toArray();
+        final var integers = sequence.toArray();
 
         assertAll(
                 () -> assertEquals(10, counter.get()),
@@ -65,7 +63,7 @@ class SortableTest {
 
     @Test
     void testSequenceSortedBy() {
-        final List<String> englishNameList = Arrays.asList(
+        final var englishNameList = List.of(
                 "Oliver",
                 "Harry",
                 "George",
@@ -76,14 +74,14 @@ class SortableTest {
                 "Oscar",
                 "Charlie"
         );
-        final List<String> names = Sequence.ofStream(englishNameList.stream())
+        final var names = Sequence.ofStream(englishNameList.stream())
                 .take(10)
                 .sortedBy(String::length)
                 .toList();
 
         System.out.println("names = " + names);
 
-        final List<String> expectedNames = Arrays.asList("Leo, Noah, Jack, Harry, Jacob, Oscar, Oliver, George, Charlie"
+        final var expectedNames = List.of("Leo, Noah, Jack, Harry, Jacob, Oscar, Oliver, George, Charlie"
                 .split(", "));
 
         assertEquals(expectedNames, names);
@@ -91,19 +89,19 @@ class SortableTest {
 
     @Test
     void testSequenceDatesSortedBy() {
-        final ListX<LocalDate> localDates = Sequence.generate(LocalDate.parse("2019-10-15"), date -> date.minusWeeks(1))
+        final var localDates = Sequence.generate(LocalDate.parse("2019-10-15"), date -> date.minusWeeks(1))
                 .take(10)
                 .onEach(System.out::println)
                 .sortedBy(LocalDate::getDayOfYear)
-                .toListX();
+                .toList();
 
         System.out.println("localDates = " + localDates);
 
-        final ListX<LocalDate> expectedDates = Sequence
+        final var expectedDates = Sequence
                 .of("2019-08-13, 2019-08-20, 2019-08-27, 2019-09-03, 2019-09-10, 2019-09-17, 2019-09-24, 2019-10-01, 2019-10-08, 2019-10-15"
                         .split(", "))
                 .map(LocalDate::parse)
-                .toListX();
+                .toList();
 
         assertEquals(expectedDates, localDates);
     }
@@ -121,7 +119,7 @@ class SortableTest {
             "Adi Hans Judith Koen Pauline  Ted"
     })
     void isSortedInNaturalOrder(String string) {
-        final ListX<Person> people = blankStringPattern.splitAsStream(string)
+        final var people = blankStringPattern.splitAsStream(string)
                 .map(Person::new)
                 .collect(CollectorsX.toListX());
 
@@ -136,7 +134,7 @@ class SortableTest {
             "Adi Judith Hans Koen Pauline  Ted"
     })
     void isNotSortedInNaturalOrder(String string) {
-        final Sequence<Person> people = Patterns
+        final var people = Patterns
                 .splitToSequence(blankStringPattern, string)
                 .map(Person::new);
 

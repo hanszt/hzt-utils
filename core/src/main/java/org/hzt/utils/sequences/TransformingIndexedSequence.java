@@ -18,7 +18,7 @@ final class TransformingIndexedSequence<T, R> implements Sequence<R> {
     @NotNull
     @Override
     public Iterator<R> iterator() {
-        return new Iterator<R>() {
+        return new Iterator<>() {
             private final Iterator<T> iterator = upStream.iterator();
             private int index = 0;
             @Override

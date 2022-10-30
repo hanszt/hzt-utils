@@ -43,8 +43,8 @@ extends PrimitiveAbstractCollection<T, A, T_CONS, I> implements PrimitiveCollect
         if (isInitEmptyArray) {
             return newArray(minCapacity);
         }
-        final int minGrowth = minCapacity - oldCapacity;
-        final int prefGrowth = oldCapacity >> 1;
+        final var minGrowth = minCapacity - oldCapacity;
+        final var prefGrowth = oldCapacity >> 1;
         int newCapacity = newLength(oldCapacity, minGrowth, prefGrowth);
         return copyElementData(newCapacity);
     }

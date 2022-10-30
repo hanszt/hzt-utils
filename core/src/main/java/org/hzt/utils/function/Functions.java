@@ -97,10 +97,6 @@ public final class Functions {
         return predicate.negate();
     }
 
-    public static <T> Predicate<T> not(Predicate<T> predicate) {
-        return predicate.negate();
-    }
-
     public static <T, R> Predicate<T> distinctBy(Function<? super T, ? extends R> function) {
         Set<R> seen = new HashSet<>();
         return t -> seen.add(function.apply(t));

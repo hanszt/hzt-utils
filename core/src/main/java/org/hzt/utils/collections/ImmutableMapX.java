@@ -3,7 +3,6 @@ package org.hzt.utils.collections;
 import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,19 +15,19 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
     private final Map<K, V> map;
 
     ImmutableMapX(@NotNull Map<? extends K, ? extends V> map) {
-        this.map = Collections.unmodifiableMap(map);
+        this.map = Map.copyOf(map);
     }
 
     ImmutableMapX() {
-        this(Collections.emptyMap());
+        this(Map.of());
     }
 
     ImmutableMapX(Iterable<Entry<K, V>> iterable) {
-        final HashMap<K, V> hashMap = new HashMap<>();
+        final var hashMap = new HashMap<K, V>();
         for (Entry<K, V> entry : iterable) {
             hashMap.put(entry.getKey(), entry.getValue());
         }
-        this.map = Collections.unmodifiableMap(hashMap);
+        this.map = Map.copyOf(hashMap);
     }
 
     @SafeVarargs
@@ -37,7 +36,7 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
         for (Pair<K, V> pair : pairs) {
             hashMap.put(pair.first(), pair.second());
         }
-        this.map = Collections.unmodifiableMap(hashMap);
+        this.map = Map.copyOf(hashMap);
     }
 
     @SafeVarargs
@@ -46,7 +45,7 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
         for (Entry<? extends K, ? extends V> entry : entries) {
             hashMap.put(entry.getKey(), entry.getValue());
         }
-        this.map = Collections.unmodifiableMap(hashMap);
+        this.map = Map.copyOf(hashMap);
     }
 
     @Override

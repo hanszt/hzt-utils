@@ -33,8 +33,8 @@ public interface IndexedIterable<T> extends Iterable<T> {
     }
 
     default void forEachIndex(@NotNull IntConsumer action) {
-        final PrimitiveIterator.OfInt indexIterator = indexIterator();
-        while(indexIterator.hasNext()) {
+        final var indexIterator = indexIterator();
+        while (indexIterator.hasNext()) {
             action.accept(indexIterator.nextInt());
         }
     }

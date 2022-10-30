@@ -1,11 +1,7 @@
 package org.hzt.utils.statistics;
 
-import org.hzt.utils.It;
-import org.hzt.utils.collections.ListX;
-import org.hzt.utils.collections.primitives.DoubleList;
-import org.hzt.utils.collections.primitives.IntList;
-import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -16,20 +12,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class StatisticsTest {
 
     @SuppressWarnings("squid:S5977")
-    private static final Random RANDOM = new Random(0);
+    private static final Random RANDOM = new Random();
 
     @Test
     void testStatisticsStandardDeviation() {
-        final ListX<Integer> list = Sequence.generate(RANDOM::nextGaussian)
+        final var list = Sequence.generate(RANDOM::nextGaussian)
                 .take(1_000)
                 .map(d -> (int) (d * 100))
                 .toListX();
 
-        final LongList intRange = list.mapToLong(It::asLong);
-        final IntList longRange = intRange.mapToInt(It::longAsInt);
-        final DoubleList doubleRange = intRange.mapToDouble(It::asDouble);
+        final var intRange = list.mapToInt(It::asInt);
+        final var longRange = intRange.mapToLong(It::asLong);
+        final var doubleRange = intRange.mapToDouble(It::asDouble);
 
-        final double standardDeviationIntRange = intRange.stats().getStandardDeviation();
+        final var stats = intRange.stats();
+
+        It.println("stats = " + stats);
+        final var standardDeviationIntRange = stats.getStandardDeviation();
 
         It.println("longRange.count() = " + longRange.count());
         It.println(longRange.sum());
@@ -43,7 +42,7 @@ class StatisticsTest {
         It.println(standardDeviationIntRange);
 
         assertAll(
-                () -> assertEquals(standardDeviationIntRange, longRange.stats().getStandardDeviation()),
+                () -> assertEquals(standardDeviationIntRange, longRange.stats().also(It::println).getStandardDeviation()),
                 () -> assertEquals(standardDeviationIntRange, doubleRange.stats().getStandardDeviation())
         );
 

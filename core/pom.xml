@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.hzt.utils</groupId>
         <artifactId>hzt-utils</artifactId>
-        <version>0.7.5.1.8</version>
+        <version>0.7.5.11</version>
     </parent>
 
     <artifactId>core</artifactId>
@@ -21,7 +21,6 @@
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

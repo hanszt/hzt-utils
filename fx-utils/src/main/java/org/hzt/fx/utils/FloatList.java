@@ -25,7 +25,7 @@ public final class FloatList extends PrimitiveAbstractList<Float, float[], Float
     public boolean add(float l) {
         final int size = this.size;
         if (size == elementData.length) {
-            final boolean isInitEmptyArray = elementData.length == 0;
+            final var isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
         }
         elementData[size] = l;
@@ -57,9 +57,9 @@ public final class FloatList extends PrimitiveAbstractList<Float, float[], Float
     public boolean addAll(@NotNull Iterable<Float> iterable) {
         boolean allAdded = true;
         if (iterable instanceof FloatList) {
-            final FloatIterator iterator = ((FloatList) iterable).iterator();
+            final var iterator = ((FloatList) iterable).iterator();
             while (iterator.hasNext()) {
-                final boolean added = add(iterator.nextFloat());
+                final var added = add(iterator.nextFloat());
                 if (!added) {
                     allAdded = false;
                 }

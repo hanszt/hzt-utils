@@ -5,8 +5,6 @@ import org.hzt.utils.strings.StringX;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -24,7 +22,7 @@ class IntXTest {
 
     @Test
     void testMapEachDigit() {
-        final long count = StringX.of(1_003_293_342)
+        final var count = StringX.of(1_003_293_342)
                 .filter(Character::isDigit)
                 .count();
 
@@ -33,23 +31,23 @@ class IntXTest {
 
     @Test
     void testSequenceUntilNthPrimeNr() {
-        final int oneThousandsPrimeNr = IntX.primeNrSequence()
+        final var oneThousandsPrimeNr = IntX.primeNrSequence()
                 .take(1_000)
                 .reduce((first, second) -> second)
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow();
 
         assertEquals(7919, oneThousandsPrimeNr);
     }
 
     @Test
     void testSieveOfEratosthenes() {
-        final IntSequence primes = primeNrSequence(7919);
+        final var primes = primeNrSequence(7919);
 
-        final long count = primes.count();
+        final var count = primes.count();
 
-        final int largestPrimeUnderOneThousand = primes
+        final var largestPrimeUnderOneThousand = primes
                 .reduce((first, second) -> second)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         assertAll(
                 () -> assertEquals(1000, count),
@@ -63,7 +61,7 @@ class IntXTest {
      * @return IntSequence of primes
      */
     private static IntSequence primeNrSequence(@SuppressWarnings("SameParameterValue") int upperPrimeSize) {
-        final boolean[] prime = new boolean[upperPrimeSize + 1];
+        final var prime = new boolean[upperPrimeSize + 1];
         Arrays.fill(prime, true);
 
         for (int p = 2; p * p <= upperPrimeSize; p++) {
@@ -83,7 +81,7 @@ class IntXTest {
     void testAsChar() {
         String s = "This is a string";
 
-        final List<Character> characters = s.chars()
+        final var characters = s.chars()
                 .mapToObj(IntX::asChar)
                 .collect(Collectors.toList());
 

@@ -24,7 +24,7 @@ abstract class PrimitiveAbstractCollection<T, A, T_CONS, I extends PrimitiveIter
 
     @Override
     public String toString() {
-        I iterator = iterator();
+        var iterator = iterator();
         if (!iterator.hasNext()) {
             return "[]";
         }

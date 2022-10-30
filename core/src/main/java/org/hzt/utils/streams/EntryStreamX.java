@@ -1,7 +1,6 @@
 package org.hzt.utils.streams;
 
 import org.hzt.utils.It;
-import org.hzt.utils.collections.MapX;
 import org.hzt.utils.iterables.EntryIterable;
 import org.hzt.utils.sequences.EntrySequence;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +22,6 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     }
 
     static <K, V> EntryStreamX<K, V> of(EntryIterable<K, V> iterable) {
-        //noinspection NullableProblems
         return iterable::spliterator;
     }
 
@@ -44,13 +42,13 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     @Override
     default <K1, V1> EntryStreamX<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper, 
                                               @NotNull Function<? super V, ? extends V1> valueMapper) {
-        return ofStream(map(e -> MapX.entry(keyMapper.apply(e.getKey()), valueMapper.apply(e.getValue()))));
+        return ofStream(map(e -> Map.entry(keyMapper.apply(e.getKey()), valueMapper.apply(e.getValue()))));
     }
 
     @Override
     default <K1, V1> EntryStreamX<K1, V1> inverted(@NotNull Function<? super V, ? extends K1> toKeyMapper,
                                                    @NotNull Function<? super K, ? extends V1> toValueMapper) {
-        return ofStream(map((k, v) -> MapX.entry(toKeyMapper.apply(v), toValueMapper.apply(k))));
+        return ofStream(map((k, v) -> Map.entry(toKeyMapper.apply(v), toValueMapper.apply(k))));
     }
 
     @Override
@@ -77,22 +75,22 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
 
     @Override
     default <K1> EntryStreamX<K1, V> mapByKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
-        return ofStream(map((k , v) -> MapX.entry(keyMapper.apply(k), v)));
+        return ofStream(map((k , v) -> Map.entry(keyMapper.apply(k), v)));
     }
 
     @Override
     default <K1> EntryStreamX<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, ? extends K1> toKeyMapper) {
-        return ofStream(map((k, v) -> MapX.entry(toKeyMapper.apply(k, v), v)));
+        return ofStream(map((k, v) -> Map.entry(toKeyMapper.apply(k, v), v)));
     }
 
     @Override
     default <V1> EntryStreamX<K, V1> mapByValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
-        return ofStream(map((k, v) -> MapX.entry(k, valueMapper.apply(v))));
+        return ofStream(map((k, v) -> Map.entry(k, valueMapper.apply(v))));
     }
 
     @Override
     default <V1> EntryStreamX<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, ? extends V1> toValueMapper) {
-        return ofStream(map((k, v) -> MapX.entry(k, toValueMapper.apply(k, v))));
+        return ofStream(map((k, v) -> Map.entry(k, toValueMapper.apply(k, v))));
     }
 
     @Override

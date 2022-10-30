@@ -2,8 +2,6 @@ package benchmark.prefix;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class PrefixStreamXMapFilterToListBenchmarkTest {
@@ -12,9 +10,9 @@ class PrefixStreamXMapFilterToListBenchmarkTest {
 
     @Test
     void testStreamAndStreamXYieldSameResult() {
-        final List<Integer> integers = streamXMapFilterToListBenchmark.streamMapFilterToList();
-        final List<Integer> integers1 = streamXMapFilterToListBenchmark.streamXMapFilterToList();
-        final List<Integer> integers2 = streamXMapFilterToListBenchmark.imperativeMapFilterToList();
+        final var integers = streamXMapFilterToListBenchmark.streamMapFilterToList();
+        final var integers1 = streamXMapFilterToListBenchmark.streamXMapFilterToList();
+        final var integers2 = streamXMapFilterToListBenchmark.imperativeMapFilterToList();
 
         assertAll(
                 () -> assertEquals(integers, integers1),

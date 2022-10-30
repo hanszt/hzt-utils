@@ -12,10 +12,10 @@ class DoubleXTest {
 
     @Test
     void testToRoundedString() {
-        final Locale locale = Locale.getDefault();
+        final var locale = Locale.getDefault();
 
         Locale.setDefault(Locale.US);
-        final String roundedString = DoubleX.toRoundedString(Math.PI, 5);
+        final var roundedString = DoubleX.toRoundedString(Math.PI, 5);
 
         assertEquals("3.14159", roundedString);
 

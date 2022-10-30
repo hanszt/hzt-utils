@@ -166,31 +166,31 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default ListX<E> sorted() {
-        final MutableListX<E> sorted = (MutableListX<E>) IterableX.super.sorted();
+        final var sorted = (MutableListX<E>) IterableX.super.sorted();
         return ListX.copyOf(sorted);
     }
 
     @Override
     default <R extends Comparable<? super R>> ListX<E> sortedBy(@NotNull Function<? super E, ? extends R> selector) {
-        final MutableListX<E> sorted = (MutableListX<E>) IterableX.super.sortedBy(selector);
+        final var sorted = (MutableListX<E>) IterableX.super.sortedBy(selector);
         return ListX.copyOf(sorted);
     }
 
     @Override
     default ListX<E> sorted(Comparator<? super E> comparator) {
-        final MutableListX<E> sorted = (MutableListX<E>) IterableX.super.sorted(comparator);
+        final var sorted = (MutableListX<E>) IterableX.super.sorted(comparator);
         return ListX.copyOf(sorted);
     }
 
     @Override
     default ListX<E> sortedDescending() {
-        final MutableListX<E> listX = (MutableListX<E>) IterableX.super.sortedDescending();
+        final var listX = (MutableListX<E>) IterableX.super.sortedDescending();
         return ListX.copyOf(listX);
     }
 
     @Override
     default <R extends Comparable<? super R>> ListX<E> sortedByDescending(@NotNull Function<? super E, ? extends R> selector) {
-        final MutableListX<E> listX = (MutableListX<E>) IterableX.super.sortedByDescending(selector);
+        final var listX = (MutableListX<E>) IterableX.super.sortedByDescending(selector);
         return ListX.copyOf(listX);
     }
 

@@ -59,7 +59,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
                                                  @NotNull DoubleBiFunction<R> finisher) {
         PrimitiveIterator.OfDouble iterator = iterator();
         if (iterator.hasNext()) {
-            final double first = iterator.nextDouble();
+            final var first = iterator.nextDouble();
             double accumulator1 = first;
             double accumulator2 = first;
             while (iterator.hasNext()) {
@@ -79,16 +79,16 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
     }
 
     default double first() {
-        return findFirst().orElseThrow(NoSuchElementException::new);
+        return findFirst().orElseThrow();
     }
 
     default double first(@NotNull DoublePredicate predicate) {
-        return findFirst(predicate).orElseThrow(NoSuchElementException::new);
+        return findFirst(predicate).orElseThrow();
     }
 
     @Override
     default OptionalDouble findFirst() {
-        final PrimitiveIterator.OfDouble iterator = iterator();
+        final var iterator = iterator();
         return iterator.hasNext() ? OptionalDouble.of(iterator.nextDouble()) : OptionalDouble.empty();
     }
 
@@ -105,11 +105,11 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
     }
 
     default double last() {
-        return findLast().orElseThrow(NoSuchElementException::new);
+        return findLast().orElseThrow();
     }
 
     default double last(@NotNull DoublePredicate predicate) {
-        return findLast(predicate).orElseThrow(NoSuchElementException::new);
+        return findLast(predicate).orElseThrow();
     }
 
     @Override
@@ -119,7 +119,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
 
     @Override
     default OptionalDouble findLast(DoublePredicate predicate) {
-        PrimitiveIterator.OfDouble iterator = iterator();
+        var iterator = iterator();
         double result = iterator.nextDouble();
         if (!predicate.test(result) && !iterator.hasNext()) {
             return OptionalDouble.empty();
@@ -134,7 +134,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
     }
 
     default double single() {
-        final PrimitiveIterator.OfDouble iterator = iterator();
+        final var iterator = iterator();
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }

@@ -19,7 +19,7 @@ class IteratorTests {
     void testGeneratingIterator() {
         Sequence<String> strings = () -> GeneratorIterator.of(() -> "h", s1 -> s1 + s1);
         for (String s : strings) {
-            final int length = s.length();
+            final var length = s.length();
             It.println("s = " + s);
             assertTrue(() -> isPowerOfTwo(length));
             if (length > 1000) {
@@ -53,10 +53,10 @@ class IteratorTests {
 
     @Test
     void testDistinctIteratorForEachRemaining() {
-        final Sequence<Integer> distinctSequence = Sequence.of(2, 2, 3, 4, 4, 5).distinct();
+        final var distinctSequence = Sequence.of(2, 2, 3, 4, 4, 5).distinct();
 
         List<Integer> list = new ArrayList<>();
-        final Iterator<Integer> iterator = distinctSequence.iterator();
+        final var iterator = distinctSequence.iterator();
         iterator.forEachRemaining(list::add);
 
         System.out.println("list = " + list);

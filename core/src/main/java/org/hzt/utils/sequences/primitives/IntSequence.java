@@ -9,7 +9,6 @@ import org.hzt.utils.iterables.primitives.IntGroupable;
 import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.iterables.primitives.IntReducable;
 import org.hzt.utils.iterables.primitives.IntStreamable;
-import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.IntFilteringIterator;
 import org.hzt.utils.iterators.primitives.IntGeneratorIterator;
@@ -24,7 +23,6 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiFunction;
@@ -53,7 +51,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     static IntSequence of(Iterable<Integer> iterable) {
         if (iterable instanceof OfInt) {
-            final PrimitiveIterable.OfInt intIterable = (OfInt) iterable;
+            final var intIterable = (OfInt) iterable;
             return intIterable::iterator;
         }
         return of(iterable, It::asInt);
@@ -96,13 +94,13 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     default IntSequence minus(int @NotNull... values) {
-        final IntMutableSet others = IntSequence.of(values).toMutableSet();
+        final var others = IntSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
 
     }
 
     default IntSequence minus(@NotNull Iterable<Integer> values) {
-        final IntMutableSet others = values instanceof IntMutableSet ? (IntMutableSet) values : IntSequence.of(values).toMutableSet();
+        final var others = values instanceof IntMutableSet ? (IntMutableSet) values : IntSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
 
@@ -121,14 +119,15 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     default IntSequence flatMap(IntFunction<? extends Iterable<Integer>> flatMapper) {
-        return mapMulti((value, consumer) -> {
-            final Iterable<Integer> iterable = flatMapper.apply(value);
-            if (iterable instanceof OfInt) {
-                ((OfInt) iterable).forEachInt(consumer);
-            } else {
-                iterable.forEach(consumer::accept);
-            }
-        });
+        return mapMulti((value, intConsumer) -> consumeForEach(flatMapper.apply(value), intConsumer));
+    }
+
+    private static void consumeForEach(Iterable<Integer> iterable, IntConsumer consumer) {
+        if (iterable instanceof OfInt) {
+            ((OfInt) iterable).forEachInt(consumer);
+        } else {
+            iterable.forEach(consumer::accept);
+        }
     }
 
     default IntSequence mapMulti(IntMapMultiConsumer intMapMultiConsumer) {
@@ -249,13 +248,13 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     default IntSequence zip(@NotNull IntBinaryOperator merger, int... array) {
-        final PrimitiveIterator.OfInt iterator = PrimitiveIterators.intArrayIterator(array);
+        final var iterator = PrimitiveIterators.intArrayIterator(array);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
     default IntSequence zip(@NotNull IntBinaryOperator merger, @NotNull Iterable<Integer> other) {
-        final PrimitiveIterator.OfInt iterator = PrimitiveIterators.intIteratorOf(other.iterator(), It::asInt);
+        final var iterator = PrimitiveIterators.intIteratorOf(other.iterator(), It::asInt);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
@@ -274,7 +273,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     @Override
     default IntStream stream() {
-        final int ordered = Spliterator.ORDERED;
+        final var ordered = Spliterator.ORDERED;
         return StreamSupport.intStream(() -> Spliterators.spliteratorUnknownSize(iterator(), ordered), ordered, false);
     }
 

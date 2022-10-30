@@ -10,11 +10,11 @@ class PrefixIntRangeSumBenchmarkTest {
 
     @Test
     void testSequenceStreamAndImperativeSumCalculationYieldsSameResult() {
-        final long mapFilterSum = intRangeSumBenchmark.parallelStreamMapFilterSum();
-        final long mapFilterSum1 = intRangeSumBenchmark.loopMapFilterSum();
-        final long mapFilterSum2 = intRangeSumBenchmark.streamMapFilterSum();
-        final long mapFilterSum3 = intRangeSumBenchmark.intSequenceMapFilterSum();
-        final long mapFilterSum4 = intRangeSumBenchmark.intListXMapFilterSum();
+        final var mapFilterSum = intRangeSumBenchmark.parallelStreamMapFilterSum();
+        final var mapFilterSum1 = intRangeSumBenchmark.loopMapFilterSum();
+        final var mapFilterSum2 = intRangeSumBenchmark.streamMapFilterSum();
+        final var mapFilterSum3 = intRangeSumBenchmark.intSequenceMapFilterSum();
+        final var mapFilterSum4 = intRangeSumBenchmark.intListXMapFilterSum();
 
         System.out.println("mapFilterSum = " + mapFilterSum);
 

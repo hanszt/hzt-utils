@@ -107,7 +107,7 @@ public final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
 
     @Override
     protected void computeNext() {
-        final ListX<T> next = computeNextWindow();
+        final var next = computeNextWindow();
         if (next.isNotEmpty()) {
             setNext(next);
         } else {

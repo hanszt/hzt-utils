@@ -97,11 +97,11 @@ public interface Reducable<T> extends Iterable<T> {
             @NotNull BiFunction<? super T, ? super T, ? extends R> finisher) {
         Iterator<T> iterator = iterator();
         if (iterator.hasNext()) {
-            final T first = iterator.next();
+            final var first = iterator.next();
             T accumulator1 = first;
             T accumulator2 = first;
             while (iterator.hasNext()) {
-                final T next = iterator.next();
+                final var next = iterator.next();
                 accumulator1 = operator1.apply(accumulator1, next);
                 accumulator2 = operator2.apply(accumulator2, next);
             }
@@ -111,7 +111,7 @@ public interface Reducable<T> extends Iterable<T> {
     }
 
     default @NotNull T single() {
-        final Iterator<T> iterator = iterator();
+        final var iterator = iterator();
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }
@@ -195,11 +195,11 @@ public interface Reducable<T> extends Iterable<T> {
     }
 
     default @NotNull T last(Predicate<T> predicate) {
-        return findLast(predicate).orElseThrow(NoSuchElementException::new);
+        return findLast(predicate).orElseThrow();
     }
 
     default <R> @NotNull R lastOf(@NotNull Function<? super T, ? extends R> mapper) {
-        return findLastOf(mapper).orElseThrow(NoSuchElementException::new);
+        return findLastOf(mapper).orElseThrow();
     }
 
     default Optional<T> findLast() {

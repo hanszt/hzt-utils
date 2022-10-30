@@ -24,11 +24,11 @@ class LongSequenceTest {
     void longRangeFromLongArray() {
         long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
-        final long[] expected = LongStream.of(array)
+        final var expected = LongStream.of(array)
                 .filter(l -> l > 3)
                 .toArray();
         
-        final long[] longs = LongSequence.of(array)
+        final var longs = LongSequence.of(array)
                 .filter(l -> l > 3)
                 .toArray();
 
@@ -72,10 +72,10 @@ class LongSequenceTest {
 
     @Test
     void positiveLongRangeStepped() {
-        final int end = 10_000_000;
-        final long[] expected = LongStream.range(0, end).filter(l -> l % 4 == 0).toArray();
+        final var end = 10_000_000;
+        final var expected = LongStream.range(0, end).filter(l -> l % 4 == 0).toArray();
 
-        final long[] longs = LongRange.until(end).step(4).toArray();
+        final var longs = LongRange.until(end).step(4).toArray();
 
         assertArrayEquals(expected, longs);
     }
@@ -94,11 +94,11 @@ class LongSequenceTest {
     void testLongRangeMapMulti() {
         long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
-        final long[] expected = LongStream.of(array)
+        final var expected = LongStream.of(array)
                 .flatMap((v) -> LongStream.of(array).map(l -> v + l))
                 .toArray();
 
-        final long[] result = LongSequence.of(array)
+        final var result = LongSequence.of(array)
                 .mapMulti((v, c) -> LongSequence.of(array).forEachLong(l -> c.accept(v + l)))
                 .toArray();
 
@@ -112,7 +112,7 @@ class LongSequenceTest {
 
     @Test
     void longSequenceFilterNot() {
-        final long[] longs = LongSequence.generate(1, i -> i + 2)
+        final var longs = LongSequence.generate(1, i -> i + 2)
                 .take(10_000_000)
                 .filterNot(l -> l % 5 == 0 && l % 7 == 0)
                 .toArray();
@@ -124,7 +124,7 @@ class LongSequenceTest {
     void testSortedDescending() {
         long[] array = {1, 4, 5, 3, 6, 7, 4, 8, 5, 9, 4};
 
-        final long[] sorted = LongSequence.of(array)
+        final var sorted = LongSequence.of(array)
                 .sortedDescending()
                 .toArray();
 
@@ -137,7 +137,7 @@ class LongSequenceTest {
     void testZipLongSequenceWithLongArray() {
         long[] array = {1, 2, 3, 4, 5, 6};
 
-        final long[] zipped = LongSequence.of(array)
+        final var zipped = LongSequence.of(array)
                 .zip(Long::sum, 1, 2, 3, 4)
                 .toArray();
 
@@ -151,7 +151,7 @@ class LongSequenceTest {
         List<Long> list = MutableListX.of(1L, 2L, 3L, 4L, 5L, 6L);
         long[] array = {1, 2, 3, 4, 5, 6, 7};
 
-        final long[] zipped = LongSequence.of(array)
+        final var zipped = LongSequence.of(array)
                 .zip(Long::sum, list)
                 .toArray();
 
@@ -164,7 +164,7 @@ class LongSequenceTest {
     void testWindowedLongSequence() {
         long[] array = {1, 2, 3, 4, 5, 6, 7};
 
-        final long[][] windowed = LongSequence.of(array)
+        final var windowed = LongSequence.of(array)
                 .windowed(5)
                 .map(LongList::toArray)
                 .toTypedArray(long[][]::new);
@@ -178,7 +178,7 @@ class LongSequenceTest {
     void testWindowedLongSequenceWindowReduced() {
         long[] array = {1, 2, 3, 4, 5, 6, 7};
 
-        final long[] sums = LongSequence.of(array)
+        final var sums = LongSequence.of(array)
                 .windowed(3, LongList::sum)
                 .toArray();
 
@@ -191,7 +191,7 @@ class LongSequenceTest {
     void testPartialWindowedLongSequence() {
         long[] array = {1, 2, 3, 4, 5, 6, 7};
 
-        final long[][] windows = LongSequence.of(array)
+        final var windows = LongSequence.of(array)
                 .windowed(3, 2, true)
                 .map(LongList::toArray)
                 .toTypedArray(long[][]::new);
@@ -205,7 +205,7 @@ class LongSequenceTest {
     void testPartialWindowedLongSequenceWindowReduced() {
         long[] array = {1, 2, 3, 4, 5, 6, 7};
 
-        final long[] sums = LongSequence.of(array)
+        final var sums = LongSequence.of(array)
                 .windowed(3, 2, true, LongList::sum)
                 .toArray();
 
@@ -216,7 +216,7 @@ class LongSequenceTest {
 
     @Test
     void testChunkedTo3DArray() {
-        final long[][][] cube = LongSequence.generate(0, l -> l + 2)
+        final var cube = LongSequence.generate(0, l -> l + 2)
                 .take(1_000)
                 .chunked(10)
                 .chunked(10)
@@ -238,7 +238,7 @@ class LongSequenceTest {
 
     @Test
     void testWindowedLargeLongSequence() {
-        final LongList sums = LongSequence.generate(0, l -> ++l)
+        final var sums = LongSequence.generate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, LongList::sum)
                 .toList();
@@ -252,7 +252,7 @@ class LongSequenceTest {
 
     @Test
     void testSkipWhile() {
-        final LongList longs = LongSequence.generate(0L, l -> ++l)
+        final var longs = LongSequence.generate(0L, l -> ++l)
                 .map(Generator::fib)
                 .skipWhile(l -> l < 3)
                 .takeWhileInclusive(l -> l < 55)
@@ -265,7 +265,7 @@ class LongSequenceTest {
 
     @Test
     void testSkipWhileInclusive() {
-        final LongList longs = LongSequence.generate(0L, l -> ++l)
+        final var longs = LongSequence.generate(0L, l -> ++l)
                 .map(Generator::fib)
                 .skipWhileInclusive(l -> l < 3)
                 .takeWhileInclusive(l -> l < 55)

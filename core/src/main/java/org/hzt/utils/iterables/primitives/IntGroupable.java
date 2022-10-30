@@ -6,7 +6,6 @@ import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 
@@ -15,20 +14,20 @@ public interface IntGroupable extends PrimitiveGroupable<Integer, IntMutableList
 
     @Override
     default MapX<Integer, IntMutableList> group() {
-        final PrimitiveIterator.OfInt iterator = iterator();
+        final var iterator = iterator();
         final MutableMapX<Integer, IntMutableList> map = MutableMapX.empty();
         while (iterator.hasNext()) {
-            final int nextInt = iterator.nextInt();
+            final var nextInt = iterator.nextInt();
             map.computeIfAbsent(nextInt, key -> IntMutableList.empty()).add(nextInt);
         }
         return map;
     }
 
     default <K> MapX<K, IntMutableList> groupBy(@NotNull IntFunction<? extends K> classifier) {
-        final PrimitiveIterator.OfInt iterator = iterator();
+        final var iterator = iterator();
         final MutableMapX<K, IntMutableList> map = MutableMapX.empty();
         while (iterator.hasNext()) {
-            final int nextInt = iterator.nextInt();
+            final var nextInt = iterator.nextInt();
             map.computeIfAbsent(classifier.apply(nextInt), key -> IntMutableList.empty()).add(nextInt);
         }
         return map;
@@ -36,11 +35,11 @@ public interface IntGroupable extends PrimitiveGroupable<Integer, IntMutableList
 
     @Override
     default Pair<IntMutableList, IntMutableList> partition(@NotNull IntPredicate predicate) {
-        final IntMutableList matchingList = IntMutableList.empty();
-        final IntMutableList nonMatchingList = IntMutableList.empty();
-        final PrimitiveIterator.OfInt iterator = iterator();
+        final var matchingList = IntMutableList.empty();
+        final var nonMatchingList = IntMutableList.empty();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
-            final int nextInt = iterator.nextInt();
+            final var nextInt = iterator.nextInt();
             if (predicate.test(nextInt)) {
                 matchingList.add(nextInt);
             } else {

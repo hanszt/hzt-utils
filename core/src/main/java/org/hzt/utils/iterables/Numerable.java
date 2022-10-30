@@ -59,7 +59,7 @@ public interface Numerable<T> extends Iterable<T> {
     }
 
     default BigDecimalX bigDecimalSumOf(@NotNull Function<? super T, ? extends BigDecimal> selector) {
-        BigDecimal sum = BigDecimal.ZERO;
+        var sum = BigDecimal.ZERO;
         for (T t : this) {
             if (t != null) {
                 final BigDecimal augend = selector.apply(t);
@@ -125,25 +125,25 @@ public interface Numerable<T> extends Iterable<T> {
     }
 
     default IntStatistics intStatsOf(@NotNull ToIntFunction<? super T> mapper) {
-        IntStatistics statistics = new IntStatistics();
+        var statistics = new IntStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> statistics.accept(mapper.applyAsInt(v)));
         return statistics;
     }
 
     default LongStatistics longStatsOf(@NotNull ToLongFunction<? super T> mapper) {
-        LongStatistics statistics = new LongStatistics();
+        var statistics = new LongStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> statistics.accept(mapper.applyAsLong(v)));
         return statistics;
     }
 
     default DoubleStatistics doubleStatsOf(@NotNull ToDoubleFunction<? super T> mapper) {
-        DoubleStatistics statistics = new DoubleStatistics();
+        var statistics = new DoubleStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> statistics.accept(mapper.applyAsDouble(v)));
         return statistics;
     }
 
     default BigDecimalStatistics bigDecimalStatsOf(@NotNull Function<T, ? extends BigDecimal> mapper) {
-        BigDecimalStatistics statistics = new BigDecimalStatistics();
+        var statistics = new BigDecimalStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> {
             final BigDecimal bigDecimal = mapper.apply(v);
             if (bigDecimal != null) {

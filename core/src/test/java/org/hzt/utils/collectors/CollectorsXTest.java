@@ -15,7 +15,6 @@ import java.time.Period;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.Set;
@@ -39,7 +38,7 @@ class CollectorsXTest {
                 .filter(Objects::nonNull)
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
 
-        final BigDecimalStatistics actual = Sequence.of(sampleBankAccountListContainingNulls).toFour(
+        final var actual = Sequence.of(sampleBankAccountListContainingNulls).toFour(
                 Sequence::count,
                 s -> s.bigDecimalSumOf(BankAccount::getBalance),
                 s -> s.minOf(BankAccount::getBalance),
@@ -73,7 +72,7 @@ class CollectorsXTest {
 
         assertAll(
                 () -> assertEquals(standardDeviationAge, summarizingAges.getStandardDeviation()),
-                () -> assertEquals(optionalAverage.orElseThrow(NoSuchElementException::new), summarizingAges.getAverage())
+                () -> assertEquals(optionalAverage.orElseThrow(), summarizingAges.getAverage())
         );
     }
 

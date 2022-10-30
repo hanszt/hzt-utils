@@ -11,7 +11,6 @@ import org.hzt.utils.ranges.IntRange;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
@@ -71,7 +70,7 @@ public interface IntList extends IntCollection,
     @Override
     @NotNull
     default OptionalInt findLast() {
-        final int lastIndex = lastIndex();
+        final var lastIndex = lastIndex();
         return lastIndex < 0 ? OptionalInt.empty() : OptionalInt.of(get(lastIndex));
     }
 
@@ -80,7 +79,7 @@ public interface IntList extends IntCollection,
     default OptionalInt findLast(@NotNull IntPredicate predicate) {
         PrimitiveListIterator.OfInt iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
-            final int previousInt = iterator.previousInt();
+            final var previousInt = iterator.previousInt();
             if (predicate.test(previousInt)) {
                 return OptionalInt.of(previousInt);
             }
@@ -89,7 +88,7 @@ public interface IntList extends IntCollection,
     }
 
     default int random() {
-        return findRandom().orElseThrow(NoSuchElementException::new);
+        return findRandom().orElseThrow();
     }
 
     OptionalInt findRandom();
@@ -104,14 +103,14 @@ public interface IntList extends IntCollection,
 
     @Override
     default IntList sorted() {
-        final int[] array = toArray();
+        final var array = toArray();
         Arrays.sort(array);
         return IntList.of(array);
     }
 
     @Override
     default IntList sorted(IntComparator comparator) {
-        final int[] array = toArray();
+        final var array = toArray();
         ArraysX.sort(comparator, array);
         return IntList.of(array);
     }

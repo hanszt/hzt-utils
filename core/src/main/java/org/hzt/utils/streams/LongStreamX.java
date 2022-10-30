@@ -25,8 +25,7 @@ import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import java.util.stream.DoubleStream;
 import java.util.stream.LongStream;
-
-import static org.hzt.utils.streams.StreamXHelper.stream;
+import java.util.stream.StreamSupport;
 
 @FunctionalInterface
 @SuppressWarnings("squid:S1448")
@@ -60,6 +59,20 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
     @Override
     Spliterator.OfLong spliterator();
 
+    private LongStream stream() {
+        final var spliterator = spliterator();
+        final var parallel = this instanceof LongStreamXImpl && isParallel();
+        return stream(spliterator, parallel);
+    }
+
+    private static LongStream stream(Spliterator.OfLong spliterator, boolean parallel) {
+        if (spliterator.hasCharacteristics(Spliterator.IMMUTABLE) ||
+                spliterator.hasCharacteristics(Spliterator.CONCURRENT)) {
+            return StreamSupport.longStream(spliterator, parallel);
+        }
+        return StreamSupport.longStream(() -> spliterator, spliterator.characteristics(), parallel);
+    }
+
     default LongSequence asSequence() {
         //noinspection FunctionalExpressionCanBeFolded
         return LongSequence.of(this::iterator);
@@ -67,68 +80,68 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
 
     @Override
     default LongStreamX filter(LongPredicate predicate) {
-        return LongStreamX.of(stream(this).filter(predicate));
+        return LongStreamX.of(stream().filter(predicate));
     }
 
     @Override
     default LongStreamX map(LongUnaryOperator mapper) {
-        return LongStreamX.of(stream(this).map(mapper));
+        return LongStreamX.of(stream().map(mapper));
     }
 
     @Override
     default IntStreamX mapToInt(LongToIntFunction mapper) {
-        return new IntStreamXImpl(stream(this).mapToInt(mapper));
+        return new IntStreamXImpl(stream().mapToInt(mapper));
     }
 
     @Override
     default DoubleStream mapToDouble(LongToDoubleFunction mapper) {
-        return stream(this).mapToDouble(mapper);
+        return stream().mapToDouble(mapper);
     }
 
     @Override
     default <U> StreamX<U> mapToObj(LongFunction<? extends U> mapper) {
-        return new StreamXImpl<>(stream(this).mapToObj(mapper));
+        return new StreamXImpl<>(stream().mapToObj(mapper));
     }
 
     @Override
     default LongStreamX flatMap(LongFunction<? extends LongStream> mapper) {
-        return LongStreamX.of(stream(this).flatMap(mapper));
+        return LongStreamX.of(stream().flatMap(mapper));
     }
 
     @Override
     default LongStreamX distinct() {
-        return LongStreamX.of(stream(this).distinct());
+        return LongStreamX.of(stream().distinct());
     }
 
     @Override
     default LongStreamX sorted() {
-        return LongStreamX.of(stream(this).sorted());
+        return LongStreamX.of(stream().sorted());
     }
 
     @Override
     @SuppressWarnings("squid:S3864")
     default LongStreamX peek(LongConsumer action) {
-        return LongStreamX.of(stream(this).peek(action));
+        return LongStreamX.of(stream().peek(action));
     }
 
     @Override
     default LongStreamX limit(long maxSize) {
-        return LongStreamX.of(stream(this).limit(maxSize));
+        return LongStreamX.of(stream().limit(maxSize));
     }
 
     @Override
     default LongStreamX skip(long n) {
-        return LongStreamX.of(stream(this).skip(n));
+        return LongStreamX.of(stream().skip(n));
     }
 
     @Override
     default void forEach(LongConsumer action) {
-        stream(this).forEach(action);
+        stream().forEach(action);
     }
 
     @Override
     default void forEachOrdered(LongConsumer action) {
-        stream(this).forEachOrdered(action);
+        stream().forEachOrdered(action);
     }
 
     @Override
@@ -138,31 +151,31 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
 
     @Override
     default long reduce(long identity, LongBinaryOperator accumulator) {
-        return stream(this).reduce(identity, accumulator);
+        return stream().reduce(identity, accumulator);
     }
 
     @NotNull
     @Override
     default OptionalLong reduce(LongBinaryOperator accumulator) {
-        return stream(this).reduce(accumulator);
+        return stream().reduce(accumulator);
     }
 
     @Override
     default <R> R collect(Supplier<R> supplier,
                           ObjLongConsumer<R> accumulator,
                           BiConsumer<R, R> combiner) {
-        return stream(this).collect(supplier, accumulator, combiner);
+        return stream().collect(supplier, accumulator, combiner);
     }
 
     @NotNull
     default OptionalLong max() {
-        return stream(this).max();
+        return stream().max();
     }
 
 
     @Override
     default long count() {
-        return stream(this).count();
+        return stream().count();
     }
 
     @Override
@@ -172,17 +185,17 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
 
     @Override
     default OptionalLong min() {
-        return stream(this).min();
+        return stream().min();
     }
 
     @Override
     default OptionalDouble average() {
-        return stream(this).average();
+        return stream().average();
     }
 
     @Override
     default LongSummaryStatistics summaryStatistics() {
-        return stream(this).summaryStatistics();
+        return stream().summaryStatistics();
     }
 
     default LongStatistics statistics() {
@@ -196,33 +209,33 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
 
     @Override
     default StreamX<Long> boxed() {
-        return new StreamXImpl<>(stream(this).boxed());
+        return new StreamXImpl<>(stream().boxed());
     }
 
     @Override
     default boolean anyMatch(LongPredicate predicate) {
-        return stream(this).anyMatch(predicate);
+        return stream().anyMatch(predicate);
     }
 
     @Override
     default boolean allMatch(LongPredicate predicate) {
-        return stream(this).allMatch(predicate);
+        return stream().allMatch(predicate);
     }
 
     @Override
     default boolean noneMatch(LongPredicate predicate) {
-        return stream(this).noneMatch(predicate);
+        return stream().noneMatch(predicate);
     }
 
     @NotNull
     @Override
     default OptionalLong findFirst() {
-        return stream(this).findFirst();
+        return stream().findFirst();
     }
 
     @Override
     default OptionalLong findAny() {
-        return stream(this).findAny();
+        return stream().findAny();
     }
 
     @NotNull
@@ -251,7 +264,7 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
     @NotNull
     @Override
     default LongStreamX unordered() {
-        return LongStreamX.of(stream(this).unordered());
+        return LongStreamX.of(stream().unordered());
     }
 
     @NotNull
@@ -263,5 +276,15 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
     @Override
     default void close() {
         throw new UnsupportedOperationException("Not supported in LongStreamX interface");
+    }
+
+    @Override
+    default LongStreamX takeWhile(LongPredicate predicate) {
+        return LongStreamX.of(LongStream.super.takeWhile(predicate));
+    }
+
+    @Override
+    default LongStreamX dropWhile(LongPredicate predicate) {
+        return LongStreamX.of(LongStream.super.dropWhile(predicate));
     }
 }

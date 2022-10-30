@@ -1,10 +1,9 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.It;
-import org.hzt.utils.tuples.IndexedValue;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,52 +11,52 @@ class CollectionXTest {
 
     @Test
     void testContainsNot() {
-        final ListX<String> strings = ListX.of("hallo", "asffasf", "string", "test");
+        final var strings = ListX.of("hallo", "asffasf", "string", "test");
 
         assertTrue(strings.containsNot("strings"));
     }
 
     @Test
     void testContainsAll() {
-        final ListX<String> strings = ListX.of("hallo", "asffasf", "string", "test");
+        final var strings = ListX.of("hallo", "asffasf", "string", "test");
 
-        Iterable<String> iterable = Arrays.asList("string", "test");
+        Iterable<String> iterable = List.of("string", "test");
 
         assertTrue(strings.containsAll(iterable));
     }
 
     @Test
     void testDoesNotContainsAll() {
-        final ListX<String> strings = ListX.of("hallo", "asffasf", "string", "test");
+        final var strings = ListX.of("hallo", "asffasf", "string", "test");
 
-        Iterable<String> iterable = Arrays.asList("string", "test", "not");
+        Iterable<String> iterable = List.of("string", "test", "not");
 
         assertFalse(strings.containsAll(iterable));
     }
 
     @Test
     void testContainsNoneOf() {
-        final ListX<String> strings = ListX.of("hallo", "asffasf", "string", "test");
+        final var strings = ListX.of("hallo", "asffasf", "string", "test");
 
-        Iterable<String> iterable = Arrays.asList("strings", "testa");
+        Iterable<String> iterable = List.of("strings", "testa");
 
         assertTrue(strings.containsNoneOf(iterable));
     }
 
     @Test
     void testDoesContainSome() {
-        final ListX<String> strings = ListX.of("hallo", "asffasf", "string", "test");
+        final var strings = ListX.of("hallo", "asffasf", "string", "test");
 
-        Iterable<String> iterable = Arrays.asList("string", "tesst", "not");
+        Iterable<String> iterable = List.of("string", "tesst", "not");
 
         assertFalse(strings.containsAll(iterable));
     }
 
     @Test
     void testMapMulti() {
-        final ListX<ListX<String>> input = ListX.of(ListX.of("a", "b", "c"), ListX.of("d", "e", "f", "g"));
+        final var input = ListX.of(ListX.of("a", "b", "c"), ListX.of("d", "e", "f", "g"));
 
-        final ListX<String> strings = input.mapMulti(Iterable::forEach);
+        final var strings = input.<String>mapMulti(Iterable::forEach);
 
         strings.forEach(It::println);
 
@@ -66,8 +65,8 @@ class CollectionXTest {
 
     @Test
     void testShuffled() {
-        final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        final ListX<Integer> shuffled = integers.shuffled();
+        final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        final var shuffled = integers.shuffled();
 
         shuffled.forEach(It::println);
 
@@ -76,7 +75,7 @@ class CollectionXTest {
 
     @Test
     void testIfEmpty() {
-        final ListX<Integer> list = ListX.empty();
+        final var list = ListX.<Integer>empty();
         final MutableSetX<Integer> set2 = MutableSetX.of(1, 2, 3, 4, 5, 6);
 
         assertAll(
@@ -88,7 +87,7 @@ class CollectionXTest {
     @Test
     void testCollectionWithIndex() {
         final ListX<Integer> list = ListX.of(1, 2, 4, 8, 16, 32);
-        final ListX<IndexedValue<Integer>> indexedValues = list.withIndex();
+        final var indexedValues = list.withIndex();
 
         assertAll(
                 () -> assertEquals(6, list.size()),

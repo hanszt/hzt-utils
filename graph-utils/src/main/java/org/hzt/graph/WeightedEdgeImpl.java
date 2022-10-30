@@ -35,7 +35,7 @@ final class WeightedEdgeImpl<T> implements WeightedEdge<T> {
             return false;
         }
         //noinspection unchecked
-        WeightedEdgeImpl<T> that = (WeightedEdgeImpl<T>) obj;
+        var that = (WeightedEdgeImpl<T>) obj;
         return Objects.equals(this.fromNode, that.fromNode) &&
                 Objects.equals(this.toNode, that.toNode) &&
                 this.weight == that.weight;

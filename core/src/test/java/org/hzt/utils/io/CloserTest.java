@@ -17,19 +17,22 @@ class CloserTest {
 
     @Test
     void testCloserForResourceNotImplementingAutoClosable() {
-        try (Closer<Resource> closer = Closer.forResource(new Resource("Resource 1"), Resource::close)) {
+        var closer = Closer.forResource(new Resource("Resource 1"), Resource::close);
+        try (closer) {
             assertFalse(closer.getResource().closed);
             closer.execute(Resource::load);
-            final String result = closer.apply(Resource::read);
+            final var result = closer.apply(Resource::read);
             assertEquals("Read result", result);
         }
+        assertTrue(closer.getResource().closed);
     }
 
     @Test
     void testCloserForResourceApplyAndClose() {
-        final Resource resource = new Resource("Resource 1");
+        final var resource = new Resource("Resource 1");
 
-        final String result = Closer.forResource(resource, Resource::close).applyAndClose(Resource::read);
+        //noinspection resource
+        final var result = Closer.forResource(resource, Resource::close).applyAndClose(Resource::read);
 
         assertAll(
                 () -> assertEquals("Read result", result),
@@ -41,8 +44,9 @@ class CloserTest {
     void testExecuteAndClose() {
         List<String> list = new ArrayList<>();
 
-        final Resource resource = new Resource("Resource 1");
+        final var resource = new Resource("Resource 1");
 
+        //noinspection resource
         Closer.forResource(resource, Resource::close).executeAndClose(l -> list.add(l.read()));
 
         assertAll(
@@ -53,15 +57,17 @@ class CloserTest {
 
     @Test
     void testCloserCLosingFunctionThrowingException() {
-        assertThrows(IllegalStateException.class, this::closeThrowingException);
+        //noinspection resource
+        var closer = Closer.forResource(new Resource("Resource 1"), Resource::closeThrowingException);
+        assertThrows(IllegalStateException.class, () -> closeThrowingException(closer));
 
     }
 
-    private void closeThrowingException() {
-        try (Closer<Resource> closer = Closer.forResource(new Resource("Resource 1"), Resource::closeThrowingException)) {
+    private void closeThrowingException(Closer<Resource> closer) {
+        try (closer) {
             assertFalse(closer.getResource().closed);
             closer.execute(Resource::load);
-            final String result = closer.apply(Resource::read);
+            final var result = closer.apply(Resource::read);
             assertEquals("Read result", result);
         }
     }

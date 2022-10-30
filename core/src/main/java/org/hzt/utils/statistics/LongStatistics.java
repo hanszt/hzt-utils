@@ -15,6 +15,10 @@ public final class LongStatistics extends LongSummaryStatistics
         super();
     }
 
+    public LongStatistics(long count, long min, long max, long sum) {
+        super(count, min, max, sum);
+    }
+
     @Override
     public void accept(long value) {
         super.accept(value);

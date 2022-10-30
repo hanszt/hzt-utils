@@ -1,22 +1,17 @@
 package org.hzt.utils.ranges;
 
-import org.hzt.utils.It;
-import org.hzt.utils.sequences.primitives.DoubleSequence;
-import org.hzt.utils.statistics.DoubleStatistics;
 import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
-import java.util.stream.DoubleStream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DoubleRangeTest {
 
     @Test
     void testRange() {
-        final DoubleStatistics stats = DoubleRange.closed(0, 100, .01).stats();
+        final var stats = DoubleRange.closed(0, 100, .01).stats();
 
         assertAll(
                 () -> assertEquals(10_000, stats.getCount()),
@@ -26,23 +21,7 @@ class DoubleRangeTest {
     }
 
     @Test
-    void doubleRangeFromDoubleArray() {
-        double[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
-
-        final long[] expected = DoubleStream.of(array)
-                .mapToLong(d -> (long) d)
-                .filter(l -> l > 3)
-                .toArray();
-
-
-        final long[] longs = DoubleSequence.of(array)
-                .mapToLong(It::doubleAsLong)
-                .filter(l -> l > 3)
-                .toArray();
-
-        assertAll(
-                () -> assertArrayEquals(new long[]{4, 5, 4, 6, 4, 4}, longs),
-                () -> assertArrayEquals(expected, longs)
-        );
+    void testClosedDoubleRange() {
+        assertEquals(10.0, DoubleRange.closed(10, 10).boxed().single());
     }
 }

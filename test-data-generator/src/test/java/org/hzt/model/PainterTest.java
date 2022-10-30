@@ -8,43 +8,40 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PainterTest {
 
     @Test
     void testPainterEqualsItself() {
-        Painter painter1 = new Painter("Piet", "Mondriaan", LocalDate.of(2021, Month.OCTOBER, 18));
+        var painter1 = new Painter("Piet", "Mondriaan", LocalDate.of(2021, Month.OCTOBER, 18));
 
         assertEquals(painter1, painter1);
     }
 
     @Test
     void testPainterWithSameLastNameAndDateOfBirthEqualsOther() {
-        Painter painter1 = new Painter("Piet", "Mondriaan", LocalDate.of(2021, Month.OCTOBER, 18));
-        Painter painter2 = new Painter("Piet", "Mondriaan", LocalDate.of(2021, Month.OCTOBER, 18));
+        var painter1 = new Painter("Piet", "Mondriaan", LocalDate.of(2021, Month.OCTOBER, 18));
+        var painter2 = new Painter("Piet", "Mondriaan", LocalDate.of(2021, Month.OCTOBER, 18));
 
         assertEquals(painter1, painter2);
     }
 
     @Test
     void testPainterWithDifferentDateOfBirthDoNotEqual() {
-        Painter painter1 = new Painter("Piet", "Mondriaan", LocalDate.of(2021, Month.OCTOBER, 18));
-        Painter painter2 = new Painter("Piet", "Mondriaan", LocalDate.of(2021, Month.DECEMBER, 18));
+        var painter1 = new Painter("Piet", "Mondriaan", LocalDate.of(2021, Month.OCTOBER, 18));
+        var painter2 = new Painter("Piet", "Mondriaan", LocalDate.of(2021, Month.DECEMBER, 18));
 
         assertNotEquals(painter1, painter2);
     }
 
     @Test
     void testPaintersWithDifferentNameDoNotEqual() {
-        Painter painter1 = new Painter("Piet", "Mondriaan", LocalDate.of(2021, Month.OCTOBER, 18));
-        Painter painter2 = new Painter("Klaas", "Mondriaan", LocalDate.of(2021, Month.OCTOBER, 18));
+        var painter1 = new Painter("Piet", "Mondriaan", LocalDate.of(2021, Month.OCTOBER, 18));
+        var painter2 = new Painter("Klaas", "Mondriaan", LocalDate.of(2021, Month.OCTOBER, 18));
 
         assertNotEquals(painter1, painter2);
     }
@@ -55,7 +52,7 @@ class PainterTest {
                 .map(Painting::painter)
                 .filter(painter -> painter.getLastname().equalsIgnoreCase("Picasso"))
                 .findFirst()
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow();
 
         final List<Painting> paintings = StreamSupport.stream(picasso.spliterator(), false)
                 .collect(Collectors.toList());

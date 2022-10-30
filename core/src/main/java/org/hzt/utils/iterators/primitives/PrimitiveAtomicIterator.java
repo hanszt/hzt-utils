@@ -19,12 +19,13 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
     void forEachRemaining(T_CONS consumer);
     final class IteratorLogger {
 
+        private static final System.Logger LOGGER = System.getLogger(PrimitiveAtomicIterator.class.getSimpleName());
+
         private IteratorLogger() {
         }
 
-        @SuppressWarnings("squid:S106")
         private static void warn(String message) {
-            System.err.println(message);
+            LOGGER.log(System.Logger.Level.WARNING, message);
         }
     }
 
@@ -49,8 +50,7 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         default void forEachRemaining(IntConsumer action) {
             //noinspection StatementWithEmptyBody
-            while (tryAdvanceInt(action)) {
-            }
+            while (tryAdvanceInt(action));
         }
 
         @Override
@@ -103,8 +103,7 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         default void forEachRemaining(LongConsumer action) {
             //noinspection StatementWithEmptyBody
-            while (tryAdvanceLong(action)) {
-            }
+            while (tryAdvanceLong(action));
         }
 
         @Override
@@ -156,8 +155,7 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         default void forEachRemaining(DoubleConsumer action) {
             //noinspection StatementWithEmptyBody
-            while (tryAdvanceDouble(action)) {
-            }
+            while (tryAdvanceDouble(action));
         }
 
         @Override
@@ -204,44 +202,50 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
     }
 
     static PrimitiveAtomicIterator.OfInt of(PrimitiveIterator.OfInt iterator) {
-        return action -> {
-            boolean hasNext = iterator.hasNext();
-            if (hasNext) {
-                action.accept(iterator.nextInt());
-            }
-            return hasNext;
-        };
+        return action -> acceptIfHasNext(iterator, action);
     }
 
     static PrimitiveAtomicIterator.OfInt of(Spliterator.OfInt spliterator) {
         return spliterator::tryAdvance;
     }
 
+    private static boolean acceptIfHasNext(PrimitiveIterator.OfInt iterator, IntConsumer action) {
+        boolean hasNext = iterator.hasNext();
+        if (hasNext) {
+            action.accept(iterator.nextInt());
+        }
+        return hasNext;
+    }
+
     static PrimitiveAtomicIterator.OfLong of(PrimitiveIterator.OfLong iterator) {
-        return action -> {
-            boolean hasNext = iterator.hasNext();
-            if (hasNext) {
-                action.accept(iterator.nextLong());
-            }
-            return hasNext;
-        };
+        return action -> acceptIfHasNext(iterator, action);
     }
 
     static PrimitiveAtomicIterator.OfLong of(Spliterator.OfLong spliterator) {
         return spliterator::tryAdvance;
     }
 
+    private static boolean acceptIfHasNext(PrimitiveIterator.OfLong iterator, LongConsumer action) {
+        boolean hasNext = iterator.hasNext();
+        if (hasNext) {
+            action.accept(iterator.nextLong());
+        }
+        return hasNext;
+    }
+
     static PrimitiveAtomicIterator.OfDouble of(PrimitiveIterator.OfDouble iterator) {
-        return action -> {
-            boolean hasNext = iterator.hasNext();
-            if (hasNext) {
-                action.accept(iterator.nextDouble());
-            }
-            return hasNext;
-        };
+        return action -> acceptIfHasNext(iterator, action);
     }
 
     static PrimitiveAtomicIterator.OfDouble of(Spliterator.OfDouble spliterator) {
         return spliterator::tryAdvance;
+    }
+
+    private static boolean acceptIfHasNext(PrimitiveIterator.OfDouble iterator, DoubleConsumer action) {
+        boolean hasNext = iterator.hasNext();
+        if (hasNext) {
+            action.accept(iterator.nextDouble());
+        }
+        return hasNext;
     }
 }

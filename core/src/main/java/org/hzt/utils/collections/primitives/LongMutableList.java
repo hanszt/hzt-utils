@@ -44,7 +44,7 @@ public interface LongMutableList extends LongList, LongMutableCollection,
 
     @Override
     default boolean remove(long l) {
-        final int index = indexOf(l);
+        final var index = indexOf(l);
         if (index >= 0) {
             removeAt(index);
             return true;

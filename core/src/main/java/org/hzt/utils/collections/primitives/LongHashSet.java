@@ -39,7 +39,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, long[], LongConsumer,
         }
 
         final int targetCollisionChainIndex = Long.hashCode(value) & mask;
-        final PrimitiveNode next = table[targetCollisionChainIndex];
+        final var next = table[targetCollisionChainIndex];
         final PrimitiveNode newNode = new CollisionChainNode(value, next);
         table[targetCollisionChainIndex] = newNode;
         return true;
@@ -47,7 +47,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, long[], LongConsumer,
 
     public boolean contains(long value) {
         final int collisionChainIndex = Long.hashCode(value) & mask;
-        PrimitiveNode node = table[collisionChainIndex];
+        var node = table[collisionChainIndex];
 
         while (node != null) {
             if (((CollisionChainNode) node).value == value) {
@@ -68,11 +68,11 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, long[], LongConsumer,
         }
         final int targetCollisionChainIndex = Long.hashCode(value) & mask;
 
-        PrimitiveNode current = table[targetCollisionChainIndex];
+        var current = table[targetCollisionChainIndex];
 
         PrimitiveNode previous = null;
         while (current != null) {
-            PrimitiveNode next = current.next;
+            var next = current.next;
             if (((CollisionChainNode) current).value == value) {
                 if (previous == null) {
                     table[targetCollisionChainIndex] = next;

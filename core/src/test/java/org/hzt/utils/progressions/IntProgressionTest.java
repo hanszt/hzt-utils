@@ -9,7 +9,7 @@ class IntProgressionTest {
 
     @Test
     void testDownTo() {
-        final IntProgression integers = IntProgression.downTo(-100_000);
+        final var integers = IntProgression.downTo(-100_000);
 
         assertAll(
                 () -> assertEquals(0, integers.first()),

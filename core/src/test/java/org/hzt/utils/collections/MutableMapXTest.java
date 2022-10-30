@@ -10,9 +10,9 @@ class MutableMapXTest {
 
     @Test
     void testComputeIfPresent() {
-        final MutableMapX<String, Integer> map = MutableMapX.of("1", 1, "2", 2);
+        final var map = MutableMapX.of("1", 1, "2", 2);
 
-        final Integer result = map.computeIfPresent("1", (k, v) -> Integer.parseInt(k) + v);
+        final var result = map.computeIfPresent("1", (k, v) -> Integer.parseInt(k) + v);
 
         map.forEach(It::println);
 

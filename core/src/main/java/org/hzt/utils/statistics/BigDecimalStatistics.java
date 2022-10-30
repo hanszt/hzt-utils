@@ -5,6 +5,7 @@ import org.hzt.utils.Transformable;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 
 public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
@@ -42,16 +43,20 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
     }
 
     public BigDecimalX getStandardDeviation() {
-        return getStandardDeviation(2, RoundingMode.HALF_UP);
+        return getStandardDeviation(2, RoundingMode.HALF_UP, MathContext.DECIMAL32);
     }
 
     public BigDecimalX getStandardDeviation(int scale, RoundingMode roundingMode) {
+        return getStandardDeviation(scale, roundingMode, MathContext.DECIMAL128);
+    }
+
+    public BigDecimalX getStandardDeviation(int scale, RoundingMode roundingMode, MathContext mathContext) {
         final BigDecimal average = getAverage(scale, roundingMode);
-        final double subtract = (getSumOfSquare().divide(BigDecimal.valueOf(getCount()), scale, roundingMode))
-                .subtract(average.multiply(average)).doubleValue();
-        final double stdDev = getCount() > 0 ? Math.sqrt(subtract) : 0.0;
-        final BigDecimalX stdDeviation = BigDecimalX.of(stdDev);
-        return stdDeviation.setScale(scale, roundingMode);
+        final BigDecimal subtract = (getSumOfSquare().divide(BigDecimal.valueOf(getCount()), scale, roundingMode))
+                .subtract(average.multiply(average));
+        final BigDecimal stdDeviation = getCount() > 0 ?
+                subtract.sqrt(mathContext) : BigDecimal.ZERO;
+        return BigDecimalX.of(stdDeviation.setScale(scale, roundingMode));
     }
 
     @Override

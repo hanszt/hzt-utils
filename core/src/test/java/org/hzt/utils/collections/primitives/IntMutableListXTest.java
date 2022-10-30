@@ -14,7 +14,7 @@ class IntMutableListXTest {
 
     @Test
     void testDifferentMethods() {
-        final IntMutableList ints = IntMutableList.empty();
+        final var ints = IntMutableList.empty();
         assertTrue(ints.isEmpty());
         ints.add(1);
         assertAll(
@@ -25,14 +25,14 @@ class IntMutableListXTest {
         ints.add(2);
         ints.add(5);
         ints.add(7);
-        final int l = ints.removeFirst();
+        final var l = ints.removeFirst();
         assertAll(
                 () -> assertFalse(ints.isEmpty()),
                 () -> assertEquals(2L, l),
                 () -> assertEquals(2, ints.size())
         );
         It.println("ints = " + ints);
-        final int l2 = ints.removeAt(0);
+        final var l2 = ints.removeAt(0);
         assertAll(
                 () -> assertFalse(ints.isEmpty()),
                 () -> assertEquals(5L, l2),
@@ -44,7 +44,7 @@ class IntMutableListXTest {
 
     @Test
     void testCopyConstructor() {
-        final IntMutableList ints = IntMutableList.empty();
+        final var ints = IntMutableList.empty();
         ints.add(2);
         ints.add(-43);
         ints.add(1231);
@@ -52,7 +52,7 @@ class IntMutableListXTest {
                 .take(10_000_000)
                 .forEachInt(ints::add);
 
-        final IntMutableList intsCopy = IntMutableList.of(ints);
+        final var intsCopy = IntMutableList.of(ints);
 
         assertAll(
                 () -> assertEquals(10_000_003, ints.size()),
@@ -62,7 +62,7 @@ class IntMutableListXTest {
 
     @Test
     void testSortIntList() {
-        final IntMutableList ints = IntSequence.generate(10_000, i -> --i)
+        final var ints = IntSequence.generate(10_000, i -> --i)
                 .take(10_000)
                 .shuffled()
                 .toMutableList();
@@ -74,7 +74,7 @@ class IntMutableListXTest {
 
     @Test
     void testSortReversedIntList() {
-        final IntMutableList ints = IntSequence.generate(-10_000, i -> ++i)
+        final var ints = IntSequence.generate(-10_000, i -> ++i)
                 .take(10_000)
                 .shuffled()
                 .toMutableList();

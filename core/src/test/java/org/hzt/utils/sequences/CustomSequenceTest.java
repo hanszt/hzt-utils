@@ -18,7 +18,7 @@ class CustomSequenceTest {
 
     @Test
     void testBigIntFibonacciSequencePrimes() {
-        final long probableFibNrPrimeCount = fibonacciSequence()
+        final var probableFibNrPrimeCount = fibonacciSequence()
                 .filter(fibNr -> fibNr.isProbablePrime(100))
                 .map(BigInteger::toString)
                 .onEach(It::println)
@@ -37,9 +37,9 @@ class CustomSequenceTest {
 
     @Test
     void testSumOfFloats() {
-        final ListX<String> strings = ListX.of("This", "is", "processed", "by", "a", "custom", "Sequence");
+        final var strings = ListX.of("This", "is", "processed", "by", "a", "custom", "Sequence");
 
-        final float sum = CustomSequence.of(strings)
+        final var sum = CustomSequence.of(strings)
                 .map(String::length)
                 .filter(IntX::isEven)
                 .floatSumOf(Integer::floatValue);
@@ -88,53 +88,28 @@ class CustomSequenceTest {
 
     @Test
     void testFizzBuzzer() {
-        final FizzBuzzer fizzBuzzer = FizzBuzzer
+        final var fizzBuzzer = FizzBuzzer
                 .start()
                 .fizz()
                 .buzz();
 
-        final long count = fizzBuzzer
+        final var count = fizzBuzzer
                 .take(100)
                 .filter(s -> s.contains("buzz"))
                 .count();
 
-        final String actual = fizzBuzzer
+        final var actual = fizzBuzzer
                 .take(16)
                 .skip(3)
                 .joinToString(", ");
 
-        for (String s : fizzBuzzer.take(3)) {
+        for (var s : fizzBuzzer.take(3)) {
             It.println("s = " + s);
         }
         assertAll(
                 () -> assertEquals("4, buzz, fizz, 7, 8, fizz, buzz, 11, fizz, 13, 14, fizzbuzz, 16", actual),
                 () -> assertEquals(20L, count)
         );
-    }
-
-    @NotNull
-    private static String next(int index, String current, int modulo,  String string) {
-        return next(index, current, modulo, 0, string);
-    }
-
-    @NotNull
-    private static String next(int index, String current, int modulo, int offSet, String string) {
-        int value = index + 1;
-        final boolean isNaturalNr = isNaturalNr(current);
-        final boolean match = value % modulo == offSet;
-        if (isNaturalNr) {
-            return match ? string : String.valueOf(value);
-        }
-        return match ? current + string : current;
-    }
-
-    private static boolean isNaturalNr(String current) {
-        for (char c : current.toCharArray()) {
-            if (!Character.isDigit(c)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @FunctionalInterface
@@ -164,8 +139,24 @@ class CustomSequenceTest {
             return mapIndexed((index, value) -> next(index, value, 2, 1, "odd"))::iterator;
         }
 
+        @NotNull
+        private String next(int index, String current, int modulo,  String string) {
+            return next(index, current, modulo, 0, string);
+        }
+
+        @NotNull
+        private String next(int index, String current, int modulo, int offSet, String string) {
+            int value = index + 1;
+            final var isNaturalNr = current.chars().allMatch(Character::isDigit);
+            final var match = value % modulo == offSet;
+            if (isNaturalNr) {
+                return match ? string : String.valueOf(value);
+            }
+            return match ? current + string : current;
+        }
+
         static void main(String[] args) {
-            final FizzBuzzer fizzBuzzer = FizzBuzzer
+            final var fizzBuzzer = FizzBuzzer
                     .start()
                     .fizz()
                     .bizz()
@@ -173,12 +164,12 @@ class CustomSequenceTest {
                     .buzz()
                     .odd();
 
-            final long count = fizzBuzzer
+            final var count = fizzBuzzer
                     .take(100_000)
                     .filter(s -> s.equals("fizzbizzevenbuzz"))
                     .count();
 
-            final String actual = fizzBuzzer
+            final var actual = fizzBuzzer
                     .take(16)
                     .skip(3)
                     .joinToString(", ");

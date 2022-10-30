@@ -2,7 +2,6 @@ package org.hzt.graph;
 
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 public final class GraphAlgorithms {
@@ -18,11 +17,10 @@ public final class GraphAlgorithms {
         while (!unsettled.isEmpty()) {
             WeightedNode<T> current = unsettled.stream()
                     .min(Comparator.comparing(WeightedNode::getCost))
-                    .orElseThrow(NoSuchElementException::new);
+                    .orElseThrow();
 
             for (WeightedEdge<T> edge : current) {
-                WeightedEdge<T> weightedEdge = edge;
-                WeightedNode<T> neighbor = weightedEdge.getOpposite(current);
+                WeightedNode<T> neighbor = edge.getOpposite(current);
                 if (!settled.contains(neighbor)) {
                     neighbor.setCost(current.getCost());
                     unsettled.add(neighbor);

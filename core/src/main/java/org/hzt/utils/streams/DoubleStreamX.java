@@ -22,8 +22,7 @@ import java.util.function.ObjDoubleConsumer;
 import java.util.function.Supplier;
 import java.util.stream.DoubleStream;
 import java.util.stream.LongStream;
-
-import static org.hzt.utils.streams.StreamXHelper.stream;
+import java.util.stream.StreamSupport;
 
 @FunctionalInterface
 @SuppressWarnings("squid:S1448")
@@ -53,6 +52,20 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
     @Override
     Spliterator.OfDouble spliterator();
 
+    private DoubleStream stream() {
+        final var spliterator = spliterator();
+        final var parallel = this instanceof DoubleStreamXImpl && isParallel();
+        return stream(spliterator, parallel);
+    }
+
+    private static DoubleStream stream(Spliterator.OfDouble spliterator, boolean parallel) {
+        if (spliterator.hasCharacteristics(Spliterator.IMMUTABLE) ||
+                spliterator.hasCharacteristics(Spliterator.CONCURRENT)) {
+            return StreamSupport.doubleStream(spliterator, parallel);
+        }
+        return StreamSupport.doubleStream(() -> spliterator, spliterator.characteristics(), parallel);
+    }
+
     default DoubleSequence asSequence() {
         //noinspection FunctionalExpressionCanBeFolded
         return DoubleSequence.of(this::iterator);
@@ -60,68 +73,68 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
 
     @Override
     default DoubleStreamX filter(DoublePredicate predicate) {
-        return DoubleStreamX.of(stream(this).filter(predicate));
+        return DoubleStreamX.of(stream().filter(predicate));
     }
 
     @Override
     default DoubleStreamX map(DoubleUnaryOperator mapper) {
-        return DoubleStreamX.of(stream(this).map(mapper));
+        return DoubleStreamX.of(stream().map(mapper));
     }
 
     @Override
     default IntStreamX mapToInt(DoubleToIntFunction mapper) {
-        return new IntStreamXImpl(stream(this).mapToInt(mapper));
+        return new IntStreamXImpl(stream().mapToInt(mapper));
     }
 
     @Override
     default LongStream mapToLong(DoubleToLongFunction mapper) {
-        return new LongStreamXImpl(stream(this).mapToLong(mapper));
+        return new LongStreamXImpl(stream().mapToLong(mapper));
     }
 
     @Override
     default <U> StreamX<U> mapToObj(DoubleFunction<? extends U> mapper) {
-        return new StreamXImpl<>(stream(this).mapToObj(mapper));
+        return new StreamXImpl<>(stream().mapToObj(mapper));
     }
 
     @Override
     default DoubleStreamX flatMap(DoubleFunction<? extends DoubleStream> mapper) {
-        return DoubleStreamX.of(stream(this).flatMap(mapper));
+        return DoubleStreamX.of(stream().flatMap(mapper));
     }
 
     @Override
     default DoubleStreamX distinct() {
-        return DoubleStreamX.of(stream(this).distinct());
+        return DoubleStreamX.of(stream().distinct());
     }
 
     @Override
     default DoubleStreamX sorted() {
-        return DoubleStreamX.of(stream(this).sorted());
+        return DoubleStreamX.of(stream().sorted());
     }
 
     @Override
     @SuppressWarnings("squid:S3864")
     default DoubleStreamX peek(DoubleConsumer action) {
-        return DoubleStreamX.of(stream(this).peek(action));
+        return DoubleStreamX.of(stream().peek(action));
     }
 
     @Override
     default DoubleStreamX limit(long maxSize) {
-        return DoubleStreamX.of(stream(this).limit(maxSize));
+        return DoubleStreamX.of(stream().limit(maxSize));
     }
 
     @Override
     default DoubleStreamX skip(long n) {
-        return DoubleStreamX.of(stream(this).skip(n));
+        return DoubleStreamX.of(stream().skip(n));
     }
 
     @Override
     default void forEach(DoubleConsumer action) {
-        stream(this).forEach(action);
+        stream().forEach(action);
     }
 
     @Override
     default void forEachOrdered(DoubleConsumer action) {
-        stream(this).forEachOrdered(action);
+        stream().forEachOrdered(action);
     }
 
     @Override
@@ -131,31 +144,31 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
 
     @Override
     default double reduce(double identity, DoubleBinaryOperator accumulator) {
-        return stream(this).reduce(identity, accumulator);
+        return stream().reduce(identity, accumulator);
     }
 
     @NotNull
     @Override
     default OptionalDouble reduce(DoubleBinaryOperator accumulator) {
-        return stream(this).reduce(accumulator);
+        return stream().reduce(accumulator);
     }
 
     @Override
     default <R> R collect(Supplier<R> supplier,
                           ObjDoubleConsumer<R> accumulator,
                           BiConsumer<R, R> combiner) {
-        return stream(this).collect(supplier, accumulator, combiner);
+        return stream().collect(supplier, accumulator, combiner);
     }
 
     @NotNull
     default OptionalDouble max() {
-        return stream(this).max();
+        return stream().max();
     }
 
 
     @Override
     default long count() {
-        return stream(this).count();
+        return stream().count();
     }
 
     @Override
@@ -165,12 +178,12 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
 
     @Override
     default OptionalDouble min() {
-        return stream(this).min();
+        return stream().min();
     }
 
     @Override
     default OptionalDouble average() {
-        return stream(this).average();
+        return stream().average();
     }
 
     @Override
@@ -180,33 +193,33 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
 
     @Override
     default StreamX<Double> boxed() {
-        return new StreamXImpl<>(stream(this).boxed());
+        return new StreamXImpl<>(stream().boxed());
     }
 
     @Override
     default boolean anyMatch(DoublePredicate predicate) {
-        return stream(this).anyMatch(predicate);
+        return stream().anyMatch(predicate);
     }
 
     @Override
     default boolean allMatch(DoublePredicate predicate) {
-        return stream(this).allMatch(predicate);
+        return stream().allMatch(predicate);
     }
 
     @Override
     default boolean noneMatch(DoublePredicate predicate) {
-        return stream(this).noneMatch(predicate);
+        return stream().noneMatch(predicate);
     }
 
     @NotNull
     @Override
     default OptionalDouble findFirst() {
-        return stream(this).findFirst();
+        return stream().findFirst();
     }
 
     @Override
     default OptionalDouble findAny() {
-        return stream(this).findAny();
+        return stream().findAny();
     }
 
     @NotNull
@@ -235,7 +248,7 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
     @NotNull
     @Override
     default DoubleStreamX unordered() {
-        return DoubleStreamX.of(stream(this).unordered());
+        return DoubleStreamX.of(stream().unordered());
     }
 
     @NotNull
@@ -247,5 +260,15 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
     @Override
     default void close() {
         throw new UnsupportedOperationException("Not supported in DoubleStreamX interface");
+    }
+
+    @Override
+    default DoubleStreamX takeWhile(DoublePredicate predicate) {
+        return DoubleStreamX.of(DoubleStream.super.takeWhile(predicate));
+    }
+
+    @Override
+    default DoubleStreamX dropWhile(DoublePredicate predicate) {
+        return DoubleStreamX.of(DoubleStream.super.dropWhile(predicate));
     }
 }

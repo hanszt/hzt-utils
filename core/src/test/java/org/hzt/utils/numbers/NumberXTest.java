@@ -8,7 +8,7 @@ class NumberXTest {
 
     @Test
     void testToInt() {
-        final int integer = DoubleX.of(Math.PI).toInt();
+        final var integer = DoubleX.of(Math.PI).toInt();
         assertEquals(3, integer);
     }
 

@@ -98,7 +98,7 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
     public static String toRoundedString(double d, int scale, Locale locale) {
         Locale defaultLocale = Locale.getDefault();
         Locale.setDefault(locale);
-        final String format = String.format(String.format("%%.%df", scale), d);
+        final var format = String.format(String.format("%%.%df", scale), d);
         Locale.setDefault(defaultLocale);
         return format;
     }

@@ -41,7 +41,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -530,11 +529,11 @@ class SequenceTest {
     @Test
     void testZipSequenceWithIterable() {
         var values = Sequence.of(0, 1, 2, 3, 4, 5, 6, 7, 4);
-        var others = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
+        var others = List.of(6, 5, 4, 3, 2, 1, 0);
 
         final var integers = values.zip(others, Integer::compareTo).toList();
 
-        assertEquals(Arrays.asList(-1, -1, -1, 0, 1, 1, 1), integers);
+        assertEquals(List.of(-1, -1, -1, 0, 1, 1, 1), integers);
     }
 
     @Test
@@ -945,7 +944,7 @@ class SequenceTest {
             private final List<String> strings = new ArrayList<>();
 
             public Nodes(String... strings) {
-                this.strings.addAll(Arrays.asList(strings));
+                this.strings.addAll(List.of(strings));
             }
 
             private int size() {
@@ -960,7 +959,7 @@ class SequenceTest {
 
     @Test
     void testSequenceFromIndexedDataStructure() {
-        var nodes = new Nodes<String>("This", "is", "a", "test");
+        var nodes = new Nodes<>("This", "is", "a", "test");
 
         final var strings = IntRange.of(0, nodes.size())
                 .mapToObj(nodes::get)

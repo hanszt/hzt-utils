@@ -31,7 +31,6 @@ import java.time.Period;
 import java.time.Year;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
@@ -135,7 +134,7 @@ class IterableXTest {
 
         It.println("sumsOfThree = " + sumsOfThree);
 
-        assertIterableEquals(Arrays.asList(3L, 6L, 9L, 12L, 15L, 18L, 21L), sumsOfThree);
+        assertIterableEquals(List.of(3L, 6L, 9L, 12L, 15L, 18L, 21L), sumsOfThree);
     }
 
     @Test
@@ -149,7 +148,7 @@ class IterableXTest {
 
         It.println("sumsOfThree = " + sumsOfThree);
 
-        assertIterableEquals(Arrays.asList(3L, 6L), sumsOfThree);
+        assertIterableEquals(List.of(3L, 6L), sumsOfThree);
     }
 
     @Test
@@ -402,20 +401,20 @@ class IterableXTest {
     @Test
     void testIntersectionOf() {
         final ListX<Collection<Integer>> collections = ListX.of(
-                Arrays.asList(1, 2, 3, 4, 5, 7),
-                Arrays.asList(2, 4, 5),
-                Arrays.asList(4, 5, 6)
+                List.of(1, 2, 3, 4, 5, 7),
+                List.of(2, 4, 5),
+                List.of(4, 5, 6)
         );
 
         final var intersect = collections.intersectionOf(It::self);
 
-        assertIterableEquals(Arrays.asList(4, 5), intersect);
+        assertIterableEquals(List.of(4, 5), intersect);
     }
 
     @Test
     void testIntersect() {
         final var integers = ListX.of(1, 2, 3, 4, 5, 7);
-        final var otherInts = Arrays.asList(1, 4, 5, 6);
+        final var otherInts = List.of(1, 4, 5, 6);
 
         final var intersect = integers.intersect(otherInts);
 
@@ -504,7 +503,7 @@ class IterableXTest {
 
         It.println("integers = " + integers);
 
-        assertIterableEquals(Arrays.asList(1, 2, 10, 4, 5, 10), integers);
+        assertIterableEquals(List.of(1, 2, 10, 4, 5, 10), integers);
     }
 
     @Test
@@ -535,7 +534,7 @@ class IterableXTest {
 
     @Test
     void testListIteratorGetPreviousOnlyWorksBeforeWhenIsAtEnd() {
-        var list = Arrays.asList(22, 44, 88, 11, 33);
+        var list = List.of(22, 44, 88, 11, 33);
         var listIterator = list.listIterator();
 
         assertFalse(listIterator.hasPrevious());
@@ -839,27 +838,27 @@ class IterableXTest {
                 .mapNotNull(Painting::name)
                 .zipWithNext(String::compareTo);
 
-        assertIterableEquals(Arrays.asList(-5, 83, -1, 5, -5, 1, 8), integers);
+        assertIterableEquals(List.of(-5, 83, -1, 5, -5, 1, 8), integers);
     }
 
     @Test
     void testZipTwoCollections() {
         var values = ListX.of(0, 1, 2, 3, 4, 5, 6, 7);
-        var others = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
+        var others = List.of(6, 5, 4, 3, 2, 1, 0);
 
         final var integers = values.zip(others, Integer::compareTo);
 
-        assertIterableEquals(Arrays.asList(-1, -1, -1, 0, 1, 1, 1), integers);
+        assertIterableEquals(List.of(-1, -1, -1, 0, 1, 1, 1), integers);
     }
 
     @Test
     void testToUnion() {
         var values = ListX.of(0, 1, 2, 1, 3, 4, 5, 6, 7);
-        var other = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
+        var other = List.of(6, 5, 4, 3, 2, 1, 0);
 
         final var union = values.union(other, String::valueOf);
 
-        assertIterableEquals(Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7"), union);
+        assertIterableEquals(List.of("0", "1", "2", "3", "4", "5", "6", "7"), union);
     }
 
     @Test

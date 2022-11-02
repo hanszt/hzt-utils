@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,7 +136,7 @@ class MapXTest {
 
         final var pairs = museumMapX.map(Pair::ofEntry);
 
-        assertEquals(new HashSetX<>(Arrays.asList("Picasso Museum", "Van Gogh Museum", "Vermeer Museum")), pairs.toSetXOf(Pair::first));
+        assertEquals(new HashSetX<>(List.of("Picasso Museum", "Van Gogh Museum", "Vermeer Museum")), pairs.toSetXOf(Pair::first));
     }
 
     @Test

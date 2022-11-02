@@ -4,9 +4,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NavigableSet;
 import java.util.Objects;
 import java.util.Optional;
@@ -61,7 +61,7 @@ public final class Painter extends Person implements Comparable<Painter>, Iterab
     }
 
     public void addPaintings(Painting... paintings) {
-        paintingList.addAll(Arrays.asList(paintings));
+        paintingList.addAll(List.of(paintings));
     }
 
     @Override

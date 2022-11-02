@@ -4,7 +4,6 @@ import org.hzt.utils.iterables.IterableXHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -40,7 +39,7 @@ final class ArrayListX<E> implements MutableListX<E> {
     @SafeVarargs
     ArrayListX(E... values) {
         list = new ArrayList<>(values.length + 1);
-        list.addAll(Arrays.asList(values));
+        list.addAll(List.of(values));
     }
 
     ArrayListX(E value) {

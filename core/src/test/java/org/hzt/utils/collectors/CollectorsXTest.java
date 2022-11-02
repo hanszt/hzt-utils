@@ -9,8 +9,8 @@ import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 
 import static org.hzt.utils.collectors.BigDecimalCollectors.summarizingBigDecimal;
@@ -72,14 +72,14 @@ class CollectorsXTest {
 
     @Test
     void testToIntersection() {
-        final var list1 = Arrays.asList("Hoi", "hoe", "het", "met", "jou", "lol");
-        final var list2 = Arrays.asList("Dit", "is", "een", "zin", "Hoi", "Papa", "lol");
-        final var list3 = Arrays.asList("Lalalala", "Nog meer", "zinnen", "Hoi", "Lief", "lol");
-        final var list4 = Arrays.asList("Hoi", "rere", "lol", "serse", "aweaw");
-        final var list5 = Arrays.asList("lol", "asdad", "wer", "werwe", "Hoi");
-        final var list6 = Arrays.asList("sdfsf", "", "awr", "awr", "Hoi", "lol");
+        final var list1 = List.of("Hoi", "hoe", "het", "met", "jou", "lol");
+        final var list2 = List.of("Dit", "is", "een", "zin", "Hoi", "Papa", "lol");
+        final var list3 = List.of("Lalalala", "Nog meer", "zinnen", "Hoi", "Lief", "lol");
+        final var list4 = List.of("Hoi", "rere", "lol", "serse", "aweaw");
+        final var list5 = List.of("lol", "asdad", "wer", "werwe", "Hoi");
+        final var list6 = List.of("sdfsf", "", "awr", "awr", "Hoi", "lol");
 
-        var stringLists = Arrays.asList(list1, list2, list3, list4, list5, list6);
+        var stringLists = List.of(list1, list2, list3, list4, list5, list6);
 
         final var intersection = stringLists.stream()
                 .collect(toIntersection());
@@ -88,8 +88,8 @@ class CollectorsXTest {
 
         assertAll(
                 () -> assertEquals(2, intersection.size()),
-                () -> assertTrue(intersection.containsAll(Arrays.asList("Hoi", "lol"))),
-                () -> assertEquals(new HashSet<>(Arrays.asList("Hoi", "lol")), intersection)
+                () -> assertTrue(intersection.containsAll(List.of("Hoi", "lol"))),
+                () -> assertEquals(new HashSet<>(List.of("Hoi", "lol")), intersection)
         );
     }
 

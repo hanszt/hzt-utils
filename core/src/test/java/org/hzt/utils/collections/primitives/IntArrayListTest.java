@@ -3,8 +3,8 @@ package org.hzt.utils.collections.primitives;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ConcurrentModificationException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,7 +26,7 @@ class IntArrayListTest {
 
     @Test
     void testConcurrentModExceptionInForLoopRemove() {
-        var list = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6));
+        var list = new ArrayList<>(List.of(1, 2, 3, 4, 5, 6));
         final var exception =
                 assertThrows(ConcurrentModificationException.class, () -> {
                     //noinspection Java8CollectionRemoveIf

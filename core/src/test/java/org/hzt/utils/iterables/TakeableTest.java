@@ -8,7 +8,6 @@ import org.hzt.test.model.Painting;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,8 +77,8 @@ class TakeableTest {
         It.println("integers = " + takeWhileInclusive);
 
         assertAll(
-                () -> assertIterableEquals(Arrays.asList(1, 2, 10, 4, 5), takeWhileInclusive),
-                () -> assertIterableEquals(Arrays.asList(1, 2, 10, 4), takeWhile)
+                () -> assertIterableEquals(List.of(1, 2, 10, 4, 5), takeWhileInclusive),
+                () -> assertIterableEquals(List.of(1, 2, 10, 4), takeWhile)
         );
     }
 }

@@ -62,22 +62,6 @@ public final class CollectorsX {
                 downstream.characteristics());
     }
 
-    public static <T, U, A, R>
-    Collector<T, ?, R> flatMapping(Function<? super T, ? extends Stream<? extends U>> mapper,
-                                   Collector<? super U, A, R> downstream) {
-        var downstreamAccumulator = downstream.accumulator();
-        return collectorOf(downstream.supplier(),
-                (r, t) -> {
-                    try (var result = mapper.apply(t)) {
-                        if (result != null) {
-                            result.sequential().forEach(u -> downstreamAccumulator.accept(r, u));
-                        }
-                    }
-                },
-                downstream.combiner(), downstream.finisher(),
-                downstream.characteristics());
-    }
-
     public static <T, U, A, R> Collector<T, ?, R> multiMapping(BiConsumer<? super T, ? super Consumer<U>> mapper,
                                                                Collector<? super U, A, R> downstream) {
         return Collectors.flatMapping(e -> {
@@ -118,7 +102,7 @@ public final class CollectorsX {
     }
 
     public static <T, R> Collector<T, ?, List<R>> flatMappingToList(Function<? super T, ? extends Stream<? extends R>> mapper) {
-        return flatMapping(mapper, toUnmodifiableList());
+        return Collectors.flatMapping(mapper, toUnmodifiableList());
     }
 
     public static <T> Collector<T, ?, Set<T>> filteringToSet(Predicate<? super T> predicate) {
@@ -134,7 +118,7 @@ public final class CollectorsX {
     }
 
     public static <T, R> Collector<T, ?, Set<R>> flatMappingToSet(Function<? super T, ? extends Stream<? extends R>> mapper) {
-        return flatMapping(mapper, toUnmodifiableSet());
+        return Collectors.flatMapping(mapper, toUnmodifiableSet());
     }
 
     public static <T, A, K> Collector<T, ?, Map<K, List<T>>> groupingBy(Function<? super T, ? extends A> classifierPart1,

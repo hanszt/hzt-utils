@@ -5,7 +5,6 @@ import org.hzt.utils.PreConditions;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -91,10 +90,6 @@ public final class Functions {
     public static <T> Predicate<T> by(Predicate<T> predicate) {
         Objects.requireNonNull(predicate);
         return predicate;
-    }
-
-    public static <T, U> BiPredicate<T, U> not(BiPredicate<T, U> predicate) {
-        return predicate.negate();
     }
 
     public static <T, R> Predicate<T> distinctBy(Function<? super T, ? extends R> function) {

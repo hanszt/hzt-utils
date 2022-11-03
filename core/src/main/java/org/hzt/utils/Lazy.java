@@ -1,5 +1,7 @@
 package org.hzt.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -11,7 +13,7 @@ import java.util.function.Supplier;
  * @param <T> The value to compute lazy
  */
 @SuppressWarnings("JavadocReference")
-public final class Lazy<T> {
+public final class Lazy<T> implements Transformable<T> {
 
     private Supplier<T> supplier;
 
@@ -27,7 +29,7 @@ public final class Lazy<T> {
         return new Lazy<>(supplier);
     }
 
-    public T get() {
+    public @NotNull T get() {
         value = supplier != null ? supplier.get() : value;
         supplier = null;
         return value;

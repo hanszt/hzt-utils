@@ -4,15 +4,23 @@ import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterators.FilteringIterator;
 import org.hzt.utils.numbers.IntX;
+import org.hzt.utils.sequences.primitives.IntSequence;
+import org.hzt.utils.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 
 import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static org.hzt.utils.It.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.DynamicTest.*;
 
 class CustomSequenceTest {
 
@@ -86,30 +94,74 @@ class CustomSequenceTest {
         float applyAsFloat(T item);
     }
 
-    @Test
-    void testFizzBuzzer() {
-        final FizzBuzzer fizzBuzzer = FizzBuzzer
-                .start()
-                .fizz()
-                .buzz();
+    private static boolean isNaturalNr(String current) {
+        return current.chars().allMatch(Character::isDigit);
+    }
 
-        final long count = fizzBuzzer
-                .take(100)
-                .filter(s -> s.contains("buzz"))
-                .count();
+    @Nested
+    class FizzBuzzerTests {
 
-        final String actual = fizzBuzzer
-                .take(16)
-                .skip(3)
-                .joinToString(", ");
+        @Test
+        void testFizzBuzzer() {
+            final FizzBuzzer fizzBuzzer = FizzBuzzer
+                    .start()
+                    .fizz()
+                    .buzz();
 
-        for (String s : fizzBuzzer.take(3)) {
-            It.println("s = " + s);
+            final long count = fizzBuzzer
+                    .take(100)
+                    .filter(s -> s.contains("buzz"))
+                    .count();
+
+            final String actual = fizzBuzzer
+                    .take(16)
+                    .skip(3)
+                    .joinToString(", ");
+
+            for (String s : fizzBuzzer.take(3)) {
+                println("s = " + s);
+            }
+            assertAll(
+                    () -> assertEquals("4, buzz, fizz, 7, 8, fizz, buzz, 11, fizz, 13, 14, fizzbuzz, 16", actual),
+                    () -> assertEquals(20L, count)
+            );
         }
-        assertAll(
-                () -> assertEquals("4, buzz, fizz, 7, 8, fizz, buzz, 11, fizz, 13, 14, fizzbuzz, 16", actual),
-                () -> assertEquals(20L, count)
-        );
+
+        @TestFactory
+        Sequence<DynamicTest> testFizzBuzzerContainsBuzzAtMultipleOf5() {
+            return FizzBuzzer.start()
+                    .fizz()
+                    .buzz()
+                    .withIndex()
+                    .onEach(It::println)
+                    .filter(value -> (value.index() + 1) % 5 == 0)
+                    .map(this::everyFifthContainsBuzz);
+//                    .take(100);
+        }
+
+        private DynamicTest everyFifthContainsBuzz(IndexedValue<String> indexedValue) {
+            final  int n = indexedValue.index() + 1;
+            String name = "Value at n=" + n + " contains buzz";
+            return dynamicTest(name, () -> assertTrue(indexedValue.value().contains("buzz")));
+        }
+
+        @TestFactory
+        Sequence<DynamicTest> testFizzBuzzerContainsFizzAtMultipleOf3() {
+            return FizzBuzzer.start()
+                    .fizz()
+                    .buzz()
+                    .withIndex()
+                    .onEach(It::println)
+                    .filter(value -> (value.index() + 1) % 3 == 0)
+                    .map(this::everyThirdContainsFizz)
+                    .take(100);
+        }
+
+        private DynamicTest everyThirdContainsFizz(IndexedValue<String> indexedValue) {
+            final  int n = indexedValue.index() + 1;
+            String name = "Value at n=" + n + " contains fizz";
+            return dynamicTest(name, () -> assertTrue(indexedValue.value().contains("fizz")));
+        }
     }
 
     @NotNull
@@ -128,20 +180,11 @@ class CustomSequenceTest {
         return match ? current + string : current;
     }
 
-    private static boolean isNaturalNr(String current) {
-        for (char c : current.toCharArray()) {
-            if (!Character.isDigit(c)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @FunctionalInterface
     private interface FizzBuzzer extends Sequence<String> {
 
         static FizzBuzzer start() {
-            return Sequence.generate(() -> "")::iterator;
+            return IntSequence.generate(1, n -> n + 1).mapToObj(String::valueOf)::iterator;
         }
 
         default FizzBuzzer fizz() {
@@ -183,9 +226,9 @@ class CustomSequenceTest {
                     .skip(3)
                     .joinToString(", ");
 
-            It.println(fizzBuzzer.take(2_000).joinToString());
-            It.println("count = " + count);
-            It.println("actual = " + actual);
+            println(fizzBuzzer.take(2_000).joinToString());
+            println("count = " + count);
+            println("actual = " + actual);
         }
     }
 }

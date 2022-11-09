@@ -15,4 +15,14 @@ class LazyTest {
         assertEquals(d2, d1);
     }
 
+    @Test
+    void testLazyRun() {
+        final Transformable<String> randomValue = Lazy.of(Math::random).run(String::valueOf);
+
+        final String s1 = randomValue.get();
+        final String s2 = randomValue.get();
+
+        assertEquals(s1, s2);
+    }
+
 }

@@ -6,7 +6,10 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
+import java.util.function.DoublePredicate;
 import java.util.function.Function;
+import java.util.function.IntPredicate;
+import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
 public final class Functions {
@@ -94,6 +97,18 @@ public final class Functions {
     }
 
     public static <T, U> BiPredicate<T, U> not(BiPredicate<T, U> predicate) {
+        return predicate.negate();
+    }
+
+    public static IntPredicate notInt(IntPredicate predicate) {
+        return predicate.negate();
+    }
+
+    public static LongPredicate notLong(LongPredicate predicate) {
+        return predicate.negate();
+    }
+
+    public static DoublePredicate notDouble(DoublePredicate predicate) {
         return predicate.negate();
     }
 

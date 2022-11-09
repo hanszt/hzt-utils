@@ -20,7 +20,7 @@ public interface Spliterable<T> extends Iterable<T> {
     }
 
     default AtomicIterator<T> atomicIterator() {
-        return AtomicIterator.of(iterator());
+        return AtomicIterator.of(spliterator());
     }
 
     @FunctionalInterface

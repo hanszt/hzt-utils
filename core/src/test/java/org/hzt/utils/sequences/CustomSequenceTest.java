@@ -135,13 +135,13 @@ class CustomSequenceTest {
                     .withIndex()
                     .onEach(It::println)
                     .filter(value -> (value.index() + 1) % 5 == 0)
-                    .map(this::everyFifthContainsBuzz);
-//                    .take(100);
+                    .map(this::everyFifthContainsBuzz)
+                    .take(100);
         }
 
         private DynamicTest everyFifthContainsBuzz(IndexedValue<String> indexedValue) {
-            final  int n = indexedValue.index() + 1;
-            String name = "Value at n=" + n + " contains buzz";
+            final int n = indexedValue.index() + 1;
+            final var name = "Value at n=" + n + " contains buzz";
             return dynamicTest(name, () -> assertTrue(indexedValue.value().contains("buzz")));
         }
 
@@ -158,26 +158,10 @@ class CustomSequenceTest {
         }
 
         private DynamicTest everyThirdContainsFizz(IndexedValue<String> indexedValue) {
-            final  int n = indexedValue.index() + 1;
-            String name = "Value at n=" + n + " contains fizz";
+            final int n = indexedValue.index() + 1;
+            final var name = "Value at n=" + n + " contains fizz";
             return dynamicTest(name, () -> assertTrue(indexedValue.value().contains("fizz")));
         }
-    }
-
-    @NotNull
-    private static String next(int index, String current, int modulo,  String string) {
-        return next(index, current, modulo, 0, string);
-    }
-
-    @NotNull
-    private static String next(int index, String current, int modulo, int offSet, String string) {
-        int value = index + 1;
-        final boolean isNaturalNr = isNaturalNr(current);
-        final boolean match = value % modulo == offSet;
-        if (isNaturalNr) {
-            return match ? string : String.valueOf(value);
-        }
-        return match ? current + string : current;
     }
 
     @FunctionalInterface
@@ -205,6 +189,22 @@ class CustomSequenceTest {
 
         default FizzBuzzer odd() {
             return mapIndexed((index, value) -> next(index, value, 2, 1, "odd"))::iterator;
+        }
+
+        @NotNull
+        private static String next(int index, String current, int modulo, String string) {
+            return next(index, current, modulo, 0, string);
+        }
+
+        @NotNull
+        private static String next(int index, String current, int modulo, int offSet, String string) {
+            int value = index + 1;
+            final boolean isNaturalNr = isNaturalNr(current);
+            final boolean match = value % modulo == offSet;
+            if (isNaturalNr) {
+                return match ? string : String.valueOf(value);
+            }
+            return match ? current + string : current;
         }
 
         static void main(String[] args) {

@@ -135,8 +135,8 @@ class CustomSequenceTest {
                     .withIndex()
                     .onEach(It::println)
                     .filter(value -> (value.index() + 1) % 5 == 0)
-                    .map(this::everyFifthContainsBuzz);
-//                    .take(100);
+                    .map(this::everyFifthContainsBuzz)
+                    .take(100);
         }
 
         private DynamicTest everyFifthContainsBuzz(IndexedValue<String> indexedValue) {

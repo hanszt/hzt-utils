@@ -35,7 +35,7 @@ public interface Spliterable<T> extends Iterable<T> {
 
         @Override
         default PrimitiveAtomicIterator.OfInt atomicIterator() {
-            return PrimitiveAtomicIterator.of(iterator());
+            return PrimitiveAtomicIterator.of(spliterator());
         }
     }
 
@@ -51,7 +51,7 @@ public interface Spliterable<T> extends Iterable<T> {
 
         @Override
         default PrimitiveAtomicIterator.OfLong atomicIterator() {
-            return PrimitiveAtomicIterator.of(iterator());
+            return PrimitiveAtomicIterator.of(spliterator());
         }
     }
 
@@ -67,7 +67,7 @@ public interface Spliterable<T> extends Iterable<T> {
 
         @Override
         default PrimitiveAtomicIterator.OfDouble atomicIterator() {
-            return PrimitiveAtomicIterator.of(iterator());
+            return PrimitiveAtomicIterator.of(spliterator());
         }
     }
 }

@@ -74,5 +74,6 @@ Below table gives an overview of the versioning so far:
 - [Kotlin docs](https://kotlinlang.org/docs/home.html)
 - [Live templates](https://www.youtube.com/watch?v=Sio9MdSqXZo)
 - [Junit5 User guide](https://junit.org/junit5/docs/current/user-guide/)
+- [How to publish a Java library to Maven Central - Complete Guide](https://maciejwalkowiak.com/blog/guide-java-publish-to-maven-central/)
 
 ---

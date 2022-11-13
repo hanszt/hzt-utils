@@ -96,7 +96,7 @@ public final class TestSampleGenerator {
         if (museums == null) {
             museums = createMuseumList();
         }
-        return museums;
+        return Collections.unmodifiableList(museums);
     }
 
     public static List<Museum> createMuseumList() {

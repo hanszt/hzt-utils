@@ -54,8 +54,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.lang.System.setProperty;
-import static org.hzt.utils.It.print;
-import static org.hzt.utils.It.printf;
 import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.*;
 

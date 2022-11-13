@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>org.hzt.utils</groupId>
-            <artifactId>test-data-generator</artifactId>
+            <artifactId>test-utils</artifactId>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>

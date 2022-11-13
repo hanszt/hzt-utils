@@ -1,13 +1,15 @@
 package org.hzt.utils.iterables;
 
+import org.hzt.test.ReplaceCamelCaseBySentence;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
+import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.tuples.Pair;
+import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +19,7 @@ import static java.util.Comparator.comparing;
 import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class GroupingTest {
 
     @Test
@@ -30,7 +33,7 @@ class GroupingTest {
 
         println(aggregated);
 
-        MapX<Integer, String> expected = MapX.of(0, "0:3-6-9", 1, "1:4-7", 2, "2:5-8");
+        final var expected = MutableMapX.of(0, "0:3-6-9", 1, "1:4-7", 2, "2:5-8");
 
         assertEquals(expected, aggregated);
     }
@@ -43,7 +46,7 @@ class GroupingTest {
                 .groupingBy(nr -> nr % 3)
                 .eachCount();
 
-        MapX<Integer, Integer> expected = MapX.of(0, 3, 1, 2, 2, 2);
+        final var expected = MutableMapX.of(0, 3, 1, 2, 2, 2);
 
         assertEquals(expected, aggregated);
     }
@@ -66,7 +69,7 @@ class GroupingTest {
 
         final ListX<Pair<Character, List<String>>> expected = ListX.of(Pair.of('a', Collections.emptyList()),
                 Pair.of('b', Collections.singletonList("banana")),
-                Pair.of('c', Arrays.asList("cherry", "citrus")));
+                Pair.of('c', List.of("cherry", "citrus")));
 
         assertEquals(expected, sorted);
     }
@@ -81,7 +84,7 @@ class GroupingTest {
 
         println(fruitNameLengthSum);
 
-        MapX<Character, Integer> expected = MapX.of('c', 19, 'b', 15, 'a', 12);
+        final var expected = MutableMapX.of('c', 19, 'b', 15, 'a', 12);
 
         assertEquals(expected, fruitNameLengthSum);
     }
@@ -94,7 +97,7 @@ class GroupingTest {
                 .groupingBy(nr -> nr % 3)
                 .reduce(Integer::sum);
 
-        MapX<Integer, Integer> expected = MapX.of(0, 18, 1, 11, 2, 13);
+        final var expected = MutableMapX.of(0, 18, 1, 11, 2, 13);
 
         assertEquals(expected, aggregated);
     }

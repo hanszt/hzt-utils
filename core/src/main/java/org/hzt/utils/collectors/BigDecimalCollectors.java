@@ -15,7 +15,7 @@ import java.util.stream.Collector;
 public final class BigDecimalCollectors {
 
     private static final Set<Collector.Characteristics> CH_ID
-            = Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
+            = Set.copyOf(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
 
     private static final Set<Collector.Characteristics> CH_NOID = Collections.emptySet();
 

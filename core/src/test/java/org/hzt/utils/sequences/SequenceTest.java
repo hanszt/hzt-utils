@@ -1,5 +1,6 @@
 package org.hzt.utils.sequences;
 
+import org.hzt.test.ReplaceCamelCaseBySentence;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;
@@ -24,6 +25,7 @@ import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -52,8 +54,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.lang.System.setProperty;
+import static org.hzt.utils.It.print;
+import static org.hzt.utils.It.printf;
+import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class SequenceTest {
 
     @Test
@@ -92,7 +98,7 @@ class SequenceTest {
                 .withIndex()
                 .windowed(4);
 
-        System.out.println(sequence);
+        println(sequence);
 
         assertNotNull(sequence);
     }
@@ -636,7 +642,7 @@ class SequenceTest {
         assertAll(
                 () -> assertEquals(Year.of(1904), first),
                 () -> assertEquals(Year.of(2000), last),
-                () -> assertEquals(48800, stats.getSum())
+                () -> assertEquals(48_800, stats.getSum())
         );
     }
 
@@ -713,7 +719,7 @@ class SequenceTest {
                 .intersperse(i -> ++i)
                 .toList();
 
-        System.out.println("integers = " + integers);
+        println("integers = " + integers);
 
         assertEquals(List.of(0, 1, -1, 0, -2, -1, -3, -2, -4, -3, -5, -4, -6, -5, -7, -6, -8, -7, -9), integers);
     }
@@ -725,7 +731,7 @@ class SequenceTest {
                 .intersperse(5)
                 .toList();
 
-        System.out.println("integers = " + integers);
+        println("integers = " + integers);
 
         assertEquals(List.of(0, 5, -1, 5, -2, 5, -3, 5, -4, 5, -5, 5, -6, 5, -7, 5, -8, 5, -9), integers);
     }
@@ -737,7 +743,7 @@ class SequenceTest {
                 .intersperse(0, i -> i + 2)
                 .toList();
 
-        System.out.println("integers = " + integers);
+        println("integers = " + integers);
 
         assertEquals(List.of(0, 0, -1, 2, -2, 4, -3, 6, -4, 8, -5, 10, -6, 12, -7, 14, -8, 16, -9), integers);
     }
@@ -751,7 +757,7 @@ class SequenceTest {
                 .intersperse(() -> random.nextInt(20))
                 .toList();
 
-        System.out.println("integers = " + integers);
+        println("integers = " + integers);
 
         assertEquals(List.of(0, 0, -1, 8, -2, 9, -3, 7, -4, 15, -5, 13, -6, 11, -7, 1, -8, 19, -9), integers);
     }

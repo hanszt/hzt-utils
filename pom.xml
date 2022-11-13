@@ -12,7 +12,7 @@
 
     <modules>
         <module>core</module>
-        <module>test-data-generator</module>
+        <module>test-utils</module>
         <module>benchmark</module>
         <module>swing-utils</module>
         <module>reflection</module>

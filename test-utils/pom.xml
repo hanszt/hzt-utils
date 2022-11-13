@@ -4,17 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <properties>
-        <junit-platform-launcher.version>1.9.1</junit-platform-launcher.version>
-    </properties>
 
     <parent>
         <groupId>org.hzt.utils</groupId>
         <artifactId>hzt-utils</artifactId>
-        <version>0.7.5.11</version>
+        <version>0.7.5.17</version>
     </parent>
 
     <artifactId>test-utils</artifactId>
+
+    <properties>
+        <junit-platform-launcher.version>1.9.1</junit-platform-launcher.version>
+    </properties>
 
     <dependencies>
         <dependency>

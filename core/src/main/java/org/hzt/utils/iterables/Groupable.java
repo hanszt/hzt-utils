@@ -7,6 +7,7 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -24,6 +25,22 @@ public interface Groupable<T> extends Iterable<T> {
     default <K, R> MapX<K, MutableListX<R>> groupMapping(@NotNull Function<? super T, ? extends K> classifier,
                                                          @NotNull Function<? super T, ? extends R> valueMapper) {
         return IterableReductions.groupMapping(this, classifier, valueMapper);
+    }
+
+    default <K> Grouping<T, K> groupingBy(@NotNull Function<? super T, ? extends K> classifier) {
+        final Iterator<T> iterator = iterator();
+        return new Grouping<T, K>() {
+            @Override
+            public K keyOf(T element) {
+                return classifier.apply(element);
+            }
+
+            @NotNull
+            @Override
+            public Iterator<T> iterator() {
+                return iterator;
+            }
+        };
     }
 
     default Pair<ListX<T>, ListX<T>> partition(@NotNull Predicate<T> predicate) {

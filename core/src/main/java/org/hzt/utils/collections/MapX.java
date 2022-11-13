@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<K, V> {
 
     static <K, V> MapX<K, V> empty() {
-        return MutableMapX.empty();
+        return new ImmutableMapX<>();
     }
 
     static <K, V> MapX<K, V> of(Map<? extends K, ? extends V> map) {

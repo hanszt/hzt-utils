@@ -12,7 +12,7 @@
 
     <modules>
         <module>core</module>
-        <module>test-data-generator</module>
+        <module>test-utils</module>
         <module>benchmark</module>
         <module>swing-utils</module>
         <module>reflection</module>
@@ -50,7 +50,7 @@
             </dependency>
             <dependency>
                 <groupId>org.hzt.utils</groupId>
-                <artifactId>test-data-generator</artifactId>
+                <artifactId>test-utils</artifactId>
                 <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>

@@ -1,6 +1,7 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.function.IndexedFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -27,6 +28,26 @@ public final class SequenceHelper {
         };
     }
 
+    static <T, R> Iterator<R> transformingIndexedIterator(Iterator<T> iterator, IndexedFunction<? super T, ? extends R> mapper) {
+        return new Iterator<>() {
+            private int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public R next() {
+                var prevIndex = index;
+                if (prevIndex < 0) {
+                    throw new IllegalStateException("indexed iterator index overflow");
+                }
+                return mapper.apply(index++, iterator.next());
+            }
+        };
+    }
+
     public static void checkInitWindowSizeAndStep(int size, int step) {
         PreConditions.require(size > 0 && step > 0, () -> getErrorMessage(size, step));
 
@@ -39,7 +60,7 @@ public final class SequenceHelper {
         return "size " + size + " must be greater than zero.";
     }
 
-    public static <T> Iterator<T> interspersingIterator(Iterator<T> iterator, UnaryOperator<T> operator) {
+    static <T> Iterator<T> interspersingIterator(Iterator<T> iterator, UnaryOperator<T> operator) {
         return new Iterator<>() {
             private T current = null;
 
@@ -62,9 +83,9 @@ public final class SequenceHelper {
         };
     }
 
-    public static <T> Iterator<T> interspersingIterator(Iterator<T> iterator,
-                                                        Supplier<T> initValSupplier,
-                                                        UnaryOperator<T> operator) {
+    static <T> Iterator<T> interspersingIterator(Iterator<T> iterator,
+                                                 Supplier<T> initValSupplier,
+                                                 UnaryOperator<T> operator) {
         return new Iterator<>() {
             private T valueToInsert = null;
             private boolean insertValue = false;

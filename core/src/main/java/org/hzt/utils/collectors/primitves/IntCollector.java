@@ -37,7 +37,7 @@ public interface IntCollector<A, R> {
         final var identityFinish = Collector.Characteristics.IDENTITY_FINISH;
         var cs = (characteristics.length == 0)
                 ? Set.of(identityFinish)
-                : Collections.unmodifiableSet(EnumSet.of(identityFinish, characteristics));
+                : Set.copyOf(EnumSet.of(identityFinish, characteristics));
         return new IntCollectorImpl<>(supplier, accumulator, combiner, cs);
     }
 

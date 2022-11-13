@@ -171,7 +171,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     @Override
     default <R> Sequence<R> mapIndexed(@NotNull IndexedFunction<? super T, ? extends R> mapper) {
-        return new TransformingIndexedSequence<>(this, mapper);
+        return () -> SequenceHelper.transformingIndexedIterator(iterator(), mapper);
     }
 
     default <R> Sequence<R> flatMap(@NotNull Function<? super T, ? extends Iterable<? extends R>> transform) {

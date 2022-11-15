@@ -11,6 +11,7 @@ import org.hzt.utils.collections.LinkedSetX;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;

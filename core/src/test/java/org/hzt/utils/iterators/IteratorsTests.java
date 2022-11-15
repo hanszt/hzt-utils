@@ -13,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class IteratorTests {
+class IteratorsTests {
 
     @Test
     void testGeneratingIterator() {
-        Sequence<String> strings = () -> GeneratorIterator.of(() -> "h", s1 -> s1 + s1);
+        Sequence<String> strings = () -> Iterators.generatorIterator(() -> "h", s1 -> s1 + s1);
         for (var s : strings) {
             final var length = s.length();
             It.println("s = " + s);
@@ -38,8 +38,8 @@ class IteratorTests {
     void testIteratorChainIteratorObjectCanOnlyBeTraversedOnce() {
         Iterator<String> iterator =
                 TakeWhileIterator.of(
-                        FilteringIterator.of(
-                                GeneratorIterator.of(() -> "|", s -> s + "\\"),
+                        Iterators.filteringIterator(
+                                Iterators.generatorIterator(() -> "|", s -> s + "\\"),
                                 s -> IntX.of(s.length()).isEven(), true), s -> s.length() < 100);
 
         Iterable<String> strings = () -> iterator;

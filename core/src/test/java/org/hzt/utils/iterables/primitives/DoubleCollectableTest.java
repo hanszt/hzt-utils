@@ -13,7 +13,7 @@ class DoubleCollectableTest {
 
     @Test
     void testDoubleSequenceToMutableSetX() {
-        final var doubles = DoubleSequence.generate(Double.MIN_VALUE, d -> d + Math.PI)
+        final var doubles = DoubleSequence.iterate(Double.MIN_VALUE, d -> d + Math.PI)
                 .take(10)
                 .plus(Math.E, Math.E, DoubleX.GOLDEN_RATIO)
                 .toMutableSet();

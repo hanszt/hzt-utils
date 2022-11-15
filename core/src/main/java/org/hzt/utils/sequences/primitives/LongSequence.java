@@ -70,7 +70,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return longStream::iterator;
     }
 
-    static LongSequence generate(long seedValue, LongUnaryOperator nextFunction) {
+    static LongSequence iterate(long seedValue, LongUnaryOperator nextFunction) {
         return generate(() -> seedValue, nextFunction);
     }
 

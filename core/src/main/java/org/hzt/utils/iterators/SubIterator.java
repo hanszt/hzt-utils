@@ -3,7 +3,7 @@ package org.hzt.utils.iterators;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public final class SubIterator<T> implements Iterator<T> {
+final class SubIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
     private final long startIndex;
@@ -11,14 +11,10 @@ public final class SubIterator<T> implements Iterator<T> {
 
     private long position;
 
-    private SubIterator(Iterator<T> iterator, long startIndex, long endIndex) {
+    SubIterator(Iterator<T> iterator, long startIndex, long endIndex) {
         this.iterator = iterator;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
-    }
-
-    public static <T> SubIterator<T> of(Iterator<T> iterator, long startIndex, long endIndex) {
-        return new SubIterator<>(iterator, startIndex, endIndex);
     }
 
     private void skip() {

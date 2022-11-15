@@ -48,7 +48,7 @@ class IntMutableListXTest {
         ints.add(2);
         ints.add(-43);
         ints.add(1231);
-        IntSequence.generate(0, l -> l + 5)
+        IntSequence.iterate(0, l -> l + 5)
                 .take(10_000_000)
                 .forEachInt(ints::add);
 
@@ -62,7 +62,7 @@ class IntMutableListXTest {
 
     @Test
     void testSortIntList() {
-        final var ints = IntSequence.generate(10_000, i -> --i)
+        final var ints = IntSequence.iterate(10_000, i -> --i)
                 .take(10_000)
                 .shuffled()
                 .toMutableList();
@@ -74,7 +74,7 @@ class IntMutableListXTest {
 
     @Test
     void testSortReversedIntList() {
-        final var ints = IntSequence.generate(-10_000, i -> ++i)
+        final var ints = IntSequence.iterate(-10_000, i -> ++i)
                 .take(10_000)
                 .shuffled()
                 .toMutableList();

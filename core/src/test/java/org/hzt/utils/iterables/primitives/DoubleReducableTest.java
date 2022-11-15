@@ -12,7 +12,7 @@ class DoubleReducableTest {
 
     @Test
     void testReduceDouble() {
-        final var sum = DoubleSequence.generate(0, d -> d + .1)
+        final var sum = DoubleSequence.iterate(0, d -> d + .1)
                 .map(Math::sin)
                 .take(1_000_000)
                 .reduce(0.0, Double::sum);
@@ -22,7 +22,7 @@ class DoubleReducableTest {
 
     @Test
     void testDoubleReducableReduceTwo() {
-        final var pair = DoubleSequence.generate(1.0, d -> d + .1)
+        final var pair = DoubleSequence.iterate(1.0, d -> d + .1)
                 .take(1_000_000)
                 .reduceToTwo(0.0, Double::sum, 1.0, DoubleX::times, Pair::of);
 

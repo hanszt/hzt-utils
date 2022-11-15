@@ -222,7 +222,7 @@ class IntSequenceTest {
     void testParallelStreamFromIntSequence() {
         // a parallel stream does not maintain the sorted nature of the sequence
         // when using a sequential stream, then the order is maintained
-        final var doubles = IntSequence.generate(0, i -> i + 2)
+        final var doubles = IntSequence.iterate(0, i -> i + 2)
                 .filter(IntX.multipleOf(4))
                 .take(10_000)
                 .sortedDescending()
@@ -245,7 +245,7 @@ class IntSequenceTest {
         final var LENGTH = 10_000_000;
         var array = new byte[LENGTH];
 
-        IntSequence.generate(Byte.MIN_VALUE, i -> (i == Byte.MAX_VALUE) ? Byte.MIN_VALUE : ++i)
+        IntSequence.iterate(Byte.MIN_VALUE, i -> (i == Byte.MAX_VALUE) ? Byte.MIN_VALUE : ++i)
                 .take(LENGTH)
                 .forEachInt(i -> array[index.getAndIncrement()] = (byte) i);
 
@@ -257,7 +257,7 @@ class IntSequenceTest {
 
     @Test
     void testChunked() {
-        final var longs = IntSequence.generate(0, i -> ++i)
+        final var longs = IntSequence.iterate(0, i -> ++i)
                 .take(500)
                 .chunked(100)
                 .mapToLong(IntList::sum)
@@ -277,7 +277,7 @@ class IntSequenceTest {
 
     @Test
     void testMapIndexed() {
-        final var list = IntSequence.generate(1, i -> i * 2)
+        final var list = IntSequence.iterate(1, i -> i * 2)
                 .mapIndexed(Integer::sum)
                 .takeWhile(i -> i < 100)
                 .toList();

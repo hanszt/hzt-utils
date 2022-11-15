@@ -54,7 +54,7 @@ class EntrySequenceTest {
 
     @Test
     void testToEntrySequence() {
-        final var yearStringMap = Sequence.generate(1, i -> ++i)
+        final var yearStringMap = Sequence.iterate(1, i -> ++i)
                 .asEntrySequence(It::self, BigDecimal::valueOf)
                 .mapByKeys(Year::of)
                 .takeWhileKeys(year -> year.isBefore(Year.of(2001)))
@@ -70,7 +70,7 @@ class EntrySequenceTest {
 
     @Test
     void testToEntrySequenceFromPairSequence() {
-        final var yearStringMap = Sequence.generate(1, i -> ++i)
+        final var yearStringMap = Sequence.iterate(1, i -> ++i)
                 .zipWithNext(Pair::of)
                 .asEntrySequence(It::self)
                 .mapByKeys(Year::of)
@@ -86,7 +86,7 @@ class EntrySequenceTest {
 
     @Test
     void testToEntrySequenceByZipWithNext() {
-        final var yearStringMap = Sequence.generate(0, i -> ++i)
+        final var yearStringMap = Sequence.iterate(0, i -> ++i)
                 .map(Year::of)
                 .takeWhileInclusive(year -> year.isBefore(Year.of(2000)))
                 .zipWithNext()

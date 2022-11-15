@@ -1,6 +1,5 @@
 package org.hzt.utils.strings;
 
-import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Nested;
@@ -9,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -38,7 +39,7 @@ class StringXTest {
                 .values()
                 .map(ListX::size);
 
-        It.println("hallo = " + characterCounts);
+        println("hallo = " + characterCounts);
 
         assertIterableEquals(expected, characterCounts);
     }
@@ -70,14 +71,14 @@ class StringXTest {
     void testStringXOfCharIterable() {
         final var characters = List.of('H', 'e', 'y', '!', '1', '2', '3');
 
-        assertEquals("Hey!123", StringX.of(characters).toString());
+        assertEquals("Hey!123", StringX.ofChars(characters).toString());
     }
 
     @Test
     void testStringChainingX() {
         final var characters = List.of('H', 'e', 'y', '!', '1', '2', '3');
 
-        final var actual = StringX.of(characters)
+        final var actual = StringX.ofChars(characters)
                 .concat("\nHallo")
                 .replaceFirst("lo", "asd")
                 .lines()
@@ -259,5 +260,16 @@ class StringXTest {
                     () -> assertEquals(expected, ListX.of(split2))
             );
         }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"This is a string", "abbreviate", "Another string"})
+    void testAbbreviate(String string) {
+        final int MAX_LENGTH = 12;
+        final StringX abbreviate = StringX.of(string).abbreviate(MAX_LENGTH);
+
+        println(abbreviate);
+
+        assertTrue(abbreviate.length() <= MAX_LENGTH);
     }
 }

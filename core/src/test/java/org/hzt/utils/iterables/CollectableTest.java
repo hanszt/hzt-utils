@@ -87,7 +87,7 @@ class CollectableTest {
     @Test
     void testBranchSequence() {
         final var leepYearResult = Sequence
-                .generate(LocalDate.of(1950, Month.JANUARY, 1), date -> date.plusDays(1))
+                .iterate(LocalDate.of(1950, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhileInclusive(date -> date.getYear() <= 2000)
                 .filter(LocalDate::isLeapYear)
                 .toTwo(Sequence::toList, Sequence::last);

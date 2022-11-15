@@ -12,7 +12,7 @@ class LongReducableTest {
 
     @Test
     void testReduceToTwo() {
-        final var sumAndMax = LongSequence.generate(1, l -> 2 * l)
+        final var sumAndMax = LongSequence.iterate(1, l -> 2 * l)
                 .takeWhile(l -> l < 2e10)
                 .onEach(It::println)
                 .reduceToTwo(Long::sum, Long::max, Pair::of)

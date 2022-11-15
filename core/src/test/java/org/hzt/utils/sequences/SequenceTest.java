@@ -262,7 +262,7 @@ class SequenceTest {
     void testFlatMapStream() {
         final var charInts = Sequence.of("hallo", "test")
                 .map(String::chars)
-                .flatMapStream(IntStream::boxed)
+                .flatMap(s -> s::iterator)
                 .toList();
 
         assertEquals(List.of(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
@@ -272,7 +272,7 @@ class SequenceTest {
     void testTransform() {
         final var map = Sequence.of("hallo", "test")
                 .map(String::chars)
-                .flatMapStream(IntStream::boxed)
+                .flatMap(intStream -> intStream::iterator)
                 .transform(this::toFilteredMapX);
 
         assertEquals(LinkedSetX.of(115, 116, 101, 104, 108, 111), map.keySet());
@@ -286,7 +286,7 @@ class SequenceTest {
 
     @Test
     void testGenerateSequence() {
-        final var strings = Sequence.generate(0, i -> ++i)
+        final var strings = Sequence.iterate(0, i -> ++i)
                 .map(Generator::fib)
                 .filter(LongX::isOdd)
                 .take(12)
@@ -295,6 +295,17 @@ class SequenceTest {
                 .toListX();
 
         assertEquals(12, strings.size());
+    }
+
+    @Test
+    void testGenerateWithSeedGenerator() {
+        final AtomicInteger atomicInteger = new AtomicInteger();
+
+        final List<Integer> integers = Sequence.generate(atomicInteger::getAndIncrement, i -> i + 1)
+                .take(10)
+                .toList();
+
+        assertEquals(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), integers);
     }
 
     @Test
@@ -311,7 +322,7 @@ class SequenceTest {
 
     @Test
     void testTakeWhile() {
-        final var strings = Sequence.generate(0, i -> ++i)
+        final var strings = Sequence.iterate(0, i -> ++i)
                 .takeWhile(i -> i < 10)
                 .filter(LongX::isEven)
                 .onEach(It::println)
@@ -324,7 +335,7 @@ class SequenceTest {
 
     @Test
     void testTakeWhileInclusive() {
-        final var strings = Sequence.generate(1, i -> i + 2)
+        final var strings = Sequence.iterate(1, i -> i + 2)
                 .map(String::valueOf)
                 .takeWhileInclusive(s -> !s.contains("0"))
                 .onEach(It::println)
@@ -399,7 +410,7 @@ class SequenceTest {
         void testGenerateWindowedThenMapMultiToList() {
             MutableListX<ListX<Integer>> windows = MutableListX.empty();
 
-            final var result = Sequence.generate(0, i -> ++i)
+            final var result = Sequence.iterate(0, i -> ++i)
                     .windowed(8, 3)
                     .onEach(windows::add)
                     .takeWhile(s -> s.intSumOf(It::asInt) < 1_000_000)
@@ -668,12 +679,68 @@ class SequenceTest {
         );
     }
 
+    @Nested
+    class ConstrainOnceTest {
+
+        @Test
+        void testSequenceWithConstrainOnceMethodCanOnlyBeUsedOnce() {
+            Sequence<ListX<Integer>> windowedSequence = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
+                    .onEach(It::println)
+                    .filter(i -> i % 2 == 0)
+                    .windowed(2)
+                    .constrainOnce();
+
+            final List<ListX<Integer>> windows = windowedSequence.toList();
+
+            System.out.println("nameList = " + windows);
+
+            final List<ListX<Integer>> expected = Arrays.asList(ListX.of(2, 4), ListX.of(4, 6), ListX.of(6, 12));
+
+            assertAll(
+                    () -> assertEquals(expected, windows),
+                    () -> assertThrows(IllegalStateException.class, windowedSequence::first)
+            );
+        }
+
+        @Test
+        void testSequenceWithConstrainOnceMethodCanOnlyBeUsedOncAfterShortCircuitingOperations() {
+            Sequence<Integer> integers = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
+                    .filter(i -> i % 2 == 0)
+                    .constrainOnce();
+
+            final int first = integers.first();
+
+            System.out.println("first = " + first);
+
+            assertAll(
+                    () -> assertEquals(2, first),
+                    () -> assertThrows(IllegalStateException.class, integers::first)
+            );
+        }
+
+        @Test
+        void testSequenceWithConstrainOnceMethodCanOnlyBeUsedOncAfterShortCircuitingOperationsAndThen() {
+            Sequence<Integer> integers = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
+                    .constrainOnce()
+                    .filter(i -> i % 2 == 0);
+
+            final String first = integers.firstOf(String::valueOf);
+
+            System.out.println("first = " + first);
+
+            assertAll(
+                    () -> assertEquals("2", first),
+                    () -> assertThrows(IllegalStateException.class, integers::toList)
+            );
+        }
+    }
+
     @Test
     void testSequenceAsIntRange() {
         final var year = 2020;
 
         final var daysOfYear = Sequence
-                .generate(LocalDate.of(year, Month.JANUARY, 1), date -> date.plusDays(1))
+                .iterate(LocalDate.of(year, Month.JANUARY, 1), date -> date.plusDays(1))
                 .takeWhile(date -> date.getYear() == year)
                 .mapToInt(LocalDate::getDayOfMonth)
                 .toList();
@@ -712,7 +779,7 @@ class SequenceTest {
 
     @Test
     void testIntersperseByPrevious() {
-        final var integers = Sequence.generate(0, i -> --i)
+        final var integers = Sequence.iterate(0, i -> --i)
                 .take(10)
                 .intersperse(i -> ++i)
                 .toList();
@@ -724,7 +791,7 @@ class SequenceTest {
 
     @Test
     void testIntersperseConstantValue() {
-        final var integers = Sequence.generate(0, i -> --i)
+        final var integers = Sequence.iterate(0, i -> --i)
                 .take(10)
                 .intersperse(5)
                 .toList();
@@ -736,7 +803,7 @@ class SequenceTest {
 
     @Test
     void testIntersperseVariable() {
-        final var integers = Sequence.generate(0, i -> --i)
+        final var integers = Sequence.iterate(0, i -> --i)
                 .take(10)
                 .intersperse(0, i -> i + 2)
                 .toList();
@@ -750,7 +817,7 @@ class SequenceTest {
     void testIntersperseBySupplier() {
         @SuppressWarnings("squid:S5977") final var random = new Random(0);
 
-        final var integers = Sequence.generate(0, i -> --i)
+        final var integers = Sequence.iterate(0, i -> --i)
                 .take(10)
                 .intersperse(() -> random.nextInt(20))
                 .toList();
@@ -806,7 +873,7 @@ class SequenceTest {
 
     @Test
     void testStepSequence() {
-        final var intSequence = Sequence.generate(0, i -> ++i)
+        final var intSequence = Sequence.iterate(0, i -> ++i)
                 .skip(4)
                 .take(1_000)
                 .step(200)
@@ -830,7 +897,7 @@ class SequenceTest {
     @Test
     void testTakeWhileInclusiveZonedDateTime() {
         final var zonedDateTimes = Sequence
-                .generate(ZonedDateTime.parse("2019-03-27T20:45:30+05:30[Asia/Calcutta]"), zdt -> zdt.plusHours(1))
+                .iterate(ZonedDateTime.parse("2019-03-27T20:45:30+05:30[Asia/Calcutta]"), zdt -> zdt.plusHours(1))
                 .takeWhileInclusive(d -> d.isBefore(ZonedDateTime.parse("2020-03-27T20:45:30+00:00[UTC]")))
                 .toListX();
 
@@ -852,7 +919,7 @@ class SequenceTest {
 
         final var MAX_ITERATIONS = 10_000;
 
-        final var approximations = IntSequence.generate(900, i -> ++i)
+        final var approximations = IntSequence.iterate(900, i -> ++i)
                 .mapToObj(Generator::fibSumBd)
                 .zipWithNext((cur, next) -> next.divide(cur, scale, RoundingMode.HALF_UP))
                 .zipWithNext()

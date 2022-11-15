@@ -13,9 +13,9 @@ import java.util.function.Function;
 final class DistinctSequence<T, K> implements Sequence<T> {
 
     private final Sequence<T> upstream;
-    private final Function<T, K> selector;
+    private final Function<? super T, ? extends K> selector;
 
-    DistinctSequence(Sequence<T> upstream, Function<T, K> selector) {
+    DistinctSequence(Sequence<T> upstream, Function<? super T, ? extends K> selector) {
         this.upstream = upstream;
         this.selector = selector;
     }

@@ -50,7 +50,7 @@ class ReducableTest {
     void foldYearDayAddition() {
         final var initDate = LocalDate.of(2000, Month.JANUARY, 1);
 
-        final var localDate = Sequence.generate(1, It::self)
+        final var localDate = Sequence.iterate(1, It::self)
                 .take(100)
                 .fold(initDate, LocalDate::plusDays);
 
@@ -148,7 +148,7 @@ class ReducableTest {
     }
 
     private static Sequence<LocalDate> generateLeapYearDateSequence() {
-        return Sequence.generate(LocalDate.EPOCH, d -> d.plusDays(1))
+        return Sequence.iterate(LocalDate.EPOCH, d -> d.plusDays(1))
                 .takeWhile(d -> d.getYear() <= 1980)
                 .filter(LocalDate::isLeapYear);
     }

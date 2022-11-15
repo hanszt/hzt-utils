@@ -69,7 +69,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return stream::iterator;
     }
 
-    static IntSequence generate(int seedValue, IntUnaryOperator nextFunction) {
+    static IntSequence iterate(int seedValue, IntUnaryOperator nextFunction) {
         return generate(() -> seedValue, nextFunction);
     }
 

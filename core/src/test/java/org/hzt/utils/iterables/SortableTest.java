@@ -27,7 +27,7 @@ class SortableTest {
     void testSortedSequenceLazyEvaluation() {
         final var counter = new AtomicInteger();
 
-        final var sequence = Sequence.generate(9, i -> --i)
+        final var sequence = Sequence.iterate(9, i -> --i)
                 .take(10)
                 .onEach(i -> counter.getAndIncrement())
                 .sorted();
@@ -46,7 +46,7 @@ class SortableTest {
     void testSortedIntSequenceLazyEvaluation() {
         final var counter = new AtomicInteger();
 
-        final var sequence = IntSequence.generate(9, i -> --i)
+        final var sequence = IntSequence.iterate(9, i -> --i)
                 .take(10)
                 .onEach(i -> counter.getAndIncrement())
                 .sorted();
@@ -89,7 +89,7 @@ class SortableTest {
 
     @Test
     void testSequenceDatesSortedBy() {
-        final var localDates = Sequence.generate(LocalDate.parse("2019-10-15"), date -> date.minusWeeks(1))
+        final var localDates = Sequence.iterate(LocalDate.parse("2019-10-15"), date -> date.minusWeeks(1))
                 .take(10)
                 .onEach(System.out::println)
                 .sortedBy(LocalDate::getDayOfYear)

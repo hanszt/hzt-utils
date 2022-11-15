@@ -50,7 +50,7 @@ class ArraysXTest {
 
         @Test
         void testIntTimSort() {
-            final int[] array = Sequence.generate(1_000, i -> --i)
+            final int[] array = Sequence.iterate(1_000, i -> --i)
                     .take(1_000)
                     .shuffled()
                     .mapToInt(It::asInt)
@@ -67,7 +67,7 @@ class ArraysXTest {
 
         @Test
         void testIntTimSortReversed() {
-            final int[] array = Sequence.generate(0, i -> ++i)
+            final int[] array = Sequence.iterate(0, i -> ++i)
                     .take(1_000)
                     .shuffled()
                     .mapToInt(It::asInt)
@@ -84,7 +84,7 @@ class ArraysXTest {
 
         @Test
         void testLongTimSort() {
-            final long[] array = Sequence.generate(1_000, i -> --i)
+            final long[] array = Sequence.iterate(1_000, i -> --i)
                     .take(1_000)
                     .shuffled()
                     .mapToLong(It::asLong)
@@ -101,7 +101,7 @@ class ArraysXTest {
 
         @Test
         void testLongTimSortReversed() {
-            final long[] array = Sequence.generate(0, i -> ++i)
+            final long[] array = Sequence.iterate(0, i -> ++i)
                     .take(1_000)
                     .shuffled()
                     .mapToLong(It::asLong)
@@ -118,7 +118,7 @@ class ArraysXTest {
 
         @Test
         void testLongTimSortReversedSmall() {
-            final long[] array = Sequence.generate(0, i -> ++i)
+            final long[] array = Sequence.iterate(0, i -> ++i)
                     .take(10)
                     .shuffled()
                     .mapToLong(It::asLong)
@@ -135,7 +135,7 @@ class ArraysXTest {
 
         @Test
         void testDoubleTimSort() {
-            final double[] array = Sequence.generate(100.0, i -> i - .1)
+            final double[] array = Sequence.iterate(100.0, i -> i - .1)
                     .take(1_000)
                     .shuffled()
                     .mapToDouble(It::asDouble)
@@ -160,7 +160,7 @@ class ArraysXTest {
 
         @Test
         void testDoubleTimSortReversed() {
-            final double[] array = Sequence.generate(0.0, i -> i + .1)
+            final double[] array = Sequence.iterate(0.0, i -> i + .1)
                     .take(1_000)
                     .shuffled()
                     .mapToDouble(It::asDouble)

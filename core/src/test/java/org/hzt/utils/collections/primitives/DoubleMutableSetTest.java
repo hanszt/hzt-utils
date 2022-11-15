@@ -30,7 +30,7 @@ class DoubleMutableSetTest {
     @Test
     void testSequenceToDoubleSet() {
         DoubleMutableSet doubles = DoubleMutableSet.empty();
-        doubles.addAll(DoubleSequence.generate(-10_000.0, d -> d + Math.E).take(90_000));
+        doubles.addAll(DoubleSequence.iterate(-10_000.0, d -> d + Math.E).take(90_000));
         doubles.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, Math.PI, -10_000.0);
         doubles.add(100_000.2342);
         doubles.add(Double.POSITIVE_INFINITY);

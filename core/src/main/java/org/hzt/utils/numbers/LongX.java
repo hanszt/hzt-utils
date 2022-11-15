@@ -116,7 +116,7 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
     }
 
     public static LongSequence fibonacciSequence() {
-        return Sequence.generate(new long[]{0, 1L}, longs -> new long[]{longs[1], longs[0] + longs[1]})
+        return Sequence.iterate(new long[]{0, 1L}, longs -> new long[]{longs[1], longs[0] + longs[1]})
                 .mapToLong(longs -> longs[0])
                 .mapIndexed((index, fibNr) -> {
                     if (fibNr < 0) {

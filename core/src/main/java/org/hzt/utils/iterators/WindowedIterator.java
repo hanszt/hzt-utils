@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Iterator;
 import java.util.function.IntUnaryOperator;
 
-public final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
+final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
 
     private final Iterator<T> iterator;
     private final int initSize;
@@ -20,7 +20,7 @@ public final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
     private int size = 0;
     private MutableListX<T> nextWindow = MutableListX.empty();
 
-    private WindowedIterator(
+    WindowedIterator(
             @NotNull Iterator<T> iterator,
             int initSize,
             @NotNull IntUnaryOperator nextSizeSupplier,
@@ -33,15 +33,6 @@ public final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
         this.initStep = initStep;
         this.nextStepSupplier = nextStepSupplier;
         this.partialWindows = partialWindows;
-    }
-
-    public static <T> WindowedIterator<T> of(@NotNull Iterator<T> iterator,
-                                             int initSize,
-                                             @NotNull IntUnaryOperator nextSizeSupplier,
-                                             int initStep,
-                                             @NotNull IntUnaryOperator nextStepSupplier,
-                                             boolean partialWindows) {
-        return new WindowedIterator<>(iterator, initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
     }
 
     private ListX<T> computeNextWindow() {

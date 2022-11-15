@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
-public final class FilteringIterator<T> implements Iterator<T> {
+final class FilteringIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
     private final Predicate<? super T> predicate;
@@ -12,14 +12,10 @@ public final class FilteringIterator<T> implements Iterator<T> {
     private State nextState = State.NEXT_UNKNOWN;
     private T nextItem = null;
 
-    private FilteringIterator(Iterator<T> iterator, Predicate<? super T> predicate, boolean sendWhen) {
+    FilteringIterator(Iterator<T> iterator, Predicate<? super T> predicate, boolean sendWhen) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.sendWhen = sendWhen;
-    }
-
-    public static <T> FilteringIterator<T> of(Iterator<T> iterator, Predicate<? super T> predicate, boolean sendWhen) {
-        return new FilteringIterator<>(iterator, predicate, sendWhen);
     }
 
     @Override

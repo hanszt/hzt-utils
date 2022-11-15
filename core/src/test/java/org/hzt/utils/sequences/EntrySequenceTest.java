@@ -64,7 +64,7 @@ class EntrySequenceTest {
 
     @Test
     void testToEntrySequence() {
-        final MutableMapX<Year, BigDecimal> yearStringMap = Sequence.generate(1, i -> ++i)
+        final MutableMapX<Year, BigDecimal> yearStringMap = Sequence.iterate(1, i -> ++i)
                 .asEntrySequence(It::self, BigDecimal::valueOf)
                 .mapByKeys(Year::of)
                 .takeWhileKeys(year -> year.isBefore(Year.of(2001)))
@@ -81,7 +81,7 @@ class EntrySequenceTest {
     @Test
     void testToEntrySequenceFromPairSequence() {
         //noinspection Convert2MethodRef
-        final MutableMapX<Year, Integer> yearStringMap = Sequence.generate(1, i -> ++i)
+        final MutableMapX<Year, Integer> yearStringMap = Sequence.iterate(1, i -> ++i)
                 .zipWithNext(Pair::of)
                 .asEntrySequence(t -> It.self(t))
                 .mapByKeys(Year::of)
@@ -97,7 +97,7 @@ class EntrySequenceTest {
 
     @Test
     void testToEntrySequenceByZipWithNext() {
-        final MutableMapX<Year, Year> yearStringMap = Sequence.generate(0, i -> ++i)
+        final MutableMapX<Year, Year> yearStringMap = Sequence.iterate(0, i -> ++i)
                 .map(Year::of)
                 .takeWhileInclusive(year -> year.isBefore(Year.of(2000)))
                 .zipWithNext()

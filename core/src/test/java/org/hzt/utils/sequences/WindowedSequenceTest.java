@@ -22,7 +22,7 @@ class WindowedSequenceTest {
     @Test
     void testChunkedSequence() {
         final List<Pair<Long, Long>> sumDays = Sequence
-                .generate(LocalDate.of(1900, Month.JANUARY, 1), date -> date.plusMonths(1))
+                .iterate(LocalDate.of(1900, Month.JANUARY, 1), date -> date.plusMonths(1))
                 .chunked(12)
                 .map(dates -> dates.intSumOf(LocalDate::getDayOfYear))
                 .zipWithNext(Pair::of)
@@ -37,7 +37,7 @@ class WindowedSequenceTest {
     @Test
     void testChunkedMappingSequence() {
         final List<Pair<Long, Long>> sumDays = Sequence
-                .generate(LocalDate.of(1900, Month.JANUARY, 1), date -> date.plusMonths(1))
+                .iterate(LocalDate.of(1900, Month.JANUARY, 1), date -> date.plusMonths(1))
                 .chunked(12)
                 .map(dates -> dates.mapToInt(LocalDate::getDayOfYear))
                 .onEach(days -> days.forEachInt(System.out::println))
@@ -53,7 +53,7 @@ class WindowedSequenceTest {
 
     @Test
     void testVariableSizeChunkedSequenceSineShape() {
-        final long[] chunkSizes = Sequence.generate(0, i -> ++i)
+        final long[] chunkSizes = Sequence.iterate(0, i -> ++i)
                 .chunked(sineWaveGenerator())
                 .take(20)
                 .onEach(It::println)

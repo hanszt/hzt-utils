@@ -12,7 +12,7 @@ class LongWindowedSequenceTest {
 
     @Test
     void testVariableSizedLongSequence() {
-        final ListX<LongList> chunks = IntSequence.generate(0, Generator::sawTooth)
+        final ListX<LongList> chunks = IntSequence.iterate(0, Generator::sawTooth)
                 .mapToLong(It::asLong)
                 .chunked(1, Generator::sawTooth)
                 .take(100)

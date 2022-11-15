@@ -17,7 +17,7 @@ class DoubleReducableTest {
         Locale defaultLocale = Locale.getDefault();
         Locale.setDefault(Locale.ENGLISH);
 
-        final double sum = DoubleSequence.generate(0, d -> d + .1)
+        final double sum = DoubleSequence.iterate(0, d -> d + .1)
                 .map(Math::sin)
                 .take(1_000_000)
                 .reduce(0.0, Double::sum);
@@ -29,7 +29,7 @@ class DoubleReducableTest {
 
     @Test
     void testDoubleReducableReduceTwo() {
-        final Pair<Double, Double> pair = DoubleSequence.generate(1.0, d -> d + .1)
+        final Pair<Double, Double> pair = DoubleSequence.iterate(1.0, d -> d + .1)
                 .take(1_000_000)
                 .reduceToTwo(0.0, Double::sum, 1.0, DoubleX::times, Pair::of);
 

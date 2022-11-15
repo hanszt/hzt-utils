@@ -11,7 +11,7 @@
         <version>0.7.5.1.8</version>
     </parent>
 
-    <artifactId>test-data-generator</artifactId>
+    <artifactId>test-utils</artifactId>
 
     <dependencies>
         <dependency>

@@ -23,9 +23,9 @@ class LongCollectionTest {
 
     @Test
     void longCollectionContainsAllInArray() {
-        final long[] longs = LongSequence.generate(0L, l -> l + 2L).take(1_000).toArray();
+        final long[] longs = LongSequence.iterate(0L, l -> l + 2L).take(1_000).toArray();
 
-        final LongList longListX = LongSequence.generate(0, l -> ++l).take(4_000).toList();
+        final LongList longListX = LongSequence.iterate(0, l -> ++l).take(4_000).toList();
 
         assertTrue(longListX.containsAll(longs));
     }

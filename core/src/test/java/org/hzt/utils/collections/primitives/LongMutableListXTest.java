@@ -46,7 +46,7 @@ class LongMutableListXTest {
         longs.add(2);
         longs.add(-43);
         longs.add(1231);
-        LongSequence.generate(0, l -> l + 5)
+        LongSequence.iterate(0, l -> l + 5)
                 .take(10_000_000)
                 .forEachLong(longs::add);
 
@@ -68,7 +68,7 @@ class LongMutableListXTest {
 
     @Test
     void testSortLongList() {
-        final LongMutableList longs = LongSequence.generate(1_000_000, i -> --i)
+        final LongMutableList longs = LongSequence.iterate(1_000_000, i -> --i)
                 .take(1_000_000)
                 .toMutableList();
 
@@ -79,7 +79,7 @@ class LongMutableListXTest {
 
     @Test
     void testSortReversedLongList() {
-        final LongMutableList longs = LongSequence.generate(-1_000_000, i -> ++i)
+        final LongMutableList longs = LongSequence.iterate(-1_000_000, i -> ++i)
                 .take(1_000_000)
                 .toMutableList();
 

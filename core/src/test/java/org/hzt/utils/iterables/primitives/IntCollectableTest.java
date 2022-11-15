@@ -14,7 +14,7 @@ class IntCollectableTest {
 
     @Test
     void testCollect() {
-        final IntMutableList listX = IntSequence.generate(0, i -> ++i)
+        final IntMutableList listX = IntSequence.iterate(0, i -> ++i)
                 .take(1_000)
                 .collect(IntMutableList::empty, IntMutableList::add);
 
@@ -23,7 +23,7 @@ class IntCollectableTest {
 
     @Test
     void testTeeing() {
-        final Pair<IntList, IntMutableList> teeing = IntSequence.generate(0, i -> ++i)
+        final Pair<IntList, IntMutableList> teeing = IntSequence.iterate(0, i -> ++i)
                 .take(1_000)
                 .teeing(IntCollectors.toList(),
                         IntCollectors.toMutableList(),

@@ -112,7 +112,7 @@ class LongSequenceTest {
 
     @Test
     void longSequenceFilterNot() {
-        final long[] longs = LongSequence.generate(1, i -> i + 2)
+        final long[] longs = LongSequence.iterate(1, i -> i + 2)
                 .take(10_000_000)
                 .filterNot(l -> l % 5 == 0 && l % 7 == 0)
                 .toArray();
@@ -216,7 +216,7 @@ class LongSequenceTest {
 
     @Test
     void testChunkedTo3DArray() {
-        final long[][][] cube = LongSequence.generate(0, l -> l + 2)
+        final long[][][] cube = LongSequence.iterate(0, l -> l + 2)
                 .take(1_000)
                 .chunked(10)
                 .chunked(10)
@@ -238,7 +238,7 @@ class LongSequenceTest {
 
     @Test
     void testWindowedLargeLongSequence() {
-        final LongList sums = LongSequence.generate(0, l -> ++l)
+        final LongList sums = LongSequence.iterate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, LongList::sum)
                 .toList();
@@ -252,7 +252,7 @@ class LongSequenceTest {
 
     @Test
     void testSkipWhile() {
-        final LongList longs = LongSequence.generate(0L, l -> ++l)
+        final LongList longs = LongSequence.iterate(0L, l -> ++l)
                 .map(Generator::fib)
                 .skipWhile(l -> l < 3)
                 .takeWhileInclusive(l -> l < 55)
@@ -265,7 +265,7 @@ class LongSequenceTest {
 
     @Test
     void testSkipWhileInclusive() {
-        final LongList longs = LongSequence.generate(0L, l -> ++l)
+        final LongList longs = LongSequence.iterate(0L, l -> ++l)
                 .map(Generator::fib)
                 .skipWhileInclusive(l -> l < 3)
                 .takeWhileInclusive(l -> l < 55)

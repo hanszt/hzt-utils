@@ -2,7 +2,7 @@ package org.hzt.utils.sequences;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
-import org.hzt.utils.iterators.FilteringIterator;
+import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.tuples.IndexedValue;
@@ -39,7 +39,7 @@ class CustomSequenceTest {
     static Sequence<BigInteger> fibonacciSequence() {
         final BigInteger[] seedValue = {BigInteger.ZERO, BigInteger.ONE};
         return Sequence
-                .generate(seedValue, pair -> new BigInteger[]{pair[1], pair[0].add(pair[1])})
+                .iterate(seedValue, pair -> new BigInteger[]{pair[1], pair[0].add(pair[1])})
                 .map(pair -> pair[0]);
     }
 
@@ -68,7 +68,7 @@ class CustomSequenceTest {
 
         @Override
         default CustomSequence<T> filter(@NotNull Predicate<? super T> predicate) {
-            return () -> FilteringIterator.of(iterator(), predicate, true);
+            return () -> Iterators.filteringIterator(iterator(), predicate, true);
         }
 
         default float floatSumOf(@NotNull ToFloatFunction<? super T> selector) {
@@ -184,7 +184,7 @@ class CustomSequenceTest {
     private interface FizzBuzzer extends Sequence<String> {
 
         static FizzBuzzer start() {
-            return IntSequence.generate(1, n -> n + 1).mapToObj(String::valueOf)::iterator;
+            return IntSequence.iterate(1, n -> n + 1).mapToObj(String::valueOf)::iterator;
         }
 
         default FizzBuzzer fizz() {

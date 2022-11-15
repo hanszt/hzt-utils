@@ -14,7 +14,7 @@ Add the following dependency to your project:
 
 <dependency>
     <groupId>org.hzt.utils</groupId>
-    <artifactId>test-data-generator</artifactId>
+    <artifactId>test-utils</artifactId>
     <version>${hzt.utils.version}</version>
 </dependency>
 ````

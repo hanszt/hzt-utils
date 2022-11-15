@@ -37,6 +37,11 @@ public interface Grouping<T, K> extends Iterable<T> {
                 operation.apply(key, Boolean.TRUE.equals(first) ? initialValueSelector.apply(key, item) : acc, item));
     }
 
+    default <R> MapX<K, R> fold(BiFunction<? super K, ? super T, ? extends R> initialValueSelector,
+                                TriFunction<? super K, ? super R, ? super T, ? extends R> operation) {
+        return foldTo(MutableMapX::empty, initialValueSelector, operation);
+    }
+
     default <R, M extends Map<K, R>> M foldTo(Supplier<? extends M> mapSupplier,
                                               final R initialValue,
                                               BiFunction<? super R, ? super T, ? extends R> operation) {
@@ -49,13 +54,18 @@ public interface Grouping<T, K> extends Iterable<T> {
     }
 
     default <M extends Map<K, T>> M reduceTo(Supplier<? extends M> mapSupplier,
-                                              TriFunction<? super K, ? super T, ? super T, ? extends T> operation) {
+                                             TriFunction<? super K, ? super T, ? super T, ? extends T> operation) {
         return aggregateTo(mapSupplier, (key, acc, item, first) ->
                 Boolean.TRUE.equals(first) ? item : operation.apply(key, acc, item));
     }
 
     default MapX<K, T> reduce(TriFunction<? super K, ? super T, ? super T, ? extends T> operation) {
         return reduceTo(MutableMapX::empty, operation);
+    }
+
+    default <M extends Map<K, T>> M reduceTo(Supplier<? extends M> mapSupplier,
+                                             BiFunction<? super T, ? super T, ? extends T> operation) {
+        return reduceTo(mapSupplier, (key, acc, value) -> operation.apply(acc, value));
     }
 
     default MapX<K, T> reduce(BinaryOperator<T> operation) {

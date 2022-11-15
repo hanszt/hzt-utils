@@ -8,5 +8,5 @@ public interface Distinctable<T> extends Iterable<T> {
 
     Distinctable<T> distinct();
 
-    <R> Distinctable<T> distinctBy(@NotNull Function<T, ? extends R> selector);
+    <R> Distinctable<T> distinctBy(@NotNull Function<? super T, ? extends R> selector);
 }

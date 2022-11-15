@@ -47,7 +47,7 @@ class DoubleMutableListXTest {
         doubles.add(2);
         doubles.add(-43);
         doubles.add(Math.E);
-        DoubleSequence.generate(0, l -> l + 5)
+        DoubleSequence.iterate(0, l -> l + 5)
                 .take(10_000_000)
                 .forEachDouble(doubles::add);
 
@@ -74,7 +74,7 @@ class DoubleMutableListXTest {
 
     @Test
     void testSortSmallDoubleList() {
-        final DoubleMutableList doubles = DoubleSequence.generate(0, i -> --i)
+        final DoubleMutableList doubles = DoubleSequence.iterate(0, i -> --i)
                 .take(10)
                 .toMutableList();
 
@@ -86,7 +86,7 @@ class DoubleMutableListXTest {
     }
     @Test
     void testSortDoubleList() {
-        final DoubleMutableList doubles = DoubleSequence.generate(1_000_000, i -> --i)
+        final DoubleMutableList doubles = DoubleSequence.iterate(1_000_000, i -> --i)
                 .take(1_000_000)
                 .toMutableList();
 
@@ -97,7 +97,7 @@ class DoubleMutableListXTest {
 
     @Test
     void testSortReversedDoubleList() {
-        final DoubleMutableList doubles = DoubleSequence.generate(-1_000_000, i -> ++i)
+        final DoubleMutableList doubles = DoubleSequence.iterate(-1_000_000, i -> ++i)
                 .take(1_000_000)
                 .toMutableList();
 

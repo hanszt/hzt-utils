@@ -171,7 +171,7 @@ class StreamXTest {
 
     @Test
     void testParallelism() {
-        final Sequence<LocalDate> generate = Sequence.generate(LocalDate.ofEpochDay(0), date -> date.plusWeeks(2))
+        final Sequence<LocalDate> generate = Sequence.iterate(LocalDate.ofEpochDay(0), date -> date.plusWeeks(2))
                 .takeWhile(LocalDate.of(2020, Month.JANUARY, 1)::isAfter);
 
         final ListX<Month> months = StreamX.of(generate)

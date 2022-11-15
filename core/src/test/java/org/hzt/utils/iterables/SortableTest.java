@@ -29,7 +29,7 @@ class SortableTest {
     void testSortedSequenceLazyEvaluation() {
         final AtomicInteger counter = new AtomicInteger();
 
-        final Sequence<Integer> sequence = Sequence.generate(9, i -> --i)
+        final Sequence<Integer> sequence = Sequence.iterate(9, i -> --i)
                 .take(10)
                 .onEach(i -> counter.getAndIncrement())
                 .sorted();
@@ -48,7 +48,7 @@ class SortableTest {
     void testSortedIntSequenceLazyEvaluation() {
         final AtomicInteger counter = new AtomicInteger();
 
-        final IntSequence sequence = IntSequence.generate(9, i -> --i)
+        final IntSequence sequence = IntSequence.iterate(9, i -> --i)
                 .take(10)
                 .onEach(i -> counter.getAndIncrement())
                 .sorted();
@@ -91,7 +91,7 @@ class SortableTest {
 
     @Test
     void testSequenceDatesSortedBy() {
-        final ListX<LocalDate> localDates = Sequence.generate(LocalDate.parse("2019-10-15"), date -> date.minusWeeks(1))
+        final ListX<LocalDate> localDates = Sequence.iterate(LocalDate.parse("2019-10-15"), date -> date.minusWeeks(1))
                 .take(10)
                 .onEach(System.out::println)
                 .sortedBy(LocalDate::getDayOfYear)

@@ -34,7 +34,7 @@ class DoubleMutableCollectionTest {
 
     @Test
     void testStreamFromDoubleCollection() {
-        DoubleList listX = IntSequence.generate(1, d -> d + 2)
+        DoubleList listX = IntSequence.iterate(1, d -> d + 2)
                 .mapToDouble(i -> 1. / i)
                 .take(1_000_000)
                 .toList();

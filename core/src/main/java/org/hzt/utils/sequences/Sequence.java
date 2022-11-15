@@ -8,12 +8,7 @@ import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.IterableX;
-import org.hzt.utils.iterators.ArrayIterator;
-import org.hzt.utils.iterators.FlatteningIterator;
-import org.hzt.utils.iterators.GeneratorIterator;
-import org.hzt.utils.iterators.MultiMappingIterator;
-import org.hzt.utils.iterators.SkipWhileIterator;
-import org.hzt.utils.iterators.TakeWhileIterator;
+import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.hzt.utils.iterators.primitives.ToDoubleMultiMappingIterator;
 import org.hzt.utils.iterators.primitives.ToIntMultiMappingIterator;
@@ -29,10 +24,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -71,11 +68,15 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     @SafeVarargs
     static <T> Sequence<T> of(T... values) {
-        return () -> ArrayIterator.of(values);
+        return () -> Iterators.arrayIterator(values);
     }
 
     static <T> Sequence<T> of(@NotNull Iterable<T> iterable) {
         return iterable::iterator;
+    }
+
+    static <T> Sequence<T> of(final Iterator<T> iterator) {
+        return () -> iterator;
     }
 
     static <T> Sequence<T> ofStream(@NotNull Stream<T> stream) {
@@ -94,16 +95,16 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return value != null ? Sequence.of(value) : new EmptySequence<>();
     }
 
-    static <T> Sequence<T> generate(@Nullable T seedValue, @NotNull UnaryOperator<T> nextFunction) {
-        return seedValue == null ? new EmptySequence<>() : (() -> GeneratorIterator.of(() -> seedValue, nextFunction));
+    static <T> Sequence<T> iterate(@Nullable T seedValue, @NotNull UnaryOperator<T> nextFunction) {
+        return seedValue == null ? new EmptySequence<>() : (() -> Iterators.generatorIterator(() -> seedValue, nextFunction));
     }
 
     static <T> Sequence<T> generate(@NotNull Supplier<? extends T> nextFunction) {
-        return () -> GeneratorIterator.of(nextFunction, t -> nextFunction.get());
+        return generate(nextFunction, t -> nextFunction.get());
     }
 
     static <T> Sequence<T> generate(@NotNull Supplier<? extends T> seedFunction, @NotNull UnaryOperator<T> nextFunction) {
-        return () -> GeneratorIterator.of(seedFunction, nextFunction);
+        return () -> Iterators.generatorIterator(seedFunction, nextFunction);
     }
 
     default Sequence<T> plus(@NotNull T value) {
@@ -115,7 +116,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default Sequence<T> minus(@NotNull T value) {
-        return () -> SequenceHelper.removingIterator(this, value);
+        return () -> Iterators.removingIterator(this, value);
     }
 
     default Sequence<T> minus(@NotNull Iterable<T> values) {
@@ -128,7 +129,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default Sequence<T> intersperse(UnaryOperator<T> operator) {
-        return () -> SequenceHelper.interspersingIterator(iterator(), operator);
+        return () -> Iterators.interspersingIterator(iterator(), operator);
     }
 
     default Sequence<T> intersperse(Supplier<T> operator) {
@@ -140,11 +141,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default Sequence<T> intersperse(Supplier<T> initSupplier, UnaryOperator<T> operator) {
-        return () -> SequenceHelper.interspersingIterator(iterator(), initSupplier, operator);
+        return () -> Iterators.interspersingIterator(iterator(), initSupplier, operator);
     }
 
     default <R> Sequence<R> map(@NotNull Function<? super T, ? extends R> mapper) {
-        return SequenceHelper.transformingSequence(this, mapper);
+        return () -> Iterators.transformingIterator(iterator(), mapper);
     }
 
     @Override
@@ -153,27 +154,25 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default <R> Sequence<R> mapNotNull(@NotNull Function<? super T, ? extends R> mapper) {
-        return SequenceHelper.filteringSequence(
-                SequenceHelper.transformingSequence(
-                        SequenceHelper.filteringSequence(this,
-                                Objects::nonNull), mapper), Objects::nonNull);
+        return () -> Iterators.filteringIterator(
+                Iterators.transformingIterator(
+                        Iterators.filteringIterator(iterator(),
+                                Objects::nonNull, true),
+                        mapper),
+                Objects::nonNull, true);
     }
 
     @Override
     default <R> Sequence<R> mapIndexed(@NotNull IndexedFunction<? super T, ? extends R> mapper) {
-        return new TransformingIndexedSequence<>(this, mapper);
+        return () -> Iterators.transformingIndexedIterator(iterator(), mapper);
     }
 
     default <R> Sequence<R> flatMap(@NotNull Function<? super T, ? extends Iterable<? extends R>> transform) {
-        return () -> FlatteningIterator.of(iterator(), t -> transform.apply(t).iterator());
-    }
-
-    default <R> Sequence<R> flatMapStream(@NotNull Function<? super T, ? extends Stream<? extends R>> transform) {
-        return () -> FlatteningIterator.of(iterator(), t -> transform.apply(t).iterator());
+        return () -> Iterators.flatMappingIterator(iterator(), t -> transform.apply(t).iterator());
     }
 
     default <R> Sequence<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
-        return () -> MultiMappingIterator.of(iterator(), mapper);
+        return () -> Iterators.multiMappingIterator(iterator(), mapper);
     }
 
     default IntSequence mapMultiToInt(@NotNull BiConsumer<? super T, IntConsumer> mapper) {
@@ -194,11 +193,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default Sequence<T> filter(@NotNull Predicate<? super T> predicate) {
-        return SequenceHelper.filteringSequence(this, predicate);
+        return () ->Iterators.filteringIterator(iterator(), predicate, true);
     }
 
     default Sequence<T> filterNot(@NotNull Predicate<? super T> predicate) {
-        return SequenceHelper.filteringSequence(this, predicate, false);
+        return () ->Iterators.filteringIterator(iterator(), predicate, false);
     }
 
     default <R> Sequence<T> filterBy(@NotNull Function<? super T, ? extends R> selector,
@@ -242,8 +241,19 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default <R> @NotNull Sequence<T> distinctBy(@NotNull Function<T, ? extends R> selector) {
+    default <R> @NotNull Sequence<T> distinctBy(@NotNull Function<? super T, ? extends R> selector) {
         return new DistinctSequence<>(this, selector);
+    }
+
+    default Sequence<T> constrainOnce() {
+        final AtomicBoolean consumed = new AtomicBoolean();
+        return () -> {
+            if (consumed.get()) {
+                throw new IllegalStateException("Sequence is already consumed");
+            }
+            consumed.set(true);
+            return iterator();
+        };
     }
 
     default <R> Sequence<R> zipWithNext(@NotNull BiFunction<? super T, ? super T, ? extends R> function) {
@@ -251,7 +261,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default <A, R> Sequence<R> zip(@NotNull Iterable<A> other, @NotNull BiFunction<? super T, ? super A, ? extends R> function) {
-        return () -> SequenceHelper.mergingIterator(iterator(), other.iterator(), function);
+        return () -> Iterators.mergingIterator(iterator(), other.iterator(), function);
     }
 
     @Override
@@ -268,11 +278,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default Sequence<T> takeWhile(@NotNull Predicate<? super T> predicate) {
-        return () -> TakeWhileIterator.of(iterator(), predicate, false);
+        return () -> Iterators.takeWhileIterator(iterator(), predicate, false);
     }
 
     default Sequence<T> takeWhileInclusive(@NotNull Predicate<? super T> predicate) {
-        return () -> TakeWhileIterator.of(iterator(), predicate, true);
+        return () -> Iterators.takeWhileIterator(iterator(), predicate, true);
     }
 
     default Sequence<T> skip(long n) {
@@ -289,12 +299,12 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     @Override
     default Sequence<T> skipWhile(@NotNull Predicate<? super T> predicate) {
-        return () -> SkipWhileIterator.of(iterator(), predicate, false);
+        return () -> Iterators.skipWhileIterator(iterator(), predicate, false);
     }
 
     @Override
     default Sequence<T> skipWhileInclusive(@NotNull Predicate<? super T> predicate) {
-        return () -> SkipWhileIterator.of(iterator(), predicate, true);
+        return () -> Iterators.skipWhileIterator(iterator(), predicate, true);
     }
 
     @Override
@@ -338,11 +348,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     @Override
     default <K> EntrySequence<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper) {
-        return EntrySequence.ofPairs(() -> SequenceHelper.associateByIterator(iterator(), keyMapper));
+        return EntrySequence.ofPairs(map(e -> Pair.of(keyMapper.apply(e), e)));
     }
 
     default <V> EntrySequence<T, V> associateWith(@NotNull Function<? super T, ? extends V> valueMapper) {
-        return EntrySequence.ofPairs(() -> SequenceHelper.associateWithIterator(iterator(), valueMapper));
+        return EntrySequence.ofPairs(map(e -> Pair.of(e, valueMapper.apply(e))));
     }
 
     @Override

@@ -31,7 +31,7 @@ class DoubleWindowedSequenceTest {
 
     @Test
     void testLargeVariableWindowedSequence() {
-        final ListX<DoubleList> windows = DoubleSequence.generate(0, pi -> pi + Math.PI)
+        final ListX<DoubleList> windows = DoubleSequence.iterate(0, pi -> pi + Math.PI)
                 .take(2_000_000)
                 .windowed(2000, size -> --size, 1, step -> ++step)
                 .onEach(w -> It.println(w.size()))
@@ -58,7 +58,7 @@ class DoubleWindowedSequenceTest {
         double goldenRatio = (1 + Math.sqrt(5)) / 2;
         final int scale = 20;
 
-        final DoubleList approximations = IntSequence.generate(1, i -> ++i)
+        final DoubleList approximations = IntSequence.iterate(1, i -> ++i)
                 .mapToLong(Generator::fibSum)
                 .windowed(2)
                 .mapToDouble(w -> (double) w.last() / w.first())
@@ -77,7 +77,7 @@ class DoubleWindowedSequenceTest {
 
     @Test
     void testVariableSizedChunkedDoubleSequence() {
-        final ListX<DoubleList> chunks = DoubleSequence.generate(0, i -> i + Math.E)
+        final ListX<DoubleList> chunks = DoubleSequence.iterate(0, i -> i + Math.E)
                 .chunked(1, Generator::sawTooth)
                 .take(100)
                 .toListX();

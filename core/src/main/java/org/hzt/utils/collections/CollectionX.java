@@ -200,7 +200,7 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     @Override
-    default <R> ListX<E> distinctBy(@NotNull Function<E, ? extends R> selector) {
+    default <R> ListX<E> distinctBy(@NotNull Function<? super E, ? extends R> selector) {
         return ListX.copyOf(distinctTo(MutableListX::empty, selector));
     }
 

@@ -25,7 +25,7 @@ class IntListTest {
 
     @Test
     void testLargeIntList() {
-        final IntList ints = IntSequence.generate(0, i -> ++i)
+        final IntList ints = IntSequence.iterate(0, i -> ++i)
                 .take(100_000)
                 .toList();
 

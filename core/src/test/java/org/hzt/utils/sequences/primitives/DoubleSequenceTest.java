@@ -70,7 +70,7 @@ class DoubleSequenceTest {
 
     @Test
     void testSortedDescending() {
-        final double[] sorted = DoubleSequence.generate(0, d -> d + Math.PI)
+        final double[] sorted = DoubleSequence.iterate(0, d -> d + Math.PI)
                 .takeWhile(d -> d < 10_000)
                 .sortedDescending()
                 .take(5)
@@ -155,7 +155,7 @@ class DoubleSequenceTest {
     @Test
     @Timeout(value = 1_000, unit = TimeUnit.MILLISECONDS)
     void testWindowedLargeDoubleSequence() {
-        final double[] sums = DoubleSequence.generate(0, l -> ++l)
+        final double[] sums = DoubleSequence.iterate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, DoubleList::sum)
                 .toArray();
@@ -166,7 +166,7 @@ class DoubleSequenceTest {
     @Test
     @Timeout(value = 1_500, unit = TimeUnit.MILLISECONDS)
     void testWindowedLargeBoxedDoubleSequence() {
-        final Double[] sums2 = Sequence.generate(0, l -> ++l)
+        final Double[] sums2 = Sequence.iterate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, s -> s.doubleSumOf(It::asDouble))
                 .toTypedArray(Double[]::new);
@@ -176,7 +176,7 @@ class DoubleSequenceTest {
 
     @Test
     void testMapMulti() {
-        final double[] doubles = DoubleSequence.generate(Math.PI, d -> d + Math.PI)
+        final double[] doubles = DoubleSequence.iterate(Math.PI, d -> d + Math.PI)
                 .takeWhile(d -> d < 1_000 * Math.PI)
                 .mapMulti(this::doWork)
                 .toArray();
@@ -212,7 +212,7 @@ class DoubleSequenceTest {
         final int nrOfCycles = 1_234;
         final DoubleMutableList doubleMutableList = DoubleMutableList.empty();
 
-        final double[] doubles = DoubleSequence.generate(0, d -> d + .1)
+        final double[] doubles = DoubleSequence.iterate(0, d -> d + .1)
                 .take(nrOfCycles)
                 .onSequence(sequence -> sequence.boxed()
                         .step(200)
@@ -235,7 +235,7 @@ class DoubleSequenceTest {
 
         println("roundedGoldenRatio = " + roundedGoldenRatio);
 
-        final DoubleList approximations = IntSequence.generate(1, i -> ++i)
+        final DoubleList approximations = IntSequence.iterate(1, i -> ++i)
                 .mapToLong(Generator::fibSum)
                 .windowed(2)
                 .mapToDouble(w -> (double) w.last() / w.first())
@@ -275,7 +275,7 @@ class DoubleSequenceTest {
 
     @Test
     void testMapIndexed() {
-        final DoubleList list = DoubleSequence.generate(1, i -> i * DoubleX.GOLDEN_RATIO)
+        final DoubleList list = DoubleSequence.iterate(1, i -> i * DoubleX.GOLDEN_RATIO)
                 .mapIndexed((i, d) -> d - i)
                 .takeWhile(d -> d < 10)
                 .toList();

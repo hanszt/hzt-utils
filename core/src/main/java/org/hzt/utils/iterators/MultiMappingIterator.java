@@ -8,22 +8,17 @@ import java.util.NoSuchElementException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public final class MultiMappingIterator<T, R> implements Iterator<R> {
+final class MultiMappingIterator<T, R> implements Iterator<R> {
 
     private final Iterator<T> iterator;
     private final BiConsumer<? super T, ? super Consumer<R>> mapper;
 
     private Iterator<R> itemIterator = null;
 
-    private MultiMappingIterator(@NotNull Iterator<T> iterator,
-                                 @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
+    MultiMappingIterator(@NotNull Iterator<T> iterator,
+                         @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
         this.iterator = iterator;
         this.mapper = mapper;
-    }
-
-    public static <T, R> MultiMappingIterator<T, R> of(@NotNull Iterator<T> iterator,
-                                                       @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
-        return new MultiMappingIterator<>(iterator, mapper);
     }
 
     @Override

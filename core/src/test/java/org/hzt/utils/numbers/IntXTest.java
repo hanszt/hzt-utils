@@ -74,7 +74,7 @@ class IntXTest {
                 }
             }
         }
-        return IntSequence.generate(2, i -> i + (i < 3 ? 1 : 2))
+        return IntSequence.iterate(2, i -> i + (i < 3 ? 1 : 2))
                 .takeWhile(i -> i <= upperPrimeSize)
                 .filter(i -> prime[i]);
     }

@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-record DistinctSequence<T, K>(Sequence<T> upstream, Function<T, K> selector) implements Sequence<T> {
+record DistinctSequence<T, K>(Sequence<T> upstream, Function<? super T, ? extends K> selector) implements Sequence<T> {
 
     @NotNull
     @Override

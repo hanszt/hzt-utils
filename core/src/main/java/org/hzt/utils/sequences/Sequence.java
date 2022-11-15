@@ -242,7 +242,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     @Override
     default <R> @NotNull Sequence<T> distinctBy(@NotNull Function<? super T, ? extends R> selector) {
-        return new DistinctSequence<>(this, selector);
+        return () -> Iterators.distinctIterator(iterator(), selector);
     }
 
     default Sequence<T> constrainOnce() {

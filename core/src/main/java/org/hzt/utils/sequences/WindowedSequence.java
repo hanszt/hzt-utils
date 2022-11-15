@@ -2,8 +2,8 @@ package org.hzt.utils.sequences;
 
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.Windowable;
-import org.hzt.utils.iterators.WindowedIterator;
 import org.hzt.utils.It;
+import org.hzt.utils.iterators.Iterators;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -77,7 +77,7 @@ public interface WindowedSequence<T> extends Windowable<T> {
                                         @NotNull IntUnaryOperator nextStepSupplier,
                                         boolean partialWindows) {
         SequenceHelper.checkInitWindowSizeAndStep(initSize, initStep);
-        return () -> WindowedIterator.of(iterator(),
+        return () -> Iterators.windowedIterator(iterator(),
                 initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
     }
 

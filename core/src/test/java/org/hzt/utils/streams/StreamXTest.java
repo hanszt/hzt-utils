@@ -179,7 +179,7 @@ class StreamXTest {
 
     @Test
     void testParallelism() {
-        final var generate = Sequence.generate(LocalDate.EPOCH, date -> date.plusWeeks(2))
+        final var generate = Sequence.iterate(LocalDate.EPOCH, date -> date.plusWeeks(2))
                 .takeWhile(LocalDate.of(2020, Month.JANUARY, 1)::isAfter);
 
         final var months = StreamX.of(generate)

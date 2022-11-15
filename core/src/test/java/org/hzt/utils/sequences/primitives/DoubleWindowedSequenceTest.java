@@ -30,7 +30,7 @@ class DoubleWindowedSequenceTest {
 
     @Test
     void testLargeVariableWindowedSequence() {
-        final var windows = DoubleSequence.generate(0, pi -> pi + Math.PI)
+        final var windows = DoubleSequence.iterate(0, pi -> pi + Math.PI)
                 .take(2_000_000)
                 .windowed(2000, size -> --size, 1, step -> ++step)
                 .onEach(w -> It.println(w.size()))
@@ -61,7 +61,7 @@ class DoubleWindowedSequenceTest {
         var goldenRatio = (1 + Math.sqrt(5)) / 2;
         final var scale = 20;
 
-        final var approximations = IntSequence.generate(1, i -> ++i)
+        final var approximations = IntSequence.iterate(1, i -> ++i)
                 .mapToLong(Generator::fibSum)
                 .windowed(2)
                 .mapToDouble(w -> (double) w.last() / w.first())
@@ -80,7 +80,7 @@ class DoubleWindowedSequenceTest {
 
     @Test
     void testVariableSizedChunkedDoubleSequence() {
-        final var chunks = DoubleSequence.generate(0, i -> i + Math.E)
+        final var chunks = DoubleSequence.iterate(0, i -> i + Math.E)
                 .chunked(1, Generator::sawTooth)
                 .take(100)
                 .toListX();

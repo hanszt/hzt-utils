@@ -14,8 +14,6 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static org.hzt.utils.function.Functions.*;
-import static org.hzt.utils.function.Functions.distinctBy;
-import static org.hzt.utils.function.Functions.not;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FunctionsTest {
@@ -35,7 +33,7 @@ class FunctionsTest {
 
     @Test
     void testDistinctBy() {
-        final Person[] people1 = {new Person("Piet"), new Person("Piet"), new Person("Klaas")};
+        final var people1 = new Person[]{new Person("Piet"), new Person("Piet"), new Person("Klaas")};
 
         final var distinctByName = Stream.of(people1)
                 .filter(distinctBy(Person::getName))

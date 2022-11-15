@@ -10,6 +10,7 @@ import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.IntPair;
 import org.jetbrains.annotations.NotNull;
@@ -72,7 +73,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return new StringX(s);
     }
 
-    public static StringX of(Iterable<Character> characterIterable) {
+    public static StringX ofChars(Iterable<Character> characterIterable) {
         return new StringX(characterIterable);
     }
 
@@ -142,7 +143,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public StringX plus(String s) {
-        return plus(StringX.of(s)).joinToStringX("");
+        return StringX.of(string.concat(s));
     }
 
     public StringX reversed() {
@@ -155,6 +156,15 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
             charArray[0] = replacer.apply(charArray[0]);
         }
         return StringX.of(charArray);
+    }
+
+    public StringX abbreviate(int maxLength) {
+        final var tail = "...";
+        final var n = maxLength - tail.length();
+        return StringX.of(codePointSequence()
+                .take(n)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint))
+                .plus(tail);
     }
 
     @NotNull
@@ -340,7 +350,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     @Override
     public StringX filter(@NotNull Predicate<? super Character> predicate) {
-        return StringX.of(Sequence.super.filter(predicate));
+        return StringX.ofChars(Sequence.super.filter(predicate));
     }
 
     public StringX replace(char oldChar, char newChar) {
@@ -509,6 +519,16 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     @NotNull
     @Override
     public IntStream codePoints() {
+        return string.codePoints();
+    }
+
+    public IntSequence codePointSequence() {
+        return IntSequence.of(codePoints());
+    }
+
+    @NotNull
+    @Override
+    public IntStream chars() {
         return string.codePoints();
     }
 

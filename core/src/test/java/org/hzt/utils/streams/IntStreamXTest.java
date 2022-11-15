@@ -11,7 +11,7 @@ class IntStreamXTest {
 
     @Test
     void testIntStreamX() {
-        final var stats = IntSequence.generate(0, i -> ++i)
+        final var stats = IntSequence.iterate(0, i -> ++i)
                 .skip(5)
                 .take(100_000)
                 .mapToLong(It::asLong)

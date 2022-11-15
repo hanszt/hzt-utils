@@ -1,19 +1,16 @@
 package org.hzt.utils.iterators;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public final class ArrayIterator<E> implements Iterator<E> {
+final class ArrayIterator<E> implements Iterator<E> {
 
     private final E[] array;
     private int index = 0;
 
-    private ArrayIterator(E[] array) {
-        this.array = array;
-    }
-
-    public static <E> Iterator<E> of(E[] array) {
-        return new ArrayIterator<>(array);
+    ArrayIterator(E[] array) {
+        this.array = Arrays.copyOf(array, array.length);
     }
 
     @Override

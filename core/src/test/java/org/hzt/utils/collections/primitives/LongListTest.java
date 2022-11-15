@@ -13,7 +13,7 @@ class LongListTest {
 
     @Test
     void testSortedDescending() {
-        final var longs = LongSequence.generate(0, l -> l + 5)
+        final var longs = LongSequence.iterate(0, l -> l + 5)
                 .take(1_000_000)
                 .toList();
 

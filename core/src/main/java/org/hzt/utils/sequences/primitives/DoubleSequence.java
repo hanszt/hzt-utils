@@ -71,7 +71,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         return stream::iterator;
     }
 
-    static DoubleSequence generate(double seedValue, DoubleUnaryOperator nextFunction) {
+    static DoubleSequence iterate(double seedValue, DoubleUnaryOperator nextFunction) {
         return generate(() -> seedValue, nextFunction);
     }
 

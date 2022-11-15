@@ -2,12 +2,10 @@ package org.hzt.utils.sequences;
 
 import org.hzt.utils.It;
 import org.hzt.utils.iterables.EntryIterable;
-import org.hzt.utils.iterators.SkipWhileIterator;
-import org.hzt.utils.iterators.TakeWhileIterator;
+import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -21,7 +19,7 @@ import java.util.function.Predicate;
  * <p>
  * It does not support parallel execution.
  * <p>
- * The implementation is heavily inspired on Kotlin's sequences api. This api provides offers simpler syntax than streams
+ * The implementation is heavily inspired on Kotlin's sequences api. This api offers simpler syntax than streams
  * and is easier to understand
  *
  * @param <K> the key type of the items in the Sequence
@@ -38,23 +36,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     static <K, V> EntrySequence<K, V> ofPairs(Iterable<Pair<K, V>> pairIterable) {
-        return () -> toEntryIterator(pairIterable.iterator());
-    }
-
-    @NotNull
-    private static <K, V> Iterator<Map.Entry<K, V>> toEntryIterator(final Iterator<Pair<K, V>> iterator) {
-        return new Iterator<>() {
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public Map.Entry<K, V> next() {
-                final var next = iterator.next();
-                return Map.entry(next.first(), next.second());
-            }
-        };
+        return () -> Iterators.transformingIterator(pairIterable.iterator(), e -> Map.entry(e.first(), e.second()));
     }
 
     static <K, V> EntrySequence<K, V> of(Map<K, V> map) {
@@ -160,37 +142,37 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     default EntrySequence<K, V> skipWhile(@NotNull BiPredicate<? super K, ? super V> predicate) {
-        return () -> SkipWhileIterator.of(iterator(), e -> predicate.test(e.getKey(), e.getValue()), false);
+        return () -> Iterators.skipWhileIterator(iterator(), e -> predicate.test(e.getKey(), e.getValue()), false);
     }
 
     default EntrySequence<K, V> skipWhileInclusive(@NotNull BiPredicate<? super K, ? super V> predicate) {
-        return () -> SkipWhileIterator.of(iterator(), e -> predicate.test(e.getKey(), e.getValue()), true);
+        return () -> Iterators.skipWhileIterator(iterator(), e -> predicate.test(e.getKey(), e.getValue()), true);
     }
 
     default EntrySequence<K, V> takeWhileKeys(Predicate<K> predicate) {
-        return EntrySequence.of(Sequence.super.takeWhile(e -> predicate.test(e.getKey())));
+        return () -> takeWhile(e -> predicate.test(e.getKey())).iterator();
     }
 
     default EntrySequence<K, V> takeWhileValues(Predicate<V> predicate) {
-        return EntrySequence.of(Sequence.super.takeWhile(e -> predicate.test(e.getValue())));
+        return () -> takeWhile(e -> predicate.test(e.getValue())).iterator();
     }
 
     default EntrySequence<K, V> takeWhile(@NotNull BiPredicate<? super K, ? super V> predicate) {
-        return () -> TakeWhileIterator.of(iterator(), e -> predicate.test(e.getKey(), e.getValue()), false);
+        return () -> Iterators.takeWhileIterator(iterator(), e -> predicate.test(e.getKey(), e.getValue()), false);
     }
 
     default EntrySequence<K, V> takeWhileInclusive(@NotNull BiPredicate<? super K, ? super V> predicate) {
-        return () -> TakeWhileIterator.of(iterator(), e -> predicate.test(e.getKey(), e.getValue()), true);
+        return () -> Iterators.takeWhileIterator(iterator(), e -> predicate.test(e.getKey(), e.getValue()), true);
     }
 
     @Override
     default EntrySequence<K, V> skip(long n) {
-        return EntrySequence.of(Sequence.super.skip(n));
+        return () -> Sequence.super.skip(n).iterator();
     }
 
     @Override
     default EntrySequence<K, V> take(long n) {
-        return EntrySequence.of(Sequence.super.take(n));
+        return () -> Sequence.super.take(n).iterator();
     }
 
     default Sequence<V> mergeKeys(Function<? super K, ? extends V> toValueTypeMapper) {

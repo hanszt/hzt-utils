@@ -147,7 +147,7 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
     }
 
     public static IntSequence primeNrSequence() {
-        return IntSequence.generate(0, i -> i + (i < 3 ? 1 : 2))
+        return IntSequence.iterate(0, i -> i + (i < 3 ? 1 : 2))
                 .takeWhile(i -> i >= 0)
                 .filter(IntX::isPrimeNr);
     }

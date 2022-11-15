@@ -67,7 +67,7 @@ class DoubleSequenceTest {
 
     @Test
     void testSortedDescending() {
-        final var sorted = DoubleSequence.generate(0, d -> d + Math.PI)
+        final var sorted = DoubleSequence.iterate(0, d -> d + Math.PI)
                 .takeWhile(d -> d < 10_000)
                 .sortedDescending()
                 .take(5)
@@ -152,7 +152,7 @@ class DoubleSequenceTest {
     @Test
     @Timeout(value = 1_000, unit = TimeUnit.MILLISECONDS)
     void testWindowedLargeDoubleSequence() {
-        final var sums = DoubleSequence.generate(0, l -> ++l)
+        final var sums = DoubleSequence.iterate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, DoubleList::sum)
                 .toArray();
@@ -163,7 +163,7 @@ class DoubleSequenceTest {
     @Test
     @Timeout(value = 1_000, unit = TimeUnit.MILLISECONDS)
     void testWindowedLargeBoxedDoubleSequence() {
-        final var sums2 = Sequence.generate(0, l -> ++l)
+        final var sums2 = Sequence.iterate(0, l -> ++l)
                 .take(1_000_000)
                 .windowed(1_000, 50, s -> s.doubleSumOf(It::asDouble))
                 .toTypedArray(Double[]::new);
@@ -173,7 +173,7 @@ class DoubleSequenceTest {
 
     @Test
     void testMapMulti() {
-        final var doubles = DoubleSequence.generate(Math.PI, d -> d + Math.PI)
+        final var doubles = DoubleSequence.iterate(Math.PI, d -> d + Math.PI)
                 .takeWhile(d -> d < 1_000 * Math.PI)
                 .mapMulti(this::doWork)
                 .toArray();
@@ -209,7 +209,7 @@ class DoubleSequenceTest {
         final var nrOfCycles = 1_234;
         final var doubleMutableList = DoubleMutableList.empty();
 
-        final var doubles = DoubleSequence.generate(0, d -> d + .1)
+        final var doubles = DoubleSequence.iterate(0, d -> d + .1)
                 .take(nrOfCycles)
                 .onSequence(sequence -> sequence.boxed()
                         .step(200)
@@ -232,7 +232,7 @@ class DoubleSequenceTest {
 
         println("roundedGoldenRatio = " + roundedGoldenRatio);
 
-        final var approximations = IntSequence.generate(1, i -> ++i)
+        final var approximations = IntSequence.iterate(1, i -> ++i)
                 .mapToLong(Generator::fibSum)
                 .windowed(2)
                 .mapToDouble(w -> (double) w.last() / w.first())
@@ -272,7 +272,7 @@ class DoubleSequenceTest {
 
     @Test
     void testMapIndexed() {
-        final var list = DoubleSequence.generate(1, i -> i * DoubleX.GOLDEN_RATIO)
+        final var list = DoubleSequence.iterate(1, i -> i * DoubleX.GOLDEN_RATIO)
                 .mapIndexed((i, d) -> d - i)
                 .takeWhile(d -> d < 10)
                 .toList();

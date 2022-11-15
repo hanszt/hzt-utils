@@ -22,7 +22,7 @@ class IntListTest {
 
     @Test
     void testLargeIntList() {
-        final var ints = IntSequence.generate(0, i -> ++i)
+        final var ints = IntSequence.iterate(0, i -> ++i)
                 .take(100_000)
                 .toList();
 

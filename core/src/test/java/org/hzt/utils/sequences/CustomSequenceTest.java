@@ -2,7 +2,7 @@ package org.hzt.utils.sequences;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
-import org.hzt.utils.iterators.FilteringIterator;
+import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.tuples.IndexedValue;
@@ -26,7 +26,7 @@ class CustomSequenceTest {
 
     @Test
     void testBigIntFibonacciSequencePrimes() {
-        final long probableFibNrPrimeCount = fibonacciSequence()
+        final var probableFibNrPrimeCount = fibonacciSequence()
                 .filter(fibNr -> fibNr.isProbablePrime(100))
                 .map(BigInteger::toString)
                 .onEach(It::println)
@@ -37,17 +37,17 @@ class CustomSequenceTest {
     }
 
     static Sequence<BigInteger> fibonacciSequence() {
-        final BigInteger[] seedValue = {BigInteger.ZERO, BigInteger.ONE};
+        final var seedValue = new BigInteger[]{BigInteger.ZERO, BigInteger.ONE};
         return Sequence
-                .generate(seedValue, pair -> new BigInteger[]{pair[1], pair[0].add(pair[1])})
+                .iterate(seedValue, pair -> new BigInteger[]{pair[1], pair[0].add(pair[1])})
                 .map(pair -> pair[0]);
     }
 
     @Test
     void testSumOfFloats() {
-        final ListX<String> strings = ListX.of("This", "is", "processed", "by", "a", "custom", "Sequence");
+        final var strings = ListX.of("This", "is", "processed", "by", "a", "custom", "Sequence");
 
-        final float sum = CustomSequence.of(strings)
+        final var sum = CustomSequence.of(strings)
                 .map(String::length)
                 .filter(IntX::isEven)
                 .floatSumOf(Integer::floatValue);
@@ -68,12 +68,12 @@ class CustomSequenceTest {
 
         @Override
         default CustomSequence<T> filter(@NotNull Predicate<? super T> predicate) {
-            return () -> FilteringIterator.of(iterator(), predicate, true);
+            return () -> Iterators.filteringIterator(iterator(), predicate, true);
         }
 
         default float floatSumOf(@NotNull ToFloatFunction<? super T> selector) {
             float sum = 0;
-            for (T t : this) {
+            for (var t : this) {
                 if (t != null) {
                     sum += selector.applyAsFloat(t);
                 }
@@ -103,22 +103,22 @@ class CustomSequenceTest {
 
         @Test
         void testFizzBuzzer() {
-            final FizzBuzzer fizzBuzzer = FizzBuzzer
+            final var fizzBuzzer = FizzBuzzer
                     .start()
                     .fizz()
                     .buzz();
 
-            final long count = fizzBuzzer
+            final var count = fizzBuzzer
                     .take(100)
                     .filter(s -> s.contains("buzz"))
                     .count();
 
-            final String actual = fizzBuzzer
+            final var actual = fizzBuzzer
                     .take(16)
                     .skip(3)
                     .joinToString(", ");
 
-            for (String s : fizzBuzzer.take(3)) {
+            for (var s : fizzBuzzer.take(3)) {
                 println("s = " + s);
             }
             assertAll(
@@ -140,7 +140,7 @@ class CustomSequenceTest {
         }
 
         private DynamicTest everyFifthContainsBuzz(IndexedValue<String> indexedValue) {
-            final int n = indexedValue.index() + 1;
+            final var n = indexedValue.index() + 1;
             final var name = "Value at n=" + n + " contains buzz";
             return dynamicTest(name, () -> assertTrue(indexedValue.value().contains("buzz")));
         }
@@ -158,7 +158,7 @@ class CustomSequenceTest {
         }
 
         private DynamicTest everyThirdContainsFizz(IndexedValue<String> indexedValue) {
-            final int n = indexedValue.index() + 1;
+            final var n = indexedValue.index() + 1;
             final var name = "Value at n=" + n + " contains fizz";
             return dynamicTest(name, () -> assertTrue(indexedValue.value().contains("fizz")));
         }
@@ -168,7 +168,7 @@ class CustomSequenceTest {
     private interface FizzBuzzer extends Sequence<String> {
 
         static FizzBuzzer start() {
-            return IntSequence.generate(1, n -> n + 1).mapToObj(String::valueOf)::iterator;
+            return IntSequence.iterate(1, n -> n + 1).mapToObj(String::valueOf)::iterator;
         }
 
         default FizzBuzzer fizz() {
@@ -198,9 +198,9 @@ class CustomSequenceTest {
 
         @NotNull
         private static String next(int index, String current, int modulo, int offSet, String string) {
-            int value = index + 1;
-            final boolean isNaturalNr = isNaturalNr(current);
-            final boolean match = value % modulo == offSet;
+            var value = index + 1;
+            final var isNaturalNr = isNaturalNr(current);
+            final var match = value % modulo == offSet;
             if (isNaturalNr) {
                 return match ? string : String.valueOf(value);
             }
@@ -208,7 +208,7 @@ class CustomSequenceTest {
         }
 
         static void main(String[] args) {
-            final FizzBuzzer fizzBuzzer = FizzBuzzer
+            final var fizzBuzzer = FizzBuzzer
                     .start()
                     .fizz()
                     .bizz()
@@ -216,12 +216,12 @@ class CustomSequenceTest {
                     .buzz()
                     .odd();
 
-            final long count = fizzBuzzer
+            final var count = fizzBuzzer
                     .take(100_000)
                     .filter(s -> s.equals("fizzbizzevenbuzz"))
                     .count();
 
-            final String actual = fizzBuzzer
+            final var actual = fizzBuzzer
                     .take(16)
                     .skip(3)
                     .joinToString(", ");

@@ -13,7 +13,7 @@ class IntCollectableTest {
 
     @Test
     void testCollect() {
-        final var listX = IntSequence.generate(0, i -> ++i)
+        final var listX = IntSequence.iterate(0, i -> ++i)
                 .take(1_000)
                 .collect(IntMutableList::empty, IntMutableList::add);
 
@@ -22,7 +22,7 @@ class IntCollectableTest {
 
     @Test
     void testTeeing() {
-        final var teeing = IntSequence.generate(0, i -> ++i)
+        final var teeing = IntSequence.iterate(0, i -> ++i)
                 .take(1_000)
                 .teeing(IntCollectors.toList(),
                         IntCollectors.toMutableList(),

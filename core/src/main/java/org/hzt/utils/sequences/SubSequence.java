@@ -1,6 +1,6 @@
 package org.hzt.utils.sequences;
 
-import org.hzt.utils.iterators.SubIterator;
+import org.hzt.utils.iterators.Iterators;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -27,7 +27,7 @@ final class SubSequence<T> implements SkipTakeSequence<T> {
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        return SubIterator.of(upstream.iterator(), startIndex, endIndex);
+        return Iterators.subIterator(upstream.iterator(), startIndex, endIndex);
     }
 
     @Override

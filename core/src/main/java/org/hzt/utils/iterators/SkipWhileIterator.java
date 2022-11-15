@@ -3,7 +3,7 @@ package org.hzt.utils.iterators;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
-public final class SkipWhileIterator<T> implements Iterator<T> {
+final class SkipWhileIterator<T> implements Iterator<T> {
 
     private final Iterator<T> iterator;
     private final Predicate<? super T> predicate;
@@ -16,10 +16,6 @@ public final class SkipWhileIterator<T> implements Iterator<T> {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
-    }
-
-    public static <T> SkipWhileIterator<T> of(Iterator<T> iterator, Predicate<? super T> predicate, boolean inclusive) {
-        return new SkipWhileIterator<>(iterator, predicate, inclusive);
     }
 
     private void skip() {

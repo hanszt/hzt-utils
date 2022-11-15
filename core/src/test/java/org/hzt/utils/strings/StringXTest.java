@@ -265,8 +265,8 @@ class StringXTest {
     @ParameterizedTest
     @ValueSource(strings = {"This is a string", "abbreviate", "Another string"})
     void testAbbreviate(String string) {
-        final int MAX_LENGTH = 12;
-        final StringX abbreviate = StringX.of(string).abbreviate(MAX_LENGTH);
+        final var MAX_LENGTH = 12;
+        final var abbreviate = StringX.of(string).abbreviate(MAX_LENGTH);
 
         println(abbreviate);
 

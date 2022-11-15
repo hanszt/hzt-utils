@@ -6,7 +6,6 @@ import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -20,7 +19,7 @@ import java.util.function.Predicate;
  * <p>
  * It does not support parallel execution.
  * <p>
- * The implementation is heavily inspired on Kotlin's sequences api. This api provides offers simpler syntax than streams
+ * The implementation is heavily inspired on Kotlin's sequences api. This api offers simpler syntax than streams
  * and is easier to understand
  *
  * @param <K> the key type of the items in the Sequence
@@ -37,7 +36,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     static <K, V> EntrySequence<K, V> ofPairs(Iterable<Pair<K, V>> pairIterable) {
-        return () -> Iterators.transformingIterator(pairIterable.iterator(), e -> MapX.entry(e.first(), e.second()));
+        return () -> Iterators.transformingIterator(pairIterable.iterator(), e -> Map.entry(e.first(), e.second()));
     }
 
     static <K, V> EntrySequence<K, V> of(Map<K, V> map) {

@@ -21,8 +21,8 @@ public final class SequenceHelper {
     }
 
     static <K, V> V keyAsValueTypeOrThrow(Map.Entry<K, V> entry) {
-        K k = entry.getKey();
-        V v = entry.getValue();
+        var k = entry.getKey();
+        var v = entry.getValue();
         if (k.getClass() == v.getClass()) {
             //noinspection unchecked
             return (V) k;

@@ -31,7 +31,7 @@ public final class Iterators {
     }
 
     public static <T, R> @NotNull Iterator<R> transformingIterator(Iterator<T> iterator, Function<? super T, ? extends R> mapper) {
-        return new Iterator<R>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -45,7 +45,7 @@ public final class Iterators {
     }
 
     public static <T, R> Iterator<R> transformingIndexedIterator(Iterator<T> iterator, IndexedFunction<? super T, ? extends R> mapper) {
-        return new Iterator<R>() {
+        return new Iterator<>() {
             private int index = 0;
 
             @Override
@@ -55,7 +55,7 @@ public final class Iterators {
 
             @Override
             public R next() {
-                int prevIndex = index;
+                var prevIndex = index;
                 if (prevIndex < 0) {
                     throw new IllegalStateException("indexed iterator index overflow");
                 }
@@ -104,7 +104,7 @@ public final class Iterators {
     public static <T, A, R> Iterator<R> mergingIterator(@NotNull Iterator<T> thisIterator,
                                                  @NotNull Iterator<A> otherIterator,
                                                  @NotNull BiFunction<? super T, ? super A, ? extends R> transform) {
-        return new Iterator<R>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return thisIterator.hasNext() && otherIterator.hasNext();
@@ -118,7 +118,7 @@ public final class Iterators {
     }
 
     public static <T> Iterator<T> interspersingIterator(Iterator<T> iterator, UnaryOperator<T> operator) {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             private T current = null;
 
             @Override
@@ -129,7 +129,7 @@ public final class Iterators {
             @Override
             public T next() {
                 if (current != null) {
-                    final T valueToInsert = operator.apply(current);
+                    final var valueToInsert = operator.apply(current);
                     current = null;
                     return valueToInsert;
                 } else {
@@ -143,7 +143,7 @@ public final class Iterators {
     public static <T> Iterator<T> interspersingIterator(Iterator<T> iterator,
                                                         Supplier<T> initValSupplier,
                                                         UnaryOperator<T> operator) {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             private T valueToInsert = null;
             private boolean insertValue = false;
 
@@ -168,7 +168,7 @@ public final class Iterators {
 
     @NotNull
     public static <T> Iterator<T> removingIterator(Iterable<T> iterable, @NotNull T value) {
-        final AtomicBoolean removed = new AtomicBoolean();
+        final var removed = new AtomicBoolean();
         return filteringIterator(iterable.iterator(), e -> {
             if (!removed.get() && e == value) {
                 removed.set(true);

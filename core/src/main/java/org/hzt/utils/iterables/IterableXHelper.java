@@ -147,15 +147,4 @@ public final class IterableXHelper {
             }
         }
     }
-
-    static <T> void exposeNonNullVal(@NotNull Iterable<T> iterable, @NotNull Consumer<T> consumer) {
-        exposeIndexedNonNullVal(iterable, (i, v) -> consumer.accept(v));
-    }
-
-    static <T, R extends Comparable<? super R>> MutableListX<T> toMutableListXSortedBy(
-            @NotNull Function<? super T, ? extends R> selector, Iterable<T> iterable) {
-        MutableListX<T> list = MutableListX.of(iterable);
-        list.sort(Comparator.comparing(selector));
-        return list;
-    }
 }

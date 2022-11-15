@@ -26,9 +26,9 @@ class GroupingTest {
 
     @Test
     void testGroupingAggregateFromListX() {
-        final ListX<Integer> numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
+        final var numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
 
-        final MapX<Integer, String> aggregated = numbers
+        final var aggregated = numbers
                 .groupingBy(nr -> nr % 3)
                 .aggregate(GroupingTest::toStringBuilder)
                 .mapByValues(StringBuilder::toString);
@@ -42,7 +42,7 @@ class GroupingTest {
 
     @Test
     void testGroupingByEachCount() {
-        final ListX<Integer> numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
+        final var numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
 
         final MapX<Integer, Integer> aggregated = numbers
                 .groupingBy(nr -> nr % 3)
@@ -55,9 +55,9 @@ class GroupingTest {
 
     @Test
     void testGroupingByEachCountToTreeMap() {
-        final ListX<Integer> numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
+        final var numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
 
-        final NavigableMap<Integer, Integer> aggregated = numbers
+        final var aggregated = numbers
                 .groupingBy(nr -> nr % 3)
                 .eachCountTo(TreeMap::new)
                 .descendingMap();
@@ -72,7 +72,7 @@ class GroupingTest {
 
     @Test
     void testGroupingByFoldTo() {
-        ListX<String> fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
+        var fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
 
         final Map<Character, Pair<Character, List<String>>> evenFruits = fruits
                 .groupingBy(fruit -> fruit.charAt(0))
@@ -80,7 +80,7 @@ class GroupingTest {
                         (firstChar, string) -> Pair.of(firstChar, new ArrayList<>()),
                         GroupingTest::addEvenFruits);
 
-        final ListX<Pair<Character, List<String>>> sorted = evenFruits.values().stream()
+        final var sorted = evenFruits.values().stream()
                 .sorted(comparing(Pair::first))
                 .collect(CollectorsX.toListX());
 
@@ -95,9 +95,9 @@ class GroupingTest {
 
     @Test
     void testGroupingByFold() {
-        ListX<String> fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
+        var fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
 
-        final MapX<Character, Integer> fruitNameLengthSum = fruits
+        final var fruitNameLengthSum = fruits
                 .groupingBy(fruit -> fruit.charAt(0))
                 .fold(0, (accLengths, next) -> accLengths + next.length());
 
@@ -110,9 +110,9 @@ class GroupingTest {
 
     @Test
     void testGroupingReduce() {
-        final ListX<Integer> numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
+        final var numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
 
-        final MapX<Integer, Integer> aggregated = numbers
+        final var aggregated = numbers
                 .groupingBy(nr -> nr % 3)
                 .reduce(Integer::sum);
 

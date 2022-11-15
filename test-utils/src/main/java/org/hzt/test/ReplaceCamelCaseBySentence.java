@@ -25,10 +25,10 @@ public class ReplaceCamelCaseBySentence extends DisplayNameGenerator.Standard {
     }
 
     static String replaceCamelCaseBySentence(String camelCase) {
-        final StringBuilder result = new StringBuilder();
+        final var result = new StringBuilder();
         result.append(Character.toUpperCase(camelCase.charAt(0)));
-        for (int i = 1; i < camelCase.length(); i++) {
-            final char curChar = camelCase.charAt(i);
+        for (var i = 1; i < camelCase.length(); i++) {
+            final var curChar = camelCase.charAt(i);
             if (Character.isUpperCase(curChar)) {
                 result.append(' ').append(Character.toLowerCase(curChar));
             } else {

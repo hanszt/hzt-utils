@@ -1,5 +1,6 @@
 package org.hzt.utils.collectors.primitves;
 
+import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.junit.jupiter.api.Test;
 
 import static java.lang.Math.E;

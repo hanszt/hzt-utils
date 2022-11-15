@@ -16,11 +16,11 @@ public interface Grouping<T, K> extends Iterable<T> {
 
     default <R, M extends Map<K, R>> M aggregateTo(Supplier<? extends M> mapSupplier,
                                                    QuadFunction<? super K, ? super R, ? super T, Boolean, ? extends R> aggregator) {
-        final M destination = mapSupplier.get();
-        for (T item : this) {
-            final K key = keyOf(item);
-            final R accumulator = destination.get(key);
-            final boolean isFirstValue = accumulator == null && !destination.containsKey(key);
+        final var destination = mapSupplier.get();
+        for (var item : this) {
+            final var key = keyOf(item);
+            final var accumulator = destination.get(key);
+            final var isFirstValue = accumulator == null && !destination.containsKey(key);
             destination.put(key, aggregator.apply(key, accumulator, item, isFirstValue));
         }
         return destination;

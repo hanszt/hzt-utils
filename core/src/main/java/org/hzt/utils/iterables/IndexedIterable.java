@@ -15,17 +15,19 @@ import java.util.function.IntConsumer;
 public interface IndexedIterable<T> extends Iterable<T> {
 
     default @NotNull Iterator<IndexedValue<T>> indexedIterator() {
-        final Iterator<T> iterator = iterator();
-        return new Iterator<IndexedValue<T>>() {
+        final var iterator = iterator();
+        return new Iterator<>() {
 
             private int index = 0;
+
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
             }
+
             @Override
             public IndexedValue<T> next() {
-                int prevIndex = index;
+                var prevIndex = index;
                 if (prevIndex < 0) {
                     throw new IllegalStateException("indexed iterator index overflow");
                 }
@@ -35,13 +37,13 @@ public interface IndexedIterable<T> extends Iterable<T> {
     }
 
     default @NotNull PrimitiveIterator.OfInt indexIterator() {
-        final Iterator<T> iterator = iterator();
+        final var iterator = iterator();
         return new PrimitiveIterator.OfInt() {
 
             int index = 0;
             @Override
             public int nextInt() {
-                int prevIndex = index;
+                var prevIndex = index;
                 if (prevIndex < 0) {
                     throw new IllegalStateException("indexed iterator index overflow");
                 }

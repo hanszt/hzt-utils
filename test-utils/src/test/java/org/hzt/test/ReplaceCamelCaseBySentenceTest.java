@@ -4,8 +4,6 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Method;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
@@ -15,20 +13,20 @@ class ReplaceCamelCaseBySentenceTest {
 
     @Test
     void testReplaceCamelCaseClassNameBySentence() {
-        final String name = new ReplaceCamelCaseBySentence().generateDisplayNameForClass(ReplaceCamelCaseBySentenceTest.class);
+        final var name = new ReplaceCamelCaseBySentence().generateDisplayNameForClass(ReplaceCamelCaseBySentenceTest.class);
 
         assertEquals("Replace camel case by sentence test", name);
     }
 
     @Test
     void testReplaceCamelCaseMethodNameBySentence() {
-        final Object classInMethod = new Object() {
+        final var classInMethod = new Object() {
         };
-        final Method methodName = classInMethod
+        final var methodName = classInMethod
                 .getClass()
                 .getEnclosingMethod();
 
-        final String name = replaceCamelCaseBySentence.generateDisplayNameForMethod(ReplaceCamelCaseBySentenceTest.class, methodName);
+        final var name = replaceCamelCaseBySentence.generateDisplayNameForMethod(ReplaceCamelCaseBySentenceTest.class, methodName);
 
         assertEquals("Test replace camel case method name by sentence()", name);
     }
@@ -38,7 +36,7 @@ class ReplaceCamelCaseBySentenceTest {
 
         @Test
         void testReplaceCamelCaseNestedClassBySentence() {
-            final String name = replaceCamelCaseBySentence.generateDisplayNameForNestedClass(NestedClassTest.class);
+            final var name = replaceCamelCaseBySentence.generateDisplayNameForNestedClass(NestedClassTest.class);
 
             assertEquals("Nested class test", name);
         }

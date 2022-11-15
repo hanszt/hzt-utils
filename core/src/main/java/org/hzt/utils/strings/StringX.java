@@ -158,8 +158,8 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public StringX abbreviate(int maxLength) {
-        final String tail = "...";
-        final int n = maxLength - tail.length();
+        final var tail = "...";
+        final var n = maxLength - tail.length();
         return StringX.of(codePointSequence()
                 .take(n)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint))

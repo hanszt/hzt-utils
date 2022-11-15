@@ -241,7 +241,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default Sequence<T> constrainOnce() {
-        final AtomicBoolean consumed = new AtomicBoolean();
+        final var consumed = new AtomicBoolean();
         return () -> {
             if (consumed.get()) {
                 throw new IllegalStateException("Sequence is already consumed");

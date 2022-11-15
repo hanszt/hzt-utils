@@ -299,13 +299,13 @@ class SequenceTest {
 
     @Test
     void testGenerateWithSeedGenerator() {
-        final AtomicInteger atomicInteger = new AtomicInteger();
+        final var atomicInteger = new AtomicInteger();
 
-        final List<Integer> integers = Sequence.generate(atomicInteger::getAndIncrement, i -> i + 1)
+        final var integers = Sequence.generate(atomicInteger::getAndIncrement, i -> i + 1)
                 .take(10)
                 .toList();
 
-        assertEquals(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), integers);
+        assertEquals(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), integers);
     }
 
     @Test
@@ -684,17 +684,17 @@ class SequenceTest {
 
         @Test
         void testSequenceWithConstrainOnceMethodCanOnlyBeUsedOnce() {
-            Sequence<ListX<Integer>> windowedSequence = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
+            var windowedSequence = Sequence.of(List.of(1, 2, 3, 4, 5, 3, -1, 6, 12))
                     .onEach(It::println)
                     .filter(i -> i % 2 == 0)
                     .windowed(2)
                     .constrainOnce();
 
-            final List<ListX<Integer>> windows = windowedSequence.toList();
+            final var windows = windowedSequence.toList();
 
             System.out.println("nameList = " + windows);
 
-            final List<ListX<Integer>> expected = Arrays.asList(ListX.of(2, 4), ListX.of(4, 6), ListX.of(6, 12));
+            final var expected = List.of(ListX.of(2, 4), ListX.of(4, 6), ListX.of(6, 12));
 
             assertAll(
                     () -> assertEquals(expected, windows),
@@ -704,7 +704,7 @@ class SequenceTest {
 
         @Test
         void testSequenceWithConstrainOnceMethodCanOnlyBeUsedOncAfterShortCircuitingOperations() {
-            Sequence<Integer> integers = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
+            var integers = Sequence.of(List.of(1, 2, 3, 4, 5, 3, -1, 6, 12))
                     .filter(i -> i % 2 == 0)
                     .constrainOnce();
 
@@ -720,11 +720,11 @@ class SequenceTest {
 
         @Test
         void testSequenceWithConstrainOnceMethodCanOnlyBeUsedOncAfterShortCircuitingOperationsAndThen() {
-            Sequence<Integer> integers = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
+            var integers = Sequence.of(List.of(1, 2, 3, 4, 5, 3, -1, 6, 12))
                     .constrainOnce()
                     .filter(i -> i % 2 == 0);
 
-            final String first = integers.firstOf(String::valueOf);
+            final var first = integers.firstOf(String::valueOf);
 
             System.out.println("first = " + first);
 
@@ -971,7 +971,7 @@ class SequenceTest {
 
     @Test
     void testSequenceMinusOtherIterable() {
-        var intsToRemove = List.of(1, 34, 3, 5);
+        final var intsToRemove = List.of(1, 34, 3, 5);
 
         final var pair = IntRange.of(0, 10)
                 .boxed()

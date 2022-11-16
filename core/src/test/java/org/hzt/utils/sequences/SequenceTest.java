@@ -11,7 +11,6 @@ import org.hzt.utils.collections.LinkedSetX;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
@@ -577,14 +576,14 @@ class SequenceTest {
                 .filterKeys(IntX::isEven)
                 .toMapX();
 
-        assertEquals(2, entries.size());
+        assertEquals(2, mapX.size());
     }
 
     @Test
     void testSequenceOfEntryIterable() {
-        final MapX<Integer, String> map = MutableMapX.of(1, "a", 2, "b", 3, "c", 4, "d");
+        final MapX<Integer, String> map = MapX.of(1, "a", 2, "b", 3, "c", 4, "d");
 
-        final MapX<Integer, Character> entries = Sequence.of(map)
+        final MapX<Integer, Character> mapX = Sequence.of(map)
                 .mapByValues(s -> StringX.of(s).first())
                 .filterValues(Character::isLetter)
                 .filterKeys(IntX::isEven)

@@ -133,7 +133,7 @@ class EntrySequenceTest {
     @Test
     void testTerminalOppMergeOfTwoDifferentTypesThrowsException() {
         final var map = Map.of(1, "2", 2, "2", 3, "3");
-        final var stringSequence = EntrySequence.ofMap(map).merge();
+        final var stringSequence = EntrySequence.of(map).merge();
 
         final var exception = assertThrows(IllegalStateException.class, stringSequence::toList);
         assertEquals("Key and value not of same type. Merge not allowed", exception.getMessage());

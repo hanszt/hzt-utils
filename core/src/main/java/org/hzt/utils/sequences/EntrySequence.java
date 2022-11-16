@@ -34,10 +34,6 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return iterable::iterator;
     }
 
-    static <K, V> EntrySequence<K, V> ofMap(Map<K, V> map) {
-        return map.entrySet()::iterator;
-    }
-
     static <K, V> EntrySequence<K, V> ofPairs(Iterable<Pair<K, V>> pairIterable) {
         return () -> Iterators.transformingIterator(pairIterable.iterator(), e -> MapX.entry(e.first(), e.second()));
     }

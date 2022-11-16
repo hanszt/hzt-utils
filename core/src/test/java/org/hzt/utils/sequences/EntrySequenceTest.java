@@ -39,7 +39,7 @@ class EntrySequenceTest {
     void testEntrySequenceOfMap() {
         final Map<Integer, String> map = MapX.of(1, "hallo", 2, "This", 3, "is", 4, "a", 5, "test").toMap();
 
-        final Map<Integer, String> integerStringMap = EntrySequence.ofMap(map)
+        final Map<Integer, String> integerStringMap = EntrySequence.of(map)
                 .filterKeys(key -> key % 2 == 0)
                 .toMap();
 

@@ -235,9 +235,8 @@ class SequenceTest {
                 SetX.of("test"));
 
         final IntList result = list.asSequence()
-                .mapMultiToInt((strings, accept) -> strings
-                        .mapToInt(String::length)
-                        .forEachInt(accept))
+                .map(strings -> strings.asSequence().mapToInt(String::length))
+                .mapMultiToInt(IntSequence::forEachInt)
                 .filter(length -> length > 3)
                 .toList();
 
@@ -271,8 +270,7 @@ class SequenceTest {
     @Test
     void testFlatMapStream() {
         final List<Integer> charInts = Sequence.of("hallo", "test")
-                .map(String::chars)
-                .flatMap(s -> s::iterator)
+                .flatMapStream(String::chars)
                 .toList();
 
         assertEquals(Arrays.asList(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
@@ -281,8 +279,7 @@ class SequenceTest {
     @Test
     void testTransform() {
         final MapX<Integer, String> map = Sequence.of("hallo", "test")
-                .map(String::chars)
-                .flatMap(intStream -> intStream::iterator)
+                .flatMapStream(String::chars)
                 .transform(this::toFilteredMapX);
 
         assertEquals(LinkedSetX.of(115, 116, 101, 104, 108, 111), map.keySet());
@@ -593,6 +590,19 @@ class SequenceTest {
     }
 
     @Test
+    void testSequenceOfEntryIterable() {
+        final MapX<Integer, String> map = MutableMapX.of(1, "a", 2, "b", 3, "c", 4, "d");
+
+        final MapX<Integer, Character> entries = Sequence.of(map)
+                .mapByValues(s -> StringX.of(s).first())
+                .filterValues(Character::isLetter)
+                .filterKeys(IntX::isEven)
+                .toMapX();
+
+        assertEquals(2, entries.size());
+    }
+
+    @Test
     void testSequenceAssociateWith() {
         final ListX<Integer> list = ListX.of(1, 2, 3, 4);
 
@@ -623,7 +633,7 @@ class SequenceTest {
         final Stream<Integer> stream = IntStream.range(0, 100).boxed();
 
         //noinspection Convert2MethodRef
-        final List<IndexedValue<Integer>> list = Sequence.ofStream(stream)
+        final List<IndexedValue<Integer>> list = Sequence.of(stream::iterator)
                 .filter(IntX::isEven)
                 .sorted()
                 .windowed(3, true)

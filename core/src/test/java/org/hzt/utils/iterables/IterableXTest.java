@@ -873,7 +873,8 @@ class IterableXTest {
 
 
         final ListX<Character> actual = bookList
-                .mapToStringX(Book::getCategory)
+                .map(Book::getCategory)
+                .map(StringX::of)
                 .flatMap(StringX::toListX);
 
         It.println("stringXES = " + actual);

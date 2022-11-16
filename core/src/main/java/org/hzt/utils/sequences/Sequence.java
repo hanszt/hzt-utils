@@ -7,16 +7,14 @@ import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
+import org.hzt.utils.iterables.EntryIterable;
 import org.hzt.utils.iterables.IterableX;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
-import org.hzt.utils.iterators.primitives.ToDoubleMultiMappingIterator;
-import org.hzt.utils.iterators.primitives.ToIntMultiMappingIterator;
-import org.hzt.utils.iterators.primitives.ToLongMultiMappingIterator;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.sequences.primitives.LongSequence;
-import org.hzt.utils.strings.StringX;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
@@ -24,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -43,6 +40,7 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
+import java.util.stream.BaseStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -75,19 +73,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return iterable::iterator;
     }
 
-    static <T> Sequence<T> of(final Iterator<T> iterator) {
-        return () -> iterator;
-    }
-
-    static <T> Sequence<T> ofStream(@NotNull Stream<T> stream) {
-        return stream::iterator;
+    static <K, V> EntrySequence<K, V> of(EntryIterable<K, V> entryIterable) {
+        return entryIterable::iterator;
     }
 
     static <K, V> EntrySequence<K, V> ofMap(Map<K, V> map) {
-        return map.entrySet()::iterator;
-    }
-
-    static <K, V> EntrySequence<K, V> of(MapX<K, V> map) {
         return map.entrySet()::iterator;
     }
 
@@ -148,11 +138,6 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> Iterators.transformingIterator(iterator(), mapper);
     }
 
-    @Override
-    default <R> Sequence<StringX> mapToStringX(@NotNull Function<? super T, ? extends R> function) {
-        return mapNotNull(t -> StringX.of((t != null ? function.apply(t) : "").toString()));
-    }
-
     default <R> Sequence<R> mapNotNull(@NotNull Function<? super T, ? extends R> mapper) {
         return () -> Iterators.filteringIterator(
                 Iterators.transformingIterator(
@@ -171,20 +156,43 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> Iterators.flatMappingIterator(iterator(), t -> transform.apply(t).iterator());
     }
 
+    @Override
+    default IntSequence flatMapToInt(@NotNull Function<? super T, ? extends PrimitiveIterable.OfInt> mapper) {
+        return () -> PrimitiveIterators.toIntFlatMappingIterator(iterator(), t -> mapper.apply(t).iterator());
+    }
+
+    @Override
+    default LongSequence flatMapToLong(@NotNull Function<? super T, ? extends PrimitiveIterable.OfLong> mapper) {
+        return () -> PrimitiveIterators.toLongFlatMappingIterator(iterator(), t -> mapper.apply(t).iterator());
+    }
+
+    @Override
+    default DoubleSequence flatMapToDouble(@NotNull Function<? super T, ? extends PrimitiveIterable.OfDouble> mapper) {
+        return () -> PrimitiveIterators.toDoubleFlatMappingIterator(iterator(), t -> mapper.apply(t).iterator());
+    }
+
+    @Override
+    default <R, S extends BaseStream<R, S>> Sequence<R> flatMapStream(@NotNull Function<? super T, ? extends S> mapper) {
+        return (Sequence<R>) IterableX.super.flatMapStream(mapper);
+    }
+
     default <R> Sequence<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
         return () -> Iterators.multiMappingIterator(iterator(), mapper);
     }
 
+    @Override
     default IntSequence mapMultiToInt(@NotNull BiConsumer<? super T, IntConsumer> mapper) {
-        return () -> ToIntMultiMappingIterator.of(iterator(), mapper);
+        return (IntSequence) IterableX.super.mapMultiToInt(mapper);
     }
 
+    @Override
     default LongSequence mapMultiToLong(@NotNull BiConsumer<? super T, LongConsumer> mapper) {
-        return () -> ToLongMultiMappingIterator.of(iterator(), mapper);
+        return (LongSequence) IterableX.super.mapMultiToLong(mapper);
     }
 
+    @Override
     default DoubleSequence mapMultiToDouble(@NotNull BiConsumer<? super T, DoubleConsumer> mapper) {
-        return () -> ToDoubleMultiMappingIterator.of(iterator(), mapper);
+        return (DoubleSequence) IterableX.super.mapMultiToDouble(mapper);
     }
 
     @Override

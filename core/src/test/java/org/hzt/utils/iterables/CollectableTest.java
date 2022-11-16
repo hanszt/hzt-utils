@@ -183,7 +183,7 @@ class CollectableTest {
                 .filter(IntX::isEven)
                 .map(Year::of);
 
-        final Sequence<Year> yearSequence = Sequence.ofStream(yearStream);
+        final Sequence<Year> yearSequence = Sequence.of(yearStream::iterator);
 
         assertAll(
                 () -> assertEquals(4, yearSequence.count()),

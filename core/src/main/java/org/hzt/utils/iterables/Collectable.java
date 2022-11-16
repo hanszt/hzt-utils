@@ -9,10 +9,14 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
+import org.hzt.utils.collections.primitives.DoubleMutableCollection;
+import org.hzt.utils.collections.primitives.IntMutableCollection;
+import org.hzt.utils.collections.primitives.LongMutableCollection;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
@@ -265,6 +269,54 @@ public interface Collectable<T> extends IndexedIterable<T> {
                 if (r != null) {
                     collection.add(r);
                 }
+            }
+        }
+        return collection;
+    }
+
+    default <I extends PrimitiveIterable.OfInt, C extends IntMutableCollection> C flatMapIntsTo(
+            @NotNull Supplier<C> collectionSupplier,
+            @NotNull Function<? super T, ? extends I> mapper) {
+        final C collection = collectionSupplier.get();
+        for (T item : this) {
+            final I c = mapper.apply(item);
+            if (c == null) {
+                continue;
+            }
+            for (int value : c) {
+                collection.add(value);
+            }
+        }
+        return collection;
+    }
+
+    default <I extends PrimitiveIterable.OfLong, C extends LongMutableCollection> C flatMapLongsTo(
+            @NotNull Supplier<C> collectionSupplier,
+            @NotNull Function<? super T, ? extends I> mapper) {
+        final C collection = collectionSupplier.get();
+        for (T item : this) {
+            final I c = mapper.apply(item);
+            if (c == null) {
+                continue;
+            }
+            for (long value : c) {
+                collection.add(value);
+            }
+        }
+        return collection;
+    }
+
+    default <I extends PrimitiveIterable.OfDouble, C extends DoubleMutableCollection> C flatMapDoublesTo(
+            @NotNull Supplier<C> collectionSupplier,
+            @NotNull Function<? super T, ? extends I> mapper) {
+        final C collection = collectionSupplier.get();
+        for (T item : this) {
+            final I c = mapper.apply(item);
+            if (c == null) {
+                continue;
+            }
+            for (double value : c) {
+                collection.add(value);
             }
         }
         return collection;

@@ -226,9 +226,8 @@ class SequenceTest {
                 SetX.of("test"));
 
         final var result = list.asSequence()
-                .mapMultiToInt((strings, accept) -> strings
-                        .mapToInt(String::length)
-                        .forEachInt(accept))
+                .map(strings -> strings.asSequence().mapToInt(String::length))
+                .mapMultiToInt(IntSequence::forEachInt)
                 .filter(length -> length > 3)
                 .toList();
 
@@ -262,8 +261,7 @@ class SequenceTest {
     @Test
     void testFlatMapStream() {
         final var charInts = Sequence.of("hallo", "test")
-                .map(String::chars)
-                .flatMap(s -> s::iterator)
+                .flatMapStream(String::chars)
                 .toList();
 
         assertEquals(List.of(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
@@ -272,8 +270,7 @@ class SequenceTest {
     @Test
     void testTransform() {
         final var map = Sequence.of("hallo", "test")
-                .map(String::chars)
-                .flatMap(intStream -> intStream::iterator)
+                .flatMapStream(String::chars)
                 .transform(this::toFilteredMapX);
 
         assertEquals(LinkedSetX.of(115, 116, 101, 104, 108, 111), map.keySet());
@@ -580,6 +577,19 @@ class SequenceTest {
                 .filterKeys(IntX::isEven)
                 .toMapX();
 
+        assertEquals(2, entries.size());
+    }
+
+    @Test
+    void testSequenceOfEntryIterable() {
+        final MapX<Integer, String> map = MutableMapX.of(1, "a", 2, "b", 3, "c", 4, "d");
+
+        final MapX<Integer, Character> entries = Sequence.of(map)
+                .mapByValues(s -> StringX.of(s).first())
+                .filterValues(Character::isLetter)
+                .filterKeys(IntX::isEven)
+                .toMapX();
+
         assertEquals(2, mapX.size());
     }
 
@@ -613,7 +623,7 @@ class SequenceTest {
     void testSequenceFromStream() {
         final var stream = IntStream.range(0, 100).boxed();
 
-        final var list = Sequence.ofStream(stream)
+        final var list = Sequence.of(stream::iterator)
                 .filter(IntX::isEven)
                 .sorted()
                 .windowed(3, true)

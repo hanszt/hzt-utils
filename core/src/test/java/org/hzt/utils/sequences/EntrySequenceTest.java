@@ -37,6 +37,17 @@ class EntrySequenceTest {
     }
 
     @Test
+    void testEntrySequenceOfMap() {
+        final Map<Integer, String> map = Map.of(1, "hallo", 2, "This", 3, "is", 4, "a", 5, "test");
+
+        final Map<Integer, String> integerStringMap = EntrySequence.of(map)
+                .filterKeys(key -> key % 2 == 0)
+                .toMap();
+
+        assertEquals(2, integerStringMap.size());
+    }
+
+    @Test
     void testMapValuesBothByKeyAndValue() {
         final var map = MapX.of("1", 1, "2", 2, "3", 3, "4", 4);
 

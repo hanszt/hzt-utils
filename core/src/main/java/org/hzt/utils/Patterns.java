@@ -24,6 +24,6 @@ public final class Patterns {
     }
 
     public static Sequence<String> splitToSequence(Pattern pattern, CharSequence charSequence) {
-        return Sequence.ofStream(pattern.splitAsStream(charSequence));
+        return Sequence.of(pattern.splitAsStream(charSequence)::iterator);
     }
 }

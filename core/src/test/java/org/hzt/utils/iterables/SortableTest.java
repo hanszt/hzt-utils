@@ -74,7 +74,7 @@ class SortableTest {
                 "Oscar",
                 "Charlie"
         );
-        final var names = Sequence.ofStream(englishNameList.stream())
+        final var names = Sequence.of(englishNameList)
                 .take(10)
                 .sortedBy(String::length)
                 .toList();

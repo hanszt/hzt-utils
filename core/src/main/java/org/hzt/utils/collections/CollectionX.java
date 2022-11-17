@@ -32,7 +32,6 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
-import java.util.stream.BaseStream;
 
 @FunctionalInterface
 @SuppressWarnings("squid:S1448")
@@ -160,11 +159,6 @@ public interface CollectionX<E> extends IterableX<E> {
     @Override
     default DoubleList flatMapToDouble(@NotNull Function<? super E, ? extends PrimitiveIterable.OfDouble> mapper) {
         return flatMapDoublesTo(() -> DoubleMutableList.withInitCapacity(size()), mapper);
-    }
-
-    @Override
-    default <R, S extends BaseStream<R, S>> ListX<R> flatMapStream(@NotNull Function<? super E, ? extends S> mapper) {
-        return (ListX<R>) IterableX.super.flatMapStream(mapper);
     }
 
     default <R> ListX<R> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<R>> mapper) {

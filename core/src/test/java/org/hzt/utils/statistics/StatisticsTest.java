@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
+import static org.hzt.utils.It.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -31,16 +32,16 @@ class StatisticsTest {
 
         final double standardDeviationIntRange = intRange.stats().getStandardDeviation();
 
-        It.println("longRange.count() = " + longRange.count());
-        It.println(longRange.sum());
+        println("longRange.count() = " + longRange.count());
+        println(longRange.sum());
 
         System.setProperty("org.openjdk.java.util.stream.tripwire", "false");
-        It.println(intRange.joinToString());
-        It.println(longRange.joinToString());
-        It.println(doubleRange.joinToString());
+        println(intRange.joinToString());
+        println(longRange.joinToString());
+        println(doubleRange.joinToString());
         System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
-        It.println(standardDeviationIntRange);
+        println(standardDeviationIntRange);
 
         assertAll(
                 () -> assertEquals(standardDeviationIntRange, longRange.stats().getStandardDeviation()),

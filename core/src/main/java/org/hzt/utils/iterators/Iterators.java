@@ -3,6 +3,7 @@ package org.hzt.utils.iterators;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
+import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -72,7 +73,11 @@ public final class Iterators {
 
     public static <T, R> Iterator<R> multiMappingIterator(@NotNull Iterator<T> iterator,
                                                           @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
-        return new MultiMappingIterator<>(iterator, mapper);
+        return flatMappingIterator(iterator, e -> {
+            final SpinedBuffer<R> spinedBuffer = new SpinedBuffer<>();
+            mapper.accept(e, spinedBuffer);
+            return spinedBuffer.iterator();
+        });
     }
 
     public static <T, R> Iterator<R> flatMappingIterator(@NotNull Iterator<T> iterator,
@@ -204,5 +209,14 @@ public final class Iterators {
                 return true;
             }
         }, true);
+    }
+
+    @NotNull
+    public static <T, I extends Iterator<T>> I constrainOnceIterator(I iterator, AtomicBoolean consumed) {
+        if (consumed.get()) {
+            throw new IllegalStateException("Sequence is already consumed");
+        }
+        consumed.set(true);
+        return iterator;
     }
 }

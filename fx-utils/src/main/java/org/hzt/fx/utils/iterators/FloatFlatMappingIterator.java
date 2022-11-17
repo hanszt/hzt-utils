@@ -1,22 +1,18 @@
-package org.hzt.utils.iterators;
+package org.hzt.fx.utils.iterators;
 
-import org.hzt.utils.spined_buffers.SpinedBuffer;
+import org.hzt.fx.utils.function.FloatFunction;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
-final class MultiMappingIterator<T, R> implements Iterator<R> {
+final class FloatFlatMappingIterator implements FloatIterator {
 
-    private final Iterator<T> iterator;
-    private final BiConsumer<? super T, ? super Consumer<R>> mapper;
+    private final FloatIterator iterator;
+    private final FloatFunction<? extends FloatIterator> mapper;
 
-    private Iterator<R> itemIterator = null;
+    private FloatIterator itemIterator = null;
 
-    MultiMappingIterator(@NotNull Iterator<T> iterator,
-                         @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
+    FloatFlatMappingIterator(@NotNull FloatIterator iterator, @NotNull FloatFunction<? extends FloatIterator> mapper) {
         this.iterator = iterator;
         this.mapper = mapper;
     }
@@ -27,11 +23,11 @@ final class MultiMappingIterator<T, R> implements Iterator<R> {
     }
 
     @Override
-    public R next() {
+    public float nextFloat() {
         if (!ensureItemIterator()) {
             throw new NoSuchElementException();
         }
-        return itemIterator.next();
+        return itemIterator.nextFloat();
     }
 
     private boolean ensureItemIterator() {
@@ -42,9 +38,7 @@ final class MultiMappingIterator<T, R> implements Iterator<R> {
             if (!iterator.hasNext()) {
                 return false;
             }
-            SpinedBuffer<R> buffer = new SpinedBuffer<>();
-            mapper.accept(iterator.next(), buffer);
-            final Iterator<R> nextItemIterator = buffer.iterator();
+            final FloatIterator nextItemIterator = mapper.apply(iterator.nextFloat());
             if (nextItemIterator.hasNext()) {
                 itemIterator = nextItemIterator;
                 return true;

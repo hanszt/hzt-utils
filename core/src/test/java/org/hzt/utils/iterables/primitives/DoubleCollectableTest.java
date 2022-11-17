@@ -1,5 +1,6 @@
 package org.hzt.utils.iterables.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.DoubleMutableSet;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
@@ -13,13 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class DoubleCollectableTest {
 
     @Test
-    void testDoubleSequenceToMutableSetX() {
+    void testDoubleSequenceToMutableSet() {
         final DoubleMutableSet doubles = DoubleSequence.iterate(Double.MIN_VALUE, d -> d + Math.PI)
                 .take(10)
                 .plus(Math.E, Math.E, DoubleX.GOLDEN_RATIO)
                 .toMutableSet();
 
-        doubles.forEachDouble(System.out::println);
+        doubles.forEachDouble(It::println);
 
         final String actual = DoubleX.toRoundedString(doubles.last(), 5, Locale.ENGLISH);
 

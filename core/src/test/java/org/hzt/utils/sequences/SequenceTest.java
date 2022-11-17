@@ -17,7 +17,6 @@ import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.iterables.Numerable;
-import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.numbers.LongX;
@@ -269,24 +268,26 @@ class SequenceTest {
 
     @Test
     void testFlatMapStream() {
-        final List<Integer> charInts = Sequence.of("hallo", "test")
-                .flatMapStream(String::chars)
+        final IntList charInts = Sequence.of("hallo", "test")
+                .map(String::chars)
+                .flatMapToInt(s -> s::iterator)
                 .toList();
 
-        assertEquals(Arrays.asList(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
+        assertEquals(IntList.of(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
     }
 
     @Test
     void testTransform() {
         final MapX<Integer, String> map = Sequence.of("hallo", "test")
-                .flatMapStream(String::chars)
+                .flatMapToInt(s -> s.chars()::iterator)
                 .transform(this::toFilteredMapX);
 
         assertEquals(LinkedSetX.of(115, 116, 101, 104, 108, 111), map.keySet());
     }
 
-    private MapX<Integer, String> toFilteredMapX(Sequence<Integer> sequence) {
-        return sequence.associateWith(String::valueOf)
+    private MapX<Integer, String> toFilteredMapX(IntSequence sequence) {
+        return sequence.boxed()
+                .associateWith(String::valueOf)
                 .filterValues(s -> s.startsWith("1"))
                 .toMapX();
     }
@@ -647,19 +648,9 @@ class SequenceTest {
     }
 
     @Test
-    void testSequenceVsStreamAsIterable() {
-        final IntRange intRange = IntRange.of(0, 2_000);
-        final IntStream intStream = IntStream.range(0, 2_000);
-        final PrimitiveIterable.OfInt iterable = intStream::iterator;
-
-        assertIterableEquals(intRange, iterable);
-    }
-
-    @Test
     void testGeneratedSequenceCanBeConsumedMultipleTimes() {
         Sequence<Year> leapYears = IntRange.from(1900).upTo(2000).step(2)
-                .boxed()
-                .map(Year::of)
+                .mapToObj(Year::of)
                 .filter(Year::isLeap);
 
         final Year first = leapYears.first();
@@ -964,11 +955,11 @@ class SequenceTest {
     void testFlatmapIterator() {
         setProperty("org.openjdk.java.util.stream.tripwire", "false");
 
-        final ListX<Integer> integers = IntRange.of(0, 1_000)
+        final IntList integers = IntRange.of(0, 1_000)
                 .windowed(10)
                 .map(IntList::iterator)
-                .flatMap(i -> () -> i)
-                .toListX();
+                .flatMapToInt(i -> () -> i)
+                .toList();
 
         println("integers = " + integers);
 

@@ -1,4 +1,4 @@
-package org.hzt.fx.utils;
+package org.hzt.fx.utils.function;
 
 @FunctionalInterface
 public interface IntToFloatFunction {

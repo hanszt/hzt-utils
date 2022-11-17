@@ -7,7 +7,9 @@ import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -165,6 +167,22 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     @Override
+    default EntrySequence<K, V> sorted(Comparator<? super Map.Entry<K, V>> comparator) {
+        return () -> Sequence.super.sorted(comparator).iterator();
+    }
+
+    @Override
+    default <R extends Comparable<? super R>> EntrySequence<K, V> sortedBy(
+            @NotNull Function<? super Map.Entry<K, V>, ? extends R> selector) {
+        return () -> Sequence.super.sortedBy(selector).iterator();
+    }
+
+    @Override
+    default <R> @NotNull EntrySequence<K, V> distinctBy(@NotNull Function<? super Map.Entry<K, V>, ? extends R> selector) {
+        return () -> Iterators.distinctIterator(iterator(), selector);
+    }
+
+    @Override
     default EntrySequence<K, V> skip(long n) {
         return () -> Sequence.super.skip(n).iterator();
     }
@@ -172,6 +190,17 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     @Override
     default EntrySequence<K, V> take(long n) {
         return () -> Sequence.super.take(n).iterator();
+    }
+
+    default EntrySequence<K, V> onEntrySequence(Consumer<? super EntrySequence<K, V>> sequenceConsumer) {
+        sequenceConsumer.accept(this);
+        return this;
+    }
+
+    @Override
+    default EntrySequence<K, V> constrainOnce() {
+        final AtomicBoolean consumed = new AtomicBoolean();
+        return () -> Iterators.constrainOnceIterator(iterator(), consumed);
     }
 
     default Sequence<V> mergeKeys(Function<? super K, ? extends V> toValueTypeMapper) {

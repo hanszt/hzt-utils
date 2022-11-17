@@ -1,6 +1,8 @@
 package org.hzt.test;
 
 import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.platform.commons.util.ClassUtils;
+import org.junit.platform.commons.util.Preconditions;
 
 import java.lang.reflect.Method;
 
@@ -20,8 +22,16 @@ public class ReplaceCamelCaseBySentence extends DisplayNameGenerator.Standard {
 
     @Override
     public String generateDisplayNameForMethod(Class<?> testClass, Method testMethod) {
-        return replaceCamelCaseBySentence(testMethod.getName()) +
-                DisplayNameGenerator.parameterTypesAsString(testMethod);
+        return replaceCamelCaseBySentence(testMethod.getName()) + parameterTypesAsString(testMethod);
+    }
+
+    static String parameterTypesAsString(Method method) {
+        Preconditions.notNull(method, "Method must not be null");
+        final Class<?>[] parameterTypes = method.getParameterTypes();
+        if (parameterTypes.length != 0) {
+            return '(' + ClassUtils.nullSafeToString(Class::getSimpleName, parameterTypes) + ')';
+        }
+        return "";
     }
 
     static String replaceCamelCaseBySentence(String camelCase) {

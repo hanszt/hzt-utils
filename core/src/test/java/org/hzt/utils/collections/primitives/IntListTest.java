@@ -5,6 +5,7 @@ import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.PrimitiveIterator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -73,10 +74,12 @@ class IntListTest {
 
     @Test
     void testIndices() {
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
         final IntList intList = IntList.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
         int[] indices1 = new int[intList.size()];
         final IntRange indices = intList.indices();
-        for (int i : indices) {
+        for (PrimitiveIterator.OfInt iterator = indices.iterator(); iterator.hasNext(); ) {
+            int i = iterator.nextInt();
             indices1[i] = i;
         }
         int[] indices2 = new int[intList.size()];

@@ -55,7 +55,7 @@ final class ArrayListX<E> implements MutableListX<E> {
 
     @Override
     public ListX<E> shuffled() {
-        final MutableListX<E> listX = to(MutableListX::empty);
+        final MutableListX<E> listX = new ArrayListX<>(this);
         Collections.shuffle(listX);
         return listX;
     }

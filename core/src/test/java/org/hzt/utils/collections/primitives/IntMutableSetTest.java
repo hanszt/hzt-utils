@@ -53,7 +53,7 @@ class IntMutableSetTest {
     void testThrowsWhenIteratedOverEmptySet() {
         IntMutableSet set = IntMutableSet.empty();
         final PrimitiveIterator.OfInt iterator = set.iterator();
-        assertThrows(NoSuchElementException.class, iterator::next);
+        assertThrows(NoSuchElementException.class, iterator::nextInt);
     }
 
 }

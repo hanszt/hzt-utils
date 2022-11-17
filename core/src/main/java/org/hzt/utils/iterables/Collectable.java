@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.PrimitiveIterator;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -285,8 +286,9 @@ public interface Collectable<T> extends IndexedIterable<T> {
             if (c == null) {
                 continue;
             }
-            for (int value : c) {
-                collection.add(value);
+            final PrimitiveIterator.OfInt iterator = c.iterator();
+            while (iterator.hasNext()) {
+                collection.add(iterator.nextInt());
             }
         }
         return collection;
@@ -301,8 +303,9 @@ public interface Collectable<T> extends IndexedIterable<T> {
             if (c == null) {
                 continue;
             }
-            for (long value : c) {
-                collection.add(value);
+            final PrimitiveIterator.OfLong iterator = c.iterator();
+            while (iterator.hasNext()) {
+                collection.add(iterator.nextLong());
             }
         }
         return collection;
@@ -317,8 +320,9 @@ public interface Collectable<T> extends IndexedIterable<T> {
             if (c == null) {
                 continue;
             }
-            for (double value : c) {
-                collection.add(value);
+            final PrimitiveIterator.OfDouble iterator = c.iterator();
+            while (iterator.hasNext()) {
+                collection.add(iterator.nextDouble());
             }
         }
         return collection;

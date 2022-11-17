@@ -11,7 +11,6 @@ import java.util.function.DoubleConsumer;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
-import java.util.stream.BaseStream;
 
 public interface Mappable<T> extends IndexedIterable<T> {
 
@@ -22,13 +21,6 @@ public interface Mappable<T> extends IndexedIterable<T> {
     <R> Mappable<R> mapIndexed(@NotNull IndexedFunction<? super T, ? extends R> mapper);
 
     <R> Mappable<R> flatMap(@NotNull Function<? super T, ? extends Iterable<? extends R>> mapper);
-
-    default <R, S extends BaseStream<R, S>> Mappable<R> flatMapStream(@NotNull Function<? super T, ? extends S> mapper) {
-        return flatMap(item -> {
-            final S stream = mapper.apply(item);
-            return stream::iterator;
-        });
-    }
 
     PrimitiveIterable.OfInt flatMapToInt(@NotNull Function<? super T, ? extends PrimitiveIterable.OfInt> mapper);
 

@@ -45,7 +45,15 @@ public interface IndexedIterable<T> extends Iterable<T> {
                 if (prevIndex < 0) {
                     throw new IllegalStateException("indexed iterator index overflow");
                 }
-                iterator.next();
+                if (iterator instanceof PrimitiveIterator.OfInt) {
+                    ((PrimitiveIterator.OfInt) iterator).nextInt();
+                } else if (iterator instanceof PrimitiveIterator.OfLong) {
+                    ((PrimitiveIterator.OfLong) iterator).nextLong();
+                } else if (iterator instanceof PrimitiveIterator.OfDouble) {
+                    ((PrimitiveIterator.OfDouble) iterator).nextDouble();
+                } else {
+                    iterator.next();
+                }
                 return index++;
             }
 

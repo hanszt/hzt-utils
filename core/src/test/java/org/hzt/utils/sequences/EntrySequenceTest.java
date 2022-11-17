@@ -3,6 +3,8 @@ package org.hzt.utils.sequences;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableMapX;
+import org.hzt.utils.collections.primitives.DoubleList;
+import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.tuples.Pair;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EntrySequenceTest {
@@ -25,7 +28,7 @@ class EntrySequenceTest {
 
         final MapX<String, LocalDate> resultMap = mapX.asSequence()
                 .filterValues(value -> value <= 3)
-                .onEach((k, v) -> It.println("key: " + k + ", value: " + v))
+                .onEach((key, day) -> println("key: " + key + ", value: " + day))
                 .mapByValues(day -> LocalDate.of(2000, Month.JANUARY, day))
                 .toMapX();
 
@@ -33,6 +36,22 @@ class EntrySequenceTest {
                 () -> assertEquals(3, resultMap.size()),
                 () -> assertEquals(new HashSet<>(Arrays.asList("1", "2", "3")), resultMap.keySet())
         );
+    }
+
+    @Test
+    void testFilterFormerIsBiggerThanCurrent() {
+        final DoubleList doubleList = DoubleSequence.iterate(0.0, i -> i + 0.1)
+                .take(100)
+                .mapToObj(Math::sin)
+                .zipWithNext()
+                .onEntrySequence(sequence -> println(sequence.count()))
+                .filter((cur, next) -> cur < next)
+                .mapToDouble(Map.Entry::getValue)
+                .toList();
+
+        println(doubleList);
+
+        assertEquals(48, doubleList.size());
     }
 
     @Test

@@ -5,10 +5,12 @@ import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 
 public interface Grouping<T, K> extends Iterable<T> {
 
@@ -26,7 +28,7 @@ public interface Grouping<T, K> extends Iterable<T> {
         return destination;
     }
 
-    default <R> MutableMapX<K, R> aggregate(QuadFunction<K, R, T, Boolean, R> aggregator) {
+    default <R> MapX<K, R> aggregate(QuadFunction<K, R, T, Boolean, R> aggregator) {
         return aggregateTo(MutableMapX::empty, aggregator);
     }
 
@@ -53,6 +55,23 @@ public interface Grouping<T, K> extends Iterable<T> {
         return foldTo(MutableMapX::empty, initialValue, operation);
     }
 
+    default <R, A, M extends Map<K, R>> M collectTo(Supplier<M> mapSupplier,
+                                                    Collector<? super T, A, R> downStream) {
+        final M destination = mapSupplier.get();
+        final Map<K, A> accumulators = new HashMap<>();
+        for (T item : this) {
+            final K key = keyOf(item);
+            final A accumulator = accumulators.computeIfAbsent(key, k -> downStream.supplier().get());
+            downStream.accumulator().accept(accumulator, item);
+            destination.put(key, downStream.finisher().apply(accumulator));
+        }
+        return destination;
+    }
+
+    default <R, A> MapX<K, R> collect(Collector<? super T, A, R> collector) {
+        return collectTo(MutableMapX::empty, collector);
+    }
+
     default <M extends Map<K, T>> M reduceTo(Supplier<? extends M> mapSupplier,
                                              TriFunction<? super K, ? super T, ? super T, ? extends T> operation) {
         return aggregateTo(mapSupplier, (key, acc, item, first) ->
@@ -72,11 +91,11 @@ public interface Grouping<T, K> extends Iterable<T> {
         return reduce((key, acc, value) -> operation.apply(acc, value));
     }
 
-    default <M extends Map<K, Integer>> M eachCountTo(Supplier<? extends M> mapSupplier) {
-        return foldTo(mapSupplier, 0, (acc, i) -> acc + 1);
+    default <M extends Map<K, Long>> M eachCountTo(Supplier<? extends M> mapSupplier) {
+        return foldTo(mapSupplier, 0L, (acc, i) -> acc + 1);
     }
 
-    default MutableMapX<K, Integer> eachCount() {
+    default MutableMapX<K, Long> eachCount() {
         return eachCountTo(MutableMapX::empty);
     }
 }

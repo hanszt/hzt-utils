@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.PrimitiveIterator;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -218,5 +219,9 @@ public final class Iterators {
         }
         consumed.set(true);
         return iterator;
+    }
+
+    public static <T> PrimitiveIterator.OfInt indexIterator(Iterator<T> iterator) {
+        return new IndexIterator<>(iterator);
     }
 }

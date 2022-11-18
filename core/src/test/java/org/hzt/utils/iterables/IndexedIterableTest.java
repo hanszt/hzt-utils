@@ -1,6 +1,8 @@
 package org.hzt.utils.iterables;
 
 import org.hzt.utils.It;
+import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
@@ -45,5 +47,14 @@ class IndexedIterableTest {
         final String[] expected = {"This", "a", "test"};
 
         assertArrayEquals(expected, integers);
+    }
+
+    @Test
+    void testForEachIndex() {
+        final IntMutableList indices = IntMutableList.empty();
+
+        ListX.of("This", "is", "a", "test").forEachIndex(indices::add);
+
+        assertEquals(IntMutableList.of(0, 1, 2, 3), indices);
     }
 }

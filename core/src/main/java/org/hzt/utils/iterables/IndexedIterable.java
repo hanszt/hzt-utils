@@ -1,6 +1,7 @@
 package org.hzt.utils.iterables;
 
 import org.hzt.utils.function.IndexedConsumer;
+import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,33 +36,7 @@ public interface IndexedIterable<T> extends Iterable<T> {
     }
 
     default @NotNull PrimitiveIterator.OfInt indexIterator() {
-        final Iterator<T> iterator = iterator();
-        return new PrimitiveIterator.OfInt() {
-
-            int index = 0;
-            @Override
-            public int nextInt() {
-                int prevIndex = index;
-                if (prevIndex < 0) {
-                    throw new IllegalStateException("indexed iterator index overflow");
-                }
-                if (iterator instanceof PrimitiveIterator.OfInt) {
-                    ((PrimitiveIterator.OfInt) iterator).nextInt();
-                } else if (iterator instanceof PrimitiveIterator.OfLong) {
-                    ((PrimitiveIterator.OfLong) iterator).nextLong();
-                } else if (iterator instanceof PrimitiveIterator.OfDouble) {
-                    ((PrimitiveIterator.OfDouble) iterator).nextDouble();
-                } else {
-                    iterator.next();
-                }
-                return index++;
-            }
-
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-        };
+        return Iterators.indexIterator(iterator());
     }
 
     default Spliterator<IndexedValue<T>> indexedSpliterator() {

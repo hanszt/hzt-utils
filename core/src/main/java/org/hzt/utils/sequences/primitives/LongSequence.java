@@ -10,8 +10,9 @@ import org.hzt.utils.iterables.primitives.LongGroupable;
 import org.hzt.utils.iterables.primitives.LongNumerable;
 import org.hzt.utils.iterables.primitives.LongReducable;
 import org.hzt.utils.iterables.primitives.LongStreamable;
-import org.hzt.utils.iterables.primitives.PrimitiveIterable;
+import org.hzt.utils.iterables.primitives.LongStringable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
+import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.LongFilteringIterator;
 import org.hzt.utils.iterators.primitives.LongGeneratorIterator;
 import org.hzt.utils.iterators.primitives.LongMultiMappingIterator;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -44,7 +46,7 @@ import java.util.stream.StreamSupport;
 
 @FunctionalInterface
 public interface LongSequence extends LongWindowedSequence, LongReducable, LongCollectable, LongNumerable, LongStreamable,
-        LongGroupable, PrimitiveSortable<LongComparator>,
+        LongGroupable, LongStringable, PrimitiveSortable<LongComparator>,
         PrimitiveSequence<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator> {
 
     static LongSequence empty() {
@@ -251,6 +253,11 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
 
     default <R> R transform(@NotNull Function<? super LongSequence, ? extends R> resultMapper) {
         return resultMapper.apply(this);
+    }
+
+    default LongSequence constrainOnce() {
+        final AtomicBoolean consumed = new AtomicBoolean();
+        return () -> Iterators.constrainOnceIterator(iterator(), consumed);
     }
 
     @Override

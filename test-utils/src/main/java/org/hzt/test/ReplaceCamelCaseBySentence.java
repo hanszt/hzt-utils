@@ -3,6 +3,11 @@ package org.hzt.test;
 import org.junit.jupiter.api.DisplayNameGenerator;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
+import java.util.function.Function;
+
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.joining;
 
 /**
  * @see <a href="https://www.baeldung.com/junit-custom-display-name-generator">JUnit Custom Display Name Generator API</a>
@@ -20,8 +25,26 @@ public class ReplaceCamelCaseBySentence extends DisplayNameGenerator.Standard {
 
     @Override
     public String generateDisplayNameForMethod(Class<?> testClass, Method testMethod) {
-        return replaceCamelCaseBySentence(testMethod.getName()) +
-                DisplayNameGenerator.parameterTypesAsString(testMethod);
+        return replaceCamelCaseBySentence(testMethod.getName()) + parameterTypesAsString(testMethod);
+    }
+
+    static String parameterTypesAsString(Method method) {
+        Objects.requireNonNull(method, "Method must not be null");
+        final Class<?>[] parameterTypes = method.getParameterTypes();
+        if (parameterTypes.length != 0) {
+            return '(' + nullSafeToString(Class::getSimpleName, parameterTypes) + ')';
+        }
+        return "";
+    }
+
+    public static String nullSafeToString(Function<? super Class<?>, String> mapper, Class<?>... classes) {
+        Objects.requireNonNull(mapper, "Mapping function must not be null");
+        if (classes == null || classes.length == 0) {
+            return "";
+        }
+        return stream(classes)
+                .map(clazz -> clazz == null ? "null" : mapper.apply(clazz))
+                .collect(joining(", "));
     }
 
     static String replaceCamelCaseBySentence(String camelCase) {

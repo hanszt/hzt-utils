@@ -7,6 +7,7 @@ import org.hzt.utils.iterables.primitives.LongGroupable;
 import org.hzt.utils.iterables.primitives.LongNumerable;
 import org.hzt.utils.iterables.primitives.LongReducable;
 import org.hzt.utils.iterables.primitives.LongStreamable;
+import org.hzt.utils.iterables.primitives.LongStringable;
 import org.hzt.utils.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,8 @@ import java.util.function.LongToDoubleFunction;
 import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
 
-public interface LongCollection extends LongReducable, LongCollectable, LongNumerable, LongStreamable, LongGroupable,
+public interface LongCollection extends
+        LongReducable, LongCollectable, LongNumerable, LongStreamable, LongGroupable, LongStringable,
         PrimitiveCollection<Long, LongConsumer, long[]> {
 
     default boolean isEmpty() {

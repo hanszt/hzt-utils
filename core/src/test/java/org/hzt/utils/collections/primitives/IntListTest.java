@@ -70,10 +70,12 @@ class IntListTest {
 
     @Test
     void testIndices() {
+        System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
         final var intList = IntList.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
         var indices1 = new int[intList.size()];
         final var indices = intList.indices();
-        for (int i : indices) {
+        for (final var iterator = indices.iterator(); iterator.hasNext(); ) {
+            int i = iterator.nextInt();
             indices1[i] = i;
         }
         var indices2 = new int[intList.size()];

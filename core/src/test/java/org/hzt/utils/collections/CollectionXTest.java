@@ -1,6 +1,7 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.It;
+import org.hzt.utils.collections.primitives.IntList;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -93,6 +94,13 @@ class CollectionXTest {
                 () -> assertEquals(6, list.size()),
                 () -> assertEquals(ListX.of(0, 2, 8, 24, 64, 160), indexedValues.map(iv -> iv.index() * iv.value()))
         );
+    }
+
+    @Test
+    void testFlatMapStreamToIntList() {
+        final IntList charInts = ListX.of("hallo", "test").flatMapToInt(s -> s.chars()::iterator);
+
+        assertEquals(IntList.of(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
     }
 
 }

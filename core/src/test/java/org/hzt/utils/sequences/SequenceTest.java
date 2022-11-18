@@ -15,7 +15,6 @@ import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.iterables.Numerable;
-import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.numbers.LongX;
@@ -225,9 +224,8 @@ class SequenceTest {
                 SetX.of("test"));
 
         final var result = list.asSequence()
-                .mapMultiToInt((strings, accept) -> strings
-                        .mapToInt(String::length)
-                        .forEachInt(accept))
+                .map(strings -> strings.asSequence().mapToInt(String::length))
+                .mapMultiToInt(IntSequence::forEachInt)
                 .filter(length -> length > 3)
                 .toList();
 
@@ -260,26 +258,26 @@ class SequenceTest {
 
     @Test
     void testFlatMapStream() {
-        final var charInts = Sequence.of("hallo", "test")
+        final IntList charInts = Sequence.of("hallo", "test")
                 .map(String::chars)
-                .flatMap(s -> s::iterator)
+                .flatMapToInt(s -> s::iterator)
                 .toList();
 
-        assertEquals(List.of(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
+        assertEquals(IntList.of(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
     }
 
     @Test
     void testTransform() {
         final var map = Sequence.of("hallo", "test")
-                .map(String::chars)
-                .flatMap(intStream -> intStream::iterator)
+                .flatMapToInt(s -> s.chars()::iterator)
                 .transform(this::toFilteredMapX);
 
         assertEquals(LinkedSetX.of(115, 116, 101, 104, 108, 111), map.keySet());
     }
 
-    private MapX<Integer, String> toFilteredMapX(Sequence<Integer> sequence) {
-        return sequence.associateWith(String::valueOf)
+    private MapX<Integer, String> toFilteredMapX(IntSequence sequence) {
+        return sequence.boxed()
+                .associateWith(String::valueOf)
                 .filterValues(s -> s.startsWith("1"))
                 .toMapX();
     }
@@ -583,6 +581,19 @@ class SequenceTest {
     }
 
     @Test
+    void testSequenceOfEntryIterable() {
+        final MapX<Integer, String> map = MapX.of(1, "a", 2, "b", 3, "c", 4, "d");
+
+        final MapX<Integer, Character> mapX = Sequence.of(map)
+                .mapByValues(s -> StringX.of(s).first())
+                .filterValues(Character::isLetter)
+                .filterKeys(IntX::isEven)
+                .toMapX();
+
+        assertEquals(2, mapX.size());
+    }
+
+    @Test
     void testSequenceAssociateWith() {
         final var list = ListX.of(1, 2, 3, 4);
 
@@ -612,7 +623,7 @@ class SequenceTest {
     void testSequenceFromStream() {
         final var stream = IntStream.range(0, 100).boxed();
 
-        final var list = Sequence.ofStream(stream)
+        final var list = Sequence.of(stream::iterator)
                 .filter(IntX::isEven)
                 .sorted()
                 .windowed(3, true)
@@ -626,19 +637,9 @@ class SequenceTest {
     }
 
     @Test
-    void testSequenceVsStreamAsIterable() {
-        final var intRange = IntRange.of(0, 2_000);
-        final var intStream = IntStream.range(0, 2_000);
-        final PrimitiveIterable.OfInt iterable = intStream::iterator;
-
-        assertIterableEquals(intRange, iterable);
-    }
-
-    @Test
     void testGeneratedSequenceCanBeConsumedMultipleTimes() {
         var leapYears = IntRange.from(1900).upTo(2000).step(2)
-                .boxed()
-                .map(Year::of)
+                .mapToObj(Year::of)
                 .filter(Year::isLeap);
 
         final var first = leapYears.first();
@@ -943,11 +944,11 @@ class SequenceTest {
     void testFlatmapIterator() {
         setProperty("org.openjdk.java.util.stream.tripwire", "false");
 
-        final var integers = IntRange.of(0, 1_000)
+        final IntList integers = IntRange.of(0, 1_000)
                 .windowed(10)
                 .map(IntList::iterator)
-                .flatMap(i -> () -> i)
-                .toListX();
+                .flatMapToInt(i -> () -> i)
+                .toList();
 
         It.println("integers = " + integers);
 

@@ -13,10 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.LongStream;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class LongSequenceTest {
 
@@ -27,7 +24,7 @@ class LongSequenceTest {
         final var expected = LongStream.of(array)
                 .filter(l -> l > 3)
                 .toArray();
-        
+
         final var longs = LongSequence.of(array)
                 .filter(l -> l > 3)
                 .toArray();
@@ -54,6 +51,16 @@ class LongSequenceTest {
                 () -> assertEquals(18, result.length),
                 () -> assertArrayEquals(new long[]{2, 4, 2, 35, 76, 5, 1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, Long.MAX_VALUE}, result)
         );
+    }
+
+    @Test
+    void testLongSequenceWindowedMapMulti() {
+        final LongList longs = LongRange.of(0, 10)
+                .windowed(3)
+                .mapMultiToLong(LongList::forEachLong)
+                .toList();
+
+        assertEquals(LongList.of(0, 1, 2, 1, 2, 3, 2, 3, 4, 3, 4, 5, 4, 5, 6, 5, 6, 7, 6, 7, 8, 7, 8, 9), longs);
     }
 
     @Test
@@ -169,7 +176,7 @@ class LongSequenceTest {
                 .map(LongList::toArray)
                 .toTypedArray(long[][]::new);
 
-       Sequence.of(windowed).map(Arrays::toString).forEach(It::println);
+        Sequence.of(windowed).map(Arrays::toString).forEach(It::println);
 
         assertEquals(3, windowed.length);
     }
@@ -184,7 +191,7 @@ class LongSequenceTest {
 
         LongSequence.of(sums).forEachLong(It::println);
 
-        assertArrayEquals(new long[] {6, 9, 12, 15, 18}, sums);
+        assertArrayEquals(new long[]{6, 9, 12, 15, 18}, sums);
     }
 
     @Test
@@ -211,7 +218,7 @@ class LongSequenceTest {
 
         LongSequence.of(sums).forEachLong(It::println);
 
-        assertArrayEquals(new long[] {6, 12, 18, 7}, sums);
+        assertArrayEquals(new long[]{6, 12, 18, 7}, sums);
     }
 
     @Test
@@ -229,7 +236,7 @@ class LongSequenceTest {
                 .map(plane -> Sequence.of(plane)
                         .map(Arrays::toString))
                 .map(s -> s.joinToString(System.lineSeparator()))
-                        .joinToString(String.format("%n%n"));
+                .joinToString(String.format("%n%n"));
 
         It.println(cubeAsString);
 
@@ -252,6 +259,12 @@ class LongSequenceTest {
 
     @Test
     void testSkipWhile() {
+        final var expected = LongList.of(LongStream.iterate(0L, l -> ++l)
+                .map(Generator::fib)
+                .dropWhile(l -> l < 3)
+                .takeWhile(l -> l <= 55)
+                .toArray());
+
         final var longs = LongSequence.iterate(0L, l -> ++l)
                 .map(Generator::fib)
                 .skipWhile(l -> l < 3)
@@ -260,12 +273,21 @@ class LongSequenceTest {
 
         longs.forEachLong(It::println);
 
-        assertEquals(LongList.of(3, 5, 8, 13, 21, 34, 55), longs);
+        assertAll(
+                () -> assertEquals(expected, longs),
+                () -> assertEquals(LongList.of(3, 5, 8, 13, 21, 34, 55), longs)
+        );
     }
 
     @Test
     void testSkipWhileInclusive() {
-        final var longs = LongSequence.iterate(0L, l -> ++l)
+        final var expected = LongList.of(LongStream.iterate(0L, l -> ++l)
+                .map(Generator::fib)
+                .dropWhile(l -> l <= 3)
+                .takeWhile(l -> l <= 55)
+                .toArray());
+
+        final var longs = LongSequence.iterate(0L, l -> l + 1)
                 .map(Generator::fib)
                 .skipWhileInclusive(l -> l < 3)
                 .takeWhileInclusive(l -> l < 55)
@@ -273,7 +295,10 @@ class LongSequenceTest {
 
         longs.forEachLong(It::println);
 
-        assertEquals(LongList.of(5, 8, 13, 21, 34, 55), longs);
+        assertAll(
+                () -> assertEquals(expected, longs),
+                () -> assertEquals(LongList.of(5, 8, 13, 21, 34, 55), longs)
+        );
     }
 
 }

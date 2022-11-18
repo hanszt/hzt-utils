@@ -10,8 +10,8 @@ import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.iterables.IterableX;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.strings.StringX;
 import org.hzt.utils.tuples.IndexedValue;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +23,10 @@ import java.util.Spliterators;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
 import java.util.function.Function;
+import java.util.function.IntConsumer;
+import java.util.function.LongConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
@@ -112,10 +115,6 @@ public interface CollectionX<E> extends IterableX<E> {
         return ListX.copyOf(IterableX.super.filterNotTo(() -> MutableListX.withInitCapacity(size()), predicate));
     }
 
-    default <R> ListX<StringX> mapToStringX(@NotNull Function<? super E, ? extends R> mapper) {
-        return map(s -> StringX.of(mapper.apply(s).toString()));
-    }
-
     @Override
     default IntList mapToInt(@NotNull ToIntFunction<? super E> mapper) {
         var intList = IntMutableList.withInitCapacity(size());
@@ -147,8 +146,38 @@ public interface CollectionX<E> extends IterableX<E> {
         return ListX.copyOf(flatMapTo(() -> MutableListX.withInitCapacity(size()), mapper));
     }
 
+    @Override
+    default IntList flatMapToInt(@NotNull Function<? super E, ? extends PrimitiveIterable.OfInt> mapper) {
+        return flatMapIntsTo(() -> IntMutableList.withInitCapacity(size()), mapper);
+    }
+
+    @Override
+    default LongList flatMapToLong(@NotNull Function<? super E, ? extends PrimitiveIterable.OfLong> mapper) {
+        return flatMapLongsTo(() -> LongMutableList.withInitCapacity(size()), mapper);
+    }
+
+    @Override
+    default DoubleList flatMapToDouble(@NotNull Function<? super E, ? extends PrimitiveIterable.OfDouble> mapper) {
+        return flatMapDoublesTo(() -> DoubleMutableList.withInitCapacity(size()), mapper);
+    }
+
     default <R> ListX<R> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<R>> mapper) {
         return ListX.copyOf(mapMultiTo(() -> MutableListX.withInitCapacity(size()), mapper));
+    }
+
+    @Override
+    default IntList mapMultiToInt(@NotNull BiConsumer<? super E, IntConsumer> mapper) {
+        return (IntList) IterableX.super.mapMultiToInt(mapper);
+    }
+
+    @Override
+    default LongList mapMultiToLong(@NotNull BiConsumer<? super E, LongConsumer> mapper) {
+        return (LongList) IterableX.super.mapMultiToLong(mapper);
+    }
+
+    @Override
+    default DoubleList mapMultiToDouble(@NotNull BiConsumer<? super E, DoubleConsumer> mapper) {
+        return (DoubleList) IterableX.super.mapMultiToDouble(mapper);
     }
 
     default <R> ListX<R> mapNotNull(@NotNull Function<? super E, ? extends R> mapper) {

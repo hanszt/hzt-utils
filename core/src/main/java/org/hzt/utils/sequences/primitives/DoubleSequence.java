@@ -10,8 +10,9 @@ import org.hzt.utils.iterables.primitives.DoubleGroupable;
 import org.hzt.utils.iterables.primitives.DoubleNumerable;
 import org.hzt.utils.iterables.primitives.DoubleReducable;
 import org.hzt.utils.iterables.primitives.DoubleStreamable;
-import org.hzt.utils.iterables.primitives.PrimitiveIterable;
+import org.hzt.utils.iterables.primitives.DoubleStringable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
+import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.DoubleFilteringIterator;
 import org.hzt.utils.iterators.primitives.DoubleGeneratorIterator;
 import org.hzt.utils.iterators.primitives.DoubleMultiMappingIterator;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.DoubleBinaryOperator;
@@ -44,7 +46,7 @@ import java.util.stream.StreamSupport;
 
 @FunctionalInterface
 public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable,
-        DoubleGroupable, PrimitiveSortable<DoubleComparator>,
+        DoubleGroupable, DoubleStringable, PrimitiveSortable<DoubleComparator>,
         PrimitiveSequence<Double, DoubleConsumer, DoubleUnaryOperator, DoublePredicate, DoubleBinaryOperator> {
 
     static DoubleSequence empty() {
@@ -253,6 +255,11 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     default <R> R transform(@NotNull Function<? super DoubleSequence, ? extends R> resultMapper) {
         return resultMapper.apply(this);
+    }
+
+    default DoubleSequence constrainOnce() {
+        final AtomicBoolean consumed = new AtomicBoolean();
+        return () -> Iterators.constrainOnceIterator(iterator(), consumed);
     }
 
     @Override

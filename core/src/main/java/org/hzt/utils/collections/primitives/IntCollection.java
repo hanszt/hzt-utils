@@ -7,6 +7,7 @@ import org.hzt.utils.iterables.primitives.IntGroupable;
 import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.iterables.primitives.IntReducable;
 import org.hzt.utils.iterables.primitives.IntStreamable;
+import org.hzt.utils.iterables.primitives.IntStringable;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,8 @@ import java.util.function.IntToDoubleFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 
-public interface IntCollection extends IntReducable, IntCollectable, IntNumerable, IntStreamable, IntGroupable,
+public interface IntCollection extends
+        IntReducable, IntCollectable, IntNumerable, IntStreamable, IntGroupable, IntStringable,
         PrimitiveCollection<Integer, IntConsumer, int[]> {
 
     default boolean isEmpty() {

@@ -18,6 +18,7 @@ import java.util.function.DoubleFunction;
 import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
+import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
@@ -82,6 +83,24 @@ public final class PrimitiveIterators {
         };
     }
 
+    public static <T> PrimitiveIterator.OfInt toIntFlatMappingIterator(@NotNull Iterator<T> iterator,
+                                                                       @NotNull Function<? super T,
+                                                                               ? extends PrimitiveIterator.OfInt> mapper) {
+        return new ToIntFlatMappingIterator<>(iterator, mapper);
+    }
+
+    public static <T> PrimitiveIterator.OfLong toLongFlatMappingIterator(@NotNull Iterator<T> iterator,
+                                                                         @NotNull Function<? super T,
+                                                                                 ? extends PrimitiveIterator.OfLong> mapper) {
+        return new ToLongFlatMappingIterator<>(iterator, mapper);
+    }
+
+    public static <T> PrimitiveIterator.OfDouble toDoubleFlatMappingIterator(@NotNull Iterator<T> iterator,
+                                                                             @NotNull Function<? super T,
+                                                                                     ? extends PrimitiveIterator.OfDouble> mapper) {
+        return new ToDoubleFlatMappingIterator<>(iterator, mapper);
+    }
+
     @NotNull
     public static PrimitiveIterator.OfInt intTransformingIterator(@NotNull PrimitiveIterator.OfInt iterator,
                                                                   @NotNull IntUnaryOperator mapper) {
@@ -103,6 +122,7 @@ public final class PrimitiveIterators {
         return new PrimitiveIterator.OfInt() {
 
             int index = 0;
+
             @Override
             public int nextInt() {
                 if (index < 0) {
@@ -225,6 +245,7 @@ public final class PrimitiveIterators {
         return new PrimitiveIterator.OfLong() {
 
             int index = 0;
+
             @Override
             public long nextLong() {
                 if (index < 0) {
@@ -351,10 +372,11 @@ public final class PrimitiveIterators {
 
     @NotNull
     public static PrimitiveIterator.OfDouble doubleIndexedTransformingIterator(@NotNull PrimitiveIterator.OfDouble iterator,
-                                                                             @NotNull DoubleIndexedFunction mapper) {
+                                                                               @NotNull DoubleIndexedFunction mapper) {
         return new PrimitiveIterator.OfDouble() {
 
             int index = 0;
+
             @Override
             public double nextDouble() {
                 if (index < 0) {
@@ -425,6 +447,7 @@ public final class PrimitiveIterators {
             public boolean hasNext() {
                 return iterator.hasNext() && otherIterator.hasNext();
             }
+
             @Override
             public int nextInt() {
                 return merger.applyAsInt(iterator.nextInt(), otherIterator.nextInt());
@@ -441,6 +464,7 @@ public final class PrimitiveIterators {
             public boolean hasNext() {
                 return iterator.hasNext() && otherIterator.hasNext();
             }
+
             @Override
             public long nextLong() {
                 return merger.applyAsLong(iterator.nextLong(), otherIterator.nextLong());
@@ -457,6 +481,7 @@ public final class PrimitiveIterators {
             public boolean hasNext() {
                 return iterator.hasNext() && otherIterator.hasNext();
             }
+
             @Override
             public double nextDouble() {
                 return merger.applyAsDouble(iterator.nextDouble(), otherIterator.nextDouble());

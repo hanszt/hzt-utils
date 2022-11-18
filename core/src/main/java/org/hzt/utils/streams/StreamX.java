@@ -359,7 +359,7 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
 
     @Override
     default <R> StreamX<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
-        final var sequence = Sequence.ofStream(stream()).mapMulti(mapper);
+        final var sequence = Sequence.of(stream()::iterator).mapMulti(mapper);
         final var parallel = isParallel();
         return new StreamXImpl<>(parallel ? sequence.parallelStream() : sequence.stream());
     }

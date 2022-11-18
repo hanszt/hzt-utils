@@ -28,8 +28,7 @@ public interface Groupable<T> extends Iterable<T> {
     }
 
     default <K> Grouping<T, K> groupingBy(@NotNull Function<? super T, ? extends K> classifier) {
-        final var iterator = iterator();
-        return new Grouping<>() {
+        return new Grouping<T, K>() {
             @Override
             public K keyOf(T element) {
                 return classifier.apply(element);
@@ -38,7 +37,7 @@ public interface Groupable<T> extends Iterable<T> {
             @NotNull
             @Override
             public Iterator<T> iterator() {
-                return iterator;
+                return Groupable.this.iterator();
             }
         };
     }

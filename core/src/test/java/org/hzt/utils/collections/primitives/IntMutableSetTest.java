@@ -52,7 +52,7 @@ class IntMutableSetTest {
     void testThrowsWhenIteratedOverEmptySet() {
         var set = IntMutableSet.empty();
         final var iterator = set.iterator();
-        assertThrows(NoSuchElementException.class, iterator::next);
+        assertThrows(NoSuchElementException.class, iterator::nextInt);
     }
 
 }

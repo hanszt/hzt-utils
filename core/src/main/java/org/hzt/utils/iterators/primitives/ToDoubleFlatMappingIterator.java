@@ -1,24 +1,21 @@
-package org.hzt.utils.iterators;
-
-import org.hzt.utils.spined_buffers.SpinedBuffer;
-import org.jetbrains.annotations.NotNull;
+package org.hzt.utils.iterators.primitives;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.PrimitiveIterator;
+import java.util.function.Function;
 
-final class MultiMappingIterator<T, R> implements Iterator<R> {
+final class ToDoubleFlatMappingIterator<T> implements PrimitiveIterator.OfDouble {
 
     private final Iterator<T> iterator;
-    private final BiConsumer<? super T, ? super Consumer<R>> mapper;
+    private final Function<? super T, ? extends PrimitiveIterator.OfDouble> toIteratorFunction;
 
-    private Iterator<R> itemIterator = null;
+    private PrimitiveIterator.OfDouble itemIterator = null;
 
-    MultiMappingIterator(@NotNull Iterator<T> iterator,
-                         @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
+    ToDoubleFlatMappingIterator(Iterator<T> iterator,
+                                Function<? super T, ? extends PrimitiveIterator.OfDouble> toIteratorFunction) {
         this.iterator = iterator;
-        this.mapper = mapper;
+        this.toIteratorFunction = toIteratorFunction;
     }
 
     @Override
@@ -27,11 +24,11 @@ final class MultiMappingIterator<T, R> implements Iterator<R> {
     }
 
     @Override
-    public R next() {
+    public double nextDouble() {
         if (!ensureItemIterator()) {
             throw new NoSuchElementException();
         }
-        return itemIterator.next();
+        return itemIterator.nextDouble();
     }
 
     private boolean ensureItemIterator() {
@@ -42,9 +39,7 @@ final class MultiMappingIterator<T, R> implements Iterator<R> {
             if (!iterator.hasNext()) {
                 return false;
             }
-            var buffer = new SpinedBuffer<R>();
-            mapper.accept(iterator.next(), buffer);
-            final var nextItemIterator = buffer.iterator();
+            final PrimitiveIterator.OfDouble nextItemIterator = toIteratorFunction.apply(iterator.next());
             if (nextItemIterator.hasNext()) {
                 itemIterator = nextItemIterator;
                 return true;

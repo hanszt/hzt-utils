@@ -9,8 +9,8 @@ import org.hzt.utils.iterables.primitives.IntGroupable;
 import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.iterables.primitives.IntReducable;
 import org.hzt.utils.iterables.primitives.IntStreamable;
-import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
+import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.IntFilteringIterator;
 import org.hzt.utils.iterators.primitives.IntGeneratorIterator;
 import org.hzt.utils.iterators.primitives.IntMultiMappingIterator;
@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -43,7 +44,7 @@ import java.util.stream.StreamSupport;
 
 @FunctionalInterface
 public interface IntSequence extends IntWindowedSequence, IntReducable, IntCollectable, IntNumerable, IntStreamable,
-        IntGroupable, PrimitiveSortable<IntComparator>,
+        IntGroupable, IntStringable, PrimitiveSortable<IntComparator>,
         PrimitiveSequence<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator> {
 
     static IntSequence empty() {
@@ -149,10 +150,6 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     default DoubleSequence mapToDouble(IntToDoubleFunction mapper) {
         return () -> PrimitiveIterators.intToDoubleIterator(iterator(), mapper);
-    }
-
-    default DoubleSequence aDoubleSequence() {
-        return mapToDouble(i -> i);
     }
 
     default DoubleSequence asDoubleSequence() {
@@ -267,6 +264,11 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     default <R> R transform(@NotNull Function<? super IntSequence, ? extends R> resultMapper) {
         return resultMapper.apply(this);
+    }
+
+    default IntSequence constrainOnce() {
+        final AtomicBoolean consumed = new AtomicBoolean();
+        return () -> Iterators.constrainOnceIterator(iterator(), consumed);
     }
 
     @Override

@@ -2,10 +2,16 @@ package org.hzt.utils.iterators;
 
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.function.IndexedFunction;
+import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
+import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.PrimitiveIterator;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -68,7 +74,11 @@ public final class Iterators {
 
     public static <T, R> Iterator<R> multiMappingIterator(@NotNull Iterator<T> iterator,
                                                           @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
-        return new MultiMappingIterator<>(iterator, mapper);
+        return flatMappingIterator(iterator, e -> {
+            final SpinedBuffer<R> spinedBuffer = new SpinedBuffer<>();
+            mapper.accept(e, spinedBuffer);
+            return spinedBuffer.iterator();
+        });
     }
 
     public static <T, R> Iterator<R> flatMappingIterator(@NotNull Iterator<T> iterator,
@@ -99,6 +109,29 @@ public final class Iterators {
                                                           @NotNull IntUnaryOperator nextStepSupplier,
                                                           boolean partialWindows) {
         return new WindowedIterator<>(iterator, initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
+    }
+
+    @NotNull
+    public static <T, K> Iterator<T> distinctIterator(Iterator<T> inputIterator, Function<? super T, ? extends K> selector) {
+        final AtomicIterator<T> iterator = AtomicIterator.of(inputIterator);
+        final Set<K> observed = new HashSet<>();
+        final AtomicIterator<T> atomicIterator = action -> nextDistinctValue(iterator, observed, action, selector);
+        return atomicIterator.asIterator();
+    }
+
+    private static <T, K> boolean nextDistinctValue(AtomicIterator<T> iterator,
+                                                    Set<K> observed,
+                                                    Consumer<? super T> action,
+                                                    Function<? super T, ? extends K> selector) {
+        AtomicReference<T> reference = new AtomicReference<>();
+        while (iterator.tryAdvance(reference::set)) {
+            T next = reference.get();
+            if (observed.add(selector.apply(next))) {
+                action.accept(next);
+                return true;
+            }
+        }
+        return false;
     }
 
     public static <T, A, R> Iterator<R> mergingIterator(@NotNull Iterator<T> thisIterator,
@@ -177,5 +210,18 @@ public final class Iterators {
                 return true;
             }
         }, true);
+    }
+
+    @NotNull
+    public static <T, I extends Iterator<T>> I constrainOnceIterator(I iterator, AtomicBoolean consumed) {
+        if (consumed.get()) {
+            throw new IllegalStateException("Sequence is already consumed");
+        }
+        consumed.set(true);
+        return iterator;
+    }
+
+    public static <T> PrimitiveIterator.OfInt indexIterator(Iterator<T> iterator) {
+        return new IndexIterator<>(iterator);
     }
 }

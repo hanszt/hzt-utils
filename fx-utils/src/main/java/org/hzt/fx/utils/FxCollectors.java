@@ -6,7 +6,9 @@ import javafx.collections.ObservableIntegerArray;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
+import org.hzt.fx.utils.collections.FloatArrayList;
 import org.hzt.fx.utils.function.DoubleToFloatFunction;
+import org.hzt.fx.utils.function.IntToFloatFunction;
 import org.hzt.fx.utils.function.LongToFloatFunction;
 import org.hzt.fx.utils.function.ToFloatFunction;
 import org.hzt.utils.collections.primitives.IntMutableList;
@@ -51,25 +53,25 @@ public final class FxCollectors {
 
     public static <T> Collector<T, ?, ObservableFloatArray> toObservableFloatArray(
             ToFloatFunction<? super T> toFloatFunction) {
-        return Collector.of(FloatMutableList::new,
+        return Collector.of(FloatArrayList::new,
                 (floatMutableList, value) -> floatMutableList.add(toFloatFunction.applyAsFloat(value)),
-                FloatMutableList::plus,
+                FloatArrayList::plus,
                 floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));
     }
 
     public static IntCollector<?, ObservableFloatArray> toObservableFloatArray(IntToFloatFunction mapper) {
-        return IntCollector.of(FloatMutableList::new,
+        return IntCollector.of(FloatArrayList::new,
                 (floatMutableList, value) -> floatMutableList.add(mapper.applyAsFloat(value)),
                 floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));
     }
 
     public static LongCollector<?, ObservableFloatArray> toObservableFloatArray(LongToFloatFunction mapper) {
-        return LongCollector.of(FloatMutableList::new,
+        return LongCollector.of(FloatArrayList::new,
                 (floatMutableList, value) -> floatMutableList.add(mapper.applyAsFloat(value)),
                 floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));
     }
     public static DoubleCollector<?, ObservableFloatArray> toObservableFloatArray(DoubleToFloatFunction mapper) {
-        return DoubleCollector.of(FloatMutableList::new,
+        return DoubleCollector.of(FloatArrayList::new,
                 (floatMutableList, value) -> floatMutableList.add(mapper.applyAsFloat(value)),
                 floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));
     }

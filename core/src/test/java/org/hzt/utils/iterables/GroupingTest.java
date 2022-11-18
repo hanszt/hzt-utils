@@ -1,11 +1,12 @@
 package org.hzt.utils.iterables;
 
 import org.hzt.test.ReplaceCamelCaseBySentence;
+import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableMapX;
-import org.hzt.utils.collectors.CollectorsX;
-import org.hzt.utils.tuples.Pair;
+import org.hzt.utils.collections.SortedMutableMapX;
+import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 
@@ -17,9 +18,11 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.reducing;
 import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class GroupingTest {
@@ -40,17 +43,35 @@ class GroupingTest {
         assertEquals(expected, aggregated);
     }
 
+    private static StringBuilder toStringBuilder(int key, StringBuilder stringBuilder, int element, boolean firstElement) {
+        if (firstElement) {
+            return new StringBuilder().append(key).append(":").append(element);
+        }
+        return stringBuilder.append("-").append(element);
+    }
+
     @Test
     void testGroupingByEachCount() {
         final var numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
 
-        final MapX<Integer, Integer> aggregated = numbers
+        final MapX<Integer, Long> aggregated = numbers
                 .groupingBy(nr -> nr % 3)
                 .eachCount();
 
-        final var expected = MutableMapX.of(0, 3, 1, 2, 2, 2);
+        final var expected = MapX.of(0, 3L, 1, 2L, 2, 2L);
 
-        assertEquals(expected, aggregated);
+        assertTrue(expected.containsAll(aggregated));
+    }
+
+    @Test
+    void testKeyOf() {
+        final ListX<Integer> numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
+
+        final Integer i = numbers
+                .groupingBy(nr -> nr % 3)
+                .keyOf(122);
+
+        assertEquals(2, i);
     }
 
     @Test
@@ -62,7 +83,7 @@ class GroupingTest {
                 .eachCountTo(TreeMap::new)
                 .descendingMap();
 
-        NavigableMap<Integer, Integer> expected = new TreeMap<>(MutableMapX.of(0, 3, 1, 2, 2, 2));
+        NavigableMap<Integer, Long> expected = new TreeMap<>(MutableMapX.of(0, 3L, 1, 2L, 2, 2L));
 
         System.out.println("expected = " + expected);
         System.out.println("aggregated = " + aggregated);
@@ -74,23 +95,29 @@ class GroupingTest {
     void testGroupingByFoldTo() {
         var fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
 
-        final Map<Character, Pair<Character, List<String>>> evenFruits = fruits
+        final Map<Character, List<String>> evenFruits = fruits
                 .groupingBy(fruit -> fruit.charAt(0))
                 .foldTo(HashMap::new,
-                        (firstChar, string) -> Pair.of(firstChar, new ArrayList<>()),
+                        (firstChar, fruit) -> new ArrayList<>(),
                         GroupingTest::addEvenFruits);
 
-        final var sorted = evenFruits.values().stream()
-                .sorted(comparing(Pair::first))
-                .collect(CollectorsX.toListX());
+        final NavigableMap<Character, List<String>> sorted = Sequence.ofMap(evenFruits).toSortedMap(It::self);
 
         println(sorted);
 
-        final ListX<Pair<Character, List<String>>> expected = ListX.of(Pair.of('a', Collections.emptyList()),
-                Pair.of('b', Collections.singletonList("banana")),
-                Pair.of('c', List.of("cherry", "citrus")));
+        final NavigableMap<Character, List<String>> expected =
+                SortedMutableMapX.of(MapX.of('a', Collections.emptyList(),
+               'b', Collections.singletonList("banana"),
+                'c', List.of("cherry", "citrus")), It::self);
 
         assertEquals(expected, sorted);
+    }
+
+    private static List<String> addEvenFruits(char key, List<String> fruits, String fruit) {
+        if (fruit.length() % 2 == 0) {
+            fruits.add(fruit);
+        }
+        return fruits;
     }
 
     @Test
@@ -121,18 +148,18 @@ class GroupingTest {
         assertEquals(expected, aggregated);
     }
 
-    private static Pair<Character, List<String>> addEvenFruits(char key, Pair<Character, List<String>> pair, String fruit) {
-        if (fruit.length() % 2 == 0) {
-            pair.second().add(fruit);
-        }
-        return pair;
-    }
+    @Test
+    void testCollect() {
+        final ListX<Integer> numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
 
-    private static StringBuilder toStringBuilder(int key, StringBuilder stringBuilder, int element, boolean firstElement) {
-        if (firstElement) {
-            return new StringBuilder().append(key).append(":").append(element);
-        }
-        return stringBuilder.append("-").append(element);
+        final MapX<Integer, Double> aggregated = numbers
+                .groupingBy(nr -> nr % 3)
+                .collect(mapping(Integer::doubleValue,
+                                reducing(0.0, Double::sum)));
+
+        MapX<Integer, Double> expected = MapX.of(0, 18.0, 1, 11.0, 2, 13.0);
+
+        assertTrue(expected.containsAll(aggregated));
     }
 
 }

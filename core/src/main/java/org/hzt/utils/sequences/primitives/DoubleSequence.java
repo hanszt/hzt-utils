@@ -11,6 +11,7 @@ import org.hzt.utils.iterables.primitives.DoubleNumerable;
 import org.hzt.utils.iterables.primitives.DoubleReducable;
 import org.hzt.utils.iterables.primitives.DoubleStreamable;
 import org.hzt.utils.iterables.primitives.DoubleStringable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.DoubleFilteringIterator;

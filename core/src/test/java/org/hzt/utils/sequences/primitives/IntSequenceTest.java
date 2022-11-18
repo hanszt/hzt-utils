@@ -6,7 +6,6 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
-import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.ranges.IntRange;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;

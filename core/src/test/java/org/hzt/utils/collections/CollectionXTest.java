@@ -2,7 +2,6 @@ package org.hzt.utils.collections;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.IntList;
-import org.hzt.utils.tuples.IndexedValue;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

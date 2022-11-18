@@ -10,7 +10,6 @@ import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.iterables.primitives.IntReducable;
 import org.hzt.utils.iterables.primitives.IntStreamable;
 import org.hzt.utils.iterables.primitives.IntStringable;
-import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.IntFilteringIterator;

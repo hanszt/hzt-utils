@@ -104,8 +104,8 @@ public final class FloatArrayList extends PrimitiveAbstractList<Float, FloatCons
     }
 
     @Override
-    public FloatMutableList plus(@NotNull Iterable<Float> iterable) {
-        var list = new FloatMutableList();
+    public FloatArrayList plus(@NotNull Iterable<Float> iterable) {
+        var list = new FloatArrayList();
         list.addAll(iterable);
         return list;
     }

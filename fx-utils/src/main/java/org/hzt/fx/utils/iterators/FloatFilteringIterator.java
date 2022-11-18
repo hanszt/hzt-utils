@@ -1,7 +1,6 @@
 package org.hzt.fx.utils.iterators;
 
 import org.hzt.fx.utils.function.FloatPredicate;
-import org.hzt.utils.iterators.State;
 
 import java.util.NoSuchElementException;
 

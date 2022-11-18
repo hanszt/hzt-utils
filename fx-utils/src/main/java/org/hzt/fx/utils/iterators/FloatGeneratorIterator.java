@@ -2,7 +2,6 @@ package org.hzt.fx.utils.iterators;
 
 import org.hzt.fx.utils.function.FloatSupplier;
 import org.hzt.fx.utils.function.FloatUnaryOperator;
-import org.hzt.utils.iterators.State;
 
 import java.util.NoSuchElementException;
 

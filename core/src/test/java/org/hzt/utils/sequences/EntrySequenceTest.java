@@ -2,6 +2,7 @@ package org.hzt.utils.sequences;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.MapX;
+import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.tuples.Pair;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +40,7 @@ class EntrySequenceTest {
 
     @Test
     void testFilterFormerIsBiggerThanCurrent() {
-        final DoubleList doubleList = DoubleSequence.iterate(0.0, i -> i + 0.1)
+        final var doubleList = DoubleSequence.iterate(0.0, i -> i + 0.1)
                 .take(100)
                 .mapToObj(Math::sin)
                 .zipWithNext()

@@ -1,5 +1,6 @@
 package org.hzt.utils.collectors;
 
+import org.hzt.test.ReplaceCamelCaseBySentence;
 import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;

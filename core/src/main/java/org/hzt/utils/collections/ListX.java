@@ -98,7 +98,6 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
 
     Optional<E> findRandom();
 
-    @Override
     ListX<E> shuffled();
 
     default E random() {

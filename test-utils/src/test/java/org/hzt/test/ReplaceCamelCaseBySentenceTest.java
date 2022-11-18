@@ -38,7 +38,7 @@ class ReplaceCamelCaseBySentenceTest {
     void testReplaceCamelCaseMethodNameBySentence(@SuppressWarnings("unused") String s) {
         final Object classInMethod = new Object() {
         };
-        final Method methodName = classInMethod
+        final var methodName = classInMethod
                 .getClass()
                 .getEnclosingMethod();
 

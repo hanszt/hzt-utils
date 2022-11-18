@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,7 +27,7 @@ class EntrySequenceTest {
 
         final var resultMap = mapX.asSequence()
                 .filterValues(value -> value <= 3)
-                .onEach((k, v) -> It.println("key: " + k + ", value: " + v))
+                .onEach((key, day) -> println("key: " + key + ", value: " + day))
                 .mapByValues(day -> LocalDate.of(2000, Month.JANUARY, day))
                 .toMapX();
 
@@ -34,6 +35,22 @@ class EntrySequenceTest {
                 () -> assertEquals(3, resultMap.size()),
                 () -> assertEquals(Set.of("1", "2", "3"), resultMap.keySet())
         );
+    }
+
+    @Test
+    void testFilterFormerIsBiggerThanCurrent() {
+        final DoubleList doubleList = DoubleSequence.iterate(0.0, i -> i + 0.1)
+                .take(100)
+                .mapToObj(Math::sin)
+                .zipWithNext()
+                .onEntrySequence(sequence -> println(sequence.count()))
+                .filter((cur, next) -> cur < next)
+                .mapToDouble(Map.Entry::getValue)
+                .toList();
+
+        println(doubleList);
+
+        assertEquals(48, doubleList.size());
     }
 
     @Test

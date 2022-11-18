@@ -1,4 +1,4 @@
-package org.hzt.fx.utils;
+package org.hzt.fx.utils.iterators;
 
 import org.hzt.fx.utils.function.FloatConsumer;
 
@@ -7,14 +7,14 @@ import java.util.PrimitiveIterator;
 
 public interface FloatIterator extends PrimitiveIterator<Float, FloatConsumer> {
 
-    float nextFloat();
-
     @Override
     default void forEachRemaining(FloatConsumer action) {
         while (hasNext()) {
             action.accept(nextFloat());
         }
     }
+
+    float nextFloat();
 
     @Override
     default Float next() {

@@ -39,7 +39,6 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
-import java.util.stream.BaseStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -170,11 +169,6 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> PrimitiveIterators.toDoubleFlatMappingIterator(iterator(), t -> mapper.apply(t).iterator());
     }
 
-    @Override
-    default <R, S extends BaseStream<R, S>> Sequence<R> flatMapStream(@NotNull Function<? super T, ? extends S> mapper) {
-        return (Sequence<R>) IterableX.super.flatMapStream(mapper);
-    }
-
     default <R> Sequence<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
         return () -> Iterators.multiMappingIterator(iterator(), mapper);
     }
@@ -254,13 +248,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     default Sequence<T> constrainOnce() {
         final var consumed = new AtomicBoolean();
-        return () -> {
-            if (consumed.get()) {
-                throw new IllegalStateException("Sequence is already consumed");
-            }
-            consumed.set(true);
-            return iterator();
-        };
+        return () -> Iterators.constrainOnceIterator(iterator(), consumed);
     }
 
     default <R> Sequence<R> zipWithNext(@NotNull BiFunction<? super T, ? super T, ? extends R> function) {

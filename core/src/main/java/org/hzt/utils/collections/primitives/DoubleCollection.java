@@ -7,6 +7,7 @@ import org.hzt.utils.iterables.primitives.DoubleGroupable;
 import org.hzt.utils.iterables.primitives.DoubleNumerable;
 import org.hzt.utils.iterables.primitives.DoubleReducable;
 import org.hzt.utils.iterables.primitives.DoubleStreamable;
+import org.hzt.utils.iterables.primitives.DoubleStringable;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +20,8 @@ import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
 
-public interface DoubleCollection extends DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable, DoubleGroupable,
+public interface DoubleCollection extends
+        DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable, DoubleGroupable, DoubleStringable,
         PrimitiveCollection<Double, DoubleConsumer, double[]> {
 
     @Override

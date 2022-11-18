@@ -23,7 +23,7 @@ public interface SortedMutableMapX<K, V> extends NavigableMap<K, V>, MutableMapX
         return new TreeMapX<>(map, selector);
     }
 
-    static <K, V, R extends Comparable<? super R>> SortedMutableMapX<K, V> ofSortedMap(SortedMap<K, V> sortedMap) {
+    static <K, V> SortedMutableMapX<K, V> ofSortedMap(SortedMap<K, V> sortedMap) {
         return new TreeMapX<>(sortedMap);
     }
 

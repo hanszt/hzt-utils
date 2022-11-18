@@ -1,23 +1,27 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.test.ReplaceCamelCaseBySentence;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
+import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.ranges.IntRange;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.chrono.IsoChronology;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hzt.utils.It.println;
+import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class IntSequenceTest {
 
     @Test
@@ -57,7 +61,7 @@ class IntSequenceTest {
                 .plus(IntList.of(array))
                 .toArray();
 
-        It.println(Arrays.toString(result));
+        println(Arrays.toString(result));
 
         assertAll(
                 () -> assertEquals(18, result.length),
@@ -71,7 +75,7 @@ class IntSequenceTest {
                 .minus(2, 76, 5)
                 .toArray();
 
-        It.println(Arrays.toString(result));
+        println(Arrays.toString(result));
 
         assertAll(
                 () -> assertEquals(8, result.length),
@@ -85,7 +89,7 @@ class IntSequenceTest {
                 .minus(IntList.of(2, 76, 5))
                 .toArray();
 
-        It.println(Arrays.toString(result));
+        println(Arrays.toString(result));
 
         assertAll(
                 () -> assertEquals(8, result.length),
@@ -103,7 +107,7 @@ class IntSequenceTest {
                 .plus(ints)
                 .toArray();
 
-        It.println(Arrays.toString(result));
+        println(Arrays.toString(result));
 
         assertAll(
                 () -> assertEquals(14, result.length),
@@ -144,7 +148,7 @@ class IntSequenceTest {
 
         final var actual = IntRange.of(0, 100).stats();
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertAll(
                 () -> assertEquals(expected.getCount(), actual.getCount()),
@@ -160,7 +164,7 @@ class IntSequenceTest {
 
         final var actual = IntSequence.of(IntStream.range(0, 100)).stats();
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertAll(
                 () -> assertEquals(expected.getCount(), actual.getCount()),
@@ -199,7 +203,7 @@ class IntSequenceTest {
                 .sortedDescending()
                 .toArray();
 
-        It.println("Arrays.toString(array) = " + Arrays.toString(sorted));
+        println("Arrays.toString(array) = " + Arrays.toString(sorted));
 
         assertArrayEquals(new int[]{9, 8, 7, 6, 5, 5, 4, 4, 4, 3, 1}, sorted);
     }
@@ -213,7 +217,7 @@ class IntSequenceTest {
                         .thenComparing(Integer::compareUnsigned))
                 .toArray();
 
-        It.println("Arrays.toString(array) = " + Arrays.toString(sorted));
+        println("Arrays.toString(array) = " + Arrays.toString(sorted));
 
         assertArrayEquals(new int[]{3, 4, 7, 8, 9, -6, -5, -5, -4, -4, -1}, sorted);
     }
@@ -272,7 +276,7 @@ class IntSequenceTest {
                 .distinct()
                 .toArray();
 
-        assertArrayEquals(new int[] {1, 2, 3, 4, -51, 5, 6, 7, -1, -100, -50}, distinctArray);
+        assertArrayEquals(new int[]{1, 2, 3, 4, -51, 5, 6, 7, -1, -100, -50}, distinctArray);
     }
 
     @Test
@@ -283,5 +287,58 @@ class IntSequenceTest {
                 .toList();
 
         assertEquals(IntList.of(1, 3, 6, 11, 20, 37, 70), list);
+    }
+
+    @Nested
+    class TakeSkipWhileInclusiveTests {
+
+        /**
+         * @see java.time.chrono.IsoChronology#isLeapYear(long)
+         */
+        @Test
+        void testYear2000IsLeapYearAccordingIso8601Standard() {
+            final int last = IntSequence.iterate(1900, year -> year + 1)
+                    .filter(IsoChronology.INSTANCE::isLeapYear)
+                    .takeWhileInclusive(year -> year % 100 != 0)
+                    .last();
+
+            assertEquals(2000, last);
+        }
+
+        /**
+         * @see java.time.chrono.IsoChronology#isLeapYear(long)
+         */
+        @Test
+        void testYear2000IssLeapYearAccordingIso8601Standard() {
+            final IntSequence leapYears = IntSequence.iterate(1900, year -> year + 1)
+                    .filter(IsoChronology.INSTANCE::isLeapYear);
+
+            final IntList yearsSkipWhileInclusive = leapYears
+                    .skipWhileInclusive(year -> year % 100 != 0)
+                    .take(5)
+                    .toList();
+
+            final IntList yearsSkipWhile = leapYears
+                    .skipWhile(year -> year % 100 != 0)
+                    .take(5)
+                    .toList();
+
+            assertAll(
+                    () -> assertEquals(IntList.of(2004, 2008, 2012, 2016, 2020), yearsSkipWhileInclusive),
+                    () -> assertEquals(IntList.of(2000, 2004, 2008, 2012, 2016), yearsSkipWhile)
+            );
+        }
+    }
+
+    @Test
+    void testFlatMapToInt() {
+        final int[] ints = IntSequence.iterate(1, i -> i * 2)
+                .take(20)
+                .flatMap(i -> IntSequence.of(1, 2, 3).plus(i))
+                .toArray();
+
+        println(Arrays.toString(ints));
+
+        assertEquals(80, ints.length);
     }
 }

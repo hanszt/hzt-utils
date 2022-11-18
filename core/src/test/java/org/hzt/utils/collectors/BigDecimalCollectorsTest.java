@@ -3,6 +3,7 @@ package org.hzt.utils.collectors;
 import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
+import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import static org.hzt.utils.collectors.BigDecimalCollectors.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class BigDecimalCollectorsTest {
 
     @Test
@@ -26,10 +28,10 @@ class BigDecimalCollectorsTest {
         It.println("bigDecimalSummaryStatistics = " + bigDecimalSummaryStatistics);
 
         assertAll(
-                () -> assertEquals(BigDecimal.valueOf(46502.27), bigDecimalSummaryStatistics.getAverage()),
-                () -> assertEquals(BigDecimal.valueOf(232511.34), bigDecimalSummaryStatistics.getSum()),
-                () -> assertEquals(BigDecimal.valueOf(-4323), bigDecimalSummaryStatistics.getMin()),
-                () -> assertEquals(BigDecimal.valueOf(234235.34), bigDecimalSummaryStatistics.getMax()),
+                () -> assertEquals(BigDecimal.valueOf(46_502.27), bigDecimalSummaryStatistics.getAverage()),
+                () -> assertEquals(BigDecimal.valueOf(232_511.34), bigDecimalSummaryStatistics.getSum()),
+                () -> assertEquals(BigDecimal.valueOf(-4_323), bigDecimalSummaryStatistics.getMin()),
+                () -> assertEquals(BigDecimal.valueOf(234_235.34), bigDecimalSummaryStatistics.getMax()),
                 () -> assertEquals(5, bigDecimalSummaryStatistics.getCount())
         );
     }

@@ -28,7 +28,7 @@ final class ToDoubleFlatMappingIterator<T> implements PrimitiveIterator.OfDouble
         if (!ensureItemIterator()) {
             throw new NoSuchElementException();
         }
-        return itemIterator.next();
+        return itemIterator.nextDouble();
     }
 
     private boolean ensureItemIterator() {

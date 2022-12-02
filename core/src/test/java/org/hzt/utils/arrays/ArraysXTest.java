@@ -32,6 +32,12 @@ class ArraysXTest {
     }
 
     @Test
+    void testGenerateIntArray() {
+        final int[] ints = ArraysX.generateIntArray(6, i -> i * 2);
+        assertArrayEquals(new int[] {0, 2, 4, 6, 8, 10}, ints);
+    }
+
+    @Test
     void testReverseArray() {
         var strings = new String[]{"this", "is", "a", "test"};
         final var strings2 = ArraysX.copyOf(strings);

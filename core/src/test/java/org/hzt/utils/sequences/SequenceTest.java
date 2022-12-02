@@ -1040,6 +1040,71 @@ class SequenceTest {
         assertEquals(List.of("This", "is", "a", "test"), strings);
     }
 
+    @Nested
+    class ReverseSequenceTests {
+
+        @Test
+        void testReverseSequenceFromArray() {
+            String[] strings = {"This", "is", "a", "test"};
+
+            final Sequence<String> sequence = Sequence.ofReverse(strings);
+
+            final int[] ints = sequence
+                    .skip(2)
+                    .mapToInt(String::length)
+                    .toArray();
+
+            final String first = sequence.first();
+
+            assertAll(
+                    () -> assertArrayEquals(new int[] {2, 4}, ints),
+                    () -> assertEquals("test", first)
+            );
+        }
+
+        @Test
+        void testReverseSequenceFromList() {
+            List<String> strings = Arrays.asList("This", "is", "a", "test");
+
+            final Sequence<String> sequence = Sequence.ofReverse(strings);
+
+            final int[] ints = sequence
+                    .skip(2)
+                    .mapToInt(String::length)
+                    .toArray();
+
+            final String first = sequence.first();
+
+            System.out.println("first = " + first);
+
+            assertAll(
+                    () -> assertArrayEquals(new int[] {2, 4}, ints),
+                    () -> assertEquals("test", first)
+            );
+        }
+
+        @Test
+        void testReverseSequenceFromListX() {
+            ListX<String> strings = ListX.of("This", "is", "a", "test");
+
+            final Sequence<String> sequence = Sequence.ofReverse(strings);
+
+            final int[] ints = sequence
+                    .skip(2)
+                    .mapToInt(String::length)
+                    .toArray();
+
+            final String first = sequence.first();
+
+            System.out.println("first = " + first);
+
+            assertAll(
+                    () -> assertArrayEquals(new int[] {2, 4}, ints),
+                    () -> assertEquals("test", first)
+            );
+        }
+    }
+
     private static final class Nodes<T> {
 
         private final List<T> nodes = new ArrayList<>();

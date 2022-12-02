@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.iterables.primitives.LongCollectable;
@@ -24,6 +25,7 @@ public interface LongCollection extends
         LongReducable, LongCollectable, LongNumerable, LongStreamable, LongGroupable, LongStringable,
         PrimitiveCollection<Long, LongConsumer, long[]> {
 
+    @Override
     default boolean isEmpty() {
         return none();
     }
@@ -106,11 +108,6 @@ public interface LongCollection extends
         return listX;
     }
 
-    @Override
-    default PrimitiveCollection<Long, LongConsumer, long[]> take(long n) {
-        return takeTo(() -> LongMutableList.withInitCapacity((int) n), n);
-    }
-
     default LongSequence asSequence() {
         return LongSequence.of(this);
     }
@@ -118,6 +115,16 @@ public interface LongCollection extends
     @Override
     default Spliterator.OfLong spliterator() {
         return Spliterators.spliterator(iterator(), size(), Spliterator.ORDERED | Spliterator.NONNULL);
+    }
+
+    @Override
+    default PrimitiveCollection<Long, LongConsumer, long[]> take(long n) {
+        return takeTo(() -> LongMutableList.withInitCapacity((int) n), n);
+    }
+
+    default LongList skip(long n) {
+        PreConditions.require(n <= Integer.MAX_VALUE);
+        return skipTo(() -> LongMutableList.withInitCapacity((int) (size() - n)), (int) n);
     }
 
     @Override

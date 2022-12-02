@@ -18,7 +18,8 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface IntCollectable extends PrimitiveCollectable<IntCollection>, PrimitiveIterable.OfInt {
 
-    default <R> R collect(@NotNull Supplier<R> supplier, @NotNull ObjIntConsumer<R> accumulator) {
+    default <R> R collect(@NotNull Supplier<R> supplier,
+                          @NotNull ObjIntConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
     }
 
@@ -98,6 +99,19 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
             if (++count == n) {
                 break;
             }
+        }
+        return collection;
+    }
+
+    default <C extends IntMutableCollection> C skipTo(Supplier<C> collectionFactory, int count) {
+        C collection = collectionFactory.get();
+        int counter = 0;
+        for (PrimitiveIterator.OfInt iterator = this.iterator(); iterator.hasNext(); ) {
+            int value = iterator.nextInt();
+            if (counter >= count) {
+                collection.add(value);
+            }
+            counter++;
         }
         return collection;
     }

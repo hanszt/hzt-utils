@@ -81,4 +81,9 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
     default Spliterator<E> spliterator() {
         return List.super.spliterator();
     }
+
+    @Override
+    default ListX<E> toListX() {
+        return ListX.copyOf(this);
+    }
 }

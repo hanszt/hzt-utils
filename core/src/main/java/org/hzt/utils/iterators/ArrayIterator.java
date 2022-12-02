@@ -7,15 +7,19 @@ import java.util.NoSuchElementException;
 final class ArrayIterator<E> implements Iterator<E> {
 
     private final E[] array;
-    private int index = 0;
 
-    ArrayIterator(E[] array) {
+    private final boolean reverse;
+    private int index;
+
+    ArrayIterator(E[] array, boolean reverse) {
         this.array = Arrays.copyOf(array, array.length);
+        this.reverse = reverse;
+        this.index = reverse ? (array.length - 1) : 0;
     }
 
     @Override
     public boolean hasNext() {
-        return index < array.length;
+        return reverse ? (index >= 0) : (index < array.length);
     }
 
     @Override
@@ -23,6 +27,6 @@ final class ArrayIterator<E> implements Iterator<E> {
         if (index < 0 || index >= array.length) {
             throw new NoSuchElementException("index out of bounds. (Index value: " + index + ")");
         }
-        return array[index++];
+        return array[reverse ? index-- : index++];
     }
 }

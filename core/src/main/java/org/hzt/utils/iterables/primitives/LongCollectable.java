@@ -100,4 +100,17 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         }
         return collection;
     }
+
+    default <C extends LongMutableCollection> C skipTo(Supplier<C> collectionFactory, int count) {
+        var collection = collectionFactory.get();
+        var counter = 0;
+        for (var iterator = this.iterator(); iterator.hasNext(); ) {
+            long value = iterator.nextLong();
+            if (counter >= count) {
+                collection.add(value);
+            }
+            counter++;
+        }
+        return collection;
+    }
 }

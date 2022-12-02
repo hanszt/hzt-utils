@@ -258,7 +258,7 @@ class SequenceTest {
 
     @Test
     void testFlatMapStream() {
-        final IntList charInts = Sequence.of("hallo", "test")
+        final var charInts = Sequence.of("hallo", "test")
                 .map(String::chars)
                 .flatMapToInt(s -> s::iterator)
                 .toList();
@@ -582,9 +582,9 @@ class SequenceTest {
 
     @Test
     void testSequenceOfEntryIterable() {
-        final MapX<Integer, String> map = MapX.of(1, "a", 2, "b", 3, "c", 4, "d");
+        final var map = MapX.of(1, "a", 2, "b", 3, "c", 4, "d");
 
-        final MapX<Integer, Character> mapX = Sequence.of(map)
+        final var mapX = Sequence.of(map)
                 .mapByValues(s -> StringX.of(s).first())
                 .filterValues(Character::isLetter)
                 .filterKeys(IntX::isEven)
@@ -944,7 +944,7 @@ class SequenceTest {
     void testFlatmapIterator() {
         setProperty("org.openjdk.java.util.stream.tripwire", "false");
 
-        final IntList integers = IntRange.of(0, 1_000)
+        final var integers = IntRange.of(0, 1_000)
                 .windowed(10)
                 .map(IntList::iterator)
                 .flatMapToInt(i -> () -> i)
@@ -1038,6 +1038,71 @@ class SequenceTest {
                 .toList();
 
         assertEquals(List.of("This", "is", "a", "test"), strings);
+    }
+
+    @Nested
+    class ReverseSequenceTests {
+
+        @Test
+        void testReverseSequenceFromArray() {
+            var strings = new String[]{"This", "is", "a", "test"};
+
+            final var sequence = Sequence.ofReverse(strings);
+
+            final var ints = sequence
+                    .skip(2)
+                    .mapToInt(String::length)
+                    .toArray();
+
+            final var first = sequence.first();
+
+            assertAll(
+                    () -> assertArrayEquals(new int[] {2, 4}, ints),
+                    () -> assertEquals("test", first)
+            );
+        }
+
+        @Test
+        void testReverseSequenceFromList() {
+            List<String> strings = List.of("This", "is", "a", "test");
+
+            final var sequence = Sequence.ofReverse(strings);
+
+            final var ints = sequence
+                    .skip(2)
+                    .mapToInt(String::length)
+                    .toArray();
+
+            final var first = sequence.first();
+
+            System.out.println("first = " + first);
+
+            assertAll(
+                    () -> assertArrayEquals(new int[] {2, 4}, ints),
+                    () -> assertEquals("test", first)
+            );
+        }
+
+        @Test
+        void testReverseSequenceFromListX() {
+            var strings = ListX.of("This", "is", "a", "test");
+
+            final var sequence = Sequence.ofReverse(strings);
+
+            final var ints = sequence
+                    .skip(2)
+                    .mapToInt(String::length)
+                    .toArray();
+
+            final var first = sequence.first();
+
+            System.out.println("first = " + first);
+
+            assertAll(
+                    () -> assertArrayEquals(new int[] {2, 4}, ints),
+                    () -> assertEquals("test", first)
+            );
+        }
     }
 
     private static final class Nodes<T> {

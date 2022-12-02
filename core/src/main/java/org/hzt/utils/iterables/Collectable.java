@@ -17,7 +17,6 @@ import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
-import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
@@ -28,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.PrimitiveIterator;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -253,8 +251,13 @@ public interface Collectable<T> extends IndexedIterable<T> {
 
     default <R, C extends Collection<R>> C mapIndexedTo(@NotNull Supplier<C> collectionFactory,
                                                         @NotNull IndexedFunction<? super T, ? extends R> mapper) {
-        return Sequence.of(this::indexedIterator)
-                .mapTo(collectionFactory, indexedValue -> mapper.apply(indexedValue.index(), indexedValue.value()));
+        final var collection = collectionFactory.get();
+        var index = 0;
+        for (var value : this) {
+            collection.add(mapper.apply(index, value));
+            index++;
+        }
+        return collection;
     }
 
     default <R, I extends Iterable<? extends R>, C extends Collection<R>> C flatMapTo(
@@ -278,13 +281,13 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <I extends PrimitiveIterable.OfInt, C extends IntMutableCollection> C flatMapIntsTo(
             @NotNull Supplier<C> collectionSupplier,
             @NotNull Function<? super T, ? extends I> mapper) {
-        final C collection = collectionSupplier.get();
-        for (T item : this) {
-            final I c = mapper.apply(item);
+        final var collection = collectionSupplier.get();
+        for (var item : this) {
+            final var c = mapper.apply(item);
             if (c == null) {
                 continue;
             }
-            final PrimitiveIterator.OfInt iterator = c.iterator();
+            final var iterator = c.iterator();
             while (iterator.hasNext()) {
                 collection.add(iterator.nextInt());
             }
@@ -295,13 +298,13 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <I extends PrimitiveIterable.OfLong, C extends LongMutableCollection> C flatMapLongsTo(
             @NotNull Supplier<C> collectionSupplier,
             @NotNull Function<? super T, ? extends I> mapper) {
-        final C collection = collectionSupplier.get();
-        for (T item : this) {
-            final I c = mapper.apply(item);
+        final var collection = collectionSupplier.get();
+        for (var item : this) {
+            final var c = mapper.apply(item);
             if (c == null) {
                 continue;
             }
-            final PrimitiveIterator.OfLong iterator = c.iterator();
+            final var iterator = c.iterator();
             while (iterator.hasNext()) {
                 collection.add(iterator.nextLong());
             }
@@ -312,15 +315,14 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <I extends PrimitiveIterable.OfDouble, C extends DoubleMutableCollection> C flatMapDoublesTo(
             @NotNull Supplier<C> collectionSupplier,
             @NotNull Function<? super T, ? extends I> mapper) {
-        final C collection = collectionSupplier.get();
-        for (T item : this) {
-            final I c = mapper.apply(item);
-            if (c == null) {
-                continue;
-            }
-            final PrimitiveIterator.OfDouble iterator = c.iterator();
-            while (iterator.hasNext()) {
-                collection.add(iterator.nextDouble());
+        final var collection = collectionSupplier.get();
+        for (var item : this) {
+            final var c = mapper.apply(item);
+            if (c != null) {
+                final var iterator = c.iterator();
+                while (iterator.hasNext()) {
+                    collection.add(iterator.nextDouble());
+                }
             }
         }
         return collection;
@@ -392,18 +394,11 @@ public interface Collectable<T> extends IndexedIterable<T> {
         return list;
     }
 
-    default <C extends Collection<T>> C takeTo(Supplier<C> collectionFactory, long n) {
+    default <C extends Collection<T>> C takeTo(Supplier<C> collectionFactory, int n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         var collection = collectionFactory.get();
         if (n == 0) {
             return collection;
-        }
-        final Iterable<T> iterable = this;
-        if (iterable instanceof Collection<T> c) {
-            if (n >= c.size()) {
-                collection.addAll(c);
-                return collection;
-            }
         }
         var count = 0;
         for (var t : this) {
@@ -418,8 +413,13 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <C extends Collection<T>> C takeWhileTo(@NotNull Supplier<C> collectionFactory,
                                                     @NotNull Predicate<? super T> predicate,
                                                     boolean inclusive) {
+        final var iterator = iterator();
         final var collection = collectionFactory.get();
-        for (var item : this) {
+        if (!iterator.hasNext()) {
+            return collection;
+        }
+        while (iterator.hasNext()) {
+            var item = iterator.next();
             if (!predicate.test(item)) {
                 if (inclusive) {
                     collection.add(item);
@@ -452,13 +452,13 @@ public interface Collectable<T> extends IndexedIterable<T> {
             @NotNull BiFunction<? super T, ? super A, ? extends R> function) {
         final var otherIterator = otherIterable.iterator();
         final var iterator = iterator();
-        final var list = collectionFactory.get();
+        final var collection = collectionFactory.get();
         while (iterator.hasNext() && otherIterator.hasNext()) {
             final var next = iterator.next();
             final var otherNext = otherIterator.next();
-            list.add(function.apply(next, otherNext));
+            collection.add(function.apply(next, otherNext));
         }
-        return list;
+        return collection;
     }
 
     default <R, C extends Collection<R>> C zipWithNextTo(@NotNull Supplier<C> collectionFactory,
@@ -467,13 +467,13 @@ public interface Collectable<T> extends IndexedIterable<T> {
         if (!iterator.hasNext()) {
             return collectionFactory.get();
         }
-        final var list = collectionFactory.get();
+        final var collection = collectionFactory.get();
         var current = iterator.next();
         while (iterator.hasNext()) {
             final var next = iterator.next();
-            list.add(function.apply(current, next));
+            collection.add(function.apply(current, next));
             current = next;
         }
-        return list;
+        return collection;
     }
 }

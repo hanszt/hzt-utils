@@ -196,7 +196,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
 
     @Override
     default EntrySequence<K, V> constrainOnce() {
-        final AtomicBoolean consumed = new AtomicBoolean();
+        final var consumed = new AtomicBoolean();
         return () -> Iterators.constrainOnceIterator(iterator(), consumed);
     }
 

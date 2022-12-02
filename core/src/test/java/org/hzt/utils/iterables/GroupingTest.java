@@ -65,9 +65,9 @@ class GroupingTest {
 
     @Test
     void testKeyOf() {
-        final ListX<Integer> numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
+        final var numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
 
-        final Integer i = numbers
+        final var i = numbers
                 .groupingBy(nr -> nr % 3)
                 .keyOf(122);
 
@@ -150,14 +150,14 @@ class GroupingTest {
 
     @Test
     void testCollect() {
-        final ListX<Integer> numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
+        final var numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
 
-        final MapX<Integer, Double> aggregated = numbers
+        final var aggregated = numbers
                 .groupingBy(nr -> nr % 3)
                 .collect(mapping(Integer::doubleValue,
                                 reducing(0.0, Double::sum)));
 
-        MapX<Integer, Double> expected = MapX.of(0, 18.0, 1, 11.0, 2, 13.0);
+        var expected = MapX.of(0, 18.0, 1, 11.0, 2, 13.0);
 
         assertTrue(expected.containsAll(aggregated));
     }

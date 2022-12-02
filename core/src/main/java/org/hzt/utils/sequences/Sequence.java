@@ -2,6 +2,7 @@ package org.hzt.utils.sequences;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -69,6 +71,19 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     static <T> Sequence<T> of(@NotNull Iterable<T> iterable) {
         return iterable::iterator;
+    }
+
+    @SafeVarargs
+    static <T> Sequence<T> ofReverse(T... values) {
+        return () -> Iterators.reverseArrayIterator(values);
+    }
+
+    static <T> Sequence<T> ofReverse(List<T> list) {
+        return () -> Iterators.reverseIterator(list);
+    }
+
+    static <T> Sequence<T> ofReverse(ListX<T> list) {
+        return () -> Iterators.reverseIterator(list);
     }
 
     static <K, V> EntrySequence<K, V> of(EntryIterable<K, V> entryIterable) {

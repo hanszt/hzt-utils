@@ -2,7 +2,6 @@ package org.hzt.utils.iterables.primitives;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.function.IntFunction;
 
 @FunctionalInterface
@@ -13,8 +12,8 @@ public interface IntStringable extends PrimitiveIterable.OfInt {
     }
 
     default String joinToString(CharSequence delimiter) {
-        final StringBuilder sb = new StringBuilder();
-        final PrimitiveIterator.OfInt iterator = iterator();
+        final var sb = new StringBuilder();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             sb.append(iterator.nextInt()).append(iterator.hasNext() ? delimiter : "");
         }
@@ -26,10 +25,10 @@ public interface IntStringable extends PrimitiveIterable.OfInt {
     }
 
     default <R> String joinToStringBy(@NotNull IntFunction<? extends R> selector, CharSequence delimiter) {
-        final StringBuilder sb = new StringBuilder();
-        final PrimitiveIterator.OfInt iterator = iterator();
+        final var sb = new StringBuilder();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
-            final R r = selector.apply(iterator.nextInt());
+            final var r = selector.apply(iterator.nextInt());
             sb.append(r).append(iterator.hasNext() ? delimiter : "");
         }
         return sb.toString().trim();

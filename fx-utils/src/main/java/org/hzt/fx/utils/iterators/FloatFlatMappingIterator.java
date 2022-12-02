@@ -38,7 +38,7 @@ final class FloatFlatMappingIterator implements FloatIterator {
             if (!iterator.hasNext()) {
                 return false;
             }
-            final FloatIterator nextItemIterator = mapper.apply(iterator.nextFloat());
+            final var nextItemIterator = mapper.apply(iterator.nextFloat());
             if (nextItemIterator.hasNext()) {
                 itemIterator = nextItemIterator;
                 return true;

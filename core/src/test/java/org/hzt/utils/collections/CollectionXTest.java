@@ -98,7 +98,7 @@ class CollectionXTest {
 
     @Test
     void testFlatMapStreamToIntList() {
-        final IntList charInts = ListX.of("hallo", "test").flatMapToInt(s -> s.chars()::iterator);
+        final var charInts = ListX.of("hallo", "test").flatMapToInt(s -> s.chars()::iterator);
 
         assertEquals(IntList.of(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
     }

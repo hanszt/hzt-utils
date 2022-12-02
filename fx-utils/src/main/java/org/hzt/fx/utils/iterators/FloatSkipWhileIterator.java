@@ -52,7 +52,7 @@ final class FloatSkipWhileIterator implements FloatIterator {
             skip();
         }
         if (state == SkipState.NEXT_ITEM) {
-            float result = nextItem;
+            var result = nextItem;
             state = SkipState.NORMAL_ITERATION;
             return result;
         }

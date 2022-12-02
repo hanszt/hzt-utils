@@ -39,7 +39,7 @@ final class ToDoubleFlatMappingIterator<T> implements PrimitiveIterator.OfDouble
             if (!iterator.hasNext()) {
                 return false;
             }
-            final PrimitiveIterator.OfDouble nextItemIterator = toIteratorFunction.apply(iterator.next());
+            final var nextItemIterator = toIteratorFunction.apply(iterator.next());
             if (nextItemIterator.hasNext()) {
                 itemIterator = nextItemIterator;
                 return true;

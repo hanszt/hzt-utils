@@ -36,13 +36,13 @@ class ReplaceCamelCaseBySentenceTest {
     @ParameterizedTest
     @ValueSource(strings = {"string 1", "string 2"})
     void testReplaceCamelCaseMethodNameBySentence(@SuppressWarnings("unused") String s) {
-        final Object classInMethod = new Object() {
+        final var classInMethod = new Object() {
         };
         final var methodName = classInMethod
                 .getClass()
                 .getEnclosingMethod();
 
-        final String name = replaceCamelCaseBySentence.generateDisplayNameForMethod(ReplaceCamelCaseBySentenceTest.class, methodName);
+        final var name = replaceCamelCaseBySentence.generateDisplayNameForMethod(ReplaceCamelCaseBySentenceTest.class, methodName);
 
         assertEquals("Test replace camel case method name by sentence(String)", name);
     }

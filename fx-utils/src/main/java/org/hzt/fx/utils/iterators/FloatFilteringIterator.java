@@ -38,7 +38,7 @@ final class FloatFilteringIterator implements FloatIterator {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        final float result = nextFloat;
+        final var result = nextFloat;
         nextFloat = 0L;
         nextState = State.NEXT_UNKNOWN;
         return result;
@@ -46,7 +46,7 @@ final class FloatFilteringIterator implements FloatIterator {
 
     private void calculateNext() {
         while (iterator.hasNext()) {
-            float next = iterator.nextFloat();
+            var next = iterator.nextFloat();
             if (predicate.test(next) == sendWhen) {
                 this.nextFloat = next;
                 nextState = State.CONTINUE;

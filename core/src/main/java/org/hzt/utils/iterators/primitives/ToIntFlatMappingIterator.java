@@ -39,7 +39,7 @@ final class ToIntFlatMappingIterator<T> implements PrimitiveIterator.OfInt {
             if (!iterator.hasNext()) {
                 return false;
             }
-            final PrimitiveIterator.OfInt nextItemIterator = toIteratorFunction.apply(iterator.next());
+            final var nextItemIterator = toIteratorFunction.apply(iterator.next());
             if (nextItemIterator.hasNext()) {
                 itemIterator = nextItemIterator;
                 return true;

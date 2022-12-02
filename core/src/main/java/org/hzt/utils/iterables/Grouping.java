@@ -57,11 +57,11 @@ public interface Grouping<T, K> extends Iterable<T> {
 
     default <R, A, M extends Map<K, R>> M collectTo(Supplier<M> mapSupplier,
                                                     Collector<? super T, A, R> downStream) {
-        final M destination = mapSupplier.get();
+        final var destination = mapSupplier.get();
         final Map<K, A> accumulators = new HashMap<>();
-        for (T item : this) {
-            final K key = keyOf(item);
-            final A accumulator = accumulators.computeIfAbsent(key, k -> downStream.supplier().get());
+        for (var item : this) {
+            final var key = keyOf(item);
+            final var accumulator = accumulators.computeIfAbsent(key, k -> downStream.supplier().get());
             downStream.accumulator().accept(accumulator, item);
             destination.put(key, downStream.finisher().apply(accumulator));
         }

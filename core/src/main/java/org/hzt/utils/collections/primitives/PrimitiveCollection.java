@@ -30,6 +30,8 @@ public interface PrimitiveCollection<T, C, A> extends Indexable<T> {
 
     PrimitiveCollection<T, C, A> take(long n);
 
+    PrimitiveCollection<T, C, A> skip(long n);
+
     @NotNull PrimitiveIterator<T, C> iterator();
 
     @Override

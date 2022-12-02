@@ -25,8 +25,6 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.PrimitiveIterator;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -432,8 +430,8 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
         final var indices = IntRange.closed(Math.max(startIndex, 0), charSequence.length());
 
-        for (PrimitiveIterator.OfInt iterator = indices.iterator(); iterator.hasNext(); ) {
-            int index = iterator.nextInt();
+        for (var iterator = indices.iterator(); iterator.hasNext(); ) {
+            var index = iterator.nextInt();
             final var matchingCharSequence = delimiters
                     .findFirst(charSeq -> charSeq.toString().regionMatches(ignoreCase, 0, stringX.string, index, charSeq.length()))
                     .orElse(null);

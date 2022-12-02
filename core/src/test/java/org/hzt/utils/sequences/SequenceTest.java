@@ -1047,7 +1047,7 @@ class SequenceTest {
         void testReverseSequenceFromArray() {
             var strings = new String[]{"This", "is", "a", "test"};
 
-            final var sequence = Sequence.ofReverse(strings);
+            final var sequence = Sequence.reverseOf(strings);
 
             final var ints = sequence
                     .skip(2)
@@ -1066,7 +1066,7 @@ class SequenceTest {
         void testReverseSequenceFromList() {
             List<String> strings = List.of("This", "is", "a", "test");
 
-            final var sequence = Sequence.ofReverse(strings);
+            final var sequence = Sequence.reverseOf(strings);
 
             final var ints = sequence
                     .skip(2)
@@ -1087,7 +1087,7 @@ class SequenceTest {
         void testReverseSequenceFromListX() {
             var strings = ListX.of("This", "is", "a", "test");
 
-            final var sequence = Sequence.ofReverse(strings);
+            final var sequence = Sequence.reverseOf(strings);
 
             final var ints = sequence
                     .skip(2)

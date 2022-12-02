@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.iterables.primitives.DoubleCollectable;
@@ -119,7 +120,13 @@ public interface DoubleCollection extends
     }
 
     default DoubleList take(long n) {
-        return takeTo(() -> DoubleMutableList.withInitCapacity((int) n), n);
+        PreConditions.require(n <= Integer.MAX_VALUE);
+        return takeTo(() -> DoubleMutableList.withInitCapacity((int) n), (int) n);
+    }
+
+    default DoubleList skip(long n) {
+        PreConditions.require(n <= Integer.MAX_VALUE);
+        return skipTo(() -> DoubleMutableList.withInitCapacity((int) (size() - n)), (int) n);
     }
 
     @Override

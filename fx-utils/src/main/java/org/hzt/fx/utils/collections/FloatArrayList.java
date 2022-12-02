@@ -81,7 +81,7 @@ public final class FloatArrayList extends PrimitiveAbstractList<Float, FloatCons
     public boolean addAll(float @NotNull ... array) {
         boolean allAdded = true;
         for (float f : array) {
-            if (add(f)) {
+            if (!add(f)) {
                 allAdded = false;
             }
         }
@@ -117,6 +117,11 @@ public final class FloatArrayList extends PrimitiveAbstractList<Float, FloatCons
 
     @Override
     public FloatArrayList take(long n) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public FloatArrayList skip(long n) {
         throw new UnsupportedOperationException();
     }
 

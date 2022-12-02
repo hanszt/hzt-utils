@@ -1,6 +1,7 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.It;
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.collections.primitives.IntList;
@@ -298,7 +299,8 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default ListX<E> take(long n) {
-        return ListX.copyOf(takeTo(() -> MutableListX.withInitCapacity((int) n), n));
+        PreConditions.require(n <= Integer.MAX_VALUE);
+        return ListX.copyOf(takeTo(() -> MutableListX.withInitCapacity((int) n), (int) n));
     }
 
     default ListX<E> takeWhile(@NotNull Predicate<? super E> predicate) {

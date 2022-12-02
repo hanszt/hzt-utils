@@ -13,12 +13,33 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
+import java.util.function.IntToDoubleFunction;
+import java.util.function.IntToLongFunction;
+import java.util.function.IntUnaryOperator;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
 public final class ArraysX {
 
     private ArraysX() {
+    }
+
+    public static int[] generateIntArray(int size, IntUnaryOperator generator) {
+        final int[] ints = new int[size];
+        Arrays.setAll(ints, generator);
+        return ints;
+    }
+
+    public static long[] generateLongArray(int size, IntToLongFunction generator) {
+        final long[] longs = new long[size];
+        Arrays.setAll(longs, generator);
+        return longs;
+    }
+
+    public static double[] generateDoubleArray(int size, IntToDoubleFunction generator) {
+        final double[] doubles = new double[size];
+        Arrays.setAll(doubles, generator);
+        return doubles;
     }
 
     public static <T> T[] copyOf(T[] array) {

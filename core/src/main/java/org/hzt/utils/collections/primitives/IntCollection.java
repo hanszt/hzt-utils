@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.iterables.primitives.IntCollectable;
@@ -25,6 +26,7 @@ public interface IntCollection extends
         IntReducable, IntCollectable, IntNumerable, IntStreamable, IntGroupable, IntStringable,
         PrimitiveCollection<Integer, IntConsumer, int[]> {
 
+    @Override
     default boolean isEmpty() {
         return none();
     }
@@ -107,11 +109,6 @@ public interface IntCollection extends
         return list;
     }
 
-    @Override
-    default IntList take(long n) {
-        return takeTo(() -> IntMutableList.withInitCapacity((int) n), n);
-    }
-
     default IntSequence asSequence() {
         return IntSequence.of(this);
     }
@@ -122,10 +119,20 @@ public interface IntCollection extends
     }
 
     @Override
-    default IntMutableList toMutableList() {
-        return to(() -> IntMutableList.withInitCapacity(size()));
+    default IntList take(long n) {
+        return takeTo(() -> IntMutableList.withInitCapacity((int) n), n);
+    }
+
+    default IntList skip(long n) {
+        PreConditions.require(n <= Integer.MAX_VALUE);
+        return skipTo(() -> IntMutableList.withInitCapacity((int) (size() - n)), (int) n);
     }
 
     @Override
     int[] toArray();
+
+    @Override
+    default IntMutableList toMutableList() {
+        return to(() -> IntMutableList.withInitCapacity(size()));
+    }
 }

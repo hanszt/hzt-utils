@@ -78,7 +78,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return to(DoubleMutableSet::empty);
     }
 
-    default <C extends DoubleMutableCollection> C takeTo(@NotNull Supplier<C> collectionFactory, long n) {
+    default <C extends DoubleMutableCollection> C takeTo(@NotNull Supplier<C> collectionFactory, int n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         C collection = collectionFactory.get();
         if (n == 0) {
@@ -100,6 +100,19 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
             if (++count == n) {
                 break;
             }
+        }
+        return collection;
+    }
+
+    default <C extends DoubleMutableCollection> C skipTo(Supplier<C> collectionFactory, int count) {
+        C collection = collectionFactory.get();
+        int counter = 0;
+        for (PrimitiveIterator.OfDouble iterator = this.iterator(); iterator.hasNext(); ) {
+            double value = iterator.nextDouble();
+            if (counter >= count) {
+                collection.add(value);
+            }
+            counter++;
         }
         return collection;
     }

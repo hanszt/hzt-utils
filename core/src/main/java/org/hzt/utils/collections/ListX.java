@@ -3,7 +3,6 @@ package org.hzt.utils.collections;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
 import org.hzt.utils.ranges.IntRange;
-import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -20,7 +19,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
 import static org.hzt.utils.PreConditions.require;
@@ -78,13 +76,13 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
         if (n == 0) {
             return emptyCollection;
         }
-        C collection = Sequence.of(this).to(() -> emptyCollection);
-        int size = collection.size();
-        if (n >= size) {
-            return collection;
-        }
         if (n == 1) {
-            return Sequence.of(last()).to(() -> emptyCollection);
+            emptyCollection.add(last());
+            return emptyCollection;
+        }
+        int size = size();
+        if (n >= size) {
+            return to(() -> collectionFactory.apply(size));
         }
         C result = collectionFactory.apply(n);
         for (int index = size - n; index < size; index++) {
@@ -182,26 +180,36 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
 
     ListX<E> subList(int fromIndex, int toIndex);
 
-    default <C extends Collection<E>> C skipLastTo(Supplier<C> collectionFactory, int n) {
+    default <C extends Collection<E>> C skipLastTo(IntFunction<C> collectionFactory, int n) {
         require(n >= 0, () -> "Requested element count " + n + " is less than zero.");
-        return takeTo(collectionFactory, Math.max((size() - n), 0));
+        final int newSize = size() - n;
+        return takeTo(() -> collectionFactory.apply(newSize), Math.max(newSize, 0));
     }
 
     default ListX<E> skipLast(int n) {
-        return ListX.copyOf(takeTo(MutableListX::empty, Math.max((size() - n), 0)));
+        return ListX.copyOf(skipLastTo(MutableListX::withInitCapacity, n));
     }
 
     default ListX<E> skipLastWhile(@NotNull Predicate<? super E> predicate) {
+        return ListX.copyOf(skipLastWhileTo(MutableListX::withInitCapacity, predicate));
+    }
+
+    default <C extends Collection<E>> C skipLastWhileTo(IntFunction<C> collectionFactory,
+                                                        Predicate<? super E> predicate) {
+        final C empty = collectionFactory.apply(0);
         if (isEmpty()) {
-            return ListX.empty();
+            return empty;
         }
         ListIterator<E> iterator = listIterator(size());
+        int counter = 0;
         while (iterator.hasPrevious()) {
             if (!predicate.test(iterator.previous())) {
-                return take(iterator.nextIndex() + 1L);
+                final int newSize = size() - counter;
+                return takeTo(() -> collectionFactory.apply(newSize), iterator.nextIndex() + 1);
             }
+            counter++;
         }
-        return ListX.empty();
+        return empty;
     }
 
     default ListX<E> takeLastWhile(@NotNull Predicate<? super E> predicate) {
@@ -214,11 +222,12 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
         if (isEmpty()) {
             return collection;
         }
-        ListIterator<E> iterator = listIterator(size());
+        final int size = size();
+        ListIterator<E> iterator = listIterator(size);
         while (iterator.hasPrevious()) {
             if (!predicate.test(iterator.previous())) {
                 iterator.next();
-                int expectedSize = size() - iterator.nextIndex();
+                int expectedSize = size - iterator.nextIndex();
                 if (expectedSize == 0) {
                     return collection;
                 }
@@ -229,7 +238,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
                 return result;
             }
         }
-        return Sequence.of(this).to(() -> collection);
+        return collection;
     }
 
     @Override

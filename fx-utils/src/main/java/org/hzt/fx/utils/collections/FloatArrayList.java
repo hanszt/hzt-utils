@@ -59,8 +59,8 @@ public final class FloatArrayList extends PrimitiveAbstractList<Float, FloatCons
     @Override
     public boolean addAll(@NotNull Iterable<Float> iterable) {
         var allAdded = true;
-        if (iterable instanceof FloatArrayList) {
-            final var iterator = ((FloatArrayList) iterable).iterator();
+        if (iterable instanceof FloatArrayList list) {
+            final var iterator = list.iterator();
             while (iterator.hasNext()) {
                 final var added = add(iterator.nextFloat());
                 if (!added) {
@@ -130,12 +130,12 @@ public final class FloatArrayList extends PrimitiveAbstractList<Float, FloatCons
         if (o == this) {
             return true;
         }
-        if (!(o instanceof FloatArrayList)) {
+        if (!(o instanceof FloatArrayList list)) {
             return false;
         }
 
         var iterator1 = iterator();
-        var iterator2 = ((FloatArrayList) o).iterator();
+        var iterator2 = list.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             var l1 = iterator1.nextFloat();
             var l2 = iterator2.nextFloat();

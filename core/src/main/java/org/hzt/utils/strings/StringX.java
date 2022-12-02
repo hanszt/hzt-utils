@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -634,10 +634,6 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
 
     public Sequence<StringX> lines() {
         return Sequence.of(linesAsStream().toList());
-    }
-
-    public <R> R transformString(Function<? super String, ? extends R> f) {
-        return f.apply(string);
     }
 
     public StringX indent(int n) {

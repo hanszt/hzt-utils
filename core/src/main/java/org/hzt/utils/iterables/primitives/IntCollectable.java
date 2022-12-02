@@ -104,9 +104,9 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
     }
 
     default <C extends IntMutableCollection> C skipTo(Supplier<C> collectionFactory, int count) {
-        C collection = collectionFactory.get();
-        int counter = 0;
-        for (PrimitiveIterator.OfInt iterator = this.iterator(); iterator.hasNext(); ) {
+        var collection = collectionFactory.get();
+        var counter = 0;
+        for (var iterator = this.iterator(); iterator.hasNext(); ) {
             int value = iterator.nextInt();
             if (counter >= count) {
                 collection.add(value);

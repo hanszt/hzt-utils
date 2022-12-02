@@ -34,7 +34,7 @@ final class FloatGeneratorIterator implements FloatIterator {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        final float result = nextFloat;
+        final var result = nextFloat;
         // Do not clean nextItem (set item to 'null' to avoid keeping reference on yielded instance)
         // -- need to keep state for getNextValue
         nextState = State.NEXT_UNKNOWN;

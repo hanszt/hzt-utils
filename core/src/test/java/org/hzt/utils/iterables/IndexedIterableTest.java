@@ -50,7 +50,7 @@ class IndexedIterableTest {
 
     @Test
     void testForEachIndex() {
-        final IntMutableList indices = IntMutableList.empty();
+        final var indices = IntMutableList.empty();
 
         ListX.of("This", "is", "a", "test").forEachIndex(indices::add);
 

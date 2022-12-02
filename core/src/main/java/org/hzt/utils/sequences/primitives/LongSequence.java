@@ -259,7 +259,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence constrainOnce() {
-        final AtomicBoolean consumed = new AtomicBoolean();
+        final var consumed = new AtomicBoolean();
         return () -> Iterators.constrainOnceIterator(iterator(), consumed);
     }
 

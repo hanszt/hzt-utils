@@ -56,9 +56,9 @@ class EntrySequenceTest {
 
     @Test
     void testEntrySequenceOfMap() {
-        final Map<Integer, String> map = Map.of(1, "hallo", 2, "This", 3, "is", 4, "a", 5, "test");
+        final var map = Map.of(1, "hallo", 2, "This", 3, "is", 4, "a", 5, "test");
 
-        final Map<Integer, String> integerStringMap = EntrySequence.of(map)
+        final var integerStringMap = EntrySequence.of(map)
                 .filterKeys(key -> key % 2 == 0)
                 .toMap();
 

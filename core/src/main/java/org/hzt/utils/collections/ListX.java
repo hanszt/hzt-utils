@@ -79,7 +79,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
             emptyCollection.add(last());
             return emptyCollection;
         }
-        int size = size();
+        var size = size();
         if (n >= size) {
             return to(() -> collectionFactory.apply(size));
         }
@@ -180,7 +180,7 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
 
     default <C extends Collection<E>> C skipLastTo(IntFunction<C> collectionFactory, int n) {
         require(n >= 0, () -> "Requested element count " + n + " is less than zero.");
-        final int newSize = size() - n;
+        final var newSize = size() - n;
         return takeTo(() -> collectionFactory.apply(newSize), Math.max(newSize, 0));
     }
 
@@ -194,15 +194,15 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
 
     default <C extends Collection<E>> C skipLastWhileTo(IntFunction<C> collectionFactory,
                                                         Predicate<? super E> predicate) {
-        final C empty = collectionFactory.apply(0);
+        final var empty = collectionFactory.apply(0);
         if (isEmpty()) {
             return empty;
         }
         var iterator = listIterator(size());
-        int counter = 0;
+        var counter = 0;
         while (iterator.hasPrevious()) {
             if (!predicate.test(iterator.previous())) {
-                final int newSize = size() - counter;
+                final var newSize = size() - counter;
                 return takeTo(() -> collectionFactory.apply(newSize), iterator.nextIndex() + 1);
             }
             counter++;
@@ -220,8 +220,8 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
         if (isEmpty()) {
             return collection;
         }
-        final int size = size();
-        ListIterator<E> iterator = listIterator(size);
+        final var size = size();
+        var iterator = listIterator(size);
         while (iterator.hasPrevious()) {
             if (!predicate.test(iterator.previous())) {
                 iterator.next();

@@ -30,7 +30,7 @@ final class FloatTakeWhileIterator implements FloatIterator {
 
     private void calculateNext() {
         if (iterator.hasNext()) {
-            final float item = iterator.nextFloat();
+            final var item = iterator.nextFloat();
             if (predicate.test(item) && !inclusiveConsumed) {
                 nextState = State.CONTINUE;
                 nextLong = item;
@@ -62,7 +62,7 @@ final class FloatTakeWhileIterator implements FloatIterator {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        float result = nextLong;
+        var result = nextLong;
         nextState = State.NEXT_UNKNOWN;
         return result;
     }

@@ -37,7 +37,7 @@ public interface FloatSequence extends FloatIterable {
     }
 
     default float first() {
-        final FloatIterator iterator = iterator();
+        final var iterator = iterator();
         if (iterator.hasNext()) {
             return iterator.nextFloat();
         }
@@ -45,8 +45,8 @@ public interface FloatSequence extends FloatIterable {
     }
 
     default FloatArrayList toList() {
-        final FloatArrayList floats = new FloatArrayList();
-        final FloatIterator iterator = iterator();
+        final var floats = new FloatArrayList();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             floats.add(iterator.nextFloat());
         }

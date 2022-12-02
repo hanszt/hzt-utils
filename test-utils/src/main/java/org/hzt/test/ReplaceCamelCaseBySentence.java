@@ -30,7 +30,7 @@ public class ReplaceCamelCaseBySentence extends DisplayNameGenerator.Standard {
 
     static String parameterTypesAsString(Method method) {
         Objects.requireNonNull(method, "Method must not be null");
-        final Class<?>[] parameterTypes = method.getParameterTypes();
+        final var parameterTypes = method.getParameterTypes();
         if (parameterTypes.length != 0) {
             return '(' + nullSafeToString(Class::getSimpleName, parameterTypes) + ')';
         }

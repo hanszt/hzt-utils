@@ -76,7 +76,7 @@ class IntListTest {
         var indices1 = new int[intList.size()];
         final var indices = intList.indices();
         for (final var iterator = indices.iterator(); iterator.hasNext(); ) {
-            int i = iterator.nextInt();
+            var i = iterator.nextInt();
             indices1[i] = i;
         }
         var indices2 = new int[intList.size()];

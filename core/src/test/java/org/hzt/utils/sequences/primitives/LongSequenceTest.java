@@ -55,7 +55,7 @@ class LongSequenceTest {
 
     @Test
     void testLongSequenceWindowedMapMulti() {
-        final LongList longs = LongRange.of(0, 10)
+        final var longs = LongRange.of(0, 10)
                 .windowed(3)
                 .mapMultiToLong(LongList::forEachLong)
                 .toList();

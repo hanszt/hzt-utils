@@ -104,9 +104,9 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
     }
 
     default <C extends DoubleMutableCollection> C skipTo(Supplier<C> collectionFactory, int count) {
-        C collection = collectionFactory.get();
-        int counter = 0;
-        for (PrimitiveIterator.OfDouble iterator = this.iterator(); iterator.hasNext(); ) {
+        var collection = collectionFactory.get();
+        var counter = 0;
+        for (var iterator = this.iterator(); iterator.hasNext(); ) {
             double value = iterator.nextDouble();
             if (counter >= count) {
                 collection.add(value);

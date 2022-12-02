@@ -14,7 +14,7 @@ final class IndexIterator<T> implements PrimitiveIterator.OfInt {
 
     @Override
     public int nextInt() {
-        int prevIndex = index;
+        var prevIndex = index;
         if (prevIndex < 0) {
             throw new IllegalStateException("indexed iterator index overflow");
         }

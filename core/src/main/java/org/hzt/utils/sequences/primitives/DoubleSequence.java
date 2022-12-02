@@ -261,7 +261,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     default DoubleSequence constrainOnce() {
-        final AtomicBoolean consumed = new AtomicBoolean();
+        final var consumed = new AtomicBoolean();
         return () -> Iterators.constrainOnceIterator(iterator(), consumed);
     }
 

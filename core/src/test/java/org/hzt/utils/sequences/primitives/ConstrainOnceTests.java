@@ -11,7 +11,7 @@ class ConstrainOnceTests {
 
     @Test
     void testIntSequenceConstrainOnce() {
-        final IntSequence integers = IntSequence.iterate(0, i -> i + 3)
+        final var integers = IntSequence.iterate(0, i -> i + 3)
                 .take(100)
                 .map(i -> i / 4)
                 .constrainOnce();
@@ -24,7 +24,7 @@ class ConstrainOnceTests {
 
     @Test
     void testDoubleSequenceConstrainOnce() {
-        final DoubleSequence doubles = DoubleSequence.iterate(0, i -> i + Math.PI)
+        final var doubles = DoubleSequence.iterate(0, i -> i + Math.PI)
                 .take(20)
                 .map(i -> i / 4)
                 .onEach(It::println)
@@ -38,7 +38,7 @@ class ConstrainOnceTests {
 
     @Test
     void testLongSequenceConstrainOnce() {
-        final IntSequence integers = IntSequence.iterate(-1, i -> i + 7)
+        final var integers = IntSequence.iterate(-1, i -> i + 7)
                 .take(100)
                 .onEach(It::println)
                 .constrainOnce();
@@ -50,7 +50,7 @@ class ConstrainOnceTests {
     }
 
     private static void assertThrowsAndAssertMessage(IntSequence integers) {
-        final IllegalStateException exception = assertThrows(IllegalStateException.class, integers::any);
+        final var exception = assertThrows(IllegalStateException.class, integers::any);
         assertEquals("Sequence is already consumed", exception.getMessage());
     }
 }

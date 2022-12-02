@@ -39,7 +39,7 @@ final class ToLongFlatMappingIterator<T> implements PrimitiveIterator.OfLong {
             if (!iterator.hasNext()) {
                 return false;
             }
-            final PrimitiveIterator.OfLong nextItemIterator = toIteratorFunction.apply(iterator.next());
+            final var nextItemIterator = toIteratorFunction.apply(iterator.next());
             if (nextItemIterator.hasNext()) {
                 itemIterator = nextItemIterator;
                 return true;

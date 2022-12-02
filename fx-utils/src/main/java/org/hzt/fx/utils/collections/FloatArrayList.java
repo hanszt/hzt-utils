@@ -79,8 +79,8 @@ public final class FloatArrayList extends PrimitiveAbstractList<Float, FloatCons
 
     @Override
     public boolean addAll(float @NotNull ... array) {
-        boolean allAdded = true;
-        for (float f : array) {
+        var allAdded = true;
+        for (var f : array) {
             if (!add(f)) {
                 allAdded = false;
             }
@@ -134,11 +134,11 @@ public final class FloatArrayList extends PrimitiveAbstractList<Float, FloatCons
             return false;
         }
 
-        FloatIterator iterator1 = iterator();
-        FloatIterator iterator2 = ((FloatArrayList) o).iterator();
+        var iterator1 = iterator();
+        var iterator2 = ((FloatArrayList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            float l1 = iterator1.nextFloat();
-            float l2 = iterator2.nextFloat();
+            var l1 = iterator1.nextFloat();
+            var l2 = iterator2.nextFloat();
             if (Float.compare(l1, l2) != 0) {
                 return false;
             }
@@ -148,7 +148,7 @@ public final class FloatArrayList extends PrimitiveAbstractList<Float, FloatCons
 
     @Override
     public int hashCode() {
-        final int result = Objects.hash(size);
+        final var result = Objects.hash(size);
         return  31 * result + Arrays.hashCode(elementData);
     }
 

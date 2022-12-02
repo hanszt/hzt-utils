@@ -25,19 +25,19 @@ public final class ArraysX {
     }
 
     public static int[] generateIntArray(int size, IntUnaryOperator generator) {
-        final int[] ints = new int[size];
+        final var ints = new int[size];
         Arrays.setAll(ints, generator);
         return ints;
     }
 
     public static long[] generateLongArray(int size, IntToLongFunction generator) {
-        final long[] longs = new long[size];
+        final var longs = new long[size];
         Arrays.setAll(longs, generator);
         return longs;
     }
 
     public static double[] generateDoubleArray(int size, IntToDoubleFunction generator) {
-        final double[] doubles = new double[size];
+        final var doubles = new double[size];
         Arrays.setAll(doubles, generator);
         return doubles;
     }

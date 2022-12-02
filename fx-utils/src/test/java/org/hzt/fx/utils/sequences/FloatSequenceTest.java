@@ -1,7 +1,6 @@
 package org.hzt.fx.utils.sequences;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableFloatArray;
 import org.hzt.fx.utils.collections.FloatArrayList;
 import org.junit.jupiter.api.Test;
 
@@ -15,26 +14,26 @@ class FloatSequenceTest {
 
     @Test
     void testMapToArray() {
-        final float[] floats = FloatSequence.of(1, 2, 3, 4, 5)
+        final var floats = FloatSequence.of(1, 2, 3, 4, 5)
                 .map(f -> f * .5F)
                 .toArray();
 
         println(Arrays.toString(floats));
 
-        float[] expected = {.5F, 1.0F, 1.5F, 2F, 2.5F};
+        var expected = new float[]{.5F, 1.0F, 1.5F, 2F, 2.5F};
 
         assertArrayEquals(expected, floats);
     }
 
     @Test
     void testFilterToList() {
-        final FloatArrayList floats = FloatSequence.of(1, 2, 3, 4, 5)
+        final var floats = FloatSequence.of(1, 2, 3, 4, 5)
                 .filter(i ->i % 2 == 0)
                 .toList();
 
         println(floats);
 
-        final FloatArrayList expected = new FloatArrayList();
+        final var expected = new FloatArrayList();
         expected.addAll(2.0F, 4.0F);
 
         assertEquals(expected, floats);
@@ -42,13 +41,13 @@ class FloatSequenceTest {
 
     @Test
     void testFilterToObservableArray() {
-        final ObservableFloatArray floats = FloatSequence.of(1, 2, 3, 4, 5)
+        final var floats = FloatSequence.of(1, 2, 3, 4, 5)
                 .filter(i ->i % 2 == 0)
                 .toObservableArray();
 
         println(floats);
 
-        final ObservableFloatArray expected = FXCollections.observableFloatArray(2.0F, 4.0F);
+        final var expected = FXCollections.observableFloatArray(2.0F, 4.0F);
 
         assertEquals(expected.toString(), floats.toString());
     }

@@ -296,7 +296,7 @@ class IntSequenceTest {
          */
         @Test
         void testYear2000IsLeapYearAccordingIso8601Standard() {
-            final int last = IntSequence.iterate(1900, year -> year + 1)
+            final var last = IntSequence.iterate(1900, year -> year + 1)
                     .filter(IsoChronology.INSTANCE::isLeapYear)
                     .takeWhileInclusive(year -> year % 100 != 0)
                     .last();
@@ -309,15 +309,15 @@ class IntSequenceTest {
          */
         @Test
         void testYear2000IssLeapYearAccordingIso8601Standard() {
-            final IntSequence leapYears = IntSequence.iterate(1900, year -> year + 1)
+            final var leapYears = IntSequence.iterate(1900, year -> year + 1)
                     .filter(IsoChronology.INSTANCE::isLeapYear);
 
-            final IntList yearsSkipWhileInclusive = leapYears
+            final var yearsSkipWhileInclusive = leapYears
                     .skipWhileInclusive(year -> year % 100 != 0)
                     .take(5)
                     .toList();
 
-            final IntList yearsSkipWhile = leapYears
+            final var yearsSkipWhile = leapYears
                     .skipWhile(year -> year % 100 != 0)
                     .take(5)
                     .toList();
@@ -331,7 +331,7 @@ class IntSequenceTest {
 
     @Test
     void testFlatMapToInt() {
-        final int[] ints = IntSequence.iterate(1, i -> i * 2)
+        final var ints = IntSequence.iterate(1, i -> i * 2)
                 .take(20)
                 .flatMap(i -> IntSequence.of(1, 2, 3).plus(i))
                 .toArray();

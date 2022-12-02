@@ -75,15 +75,15 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @SafeVarargs
-    static <T> Sequence<T> ofReverse(T... values) {
+    static <T> Sequence<T> reverseOf(T... values) {
         return () -> Iterators.reverseArrayIterator(values);
     }
 
-    static <T> Sequence<T> ofReverse(List<T> list) {
+    static <T> Sequence<T> reverseOf(List<T> list) {
         return () -> Iterators.reverseIterator(list);
     }
 
-    static <T> Sequence<T> ofReverse(ListX<T> list) {
+    static <T> Sequence<T> reverseOf(ListX<T> list) {
         return () -> Iterators.reverseIterator(list);
     }
 

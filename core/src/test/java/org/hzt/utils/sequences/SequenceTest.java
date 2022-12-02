@@ -1058,7 +1058,7 @@ class SequenceTest {
         void testReverseSequenceFromArray() {
             String[] strings = {"This", "is", "a", "test"};
 
-            final Sequence<String> sequence = Sequence.ofReverse(strings);
+            final Sequence<String> sequence = Sequence.reverseOf(strings);
 
             final int[] ints = sequence
                     .skip(2)
@@ -1077,7 +1077,7 @@ class SequenceTest {
         void testReverseSequenceFromList() {
             List<String> strings = Arrays.asList("This", "is", "a", "test");
 
-            final Sequence<String> sequence = Sequence.ofReverse(strings);
+            final Sequence<String> sequence = Sequence.reverseOf(strings);
 
             final int[] ints = sequence
                     .skip(2)
@@ -1098,7 +1098,7 @@ class SequenceTest {
         void testReverseSequenceFromListX() {
             ListX<String> strings = ListX.of("This", "is", "a", "test");
 
-            final Sequence<String> sequence = Sequence.ofReverse(strings);
+            final Sequence<String> sequence = Sequence.reverseOf(strings);
 
             final int[] ints = sequence
                     .skip(2)

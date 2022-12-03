@@ -2,7 +2,6 @@ package org.hzt.utils.iterables;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
-import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
@@ -87,7 +86,7 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
 
     default SetX<T> intersect(@NotNull Iterable<T> other) {
         final MutableSetX<T> intersection = toMutableSet();
-        final Collection<T> otherCollection = other instanceof Collectable<?> ? (Collection<T>) other : MutableListX.of(other);
+        final Collection<T> otherCollection = other instanceof Collectable<?> ? (Collection<T>) other : MutableSetX.of(other);
         intersection.retainAll(otherCollection);
         return SetX.of(intersection);
     }
@@ -102,10 +101,8 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
     }
 
     default SetX<T> union(@NotNull Iterable<T> other) {
-        MutableSetX<T> union = MutableSetX.empty();
-        forEach(union::add);
-        other.forEach(union::add);
-        return SetX.copyOf(union);
+        final MutableSetX<T> union = toMutableSet();
+        return SetX.copyOf(union.plus(other));
     }
 
     default <R> SetX<R> union(@NotNull Iterable<T> other, @NotNull Function<? super T, ? extends R> mapper) {

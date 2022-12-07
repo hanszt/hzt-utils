@@ -2,7 +2,6 @@ package org.hzt.utils.demo;
 
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.io.FileX;
-import org.hzt.utils.strings.StringX;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,7 +15,7 @@ class Aoc2021SnippetsTest {
 
     long part2() {
         return FileX.of("input/day1aoc2021.txt").useLines(lines ->
-                lines.mapToInt(StringX::toInt)
+                lines.mapToInt(Integer::parseInt)
                         .windowed(3)
                         .mapToLong(IntList::sum)
                         .zipWithNext((sum, nextSum) -> sum - nextSum)

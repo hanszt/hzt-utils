@@ -47,7 +47,8 @@ class FileXTest {
     @Test
     void testGridInFileTo2DIntArray() {
         final var grid = FileX.of("input/grid.txt").useLines(sequence ->
-                sequence.map(line -> line.split(" ").toIntArray(Integer::parseInt))
+                sequence.map(StringX::of)
+                        .map(line -> line.split(" ").toIntArray(Integer::parseInt))
                 .toTypedArray(int[][]::new));
 
         Arrays.stream(grid).map(Arrays::toString).forEach(It::println);

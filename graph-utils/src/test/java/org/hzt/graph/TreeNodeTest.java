@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,10 +12,10 @@ class TreeNodeTest {
 
     @Test
     void testToTreeString() {
-        final Node root = buildTree();
-        final String s = root.toTreeString(2);
+        final var root = buildTree();
+        final var s = root.toTreeString(2);
 
-        final String expected = "" +
+        final var expected = "" +
                 "root\n" +
                 "  c1\n" +
                 "    c4\n" +
@@ -31,10 +30,10 @@ class TreeNodeTest {
 
     @Test
     void testMapLeafs() {
-        final Node root = buildTree();
+        final var root = buildTree();
         final List<String> strings = root.mapLeafsTo(ArrayList::new, s -> s.name);
 
-        final List<String> fromSequence = root.asSequence()
+        final var fromSequence = root.asSequence()
                 .filter(n -> n.children.isEmpty())
                 .map(node -> node.name)
                 .toList();
@@ -43,51 +42,51 @@ class TreeNodeTest {
 
         assertAll(
                 () -> assertEquals(strings, fromSequence),
-                () -> assertEquals(Arrays.asList("c4", "c5", "c6", "c7", "c3"), strings)
+                () -> assertEquals(List.of("c4", "c5", "c6", "c7", "c3"), strings)
         );
     }
 
     @Test
     void testMap() {
-        final Node root = buildTree();
+        final var root = buildTree();
         final List<String> strings = root.mapTo(ArrayList::new, s -> s.name);
         strings.forEach(System.out::println);
-        assertEquals(Arrays.asList("root", "c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
+        assertEquals(List.of("root", "c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
     }
 
     @Test
     void testAsSequence() {
-        final Node root = buildTree();
-        final List<String> strings = root.asSequence()
+        final var root = buildTree();
+        final var strings = root.asSequence()
                 .map(node -> node.name)
                 .filter(n -> n.length() < 3)
                 .toList();
         strings.forEach(System.out::println);
-        assertEquals(Arrays.asList("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
+        assertEquals(List.of("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
     }
 
     @NotNull
     private static TreeNodeTest.Node buildTree() {
-        final Node c1 = new Node("c1")
-                .addChildren(Arrays.asList(
+        final var c1 = new Node("c1")
+                .addChildren(List.of(
                         new Node("c4"),
                         new Node("c5")));
-        final Node c2 = new Node("c2")
-                .addChildren(Arrays.asList(
+        final var c2 = new Node("c2")
+                .addChildren(List.of(
                         new Node("c6"),
                         new Node("c7")));
         return new Node("root")
-                .addChildren(Arrays.asList(c1, c2, new Node("c3")));
+                .addChildren(List.of(c1, c2, new Node("c3")));
     }
 
     @Test
     void testGetParentThrowsUnsupportedOperationExceptionByDefault() {
-        final Node node = new Node("test");
+        final var node = new Node("test");
         assertThrows(UnsupportedOperationException.class, () -> tryPrintParent(node));
     }
 
     private static void tryPrintParent(Node node) {
-        final Node parent = node.getParent();
+        final var parent = node.getParent();
         System.out.println(parent);
     }
 

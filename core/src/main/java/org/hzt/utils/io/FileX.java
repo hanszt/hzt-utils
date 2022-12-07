@@ -27,11 +27,11 @@ public final class FileX extends File {
         return new FileX(pathName);
     }
 
-    public ListX<StringX> readLines() {
+    public ListX<String> readLines() {
         return readLines(StandardCharsets.UTF_8);
     }
 
-    public ListX<StringX> readLines(Charset charset) {
+    public ListX<String> readLines(Charset charset) {
         return useLines(Collectable::toListX, charset);
     }
 
@@ -51,13 +51,13 @@ public final class FileX extends File {
         return readTextX(StandardCharsets.UTF_8);
     }
 
-    public <T> T useLines(Function<? super Sequence<StringX>, ? extends T> block) {
+    public <T> T useLines(Function<? super Sequence<String>, ? extends T> block) {
         return useLines(block, StandardCharsets.UTF_8);
     }
 
-    public <T> T useLines(Function<? super Sequence<StringX>, ? extends T> block, Charset charset) {
+    public <T> T useLines(Function<? super Sequence<String>, ? extends T> block, Charset charset) {
         try(Stream<String> lines = Files.lines(Paths.get(getPath()), charset)) {
-            return block.apply(Sequence.of(lines::iterator).map(StringX::of));
+            return block.apply(Sequence.of(lines::iterator));
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

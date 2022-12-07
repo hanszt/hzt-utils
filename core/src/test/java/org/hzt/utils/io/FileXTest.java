@@ -16,7 +16,7 @@ class FileXTest {
 
     @Test
     void testReadLines() {
-        final ListX<StringX> lines = FileX.of("input/test.txt").readLines();
+        final ListX<String> lines = FileX.of("input/test.txt").readLines();
 
         assertAll(
                 () -> assertEquals("Hello, this is a test, Second line", lines.joinToString()),
@@ -48,7 +48,8 @@ class FileXTest {
     @Test
     void testGridInFileTo2DIntArray() {
         final int[][] grid = FileX.of("input/grid.txt").useLines(sequence ->
-                sequence.map(line -> line.split(" ").toIntArray(Integer::parseInt))
+                sequence.map(StringX::of)
+                        .map(line -> line.split(" ").toIntArray(Integer::parseInt))
                 .toTypedArray(int[][]::new));
 
         Arrays.stream(grid).map(Arrays::toString).forEach(It::println);

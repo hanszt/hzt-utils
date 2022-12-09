@@ -60,12 +60,12 @@ public interface DoubleCollection extends
     }
 
     default DoubleList map(DoubleUnaryOperator mapper) {
-        var doubles = DoubleMutableList.withInitCapacity(size());
+        var mutableList = DoubleMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
-            list.add(mapper.applyAsDouble(iterator.nextDouble()));
+            mutableList.add(mapper.applyAsDouble(iterator.nextDouble()));
         }
-        return DoubleList.copyOf(list);
+        return DoubleList.copyOf(mutableList);
     }
 
     default IntList mapToInt(DoubleToIntFunction mapper) {

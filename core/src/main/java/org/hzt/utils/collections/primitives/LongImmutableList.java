@@ -1,6 +1,5 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
@@ -34,7 +33,7 @@ final class LongImmutableList extends
 
     @Override
     public long get(int index) {
-        PreConditions.requireOrThrow(index < elementData.length, IndexOutOfBoundsException::new);
+        Objects.checkIndex(index, elementData.length);
         return elementData[index];
     }
 

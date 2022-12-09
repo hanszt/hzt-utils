@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.lang.System.setProperty;
-import static org.hzt.utils.It.println;
+import static org.hzt.utils.It.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
@@ -197,7 +197,7 @@ class SequenceTest {
                 .filterNot(String::isEmpty)
                 .toListX();
 
-        It.println("result = " + result);
+        println("result = " + result);
 
         assertIterableEquals(ListX.of("Hallo", "test"), result);
     }
@@ -213,7 +213,7 @@ class SequenceTest {
                 .filterNot(String::isEmpty)
                 .toListX();
 
-        It.println("result = " + result);
+        println("result = " + result);
 
         assertEquals(ListX.of("Hallo", "test"), result);
     }
@@ -229,7 +229,7 @@ class SequenceTest {
                 .filter(length -> length > 3)
                 .toList();
 
-        It.println("result = " + result);
+        println("result = " + result);
 
         assertEquals(IntList.of(5, 4), result);
     }
@@ -351,7 +351,7 @@ class SequenceTest {
                 .skipWhile(i -> i != 5)
                 .toList();
 
-        It.println("integers = " + integers);
+        println("integers = " + integers);
 
         assertEquals(List.of(5, 10, 6, 5, 3, 5, 6), integers);
     }
@@ -364,7 +364,7 @@ class SequenceTest {
                 .skipWhileInclusive(i -> i != 5)
                 .toList();
 
-        It.println("integers = " + integers);
+        println("integers = " + integers);
 
         assertEquals(List.of(10, 6, 5, 3, 5, 6), integers);
     }
@@ -396,7 +396,7 @@ class SequenceTest {
                 .map(StringX::reversed)
                 .toListOf(StringX::toString);
 
-        It.println("strings = " + strings);
+        println("strings = " + strings);
 
         assertEquals(List.of("ollah", "eoh", "si"), strings);
     }
@@ -417,7 +417,7 @@ class SequenceTest {
 
             windows.filterIndexed((i, v) -> IntX.multipleOf(10_000).test(i)).forEach(It::println);
 
-            It.println("windows.last() = " + windows.last());
+            println("windows.last() = " + windows.last());
 
             assertEquals(333328, result.size());
         }
@@ -435,7 +435,7 @@ class SequenceTest {
                     .windowed(5, 6, true)
                     .toListX();
 
-            It.println("windows = " + windows);
+            println("windows = " + windows);
 
             new HashMap<>(0);
 
@@ -452,7 +452,7 @@ class SequenceTest {
                     .windowed(5, 6)
                     .toListX();
 
-            It.println("windows = " + windows);
+            println("windows = " + windows);
 
             assertAll(
                     () -> assertEquals(16, windows.size()),
@@ -468,7 +468,7 @@ class SequenceTest {
                     .windowed(5, 2, true)
                     .toListX();
 
-            It.println("windows = " + windows);
+            println("windows = " + windows);
 
             assertAll(
                     () -> assertEquals(6, windows.size()),
@@ -484,7 +484,7 @@ class SequenceTest {
                     .windowed(4, 2)
                     .toListX();
 
-            It.println("windows = " + windows);
+            println("windows = " + windows);
 
             assertAll(
                     () -> assertEquals(3, windows.size()),
@@ -500,7 +500,7 @@ class SequenceTest {
                     .windowed(1, n -> ++n, 4, true, It::self)
                     .toListX();
 
-            It.println("windows = " + windows);
+            println("windows = " + windows);
 
             assertAll(
                     () -> assertEquals(10, windows.size()),
@@ -516,7 +516,7 @@ class SequenceTest {
                     .windowed(10)
                     .toListX();
 
-            It.println("windows = " + windows);
+            println("windows = " + windows);
 
             assertTrue(windows.isEmpty());
         }
@@ -530,10 +530,10 @@ class SequenceTest {
                     .map(ListX::size)
                     .toListX();
 
-            It.println("sizes = " + sizes);
+            println("sizes = " + sizes);
 
-            It.println("windows.first() = " + sizes.findFirst());
-            It.println("windows.last() = " + sizes.findLast());
+            println("windows.first() = " + sizes.findFirst());
+            println("windows.last() = " + sizes.findLast());
 
             assertEquals(22, sizes.size());
         }
@@ -553,16 +553,16 @@ class SequenceTest {
     void testZipWithNext() {
         final var sums = IntRange.of(0, 1_000)
                 .filter(IntX.multipleOf(10))
-                .onEach(i -> It.print(i + ", "))
+                .onEach(i -> print(i + ", "))
                 .boxed()
                 .zipWithNext(Integer::sum)
                 .toListX()
                 .shuffled();
 
-        It.println("\nsums = " + sums);
+        println("\nsums = " + sums);
 
-        It.println("sums.first() = " + sums.findFirst());
-        It.println("sums.last() = " + sums.findLast());
+        println("sums.first() = " + sums.findFirst());
+        println("sums.last() = " + sums.findLast());
 
         assertEquals(99, sums.size());
     }
@@ -631,7 +631,7 @@ class SequenceTest {
                 .withIndex()
                 .toList();
 
-        It.println("list = " + list);
+        println("list = " + list);
 
         assertEquals(147, list.size());
     }
@@ -645,8 +645,8 @@ class SequenceTest {
         final var first = leapYears.first();
         final var last = leapYears.last();
 
-        It.println("first = " + first);
-        It.println("last = " + last);
+        println("first = " + first);
+        println("last = " + last);
         final var stats = leapYears.intStatsOf(Year::getValue);
 
         assertAll(
@@ -664,13 +664,13 @@ class SequenceTest {
                 .sorted();
 
         final var first = names.first();
-        It.println("first = " + first);
-        It.println("first = " + names.first());
+        println("first = " + first);
+        println("first = " + names.first());
         final var nameList = names.toList();
         final var last = names.last();
 
 
-        It.println("last = " + last);
+        println("last = " + last);
 
         assertAll(
                 () -> assertEquals(Year.of(-1), first),
@@ -748,12 +748,12 @@ class SequenceTest {
 
 
         setProperty("org.openjdk.java.util.stream.tripwire", "false");
-        It.println(daysOfYear.joinToString());
+        println(daysOfYear.joinToString());
         setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
-        It.println("daysOfYear.min() = " + daysOfYear.min());
+        println("daysOfYear.min() = " + daysOfYear.min());
 
-        It.println("daysOfYear.max() = " + daysOfYear.max());
+        println("daysOfYear.max() = " + daysOfYear.max());
 
         assertAll(
                 () -> assertTrue(Year.of(year).isLeap()),
@@ -832,7 +832,7 @@ class SequenceTest {
     void testSequenceOfZoneIds() {
         var now = Instant.now();
         var current = now.atZone(ZoneId.systemDefault());
-        It.printf("Current time is %s%n%n", current);
+        printf("Current time is %s%n%n", current);
 
         final var noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
 
@@ -849,7 +849,7 @@ class SequenceTest {
     void testTimeZonesAntarctica() {
         var now = Instant.now();
         var current = now.atZone(ZoneId.systemDefault());
-        It.printf("Current time is %s%n%n", current);
+        printf("Current time is %s%n%n", current);
 
         final var timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.getId().contains("Antarctica"));
 
@@ -881,7 +881,7 @@ class SequenceTest {
                 .onEach(It::println)
                 .mapToInt(It::asInt);
 
-        final var integers = intSequence.toList();
+        final var integers = intSequence.toMutableList();
         final var sum = intSequence.sum();
 
         final var pair = intSequence.boxed()
@@ -916,7 +916,7 @@ class SequenceTest {
         final var sqrtOf5 = BigDecimal.valueOf(5).sqrt(MathContext.DECIMAL128);
         var goldenRatio = (BigDecimal.ONE.add(sqrtOf5)).divide(BigDecimal.valueOf(2), scale, RoundingMode.HALF_UP);
 
-        It.println("goldenRatio by sqrt = " + goldenRatio);
+        println("goldenRatio by sqrt = " + goldenRatio);
 
         final var MAX_ITERATIONS = 10_000;
 
@@ -930,7 +930,7 @@ class SequenceTest {
                 .toListX();
 
         final var actual = approximations.last();
-        It.println("golden ratio by seq = " + actual);
+        println("golden ratio by seq = " + actual);
 
         approximations.forEach(It::println);
 
@@ -950,7 +950,7 @@ class SequenceTest {
                 .flatMapToInt(i -> () -> i)
                 .toList();
 
-        It.println("integers = " + integers);
+        println("integers = " + integers);
 
         setProperty("org.openjdk.java.util.stream.tripwire", "true");
 

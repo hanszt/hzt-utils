@@ -27,7 +27,7 @@ class IntRangeTest {
         var list = IntMutableList.empty();
         range.forEachInt(list::add);
         range.forEachInt(list::add);
-        assertEquals(IntList.of(2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9), list);
+        assertEquals(IntMutableList.of(2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9), list);
     }
 
     @Test

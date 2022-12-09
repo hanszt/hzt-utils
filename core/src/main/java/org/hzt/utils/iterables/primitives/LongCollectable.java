@@ -56,7 +56,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
     }
 
     default LongList toList() {
-        return toMutableList();
+        return LongList.copyOf(toMutableList());
     }
 
     default <C extends LongMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {

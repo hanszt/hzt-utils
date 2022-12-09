@@ -15,7 +15,7 @@ import java.util.function.LongConsumer;
 
 import static java.util.Objects.checkIndex;
 
-public final class LongArrayList extends PrimitiveAbstractList<Long, LongConsumer, long[], PrimitiveIterator.OfLong>
+public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongConsumer, long[], PrimitiveIterator.OfLong>
         implements LongMutableList {
 
     LongArrayList() {

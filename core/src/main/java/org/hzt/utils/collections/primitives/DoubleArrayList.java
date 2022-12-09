@@ -15,7 +15,7 @@ import java.util.function.DoubleConsumer;
 
 import static java.util.Objects.checkIndex;
 
-final class DoubleArrayList extends PrimitiveAbstractList<Double, DoubleConsumer, double[], PrimitiveIterator.OfDouble>
+final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleConsumer, double[], PrimitiveIterator.OfDouble>
         implements DoubleMutableList {
 
     DoubleArrayList() {

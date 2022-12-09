@@ -17,7 +17,7 @@ class DoubleMutableCollectionTest {
 
         assertAll(
                 () -> assertTrue(removedAll),
-                () -> assertEquals(DoubleList.of(1, 5, 8, 9), list)
+                () -> assertEquals(DoubleMutableList.of(1, 5, 8, 9), list)
         );
     }
 
@@ -28,7 +28,7 @@ class DoubleMutableCollectionTest {
 
         assertAll(
                 () -> assertTrue(addedAll),
-                () -> assertEquals(DoubleList.of(1, 4, 5, 3, 6, 7, 5, 8, 9, 3, 4, 6, 5, 7, 8, Math.E), list)
+                () -> assertEquals(DoubleMutableList.of(1, 4, 5, 3, 6, 7, 5, 8, 9, 3, 4, 6, 5, 7, 8, Math.E), list)
         );
     }
 
@@ -53,7 +53,7 @@ class DoubleMutableCollectionTest {
 
         assertAll(
                 () -> assertTrue(removed),
-                () -> assertEquals(DoubleList.of(Math.PI, 1, 5, 3, Math.E, 7, 5, 9), list)
+                () -> assertEquals(DoubleMutableList.of(Math.PI, 1, 5, 3, Math.E, 7, 5, 9), list)
         );
     }
 }

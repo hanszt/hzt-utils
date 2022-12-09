@@ -19,10 +19,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-base</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.hzt.utils</groupId>
             <artifactId>core</artifactId>
         </dependency>

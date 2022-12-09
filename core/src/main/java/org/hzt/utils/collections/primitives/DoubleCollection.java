@@ -56,16 +56,16 @@ public interface DoubleCollection extends
                 doubles.add(value);
             }
         }
-        return doubles;
+        return DoubleList.copyOf(doubles);
     }
 
     default DoubleList map(DoubleUnaryOperator mapper) {
         var doubles = DoubleMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
-            doubles.add(mapper.applyAsDouble(iterator.nextDouble()));
+            list.add(mapper.applyAsDouble(iterator.nextDouble()));
         }
-        return doubles;
+        return DoubleList.copyOf(list);
     }
 
     default IntList mapToInt(DoubleToIntFunction mapper) {
@@ -74,7 +74,7 @@ public interface DoubleCollection extends
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextDouble()));
         }
-        return ints;
+        return IntList.copyOf(ints);
     }
 
     default LongList mapToLong(DoubleToLongFunction mapper) {
@@ -83,30 +83,30 @@ public interface DoubleCollection extends
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextDouble()));
         }
-        return longs;
+        return LongList.copyOf(longs);
     }
 
     default <R> ListX<R> mapToObj(DoubleFunction<R> mapper) {
-        MutableListX<R> doubles = MutableListX.withInitCapacity(size());
+        MutableListX<R> list = MutableListX.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
-            doubles.add(mapper.apply(iterator.nextDouble()));
+            list.add(mapper.apply(iterator.nextDouble()));
         }
-        return doubles;
+        return ListX.copyOf(list);
     }
 
     @Override
     default DoubleList plus(@NotNull Iterable<Double> values) {
         var list = toMutableList();
         list.addAll(values);
-        return list;
+        return DoubleList.copyOf(list);
     }
 
     @Override
     default DoubleList plus(double @NotNull ... array) {
         var list = toMutableList();
         list.addAll(array);
-        return list;
+        return DoubleList.copyOf(list);
     }
 
     default DoubleSequence asSequence() {
@@ -120,12 +120,12 @@ public interface DoubleCollection extends
 
     default DoubleList take(long n) {
         PreConditions.require(n <= Integer.MAX_VALUE);
-        return takeTo(() -> DoubleMutableList.withInitCapacity((int) n), (int) n);
+        return DoubleList.copyOf(takeTo(() -> DoubleMutableList.withInitCapacity((int) n), (int) n));
     }
 
     default DoubleList skip(long n) {
         PreConditions.require(n <= Integer.MAX_VALUE);
-        return skipTo(() -> DoubleMutableList.withInitCapacity((int) (size() - n)), (int) n);
+        return DoubleList.copyOf(skipTo(() -> DoubleMutableList.withInitCapacity((int) (size() - n)), (int) n));
     }
 
     @Override

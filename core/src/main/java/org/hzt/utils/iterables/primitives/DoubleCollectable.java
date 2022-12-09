@@ -56,7 +56,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
     }
 
     default DoubleList toList() {
-        return toMutableList();
+        return DoubleList.copyOf(toMutableList());
     }
 
     default <C extends DoubleMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {

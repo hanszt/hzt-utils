@@ -31,6 +31,7 @@ public interface IntCollection extends
         return none();
     }
 
+    @Override
     default boolean isNotEmpty() {
         return any();
     }
@@ -56,16 +57,16 @@ public interface IntCollection extends
                 ints.add(value);
             }
         }
-        return ints;
+        return IntList.copyOf(ints);
     }
 
     default IntList map(IntUnaryOperator mapper) {
-        IntMutableList ints = IntMutableList.withInitCapacity(size());
+        IntMutableList list = IntMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
-            ints.add(mapper.applyAsInt(iterator.nextInt()));
+            list.add(mapper.applyAsInt(iterator.nextInt()));
         }
-        return ints;
+        return IntList.copyOf(list);
     }
 
     default LongList mapToLong(IntToLongFunction mapper) {
@@ -74,7 +75,7 @@ public interface IntCollection extends
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextInt()));
         }
-        return longs;
+        return LongList.copyOf(longs);
     }
 
     default DoubleList mapToDouble(IntToDoubleFunction mapper) {
@@ -92,21 +93,21 @@ public interface IntCollection extends
         while (iterator.hasNext()) {
             listX.add(mapper.apply(iterator.nextInt()));
         }
-        return listX;
+        return ListX.copyOf(listX);
     }
 
     @Override
     default IntList plus(@NotNull Iterable<Integer> values) {
         IntMutableList list = toMutableList();
         list.addAll(values);
-        return list;
+        return IntList.copyOf(list);
     }
 
     @Override
     default IntList plus(int @NotNull ... array) {
         IntMutableList list = toMutableList();
         list.addAll(array);
-        return list;
+        return IntList.copyOf(list);
     }
 
     default IntSequence asSequence() {
@@ -120,12 +121,12 @@ public interface IntCollection extends
 
     @Override
     default IntList take(long n) {
-        return takeTo(() -> IntMutableList.withInitCapacity((int) n), n);
+        return IntList.copyOf(takeTo(() -> IntMutableList.withInitCapacity((int) n), n));
     }
 
     default IntList skip(long n) {
         PreConditions.require(n <= Integer.MAX_VALUE);
-        return skipTo(() -> IntMutableList.withInitCapacity((int) (size() - n)), (int) n);
+        return IntList.copyOf(skipTo(() -> IntMutableList.withInitCapacity((int) (size() - n)), (int) n));
     }
 
     @Override

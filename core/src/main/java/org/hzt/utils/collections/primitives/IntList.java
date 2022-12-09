@@ -1,12 +1,13 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.ArraysX;
+import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
-import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.ranges.IntRange;
+import org.hzt.utils.sequences.primitives.IntSequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -22,25 +23,25 @@ public interface IntList extends IntCollection,
         BinarySearchable<IntUnaryOperator> {
 
     static IntList empty() {
-        return new IntArrayList();
+        return new IntImmutableList();
     }
 
     static IntList of(Iterable<Integer> iterable) {
-        return new IntArrayList(iterable);
-    }
-
-    static IntList of(IntList intList) {
-        return new IntArrayList(intList);
+        return IntSequence.of(iterable).toList();
     }
 
     static IntList of(int... array) {
-        return new IntArrayList(array);
+        return new IntImmutableList(array);
+    }
+
+    static IntList copyOf(IntCollection intCollection) {
+        return new IntImmutableList(intCollection);
     }
 
     static IntList build(Consumer<? super IntMutableList> factory) {
-        final IntMutableList listX = IntMutableList.empty();
-        factory.accept(listX);
-        return listX;
+        final IntMutableList mutableList = IntMutableList.empty();
+        factory.accept(mutableList);
+        return IntList.copyOf(mutableList);
     }
 
     default boolean contains(int value) {

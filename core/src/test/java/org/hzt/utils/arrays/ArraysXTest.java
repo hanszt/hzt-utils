@@ -19,24 +19,10 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import static org.hzt.utils.It.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArraysXTest {
-
-    @Test
-    void testToBooleanArray() {
-        String[] strings = {"This", "is", "a", "test"};
-
-        boolean[] array = ArraysX.toBooleanArray(s -> s.contains("i"), strings);
-
-        assertArrayEquals(new boolean[] {true, true, false, false}, array);
-    }
-
-    @Test
-    void testGenerateIntArray() {
-        final int[] ints = ArraysX.generateIntArray(6, i -> i * 2);
-        assertArrayEquals(new int[] {0, 2, 4, 6, 8, 10}, ints);
-    }
 
     @Test
     void testReverseArray() {
@@ -51,6 +37,13 @@ class ArraysXTest {
         assertArrayEquals(strings, strings2);
     }
 
+    @Test
+    void generateArrayShouldCreateAFilledArray() {
+        final String[] strings = ArraysX.generateArray(5, i -> "nr " + i, String[]::new);
+        final String[] expected = {"nr 0", "nr 1", "nr 2", "nr 3", "nr 4"};
+        assertArrayEquals(expected, strings);
+    }
+
     @Nested
     class PrimitiveArraysTest {
 
@@ -62,11 +55,11 @@ class ArraysXTest {
                     .mapToInt(It::asInt)
                     .toArray();
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             ArraysX.sort(Integer::compare, array);
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             assertEquals(IntList.of(1, 2, 3, 4, 5, 6), IntSequence.of(array).take(6).toList());
         }
@@ -79,11 +72,11 @@ class ArraysXTest {
                     .mapToInt(It::asInt)
                     .toArray();
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             ArraysX.sort(IntComparator.reverseOrder(), array);
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             assertEquals(IntList.of(999, 998, 997, 996, 995, 994), IntSequence.of(array).take(6).toList());
         }
@@ -96,11 +89,11 @@ class ArraysXTest {
                     .mapToLong(It::asLong)
                     .toArray();
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             ArraysX.sort(Long::compare, array);
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             assertEquals(LongList.of(1, 2, 3, 4, 5, 6), LongSequence.of(array).take(6).toList());
         }
@@ -113,11 +106,11 @@ class ArraysXTest {
                     .mapToLong(It::asLong)
                     .toArray();
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             ArraysX.sort(LongComparator.reverseOrder(), array);
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             assertEquals(LongList.of(999, 998, 997, 996, 995, 994), LongSequence.of(array).take(6).toList());
         }
@@ -130,11 +123,11 @@ class ArraysXTest {
                     .mapToLong(It::asLong)
                     .toArray();
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             ArraysX.sort(LongComparator.reverseOrder(), array);
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             assertArrayEquals(new long[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, array);
         }
@@ -147,11 +140,11 @@ class ArraysXTest {
                     .mapToDouble(It::asDouble)
                     .toArray();
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             ArraysX.sort(Double::compare, array);
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             final ListX<String> expected = DoubleList.of(.1, .2, .3, .4, .5, .6)
                     .mapToObj(DoubleX::toRoundedString);
@@ -172,11 +165,11 @@ class ArraysXTest {
                     .mapToDouble(It::asDouble)
                     .toArray();
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             ArraysX.sort(DoubleComparator.reverseOrder(), array);
 
-            It.println(Arrays.toString(array));
+            println(Arrays.toString(array));
 
             final ListX<String> expected = DoubleList.of(99.9, 99.8, 99.7, 99.6, 99.5, 99.4).mapToObj(DoubleX::toRoundedString);
             final ListX<String> actual = DoubleSequence.of(array).take(6).toList().mapToObj(DoubleX::toRoundedString);
@@ -229,6 +222,21 @@ class ArraysXTest {
             final boolean sorted = ArraysX.isSorted(IntComparator.reverseOrder(), 10, 9, 7, 8, 7, 6, 4, 2, 5);
 
             assertFalse(sorted);
+        }
+
+        @Test
+        void testToBooleanArray() {
+            String[] strings = {"This", "is", "a", "test"};
+
+            boolean[] array = ArraysX.toBooleanArray(s -> s.contains("i"), strings);
+
+            assertArrayEquals(new boolean[] {true, true, false, false}, array);
+        }
+
+        @Test
+        void testGenerateIntArray() {
+            final int[] ints = ArraysX.generateIntArray(6, i -> i * 2);
+            assertArrayEquals(new int[] {0, 2, 4, 6, 8, 10}, ints);
         }
 
         @Nested

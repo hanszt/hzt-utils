@@ -5,7 +5,7 @@ import org.hzt.fx.utils.function.FloatPredicate;
 import org.hzt.fx.utils.iterables.FloatIterable;
 import org.hzt.fx.utils.iterators.FloatIterator;
 import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.primitives.PrimitiveAbstractList;
+import org.hzt.utils.collections.primitives.PrimitiveAbstractArrayList;
 import org.hzt.utils.collections.primitives.PrimitiveMutableCollection;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 
-public final class FloatArrayList extends PrimitiveAbstractList<Float, FloatConsumer, float[], FloatIterator>
+public final class FloatArrayList extends PrimitiveAbstractArrayList<Float, FloatConsumer, float[], FloatIterator>
         implements PrimitiveMutableCollection<Float, FloatConsumer, float[], FloatPredicate>, FloatIterable {
 
     public FloatArrayList() {

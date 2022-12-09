@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.DoublePredicate;
+import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntToLongFunction;
@@ -22,6 +23,12 @@ import java.util.function.Predicate;
 public final class ArraysX {
 
     private ArraysX() {
+    }
+
+    public static <T> T[] generateArray(int size, IntFunction<T> generator, IntFunction<T[]> arrayFactory) {
+        final T[] array = arrayFactory.apply(size);
+        Arrays.setAll(array, generator);
+        return array;
     }
 
     public static int[] generateIntArray(int size, IntUnaryOperator generator) {
@@ -43,6 +50,18 @@ public final class ArraysX {
     }
 
     public static <T> T[] copyOf(T[] array) {
+        return Arrays.copyOf(array, array.length);
+    }
+
+    public static int[] copyOf(int[] array) {
+        return Arrays.copyOf(array, array.length);
+    }
+
+    public static long[] copyOf(long[] array) {
+        return Arrays.copyOf(array, array.length);
+    }
+
+    public static double[] copyOf(double[] array) {
         return Arrays.copyOf(array, array.length);
     }
 

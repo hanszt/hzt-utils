@@ -2,9 +2,7 @@ package org.hzt.utils.collections.primitives;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class LongMutableCollectionTest {
 
@@ -15,7 +13,7 @@ class LongMutableCollectionTest {
 
         assertAll(
                 () -> assertTrue(removedAll),
-                () -> assertEquals(LongList.of(1, 5, 9), list)
+                () -> assertEquals(LongMutableList.of(1, 5, 9), list)
         );
     }
 
@@ -26,7 +24,7 @@ class LongMutableCollectionTest {
 
         assertAll(
                 () -> assertTrue(addedAll),
-                () -> assertEquals(LongList.of(1, 4, 5, 3, 6, 7, 5, 8, 9, 3, 4, 6, 5, 7, 8), list)
+                () -> assertEquals(LongMutableList.of(1, 4, 5, 3, 6, 7, 5, 8, 9, 3, 4, 6, 5, 7, 8), list)
         );
     }
 
@@ -37,7 +35,7 @@ class LongMutableCollectionTest {
 
         assertAll(
                 () -> assertTrue(removed),
-                () -> assertEquals(LongList.of(1, 5, 3, 7, 5, 9), list)
+                () -> assertEquals(LongMutableList.of(1, 5, 3, 7, 5, 9), list)
         );
     }
 }

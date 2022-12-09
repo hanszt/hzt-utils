@@ -7,6 +7,7 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.ranges.IntRange;
+import org.hzt.utils.sequences.primitives.LongSequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -22,25 +23,25 @@ public interface LongList extends LongCollection,
         BinarySearchable<LongToIntFunction> {
 
     static LongList empty() {
-        return new LongArrayList();
-    }
-
-    static LongList of(Iterable<Long> iterable) {
-        return new LongArrayList(iterable);
-    }
-
-    static LongList of(LongList longList) {
-        return new LongArrayList(longList);
+        return new LongImmutableList();
     }
 
     static LongList of(long... array) {
-        return new LongArrayList(array);
+        return new LongImmutableList(array);
+    }
+
+    static LongList of(Iterable<Long> iterable) {
+        return LongSequence.of(iterable).toList();
+    }
+
+    static LongList copyOf(LongCollection longCollection) {
+        return new LongImmutableList(longCollection);
     }
 
     static LongList build(Consumer<? super LongMutableList> factory) {
-        final LongMutableList listX = LongMutableList.empty();
-        factory.accept(listX);
-        return listX;
+        final LongMutableList mutableList = LongMutableList.empty();
+        factory.accept(mutableList);
+        return LongList.copyOf(mutableList);
     }
 
     default boolean contains(long value) {

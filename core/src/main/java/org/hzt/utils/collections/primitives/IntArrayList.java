@@ -14,7 +14,7 @@ import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
 import java.util.function.IntConsumer;
 
-final class IntArrayList extends PrimitiveAbstractList<Integer, IntConsumer, int[], PrimitiveIterator.OfInt>
+final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer, int[], PrimitiveIterator.OfInt>
         implements IntMutableList {
 
     IntArrayList() {

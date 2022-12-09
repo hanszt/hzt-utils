@@ -122,7 +122,7 @@ public interface CollectionX<E> extends IterableX<E> {
         for (E e : this) {
             intList.add(mapper.applyAsInt(e));
         }
-        return intList;
+        return IntList.copyOf(intList);
     }
 
     @Override
@@ -131,7 +131,7 @@ public interface CollectionX<E> extends IterableX<E> {
         for (E e : this) {
             longList.add(mapper.applyAsLong(e));
         }
-        return longList;
+        return LongList.copyOf(longList);
     }
 
     @Override
@@ -140,7 +140,7 @@ public interface CollectionX<E> extends IterableX<E> {
         for (E e : this) {
             doubleList.add(mapper.applyAsDouble(e));
         }
-        return doubleList;
+        return DoubleList.copyOf(doubleList);
     }
 
     default <R> ListX<R> flatMap(@NotNull Function<? super E, ? extends Iterable<? extends R>> mapper) {
@@ -149,17 +149,17 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default IntList flatMapToInt(@NotNull Function<? super E, ? extends PrimitiveIterable.OfInt> mapper) {
-        return flatMapIntsTo(() -> IntMutableList.withInitCapacity(size()), mapper);
+        return IntList.copyOf(flatMapIntsTo(() -> IntMutableList.withInitCapacity(size()), mapper));
     }
 
     @Override
     default LongList flatMapToLong(@NotNull Function<? super E, ? extends PrimitiveIterable.OfLong> mapper) {
-        return flatMapLongsTo(() -> LongMutableList.withInitCapacity(size()), mapper);
+        return LongList.copyOf(flatMapLongsTo(() -> LongMutableList.withInitCapacity(size()), mapper));
     }
 
     @Override
     default DoubleList flatMapToDouble(@NotNull Function<? super E, ? extends PrimitiveIterable.OfDouble> mapper) {
-        return flatMapDoublesTo(() -> DoubleMutableList.withInitCapacity(size()), mapper);
+        return DoubleList.copyOf(flatMapDoublesTo(() -> DoubleMutableList.withInitCapacity(size()), mapper));
     }
 
     default <R> ListX<R> mapMulti(@NotNull BiConsumer<? super E, ? super Consumer<R>> mapper) {

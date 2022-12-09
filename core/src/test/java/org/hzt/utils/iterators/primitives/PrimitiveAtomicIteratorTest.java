@@ -18,7 +18,7 @@ class PrimitiveAtomicIteratorTest {
 
         IntList.of(1, 3, 5, 7, 8, 9).atomicIterator().forEachRemaining((IntConsumer) listX::add);
 
-        assertEquals(IntList.of(1, 3, 5, 7, 8, 9), listX);
+        assertEquals(IntMutableList.of(1, 3, 5, 7, 8, 9), listX);
     }
 
     @Test

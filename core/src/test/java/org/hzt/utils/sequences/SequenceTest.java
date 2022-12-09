@@ -892,14 +892,14 @@ class SequenceTest {
                 .onEach(It::println)
                 .mapToInt(It::asInt);
 
-        final IntList integers = intSequence.toList();
+        final IntMutableList integers = intSequence.toMutableList();
         final long sum = intSequence.sum();
 
         final Pair<IntMutableList, Integer> pair = intSequence.boxed()
                 .foldTwo(IntMutableList.empty(), IntMutableList::plus, 0, Integer::sum);
 
         assertAll(
-                () -> assertEquals(IntList.of(4, 204, 404, 604, 804), integers),
+                () -> assertEquals(IntMutableList.of(4, 204, 404, 604, 804), integers),
                 () -> assertEquals(pair.first(), integers),
                 () -> assertEquals(2020, sum),
                 () -> assertEquals(pair.second().longValue(), sum)

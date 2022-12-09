@@ -21,7 +21,7 @@ class IntArrayListTest {
         }
         System.out.println("list = " + list);
 
-        assertEquals(IntList.of(1, 2, 4, 6), list);
+        assertEquals(IntMutableList.of(1, 2, 4, 6), list);
     }
 
     @Test

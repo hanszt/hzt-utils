@@ -16,7 +16,7 @@ class GraphAlgorithmsTest {
     void testFindShortestPathUsingDijkstra() {
         final var start = WeightedNode.ofCost(3);
         final var graph = WeightedNode.ofCost(2);
-        assertThrows(IllegalStateException.class, () -> GraphAlgorithms.dijkstra(start, graph));
+        assertThrows(UnsupportedOperationException.class, () -> GraphAlgorithms.dijkstra(start, graph));
     }
 
     /**

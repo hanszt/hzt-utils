@@ -57,7 +57,7 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
     }
 
     default IntList toList() {
-        return toMutableList();
+        return IntList.copyOf(toMutableList());
     }
 
     default <C extends IntMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {

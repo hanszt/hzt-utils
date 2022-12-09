@@ -15,7 +15,7 @@ import java.util.function.IntConsumer;
 
 import static java.util.Objects.checkIndex;
 
-final class IntArrayList extends PrimitiveAbstractList<Integer, IntConsumer, int[], PrimitiveIterator.OfInt>
+final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer, int[], PrimitiveIterator.OfInt>
         implements IntMutableList {
 
     IntArrayList() {

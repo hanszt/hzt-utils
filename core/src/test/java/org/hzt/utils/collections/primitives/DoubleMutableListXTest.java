@@ -68,7 +68,7 @@ class DoubleMutableListXTest {
 
         assertAll(
                 () -> assertTrue(remove),
-                () -> assertEquals(DoubleList.of(1, 2, 3, 4, 5, 6, 8), list)
+                () -> assertEquals(DoubleMutableList.of(1, 2, 3, 4, 5, 6, 8), list)
         );
     }
 
@@ -82,7 +82,7 @@ class DoubleMutableListXTest {
 
         doubles.forEachDouble(System.out::println);
 
-        assertEquals(DoubleList.of(-9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0), doubles);
+        assertEquals(DoubleMutableList.of(-9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0), doubles);
     }
     @Test
     void testSortDoubleList() {

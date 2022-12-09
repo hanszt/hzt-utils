@@ -7,6 +7,7 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.ranges.IntRange;
+import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -22,19 +23,19 @@ public interface DoubleList extends DoubleCollection,
         BinarySearchable<DoubleToIntFunction> {
 
     static DoubleList empty() {
-        return new DoubleArrayList();
-    }
-
-    static DoubleList of(Iterable<Double> iterable) {
-        return new DoubleArrayList(iterable);
-    }
-
-    static DoubleList of(DoubleList doubleList) {
-        return new DoubleArrayList(doubleList);
+        return new DoubleImmutableList();
     }
 
     static DoubleList of(double... array) {
-        return new DoubleArrayList(array);
+        return new DoubleImmutableList(array);
+    }
+
+    static DoubleList of(Iterable<Double> iterable) {
+        return DoubleSequence.of(iterable).toList();
+    }
+
+    static DoubleList copyOf(DoubleCollection doubleCollection) {
+        return new DoubleImmutableList(doubleCollection);
     }
 
     static DoubleList build(Consumer<? super DoubleMutableList> factory) {

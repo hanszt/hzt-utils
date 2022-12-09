@@ -10,14 +10,14 @@ import java.util.PrimitiveIterator;
  * @param <T_CONS> The primitive consumer
  * @param <I> the primitive iterator
  */
-public abstract class PrimitiveAbstractList<T, T_CONS, A, I extends PrimitiveIterator<T, T_CONS>>
+public abstract class PrimitiveAbstractArrayList<T, T_CONS, A, I extends PrimitiveIterator<T, T_CONS>>
 extends PrimitiveAbstractCollection<T, T_CONS, A, I> implements PrimitiveCollection<T, T_CONS, A> {
 
     private static final int SOFT_MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
     protected static final int DEFAULT_CAPACITY = 10;
     protected A elementData;
 
-    protected PrimitiveAbstractList(int initSize, A elementData) {
+    protected PrimitiveAbstractArrayList(int initSize, A elementData) {
         super(initSize);
         this.elementData = elementData;
     }

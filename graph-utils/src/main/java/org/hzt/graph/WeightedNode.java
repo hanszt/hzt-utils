@@ -9,7 +9,87 @@ import java.util.List;
 public interface WeightedNode<T> extends Sequence<WeightedEdge<T>> {
 
     static <T> WeightedNode<T> of(T payload, int cost) {
-        return new ObservableWeightedNodeImpl<>(payload, cost);
+        return new WeightedNode<T>() {
+            @Override
+            public T getPayload() {
+                return payload;
+            }
+
+            @Override
+            public List<WeightedEdge<T>> getWeightedEdges() {
+                throw new IllegalStateException();
+            }
+
+            @Override
+            public List<WeightedEdge<T>> getEdges() {
+                throw new IllegalStateException();
+            }
+
+            @Override
+            public WeightedNode<T> getPredecessor() {
+                throw new IllegalStateException();
+            }
+
+            @Override
+            public void setPredecessor(WeightedNode<T> node) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public boolean isOpen() {
+                return false;
+            }
+
+            @Override
+            public void setOpen(boolean open) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public boolean isVisited() {
+                return false;
+            }
+
+            @Override
+            public void setVisited(boolean visited) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public boolean isSelected() {
+                return false;
+            }
+
+            @Override
+            public void setSelected(boolean selected) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public int getHeuristic() {
+                return 0;
+            }
+
+            @Override
+            public void setHeuristic(int heuristic) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public int getCost() {
+                return cost;
+            }
+
+            @Override
+            public void setCost(int cost) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public boolean addEdge(WeightedEdge<T> weightedEdge) {
+                return false;
+            }
+        };
     }
 
     static <T> WeightedNode<T> ofCost(int cost) {

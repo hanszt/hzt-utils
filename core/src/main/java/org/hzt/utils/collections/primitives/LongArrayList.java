@@ -60,7 +60,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
 
     @Override
     public boolean add(int index, long value) {
-        PreConditions.requireOrThrow(index >= 0 && index <= size, IndexOutOfBoundsException::new);
+        Objects.checkIndex(index, size + 1);
         if (size == elementData.length) {
             elementData = growArray(size, elementData.length == 0);
         }

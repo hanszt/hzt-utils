@@ -60,7 +60,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
 
     @Override
     public boolean add(int index, double value) {
-        PreConditions.requireOrThrow(index >= 0 && index <= size, IndexOutOfBoundsException::new);
+        Objects.checkIndex(index, size + 1);
         if (size == elementData.length) {
             elementData = growArray(size, elementData.length == 0);
         }

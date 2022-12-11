@@ -77,16 +77,17 @@ final class DoubleImmutableList extends
     }
 
     @Override
+    @SuppressWarnings("squid:S2162")
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof DoubleImmutableList)) {
+        if (!(o instanceof DoubleList)) {
             return false;
         }
 
         PrimitiveIterator.OfDouble iterator1 = iterator();
-        PrimitiveIterator.OfDouble iterator2 = ((DoubleImmutableList) o).iterator();
+        PrimitiveIterator.OfDouble iterator2 = ((DoubleList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             double l1 = iterator1.nextDouble();
             double l2 = iterator2.nextDouble();

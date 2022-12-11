@@ -136,16 +136,17 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
+    @SuppressWarnings("squid:S2162")
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof LongArrayList longArrayList)) {
+        if (!(o instanceof LongList longList)) {
             return false;
         }
 
         PrimitiveIterator.OfLong iterator1 = iterator();
-        PrimitiveIterator.OfLong iterator2 = longArrayList.iterator();
+        PrimitiveIterator.OfLong iterator2 = longList.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             long l1 = iterator1.nextLong();
             long l2 = iterator2.nextLong();

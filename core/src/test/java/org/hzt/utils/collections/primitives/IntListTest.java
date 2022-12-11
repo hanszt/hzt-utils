@@ -91,4 +91,23 @@ class IntListTest {
                 () -> assertFalse(indices.contains(intList.size()))
         );
     }
+
+    @Test
+    void testMutableListAndImmutableListWithSameElementsAreEqualAccordingToEqualsMethod() {
+        IntList list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
+        IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
+
+        assertAll(
+                () -> assertEquals(list2, list1),
+                () -> assertEquals(list1, list2)
+        );
+    }
+
+    @Test
+    void testMutableListAndImmutableListWithSameElementsHaveSameHashCode() {
+        IntList list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
+        IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
+
+        assertEquals(list2.hashCode(), list1.hashCode());
+    }
 }

@@ -136,16 +136,17 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
+    @SuppressWarnings("squid:S2162")
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof DoubleArrayList doubleArrayList)) {
+        if (!(o instanceof DoubleList doubleList)) {
             return false;
         }
 
         PrimitiveIterator.OfDouble iterator1 = iterator();
-        PrimitiveIterator.OfDouble iterator2 = doubleArrayList.iterator();
+        PrimitiveIterator.OfDouble iterator2 = doubleList.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             double l1 = iterator1.nextDouble();
             double l2 = iterator2.nextDouble();

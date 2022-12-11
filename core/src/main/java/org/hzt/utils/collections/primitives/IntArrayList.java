@@ -136,16 +136,17 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     @Override
+    @SuppressWarnings("squid:S2162")
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof IntArrayList intArrayList)) {
+        if (!(o instanceof IntList intList)) {
             return false;
         }
 
         PrimitiveIterator.OfInt iterator1 = iterator();
-        PrimitiveIterator.OfInt iterator2 = intArrayList.iterator();
+        PrimitiveIterator.OfInt iterator2 = intList.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             int l1 = iterator1.nextInt();
             int l2 = iterator2.nextInt();

@@ -135,11 +135,12 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     @Override
+    @SuppressWarnings("squid:S2162")
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof IntArrayList)) {
+        if (!(o instanceof IntList)) {
             return false;
         }
 

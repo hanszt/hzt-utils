@@ -78,16 +78,17 @@ final class LongImmutableList extends
     }
 
     @Override
+    @SuppressWarnings("squid:S2162")
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof LongImmutableList)) {
+        if (!(o instanceof LongList)) {
             return false;
         }
 
         PrimitiveIterator.OfLong iterator1 = iterator();
-        PrimitiveIterator.OfLong iterator2 = ((LongImmutableList) o).iterator();
+        PrimitiveIterator.OfLong iterator2 = ((LongList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             long l1 = iterator1.nextLong();
             long l2 = iterator2.nextLong();

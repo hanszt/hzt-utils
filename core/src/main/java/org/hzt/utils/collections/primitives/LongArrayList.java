@@ -135,11 +135,12 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
+    @SuppressWarnings("squid:S2162")
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof LongArrayList)) {
+        if (!(o instanceof LongList)) {
             return false;
         }
 

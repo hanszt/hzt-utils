@@ -1,6 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.jetbrains.annotations.NotNull;
@@ -42,10 +43,14 @@ public interface IntMutableList extends IntList, IntMutableCollection,
 
     @Override
     default MutableListX<Integer> boxed() {
-        return asSequence().boxed().toMutableList();
+        return MutableListX.of(this);
     }
 
     int set(int index, int value);
+
+    boolean add(int index, int value);
+
+    boolean addAll(int index, PrimitiveIterable.OfInt iterable);
 
     @Override
     default boolean remove(int i) {

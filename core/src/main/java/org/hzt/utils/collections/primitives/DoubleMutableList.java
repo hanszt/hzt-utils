@@ -1,6 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.jetbrains.annotations.NotNull;
@@ -42,10 +43,14 @@ public interface DoubleMutableList extends DoubleList, DoubleMutableCollection,
 
     @Override
     default MutableListX<Double> boxed() {
-        return asSequence().boxed().toMutableList();
+        return MutableListX.of(this);
     }
 
     double set(int index, double value);
+
+    boolean add(int index, double value);
+
+    boolean addAll(int index, PrimitiveIterable.OfDouble iterable);
 
     @Override
     default boolean remove(double d) {

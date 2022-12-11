@@ -1,6 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +41,16 @@ public interface LongMutableList extends LongList, LongMutableCollection,
         return this;
     }
 
+    @Override
+    default MutableListX<Long> boxed() {
+        return MutableListX.of(this);
+    }
+
     long set(int index, long value);
+
+    boolean add(int index, long value);
+
+    boolean addAll(int index, PrimitiveIterable.OfLong iterable);
 
     @Override
     default boolean remove(long l) {
@@ -50,11 +60,6 @@ public interface LongMutableList extends LongList, LongMutableCollection,
             return true;
         }
         return false;
-    }
-
-    @Override
-    default MutableListX<Long> boxed() {
-        return MutableListX.of(this);
     }
 
     long removeAt(int index);

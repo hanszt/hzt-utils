@@ -5,12 +5,13 @@ import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-class IntMutableListXTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+class IntMutableListTest {
 
     @Test
     void testDifferentMethods() {
@@ -40,6 +41,20 @@ class IntMutableListXTest {
         );
 
         ints.forEachInt(It::println);
+    }
+
+    @Test
+    void testAddAtIndex() {
+        IntMutableList list = IntMutableList.of(1, 2, 5);
+        list.add(list.size(), 3);
+        List<Integer> refList = new ArrayList<>(Arrays.asList(1, 2, 5));
+        refList.add(refList.size(), 3);
+
+        System.out.println("list = " + list);
+        assertAll(
+                () -> assertEquals(IntMutableList.of(1, 2, 5, 3), list),
+                () -> assertEquals(Arrays.asList(1, 2, 5, 3), refList)
+        );
     }
 
     @Test

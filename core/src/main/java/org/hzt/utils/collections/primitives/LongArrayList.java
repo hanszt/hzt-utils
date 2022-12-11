@@ -59,6 +59,23 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
+    public boolean add(int index, long value) {
+        PreConditions.requireOrThrow(index >= 0 && index <= size, IndexOutOfBoundsException::new);
+        if (size == elementData.length) {
+            elementData = growArray(size, elementData.length == 0);
+        }
+        System.arraycopy(elementData, index, elementData, index + 1, size - index);
+        elementData[index] = value;
+        size++;
+        return true;
+    }
+
+    @Override
+    public boolean addAll(int index, PrimitiveIterable.OfLong iterable) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public long get(int index) {
         checkIndex(index, size);
         return elementData[index];

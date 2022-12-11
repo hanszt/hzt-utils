@@ -59,6 +59,23 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
+    public boolean add(int index, double value) {
+        PreConditions.requireOrThrow(index >= 0 && index <= size, IndexOutOfBoundsException::new);
+        if (size == elementData.length) {
+            elementData = growArray(size, elementData.length == 0);
+        }
+        System.arraycopy(elementData, index, elementData, index + 1, size - index);
+        elementData[index] = value;
+        size++;
+        return true;
+    }
+
+    @Override
+    public boolean addAll(int index, PrimitiveIterable.OfDouble iterable) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public double get(int index) {
         checkIndex(index, size);
         return elementData[index];

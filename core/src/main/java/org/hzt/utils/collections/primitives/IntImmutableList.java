@@ -77,16 +77,17 @@ final class IntImmutableList extends
     }
 
     @Override
+    @SuppressWarnings("squid:S2162")
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof IntImmutableList)) {
+        if (!(o instanceof IntList)) {
             return false;
         }
 
         PrimitiveIterator.OfInt iterator1 = iterator();
-        PrimitiveIterator.OfInt iterator2 = ((IntImmutableList) o).iterator();
+        PrimitiveIterator.OfInt iterator2 = ((IntList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             int l1 = iterator1.nextInt();
             int l2 = iterator2.nextInt();

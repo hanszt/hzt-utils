@@ -136,11 +136,12 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
+    @SuppressWarnings("squid:S2162")
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof DoubleArrayList)) {
+        if (!(o instanceof DoubleList)) {
             return false;
         }
 

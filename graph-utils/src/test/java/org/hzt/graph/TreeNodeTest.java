@@ -1,31 +1,90 @@
 package org.hzt.graph;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TreeNodeTest {
 
-    @Test
-    void testToTreeString() {
-        final var root = buildTree();
-        final var s = root.toTreeString(2);
+    @Nested
+    class ToTreeStringTests {
 
-        final var expected = "" +
-                "root\n" +
-                "  c1\n" +
-                "    c4\n" +
-                "    c5\n" +
-                "  c2\n" +
-                "    c6\n" +
-                "    c7\n" +
-                "  c3\n";
+        @Test
+        void testToTreeString() {
+            final var root = buildTree();
+            final var s = root.toTreeString(2);
 
-        assertEquals(expected, s);
+            final var expected = "" +
+                    "root\n" +
+                    "  c1\n" +
+                    "    c4\n" +
+                    "    c5\n" +
+                    "  c2\n" +
+                    "    c6\n" +
+                    "    c7\n" +
+                    "  c3\n";
+
+            assertEquals(expected, s);
+        }
+
+        @Test
+        void testToTreeStringCustomized() {
+            final var root = buildTree();
+            final var s = root.toTreeString(1, "-", n -> (n.isLeaf() ? "leaf: " : "") + n);
+
+            final var expected = "root\n" +
+                    "-c1\n" +
+                    "--leaf: c4\n" +
+                    "--leaf: c5\n" +
+                    "-c2\n" +
+                    "--leaf: c6\n" +
+                    "--leaf: c7\n" +
+                    "-leaf: c3\n";
+
+            assertEquals(expected, s);
+        }
+
+        @Test
+        void testToTreeStringCustomized2() {
+            final var root = buildTree();
+            final var s = root.toTreeString();
+
+            final var expected = "root[c1[c4, c5], c2[c6, c7], c3]";
+
+            assertEquals(expected, s);
+        }
+
+        @Test
+        void testToTreeStringCustomized3() {
+            final var root = buildTree();
+            final var s = root.toTreeString(n -> (n.isLeaf() ? "leaf: " : "") + n.name);
+
+            final var expected = "root[c1[leaf: c4, leaf: c5], c2[leaf: c6, leaf: c7], leaf: c3]";
+
+            assertEquals(expected, s);
+        }
+
+        @Test
+        void testToTreeStringCustomized4() {
+            final var root = buildTree();
+            final var s = root.toTreeString(" { ", " ; ", " } ", Objects::toString);
+
+            final var expected = "root { c1 { c4 ; c5 }  ; c2 { c6 ; c7 }  ; c3 } ";
+
+            assertEquals(expected, s);
+        }
     }
 
     @Test
@@ -34,7 +93,7 @@ class TreeNodeTest {
         final List<String> strings = root.mapLeafsTo(ArrayList::new, s -> s.name);
 
         final var fromSequence = root.asSequence()
-                .filter(n -> n.children.isEmpty())
+                .filter(TreeNode::isLeaf)
                 .map(node -> node.name)
                 .toList();
 
@@ -57,16 +116,31 @@ class TreeNodeTest {
     @Test
     void testAsSequence() {
         final var root = buildTree();
+
         final var strings = root.asSequence()
                 .map(node -> node.name)
                 .filter(n -> n.length() < 3)
                 .toList();
+
+        strings.forEach(System.out::println);
+        assertEquals(List.of("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
+    }
+
+    @Test
+    void testStream() {
+        final var root = buildTree();
+
+        final var strings = root.stream()
+                .map(node -> node.name)
+                .filter(n -> n.length() < 3)
+                .collect(Collectors.toUnmodifiableList());
+
         strings.forEach(System.out::println);
         assertEquals(List.of("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
     }
 
     @NotNull
-    private static TreeNodeTest.Node buildTree() {
+    private static Node buildTree() {
         final var c1 = new Node("c1")
                 .addChildren(List.of(
                         new Node("c4"),
@@ -80,14 +154,16 @@ class TreeNodeTest {
     }
 
     @Test
-    void testGetParentThrowsUnsupportedOperationExceptionByDefault() {
-        final var node = new Node("test");
-        assertThrows(UnsupportedOperationException.class, () -> tryPrintParent(node));
-    }
+    void testFileNode() {
+        final var fileX = new FileX(".");
 
-    private static void tryPrintParent(Node node) {
-        final var parent = node.getParent();
-        System.out.println(parent);
+        final var files = fileX.asSequence()
+                .map(File::getName)
+                .toList();
+
+        println(fileX.toTreeString(2, File::getName));
+
+        assertTrue(files.contains("pom.xml"));
     }
 
 
@@ -112,4 +188,23 @@ class TreeNodeTest {
         }
     }
 
+    private static final class FileX extends File implements TreeNode<FileX, FileX> {
+
+        public FileX(@NotNull String pathname) {
+            super(pathname);
+        }
+
+        public FileX(File file) {
+            this(file.getAbsolutePath());
+        }
+
+        @Override
+        public List<FileX> getChildren() {
+            return Optional.ofNullable(listFiles())
+                    .map(list -> Arrays.stream(list)
+                            .map(FileX::new)
+                            .collect(Collectors.toUnmodifiableList()))
+                    .orElse(Collections.emptyList());
+        }
+    }
 }

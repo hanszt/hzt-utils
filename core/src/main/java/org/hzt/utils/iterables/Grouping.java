@@ -4,11 +4,15 @@ import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
+import org.hzt.utils.iterators.Iterators;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
@@ -26,6 +30,22 @@ public interface Grouping<T, K> extends Iterable<T> {
             destination.put(key, aggregator.apply(key, accumulator, item, isFirstValue));
         }
         return destination;
+    }
+
+
+    default Grouping<T, K> filtering(Predicate<? super T> predicate) {
+        return new Grouping<T, K>() {
+            @Override
+            public K keyOf(T element) {
+                return Grouping.this.keyOf(element);
+            }
+
+            @NotNull
+            @Override
+            public Iterator<T> iterator() {
+                return Iterators.filteringIterator(Grouping.this.iterator(), predicate, true);
+            }
+        };
     }
 
     default <R> MapX<K, R> aggregate(QuadFunction<K, R, T, Boolean, R> aggregator) {

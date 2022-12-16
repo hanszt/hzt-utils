@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,15 +25,17 @@ class TreeNodeTest {
             final var root = buildTree();
             final var s = root.toTreeString(2);
 
-            final var expected = "" +
-                    "root\n" +
-                    "  c1\n" +
-                    "    c4\n" +
-                    "    c5\n" +
-                    "  c2\n" +
-                    "    c6\n" +
-                    "    c7\n" +
-                    "  c3\n";
+            final var expected = """
+                    root
+                      c1
+                        c4
+                        c5
+                      c2
+                        c6
+                        c7
+                        c8
+                      c3
+                    """;
 
             assertEquals(expected, s);
         }
@@ -44,14 +45,17 @@ class TreeNodeTest {
             final var root = buildTree();
             final var s = root.toTreeString(1, "-", n -> (n.isLeaf() ? "leaf: " : "") + n);
 
-            final var expected = "root\n" +
-                    "-c1\n" +
-                    "--leaf: c4\n" +
-                    "--leaf: c5\n" +
-                    "-c2\n" +
-                    "--leaf: c6\n" +
-                    "--leaf: c7\n" +
-                    "-leaf: c3\n";
+            final var expected = """
+                    root
+                    -c1
+                    --leaf: c4
+                    --leaf: c5
+                    -c2
+                    --leaf: c6
+                    --leaf: c7
+                    --leaf: c8
+                    -leaf: c3
+                    """;
 
             assertEquals(expected, s);
         }
@@ -61,7 +65,7 @@ class TreeNodeTest {
             final var root = buildTree();
             final var s = root.toTreeString();
 
-            final var expected = "root[c1[c4, c5], c2[c6, c7], c3]";
+            final var expected = "root[c1[c4, c5], c2[c6, c7, c8], c3]";
 
             assertEquals(expected, s);
         }
@@ -71,7 +75,7 @@ class TreeNodeTest {
             final var root = buildTree();
             final var s = root.toTreeString(n -> (n.isLeaf() ? "leaf: " : "") + n.name);
 
-            final var expected = "root[c1[leaf: c4, leaf: c5], c2[leaf: c6, leaf: c7], leaf: c3]";
+            final var expected = "root[c1[leaf: c4, leaf: c5], c2[leaf: c6, leaf: c7, leaf: c8], leaf: c3]";
 
             assertEquals(expected, s);
         }
@@ -81,7 +85,7 @@ class TreeNodeTest {
             final var root = buildTree();
             final var s = root.toTreeString(" { ", " ; ", " } ", Objects::toString);
 
-            final var expected = "root { c1 { c4 ; c5 }  ; c2 { c6 ; c7 }  ; c3 } ";
+            final var expected = "root { c1 { c4 ; c5 }  ; c2 { c6 ; c7 ; c8 }  ; c3 } ";
 
             assertEquals(expected, s);
         }
@@ -101,7 +105,7 @@ class TreeNodeTest {
 
         assertAll(
                 () -> assertEquals(strings, fromSequence),
-                () -> assertEquals(List.of("c4", "c5", "c6", "c7", "c3"), strings)
+                () -> assertEquals(List.of("c4", "c5", "c6", "c7", "c8", "c3"), strings)
         );
     }
 
@@ -110,7 +114,7 @@ class TreeNodeTest {
         final var root = buildTree();
         final List<String> strings = root.mapTo(ArrayList::new, s -> s.name);
         strings.forEach(System.out::println);
-        assertEquals(List.of("root", "c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
+        assertEquals(List.of("root", "c1", "c4", "c5", "c2", "c6", "c7", "c8", "c3"), strings);
     }
 
     @Test
@@ -123,7 +127,7 @@ class TreeNodeTest {
                 .toList();
 
         strings.forEach(System.out::println);
-        assertEquals(List.of("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
+        assertEquals(List.of("c1", "c4", "c5", "c2", "c6", "c7", "c8", "c3"), strings);
     }
 
     @Test
@@ -133,10 +137,10 @@ class TreeNodeTest {
         final var strings = root.stream()
                 .map(node -> node.name)
                 .filter(n -> n.length() < 3)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
 
         strings.forEach(System.out::println);
-        assertEquals(List.of("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
+        assertEquals(List.of("c1", "c4", "c5", "c2", "c6", "c7", "c8", "c3"), strings);
     }
 
     @NotNull
@@ -148,7 +152,8 @@ class TreeNodeTest {
         final var c2 = new Node("c2")
                 .addChildren(List.of(
                         new Node("c6"),
-                        new Node("c7")));
+                        new Node("c7"),
+                        new Node("c8")));
         return new Node("root")
                 .addChildren(List.of(c1, c2, new Node("c3")));
     }
@@ -203,7 +208,7 @@ class TreeNodeTest {
             return Optional.ofNullable(listFiles())
                     .map(list -> Arrays.stream(list)
                             .map(FileX::new)
-                            .collect(Collectors.toUnmodifiableList()))
+                            .toList())
                     .orElse(Collections.emptyList());
         }
     }

@@ -4,6 +4,7 @@ import org.hzt.test.ReplaceCamelCaseBySentence;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
+import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.SortedMutableMapX;
 import org.hzt.utils.sequences.Sequence;
@@ -19,8 +20,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.*;
 import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -85,8 +85,8 @@ class GroupingTest {
 
         NavigableMap<Integer, Long> expected = new TreeMap<>(MutableMapX.of(0, 3L, 1, 2L, 2, 2L));
 
-        System.out.println("expected = " + expected);
-        System.out.println("aggregated = " + aggregated);
+        println("expected = " + expected);
+        println("aggregated = " + aggregated);
 
         assertEquals(expected, aggregated);
     }
@@ -160,6 +160,25 @@ class GroupingTest {
         MapX<Integer, Double> expected = MapX.of(0, 18.0, 1, 11.0, 2, 13.0);
 
         assertEquals(expected, aggregated);
+    }
+
+    @Test
+    void testFilteringCollect() {
+        final ListX<Integer> numbers = ListX.of(3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+
+        final MapX<Integer, List<Integer>> aggregated = numbers
+                .groupingBy(nr -> nr % 3)
+                .filtering(nr -> nr % 2 == 0)
+                .collect(toList());
+
+        final MapX<Integer, MutableListX<Integer>> expected = numbers
+                .filter(nr -> nr % 2 == 0)
+                .groupBy(nr -> nr % 3);
+
+        println("aggregated = " + aggregated);
+        println("expected = " + expected);
+
+        assertEquals(expected.entrySet(), aggregated.entrySet());
     }
 
 }

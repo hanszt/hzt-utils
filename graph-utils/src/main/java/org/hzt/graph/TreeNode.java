@@ -2,6 +2,7 @@ package org.hzt.graph;
 
 import org.hzt.graph.iterators.GraphIterators;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.strings.StringX;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -108,7 +109,7 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     }
 
     default Sequence<S> parentSequence() {
-        final Iterator<S> iterator = new Iterator<S>() {
+        final Iterator<S> iterator = new Iterator<>() {
 
             S next = null;
 
@@ -136,14 +137,14 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     default <R, C extends Collection<R>> C mapTo(Supplier<C> collectionFactory, Function<? super S, ? extends R> function) {
         final C collection = collectionFactory.get();
         //noinspection unchecked
-        TreeNodeHelper.map((S) this, function, collection);
+        map((S) this, function, collection);
         return collection;
     }
 
     default <R, C extends Collection<R>> C mapLeafsTo(Supplier<C> supplier, Function<? super S, ? extends R> function) {
         final C collection = supplier.get();
         //noinspection unchecked
-        TreeNodeHelper.mapLeafs((S) this, function, collection);
+        mapLeafs((S) this, function, collection);
         return collection;
     }
 
@@ -158,7 +159,7 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     default String toTreeString(String opening, String separator, String closing,
                                 Function<? super S, String> toStringFunction) {
         final StringBuilder sb = new StringBuilder();
-        TreeNodeHelper.toTreeString(this, sb, opening, separator, closing, toStringFunction);
+        toTreeString(this, sb, opening, separator, closing, toStringFunction);
         return sb.toString();
     }
 
@@ -174,7 +175,76 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
                                 String indentString,
                                 Function<? super S, String> toStringFunction) {
         final StringBuilder sb = new StringBuilder();
-        TreeNodeHelper.toTreeString(this, sb, 0, indent, indentString, toStringFunction);
+        toTreeString(this, sb, 0, indent, indentString, toStringFunction);
         return sb.toString();
+    }
+
+    private static <T, S extends TreeNode<T, S>> void toTreeString(TreeNode<T, S> treeNode,
+                                                           StringBuilder sb,
+                                                           int level,
+                                                           int indent,
+                                                           String indentString,
+                                                           Function<? super S, String> toStringFunction) {
+        //noinspection unchecked
+        sb.append(StringX.of(indentString).repeat(indent * level))
+                .append(toStringFunction.apply((S) treeNode))
+                .append("\n");
+
+        final Collection<S> children = treeNode.getChildren();
+        if (children.isEmpty()) {
+            return;
+        }
+        for (S child : children) {
+            toTreeString(child, sb, level + 1, indent, indentString, toStringFunction);
+        }
+    }
+
+    private static <T, S extends TreeNode<T, S>> void toTreeString(TreeNode<T, S> treeNode,
+                                                           StringBuilder sb,
+                                                           String opening,
+                                                           String levelSeparator,
+                                                           String closing,
+                                                           Function<? super S, String> toStringFunction) {
+        //noinspection unchecked
+        sb.append(toStringFunction.apply((S) treeNode));
+        final Collection<S> children = treeNode.getChildren();
+        if (children.isEmpty()) {
+            return;
+        }
+        sb.append(opening);
+        for (Iterator<S> iterator = children.iterator(); iterator.hasNext(); ) {
+            S child = iterator.next();
+            toTreeString(child, sb, opening, levelSeparator, closing, toStringFunction);
+            if (iterator.hasNext()) {
+                sb.append(levelSeparator);
+            }
+        }
+        sb.append(closing);
+    }
+
+    private static <T, S extends TreeNode<T, S>, R> void map(S treeNode,
+                                                     Function<? super S, ? extends R> function,
+                                                     Collection<R> collection) {
+        final Collection<S> children = treeNode.getChildren();
+        collection.add(function.apply(treeNode));
+        if (children.isEmpty()) {
+            return;
+        }
+        for (S child : children) {
+            map(child, function, collection);
+        }
+    }
+
+    private static <T, S extends TreeNode<T, S>, R> void mapLeafs(S treeNode,
+                                                          Function<? super S, ? extends R> function,
+                                                          Collection<R> collection) {
+        final Collection<S> children = treeNode.getChildren();
+        if (children.isEmpty()) {
+            collection.add(function.apply(treeNode));
+            return;
+        }
+        for (S child : children) {
+            mapLeafs(child, function, collection);
+        }
     }
 }

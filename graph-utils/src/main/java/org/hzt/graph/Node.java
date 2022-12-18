@@ -4,6 +4,8 @@ import org.hzt.graph.iterators.GraphIterators;
 import org.hzt.utils.sequences.Sequence;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -75,7 +77,7 @@ public interface Node<T, S extends Node<T, S>> {
 
     default Sequence<S> predecessorSequence() {
         //noinspection unchecked
-        return () -> NodeHelper.predecessorIterator((S) this);
+        return () -> predecessorIterator((S) this);
     }
 
     /**
@@ -86,8 +88,43 @@ public interface Node<T, S extends Node<T, S>> {
     default <R, C extends Collection<R>> C mapTo(Supplier<C> collectionFactory, Function<? super S, ? extends R> function) {
         final C collection = collectionFactory.get();
         //noinspection unchecked
-        NodeHelper.map((S) this, function, collection);
+        map((S) this, function, collection);
         return collection;
+    }
+
+    private static <T, S extends Node<T, S>, R> void map(S node,
+                                                 Function<? super S, ? extends R> function,
+                                                 Collection<R> collection) {
+        final Collection<S> children = node.getNeighbors();
+        collection.add(function.apply(node));
+        if (children.isEmpty()) {
+            return;
+        }
+        for (S child : children) {
+            map(child, function, collection);
+        }
+    }
+
+    private static <S extends Node<T, S>, T> Iterator<S> predecessorIterator(S node) {
+        return new Iterator<>() {
+
+            private S next = node;
+
+            @Override
+            public boolean hasNext() {
+                return next != null;
+            }
+
+            @Override
+            public S next() {
+                if (next == null) {
+                    throw new NoSuchElementException();
+                }
+                S current = next;
+                next = next.getPredecessor();
+                return current;
+            }
+        };
     }
 }
 

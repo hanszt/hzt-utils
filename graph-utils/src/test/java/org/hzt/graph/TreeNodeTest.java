@@ -8,13 +8,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,10 +25,10 @@ class TreeNodeTest {
 
         @Test
         void testToTreeString() {
-            final Person root = buildTree();
-            final String s = root.toTreeString(2);
+            final var root = buildTree();
+            final var s = root.toTreeString(2);
 
-            final String expected = "" +
+            final var expected = "" +
                     "root\n" +
                     "  c1\n" +
                     "    c4\n" +
@@ -45,10 +44,10 @@ class TreeNodeTest {
 
         @Test
         void testToTreeStringCustomized() {
-            final Person root = buildTree();
-            final String s = root.toTreeString(1, "-", n -> (n.isLeaf() ? "leaf: " : "") + n);
+            final var root = buildTree();
+            final var s = root.toTreeString(1, "-", n -> (n.isLeaf() ? "leaf: " : "") + n);
 
-            final String expected = "root\n" +
+            final var expected = "root\n" +
                     "-c1\n" +
                     "--c4\n" +
                     "---leaf: c10\n" +
@@ -63,30 +62,30 @@ class TreeNodeTest {
 
         @Test
         void testToTreeStringCustomized2() {
-            final Person root = buildTree();
-            final String s = root.toTreeString();
+            final var root = buildTree();
+            final var s = root.toTreeString();
 
-            final String expected = "root[c1[c4[c10], c5], c2[c6, c7], c3]";
+            final var expected = "root[c1[c4[c10], c5], c2[c6, c7], c3]";
 
             assertEquals(expected, s);
         }
 
         @Test
         void testToTreeStringCustomized3() {
-            final Person root = buildTree();
-            final String s = root.toTreeString(n -> (n.isLeaf() ? "leaf: " : "") + n.name);
+            final var root = buildTree();
+            final var s = root.toTreeString(n -> (n.isLeaf() ? "leaf: " : "") + n.name);
 
-            final String expected = "root[c1[c4[leaf: c10], leaf: c5], c2[leaf: c6, leaf: c7], leaf: c3]";
+            final var expected = "root[c1[c4[leaf: c10], leaf: c5], c2[leaf: c6, leaf: c7], leaf: c3]";
 
             assertEquals(expected, s);
         }
 
         @Test
         void testToTreeStringCustomized4() {
-            final Person root = buildTree();
-            final String s = root.toTreeString(" { ", " ; ", " } ", Objects::toString);
+            final var root = buildTree();
+            final var s = root.toTreeString(" { ", " ; ", " } ", Objects::toString);
 
-            final String expected = "root { c1 { c4 { c10 }  ; c5 }  ; c2 { c6 ; c7 }  ; c3 } ";
+            final var expected = "root { c1 { c4 { c10 }  ; c5 }  ; c2 { c6 ; c7 }  ; c3 } ";
 
             assertEquals(expected, s);
         }
@@ -94,10 +93,10 @@ class TreeNodeTest {
 
     @Test
     void testMapLeafs() {
-        final Person root = buildTree();
+        final var root = buildTree();
         final List<String> strings = root.mapLeafsTo(ArrayList::new, s -> s.name);
 
-        final List<String> fromSequence = root.depthFirstSequence()
+        final var fromSequence = root.depthFirstSequence()
                 .filter(org.hzt.graph.TreeNode::isLeaf)
                 .map(node -> node.name)
                 .toList();
@@ -106,87 +105,87 @@ class TreeNodeTest {
 
         assertAll(
                 () -> assertEquals(strings, fromSequence),
-                () -> assertEquals(Arrays.asList("c10", "c5", "c6", "c7", "c3"), strings)
+                () -> assertEquals(List.of("c10", "c5", "c6", "c7", "c3"), strings)
         );
     }
 
     @Test
     void testMap() {
-        final Person root = buildTree();
+        final var root = buildTree();
 
         final List<String> strings = root.mapTo(ArrayList::new, s -> s.name);
         strings.forEach(It::println);
 
-        assertEquals(Arrays.asList("root", "c1", "c4", "c10", "c5", "c2", "c6", "c7", "c3"), strings);
+        assertEquals(List.of("root", "c1", "c4", "c10", "c5", "c2", "c6", "c7", "c3"), strings);
     }
 
     @Test
     void testAsSequence() {
-        final Person root = buildTree();
+        final var root = buildTree();
 
-        final List<String> strings = root.depthFirstSequence()
+        final var strings = root.depthFirstSequence()
                 .map(node -> node.name)
                 .filter(n -> n.length() < 3)
                 .toList();
 
         strings.forEach(It::println);
-        assertEquals(Arrays.asList("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
+        assertEquals(List.of("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
     }
 
     @Test
     void testStream() {
-        final Person root = buildTree();
+        final var root = buildTree();
 
-        final List<String> strings = root.depthFirstSequence()
+        final var strings = root.depthFirstSequence()
                 .stream()
                 .map(node -> node.name)
                 .filter(n -> n.length() < 3)
                 .collect(Collectors.toList());
 
         strings.forEach(It::println);
-        assertEquals(Arrays.asList("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
+        assertEquals(List.of("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
     }
 
     @Test
     void testRemoveBranch() {
-        final Person root = buildTree();
+        final var root = buildTree();
 
         println(root.toTreeString(2));
 
-        final Person c1 = root.breadthFirstSequence().first(s -> "c1".equals(s.name));
-        final Person node = root.removeSubTree(c1);
+        final var c1 = root.breadthFirstSequence().first(s -> "c1".equals(s.name));
+        final var node = root.removeSubTree(c1);
 
         println();
         println(root.toTreeString(2));
 
-        final String[] expected = {"root", "c2", "c6", "c7", "c3"};
+        final var expected = new String[]{"root", "c2", "c6", "c7", "c3"};
         Assertions.assertArrayEquals(expected, node.depthFirstSequence().toArrayOf(n -> n.name, String[]::new));
     }
 
     @NotNull
     private static TreeNodeTest.Person buildTree() {
-        final Person c1 = new Person("c1").addChildren(Arrays.asList(
+        final var c1 = new Person("c1").addChildren(List.of(
                 new Person("c4").addChild(new Person("c10")),
                 new Person("c5")));
-        final Person c2 = new Person("c2")
-                .addChildren(Arrays.asList(
+        final var c2 = new Person("c2")
+                .addChildren(List.of(
                         new Person("c6"),
                         new Person("c7")));
         return new Person("root")
-                .addChildren(Arrays.asList(c1, c2, new Person("c3")));
+                .addChildren(List.of(c1, c2, new Person("c3")));
     }
 
     @Nested
     class FileXTests {
         @Test
         void testTraverseToParent() {
-            final FileX fileX = new FileX(".");
+            final var fileX = new FileX(".");
 
-            final FileX file = fileX.breadthFirstSequence()
+            final var file = fileX.breadthFirstSequence()
                     .first(n -> "TreeNodeTest.java".equals(n.getName()));
 
-            final FileX parent = file.parent();
-            final FileX itsParent = parent.parent();
+            final var parent = file.parent();
+            final var itsParent = parent.parent();
 
             assertAll(
                     () -> assertEquals("graph", parent.getName()),
@@ -196,9 +195,9 @@ class TreeNodeTest {
 
         @Test
         void testFileXAsSequence() {
-            final FileX fileX = new FileX(".");
+            final var fileX = new FileX(".");
 
-            final List<String> files = fileX.breadthFirstSequence()
+            final var files = fileX.breadthFirstSequence()
                     .map(File::getName)
                     .toList();
 
@@ -209,12 +208,12 @@ class TreeNodeTest {
 
         @Test
         void testTraverseToRoot() {
-            final FileX fileX = new FileX(".");
+            final var fileX = new FileX(".");
 
-            final FileX file = fileX.breadthFirstSequence()
+            final var file = fileX.breadthFirstSequence()
                     .first(n -> "TreeNodeTest.java".equals(n.getName()));
 
-            final FileX root = file.parentSequence()
+            final var root = file.parentSequence()
                     .onEach(s -> System.out.println(s.getAbsolutePath()))
                     .last();
 
@@ -226,9 +225,9 @@ class TreeNodeTest {
 
         @Test
         void testBreadthFirstSearch() {
-            final FileX root = new FileX(".");
+            final var root = new FileX(".");
 
-            final Map<String, Integer> map = root.breadthFirstSequence()
+            final var map = root.breadthFirstSequence()
                     .filter(n -> n.getName().endsWith("java"))
                     .associateWith(TreeNode::treeDepth)
                     .onEach(It::println)
@@ -240,9 +239,9 @@ class TreeNodeTest {
 
         @Test
         void testDepthFirstSearch() {
-            final FileX root = new FileX(".");
+            final var root = new FileX(".");
 
-            final Map<String, Integer> map = root.depthFirstSequence()
+            final var map = root.depthFirstSequence()
                     .filter(n -> n.getName().endsWith("java"))
                     .associateWith(TreeNode::treeDepth)
                     .onEach(It::println)
@@ -288,9 +287,9 @@ class TreeNodeTest {
         @Override
         public List<FileX> getChildren() {
             return Optional.ofNullable(listFiles())
-                    .map(list -> Collections.unmodifiableList(Arrays.stream(list)
+                    .map(list -> Stream.of(list)
                             .map(FileX::new)
-                            .collect(Collectors.toList())))
+                            .collect(Collectors.toUnmodifiableList()))
                     .orElse(Collections.emptyList());
         }
 

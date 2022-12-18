@@ -4,7 +4,6 @@ import org.hzt.utils.It;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -19,70 +18,70 @@ class NodeTest {
 
     @Test
     void testBreadthFirstSequence() {
-        Map<String, RailWayStation> graph = buildGraph();
+        var graph = buildGraph();
 
-        final List<String> stationNames = graph.get("Leiden").breadthFirstSequence()
+        final var stationNames = graph.get("Leiden").breadthFirstSequence()
                 .onEach(It::println)
                 .map(railWayStation -> railWayStation.name)
                 .toList();
 
-        assertEquals(Arrays.asList("Leiden", "Amsterdam", "Den Haag", "Utrecht", "Tilburg", "Bergen op zoom", "Rotterdam", "Middelburg", "Vlissingen"), stationNames);
+        assertEquals(List.of("Leiden", "Amsterdam", "Den Haag", "Utrecht", "Tilburg", "Bergen op zoom", "Rotterdam", "Middelburg", "Vlissingen"), stationNames);
     }
 
     @Test
     void testFindRouteWithLeastStops() {
-        Map<String, RailWayStation> graph = buildGraph();
+        var graph = buildGraph();
 
-        final RailWayStation source = graph.get("Leiden");
-        final RailWayStation target = graph.get("Vlissingen");
+        final var source = graph.get("Leiden");
+        final var target = graph.get("Vlissingen");
 
-        List<String> leastStopsPath = source.breadthFirstSequence()
+        var leastStopsPath = source.breadthFirstSequence()
                 .first(target::equals)
                 .predecessorSequence()
                 .onEach(n -> System.out.println(n.predecessorSequence().count()))
                 .toListOf(station -> station.name);
 
-        assertEquals(Arrays.asList("Vlissingen", "Middelburg", "Bergen op zoom", "Utrecht", "Leiden"), leastStopsPath);
+        assertEquals(List.of("Vlissingen", "Middelburg", "Bergen op zoom", "Utrecht", "Leiden"), leastStopsPath);
     }
 
     @Test
     void testFindTouristicRoute() {
-        Map<String, RailWayStation> graph = buildGraph();
+        var graph = buildGraph();
 
-        final RailWayStation source = graph.get("Leiden");
+        final var source = graph.get("Leiden");
 
-        final RailWayStation vlissingen = source.depthFirstSequence().onEach(System.out::println).first(graph.get("Vlissingen")::equals);
+        final var vlissingen = source.depthFirstSequence().onEach(System.out::println).first(graph.get("Vlissingen")::equals);
 
-        List<String> leastStopsPath = vlissingen.predecessorSequence().take(100).toListOf(station -> station.name);
+        var leastStopsPath = vlissingen.predecessorSequence().take(100).toListOf(station -> station.name);
 
         assertEquals(Collections.singletonList("Vlissingen"), leastStopsPath);
     }
 
     @Test
     void testFindRouteWithLeastStopsNoRoute() {
-        Map<String, RailWayStation> graph = buildGraph();
+        var graph = buildGraph();
 
-        final RailWayStation source = graph.get("Leiden");
+        final var source = graph.get("Leiden");
 
-        final Sequence<RailWayStation> railWayStations = source.breadthFirstSequence();
-        final RailWayStation timbuktu = graph.get("Timbuktu");
+        final var railWayStations = source.breadthFirstSequence();
+        final var timbuktu = graph.get("Timbuktu");
 
         assertThrows(NoSuchElementException.class, () -> railWayStations.first(timbuktu::equals));
     }
 
     @Test
     void testDepthFirstSequence() {
-        Map<String, RailWayStation> graph = buildGraph();
+        var graph = buildGraph();
 
-        final List<String> stationNames = graph.get("Leiden").depthFirstSequence()
+        final var stationNames = graph.get("Leiden").depthFirstSequence()
                 .map(railWayStation -> railWayStation.name)
                 .toList();
 
-        assertEquals(Arrays.asList("Leiden", "Amsterdam", "Utrecht", "Tilburg", "Bergen op zoom", "Middelburg", "Vlissingen", "Rotterdam", "Den Haag"), stationNames);
+        assertEquals(List.of("Leiden", "Amsterdam", "Utrecht", "Tilburg", "Bergen op zoom", "Middelburg", "Vlissingen", "Rotterdam", "Den Haag"), stationNames);
     }
 
     private Map<String, RailWayStation> buildGraph() {
-        final Map<String, RailWayStation> map = Sequence.of(
+        final var map = Sequence.of(
                 "Leiden",
                         "Amsterdam",
                         "Den Haag",
@@ -106,7 +105,7 @@ class NodeTest {
                 "Den Haag",
                 "Amsterdam",
                 "Rotterdam").toListOf(map::get));
-        map.get("Bergen op zoom").bidiAddNeighbors(Arrays.asList(
+        map.get("Bergen op zoom").bidiAddNeighbors(List.of(
                 map.get("Middelburg").bidiAddNeighbor(map.get("Vlissingen")),
                 map.get("Tilburg"),
                 map.get("Rotterdam")));

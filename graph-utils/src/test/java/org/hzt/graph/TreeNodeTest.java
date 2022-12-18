@@ -1,14 +1,15 @@
 package org.hzt.graph;
 
+import org.hzt.graph.tuples.DepthToTreeNode;
 import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,6 +38,7 @@ class TreeNodeTest {
                     "  c2\n" +
                     "    c6\n" +
                     "    c7\n" +
+                    "    c8\n" +
                     "  c3\n";
 
             assertEquals(expected, s);
@@ -55,6 +57,7 @@ class TreeNodeTest {
                     "-c2\n" +
                     "--leaf: c6\n" +
                     "--leaf: c7\n" +
+                    "--leaf: c8\n" +
                     "-leaf: c3\n";
 
             assertEquals(expected, s);
@@ -65,7 +68,7 @@ class TreeNodeTest {
             final var root = buildTree();
             final var s = root.toTreeString();
 
-            final var expected = "root[c1[c4[c10], c5], c2[c6, c7], c3]";
+            final var expected = "root[c1[c4[c10], c5], c2[c6, c7, c8], c3]";
 
             assertEquals(expected, s);
         }
@@ -75,7 +78,7 @@ class TreeNodeTest {
             final var root = buildTree();
             final var s = root.toTreeString(n -> (n.isLeaf() ? "leaf: " : "") + n.name);
 
-            final var expected = "root[c1[c4[leaf: c10], leaf: c5], c2[leaf: c6, leaf: c7], leaf: c3]";
+            final var expected = "root[c1[c4[leaf: c10], leaf: c5], c2[leaf: c6, leaf: c7, leaf: c8], leaf: c3]";
 
             assertEquals(expected, s);
         }
@@ -85,7 +88,7 @@ class TreeNodeTest {
             final var root = buildTree();
             final var s = root.toTreeString(" { ", " ; ", " } ", Objects::toString);
 
-            final var expected = "root { c1 { c4 { c10 }  ; c5 }  ; c2 { c6 ; c7 }  ; c3 } ";
+            final var expected = "root { c1 { c4 { c10 }  ; c5 }  ; c2 { c6 ; c7 ; c8 }  ; c3 } ";
 
             assertEquals(expected, s);
         }
@@ -96,16 +99,16 @@ class TreeNodeTest {
         final var root = buildTree();
         final List<String> strings = root.mapLeafsTo(ArrayList::new, s -> s.name);
 
+        System.out.println(root.toTreeString());
+
         final var fromSequence = root.depthFirstSequence()
-                .filter(org.hzt.graph.TreeNode::isLeaf)
+                .filter(TreeNode::isLeaf)
                 .map(node -> node.name)
                 .toList();
 
-        strings.forEach(It::println);
-
         assertAll(
                 () -> assertEquals(strings, fromSequence),
-                () -> assertEquals(List.of("c10", "c5", "c6", "c7", "c3"), strings)
+                () -> assertEquals(List.of("c10", "c5", "c6", "c7", "c8", "c3"), strings)
         );
     }
 
@@ -113,37 +116,24 @@ class TreeNodeTest {
     void testMap() {
         final var root = buildTree();
 
-        final List<String> strings = root.mapTo(ArrayList::new, s -> s.name);
-        strings.forEach(It::println);
+        System.out.println(root.toTreeString());
 
-        assertEquals(List.of("root", "c1", "c4", "c10", "c5", "c2", "c6", "c7", "c3"), strings);
+        final List<String> strings = root.mapTo(ArrayList::new, s -> s.name);
+
+        assertEquals(List.of("root", "c1", "c4", "c10", "c5", "c2", "c6", "c7", "c8", "c3"), strings);
     }
 
     @Test
-    void testAsSequence() {
+    void testDepthFirstSequence() {
         final var root = buildTree();
+
+        System.out.println(root.toTreeString(1));
 
         final var strings = root.depthFirstSequence()
                 .map(node -> node.name)
-                .filter(n -> n.length() < 3)
                 .toList();
 
-        strings.forEach(It::println);
-        assertEquals(List.of("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
-    }
-
-    @Test
-    void testStream() {
-        final var root = buildTree();
-
-        final var strings = root.depthFirstSequence()
-                .stream()
-                .map(node -> node.name)
-                .filter(n -> n.length() < 3)
-                .collect(Collectors.toList());
-
-        strings.forEach(It::println);
-        assertEquals(List.of("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
+        assertEquals(List.of("root", "c1", "c4", "c10", "c5", "c2", "c6", "c7", "c8", "c3"), strings);
     }
 
     @Test
@@ -158,8 +148,8 @@ class TreeNodeTest {
         println();
         println(root.toTreeString(2));
 
-        final var expected = new String[]{"root", "c2", "c6", "c7", "c3"};
-        Assertions.assertArrayEquals(expected, node.depthFirstSequence().toArrayOf(n -> n.name, String[]::new));
+        final var expected = new String[]{"root", "c2", "c6", "c7", "c8", "c3"};
+        assertArrayEquals(expected, node.depthFirstSequence().toArrayOf(n -> n.name, String[]::new));
     }
 
     @NotNull
@@ -170,7 +160,8 @@ class TreeNodeTest {
         final var c2 = new Person("c2")
                 .addChildren(List.of(
                         new Person("c6"),
-                        new Person("c7")));
+                        new Person("c7"),
+                        new Person("c8")));
         return new Person("root")
                 .addChildren(List.of(c1, c2, new Person("c3")));
     }
@@ -194,7 +185,25 @@ class TreeNodeTest {
         }
 
         @Test
-        void testFileXAsSequence() {
+        void testDepthTrackingTraversal() {
+            final var fileX = new FileX(".");
+
+            final var nodeToTreeDept1 = fileX.breadthFirstDepthTrackingSequence()
+                    .onEach(System.out::println)
+                    .toList();
+
+            System.out.println();
+
+            final var nodeToTreeDepth2 = fileX.depthFirstDepthTrackingSequence()
+                    .onEach(System.out::println)
+                    .sorted(Comparator.comparingInt(DepthToTreeNode::treeDepth))
+                    .toList();
+
+            assertEquals(nodeToTreeDept1, nodeToTreeDepth2);
+        }
+
+        @Test
+        void testFileXAsBreadthFirstSequence() {
             final var fileX = new FileX(".");
 
             final var files = fileX.breadthFirstSequence()

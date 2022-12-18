@@ -4,4 +4,5 @@ open module org.hzt.graph.utils {
     requires org.jetbrains.annotations;
 
     exports org.hzt.graph;
+    exports org.hzt.graph.tuples;
 }

@@ -1,6 +1,7 @@
 package org.hzt.graph.iterators;
 
 import org.hzt.graph.TreeNode;
+import org.hzt.graph.tuples.DepthToTreeNode;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,11 +14,11 @@ import java.util.Queue;
  *
  * @see <a href="https://gist.github.com/Xrayez/e67858723beca83f972f5790aae3a26f">BFS and DFS Iterator for Graph</a>
  */
-final class TreeNodeBreadthFirstIterator<T, S extends TreeNode<T, S>> implements Iterator<S> {
-    private final Queue<S> queue = new LinkedList<>();
+final class TreeNodeBreadthFirstDepthTrackingIterator<T, S extends TreeNode<T, S>> implements Iterator<DepthToTreeNode<S>> {
+    private final Queue<DepthToTreeNode<S>> queue = new LinkedList<>();
 
-    TreeNodeBreadthFirstIterator(S node) {
-        queue.add(node);
+    TreeNodeBreadthFirstDepthTrackingIterator(S node) {
+        queue.add(new DepthToTreeNode<>(0, node));
     }
 
     @Override
@@ -26,13 +27,16 @@ final class TreeNodeBreadthFirstIterator<T, S extends TreeNode<T, S>> implements
     }
 
     @Override
-    public S next() {
+    public DepthToTreeNode<S> next() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
         //removes from front of queue
-        S next = queue.remove();
-        queue.addAll(next.getChildren());
+        DepthToTreeNode<S> next = queue.remove();
+        final var children = next.node().getChildren();
+        for (S child : children) {
+            queue.add(new DepthToTreeNode<>(next.treeDepth() + 1, child));
+        }
         return next;
     }
 }

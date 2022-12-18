@@ -1,22 +1,21 @@
 package org.hzt.graph;
 
-import org.hzt.utils.It;
+import org.hzt.graph.iterators.GraphIterators;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.strings.StringX;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Spliterators;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * @param <T> The type of the node itself
  * @param <S> The type of the children
  *
- * In practice, T and S should be the same
+ * T and S must be of same type for this interface to work properly
  */
 @FunctionalInterface
 public interface TreeNode<T, S extends TreeNode<T, S>> {
@@ -25,6 +24,29 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
 
     default boolean isLeaf() {
         return getChildren().isEmpty();
+    }
+
+    default int treeDepth() {
+        return (int) parentSequence().count();
+    }
+
+    default Optional<S> optionalParent() {
+        throw new IllegalStateException("optionalParent() is not implemented by default. Override it if you want to use it");
+    }
+
+    default S parent() {
+        return optionalParent().orElseThrow(() -> new IllegalStateException("No parent found for node: " + this));
+    }
+
+    default S setParent(S parent) {
+        throw new IllegalStateException("setParent(TreeNode) not supported by default. tried to set " + parent + " as parent");
+    }
+
+    default S addChild(S toAdd) {
+        final Collection<S> children = getChildren();
+        children.add(toAdd);
+        //noinspection unchecked
+        return (S) this;
     }
 
     default S addChildren(Iterable<S> toAdd) {
@@ -36,16 +58,80 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return (S) this;
     }
 
-    default Iterator<S> treeIterator() {
-        return mapTo(ArrayList::new, It::self).iterator();
+    default S addChildAndSetParent(S toAdd) {
+        final Collection<S> children = getChildren();
+        children.add(toAdd);
+        try {
+            //noinspection unchecked
+            toAdd.setParent((S) this);
+        } catch (IllegalStateException e) {
+            final String message = "Could not set parent. Override setParent(TreeNode) or try to use addChild(TreeNode) instead...";
+            throw new IllegalStateException(message, e);
+        }
+        //noinspection unchecked
+        return (S) this;
     }
 
-    default Sequence<S> asSequence() {
-        return Sequence.of(this::treeIterator);
+    default S addChildrenAndSetParent(Iterable<S> toAdd) {
+        final Collection<S> children = getChildren();
+        for (S child : toAdd) {
+            children.add(child);
+            //noinspection unchecked
+            child.setParent((S) this);
+        }
+        //noinspection unchecked
+        return (S) this;
     }
 
-    default Stream<S> stream() {
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(treeIterator(), 0), false);
+    default S removeSubTree(S branch) {
+        final Collection<S> branchChildren = branch.getChildren();
+        for (S child : branchChildren) {
+            if (!child.isLeaf()) {
+                removeSubTree(child);
+            }
+        }
+        branchChildren.removeIf(TreeNode::isLeaf);
+        if (branch.isLeaf()) {
+            getChildren().removeIf(branch::equals);
+        }
+        //noinspection unchecked
+        return (S) this;
+    }
+
+    default Sequence<S> breadthFirstSequence() {
+        //noinspection unchecked
+        return Sequence.of(() -> GraphIterators.treeNodeBreadthFirstIterator((S) this));
+    }
+
+    default Sequence<S> depthFirstSequence() {
+        //noinspection unchecked
+        return Sequence.of(() -> GraphIterators.treeNodeDepthFirstIterator((S) this));
+    }
+
+    default Sequence<S> parentSequence() {
+        final Iterator<S> iterator = new Iterator<>() {
+
+            S next = null;
+
+            @Override
+            public boolean hasNext() {
+                final Optional<S> parent = next == null ? optionalParent() : next.optionalParent();
+                final boolean present = parent.isPresent();
+                if (present) {
+                    next = parent.orElseThrow(IllegalStateException::new);
+                }
+                return next != null && present;
+            }
+
+            @Override
+            public S next() {
+                if (next == null) {
+                    throw new NoSuchElementException();
+                }
+                return next;
+            }
+        };
+        return Sequence.of(() -> iterator);
     }
 
     default <R, C extends Collection<R>> C mapTo(Supplier<C> collectionFactory, Function<? super S, ? extends R> function) {
@@ -72,7 +158,7 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
 
     default String toTreeString(String opening, String separator, String closing,
                                 Function<? super S, String> toStringFunction) {
-        final var sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         toTreeString(this, sb, opening, separator, closing, toStringFunction);
         return sb.toString();
     }
@@ -94,13 +180,13 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     }
 
     private static <T, S extends TreeNode<T, S>> void toTreeString(TreeNode<T, S> treeNode,
-                                                                   StringBuilder sb,
-                                                                   int level,
-                                                                   int indent,
-                                                                   String indentString,
-                                                                   Function<? super S, String> toStringFunction) {
+                                                           StringBuilder sb,
+                                                           int level,
+                                                           int indent,
+                                                           String indentString,
+                                                           Function<? super S, String> toStringFunction) {
         //noinspection unchecked
-        sb.append(indentString.repeat(indent * level))
+        sb.append(StringX.of(indentString).repeat(indent * level))
                 .append(toStringFunction.apply((S) treeNode))
                 .append("\n");
 
@@ -114,11 +200,11 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     }
 
     private static <T, S extends TreeNode<T, S>> void toTreeString(TreeNode<T, S> treeNode,
-                                                                   StringBuilder sb,
-                                                                   String opening,
-                                                                   String levelSeparator,
-                                                                   String closing,
-                                                                   Function<? super S, String> toStringFunction) {
+                                                           StringBuilder sb,
+                                                           String opening,
+                                                           String levelSeparator,
+                                                           String closing,
+                                                           Function<? super S, String> toStringFunction) {
         //noinspection unchecked
         sb.append(toStringFunction.apply((S) treeNode));
         final Collection<S> children = treeNode.getChildren();
@@ -137,8 +223,8 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     }
 
     private static <T, S extends TreeNode<T, S>, R> void map(S treeNode,
-                                                             Function<? super S, ? extends R> function,
-                                                             Collection<R> collection) {
+                                                     Function<? super S, ? extends R> function,
+                                                     Collection<R> collection) {
         final Collection<S> children = treeNode.getChildren();
         collection.add(function.apply(treeNode));
         if (children.isEmpty()) {
@@ -150,8 +236,8 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     }
 
     private static <T, S extends TreeNode<T, S>, R> void mapLeafs(S treeNode,
-                                                                  Function<? super S, ? extends R> function,
-                                                                  Collection<R> collection) {
+                                                          Function<? super S, ? extends R> function,
+                                                          Collection<R> collection) {
         final Collection<S> children = treeNode.getChildren();
         if (children.isEmpty()) {
             collection.add(function.apply(treeNode));

@@ -19,14 +19,13 @@ public final class GraphAlgorithms {
                     .min(Comparator.comparing(WeightedNode::getCost))
                     .orElseThrow();
 
-            for (var edge : current) {
+            for (var edge : current.getEdges()) {
                 var neighbor = edge.getOpposite(current);
                 if (!settled.contains(neighbor)) {
                     neighbor.setCost(current.getCost());
                     unsettled.add(neighbor);
                 }
             }
-
             if (current.equals(goal)) {
                 return current;
             }
@@ -34,13 +33,5 @@ public final class GraphAlgorithms {
             settled.add(current);
         }
         throw new IllegalStateException("Dit not find a path to goal: " + goal);
-    }
-
-    public static <T> Node<T> breadthFirstSearch(Node<T> start, Node<T> goal) {
-        throw new UnsupportedOperationException();
-    }
-
-    public static <T> Node<T> depthFirstSearch(Node<T> start, Node<T> goal) {
-        throw new UnsupportedOperationException();
     }
 }

@@ -79,7 +79,7 @@ class MapXTest {
 
         final var expected = museumMap.entrySet().stream()
                 .flatMap(e -> e.getValue().getPaintings().stream())
-                .collect(Collectors.toList());
+                .toList();
 
         final List<Painting> actual = MapX.of(museumMap).flatMapValuesTo(MutableListX::empty, Museum::getPaintings);
 

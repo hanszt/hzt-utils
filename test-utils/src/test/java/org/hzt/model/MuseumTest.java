@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +28,7 @@ class MuseumTest {
                         .isPresent())
                 .flatMap(m -> StreamSupport.stream(m.spliterator(), false))
                 .filter(painting -> painting.ageInYears() > 200)
-                .collect(Collectors.toList());
+                .toList();
 
         System.out.println("paintings = " + paintings);
 
@@ -45,7 +44,7 @@ class MuseumTest {
                 .orElseThrow();
 
         final var paintings = StreamSupport.stream(firstMuseum.spliterator(), false)
-                .collect(Collectors.toList());
+                .toList();
 
         assertFalse(paintings.isEmpty());
     }

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 final class ImmutableListX<T> implements ListX<T> {
@@ -25,7 +24,7 @@ final class ImmutableListX<T> implements ListX<T> {
     ImmutableListX(Iterable<T> iterable) {
         immutableList = StreamSupport.stream(iterable.spliterator(), false)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 
     ImmutableListX(Collection<T> collection) {

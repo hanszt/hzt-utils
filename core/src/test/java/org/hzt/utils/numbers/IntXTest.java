@@ -5,7 +5,6 @@ import org.hzt.utils.strings.StringX;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,7 +82,7 @@ class IntXTest {
 
         final var characters = s.chars()
                 .mapToObj(IntX::asChar)
-                .collect(Collectors.toList());
+                .toList();
 
         System.out.println(characters);
 

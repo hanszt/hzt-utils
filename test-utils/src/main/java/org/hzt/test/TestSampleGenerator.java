@@ -134,7 +134,7 @@ public final class TestSampleGenerator {
     public static List<Number> createRandomNumberTypeList(int amount) {
         return IntStream.range(0, amount)
                 .mapToObj(TestSampleGenerator::toRandomNumberType)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static Number toRandomNumberType(int integer) {
@@ -144,7 +144,7 @@ public final class TestSampleGenerator {
     public static List<Number> createNumberTypeList(int amount) {
         return IntStream.range(0, amount)
                 .mapToObj(TestSampleGenerator::toNumberType)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public static DoubleStream gaussianDoubles(int amount, double targetMean, double targetStdDev) {
@@ -171,7 +171,7 @@ public final class TestSampleGenerator {
                 .orElseThrow(() -> new NoSuchElementException("Could not find resource " + name));
 
         try (var s = Files.lines(path)) {
-            return s.collect(Collectors.toUnmodifiableList());
+            return s.toList();
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

@@ -380,7 +380,7 @@ class IterableXTest {
     void testFromIntArrayToMappedList() {
         final var numbers = new int[]{1, 4, 3, 6, 7, 4, 3, 234};
 
-        final var expected = IntStream.of(numbers).mapToObj(BigDecimal::valueOf).collect(Collectors.toList());
+        final var expected = IntStream.of(numbers).mapToObj(BigDecimal::valueOf).toList();
 
         final var actual = IntSequence.of(numbers).boxed().toListOf(BigDecimal::valueOf);
 

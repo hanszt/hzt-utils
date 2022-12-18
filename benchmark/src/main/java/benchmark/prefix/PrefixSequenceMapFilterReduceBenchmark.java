@@ -11,7 +11,6 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("unused")
@@ -25,7 +24,7 @@ public class PrefixSequenceMapFilterReduceBenchmark {
 
     private final List<String> list = IntStream.range(0, Integer.parseInt(LIST_SIZE))
             .mapToObj(String::valueOf)
-            .collect(Collectors.toUnmodifiableList());
+            .toList();
 
     public PrefixSequenceMapFilterReduceBenchmark() {
         super();

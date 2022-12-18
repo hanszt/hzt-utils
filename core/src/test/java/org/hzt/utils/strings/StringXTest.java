@@ -32,7 +32,7 @@ class StringXTest {
         final var expected = groupByChars(hallo)
                 .values().stream()
                 .map(List::size)
-                .collect(Collectors.toList());
+                .toList();
 
         final var characterCounts = StringX.of(hallo)
                 .group()

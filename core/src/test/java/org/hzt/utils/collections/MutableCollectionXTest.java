@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toCollection;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
@@ -36,7 +35,7 @@ class MutableCollectionXTest {
 
         final var expectedLocalDates = museumList.stream()
                 .map(Museum::getDateOfOpening)
-                .collect(Collectors.toList());
+                .toList();
 
         final ListX<LocalDate> actualLocalDates = museumList
                 .mapTo(MutableListX::empty, Museum::getDateOfOpening);

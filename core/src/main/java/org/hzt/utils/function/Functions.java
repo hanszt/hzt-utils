@@ -32,7 +32,7 @@ public final class Functions {
      * List<Book> filteredBookList = books.stream()
      *          .filter(by(Book::getAuthor, contains("first")
      *          .or(startsWith("j"))))
-     *          .collect(Collectors.toList());
+     *          .toList();
      * }</pre>
      * It can help clean up code
      */
@@ -86,7 +86,7 @@ public final class Functions {
      *                                         .filter((by(Painting::isFromPicasso)
      *                                               .or(Painting::isFromRembrandt))
      *                                               .and(Painting::isInMuseum)))
-     *                                         .collect(Collectors.toList());
+     *                                         .toList();
      *                              }</pre>
      * @see java.util.function.Predicate#and(Predicate)
      * @see java.util.function.Predicate#or(Predicate)

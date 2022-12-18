@@ -60,7 +60,7 @@ class ListXTest {
 
         final var expected = museumList.stream()
                 .takeWhile(museum -> museum.getPaintings().size() < 3)
-                .collect(Collectors.toList());
+                .toList();
 
         final var actual = Sequence.of(museumList)
                 .takeWhile(museum -> museum.getPaintings().size() < 3)
@@ -224,7 +224,7 @@ class ListXTest {
 
         final var expected = museums.stream()
                 .map(PaintingAuction::getDateOfOpening)
-                .collect(Collectors.toList());
+                .toList();
 
         final CollectionX<LocalDate> dates = museums
                 .mapTo(MutableListX::empty, PaintingAuction::getDateOfOpening)
@@ -242,7 +242,7 @@ class ListXTest {
         final var expected = museums.stream()
                 .map(PaintingAuction::getDateOfOpening)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
 
         final List<LocalDate> dates = museums
                 .map(PaintingAuction::getDateOfOpening)

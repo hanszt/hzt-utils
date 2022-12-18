@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public interface WeightedNode<T> extends Node<WeightedNode<T>, WeightedNode<T>> {
 
@@ -47,7 +46,7 @@ public interface WeightedNode<T> extends Node<WeightedNode<T>, WeightedNode<T>> 
     List<WeightedEdge<T>> getEdges();
 
     default List<WeightedNode<T>> getNeighbors() {
-        return getEdges().stream().map(e -> e.getOpposite(this)).collect(Collectors.toList());
+        return getEdges().stream().map(e -> e.getOpposite(this)).toList();
     }
 
     @NotNull

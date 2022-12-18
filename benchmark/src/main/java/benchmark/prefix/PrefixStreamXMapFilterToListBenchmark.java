@@ -12,7 +12,6 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("unused")
@@ -25,7 +24,7 @@ public class PrefixStreamXMapFilterToListBenchmark {
 
     private final List<String> list = IntStream.range(0, Integer.parseInt(NR_OF_ITERATIONS))
             .mapToObj(String::valueOf)
-            .collect(Collectors.toUnmodifiableList());
+            .toList();
 
     public PrefixStreamXMapFilterToListBenchmark() {
         super();
@@ -36,7 +35,7 @@ public class PrefixStreamXMapFilterToListBenchmark {
         return list.stream()
                 .map(String::length)
                 .filter(IntX::isEven)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 
     @Benchmark
@@ -44,7 +43,7 @@ public class PrefixStreamXMapFilterToListBenchmark {
         return list.parallelStream()
                 .map(String::length)
                 .filter(IntX::isEven)
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 
     @Benchmark

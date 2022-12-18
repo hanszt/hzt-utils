@@ -4,8 +4,6 @@ import org.hzt.test.TestSampleGenerator;
 import org.hzt.utils.collections.ListX;
 import org.junit.jupiter.api.Test;
 
-import java.util.stream.Collectors;
-
 import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
@@ -17,7 +15,7 @@ class SkipableTest {
 
         final var expected = museumList.stream()
                 .skip(3)
-                .collect(Collectors.toList());
+                .toList();
 
         final var actual = museumList.skip(3);
 

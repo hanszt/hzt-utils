@@ -31,6 +31,7 @@ class TreeNodeTest {
                     root
                       c1
                         c4
+                          c10
                         c5
                       c2
                         c6
@@ -50,7 +51,8 @@ class TreeNodeTest {
             final var expected = """
                     root
                     -c1
-                    --leaf: c4
+                    --c4
+                    ---leaf: c10
                     --leaf: c5
                     -c2
                     --leaf: c6
@@ -160,7 +162,7 @@ class TreeNodeTest {
         println();
         println(root.toTreeString(2));
 
-        final var expected = new String[]{"root", "c2", "c6", "c7", "c3"};
+        final var expected = new String[]{"root", "c2", "c6", "c7", "c8", "c3"};
         Assertions.assertArrayEquals(expected, node.depthFirstSequence().toArrayOf(n -> n.name, String[]::new));
     }
 
@@ -173,7 +175,7 @@ class TreeNodeTest {
                 .addChildren(List.of(
                         new Person("c6"),
                         new Person("c7"),
-                        new Node("c8")));
+                        new Person("c8")));
         return new Person("root")
                 .addChildren(List.of(c1, c2, new Person("c3")));
     }

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,7 +18,7 @@ class TakeableTest {
     void testTake() {
         final var museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        final var expected = museumList.stream().limit(3).collect(Collectors.toList());
+        final var expected = museumList.stream().limit(3).toList();
 
         final IterableX<Museum> actual = museumList.take(3);
 

@@ -107,7 +107,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     @Override
-    default EntryIterable<K, V> onEachValue(@NotNull Consumer<? super V> consumer) {
+    default EntrySequence<K, V> onEachValue(@NotNull Consumer<? super V> consumer) {
         return EntrySequence.of(mapByValues(value -> {
             consumer.accept(value);
             return value;
@@ -115,7 +115,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     @Override
-    default EntryIterable<K, V> onEach(@NotNull BiConsumer<? super K, ? super V> biConsumer) {
+    default EntrySequence<K, V> onEach(@NotNull BiConsumer<? super K, ? super V> biConsumer) {
         return EntrySequence.of(map(e -> {
             biConsumer.accept(e.getKey(), e.getValue());
             return e;

@@ -1,6 +1,8 @@
 package org.hzt.graph;
 
+import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,13 +26,14 @@ class TreeNodeTest {
 
         @Test
         void testToTreeString() {
-            final Node root = buildTree();
+            final Person root = buildTree();
             final String s = root.toTreeString(2);
 
             final String expected = "" +
                     "root\n" +
                     "  c1\n" +
                     "    c4\n" +
+                    "      c10\n" +
                     "    c5\n" +
                     "  c2\n" +
                     "    c6\n" +
@@ -41,12 +45,13 @@ class TreeNodeTest {
 
         @Test
         void testToTreeStringCustomized() {
-            final Node root = buildTree();
+            final Person root = buildTree();
             final String s = root.toTreeString(1, "-", n -> (n.isLeaf() ? "leaf: " : "") + n);
 
             final String expected = "root\n" +
                     "-c1\n" +
-                    "--leaf: c4\n" +
+                    "--c4\n" +
+                    "---leaf: c10\n" +
                     "--leaf: c5\n" +
                     "-c2\n" +
                     "--leaf: c6\n" +
@@ -58,30 +63,30 @@ class TreeNodeTest {
 
         @Test
         void testToTreeStringCustomized2() {
-            final Node root = buildTree();
+            final Person root = buildTree();
             final String s = root.toTreeString();
 
-            final String expected = "root[c1[c4, c5], c2[c6, c7], c3]";
+            final String expected = "root[c1[c4[c10], c5], c2[c6, c7], c3]";
 
             assertEquals(expected, s);
         }
 
         @Test
         void testToTreeStringCustomized3() {
-            final Node root = buildTree();
+            final Person root = buildTree();
             final String s = root.toTreeString(n -> (n.isLeaf() ? "leaf: " : "") + n.name);
 
-            final String expected = "root[c1[leaf: c4, leaf: c5], c2[leaf: c6, leaf: c7], leaf: c3]";
+            final String expected = "root[c1[c4[leaf: c10], leaf: c5], c2[leaf: c6, leaf: c7], leaf: c3]";
 
             assertEquals(expected, s);
         }
 
         @Test
         void testToTreeStringCustomized4() {
-            final Node root = buildTree();
+            final Person root = buildTree();
             final String s = root.toTreeString(" { ", " ; ", " } ", Objects::toString);
 
-            final String expected = "root { c1 { c4 ; c5 }  ; c2 { c6 ; c7 }  ; c3 } ";
+            final String expected = "root { c1 { c4 { c10 }  ; c5 }  ; c2 { c6 ; c7 }  ; c3 } ";
 
             assertEquals(expected, s);
         }
@@ -89,95 +94,178 @@ class TreeNodeTest {
 
     @Test
     void testMapLeafs() {
-        final Node root = buildTree();
+        final Person root = buildTree();
         final List<String> strings = root.mapLeafsTo(ArrayList::new, s -> s.name);
 
-        final List<String> fromSequence = root.asSequence()
-                .filter(n -> n.children.isEmpty())
+        final List<String> fromSequence = root.depthFirstSequence()
+                .filter(org.hzt.graph.TreeNode::isLeaf)
                 .map(node -> node.name)
                 .toList();
 
-        strings.forEach(System.out::println);
+        strings.forEach(It::println);
 
         assertAll(
                 () -> assertEquals(strings, fromSequence),
-                () -> assertEquals(Arrays.asList("c4", "c5", "c6", "c7", "c3"), strings)
+                () -> assertEquals(Arrays.asList("c10", "c5", "c6", "c7", "c3"), strings)
         );
     }
 
     @Test
     void testMap() {
-        final Node root = buildTree();
+        final Person root = buildTree();
+
         final List<String> strings = root.mapTo(ArrayList::new, s -> s.name);
-        strings.forEach(System.out::println);
-        assertEquals(Arrays.asList("root", "c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
+        strings.forEach(It::println);
+
+        assertEquals(Arrays.asList("root", "c1", "c4", "c10", "c5", "c2", "c6", "c7", "c3"), strings);
     }
 
     @Test
     void testAsSequence() {
-        final Node root = buildTree();
-        final List<String> strings = root.asSequence()
+        final Person root = buildTree();
+
+        final List<String> strings = root.depthFirstSequence()
                 .map(node -> node.name)
                 .filter(n -> n.length() < 3)
                 .toList();
 
-        strings.forEach(System.out::println);
+        strings.forEach(It::println);
         assertEquals(Arrays.asList("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
     }
 
     @Test
     void testStream() {
-        final Node root = buildTree();
+        final Person root = buildTree();
 
-        final List<String> strings = root.stream()
+        final List<String> strings = root.depthFirstSequence()
+                .stream()
                 .map(node -> node.name)
                 .filter(n -> n.length() < 3)
                 .collect(Collectors.toList());
 
-        strings.forEach(System.out::println);
+        strings.forEach(It::println);
         assertEquals(Arrays.asList("c1", "c4", "c5", "c2", "c6", "c7", "c3"), strings);
     }
 
-    @NotNull
-    private static TreeNodeTest.Node buildTree() {
-        final Node c1 = new Node("c1")
-                .addChildren(Arrays.asList(
-                        new Node("c4"),
-                        new Node("c5")));
-        final Node c2 = new Node("c2")
-                .addChildren(Arrays.asList(
-                        new Node("c6"),
-                        new Node("c7")));
-        return new Node("root")
-                .addChildren(Arrays.asList(c1, c2, new Node("c3")));
-    }
-
     @Test
-    void testFileNode() {
-        final FileX fileX = new FileX(".");
+    void testRemoveBranch() {
+        final Person root = buildTree();
 
-        final List<String> files = fileX.asSequence()
-                .map(File::getName)
-                .toList();
+        println(root.toTreeString(2));
 
-        println(fileX.toTreeString(2, File::getName));
+        final Person c1 = root.breadthFirstSequence().first(s -> "c1".equals(s.name));
+        final Person node = root.removeSubTree(c1);
 
-        assertTrue(files.contains("pom.xml"));
+        println();
+        println(root.toTreeString(2));
+
+        final String[] expected = {"root", "c2", "c6", "c7", "c3"};
+        Assertions.assertArrayEquals(expected, node.depthFirstSequence().toArrayOf(n -> n.name, String[]::new));
+    }
+
+    @NotNull
+    private static TreeNodeTest.Person buildTree() {
+        final Person c1 = new Person("c1").addChildren(Arrays.asList(
+                new Person("c4").addChild(new Person("c10")),
+                new Person("c5")));
+        final Person c2 = new Person("c2")
+                .addChildren(Arrays.asList(
+                        new Person("c6"),
+                        new Person("c7")));
+        return new Person("root")
+                .addChildren(Arrays.asList(c1, c2, new Person("c3")));
+    }
+
+    @Nested
+    class FileXTests {
+        @Test
+        void testTraverseToParent() {
+            final FileX fileX = new FileX(".");
+
+            final FileX file = fileX.breadthFirstSequence()
+                    .first(n -> "TreeNodeTest.java".equals(n.getName()));
+
+            final FileX parent = file.parent();
+            final FileX itsParent = parent.parent();
+
+            assertAll(
+                    () -> assertEquals("graph", parent.getName()),
+                    () -> assertEquals("hzt", itsParent.getName())
+            );
+        }
+
+        @Test
+        void testFileXAsSequence() {
+            final FileX fileX = new FileX(".");
+
+            final List<String> files = fileX.breadthFirstSequence()
+                    .map(File::getName)
+                    .toList();
+
+            println(fileX.toTreeString(2, File::getName));
+
+            assertTrue(files.contains("pom.xml"));
+        }
+
+        @Test
+        void testTraverseToRoot() {
+            final FileX fileX = new FileX(".");
+
+            final FileX file = fileX.breadthFirstSequence()
+                    .first(n -> "TreeNodeTest.java".equals(n.getName()));
+
+            final FileX root = file.parentSequence()
+                    .onEach(s -> System.out.println(s.getAbsolutePath()))
+                    .last();
+
+            assertAll(
+                    () -> assertEquals("", root.getName()),
+                    () -> assertThrows(IllegalStateException.class, root::parent)
+            );
+        }
+
+        @Test
+        void testBreadthFirstSearch() {
+            final FileX root = new FileX(".");
+
+            final Map<String, Integer> map = root.breadthFirstSequence()
+                    .filter(n -> n.getName().endsWith("java"))
+                    .associateWith(TreeNode::treeDepth)
+                    .onEach(It::println)
+                    .mapByKeys(File::getName)
+                    .toMap();
+
+            assertTrue(map.containsKey(TreeNodeTest.class.getSimpleName() + ".java"));
+        }
+
+        @Test
+        void testDepthFirstSearch() {
+            final FileX root = new FileX(".");
+
+            final Map<String, Integer> map = root.depthFirstSequence()
+                    .filter(n -> n.getName().endsWith("java"))
+                    .associateWith(TreeNode::treeDepth)
+                    .onEach(It::println)
+                    .mapByKeys(File::getName)
+                    .toMap();
+
+            assertTrue(map.containsKey(TreeNodeTest.class.getSimpleName() + ".java"));
+        }
     }
 
 
-    private static class Node implements TreeNode<Node, Node> {
+    private static class Person implements TreeNode<Person, Person> {
 
         private final String name;
-        private final List<Node> children;
+        private final List<Person> children;
 
-        public Node(String name) {
+        public Person(String name) {
             this.name = name;
             this.children = new ArrayList<>();
         }
 
         @Override
-        public List<Node> getChildren() {
+        public List<Person> getChildren() {
             return children;
         }
 
@@ -204,6 +292,11 @@ class TreeNodeTest {
                             .map(FileX::new)
                             .collect(Collectors.toList())))
                     .orElse(Collections.emptyList());
+        }
+
+        @Override
+        public Optional<FileX> optionalParent() {
+            return Optional.ofNullable(getParentFile()).map(FileX::new);
         }
     }
 }

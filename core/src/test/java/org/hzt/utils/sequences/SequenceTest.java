@@ -775,6 +775,34 @@ class SequenceTest {
     }
 
     @Test
+    void testExecutionOrderSameForSequenceAndStreamWithSortedMethod() {
+        List<String> orderCalledStream = new ArrayList<>();
+        List<String> orderCalledSequence = new ArrayList<>();
+
+        final int[] ints1 = IntStream.of(6, 1, 456, 2)
+                .peek(s -> orderCalledStream.add("first"))
+                .peek(s -> orderCalledStream.add("pre-sort"))
+                .sorted()
+                .peek(s -> orderCalledStream.add("post-sort"))
+                .toArray();
+
+        final int[] ints2 = IntSequence.of(6, 1, 456, 2)
+                .onEach(s -> orderCalledSequence.add("first"))
+                .onEach(s -> orderCalledSequence.add("pre-sort"))
+                .sorted()
+                .onEach(s -> orderCalledSequence.add("post-sort"))
+                .toArray();
+
+        orderCalledSequence.forEach(System.out::println);
+
+        assertAll(
+                () -> assertEquals(orderCalledSequence, orderCalledStream),
+                () -> assertEquals(1, ints1[0]),
+                () -> assertEquals(ints2[0], ints1[0])
+        );
+    }
+
+    @Test
     void testToSortedLocalDateTime() {
         final LocalDateTime initDateTime = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0, 0);
 
@@ -1068,7 +1096,7 @@ class SequenceTest {
             final String first = sequence.first();
 
             assertAll(
-                    () -> assertArrayEquals(new int[] {2, 4}, ints),
+                    () -> assertArrayEquals(new int[]{2, 4}, ints),
                     () -> assertEquals("test", first)
             );
         }
@@ -1089,7 +1117,7 @@ class SequenceTest {
             System.out.println("first = " + first);
 
             assertAll(
-                    () -> assertArrayEquals(new int[] {2, 4}, ints),
+                    () -> assertArrayEquals(new int[]{2, 4}, ints),
                     () -> assertEquals("test", first)
             );
         }
@@ -1110,7 +1138,7 @@ class SequenceTest {
             System.out.println("first = " + first);
 
             assertAll(
-                    () -> assertArrayEquals(new int[] {2, 4}, ints),
+                    () -> assertArrayEquals(new int[]{2, 4}, ints),
                     () -> assertEquals("test", first)
             );
         }

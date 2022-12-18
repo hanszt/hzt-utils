@@ -1,6 +1,7 @@
 package org.hzt.graph;
 
 import org.hzt.graph.iterators.GraphIterators;
+import org.hzt.graph.tuples.DepthToTreeNode;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.strings.StringX;
 
@@ -103,9 +104,19 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return Sequence.of(() -> GraphIterators.treeNodeBreadthFirstIterator((S) this));
     }
 
+    default Sequence<DepthToTreeNode<S>> breadthFirstDepthTrackingSequence() {
+        //noinspection unchecked
+        return Sequence.of(() -> GraphIterators.treeNodeBreadthFirstDepthTrackingIterator((S) this));
+    }
+
     default Sequence<S> depthFirstSequence() {
         //noinspection unchecked
         return Sequence.of(() -> GraphIterators.treeNodeDepthFirstIterator((S) this));
+    }
+
+    default Sequence<DepthToTreeNode<S>> depthFirstDepthTrackingSequence() {
+        //noinspection unchecked
+        return Sequence.of(() -> GraphIterators.treeNodeDepthFirstDepthTrackingIterator((S) this));
     }
 
     default Sequence<S> parentSequence() {
@@ -118,7 +129,7 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
                 final Optional<S> parent = next == null ? optionalParent() : next.optionalParent();
                 final boolean present = parent.isPresent();
                 if (present) {
-                    next = parent.orElseThrow(IllegalStateException::new);
+                    next = parent.orElseThrow();
                 }
                 return next != null && present;
             }

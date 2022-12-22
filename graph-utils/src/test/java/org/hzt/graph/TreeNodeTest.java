@@ -59,8 +59,7 @@ class TreeNodeTest {
                     --leaf: c6
                     --leaf: c7
                     --leaf: c8
-                    --leaf: c8\n" +
-                    "-leaf: c3
+                    -leaf: c3
                     """;
 
             assertEquals(expected, s);

@@ -2,14 +2,16 @@ package org.hzt.graph;
 
 import org.hzt.graph.tuples.DepthToTreeNode;
 import org.hzt.utils.It;
+import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,7 +27,7 @@ class TreeNodeTest {
 
         @Test
         void testToTreeString() {
-            final var root = buildTree();
+            final var root = buildPersonTree();
             final var s = root.toTreeString(2);
 
             final var expected = """
@@ -38,15 +40,34 @@ class TreeNodeTest {
                         c6
                         c7
                         c8
-                      c3
-                    """;
+                      c3""";
+
+            assertEquals(expected, s);
+        }
+
+        @Test
+        void testToBfsTreeString() {
+            final var root = buildPersonTree();
+            final var s = root.toBFSTreeString(2);
+
+            final var expected = """
+                     root
+                       c1
+                       c2
+                       c3
+                         c4
+                         c5
+                         c6
+                         c7
+                         c8
+                           c10""";
 
             assertEquals(expected, s);
         }
 
         @Test
         void testToTreeStringCustomized() {
-            final var root = buildTree();
+            final var root = buildPersonTree();
             final var s = root.toTreeString(1, "-", n -> (n.isLeaf() ? "leaf: " : "") + n);
 
             final var expected = """
@@ -59,15 +80,14 @@ class TreeNodeTest {
                     --leaf: c6
                     --leaf: c7
                     --leaf: c8
-                    -leaf: c3
-                    """;
+                    -leaf: c3""";
 
             assertEquals(expected, s);
         }
 
         @Test
         void testToTreeStringCustomized2() {
-            final var root = buildTree();
+            final var root = buildPersonTree();
             final var s = root.toTreeString();
 
             final var expected = "root[c1[c4[c10], c5], c2[c6, c7, c8], c3]";
@@ -77,7 +97,7 @@ class TreeNodeTest {
 
         @Test
         void testToTreeStringCustomized3() {
-            final var root = buildTree();
+            final var root = buildPersonTree();
             final var s = root.toTreeString(n -> (n.isLeaf() ? "leaf: " : "") + n.name);
 
             final var expected = "root[c1[c4[leaf: c10], leaf: c5], c2[leaf: c6, leaf: c7, leaf: c8], leaf: c3]";
@@ -87,7 +107,7 @@ class TreeNodeTest {
 
         @Test
         void testToTreeStringCustomized4() {
-            final var root = buildTree();
+            final var root = buildPersonTree();
             final var s = root.toTreeString(" { ", " ; ", " } ", Objects::toString);
 
             final var expected = "root { c1 { c4 { c10 }  ; c5 }  ; c2 { c6 ; c7 ; c8 }  ; c3 } ";
@@ -97,37 +117,48 @@ class TreeNodeTest {
     }
 
     @Test
-    void testMapLeafs() {
-        final var root = buildTree();
-        final List<String> strings = root.mapLeafsTo(ArrayList::new, s -> s.name);
+    void testToLeafs() {
+        final var root = buildPersonTree();
 
         System.out.println(root.toTreeString());
 
-        final var fromSequence = root.depthFirstSequence()
+        final var leafs = root.depthFirstSequence()
                 .filter(TreeNode::isLeaf)
                 .map(node -> node.name)
                 .toList();
 
-        assertAll(
-                () -> assertEquals(strings, fromSequence),
-                () -> assertEquals(List.of("c10", "c5", "c6", "c7", "c8", "c3"), strings)
-        );
+        assertEquals(List.of("c10", "c5", "c6", "c7", "c8", "c3"), leafs);
+    }
+
+    @Test
+    void testToAllInternalNodes() {
+        final var root = buildPersonTree();
+
+        System.out.println(root.toTreeString());
+
+        final var internalNodes = root.depthFirstSequence()
+                .filter(TreeNode::isInternal)
+                .map(node -> node.name)
+                .toList();
+
+        assertEquals(List.of("root", "c1", "c4", "c2"), internalNodes);
     }
 
     @Test
     void testMap() {
-        final var root = buildTree();
+        final var root = buildPersonTree();
 
         System.out.println(root.toTreeString());
 
-        final List<String> strings = root.mapTo(ArrayList::new, s -> s.name);
+        final List<String> strings = root.depthFirstSequence().mapTo(ArrayList::new, s -> s.name);
 
         assertEquals(List.of("root", "c1", "c4", "c10", "c5", "c2", "c6", "c7", "c8", "c3"), strings);
     }
 
+
     @Test
     void testDepthFirstSequence() {
-        final var root = buildTree();
+        final var root = buildPersonTree();
 
         System.out.println(root.toTreeString(1));
 
@@ -140,7 +171,7 @@ class TreeNodeTest {
 
     @Test
     void testRemoveBranch() {
-        final var root = buildTree();
+        final var root = buildPersonTree();
 
         println(root.toTreeString(2));
 
@@ -155,17 +186,56 @@ class TreeNodeTest {
     }
 
     @NotNull
-    private static TreeNodeTest.Person buildTree() {
-        final var c1 = new Person("c1").addChildren(List.of(
-                new Person("c4").addChild(new Person("c10")),
+    private static TreeNodeTest.Person buildPersonTree() {
+        final var c1 = new Person("c1")
+                .addChildrenWithThisAsParent(List.of(
+                new Person("c4").addChildWithThisAsParent(new Person("c10")),
                 new Person("c5")));
         final var c2 = new Person("c2")
                 .addChildren(List.of(
                         new Person("c6"),
-                        new Person("c7"),
-                        new Person("c8")));
+                        new Person("c7")));
         return new Person("root")
-                .addChildren(List.of(c1, c2, new Person("c3")));
+                .addChildren(List.of(c1, c2.addChild(new Person("c8").withParent(c2)), new Person("c3")));
+    }
+
+    private static class Person implements TreeNode<Person, Person> {
+
+        private final String name;
+        private final List<Person> children;
+
+        private Person parent;
+
+        public Person(String name) {
+            this.name = name;
+            this.children = new ArrayList<>();
+        }
+
+        @Override
+        public @NotNull Iterator<Person> childrenIterator() {
+            return children.iterator();
+        }
+
+        @Override
+        public Collection<Person> getMutableChildren() {
+            return children;
+        }
+
+        @Override
+        public Optional<Person> optionalParent() {
+            return Optional.ofNullable(parent);
+        }
+
+        @Override
+        public Person withParent(Person parent) {
+            this.parent = parent;
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     @Nested
@@ -183,6 +253,21 @@ class TreeNodeTest {
             assertAll(
                     () -> assertEquals("graph", parent.getName()),
                     () -> assertEquals("hzt", itsParent.getName())
+            );
+        }
+
+        @Test
+        void testSiblings() {
+            final var root = new FileX(System.getProperty("user.dir"));
+            System.out.println("root.getName() = " + root.getName());
+
+            System.out.println(root.toTreeString());
+
+            final List<String> fileNames = root.siblingSequence().map(File::getName).toList();
+
+            assertAll(
+                    () -> assertFalse(fileNames.isEmpty()),
+                    () -> assertTrue(new FileX(".").siblingSequence().none())
             );
         }
 
@@ -263,25 +348,56 @@ class TreeNodeTest {
         }
     }
 
+    @Nested
+    class SimpleNodeTests {
 
-    private static class Person implements TreeNode<Person, Person> {
+        @Test
+        void testSimpleNode() {
+            final var simpleTreeNode = buildSimpleTreeNodeTree();
 
-        private final String name;
-        private final List<Person> children;
+            println(simpleTreeNode.toTreeString(1, "-", n -> n.name));
 
-        public Person(String name) {
-            this.name = name;
-            this.children = new ArrayList<>();
+            System.out.println(simpleTreeNode.toBFSTreeString(2, "-", n -> n.name));
+
+            final var breadthFirst = simpleTreeNode.breadthFirstSequence().toListOf(s -> s.name);
+
+            final var expected = List.of("root", "internal 1", "leaf 10", "leaf 0", "internal 2", "leaf 6", "internal 4", "leaf 9",
+                    "leaf 1", "leaf 2", "internal 3", "leaf 7", "leaf 8", "leaf 4", "leaf 5");
+            assertEquals(expected, breadthFirst);
         }
 
-        @Override
-        public List<Person> getChildren() {
-            return children;
+        private SimpleTreeNode buildSimpleTreeNodeTree() {
+            return new SimpleTreeNode("root",
+                    new SimpleTreeNode("internal 1",
+                            new SimpleTreeNode("leaf 0"),
+                            new SimpleTreeNode("internal 2",
+                                    new SimpleTreeNode("leaf 1"),
+                                    new SimpleTreeNode("leaf 2"),
+                                    new SimpleTreeNode("internal 3",
+                                            new SimpleTreeNode("leaf 4"),
+                                            new SimpleTreeNode("leaf 5"))),
+                            new SimpleTreeNode("leaf 6"),
+                            new SimpleTreeNode("internal 4",
+                                    new SimpleTreeNode("leaf 7"),
+                                    new SimpleTreeNode("leaf 8")),
+                            new SimpleTreeNode("leaf 9")),
+                    new SimpleTreeNode("leaf 10"));
         }
 
-        @Override
-        public String toString() {
-            return name;
+        private class SimpleTreeNode implements TreeNode<SimpleTreeNode, SimpleTreeNode> {
+
+            private final String name;
+            private final SimpleTreeNode[] children;
+
+            public SimpleTreeNode(String name, SimpleTreeNode... children) {
+                this.name = name;
+                this.children = children;
+            }
+
+            @Override
+            public @NotNull Iterator<SimpleTreeNode> childrenIterator() {
+                return Sequence.of(children).iterator();
+            }
         }
     }
 
@@ -296,12 +412,11 @@ class TreeNodeTest {
         }
 
         @Override
-        public List<FileX> getChildren() {
-            return Optional.ofNullable(listFiles())
-                    .map(list -> Stream.of(list)
-                            .map(FileX::new)
-                            .toList())
-                    .orElse(Collections.emptyList());
+        public @NotNull Iterator<FileX> childrenIterator() {
+            return Stream.ofNullable(listFiles())
+                    .flatMap(Stream::of)
+                    .map(FileX::new)
+                    .iterator();
         }
 
         @Override

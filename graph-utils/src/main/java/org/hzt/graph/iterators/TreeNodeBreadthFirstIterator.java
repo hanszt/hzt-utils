@@ -32,7 +32,7 @@ final class TreeNodeBreadthFirstIterator<T, S extends TreeNode<T, S>> implements
         }
         //removes from front of queue
         S next = queue.remove();
-        queue.addAll(next.getChildren());
+        next.childrenSequence().forEach(queue::add);
         return next;
     }
 }

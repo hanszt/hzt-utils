@@ -33,8 +33,7 @@ final class TreeNodeBreadthFirstDepthTrackingIterator<T, S extends TreeNode<T, S
         }
         //removes from front of queue
         DepthToTreeNode<S> next = queue.remove();
-        final var children = next.node().getChildren();
-        for (S child : children) {
+        for (S child : next.node().childrenSequence()) {
             queue.add(new DepthToTreeNode<>(next.treeDepth() + 1, child));
         }
         return next;

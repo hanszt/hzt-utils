@@ -18,7 +18,7 @@ final class TreeNodeDepthFirstIterator<T, S extends TreeNode<T, S>> implements I
     private S next;
 
     TreeNodeDepthFirstIterator(S source) {
-        stack.push(source.getChildren().iterator());
+        stack.push(source.childrenIterator());
         next = source;
     }
 
@@ -50,6 +50,6 @@ final class TreeNodeDepthFirstIterator<T, S extends TreeNode<T, S>> implements I
             children = stack.peek();
         }
         next = children.next();
-        stack.push(next.getChildren().iterator());
+        stack.push(next.childrenIterator());
     }
 }

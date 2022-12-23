@@ -2,7 +2,6 @@ package org.hzt.graph.iterators;
 
 import org.hzt.graph.TreeNode;
 import org.hzt.graph.tuples.DepthToTreeNode;
-import org.hzt.utils.sequences.Sequence;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -20,7 +19,7 @@ final class TreeNodeDepthFirstDepthTrackingIterator<T, S extends TreeNode<T, S>>
     private DepthToTreeNode<S> next;
 
     TreeNodeDepthFirstDepthTrackingIterator(S source) {
-        stack.push(Sequence.of(source.getChildren()).map(c -> new DepthToTreeNode<>(1, c)).iterator());
+        stack.push(source.childrenSequence().map(c -> new DepthToTreeNode<>(1, c)).iterator());
         next = new DepthToTreeNode<>(0, source);
     }
 
@@ -52,8 +51,8 @@ final class TreeNodeDepthFirstDepthTrackingIterator<T, S extends TreeNode<T, S>>
             children = stack.peek();
         }
         next = children.next();
-        final var newChildren = next.node().getChildren();
+        final var newChildren = next.node().childrenSequence();
         final var newTreeDepth = next.treeDepth() + 1;
-        stack.push(Sequence.of(newChildren).map(c -> new DepthToTreeNode<>(newTreeDepth, c)).iterator());
+        stack.push(newChildren.map(c -> new DepthToTreeNode<>(newTreeDepth, c)).iterator());
     }
 }

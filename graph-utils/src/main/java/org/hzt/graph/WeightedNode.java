@@ -11,6 +11,11 @@ public interface WeightedNode<T> extends Node<WeightedNode<T>, WeightedNode<T>> 
     static <T> WeightedNode<T> of(T payload) {
         return new WeightedNode<T>() {
             @Override
+            public Iterator<WeightedNode<T>> neighborIterator() {
+                return null;
+            }
+
+            @Override
             public T getPayload() {
                 return payload;
             }
@@ -29,16 +34,6 @@ public interface WeightedNode<T> extends Node<WeightedNode<T>, WeightedNode<T>> 
             public int getCost() {
                 return 0;
             }
-
-            @Override
-            public WeightedNode<T> withPredecessor(WeightedNode<T> predecessor) {
-                return null;
-            }
-
-            @Override
-            public WeightedNode<T> getPredecessor() {
-                throw new IllegalStateException();
-            }
         };
     }
 
@@ -46,7 +41,8 @@ public interface WeightedNode<T> extends Node<WeightedNode<T>, WeightedNode<T>> 
 
     List<WeightedEdge<T>> getEdges();
 
-    default List<WeightedNode<T>> getNeighbors() {
+    @Override
+    default List<WeightedNode<T>> getMutableNeighbors() {
         return getEdges().stream().map(e -> e.getOpposite(this)).collect(Collectors.toList());
     }
 

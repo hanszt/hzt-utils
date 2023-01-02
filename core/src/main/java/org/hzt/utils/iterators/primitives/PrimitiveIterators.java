@@ -591,6 +591,21 @@ public final class PrimitiveIterators {
         return false;
     }
 
+    public static PrimitiveIterator.OfInt intScanningIterator(PrimitiveIterator.OfInt iterator,
+                                                int initial, IntBinaryOperator operation) {
+        return new IntScanningIterator(iterator, initial, operation);
+    }
+
+    public static PrimitiveIterator.OfLong longScanningIterator(PrimitiveIterator.OfLong iterator,
+                                                long initial, LongBinaryOperator operation) {
+        return new LongScanningIterator(iterator, initial, operation);
+    }
+
+    public static PrimitiveIterator.OfDouble doubleScanningIterator(PrimitiveIterator.OfDouble iterator,
+                                                double initial, DoubleBinaryOperator operation) {
+        return new DoubleScanningIterator(iterator, initial, operation);
+    }
+
     @NotNull
     private static String getMessage(int index) {
         return "index out of bounds. (Index value: " + index + ")";

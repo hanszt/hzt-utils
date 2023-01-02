@@ -272,4 +272,22 @@ class StringXTest {
 
         assertTrue(abbreviate.length() <= MAX_LENGTH);
     }
+    
+    @Nested
+    class ContainsTests {
+
+        @ParameterizedTest
+        @ValueSource(chars = {'a', 't', 'c', 'm', '!', 'T'})
+        void testStringContainsChars(char c) {
+            final var s = "This is a test string to test contains method!";
+            assertTrue(StringX.of(s).contains(c));
+        }
+
+        @ParameterizedTest
+        @ValueSource(chars = {'A', '?', 'b', 'z', 'M'})
+        void testStringDoesNotContainChars(char c) {
+            final var s = "This is a test string to test contains method!";
+            assertFalse(StringX.of(s).contains(c));
+        }
+    }
 }

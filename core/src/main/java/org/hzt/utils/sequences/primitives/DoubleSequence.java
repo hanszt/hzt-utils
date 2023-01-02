@@ -119,6 +119,11 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         return () -> PrimitiveIterators.doubleIndexedTransformingIterator(iterator(), indexedFunction);
     }
 
+    default DoubleSequence scan(long initial, DoubleBinaryOperator operation) {
+        return () -> PrimitiveIterators.doubleScanningIterator(iterator(), initial, operation);
+    }
+
+
     default DoubleSequence flatMap(DoubleFunction<? extends Iterable<Double>> flatMapper) {
         return mapMulti((value, doubleConsumer) -> consumeForEach(flatMapper.apply(value), doubleConsumer));
     }

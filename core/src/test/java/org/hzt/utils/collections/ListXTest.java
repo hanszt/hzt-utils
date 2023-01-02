@@ -38,6 +38,13 @@ class ListXTest {
     }
 
     @Test
+    void testReverseOf() {
+        final var strings = ListX.of("This", "is", "a", "test");
+        final var reversed = strings.reversed();
+        assertEquals(ListX.of("test", "a", "is", "This"), reversed);
+    }
+
+    @Test
     void testToMutableList() {
         final var museums = Generator.createAuctions().toMutableList();
 

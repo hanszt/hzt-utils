@@ -364,6 +364,10 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return string.contains(s);
     }
 
+    public boolean contains(@NotNull char c) {
+        return string.indexOf(c) >= 0;
+    }
+
     public StringX replaceFirst(@NotNull Pattern regex, @NotNull CharSequence replacement) {
         return StringX.of(string.replaceFirst(regex.toString(), StringX.of(replacement).toString()));
     }

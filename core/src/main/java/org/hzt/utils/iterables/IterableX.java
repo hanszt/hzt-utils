@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.PrimitiveIterator;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -123,6 +124,8 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
     default double[] toDoubleArray(@NotNull ToDoubleFunction<? super T> mapper) {
         return asSequence().mapToDouble(mapper).toArray();
     }
+
+    <R> IterableX<R> scan(R initial, BiFunction<? super R, ? super T, ? extends R> operation);
 
     default boolean[] toBooleanArray(@NotNull Predicate<? super T> mapper) {
         var size = (int) count();

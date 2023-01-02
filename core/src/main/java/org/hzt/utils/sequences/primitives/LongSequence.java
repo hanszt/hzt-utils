@@ -121,6 +121,11 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return () -> PrimitiveIterators.longIndexedTransformingIterator(iterator(), longIndexedFunction);
     }
 
+    default LongSequence scan(long initial, LongBinaryOperator operation) {
+        return () -> PrimitiveIterators.longScanningIterator(iterator(), initial, operation);
+    }
+
+
     default LongSequence flatMap(LongFunction<? extends Iterable<Long>> flatMapper) {
         return mapMulti((value, longConsumer) -> consumeForEach(flatMapper.apply(value), longConsumer));
     }

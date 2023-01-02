@@ -6,8 +6,7 @@ import org.hzt.utils.sequences.Sequence;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.Optional;
 
 /**
  * @param <T> The type of the node itself
@@ -15,19 +14,24 @@ import java.util.function.Supplier;
  *
  * T and S must be of same type for this interface to work properly
  */
+@FunctionalInterface
 public interface Node<T, S extends Node<T, S>> {
 
-    Collection<S> getNeighbors();
+    Iterator<S> neighborIterator();
+
+    default Collection<S> getMutableNeighbors() {
+        throw new UnsupportedOperationException("getMutableNeighbors() not supported by default. Implement it to use it");
+    }
 
     default S addNeighbor(S toAdd) {
-        final Collection<S> children = getNeighbors();
+        final Collection<S> children = getMutableNeighbors();
         children.add(toAdd);
         //noinspection unchecked
         return (S) this;
     }
 
     default S addNeighbors(Iterable<S> toAdd) {
-        final Collection<S> children = getNeighbors();
+        final Collection<S> children = getMutableNeighbors();
         for (S child : toAdd) {
             children.add(child);
         }
@@ -36,33 +40,45 @@ public interface Node<T, S extends Node<T, S>> {
     }
 
     default S bidiAddNeighbor(S toAdd) {
-        final Collection<S> neighbors = getNeighbors();
+        final Collection<S> neighbors = getMutableNeighbors();
         neighbors.add(toAdd);
         //noinspection unchecked
-        toAdd.getNeighbors().add((S) this);
+        toAdd.getMutableNeighbors().add((S) this);
         //noinspection unchecked
         return (S) this;
     }
 
     default S bidiAddNeighbors(Iterable<S> toAdd) {
-        final Collection<S> neighbors = getNeighbors();
+        final Collection<S> neighbors = getMutableNeighbors();
         for (S neighbor : toAdd) {
             neighbors.add(neighbor);
             //noinspection unchecked
-            neighbor.getNeighbors().add((S) this);
+            neighbor.getMutableNeighbors().add((S) this);
         }
         //noinspection unchecked
         return (S) this;
     }
 
-    default Sequence<S> breadthFirstSequence() {
+    default Sequence<S> breadthFirstSequence(Mode mode) {
         //noinspection unchecked
-        return Sequence.of(() -> GraphIterators.breadthFirstIterator((S) this));
+        return Sequence.of(() -> GraphIterators.breadthFirstIterator((S) this, mode == Mode.SET_PREDECESSORS));
+    }
+
+    default Sequence<S> breadthFirstSequence() {
+        return breadthFirstSequence(Mode.NO_PREDECESSOR);
+    }
+
+    default Sequence<S> depthFirstSequence(Mode mode) {
+        //noinspection unchecked
+        return Sequence.of(() -> GraphIterators.depthFirstIterator((S) this, mode == Mode.SET_PREDECESSORS));
     }
 
     default Sequence<S> depthFirstSequence() {
-        //noinspection unchecked
-        return Sequence.of(() -> GraphIterators.depthFirstIterator((S) this));
+        return depthFirstSequence(Mode.NO_PREDECESSOR);
+    }
+
+    enum Mode {
+        SET_PREDECESSORS, NO_PREDECESSOR
     }
 
     /**
@@ -73,46 +89,39 @@ public interface Node<T, S extends Node<T, S>> {
      *
      * @param predecessor node
      */
-    S withPredecessor(S predecessor);
+    default S withPredecessor(S predecessor) {
+        throw new IllegalStateException("withPredecessor(Node) not supported by default. Override it if you want to use it. " +
+                "Tried to set " + predecessor + " as predecessor");
+    }
 
     default Sequence<S> predecessorSequence() {
         //noinspection unchecked
         return () -> predecessorIterator((S) this);
     }
 
-    /**
-     * @return the predecessor of the node
-     */
-    S getPredecessor();
-
-    default <R, C extends Collection<R>> C mapTo(Supplier<C> collectionFactory, Function<? super S, ? extends R> function) {
-        final C collection = collectionFactory.get();
-        //noinspection unchecked
-        map((S) this, function, collection);
-        return collection;
+    default Optional<S> optionalPredecessor() {
+        throw new IllegalStateException("optionalPredecessor() is not implemented by default. Override it if you want to use it");
     }
 
-    private static <T, S extends Node<T, S>, R> void map(S node,
-                                                 Function<? super S, ? extends R> function,
-                                                 Collection<R> collection) {
-        final Collection<S> children = node.getNeighbors();
-        collection.add(function.apply(node));
-        if (children.isEmpty()) {
-            return;
-        }
-        for (S child : children) {
-            map(child, function, collection);
-        }
-    }
 
-    private static <S extends Node<T, S>, T> Iterator<S> predecessorIterator(S node) {
+    private Iterator<S> predecessorIterator(S initial) {
         return new Iterator<>() {
 
-            private S next = node;
+            private boolean isThis = true;
+            private S next = initial;
 
             @Override
             public boolean hasNext() {
-                return next != null;
+                if (isThis) {
+                    isThis = false;
+                    return true;
+                }
+                final Optional<S> predecessor = next.optionalPredecessor();
+                final boolean present = predecessor.isPresent();
+                if (present) {
+                    next = predecessor.orElseThrow();
+                }
+                return next != null && present;
             }
 
             @Override
@@ -120,9 +129,7 @@ public interface Node<T, S extends Node<T, S>> {
                 if (next == null) {
                     throw new NoSuchElementException();
                 }
-                S current = next;
-                next = next.getPredecessor();
-                return current;
+                return next;
             }
         };
     }

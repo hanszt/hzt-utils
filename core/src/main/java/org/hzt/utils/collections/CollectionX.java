@@ -283,6 +283,17 @@ public interface CollectionX<E> extends IterableX<E> {
         return toMapX(It::self, valueMapper);
     }
 
+    @Override
+    default <R> ListX<R> scan(R initial, BiFunction<? super R, ? super E, ? extends R> operation) {
+        R accumulation = initial;
+        final var mutableListX = MutableListX.of(initial);
+        for (E value : this) {
+            accumulation = operation.apply(accumulation, value);
+            mutableListX.add(accumulation);
+        }
+        return ListX.copyOf(mutableListX);
+    }
+
     default ListX<E> skip(long count) {
         return ListX.copyOf(skipTo(() -> MutableListX.withInitCapacity(size() - (int) count), (int) count));
     }

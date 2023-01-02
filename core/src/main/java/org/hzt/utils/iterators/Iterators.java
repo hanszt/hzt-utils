@@ -48,7 +48,7 @@ public final class Iterators {
 
     @NotNull
     private static <T> Iterator<T> reverseIterator(ListIterator<T> listIterator) {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return listIterator.hasPrevious();
@@ -253,5 +253,11 @@ public final class Iterators {
 
     public static <T> PrimitiveIterator.OfInt indexIterator(Iterator<T> iterator) {
         return new IndexIterator<>(iterator);
+    }
+
+    public static <R, T> Iterator<R> scanningIterator(Iterator<T> iterator,
+                                                      R initial,
+                                                      BiFunction<? super R, ? super T, ? extends R> operation) {
+        return new ScanningIterator<>(iterator, initial, operation);
     }
 }

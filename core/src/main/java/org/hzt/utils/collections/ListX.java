@@ -3,6 +3,7 @@ package org.hzt.utils.collections;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
 import org.hzt.utils.ranges.IntRange;
+import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -97,6 +98,10 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
     Optional<E> findRandom();
 
     ListX<E> shuffled();
+
+    default ListX<E> reversed() {
+        return Sequence.reverseOf(this).toListX();
+    }
 
     default E random() {
         return findRandom().orElseThrow();

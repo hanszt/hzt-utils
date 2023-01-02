@@ -26,11 +26,11 @@ public final class GraphIterators {
         return new TreeNodeDepthFirstDepthTrackingIterator<>(source);
     }
 
-    public static <T, S extends Node<T, S>> Iterator<S> breadthFirstIterator(S s) {
-        return new BreadthFirstIterator<>(s);
+    public static <T, S extends Node<T, S>> Iterator<S> breadthFirstIterator(S s, boolean setPredecessor) {
+        return new BreadthFirstIterator<>(s, setPredecessor);
     }
 
-    public static <T, S extends Node<T, S>>Iterator<S> depthFirstIterator(S s) {
-        return new DepthFirstIterator<>(s);
+    public static <T, S extends Node<T, S>>Iterator<S> depthFirstIterator(S s, boolean setPredecessor) {
+        return new DepthFirstIterator<>(s, setPredecessor);
     }
 }

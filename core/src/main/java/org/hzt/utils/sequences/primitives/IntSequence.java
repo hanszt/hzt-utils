@@ -121,6 +121,10 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return () -> PrimitiveIterators.intIndexedTransformingIterator(iterator(), indexedFunction);
     }
 
+    default IntSequence scan(int initial, IntBinaryOperator operation) {
+        return () -> PrimitiveIterators.intScanningIterator(iterator(), initial, operation);
+    }
+
     default IntSequence flatMap(IntFunction<? extends Iterable<Integer>> flatMapper) {
         return mapMulti((value, intConsumer) -> consumeForEach(flatMapper.apply(value), intConsumer));
     }

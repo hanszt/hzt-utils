@@ -18,10 +18,12 @@ import java.util.Set;
 final class DepthFirstIterator<T, S extends Node<T, S>> implements Iterator<S> {
     private final Set<S> visited = new HashSet<>();
     private final Deque<Iterator<S>> stack = new ArrayDeque<>();
+    private final boolean setPredecessor;
     private S next;
 
-    DepthFirstIterator(S source) {
-        this.stack.push(source.getNeighbors().iterator());
+    DepthFirstIterator(S source, boolean setPredecessor) {
+        this.setPredecessor = setPredecessor;
+        this.stack.push(source.neighborIterator());
         this.next = source;
     }
 
@@ -54,8 +56,15 @@ final class DepthFirstIterator<T, S extends Node<T, S>> implements Iterator<S> {
                 }
                 neighbors = stack.peek();
             }
-            next = neighbors.next();
-        } while (visited.contains(next));
-        stack.push(next.getNeighbors().iterator());
+            final var neighbor = neighbors.next();
+            if (!visited.contains(neighbor)) {
+                if (setPredecessor) {
+                    neighbor.withPredecessor(next);
+                }
+                next = neighbor;
+                break;
+            }
+        } while (true);
+        stack.push(next.neighborIterator());
     }
 }

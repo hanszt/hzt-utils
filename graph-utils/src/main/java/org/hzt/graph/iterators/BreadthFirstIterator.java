@@ -18,8 +18,10 @@ import java.util.Set;
 final class BreadthFirstIterator<T, S extends Node<T, S>> implements Iterator<S> {
     private final Set<S> visited = new HashSet<>();
     private final Queue<S> queue = new LinkedList<>();
+    private final boolean setPredecessor;
 
-    BreadthFirstIterator(S node) {
+    BreadthFirstIterator(S node, boolean setPredecessor) {
+        this.setPredecessor = setPredecessor;
         queue.add(node);
         visited.add(node);
     }
@@ -35,11 +37,15 @@ final class BreadthFirstIterator<T, S extends Node<T, S>> implements Iterator<S>
             throw new NoSuchElementException();
         }
         S next = queue.remove();
-        for (S neighbor : next.getNeighbors()) {
-            if (!this.visited.contains(neighbor)) {
-                neighbor.withPredecessor(next);
-                this.queue.add(neighbor);
-                this.visited.add(neighbor);
+        final var iterator = next.neighborIterator();
+        while (iterator.hasNext()) {
+            S neighbor = iterator.next();
+            if (!visited.contains(neighbor)) {
+                if (setPredecessor) {
+                    neighbor.withPredecessor(next);
+                }
+                queue.add(neighbor);
+                visited.add(neighbor);
             }
         }
         return next;

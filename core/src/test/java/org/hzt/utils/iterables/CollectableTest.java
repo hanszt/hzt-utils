@@ -228,11 +228,12 @@ class CollectableTest {
     @Test
     void testToDoubleArray() {
         final var museums = TestSampleGenerator.getMuseumListContainingNulls();
+        final var referenceYear = 2022;
 
         final var averages = Sequence.of(museums)
                 .map(Museum::getPaintings)
                 .map(Sequence::of)
-                .map(s -> s.mapToInt(Painting::ageInYears))
+                .map(s -> s.mapToInt(p -> referenceYear - p.yearOfCreation().getValue()))
                 .toDoubleArray(IntSequence::average);
 
         assertArrayEquals(new double[]{25.0, 135.5, 359.3333333333333, 96.66666666666667}, averages);

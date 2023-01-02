@@ -252,6 +252,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
+    default <R> Sequence<R> scan(R initial, BiFunction<? super R, ? super T, ? extends R> operation) {
+        return () -> Iterators.scanningIterator(iterator(), initial, operation);
+    }
+
+    @Override
     default @NotNull Sequence<T> distinct() {
         return distinctBy(It::self);
     }

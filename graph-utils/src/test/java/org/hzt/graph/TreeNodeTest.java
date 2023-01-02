@@ -189,8 +189,8 @@ class TreeNodeTest {
     private static TreeNodeTest.Person buildPersonTree() {
         final var c1 = new Person("c1")
                 .addChildrenWithThisAsParent(List.of(
-                new Person("c4").addChildWithThisAsParent(new Person("c10")),
-                new Person("c5")));
+                        new Person("c4").addChildWithThisAsParent(new Person("c10")),
+                        new Person("c5")));
         final var c2 = new Person("c2")
                 .addChildren(List.of(
                         new Person("c6"),
@@ -247,8 +247,8 @@ class TreeNodeTest {
             final var file = fileX.breadthFirstSequence()
                     .first(n -> "TreeNodeTest.java".equals(n.getName()));
 
-            final var parent = file.parent();
-            final var itsParent = parent.parent();
+            final var parent = file.optionalParent().orElseThrow();
+            final var itsParent = parent.optionalParent().orElseThrow();
 
             assertAll(
                     () -> assertEquals("graph", parent.getName()),
@@ -313,9 +313,11 @@ class TreeNodeTest {
                     .onEach(s -> System.out.println(s.getAbsolutePath()))
                     .last();
 
+            final var optionalParent = root.optionalParent();
+
             assertAll(
                     () -> assertEquals("", root.getName()),
-                    () -> assertThrows(IllegalStateException.class, root::parent)
+                    () -> assertFalse(optionalParent::isPresent)
             );
         }
 
@@ -355,9 +357,10 @@ class TreeNodeTest {
         void testSimpleNode() {
             final var simpleTreeNode = buildSimpleTreeNodeTree();
 
-            println(simpleTreeNode.toTreeString(1, "-", n -> n.name));
-
-            System.out.println(simpleTreeNode.toBFSTreeString(2, "-", n -> n.name));
+            println("Dfs string:");
+            println(simpleTreeNode.toTreeString(1, "-", n -> n.name) + "\n");
+            println("Bfs string");
+            println(simpleTreeNode.toBFSTreeString(1, "-", n -> n.name) + "\n");
 
             final var breadthFirst = simpleTreeNode.breadthFirstSequence().toListOf(s -> s.name);
 
@@ -366,36 +369,36 @@ class TreeNodeTest {
             assertEquals(expected, breadthFirst);
         }
 
-        private SimpleTreeNode buildSimpleTreeNodeTree() {
-            return new SimpleTreeNode("root",
-                    new SimpleTreeNode("internal 1",
-                            new SimpleTreeNode("leaf 0"),
-                            new SimpleTreeNode("internal 2",
-                                    new SimpleTreeNode("leaf 1"),
-                                    new SimpleTreeNode("leaf 2"),
-                                    new SimpleTreeNode("internal 3",
-                                            new SimpleTreeNode("leaf 4"),
-                                            new SimpleTreeNode("leaf 5"))),
-                            new SimpleTreeNode("leaf 6"),
-                            new SimpleTreeNode("internal 4",
-                                    new SimpleTreeNode("leaf 7"),
-                                    new SimpleTreeNode("leaf 8")),
-                            new SimpleTreeNode("leaf 9")),
-                    new SimpleTreeNode("leaf 10"));
+        private Node buildSimpleTreeNodeTree() {
+            return new Node("root",
+                    new Node("internal 1",
+                            new Node("leaf 0"),
+                            new Node("internal 2",
+                                    new Node("leaf 1"),
+                                    new Node("leaf 2"),
+                                    new Node("internal 3",
+                                            new Node("leaf 4"),
+                                            new Node("leaf 5"))),
+                            new Node("leaf 6"),
+                            new Node("internal 4",
+                                    new Node("leaf 7"),
+                                    new Node("leaf 8")),
+                            new Node("leaf 9")),
+                    new Node("leaf 10"));
         }
 
-        private class SimpleTreeNode implements TreeNode<SimpleTreeNode, SimpleTreeNode> {
+        private class Node implements TreeNode<Node, Node> {
 
             private final String name;
-            private final SimpleTreeNode[] children;
+            private final Node[] children;
 
-            public SimpleTreeNode(String name, SimpleTreeNode... children) {
+            public Node(String name, Node... children) {
                 this.name = name;
                 this.children = children;
             }
 
             @Override
-            public @NotNull Iterator<SimpleTreeNode> childrenIterator() {
+            public @NotNull Iterator<Node> childrenIterator() {
                 return Sequence.of(children).iterator();
             }
         }
@@ -414,8 +417,7 @@ class TreeNodeTest {
         @Override
         public @NotNull Iterator<FileX> childrenIterator() {
             return Stream.ofNullable(listFiles())
-                    .flatMap(Stream::of)
-                    .map(FileX::new)
+                    .flatMap(values -> Stream.of(values).map(FileX::new))
                     .iterator();
         }
 

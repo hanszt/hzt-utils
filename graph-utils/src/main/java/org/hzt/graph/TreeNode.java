@@ -16,10 +16,10 @@ import java.util.function.Function;
 /**
  * @param <T> The type of the node itself
  * @param <S> The type of the children
- * <p>
- * T and S must be of same type for this interface to work properly
- *
- * The iterator that must be implemented, must provide an iterator over the children of the current node
+ *            <p>
+ *            T and S must be of same type for this interface to work properly
+ *            <p>
+ *            The iterator that must be implemented, must provide an iterator over the children of the current node
  */
 @FunctionalInterface
 public interface TreeNode<T, S extends TreeNode<T, S>> {
@@ -53,7 +53,7 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     }
 
     default Collection<S> getMutableChildren() {
-        throw new UnsupportedOperationException("getMutableChildren() not supported by default. Implement it to use it");
+        throw new UnsupportedOperationException("getMutableChildren() not supported by default. Override it if you want to use it");
     }
 
     default Optional<S> optionalParent() {
@@ -63,10 +63,6 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     default S withParent(S parent) {
         throw new IllegalStateException("withParent(TreeNode) not supported by default. Override it if you want to use it. " +
                 "Tried to set " + parent + " as parent");
-    }
-
-    default S parent() {
-        return optionalParent().orElseThrow(() -> new IllegalStateException("No parent found for node: " + this));
     }
 
     default S addChild(S toAdd) {
@@ -146,16 +142,22 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     }
 
     default Sequence<S> parentSequence() {
+        //noinspection unchecked
+        final S initial = (S) this;
         final Iterator<S> iterator = new Iterator<>() {
-
-            S next = null;
+            boolean isThis = true;
+            S next = initial;
 
             @Override
             public boolean hasNext() {
-                final Optional<S> parent = next == null ? optionalParent() : next.optionalParent();
-                final boolean present = parent.isPresent();
+                if (isThis) {
+                    isThis = false;
+                    return true;
+                }
+                final Optional<S> optionalParent = next.optionalParent();
+                final boolean present = optionalParent.isPresent();
                 if (present) {
-                    next = parent.orElseThrow();
+                    next = optionalParent.orElseThrow();
                 }
                 return next != null && present;
             }
@@ -176,7 +178,7 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     }
 
     default String toTreeString(Function<? super S, String> toStringFunction) {
-        return toTreeString( "[", ", ", "]", toStringFunction);
+        return toTreeString("[", ", ", "]", toStringFunction);
     }
 
     default String toTreeString(String opening, String separator, String closing,
@@ -212,19 +214,19 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     }
 
     default String toBFSTreeString(int indent,
-                                String indentString,
-                                Function<? super S, String> toStringFunction) {
+                                   String indentString,
+                                   Function<? super S, String> toStringFunction) {
         return breadthFirstDepthTrackingSequence()
                 .map(n -> indentString.repeat(n.treeDepth() * indent) + toStringFunction.apply(n.node()))
                 .joinToString("\n");
     }
 
     private static <T, S extends TreeNode<T, S>> void toTreeString(TreeNode<T, S> treeNode,
-                                                           StringBuilder sb,
-                                                           int level,
-                                                           int indent,
-                                                           String indentString,
-                                                           Function<? super S, String> toStringFunction) {
+                                                                   StringBuilder sb,
+                                                                   int level,
+                                                                   int indent,
+                                                                   String indentString,
+                                                                   Function<? super S, String> toStringFunction) {
         //noinspection unchecked
         sb.append(StringX.of(indentString).repeat(indent * level))
                 .append(toStringFunction.apply((S) treeNode))
@@ -238,11 +240,11 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     }
 
     private static <T, S extends TreeNode<T, S>> void toTreeString(TreeNode<T, S> treeNode,
-                                                           StringBuilder sb,
-                                                           String opening,
-                                                           String levelSeparator,
-                                                           String closing,
-                                                           Function<? super S, String> toStringFunction) {
+                                                                   StringBuilder sb,
+                                                                   String opening,
+                                                                   String levelSeparator,
+                                                                   String closing,
+                                                                   Function<? super S, String> toStringFunction) {
         //noinspection unchecked
         sb.append(toStringFunction.apply((S) treeNode));
         Iterator<S> iterator = treeNode.childrenIterator();

@@ -980,4 +980,18 @@ class IterableXTest {
         assertArrayEquals(new boolean[]{true, true, false, false}, booleans);
     }
 
+    @Test
+    void testScan() {
+        final var list = ListX.of("This", "is", "a", "test");
+        final var scan = list.scan(10, (lengths, s) -> lengths + s.length());
+        final var sequenceScan = list.asSequence()
+                .scan(10, (lengths, s) -> lengths + s.length())
+                .toListX();
+
+        assertAll(
+                () -> assertEquals(ListX.of(10, 14, 16, 17, 21), scan),
+                () -> assertEquals(scan, sequenceScan)
+        );
+    }
+
 }

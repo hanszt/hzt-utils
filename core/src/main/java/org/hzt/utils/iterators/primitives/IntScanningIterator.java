@@ -30,7 +30,7 @@ public class IntScanningIterator implements PrimitiveIterator.OfInt {
             state = State.CONTINUE;
             return accumulation;
         }
-        accumulation = operation.applyAsInt(accumulation, iterator.next());
+        accumulation = operation.applyAsInt(accumulation, iterator.nextInt());
         return accumulation;
     }
 }

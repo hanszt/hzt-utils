@@ -30,7 +30,7 @@ public class DoubleScanningIterator implements PrimitiveIterator.OfDouble {
             state = State.CONTINUE;
             return accumulation;
         }
-        accumulation = operation.applyAsDouble(accumulation, iterator.next());
+        accumulation = operation.applyAsDouble(accumulation, iterator.nextDouble());
         return accumulation;
     }
 }

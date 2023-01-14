@@ -30,7 +30,7 @@ public class LongScanningIterator implements PrimitiveIterator.OfLong {
             state = State.CONTINUE;
             return accumulation;
         }
-        accumulation = operation.applyAsLong(accumulation, iterator.next());
+        accumulation = operation.applyAsLong(accumulation, iterator.nextLong());
         return accumulation;
     }
 }

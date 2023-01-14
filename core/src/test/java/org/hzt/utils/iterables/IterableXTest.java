@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.*;
+import static org.hzt.utils.It.println;
 import static org.hzt.utils.collectors.CollectorsX.intersectingBy;
 import static org.hzt.utils.collectors.CollectorsX.toListX;
 import static org.junit.jupiter.api.Assertions.*;
@@ -113,8 +114,8 @@ class IterableXTest {
                 .onEach(It::println)
                 .toMutableMap();
 
-        It.println("expectedMap.size() = " + expectedMap.size());
-        It.println("actualMap.size() = " + actualMap.size());
+        println("expectedMap.size() = " + expectedMap.size());
+        println("actualMap.size() = " + actualMap.size());
 
         assertEquals(expectedMap, actualMap);
     }
@@ -132,7 +133,7 @@ class IterableXTest {
                 .map(IntSequence::sum)
                 .toListX();
 
-        It.println("sumsOfThree = " + sumsOfThree);
+        println("sumsOfThree = " + sumsOfThree);
 
         assertIterableEquals(List.of(3L, 6L, 9L, 12L, 15L, 18L, 21L), sumsOfThree);
     }
@@ -146,7 +147,7 @@ class IterableXTest {
                 .windowed(3, IntSequence::of)
                 .map(IntSequence::sum);
 
-        It.println("sumsOfThree = " + sumsOfThree);
+        println("sumsOfThree = " + sumsOfThree);
 
         assertIterableEquals(List.of(3L, 6L), sumsOfThree);
     }
@@ -175,7 +176,7 @@ class IterableXTest {
 
         final var actual = bankAccountList.maxOf(BankAccount::getBalance);
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -191,7 +192,7 @@ class IterableXTest {
 
         final var actual = list.minOf(BankAccount::getBalance);
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -362,7 +363,7 @@ class IterableXTest {
                 .mapNotNull(Museum::getDateOfOpening)
                 .mapTo(() -> deque, It::self);
 
-        It.println("actualLocalDates = " + actualLocalDates);
+        println("actualLocalDates = " + actualLocalDates);
 
         assertIterableEquals(expectedLocalDates, actualLocalDates);
     }
@@ -431,7 +432,7 @@ class IterableXTest {
 
         final var intersection = museums.intersectionOf(Museum::getPaintings, Painting::getMillenniumOfCreation);
 
-        It.println("intersection = " + intersection);
+        println("intersection = " + intersection);
 
         assertEquals(expected, intersection);
     }
@@ -460,7 +461,7 @@ class IterableXTest {
         final var sum = integers
                 .fold(BigDecimal.ZERO, (bigDecimal, integer) -> bigDecimal.add(BigDecimal.valueOf(integer)));
 
-        It.println("sum = " + sum);
+        println("sum = " + sum);
 
         assertEquals(expectedSum, sum);
     }
@@ -501,7 +502,7 @@ class IterableXTest {
 
         final var integers = list.skipLastWhile(i -> i != 10);
 
-        It.println("integers = " + integers);
+        println("integers = " + integers);
 
         assertIterableEquals(List.of(1, 2, 10, 4, 5, 10), integers);
     }
@@ -514,7 +515,7 @@ class IterableXTest {
 
         final IterableX<Integer> integers = list.skipWhile(i -> i != 5);
 
-        It.println("integers = " + integers);
+        println("integers = " + integers);
 
         assertIterableEquals(List.of(5, 10, 6, 5, 3, 5, 6), integers);
     }
@@ -527,7 +528,7 @@ class IterableXTest {
 
         final IterableX<Integer> integers = list.skipWhileInclusive(i -> i != 5);
 
-        It.println("integers = " + integers);
+        println("integers = " + integers);
 
         assertIterableEquals(List.of(10, 6, 5, 3, 5, 6), integers);
     }
@@ -539,16 +540,16 @@ class IterableXTest {
 
         assertFalse(listIterator.hasPrevious());
 
-        It.println("In actual order :");
+        println("In actual order :");
         while (listIterator.hasNext()) {
-            It.println(listIterator.next());
+            println(listIterator.next());
         }
 
         assertTrue(listIterator.hasPrevious());
 
-        It.println("In reverse order :");
+        println("In reverse order :");
         while (listIterator.hasPrevious()) {
-            It.println(listIterator.previous());
+            println(listIterator.previous());
         }
     }
 
@@ -560,7 +561,7 @@ class IterableXTest {
 
         final var actual = bankAccounts.filter(Objects::nonNull).count(BankAccount::isDutchAccount);
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -575,7 +576,7 @@ class IterableXTest {
 
         final BigDecimal actual = list.bigDecimalSumOf(BankAccount::getBalance);
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -588,7 +589,7 @@ class IterableXTest {
 
         final var actual = list.intSumOf(Painting::ageInYears);
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -601,7 +602,7 @@ class IterableXTest {
 
         final var actual = list.averageOf(Painting::ageInYears);
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -616,7 +617,7 @@ class IterableXTest {
 
         final BigDecimal actual = ListX.of(listX).bigDecimalSumOf(BankAccount::getBalance);
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -661,7 +662,7 @@ class IterableXTest {
 
         final var actual = paintings.findLast(painting -> !painting.isInMuseum());
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertEquals("Lentetuin, de pastorietuin te Nuenen in het voorjaar", actual
                 .map(Painting::name)
@@ -690,7 +691,7 @@ class IterableXTest {
 
         final var actual = paintings.joinToStringBy(Painting::age, ", ");
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -719,7 +720,7 @@ class IterableXTest {
 
         final var actual = bookList.filterNot(Book::isAboutProgramming).toSetX();
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -735,7 +736,7 @@ class IterableXTest {
 
         final var actual = bookList.filterBy(Book::getCategory, Objects::nonNull).count();
 
-        It.println("actual = " + actual);
+        println("actual = " + actual);
 
         assertEquals(expected, actual);
     }
@@ -877,14 +878,14 @@ class IterableXTest {
                 .map(StringX::of)
                 .flatMap(StringX::toListX);
 
-        It.println("stringXES = " + actual);
+        println("stringXES = " + actual);
 
         assertIterableEquals(expected, actual);
     }
 
     private void printEvery10_000stElement(int i) {
         if (IntX.of(i).isMultipleOf(10_000)) {
-            It.println(i);
+            println(i);
         }
     }
 
@@ -912,7 +913,7 @@ class IterableXTest {
 
         final var list = bigDecimals.distinctBy(BigDecimal::byteValue);
 
-        It.println("list = " + list);
+        println("list = " + list);
 
         assertIterableEquals(expected, list);
     }
@@ -932,7 +933,7 @@ class IterableXTest {
 
         final var integers = list.castIfInstanceOf(Integer.class);
 
-        It.println("integers = " + integers);
+        println("integers = " + integers);
 
         assertEquals(ListX.of(2, 4, 3), integers);
     }
@@ -983,14 +984,20 @@ class IterableXTest {
     @Test
     void testScan() {
         final var list = ListX.of("This", "is", "a", "test");
+
         final var scan = list.scan(10, (lengths, s) -> lengths + s.length());
+        final var scanOfReverse = list.reversed().scan(10, (lengths, s) -> lengths + s.length());
+
+        println("scanOfReverse = " + scanOfReverse);
+
         final var sequenceScan = list.asSequence()
                 .scan(10, (lengths, s) -> lengths + s.length())
                 .toListX();
 
         assertAll(
                 () -> assertEquals(ListX.of(10, 14, 16, 17, 21), scan),
-                () -> assertEquals(scan, sequenceScan)
+                () -> assertEquals(scan, sequenceScan),
+                () -> assertNotEquals(scanOfReverse, scan)
         );
     }
 

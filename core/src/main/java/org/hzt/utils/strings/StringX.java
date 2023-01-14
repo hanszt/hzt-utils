@@ -1,5 +1,6 @@
 package org.hzt.utils.strings;
 
+import org.hzt.utils.iterables.Reversable;
 import org.hzt.utils.Transformable;
 import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.collections.ListX;
@@ -24,6 +25,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -36,7 +38,7 @@ import java.util.stream.Stream;
 import static org.hzt.utils.PreConditions.require;
 
 @SuppressWarnings({"squid:S1448", "squid:S1200", "squid:S4351"})
-public final class StringX implements CharSequence, Sequence<Character>, Transformable<StringX>, ComparableX<StringX> {
+public final class StringX implements CharSequence, Sequence<Character>, Transformable<StringX>, ComparableX<StringX>, Reversable<StringX> {
 
     private final String string;
 
@@ -76,7 +78,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return new StringX(characterIterable);
     }
 
-    public static StringX of(char @NotNull [] s) {
+    public static StringX of(char @NotNull ... s) {
         return new StringX(s);
     }
 
@@ -91,7 +93,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return new StringX(charsArray);
     }
 
-    public static StringX of(byte[] s) {
+    public static StringX of(byte... s) {
         return new StringX(s);
     }
 
@@ -665,6 +667,52 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     @Override
     public Iterator<Character> iterator() {
         return charIterator();
+    }
+
+    //overriden sequence methods
+    @Override
+    public StringX plus(@NotNull Character value) {
+        return StringX.ofChars(Sequence.super.plus(value));
+    }
+
+    @Override
+    public StringX minus(@NotNull Character value) {
+        return StringX.ofChars(Sequence.super.minus(value));
+    }
+
+    @Override
+    public StringX intersperse(Character value) {
+        return StringX.ofChars(Sequence.super.intersperse(value));
+    }
+
+    @Override
+    public @NotNull StringX onEach(@NotNull Consumer<? super Character> consumer) {
+        return StringX.ofChars(Sequence.super.onEach(consumer));
+    }
+
+    @Override
+    public @NotNull StringX distinct() {
+        return StringX.ofChars(Sequence.super.distinct());
+    }
+
+    @Override
+    public StringX take(long n) {
+        return StringX.ofChars(Sequence.super.take(n));
+    }
+
+    @Override
+    public StringX takeWhile(@NotNull Predicate<? super Character> predicate) {
+        return StringX.ofChars(Sequence.super.takeWhile(predicate));
+    }
+
+    @Override
+    public StringX skip(long n) {
+        return StringX.ofChars(Sequence.super.skip(n));
+    }
+
+    @Override
+    public StringX skipWhile(@NotNull Predicate<? super Character> predicate) {
+        return StringX.ofChars(Sequence.super.skipWhile(predicate));
     }
 
     @Override

@@ -290,4 +290,18 @@ class StringXTest {
             assertFalse(StringX.of(s).contains(c));
         }
     }
+
+    @Nested
+    class OverridenSequenceMethodTests {
+
+        @Test
+        void testFilterCharNrs() {
+            final var s = StringX.of("This 1s a strin9 containing s0me nrs: 4")
+                    .filter(Character::isDigit)
+                    .skip(1)
+                    .toInt();
+
+            assertEquals(904, s);
+        }
+    }
 }

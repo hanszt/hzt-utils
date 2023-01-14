@@ -47,6 +47,11 @@ public interface IntList extends IntCollection,
         return indexOf(value) >= 0;
     }
 
+    @Override
+    default IntList reversed() {
+        return IntSequence.reverseOf(this).toList();
+    }
+
     int get(int index);
 
     int indexOf(int i);

@@ -14,9 +14,7 @@ import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.hzt.utils.statistics.DoubleStatistics;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -38,28 +36,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static java.util.stream.Collectors.toUnmodifiableList;
-import static java.util.stream.Collectors.toUnmodifiableMap;
-import static java.util.stream.Collectors.toUnmodifiableSet;
+import static java.util.stream.Collectors.*;
 
 @SuppressWarnings({"DuplicatedCode"})
 public final class CollectorsX {
 
     private CollectorsX() {
-    }
-
-    public static <T, A, R>
-    Collector<T, ?, R> filtering(Predicate<? super T> predicate,
-                                 Collector<? super T, A, R> downstream) {
-        var downstreamAccumulator = downstream.accumulator();
-        return collectorOf(downstream.supplier(),
-                (r, t) -> {
-                    if (predicate.test(t)) {
-                        downstreamAccumulator.accept(r, t);
-                    }
-                },
-                downstream.combiner(), downstream.finisher(),
-                downstream.characteristics());
     }
 
     public static <T, U, A, R> Collector<T, ?, R> multiMapping(BiConsumer<? super T, ? super Consumer<U>> mapper,
@@ -71,7 +53,6 @@ public final class CollectorsX {
         }, downstream);
     }
 
-    @NotNull
     static <T, A, R> Collector<T, A, R> collectorOf(
             Supplier<A> supplier,
             BiConsumer<A, T> accumulator,
@@ -155,7 +136,7 @@ public final class CollectorsX {
     public static <T, R1, R2> Collector<T, ?, Map.Entry<R1, R2>> teeingToEntry(
             Collector<? super T, ?, R1> downstream1,
             Collector<? super T, ?, R2> downstream2) {
-        return teeing(downstream1, downstream2, AbstractMap.SimpleEntry::new);
+        return teeing(downstream1, downstream2, Map::entry);
     }
 
     public static <T> Collector<T, ?, DoubleStatistics> toDoubleStatisticsBy(ToDoubleFunction<? super T> toDoubleFunction) {

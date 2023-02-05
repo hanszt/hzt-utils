@@ -2,6 +2,7 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableSet;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.primitives.IntCollectable;
@@ -70,6 +71,10 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     static IntSequence of(IntStream stream) {
         return stream::iterator;
+    }
+
+    static IntSequence reverseOf(IntList intList) {
+        return () -> PrimitiveIterators.reverseIterator(intList);
     }
 
     static IntSequence iterate(int seedValue, IntUnaryOperator nextFunction) {

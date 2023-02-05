@@ -17,6 +17,7 @@ public abstract class PrimitiveTimSort<A, C> {
     private static final int MIN_MERGE = 32;
     private static final int MIN_GALLOP = 7;
     private static final int INITIAL_TMP_STORAGE_LENGTH = 256;
+    private static final String NO_DEEPLY_NESTED_CODE = "java:S134";
 
     private final int[] runBase;
     private final int[] runLength;
@@ -218,7 +219,8 @@ public abstract class PrimitiveTimSort<A, C> {
 
     //Suppress the warnings that have to do with to long and complex methods. In this case performance is more important
 
-    @SuppressWarnings({"SuspiciousSystemArraycopy", "squid:S134", "squid:S135", "squid:S138", "squid:S1119", "squid:S1541", "squid:S3776"})
+    @SuppressWarnings({"SuspiciousSystemArraycopy", NO_DEEPLY_NESTED_CODE, "squid:S135",
+            "squid:S138", "squid:S1119", "squid:S1541", "squid:S3776"})
     private void mergeLo(final int base1, final int initLen1, final int base2, final int initLen2) {
         PreConditions.require(initLen1 > 0 && initLen2 > 0 && base1 + initLen1 == base2);
         // Copy first run into temp array
@@ -321,7 +323,8 @@ public abstract class PrimitiveTimSort<A, C> {
             System.arraycopy(tmpArray, cursor1, localArray, dest, len1);
         }
     }
-    @SuppressWarnings({"SuspiciousSystemArraycopy", "squid:S134", "squid:S135", "squid:S138", "squid:S1119", "squid:S1541", "squid:S3776"})
+    @SuppressWarnings({"SuspiciousSystemArraycopy",
+            NO_DEEPLY_NESTED_CODE, "squid:S135", "squid:S138", "squid:S1119", "squid:S1541", "squid:S3776"})
     private void mergeHi(final int base1, final int initLen1, final int base2, final int initLen2) {
         PreConditions.require(initLen1 > 0 && initLen2 > 0 && base1 + initLen1 == base2);
         // Copy second run into temp array

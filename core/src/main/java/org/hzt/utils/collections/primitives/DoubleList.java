@@ -1,10 +1,10 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.ArraysX;
+import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
-import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
@@ -46,6 +46,11 @@ public interface DoubleList extends DoubleCollection,
 
     default boolean contains(double value) {
         return indexOf(value) >= 0;
+    }
+
+    @Override
+    default DoubleList reversed() {
+        return DoubleSequence.reverseOf(this).toList();
     }
 
     double get(int index);

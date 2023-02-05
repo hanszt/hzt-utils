@@ -1,5 +1,6 @@
 package org.hzt.utils.strings;
 
+import org.hzt.utils.Patterns;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Nested;
@@ -196,6 +197,17 @@ class StringXTest {
         }
 
         @Test
+        void splitToSequenceByPattern() {
+            final var strings = StringX.of("test@test.com      this is some text")
+                    .splitToSequence(Patterns.blankStringPattern)
+                    .toList();
+
+            System.out.println("strings.size() = " + strings.size());
+
+            assertEquals(List.of("test@test.com", "this", "is", "some", "text"), strings);
+        }
+
+        @Test
         void testStringTokenizerVsSplitToSequence() {
             final var testString = "This is a\ftest\tcontaining\ndefault\rseparators";
 
@@ -288,6 +300,20 @@ class StringXTest {
         void testStringDoesNotContainChars(char c) {
             final var s = "This is a test string to test contains method!";
             assertFalse(StringX.of(s).contains(c));
+        }
+    }
+
+    @Nested
+    class OverridenSequenceMethodTests {
+
+        @Test
+        void testFilterCharNrs() {
+            final var s = StringX.of("This 1s a strin9 containing s0me nrs: 4")
+                    .filter(Character::isDigit)
+                    .skip(1)
+                    .toInt();
+
+            assertEquals(904, s);
         }
     }
 }

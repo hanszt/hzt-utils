@@ -69,6 +69,15 @@ class IntListTest {
     }
 
     @Test
+    void testReversed() {
+        final var intList = IntList.of(1, 2, 4, 3, 5, 4, 3);
+
+        final var index = intList.reversed();
+
+        assertEquals(IntList.of(3, 4, 5, 3, 4, 2, 1), index);
+    }
+
+    @Test
     void testIndices() {
         System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
         final var intList = IntList.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);

@@ -408,6 +408,10 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
                 .map(range -> string.substring(range.start(), range.endInclusive() + 1));
     }
 
+    public Sequence<String> splitToSequence(Pattern pattern) {
+        return Sequence.of(pattern.splitAsStream(string)::iterator);
+    }
+
     private static Sequence<IntRange> rangeDelimitedBy(final String string,
                                                        final CharSequence[] delimiters,
                                                        final boolean ignoreCase,

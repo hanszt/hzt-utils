@@ -1,7 +1,6 @@
 package org.hzt.utils.iterables;
 
 import org.hzt.test.model.Person;
-import org.hzt.utils.Patterns;
 import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
@@ -15,11 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Comparator.reverseOrder;
 import static org.hzt.utils.Patterns.blankStringPattern;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hzt.utils.Patterns.splitToSequence;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SortableTest {
 
@@ -134,8 +130,7 @@ class SortableTest {
             "Adi Judith Hans Koen Pauline  Ted"
     })
     void isNotSortedInNaturalOrder(String string) {
-        final var people = Patterns
-                .splitToSequence(blankStringPattern, string)
+        final var people = splitToSequence(blankStringPattern, string)
                 .map(Person::new);
 
         assertFalse(people.isSortedBy(Person::getName));

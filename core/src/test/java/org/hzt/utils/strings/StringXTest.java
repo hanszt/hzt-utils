@@ -1,5 +1,6 @@
 package org.hzt.utils.strings;
 
+import org.hzt.utils.Patterns;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Nested;
@@ -193,6 +194,17 @@ class StringXTest {
             strings.forEach(System.out::println);
 
             assertIterableEquals(Sequence.of("hallo", "this", "is", "a", "test", "answer"), strings);
+        }
+
+        @Test
+        void splitToSequenceByPattern() {
+            final var strings = StringX.of("test@test.com      this is some text")
+                    .splitToSequence(Patterns.blankStringPattern)
+                    .toList();
+
+            System.out.println("strings.size() = " + strings.size());
+
+            assertEquals(List.of("test@test.com", "this", "is", "some", "text"), strings);
         }
 
         @Test

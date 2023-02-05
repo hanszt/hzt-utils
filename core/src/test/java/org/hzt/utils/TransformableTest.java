@@ -2,6 +2,7 @@ package org.hzt.utils;
 
 import org.hzt.test.model.Painting;
 import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
@@ -11,13 +12,10 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TransformableTest {
 
@@ -69,9 +67,8 @@ class TransformableTest {
 
     @Test
     void testTransformableSequence() {
-        final var integers = TransformableSequence.of(List.of(1, 2, 3, 4, 3, 5))
-                .alsoWhen(s -> s.count() > 10, s -> s.forEach(System.out::println))
-                .get()
+        final var integers = TransformableSequence.of(IntList.of(1, 2, 3, 4, 3, 5))
+                .when(s -> s.count() > 4, s -> s.forEach(System.out::println))
                 .toSet();
 
         assertEquals(Set.of(1,2,3,4,5), integers);

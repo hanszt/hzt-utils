@@ -860,8 +860,8 @@ class SequenceTest {
 
     @Test
     void testSequenceOfZoneIds() {
-        final var now = Instant.parse("2022-11-23T23:34:34.34Z");
-        final var current = now.atZone(ZoneId.of("Europe/Amsterdam"));
+        var now = Instant.parse("2023-02-02T23:43:24Z");
+        var current = now.atZone(ZoneId.of("Europe/Amsterdam"));
         printf("Current time is %s%n%n", current);
 
         final var noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
@@ -877,8 +877,8 @@ class SequenceTest {
 
     @Test
     void testTimeZonesAntarctica() {
-        var now = Instant.now();
-        var current = now.atZone(ZoneId.systemDefault());
+        var now = Instant.parse("2022-10-23T13:34:43Z");
+        var current = now.atZone(ZoneId.of("Europe/Amsterdam"));
         printf("Current time is %s%n%n", current);
 
         final var timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.getId().contains("Antarctica"));

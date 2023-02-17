@@ -89,7 +89,6 @@ final class ArrayListX<E> implements MutableListX<E> {
     @NotNull
     @Override
     public <T1> T1 @NotNull [] toArray(@NotNull T1 @NotNull [] a) {
-        //noinspection SuspiciousToArrayCall
         return list.toArray(a);
     }
 

@@ -24,8 +24,9 @@ class MuseumTest {
         firstMuseum.forEach(System.out::println);
 
         final var paintings = museumList.stream()
-                .filter(museum -> Optional.ofNullable(museum).map(Museum::getDateOfOpening)
-                        .filter(d -> d.isBefore(LocalDate.now()))
+                .filter(museum -> Optional.ofNullable(museum)
+                        .map(Museum::getDateOfOpening)
+                        .filter(LocalDate.parse("2023-02-03")::isAfter)
                         .isPresent())
                 .flatMap(m -> StreamSupport.stream(m.spliterator(), false))
                 .filter(painting -> painting.ageInYears() > 200)

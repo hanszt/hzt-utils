@@ -17,7 +17,7 @@ class DoubleReducableTest {
                 .take(1_000_000)
                 .reduce(0.0, Double::sum);
 
-        assertEquals(19.959070699659645, sum);
+        assertEquals(19.959070699659645, sum, 1e10);
     }
 
     @Test

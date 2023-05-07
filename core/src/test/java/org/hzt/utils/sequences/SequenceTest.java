@@ -860,8 +860,8 @@ class SequenceTest {
 
     @Test
     void testSequenceOfZoneIds() {
-        var now = Instant.now();
-        var current = now.atZone(ZoneId.systemDefault());
+        final var now = Instant.parse("2022-11-23T23:34:34.34Z");
+        final var current = now.atZone(ZoneId.of("Europe/Amsterdam"));
         printf("Current time is %s%n%n", current);
 
         final var noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));

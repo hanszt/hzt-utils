@@ -19,6 +19,7 @@
         <module>fx-utils</module>
         <module>geometry</module>
         <module>graph-utils</module>
+        <module>kotlin-utils</module>
     </modules>
 
     <properties>

@@ -19,7 +19,7 @@ class DoubleReducableTest {
                 .take(1_000_000)
                 .reduce(0.0, Double::sum);
 
-        assertThat(sum, 1e10).isCloseTo(20.0, offset(0.1));
+        assertThat(sum, 1e10).isCloseTo(20.0, offset(0.1)).isCloseTo(20.0, offset(0.1));
     }
 
     @Test

@@ -6,7 +6,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MutableListXTest {
 
@@ -18,9 +17,9 @@ class MutableListXTest {
         final var removed2 = integers.removeFirst();
 
         assertAll(
-                () -> assertTrue(removed),
-                () -> assertTrue(removed2),
-                () -> assertEquals(List.of(3,4, 5), integers)
+                () -> assertEquals(1, removed),
+                () -> assertEquals(2, removed2),
+                () -> assertEquals(List.of(3, 4, 5), integers)
         );
     }
 
@@ -31,8 +30,8 @@ class MutableListXTest {
         final var removed = integers.removeLast();
 
         assertAll(
-                () -> assertTrue(removed),
-                () -> assertEquals(List.of(1,2,3,4), integers)
+                () -> assertEquals(5, removed),
+                () -> assertEquals(List.of(1, 2, 3, 4), integers)
         );
     }
 }

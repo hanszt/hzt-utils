@@ -1,5 +1,6 @@
 package org.hzt.utils.collections;
 
+import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -49,7 +50,7 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
 
     MutableListX<E> tailFrom(int fromIndex);
 
-    MutableListX<E> subList(int fromIndex, int toIndex);
+    @NotNull MutableListX<E> subList(int fromIndex, int toIndex);
 
     @Override
     default boolean containsAll(@NotNull Iterable<E> iterable) {
@@ -63,13 +64,18 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
     boolean isEmpty();
 
     @Override
-    default boolean removeFirst() {
-        return remove(get(0));
+    default E removeFirst() {
+        return List.super.removeFirst();
     }
 
     @Override
-    default boolean removeLast() {
-        return remove(get(lastIndex()));
+    default E removeLast() {
+        return List.super.removeLast();
+    }
+
+    @Override
+    default MutableListX<E> reversed() {
+        return Sequence.of(List.super.reversed()).toMutableList();
     }
 
     @Override

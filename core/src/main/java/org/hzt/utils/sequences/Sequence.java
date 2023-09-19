@@ -22,9 +22,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.SequencedCollection;
 import java.util.Set;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -78,8 +78,8 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> Iterators.reverseArrayIterator(values);
     }
 
-    static <T> Sequence<T> reverseOf(List<T> list) {
-        return () -> Iterators.reverseIterator(list);
+    static <T> Sequence<T> reverseOf(SequencedCollection<T> sequencedCollection) {
+        return () -> sequencedCollection.reversed().iterator();
     }
 
     static <T> Sequence<T> reverseOf(ListX<T> list) {

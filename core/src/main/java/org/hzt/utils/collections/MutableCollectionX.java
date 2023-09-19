@@ -52,12 +52,16 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E> {
 
     boolean containsAll(@NotNull Collection<?> c);
 
-    default boolean removeFirst() {
-        return remove(first());
+    default E removeFirst() {
+        E first = first();
+        remove(first);
+        return first;
     }
 
-    default boolean removeLast() {
-        return remove(last());
+    default E removeLast() {
+        E last = last();
+        remove(last);
+        return last;
     }
 
     @Override

@@ -46,6 +46,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -55,8 +56,18 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.lang.System.setProperty;
-import static org.hzt.utils.It.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hzt.utils.It.print;
+import static org.hzt.utils.It.printf;
+import static org.hzt.utils.It.println;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class SequenceTest {
@@ -1041,7 +1052,7 @@ class SequenceTest {
             );
         }
 
-        private class Nodes {
+        private static class Nodes {
 
             private final List<String> strings = new ArrayList<>();
 
@@ -1095,6 +1106,27 @@ class SequenceTest {
         @Test
         void testReverseSequenceFromList() {
             List<String> strings = List.of("This", "is", "a", "test");
+
+            final var sequence = Sequence.reverseOf(strings);
+
+            final var ints = sequence
+                    .skip(2)
+                    .mapToInt(String::length)
+                    .toArray();
+
+            final var first = sequence.first();
+
+            System.out.println("first = " + first);
+
+            assertAll(
+                    () -> assertArrayEquals(new int[]{2, 4}, ints),
+                    () -> assertEquals("test", first)
+            );
+        }
+
+        @Test
+        void testReverseSequenceFromLinkedHashSet() {
+            final var strings = new LinkedHashSet<>(List.of("This", "is", "a", "test"));
 
             final var sequence = Sequence.reverseOf(strings);
 

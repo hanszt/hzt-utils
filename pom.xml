@@ -7,7 +7,7 @@
 
     <groupId>org.hzt.utils</groupId>
     <artifactId>hzt-utils</artifactId>
-    <version>0.7.5.17</version>
+    <version>0.7.5.21</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -23,13 +23,13 @@
     </modules>
 
     <properties>
-        <java.source.version>17</java.source.version>
-        <java.target.version>17</java.target.version>
+        <java.source.version>21</java.source.version>
+        <java.target.version>21</java.target.version>
         <coverage.target>50%</coverage.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--        dependencies-->
         <!--        test-->
-        <junit.jupiter.version>5.9.0</junit.jupiter.version>
+        <junit.jupiter.version>5.10.0</junit.jupiter.version>
         <assertj-core.version>3.24.2</assertj-core.version>
         <awaitility.version>4.2.0</awaitility.version>
         <!--        dependency management-->

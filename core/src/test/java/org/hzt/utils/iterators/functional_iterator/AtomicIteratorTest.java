@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,17 +22,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class AtomicIteratorTest {
 
     @Test
-    void testFunctionalIteratorImpl() {
+    void testAtomicIteratorBehavesTheSameAsIterator() {
         List<String> list1 = new ArrayList<>();
         List<String> list2 = new ArrayList<>();
 
         final var upperBound = 100;
 
-        var stringIterator = getBoundedStringIteratorX(upperBound);
+        var stringIterator = getBoundedAtomicIteratorIteratorX(upperBound, String::valueOf);
         //noinspection StatementWithEmptyBody
         while (stringIterator.tryAdvance(list1::add)) ;
 
-        final var boundedIteratorX = getBoundedStringIteratorX(upperBound);
+        final var boundedIteratorX = getBoundedAtomicIteratorIteratorX(upperBound, String::valueOf);
         final Iterable<String> stringIterable = boundedIteratorX::asIterator;
         stringIterable.forEach(list2::add);
 
@@ -44,7 +45,7 @@ class AtomicIteratorTest {
         List<String> list2 = new ArrayList<>();
 
         final var upperBound = 200;
-        var stringIterator = getBoundedStringIteratorX(upperBound);
+        var stringIterator = getBoundedAtomicIteratorIteratorX(upperBound, String::valueOf);
         stringIterator.forEachRemaining(list1::add);
         stringIterator.forEachRemaining(list2::add);
 
@@ -60,15 +61,15 @@ class AtomicIteratorTest {
         final var bound = 241;
         var atomicInteger = new AtomicInteger();
 
-        var stringIterator = getBoundedStringIteratorX(bound);
+        var stringIterator = getBoundedAtomicIteratorIteratorX(bound, String::valueOf);
         stringIterator.asIterator().forEachRemaining(e -> atomicInteger.incrementAndGet());
 
         assertEquals(bound, atomicInteger.get());
     }
 
     @NotNull
-    private AtomicIterator<String> getBoundedStringIteratorX(int upperBound) {
-        return new BoundedIterator<>(upperBound, String::valueOf)::supplyNext;
+    private AtomicIterator<String> getBoundedAtomicIteratorIteratorX(int upperBound, IntFunction<String> intFunction) {
+        return new BoundedIterator<>(upperBound, intFunction)::supplyNext;
     }
 
     @Test
@@ -159,5 +160,15 @@ class AtomicIteratorTest {
                 () -> assertFalse(stringIterator.hasNext()),
                 () -> assertThrows(NoSuchElementException.class, stringIterator::next)
         );
+    }
+
+    @Test
+    void testListContainingNullsCanBeTraversedByAtomicIterator() {
+        final var listContainingNulls = Arrays.asList(null, 2, 3, 4, null, 7);
+        final var atomicIterator = AtomicIterator.of(listContainingNulls.iterator());
+        final var result = new ArrayList<Integer>();
+        //noinspection StatementWithEmptyBody
+        while (atomicIterator.tryAdvance(result::add));
+        assertEquals(listContainingNulls, result);
     }
 }

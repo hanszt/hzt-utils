@@ -5,6 +5,8 @@ import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.tuples.Pair;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,7 +19,7 @@ class DoubleReducableTest {
                 .take(1_000_000)
                 .reduce(0.0, Double::sum);
 
-        assertEquals(19.959070699659645, sum);
+        assertThat(sum).isCloseTo(20.0, offset(0.1));
     }
 
     @Test

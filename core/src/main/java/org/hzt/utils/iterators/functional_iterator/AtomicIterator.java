@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -14,19 +15,17 @@ import java.util.function.Consumer;
 public interface AtomicIterator<T> {
 
     static <T> AtomicIterator<T> of(Iterator<T> iterator) {
-        return action -> acceptIfHasNext(iterator, action);
+        return action -> {
+            var hasNext = iterator.hasNext();
+            if (hasNext) {
+                action.accept(iterator.next());
+            }
+            return hasNext;
+        };
     }
 
     static <T> AtomicIterator<T> of(Spliterator<T> spliterator) {
         return spliterator::tryAdvance;
-    }
-
-    private static <T> boolean acceptIfHasNext(Iterator<T> iterator, Consumer<? super T> action) {
-        var hasNext = iterator.hasNext();
-        if (hasNext) {
-            action.accept(iterator.next());
-        }
-        return hasNext;
     }
 
     boolean tryAdvance(Consumer<? super T> action);
@@ -47,20 +46,21 @@ public interface AtomicIterator<T> {
         return new Iterator<>() {
 
             private final AtomicReference<T> sink = new AtomicReference<>();
+            private final AtomicBoolean hasNext = new AtomicBoolean(false);
 
             @Override
             public boolean hasNext() {
-                return tryAdvance(sink::set);
+                final var hasNextVal = tryAdvance(sink::set);
+                this.hasNext.set(hasNextVal);
+                return hasNextVal;
             }
 
             @Override
             public T next() {
-                final var value = sink.get();
-                sink.set(null);
-                if (value == null) {
-                    throw new NoSuchElementException();
+                if (hasNext.getAndSet(false)) {
+                    return sink.getAndSet(null);
                 }
-                return value;
+                throw new NoSuchElementException();
             }
         };
     }

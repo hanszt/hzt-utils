@@ -158,11 +158,27 @@ class SequenceTest {
     void testMapNotNull() {
         var list = ListX.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
 
-        final var sum = Sequence.of(list)
+        final var balances = Sequence.of(list)
                 .mapNotNull(BankAccount::getBalance)
                 .toMutableList();
 
-        assertFalse(sum.contains(null));
+        assertFalse(balances.contains(null));
+    }
+
+    @Test
+    void testMapIfPresent() {
+        var list = ListX.of(TestSampleGenerator.createMuseumList());
+
+        final var dates = Sequence.of(list)
+                .mapIfPresent(Museum::dateOfOpening)
+                .toList();
+
+        List<LocalDate> expected = ListX.of("1992-04-02", "1940-01-23", "1965-08-04").toListOf(LocalDate::parse);
+
+        assertAll(
+                () -> assertEquals(expected, dates),
+                () -> assertEquals(4, list.size())
+        );
     }
 
     @Test

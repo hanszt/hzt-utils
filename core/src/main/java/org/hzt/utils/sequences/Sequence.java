@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.SequencedCollection;
 import java.util.Set;
 import java.util.Spliterators;
@@ -158,6 +159,10 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
                                 Objects::nonNull, true),
                         mapper),
                 Objects::nonNull, true);
+    }
+
+    default <R> Sequence<R> mapIfPresent(@NotNull Function<? super T, Optional<R>> mapper) {
+        return () -> Iterators.multiMappingIterator(iterator(), (t, consumer) -> mapper.apply(t).ifPresent(consumer));
     }
 
     @Override

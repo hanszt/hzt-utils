@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiConsumer;
@@ -183,6 +184,10 @@ public interface CollectionX<E> extends IterableX<E> {
 
     default <R> ListX<R> mapNotNull(@NotNull Function<? super E, ? extends R> mapper) {
         return ListX.copyOf(mapNotNullTo(() -> MutableListX.withInitCapacity(size()), mapper));
+    }
+
+    default <R> ListX<R> mapIfPresent(@NotNull Function<? super E, Optional<R>> mapper) {
+        return ListX.copyOf(mapIfPresentTo(() -> MutableListX.withInitCapacity(size()), mapper));
     }
 
     @Override

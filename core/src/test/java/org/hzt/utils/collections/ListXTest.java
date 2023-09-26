@@ -8,6 +8,7 @@ import org.hzt.utils.iterables.Collectable;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
 import org.hzt.utils.test.model.PaintingAuction;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
@@ -26,7 +27,12 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static org.hzt.utils.collectors.CollectorsX.toListX;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ListXTest {
 
@@ -318,6 +324,32 @@ class ListXTest {
 
         assertEquals(expected, product, () -> "Something went wrong. Did you know, you can also crate dates from ints? " +
                 integers.toListOf(day -> LocalDate.of(2020, Month.JANUARY, day)));
+    }
+
+    @Nested
+    class EqualsTests {
+
+        @Test
+        void testListXEquals() {
+            final ListX<String> list1 = ListX.of("This", "is", "a", "test");
+            final ListX<String> list2 = ListX.of("This", "is", "a", "test");
+
+            assertAll(
+                    () -> assertEquals(list2, list1),
+                    () -> assertEquals(list1, list2)
+            );
+        }
+
+        @Test
+        void testListXAndListDoNotEqual() {
+            final ListX<String> listX =ListX.of("This", "is", "a", "test");
+            final List<String> list = Arrays.asList("This", "is", "a", "test");
+
+            assertAll(
+                    () -> assertNotEquals(list, listX),
+                    () -> assertNotEquals(listX, list)
+            );
+        }
     }
 
     private static int calculateProduct(ListX<Integer> list) {

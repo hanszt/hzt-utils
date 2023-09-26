@@ -4,6 +4,7 @@ import org.hzt.utils.Transformable;
 import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.comparables.ComparableX;
+import org.hzt.utils.iterables.Reversable;
 import org.hzt.utils.numbers.BigDecimalX;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.numbers.IntX;
@@ -36,7 +37,7 @@ import java.util.stream.Stream;
 import static org.hzt.utils.PreConditions.require;
 
 @SuppressWarnings({"squid:S1448", "squid:S1200", "squid:S4351"})
-public final class StringX implements CharSequence, Sequence<Character>, Transformable<StringX>, ComparableX<StringX> {
+public final class StringX implements CharSequence, Sequence<Character>, Transformable<StringX>, ComparableX<StringX>, Reversable<StringX> {
 
     private final String string;
 
@@ -356,6 +357,10 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return string.contains(s);
     }
 
+    public boolean contains(@NotNull char c) {
+        return string.indexOf(c) >= 0;
+    }
+
     public StringX replaceFirst(@NotNull Pattern regex, @NotNull CharSequence replacement) {
         return StringX.of(string.replaceFirst(regex.toString(), StringX.of(replacement).toString()));
     }
@@ -392,6 +397,10 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
                                             final CharSequence... delimiters) {
         return rangeDelimitedBy(string, delimiters, ignoreCase, limit)
                 .map(range -> string.substring(range.start(), range.endInclusive() + 1));
+    }
+
+    public Sequence<String> splitToSequence(Pattern pattern) {
+        return Sequence.of(pattern.splitAsStream(string)::iterator);
     }
 
     private static Sequence<IntRange> rangeDelimitedBy(final String string,

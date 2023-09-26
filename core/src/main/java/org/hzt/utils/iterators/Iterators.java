@@ -254,4 +254,10 @@ public final class Iterators {
     public static <T> PrimitiveIterator.OfInt indexIterator(Iterator<T> iterator) {
         return new IndexIterator<>(iterator);
     }
+
+    public static <R, T> Iterator<R> scanningIterator(Iterator<T> iterator,
+                                                      R initial,
+                                                      BiFunction<? super R, ? super T, ? extends R> operation) {
+        return new ScanningIterator<>(iterator, initial, operation);
+    }
 }

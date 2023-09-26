@@ -2,6 +2,7 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableSet;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.function.primitives.LongIndexedFunction;
@@ -75,6 +76,10 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return longStream::iterator;
     }
 
+    static LongSequence reverseOf(LongList longList) {
+        return () -> PrimitiveIterators.reverseIterator(longList);
+    }
+
     static LongSequence iterate(long seedValue, LongUnaryOperator nextFunction) {
         return generate(() -> seedValue, nextFunction);
     }
@@ -122,6 +127,11 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     default LongSequence mapIndexed(@NotNull LongIndexedFunction longIndexedFunction) {
         return () -> PrimitiveIterators.longIndexedTransformingIterator(iterator(), longIndexedFunction);
     }
+
+    default LongSequence scan(long initial, LongBinaryOperator operation) {
+        return () -> PrimitiveIterators.longScanningIterator(iterator(), initial, operation);
+    }
+
 
     default LongSequence flatMap(LongFunction<? extends Iterable<Long>> flatMapper) {
         return mapMulti((value, consumer) -> {

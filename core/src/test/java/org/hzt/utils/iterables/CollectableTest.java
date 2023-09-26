@@ -31,7 +31,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.averagingInt;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.maxBy;
+import static java.util.stream.Collectors.minBy;
+import static java.util.stream.Collectors.partitioningBy;
+import static java.util.stream.Collectors.summarizingInt;
+import static java.util.stream.Collectors.summingInt;
+import static java.util.stream.Collectors.summingLong;
+import static java.util.stream.Collectors.toList;
 import static org.hzt.utils.collectors.CollectorsX.branching;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -192,7 +203,6 @@ class CollectableTest {
     }
 
     private void assertStreamCanOnlyBeConsumedOnce(Stream<Year> yearStream) {
-        //noinspection ResultOfMethodCallIgnored
         final IllegalStateException exception = assertThrows(IllegalStateException.class, yearStream::findFirst);
         assertEquals("stream has already been operated upon or closed", exception.getMessage());
     }
@@ -235,11 +245,12 @@ class CollectableTest {
     @Test
     void testToDoubleArray() {
         final List<Museum> museums = TestSampleGenerator.getMuseumListContainingNulls();
+        final int referenceYear = 2022;
 
         final double[] averages = Sequence.of(museums)
                 .map(Museum::getPaintings)
                 .map(Sequence::of)
-                .map(s -> s.mapToInt(Painting::ageInYears))
+                .map(s -> s.mapToInt(p -> referenceYear - p.yearOfCreation().getValue()))
                 .toDoubleArray(IntSequence::average);
 
         assertArrayEquals(new double[]{25.0, 135.5, 359.3333333333333, 96.66666666666667}, averages);

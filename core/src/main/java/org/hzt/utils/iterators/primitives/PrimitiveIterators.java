@@ -1,9 +1,12 @@
 package org.hzt.utils.iterators.primitives;
 
 import org.hzt.utils.It;
+import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.collections.primitives.DoubleMutableSet;
+import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableCollection;
 import org.hzt.utils.collections.primitives.IntMutableSet;
+import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableSet;
 import org.hzt.utils.function.primitives.DoubleIndexedFunction;
 import org.hzt.utils.function.primitives.LongIndexedFunction;
@@ -591,8 +594,70 @@ public final class PrimitiveIterators {
         return false;
     }
 
+    public static PrimitiveIterator.OfInt intScanningIterator(PrimitiveIterator.OfInt iterator,
+                                                int initial, IntBinaryOperator operation) {
+        return new IntScanningIterator(iterator, initial, operation);
+    }
+
+    public static PrimitiveIterator.OfLong longScanningIterator(PrimitiveIterator.OfLong iterator,
+                                                long initial, LongBinaryOperator operation) {
+        return new LongScanningIterator(iterator, initial, operation);
+    }
+
+    public static PrimitiveIterator.OfDouble doubleScanningIterator(PrimitiveIterator.OfDouble iterator,
+                                                double initial, DoubleBinaryOperator operation) {
+        return new DoubleScanningIterator(iterator, initial, operation);
+    }
+
     @NotNull
     private static String getMessage(int index) {
         return "index out of bounds. (Index value: " + index + ")";
+    }
+
+    public static PrimitiveIterator.OfInt reverseIterator(IntList doubleList) {
+        final PrimitiveListIterator.OfInt listIterator = doubleList.listIterator(doubleList.size());
+        return new PrimitiveIterator.OfInt() {
+            @Override
+            public boolean hasNext() {
+                return listIterator.hasPrevious();
+            }
+
+            @Override
+            public int nextInt() {
+                return listIterator.previousInt();
+            }
+        };
+    }
+
+    public static PrimitiveIterator.OfLong reverseIterator(LongList doubleList) {
+        final PrimitiveListIterator.OfLong listIterator = doubleList.listIterator(doubleList.size());
+        return new PrimitiveIterator.OfLong() {
+
+            @Override
+            public boolean hasNext() {
+                return listIterator.hasPrevious();
+            }
+
+            @Override
+            public long nextLong() {
+                return listIterator.previousLong();
+            }
+        };
+    }
+
+    public static PrimitiveIterator.OfDouble reverseIterator(DoubleList doubleList) {
+        final PrimitiveListIterator.OfDouble listIterator = doubleList.listIterator(doubleList.size());
+        return new PrimitiveIterator.OfDouble() {
+
+            @Override
+            public boolean hasNext() {
+                return listIterator.hasPrevious();
+            }
+
+            @Override
+            public double nextDouble() {
+                return listIterator.previousDouble();
+            }
+        };
     }
 }

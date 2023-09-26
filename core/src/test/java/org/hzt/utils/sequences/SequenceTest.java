@@ -32,6 +32,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -63,7 +65,15 @@ import static java.lang.System.setProperty;
 import static org.hzt.utils.It.print;
 import static org.hzt.utils.It.printf;
 import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class SequenceTest {
@@ -869,8 +879,8 @@ class SequenceTest {
 
     @Test
     void testSequenceOfZoneIds() {
-        Instant now = Instant.now();
-        ZonedDateTime current = now.atZone(ZoneId.systemDefault());
+        Instant now = Instant.parse("2023-02-02T23:43:24Z");
+        ZonedDateTime current = now.atZone(ZoneId.of("Europe/Amsterdam"));
         printf("Current time is %s%n%n", current);
 
         final Sequence<String> noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
@@ -1159,6 +1169,46 @@ class SequenceTest {
 
         public T get(int index) {
             return nodes.get(index);
+        }
+    }
+
+    @Nested
+    class ScanTests {
+
+        @Test
+        void testScanOnEmptySequence() {
+            final Sequence<Integer> scan = Sequence.<String>empty().scan(10, (lengths, s) -> lengths + s.length());
+
+            assertIterableEquals(Sequence.of(10), scan);
+        }
+
+        @Test
+        void testScan() {
+            final List<Integer> integers = Sequence.iterate(1, i -> i * 2)
+                    .scan(10, Integer::sum)
+                    .take(20)
+                    .toList();
+
+            final List<Integer> expected = Arrays.asList(10, 11, 13, 17, 25, 41, 73, 137, 265, 521, 1033, 2057, 4105, 8201, 16393, 32777, 65545, 131081, 262153, 524297);
+            assertEquals(expected, integers);
+        }
+
+        /**
+         * @see <a href="https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/">1614. Maximum Nesting Depth of the Parentheses</a>
+         * @param s The nesting string
+         * @param expected the expected depth
+         */
+        @ParameterizedTest
+        @CsvSource({
+                "(1+(2*3)+((8)/4))+1, 3",
+                "(1)+((2))+(((3))), 3"})
+        void testMaximumNestingDepthUSingScan(String s, int expected) {
+            final int actual = StringX.of(s)
+                    .filter(StringX.of("()")::contains)
+                    .mapToInt(c -> c == '(' ? 1 : -1)
+                    .scan(0, Integer::sum)
+                    .max();
+            assertEquals(expected, actual);
         }
     }
 }

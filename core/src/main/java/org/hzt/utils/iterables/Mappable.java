@@ -5,6 +5,7 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
@@ -17,6 +18,8 @@ public interface Mappable<T> extends IndexedIterable<T> {
     <R> Mappable<R> map(@NotNull Function<? super T, ? extends R> mapper);
 
     <R> Mappable<R> mapNotNull(@NotNull Function<? super T, ? extends R> mapper);
+
+    <R> Mappable<R> mapIfPresent(Function<? super T, Optional<R>> mapper);
 
     <R> Mappable<R> mapIndexed(@NotNull IndexedFunction<? super T, ? extends R> mapper);
 

@@ -2,6 +2,7 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableSet;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterables.primitives.IntCollectable;
@@ -74,6 +75,10 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return stream::iterator;
     }
 
+    static IntSequence reverseOf(IntList intList) {
+        return () -> PrimitiveIterators.reverseIterator(intList);
+    }
+
     static IntSequence iterate(int seedValue, IntUnaryOperator nextFunction) {
         return generate(() -> seedValue, nextFunction);
     }
@@ -121,6 +126,10 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     default IntSequence mapIndexed(@NotNull IntBinaryOperator indexedFunction) {
         return () -> PrimitiveIterators.intIndexedTransformingIterator(iterator(), indexedFunction);
+    }
+
+    default IntSequence scan(int initial, IntBinaryOperator operation) {
+        return () -> PrimitiveIterators.intScanningIterator(iterator(), initial, operation);
     }
 
     default IntSequence flatMap(IntFunction<? extends Iterable<Integer>> flatMapper) {

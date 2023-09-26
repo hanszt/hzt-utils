@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -38,6 +39,10 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
 
     public LocalDate getDateOfOpening() {
         return dateOfOpening;
+    }
+
+    public Optional<LocalDate> dateOfOpening() {
+        return Optional.ofNullable(dateOfOpening);
     }
 
     public Painting getOldestPainting() {

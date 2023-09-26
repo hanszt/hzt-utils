@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.PrimitiveIterator;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -250,6 +251,17 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <R, C extends Collection<R>> C mapNotNullTo(@NotNull Supplier<C> collectionFactory,
                                                         @NotNull Function<? super T, ? extends R> mapper) {
         return IterableXHelper.mapFilteringTo(this, collectionFactory, Objects::nonNull, mapper, Objects::nonNull);
+    }
+
+    default <R, C extends Collection<R>> C mapIfPresentTo(@NotNull Supplier<C> collectionFactory,
+                                                          @NotNull Function<? super T, Optional<R>> mapper) {
+        C collection = collectionFactory.get();
+        for (T t : this) {
+            if (t != null) {
+                mapper.apply(t).ifPresent(collection::add);
+            }
+        }
+        return collection;
     }
 
     default <R, C extends Collection<R>> C mapIndexedTo(@NotNull Supplier<C> collectionFactory,

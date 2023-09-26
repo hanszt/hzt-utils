@@ -2,7 +2,9 @@ package org.hzt.utils.collections;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
+import org.hzt.utils.iterables.Reversable;
 import org.hzt.utils.ranges.IntRange;
+import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -29,7 +31,10 @@ import static org.hzt.utils.PreConditions.require;
  * @param <E> the type of the elements
  * @author Hans Zuidervaart
  */
-public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, BinarySearchable<ToIntFunction<E>> {
+public interface ListX<E> extends CollectionX<E>,
+        Transformable<ListX<E>>,
+        BinarySearchable<ToIntFunction<E>>,
+        Reversable<ListX<E>> {
 
     static <E> ListX<E> empty() {
         return new ImmutableListX<>();
@@ -99,6 +104,10 @@ public interface ListX<E> extends CollectionX<E>, Transformable<ListX<E>>, Binar
 
     @Override
     ListX<E> shuffled();
+
+    default ListX<E> reversed() {
+        return Sequence.reverseOf(this).toListX();
+    }
 
     default E random() {
         return findRandom().orElseThrow(NoSuchElementException::new);

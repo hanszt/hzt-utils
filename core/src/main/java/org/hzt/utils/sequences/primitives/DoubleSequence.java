@@ -2,6 +2,7 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.collections.primitives.DoubleMutableSet;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.function.primitives.DoubleIndexedFunction;
@@ -76,6 +77,10 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         return stream::iterator;
     }
 
+    static DoubleSequence reverseOf(DoubleList doubleList) {
+        return () -> PrimitiveIterators.reverseIterator(doubleList);
+    }
+
     static DoubleSequence iterate(double seedValue, DoubleUnaryOperator nextFunction) {
         return generate(() -> seedValue, nextFunction);
     }
@@ -121,6 +126,11 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     default DoubleSequence mapIndexed(@NotNull DoubleIndexedFunction indexedFunction) {
         return () -> PrimitiveIterators.doubleIndexedTransformingIterator(iterator(), indexedFunction);
     }
+
+    default DoubleSequence scan(long initial, DoubleBinaryOperator operation) {
+        return () -> PrimitiveIterators.doubleScanningIterator(iterator(), initial, operation);
+    }
+
 
     default DoubleSequence flatMap(DoubleFunction<? extends Iterable<Double>> flatMapper) {
         return mapMulti((value, consumer) -> {

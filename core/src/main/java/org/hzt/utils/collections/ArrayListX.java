@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -90,7 +91,6 @@ final class ArrayListX<E> implements MutableListX<E> {
     @NotNull
     @Override
     public <T1> T1 @NotNull [] toArray(@NotNull T1 @NotNull [] a) {
-        //noinspection SuspiciousToArrayCall
         return list.toArray(a);
     }
 
@@ -203,8 +203,21 @@ final class ArrayListX<E> implements MutableListX<E> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ArrayListX<?> that = (ArrayListX<?>) o;
-        return Objects.equals(list, that.list);
+        return equalsRange((Iterable<?>) o, size());
+    }
+
+    private boolean equalsRange(Iterable<?> other, int to) {
+        final Object[] es = list.toArray();
+        if (to > es.length) {
+            throw new ConcurrentModificationException();
+        }
+        Iterator<?> oit = other.iterator();
+        for (int from = 0; from < to; from++) {
+            if (!oit.hasNext() || !Objects.equals(es[from], oit.next())) {
+                return false;
+            }
+        }
+        return !oit.hasNext();
     }
 
     @Override

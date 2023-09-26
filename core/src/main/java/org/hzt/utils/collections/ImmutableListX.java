@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -121,14 +122,28 @@ final class ImmutableListX<T> implements ListX<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
+        if (o == this) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+
+        if (!(o instanceof ListX)) {
             return false;
         }
-        ImmutableListX<?> that = (ImmutableListX<?>) o;
-        return Objects.equals(immutableList, that.immutableList);
+        return equalsRange((ListX<?>) o, size());
+    }
+
+    private boolean equalsRange(Iterable<?> other, int to) {
+        final Object[] es = immutableList.toArray();
+        if (to > es.length) {
+            throw new ConcurrentModificationException();
+        }
+        Iterator<?> oit = other.iterator();
+        for (int from = 0; from < to; from++) {
+            if (!oit.hasNext() || !Objects.equals(es[from], oit.next())) {
+                return false;
+            }
+        }
+        return !oit.hasNext();
     }
 
     @Override

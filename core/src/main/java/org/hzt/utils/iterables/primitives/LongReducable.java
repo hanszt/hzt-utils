@@ -14,8 +14,8 @@ import java.util.function.LongPredicate;
 @FunctionalInterface
 public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReducable<Long, LongBinaryOperator, LongPredicate, OptionalLong> {
 
-    default long reduce(long initial, LongBinaryOperator operator) {
-        var iterator = iterator();
+    default long reduce(final long initial, final LongBinaryOperator operator) {
+        final var iterator = iterator();
         var accumulator = initial;
         while (iterator.hasNext()) {
             accumulator = operator.applyAsLong(accumulator, iterator.nextLong());
@@ -23,8 +23,8 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return accumulator;
     }
 
-    default @NotNull OptionalLong reduce(@NotNull LongBinaryOperator operator) {
-        var iterator = iterator();
+    default @NotNull OptionalLong reduce(@NotNull final LongBinaryOperator operator) {
+        final var iterator = iterator();
         if (iterator.hasNext()) {
             var accumulator = iterator.nextLong();
             while (iterator.hasNext()) {
@@ -36,30 +36,30 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
     }
 
     default <R> R reduceToTwo(
-            long initial1, @NotNull LongBinaryOperator operator1,
-            long initial2, @NotNull LongBinaryOperator operator2,
-            @NotNull LongBiFunction<R> finisher) {
-        var iterator = iterator();
+            final long initial1, @NotNull final LongBinaryOperator operator1,
+            final long initial2, @NotNull final LongBinaryOperator operator2,
+            @NotNull final LongBiFunction<R> finisher) {
+        final var iterator = iterator();
         var accumulator1 = initial1;
         var accumulator2 = initial2;
         while (iterator.hasNext()) {
-            var nextLong = iterator.nextLong();
+            final var nextLong = iterator.nextLong();
             accumulator1 = operator1.applyAsLong(accumulator1, nextLong);
             accumulator2 = operator2.applyAsLong(accumulator2, nextLong);
         }
         return finisher.apply(accumulator1, accumulator2);
     }
 
-    default @NotNull <R> Optional<R> reduceToTwo(@NotNull LongBinaryOperator operator1,
-                                                 @NotNull LongBinaryOperator operator2,
-                                                 @NotNull LongBiFunction<R> finisher) {
-        var iterator = iterator();
+    default @NotNull <R> Optional<R> reduceToTwo(@NotNull final LongBinaryOperator operator1,
+                                                 @NotNull final LongBinaryOperator operator2,
+                                                 @NotNull final LongBiFunction<R> finisher) {
+        final var iterator = iterator();
         if (iterator.hasNext()) {
             final var first = iterator.nextLong();
             var accumulator1 = first;
             var accumulator2 = first;
             while (iterator.hasNext()) {
-                var nextLong = iterator.nextLong();
+                final var nextLong = iterator.nextLong();
                 accumulator1 = operator1.applyAsLong(accumulator1, nextLong);
                 accumulator2 = operator2.applyAsLong(accumulator2, nextLong);
             }
@@ -68,9 +68,9 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return Optional.empty();
     }
 
-    default <R> @NotNull R reduce(long initial,
-                                  @NotNull LongFunction<R> mapper,
-                                  @NotNull LongBinaryOperator operation) {
+    default <R> @NotNull R reduce(final long initial,
+                                  @NotNull final LongFunction<R> mapper,
+                                  @NotNull final LongBinaryOperator operation) {
         return mapper.apply(reduce(initial, operation));
     }
 
@@ -78,11 +78,11 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return findFirst().orElseThrow();
     }
 
-    default long first(@NotNull LongPredicate predicate) {
+    default long first(@NotNull final LongPredicate predicate) {
         return findFirst(predicate).orElseThrow();
     }
 
-    default long firstNot(@NotNull LongPredicate predicate) {
+    default long firstNot(@NotNull final LongPredicate predicate) {
         return first(predicate.negate());
     }
 
@@ -91,10 +91,10 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return iterator.hasNext() ? OptionalLong.of(iterator.nextLong()) : OptionalLong.empty();
     }
 
-    default @NotNull OptionalLong findFirst(@NotNull LongPredicate predicate) {
-        var iterator = this.iterator();
+    default @NotNull OptionalLong findFirst(@NotNull final LongPredicate predicate) {
+        final var iterator = this.iterator();
         while (iterator.hasNext()) {
-            var next = iterator.nextLong();
+            final var next = iterator.nextLong();
             if (predicate.test(next)) {
                 return OptionalLong.of(next);
             }
@@ -106,7 +106,7 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return findLast().orElseThrow();
     }
 
-    default long last(@NotNull LongPredicate predicate) {
+    default long last(@NotNull final LongPredicate predicate) {
         return findLast(predicate).orElseThrow();
     }
 
@@ -114,14 +114,14 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return findLast(It::noLongFilter);
     }
 
-    default @NotNull OptionalLong findLast(@NotNull LongPredicate predicate) {
-        var iterator = iterator();
+    default @NotNull OptionalLong findLast(@NotNull final LongPredicate predicate) {
+        final var iterator = iterator();
         var result = iterator.nextLong();
         if (!predicate.test(result) && !iterator.hasNext()) {
             return OptionalLong.empty();
         }
         while (iterator.hasNext()) {
-            var next = iterator.nextLong();
+            final var next = iterator.nextLong();
             if (predicate.test(next)) {
                 result = next;
             }
@@ -134,16 +134,15 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }
-        @SuppressWarnings("squid:S1941")
-        var single = iterator.nextLong();
+        @SuppressWarnings("squid:S1941") final var single = iterator.nextLong();
         if (iterator.hasNext()) {
             throw new IllegalArgumentException("Sequence has more than one element");
         }
         return single;
     }
 
-    default boolean any(@NotNull LongPredicate predicate) {
-        var iterator = iterator();
+    default boolean any(@NotNull final LongPredicate predicate) {
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextLong())) {
                 return true;
@@ -152,8 +151,8 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return false;
     }
 
-    default boolean all(@NotNull LongPredicate predicate) {
-        var iterator = iterator();
+    default boolean all(@NotNull final LongPredicate predicate) {
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             if (!predicate.test(iterator.nextLong())) {
                 return false;
@@ -162,8 +161,8 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return true;
     }
 
-    default boolean none(@NotNull LongPredicate predicate) {
-        var iterator = iterator();
+    default boolean none(@NotNull final LongPredicate predicate) {
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextLong())) {
                 return false;

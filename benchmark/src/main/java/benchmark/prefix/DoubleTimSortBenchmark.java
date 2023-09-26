@@ -61,7 +61,7 @@ public class DoubleTimSortBenchmark {
     @Benchmark
     @SuppressWarnings("squid:S2384")
     public double[] arraySort() {
-        var copy = Arrays.copyOf(array, array.length);
+        final var copy = Arrays.copyOf(array, array.length);
         Arrays.sort(copy);
         return copy;
     }
@@ -69,7 +69,7 @@ public class DoubleTimSortBenchmark {
     @Benchmark
     @SuppressWarnings("squid:S2384")
     public double[] primitiveArraySortReversed() {
-        var copy = Arrays.copyOf(array, array.length);
+        final var copy = Arrays.copyOf(array, array.length);
         ArraysX.sort(DoubleComparator.reverseOrder(), copy);
         return copy;
     }
@@ -89,8 +89,8 @@ public class DoubleTimSortBenchmark {
         return list;
     }
 
-    public static void main(String[] args) {
-        var options = new OptionsBuilder()
+    public static void main(final String[] args) {
+        final var options = new OptionsBuilder()
                 .include(DoubleTimSortBenchmark.class.getSimpleName())
                 .forks(2)
                 .warmupIterations(2)
@@ -99,7 +99,7 @@ public class DoubleTimSortBenchmark {
                 .build();
         try {
             new Runner(options).run();
-        } catch (RunnerException e) {
+        } catch (final RunnerException e) {
             throw new IllegalStateException(e);
         }
     }

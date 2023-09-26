@@ -64,9 +64,9 @@ public class PrefixStreamXMapFilterToListBenchmark {
 
     @Benchmark
     public List<Integer> imperativeMapFilterToList() {
-        List<Integer> result = new ArrayList<>();
-        for (var s : list) {
-            var length = s.length();
+        final List<Integer> result = new ArrayList<>();
+        for (final var s : list) {
+            final var length = s.length();
             if (IntX.isEven(length)) {
                 result.add(length);
             }
@@ -74,8 +74,8 @@ public class PrefixStreamXMapFilterToListBenchmark {
         return List.copyOf(result);
     }
 
-    public static void main(String[] args) {
-        var options = new OptionsBuilder()
+    public static void main(final String[] args) {
+        final var options = new OptionsBuilder()
                 .include(PrefixStreamXMapFilterToListBenchmark.class.getSimpleName())
                 .forks(2)
                 .warmupIterations(2)
@@ -84,7 +84,7 @@ public class PrefixStreamXMapFilterToListBenchmark {
                 .build();
         try {
             new Runner(options).run();
-        } catch (RunnerException e) {
+        } catch (final RunnerException e) {
             throw new IllegalStateException(e);
         }
     }

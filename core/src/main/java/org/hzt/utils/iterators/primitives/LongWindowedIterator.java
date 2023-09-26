@@ -22,12 +22,12 @@ public final class LongWindowedIterator extends AbstractIterator<LongList> {
     private LongMutableList nextWindow = LongMutableList.empty();
 
     private LongWindowedIterator(
-            @NotNull PrimitiveIterator.OfLong iterator,
-            int initSize,
-            @NotNull IntUnaryOperator nextSizeSupplier,
-            int initStep,
-            @NotNull IntUnaryOperator nextStepSupplier,
-            boolean partialWindows) {
+            @NotNull final PrimitiveIterator.OfLong iterator,
+            final int initSize,
+            @NotNull final IntUnaryOperator nextSizeSupplier,
+            final int initStep,
+            @NotNull final IntUnaryOperator nextStepSupplier,
+            final boolean partialWindows) {
         this.iterator = iterator;
         this.initSize = initSize;
         this.nextSizeSupplier = nextSizeSupplier;
@@ -36,17 +36,17 @@ public final class LongWindowedIterator extends AbstractIterator<LongList> {
         this.partialWindows = partialWindows;
     }
 
-    public static LongWindowedIterator of(@NotNull PrimitiveIterator.OfLong iterator,
-                                          int initSize,
-                                          @NotNull IntUnaryOperator nextSizeSupplier,
-                                          int initStep,
-                                          @NotNull IntUnaryOperator nextStepSupplier,
-                                          boolean partialWindows) {
+    public static LongWindowedIterator of(@NotNull final PrimitiveIterator.OfLong iterator,
+                                          final int initSize,
+                                          @NotNull final IntUnaryOperator nextSizeSupplier,
+                                          final int initStep,
+                                          @NotNull final IntUnaryOperator nextStepSupplier,
+                                          final boolean partialWindows) {
         return new LongWindowedIterator(iterator, initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
     }
 
     private LongMutableList computeNextWindow() {
-        var windowInitCapacity = Math.min(size, 1024);
+        final var windowInitCapacity = Math.min(size, 1024);
         final var gap = step - size;
         size = calculateNextSize(size);
         if (gap >= 0) {
@@ -58,17 +58,17 @@ public final class LongWindowedIterator extends AbstractIterator<LongList> {
         return nextWindow;
     }
 
-    private int calculateNextSize(int cur) {
-        var next = cur <= 0 ? initSize : nextSizeSupplier.applyAsInt(cur);
+    private int calculateNextSize(final int cur) {
+        final var next = cur <= 0 ? initSize : nextSizeSupplier.applyAsInt(cur);
         return (next > 0) ? next : 1;
     }
 
-    private int calculateNextStep(int cur) {
-        var next = cur <= 0 ? initStep : nextStepSupplier.applyAsInt(cur);
+    private int calculateNextStep(final int cur) {
+        final var next = cur <= 0 ? initStep : nextStepSupplier.applyAsInt(cur);
         return (next > 0) ? next : 1;
     }
 
-    private void computeNextForWindowedSequenceOverlapping(int windowInitCapacity) {
+    private void computeNextForWindowedSequenceOverlapping(final int windowInitCapacity) {
         nextWindow = nextWindow.isEmpty() ? LongMutableList.withInitCapacity(windowInitCapacity) : LongMutableList.of(nextWindow);
         calculateNextOverlappingWindow();
         if (!partialWindows && nextWindow.size() < size) {
@@ -87,11 +87,11 @@ public final class LongWindowedIterator extends AbstractIterator<LongList> {
         }
     }
 
-    private void computeNextForWindowedSequenceNoOverlap(int bufferInitCapacity, int gap) {
+    private void computeNextForWindowedSequenceNoOverlap(final int bufferInitCapacity, final int gap) {
         var skip = gap;
         nextWindow = LongMutableList.withInitCapacity(bufferInitCapacity);
         while (iterator.hasNext()) {
-            var item = iterator.nextLong();
+            final var item = iterator.nextLong();
             if (skip > 0) {
                 skip--;
                 continue;

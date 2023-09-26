@@ -1,12 +1,12 @@
 package org.hzt.utils.collectors;
 
-import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.statistics.BigDecimalStatistics;
-import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
+import org.hzt.utils.It;
+import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.statistics.BigDecimalStatistics;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -58,7 +58,7 @@ class CollectorsXTest {
         final var summarizingAges = paintingList.stream()
                 .collect(CollectorsX.toDoubleStatisticsBy(Painting::ageInYears));
 
-        var optionalAverage = paintingList.stream()
+        final var optionalAverage = paintingList.stream()
                 .mapToDouble(Painting::ageInYears)
                 .average();
 
@@ -79,7 +79,7 @@ class CollectorsXTest {
         final var list5 = List.of("lol", "asdad", "wer", "werwe", "Hoi");
         final var list6 = List.of("sdfsf", "", "awr", "awr", "Hoi", "lol");
 
-        var stringLists = List.of(list1, list2, list3, list4, list5, list6);
+        final var stringLists = List.of(list1, list2, list3, list4, list5, list6);
 
         final var intersection = stringLists.stream()
                 .collect(toIntersection());
@@ -97,7 +97,7 @@ class CollectorsXTest {
     void testIntersectingBy() {
         final var museumList = TestSampleGenerator.getMuseumListContainingNulls();
 
-        var paintingNamesPresentInAllMuseums = museumList.stream()
+        final var paintingNamesPresentInAllMuseums = museumList.stream()
                 .map(Museum::getPaintings)
                 .collect(intersectingBy(Painting::getMillenniumOfCreation));
 

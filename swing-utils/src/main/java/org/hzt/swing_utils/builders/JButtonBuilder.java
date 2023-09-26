@@ -1,6 +1,6 @@
 package org.hzt.swing_utils.builders;
 
-import javax.swing.JButton;
+import javax.swing.*;
 import javax.swing.event.ChangeListener;
 
 public final class JButtonBuilder {
@@ -14,27 +14,27 @@ public final class JButtonBuilder {
         return new JButtonBuilder();
     }
 
-    public JButtonBuilder withName(String name) {
+    public JButtonBuilder withName(final String name) {
         button.setName(name);
         return this;
     }
 
-    public JButtonBuilder withInitValue(String text) {
+    public JButtonBuilder withInitValue(final String text) {
         button.setText(text);
         return this;
     }
 
-    public JButtonBuilder withToolTipText(String toolTipText) {
+    public JButtonBuilder withToolTipText(final String toolTipText) {
         button.setToolTipText(toolTipText);
         return this;
     }
 
-    public JButtonBuilder withSize(int width, int height) {
+    public JButtonBuilder withSize(final int width, final int height) {
         button.setSize(width, height);
         return this;
     }
 
-    public JButtonBuilder withListener(ChangeListener changeListener) {
+    public JButtonBuilder withListener(final ChangeListener changeListener) {
         button.addChangeListener(changeListener);
         return this;
     }

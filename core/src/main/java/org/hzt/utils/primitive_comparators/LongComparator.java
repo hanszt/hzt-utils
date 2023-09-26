@@ -7,7 +7,7 @@ public interface LongComparator extends PrimitiveComparator {
 
     int compare(long l1, long l2);
 
-    static LongComparator comparing(LongUnaryOperator selector) {
+    static LongComparator comparing(final LongUnaryOperator selector) {
         return (l1, l2) -> Long.compare(selector.applyAsLong(l1), selector.applyAsLong(l2));
     }
 
@@ -19,7 +19,7 @@ public interface LongComparator extends PrimitiveComparator {
         return (l1, l2) -> Long.compare(l2, l1);
     }
 
-    default LongComparator thenComparing(LongComparator comparator) {
+    default LongComparator thenComparing(final LongComparator comparator) {
         return comparator;
     }
 }

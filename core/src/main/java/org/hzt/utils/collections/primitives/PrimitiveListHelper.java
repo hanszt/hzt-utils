@@ -12,35 +12,35 @@ final class PrimitiveListHelper {
     private PrimitiveListHelper() {
     }
 
-    public static void shuffle(IntMutableList list) {
+    public static void shuffle(final IntMutableList list) {
         if (random == null) {
             random = new Random(); // harmless race.
         }
         shuffle(list, random);
     }
 
-    public static void shuffle(LongMutableList list) {
+    public static void shuffle(final LongMutableList list) {
         if (random == null) {
             random = new Random(); // harmless race.
         }
         shuffle(list, random);
     }
 
-    public static void shuffle(DoubleMutableList list) {
+    public static void shuffle(final DoubleMutableList list) {
         if (random == null) {
             random = new Random(); // harmless race.
         }
         shuffle(list, random);
     }
 
-    public static void shuffle(IntMutableList list, Random random) {
-        var size = list.size();
+    public static void shuffle(final IntMutableList list, final Random random) {
+        final var size = list.size();
         if (size < SHUFFLE_THRESHOLD || list instanceof RandomAccess) {
             for (var i = size; i > 1; i--) {
                 swap(list, i - 1, random.nextInt(i));
             }
         } else {
-            var array = list.toArray();
+            final var array = list.toArray();
             for (var i = size; i > 1; i--) {
                 swap(array, i - 1, random.nextInt(i));
             }
@@ -50,14 +50,14 @@ final class PrimitiveListHelper {
         }
     }
 
-    public static void shuffle(LongMutableList list, Random random) {
-        var size = list.size();
+    public static void shuffle(final LongMutableList list, final Random random) {
+        final var size = list.size();
         if (size < SHUFFLE_THRESHOLD || list instanceof RandomAccess) {
             for (var i = size; i > 1; i--) {
                 swap(list, i - 1, random.nextInt(i));
             }
         } else {
-            var array = list.toArray();
+            final var array = list.toArray();
             for (var i = size; i > 1; i--) {
                 swap(array, i - 1, random.nextInt(i));
             }
@@ -67,14 +67,14 @@ final class PrimitiveListHelper {
         }
     }
 
-    public static void shuffle(DoubleMutableList list, Random random) {
-        var size = list.size();
+    public static void shuffle(final DoubleMutableList list, final Random random) {
+        final var size = list.size();
         if (size < SHUFFLE_THRESHOLD || list instanceof RandomAccess) {
             for (var i = size; i > 1; i--) {
                 swap(list, i - 1, random.nextInt(i));
             }
         } else {
-            var array = list.toArray();
+            final var array = list.toArray();
             for (var i = size; i > 1; i--) {
                 swap(array, i - 1, random.nextInt(i));
             }
@@ -84,38 +84,38 @@ final class PrimitiveListHelper {
         }
     }
 
-    public static void swap(IntMutableList list, int i, int j) {
+    public static void swap(final IntMutableList list, final int i, final int j) {
         final var element = list.get(i);
         final var other = list.set(j, element);
         list.set(i, other);
     }
 
-    private static void swap(int[] arr, int i, int j) {
+    private static void swap(final int[] arr, final int i, final int j) {
         final var tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
     }
 
-    public static void swap(LongMutableList list, int i, int j) {
+    public static void swap(final LongMutableList list, final int i, final int j) {
         final var element = list.get(i);
         final var other = list.set(j, element);
         list.set(i, other);
     }
 
-    private static void swap(long[] arr, int i, int j) {
+    private static void swap(final long[] arr, final int i, final int j) {
         final var tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
     }
 
-    public static void swap(DoubleMutableList list, int i, int j) {
+    public static void swap(final DoubleMutableList list, final int i, final int j) {
         final var element = list.get(i);
         final var other = list.set(j, element);
         list.set(i, other);
     }
 
-    private static void swap(double[] arr, int i, int j) {
-        var tmp = arr[i];
+    private static void swap(final double[] arr, final int i, final int j) {
+        final var tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
     }

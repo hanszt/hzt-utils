@@ -6,7 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CollectionXTest {
 
@@ -21,7 +26,7 @@ class CollectionXTest {
     void testContainsAll() {
         final var strings = ListX.of("hallo", "asffasf", "string", "test");
 
-        Iterable<String> iterable = List.of("string", "test");
+        final Iterable<String> iterable = List.of("string", "test");
 
         assertTrue(strings.containsAll(iterable));
     }
@@ -30,7 +35,7 @@ class CollectionXTest {
     void testDoesNotContainsAll() {
         final var strings = ListX.of("hallo", "asffasf", "string", "test");
 
-        Iterable<String> iterable = List.of("string", "test", "not");
+        final Iterable<String> iterable = List.of("string", "test", "not");
 
         assertFalse(strings.containsAll(iterable));
     }
@@ -39,7 +44,7 @@ class CollectionXTest {
     void testContainsNoneOf() {
         final var strings = ListX.of("hallo", "asffasf", "string", "test");
 
-        Iterable<String> iterable = List.of("strings", "testa");
+        final Iterable<String> iterable = List.of("strings", "testa");
 
         assertTrue(strings.containsNoneOf(iterable));
     }
@@ -48,7 +53,7 @@ class CollectionXTest {
     void testDoesContainSome() {
         final var strings = ListX.of("hallo", "asffasf", "string", "test");
 
-        Iterable<String> iterable = List.of("string", "tesst", "not");
+        final Iterable<String> iterable = List.of("string", "tesst", "not");
 
         assertFalse(strings.containsAll(iterable));
     }

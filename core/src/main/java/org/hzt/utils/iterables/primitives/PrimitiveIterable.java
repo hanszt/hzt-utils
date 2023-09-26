@@ -27,16 +27,16 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
             return PrimitiveAtomicIterator.of(iterator());
         }
 
-        default void forEachInt(@NotNull IntConsumer action) {
-            var intIterator = iterator();
+        default void forEachInt(@NotNull final IntConsumer action) {
+            final var intIterator = iterator();
             while (intIterator.hasNext()) {
                 action.accept(intIterator.nextInt());
             }
         }
 
         @Override
-        default void forEach(Consumer<? super Integer> action) {
-            var intIterator = iterator();
+        default void forEach(final Consumer<? super Integer> action) {
+            final var intIterator = iterator();
             if (intIterator.hasNext()) {
                 throw new UnsupportedOperationException("Use forEachInt instead");
             }
@@ -57,16 +57,16 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
             return PrimitiveAtomicIterator.of(iterator());
         }
 
-        default void forEachLong(@NotNull LongConsumer action) {
-            var intIterator = iterator();
+        default void forEachLong(@NotNull final LongConsumer action) {
+            final var intIterator = iterator();
             while (intIterator.hasNext()) {
                 action.accept(intIterator.nextLong());
             }
         }
 
         @Override
-        default void forEach(Consumer<? super Long> action) {
-            var intIterator = iterator();
+        default void forEach(final Consumer<? super Long> action) {
+            final var intIterator = iterator();
             if (intIterator.hasNext()) {
                 throw new UnsupportedOperationException("Use forEachLong instead");
             }
@@ -87,16 +87,16 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
             return PrimitiveAtomicIterator.of(iterator());
         }
 
-        default void forEachDouble(@NotNull DoubleConsumer action) {
-            var intIterator = iterator();
+        default void forEachDouble(@NotNull final DoubleConsumer action) {
+            final var intIterator = iterator();
             while (intIterator.hasNext()) {
                 action.accept(intIterator.nextDouble());
             }
         }
 
         @Override
-        default void forEach(Consumer<? super Double> action) {
-            var intIterator = iterator();
+        default void forEach(final Consumer<? super Double> action) {
+            final var intIterator = iterator();
             if (intIterator.hasNext()) {
                 throw new UnsupportedOperationException("Use forEachDouble instead");
             }

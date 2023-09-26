@@ -8,16 +8,16 @@ public interface IndexedPredicate<T> extends Predicate<T> {
 
     boolean test(int index, T value);
 
-    default boolean test(T value) {
+    default boolean test(final T value) {
         return test(0, value);
     }
 
-    default IndexedPredicate<T> and(IndexedPredicate<? super T> other) {
+    default IndexedPredicate<T> and(final IndexedPredicate<? super T> other) {
         Objects.requireNonNull(other);
         return (i, t) -> test(i, t) && other.test(i, t);
     }
 
-    default IndexedPredicate<T> or(IndexedPredicate<? super T> other) {
+    default IndexedPredicate<T> or(final IndexedPredicate<? super T> other) {
         Objects.requireNonNull(other);
         return (i, t) -> test(i, t) || other.test(i, t);
     }
@@ -27,7 +27,7 @@ public interface IndexedPredicate<T> extends Predicate<T> {
         return (i, t) -> !test(i, t);
     }
 
-    static <T> IndexedPredicate<T> not(IndexedPredicate<? super T> target) {
+    static <T> IndexedPredicate<T> not(final IndexedPredicate<? super T> target) {
         Objects.requireNonNull(target);
         //noinspection unchecked
         return (IndexedPredicate<T>) target.negate();

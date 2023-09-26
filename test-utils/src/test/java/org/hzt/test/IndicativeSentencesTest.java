@@ -23,7 +23,7 @@ class IndicativeSentencesTest {
 
         @ParameterizedTest(name = "Number {0} is fizz.")
         @ValueSource(ints = {3, 12, 18})
-        void ifItIsOneOfTheFollowingNumbers(int number) {
+        void ifItIsOneOfTheFollowingNumbers(final int number) {
             final var result = fizzbuzz(number);
             assertEquals("fizz", result);
         }
@@ -40,13 +40,13 @@ class IndicativeSentencesTest {
 
         @ParameterizedTest(name = "Number {0} contains buzz.")
         @ValueSource(ints = {5, 10, 15, 20})
-        void ifItIsOneOfTheFollowingNumbers(int number) {
+        void ifItIsOneOfTheFollowingNumbers(final int number) {
             final var result = fizzbuzz(number);
             assertTrue(result.contains("buzz"));
         }
     }
 
-    static String fizzbuzz(int nr) {
+    static String fizzbuzz(final int nr) {
         final var sb = new StringBuilder();
         if (nr % 3 == 0) {
             sb.append("fizz");

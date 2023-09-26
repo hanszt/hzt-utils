@@ -15,15 +15,15 @@ import java.util.function.ToLongFunction;
 
 public interface LongWindowedSequence extends PrimitiveIterable.OfLong {
 
-    default Sequence<LongList> chunked(int size) {
+    default Sequence<LongList> chunked(final int size) {
         return windowed(size, size, true);
     }
 
-    default Sequence<LongList> chunked(IntSupplier nextSizeSupplier) {
+    default Sequence<LongList> chunked(final IntSupplier nextSizeSupplier) {
         return chunked(nextSizeSupplier.getAsInt(), size -> nextSizeSupplier.getAsInt());
     }
 
-    default Sequence<LongList> chunked(int initSize, IntUnaryOperator nextSizeSupplier) {
+    default Sequence<LongList> chunked(final int initSize, final IntUnaryOperator nextSizeSupplier) {
         //The holding consumer provides a way to provide the same value to both the size and step unary operator.
         //It also makes sure the nextSizeSupplier from this method is only called once instead of twice
         //It is required that the call for next size is made before next step for them to receive the same value
@@ -35,45 +35,45 @@ public interface LongWindowedSequence extends PrimitiveIterable.OfLong {
         }, initSize, step -> holdingConsumer.get(), true);
     }
 
-    default Sequence<LongList> windowed(int size, int step, boolean partialWindows) {
+    default Sequence<LongList> windowed(final int size, final int step, final boolean partialWindows) {
         return windowed(size, It::asInt, step, It::asInt, partialWindows);
     }
 
-    default Sequence<LongList> windowed(int initSize,
-                                        @NotNull IntUnaryOperator nextSizeSupplier,
-                                        int initStep,
-                                        @NotNull IntUnaryOperator nextStepSupplier,
-                                        boolean partialWindows) {
+    default Sequence<LongList> windowed(final int initSize,
+                                        @NotNull final IntUnaryOperator nextSizeSupplier,
+                                        final int initStep,
+                                        @NotNull final IntUnaryOperator nextStepSupplier,
+                                        final boolean partialWindows) {
         SequenceHelper.checkInitWindowSizeAndStep(initSize, initStep);
         return () -> LongWindowedIterator.of(iterator(), initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
     }
 
-    default Sequence<LongList> windowed(int size, int step) {
+    default Sequence<LongList> windowed(final int size, final int step) {
         return windowed(size, step, false);
     }
 
-    default Sequence<LongList> windowed(int size) {
+    default Sequence<LongList> windowed(final int size) {
         return windowed(size, 1);
     }
 
-    default Sequence<LongList> windowed(int size, boolean partialWindows) {
+    default Sequence<LongList> windowed(final int size, final boolean partialWindows) {
         return windowed(size, 1, partialWindows);
     }
 
-    default LongSequence windowed(int size, int step, boolean partialWindows,
-                                  @NotNull ToLongFunction<LongList> reducer) {
+    default LongSequence windowed(final int size, final int step, final boolean partialWindows,
+                                  @NotNull final ToLongFunction<LongList> reducer) {
         return windowed(size, step, partialWindows).mapToLong(reducer);
     }
 
-    default LongSequence windowed(int size, int step, @NotNull ToLongFunction<LongList> reducer) {
+    default LongSequence windowed(final int size, final int step, @NotNull final ToLongFunction<LongList> reducer) {
         return windowed(size, step, false, reducer);
     }
 
-    default LongSequence windowed(int size, @NotNull ToLongFunction<LongList> reducer) {
+    default LongSequence windowed(final int size, @NotNull final ToLongFunction<LongList> reducer) {
         return windowed(size, 1, reducer);
     }
 
-    default LongSequence windowed(int size, boolean partialWindows, @NotNull ToLongFunction<LongList> reducer) {
+    default LongSequence windowed(final int size, final boolean partialWindows, @NotNull final ToLongFunction<LongList> reducer) {
         return windowed(size, 1, partialWindows, reducer);
     }
 }

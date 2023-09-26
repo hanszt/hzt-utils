@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 
 import static org.hzt.utils.TimingUtils.sleep;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TimingUtilsTest {
 
@@ -22,11 +23,11 @@ class TimingUtilsTest {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static void sleepAndPrint(int millis) {
+    private static void sleepAndPrint(final int millis) {
         System.out.println("Start sleeping...");
         final double startTime = System.nanoTime();
         sleep(Duration.ofMillis(millis));
-        final double delta = System.nanoTime() - startTime;
+        final var delta = System.nanoTime() - startTime;
         System.out.printf("Slept for %.5f millis", delta * 1e-6);
     }
 }

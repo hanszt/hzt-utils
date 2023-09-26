@@ -13,30 +13,30 @@ public interface IntMutableList extends IntList, IntMutableCollection,
         return new IntArrayList();
     }
 
-    static IntMutableList of(Iterable<Integer> iterable) {
+    static IntMutableList of(final Iterable<Integer> iterable) {
         return new IntArrayList(iterable);
     }
 
-    static IntMutableList of(IntList intList) {
+    static IntMutableList of(final IntList intList) {
         return new IntArrayList(intList);
     }
 
-    static IntMutableList of(int... array) {
+    static IntMutableList of(final int... array) {
         return new IntArrayList(array);
     }
 
-    static IntMutableList withInitCapacity(int capacity) {
+    static IntMutableList withInitCapacity(final int capacity) {
         return new IntArrayList(capacity);
     }
 
     @Override
-    default IntMutableList plus(@NotNull Iterable<Integer> iterable) {
+    default IntMutableList plus(@NotNull final Iterable<Integer> iterable) {
         addAll(iterable);
         return this;
     }
 
     @Override
-    default IntMutableList plus(int @NotNull ... array) {
+    default IntMutableList plus(final int @NotNull ... array) {
         addAll(array);
         return this;
     }
@@ -53,7 +53,7 @@ public interface IntMutableList extends IntList, IntMutableCollection,
     boolean addAll(int index, PrimitiveIterable.OfInt iterable);
 
     @Override
-    default boolean remove(int i) {
+    default boolean remove(final int i) {
         final var index = indexOf(i);
         if (index >= 0) {
             removeAt(index);

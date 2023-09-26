@@ -11,8 +11,8 @@ final class FlatMappingIterator<T, R> implements Iterator<R> {
 
     private Iterator<? extends R> itemIterator = null;
 
-    FlatMappingIterator(Iterator<T> iterator,
-                        Function<? super T, ? extends Iterator<? extends R>> toIteratorFunction) {
+    FlatMappingIterator(final Iterator<T> iterator,
+                        final Function<? super T, ? extends Iterator<? extends R>> toIteratorFunction) {
         this.iterator = iterator;
         this.toIteratorFunction = toIteratorFunction;
     }

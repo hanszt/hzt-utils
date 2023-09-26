@@ -16,17 +16,17 @@ public final class DoubleTakeWhileIterator implements PrimitiveIterator.OfDouble
     private double nextLong;
     private State nextState = State.INIT_UNKNOWN;
 
-    private DoubleTakeWhileIterator(OfDouble iterator, DoublePredicate predicate, boolean inclusive) {
+    private DoubleTakeWhileIterator(final OfDouble iterator, final DoublePredicate predicate, final boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
     }
 
-    public static DoubleTakeWhileIterator of(OfDouble iterator, DoublePredicate predicate, boolean inclusive) {
+    public static DoubleTakeWhileIterator of(final OfDouble iterator, final DoublePredicate predicate, final boolean inclusive) {
         return new DoubleTakeWhileIterator(iterator, predicate, inclusive);
     }
 
-    public static DoubleTakeWhileIterator of(OfDouble iterator, DoublePredicate predicate) {
+    public static DoubleTakeWhileIterator of(final OfDouble iterator, final DoublePredicate predicate) {
         return new DoubleTakeWhileIterator(iterator, predicate, false);
     }
 
@@ -64,7 +64,7 @@ public final class DoubleTakeWhileIterator implements PrimitiveIterator.OfDouble
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        var result = nextLong;
+        final var result = nextLong;
         nextState = State.NEXT_UNKNOWN;
         return result;
     }

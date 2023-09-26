@@ -5,7 +5,6 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 
@@ -15,9 +14,9 @@ public interface DoubleMutableCollection extends DoubleCollection,
     boolean add(double d);
 
     @Override
-    default boolean addAll(@NotNull Iterable<Double> iterable) {
-        boolean allAdded = true;
-        if (iterable instanceof PrimitiveIterable.OfDouble doubleIterable) {
+    default boolean addAll(@NotNull final Iterable<Double> iterable) {
+        var allAdded = true;
+        if (iterable instanceof final PrimitiveIterable.OfDouble doubleIterable) {
             final var iterator = doubleIterable.iterator();
             while (iterator.hasNext()) {
                 final var added = add(iterator.nextDouble());
@@ -27,7 +26,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
             }
             return allAdded;
         }
-        for (double i : iterable) {
+        for (final double i : iterable) {
             if (!add(i)) {
                 allAdded = false;
             }
@@ -36,9 +35,9 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default boolean addAll(double @NotNull ... array) {
+    default boolean addAll(final double @NotNull ... array) {
         final var iterator = PrimitiveIterators.doubleArrayIterator(array);
-        boolean allAdded = true;
+        var allAdded = true;
         while (iterator.hasNext()) {
             if (!add(iterator.nextDouble())) {
                 allAdded = false;
@@ -50,9 +49,9 @@ public interface DoubleMutableCollection extends DoubleCollection,
     boolean remove(double d);
 
     @Override
-    default boolean removeAll(@NotNull Iterable<Double> iterable) {
-        boolean allRemoved = true;
-        if (iterable instanceof PrimitiveIterable.OfDouble doubleIterable) {
+    default boolean removeAll(@NotNull final Iterable<Double> iterable) {
+        var allRemoved = true;
+        if (iterable instanceof final PrimitiveIterable.OfDouble doubleIterable) {
             final var iterator = doubleIterable.iterator();
             while (iterator.hasNext()) {
                 if (!remove(iterator.nextDouble())) {
@@ -61,7 +60,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
             }
             return allRemoved;
         }
-        for (double d : iterable) {
+        for (final double d : iterable) {
             if (!remove(d)) {
                 allRemoved = false;
             }
@@ -70,8 +69,8 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default boolean removeAll(double @NotNull ... array) {
-        boolean allRemoved = true;
+    default boolean removeAll(final double @NotNull ... array) {
+        var allRemoved = true;
         final var iterator = PrimitiveIterators.doubleArrayIterator(array);
         while (iterator.hasNext()) {
             final var removed = remove(iterator.nextDouble());
@@ -83,11 +82,11 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default boolean removeIf(@NotNull DoublePredicate predicate) {
-        boolean removed = false;
-        final PrimitiveIterator.OfDouble iterator = iterator();
+    default boolean removeIf(@NotNull final DoublePredicate predicate) {
+        var removed = false;
+        final var iterator = iterator();
         while (iterator.hasNext()) {
-            final double value = iterator.nextDouble();
+            final var value = iterator.nextDouble();
             if (predicate.test(value)) {
                 removed = remove(value);
             }
@@ -96,12 +95,12 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default DoubleMutableList plus(@NotNull Iterable<Double> iterable) {
+    default DoubleMutableList plus(@NotNull final Iterable<Double> iterable) {
         return (DoubleMutableList) DoubleCollection.super.plus(iterable);
     }
 
     @Override
-    default DoubleMutableList plus(double @NotNull ... array) {
+    default DoubleMutableList plus(final double @NotNull ... array) {
         return (DoubleMutableList) DoubleCollection.super.plus(array);
     }
 

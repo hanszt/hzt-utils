@@ -16,15 +16,15 @@ import java.util.function.ToDoubleFunction;
 @FunctionalInterface
 public interface DoubleWindowedSequence extends PrimitiveIterable.OfDouble {
 
-    default Sequence<DoubleList> chunked(int size) {
+    default Sequence<DoubleList> chunked(final int size) {
         return windowed(size, size, true);
     }
 
-    default Sequence<DoubleList> chunked(IntSupplier nextSizeSupplier) {
+    default Sequence<DoubleList> chunked(final IntSupplier nextSizeSupplier) {
         return chunked(nextSizeSupplier.getAsInt(), size -> nextSizeSupplier.getAsInt());
     }
 
-    default Sequence<DoubleList> chunked(int initSize, IntUnaryOperator nextSizeSupplier) {
+    default Sequence<DoubleList> chunked(final int initSize, final IntUnaryOperator nextSizeSupplier) {
         //The holding consumer provides a way to provide the same value to both the size and step unary operator.
         //It also makes sure the nextSizeSupplier from this method is only called once instead of twice
         //It is required that the call for next size is made before next step for them to receive the same value
@@ -36,52 +36,52 @@ public interface DoubleWindowedSequence extends PrimitiveIterable.OfDouble {
         }, initSize, step -> holdingConsumer.get(), true);
     }
 
-    default Sequence<DoubleList> windowed(int size, int step, boolean partialWindows) {
+    default Sequence<DoubleList> windowed(final int size, final int step, final boolean partialWindows) {
         return windowed(size, It::asInt, step, It::asInt, partialWindows);
     }
 
-    default Sequence<DoubleList> windowed(int initSize,
-                                          @NotNull IntUnaryOperator nextSizeSupplier,
-                                          int initStep,
-                                          @NotNull IntUnaryOperator nextStepSupplier,
-                                          boolean partialWindows) {
+    default Sequence<DoubleList> windowed(final int initSize,
+                                          @NotNull final IntUnaryOperator nextSizeSupplier,
+                                          final int initStep,
+                                          @NotNull final IntUnaryOperator nextStepSupplier,
+                                          final boolean partialWindows) {
         SequenceHelper.checkInitWindowSizeAndStep(initSize, initStep);
         return () -> DoubleWindowedIterator.of(iterator(), initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
     }
 
-    default Sequence<DoubleList> windowed(int initSize,
-                                          @NotNull IntUnaryOperator nextSizeSupplier,
-                                          int initStep,
-                                          @NotNull IntUnaryOperator nextStepSupplier) {
+    default Sequence<DoubleList> windowed(final int initSize,
+                                          @NotNull final IntUnaryOperator nextSizeSupplier,
+                                          final int initStep,
+                                          @NotNull final IntUnaryOperator nextStepSupplier) {
         return windowed(initSize, nextSizeSupplier, initStep, nextStepSupplier, false);
     }
 
-    default Sequence<DoubleList> windowed(int size, int step) {
+    default Sequence<DoubleList> windowed(final int size, final int step) {
         return windowed(size, step, false);
     }
 
-    default Sequence<DoubleList> windowed(int size) {
+    default Sequence<DoubleList> windowed(final int size) {
         return windowed(size, 1);
     }
 
-    default Sequence<DoubleList> windowed(int size, boolean partialWindows) {
+    default Sequence<DoubleList> windowed(final int size, final boolean partialWindows) {
         return windowed(size, 1, partialWindows);
     }
 
-    default DoubleSequence windowed(int size, int step, boolean partialWindows,
-                                    @NotNull ToDoubleFunction<DoubleList> reducer) {
+    default DoubleSequence windowed(final int size, final int step, final boolean partialWindows,
+                                    @NotNull final ToDoubleFunction<DoubleList> reducer) {
         return windowed(size, step, partialWindows).mapToDouble(reducer);
     }
 
-    default DoubleSequence windowed(int size, int step, @NotNull ToDoubleFunction<DoubleList> reducer) {
+    default DoubleSequence windowed(final int size, final int step, @NotNull final ToDoubleFunction<DoubleList> reducer) {
         return windowed(size, step, false, reducer);
     }
 
-    default DoubleSequence windowed(int size, @NotNull ToDoubleFunction<DoubleList> reducer) {
+    default DoubleSequence windowed(final int size, @NotNull final ToDoubleFunction<DoubleList> reducer) {
         return windowed(size, 1, reducer);
     }
 
-    default DoubleSequence windowed(int size, boolean partialWindows, @NotNull ToDoubleFunction<DoubleList> reducer) {
+    default DoubleSequence windowed(final int size, final boolean partialWindows, @NotNull final ToDoubleFunction<DoubleList> reducer) {
         return windowed(size, 1, partialWindows, reducer);
     }
 }

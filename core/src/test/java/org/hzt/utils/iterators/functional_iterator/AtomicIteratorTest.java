@@ -17,18 +17,23 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AtomicIteratorTest {
 
     @Test
     void testAtomicIteratorBehavesTheSameAsIterator() {
-        List<String> list1 = new ArrayList<>();
-        List<String> list2 = new ArrayList<>();
+        final List<String> list1 = new ArrayList<>();
+        final List<String> list2 = new ArrayList<>();
 
         final var upperBound = 100;
 
-        var stringIterator = getBoundedAtomicIteratorIteratorX(upperBound, String::valueOf);
+        final var stringIterator = getBoundedAtomicIteratorIteratorX(upperBound, String::valueOf);
         //noinspection StatementWithEmptyBody
         while (stringIterator.tryAdvance(list1::add)) ;
 
@@ -41,11 +46,11 @@ class AtomicIteratorTest {
 
     @Test
     void testForEachRemaining() {
-        List<String> list1 = new ArrayList<>();
-        List<String> list2 = new ArrayList<>();
+        final List<String> list1 = new ArrayList<>();
+        final List<String> list2 = new ArrayList<>();
 
         final var upperBound = 200;
-        var stringIterator = getBoundedAtomicIteratorIteratorX(upperBound, String::valueOf);
+        final var stringIterator = getBoundedAtomicIteratorIteratorX(upperBound, String::valueOf);
         stringIterator.forEachRemaining(list1::add);
         stringIterator.forEachRemaining(list2::add);
 
@@ -59,16 +64,16 @@ class AtomicIteratorTest {
     @DisplayName("Test get correct iterator from iteratorX instance")
     void testGetCorrectIteratorFromIteratorXInstance() {
         final var bound = 241;
-        var atomicInteger = new AtomicInteger();
+        final var atomicInteger = new AtomicInteger();
 
-        var stringIterator = getBoundedAtomicIteratorIteratorX(bound, String::valueOf);
+        final var stringIterator = getBoundedAtomicIteratorIteratorX(bound, String::valueOf);
         stringIterator.asIterator().forEachRemaining(e -> atomicInteger.incrementAndGet());
 
         assertEquals(bound, atomicInteger.get());
     }
 
     @NotNull
-    private AtomicIterator<String> getBoundedAtomicIteratorIteratorX(int upperBound, IntFunction<String> intFunction) {
+    private AtomicIterator<String> getBoundedAtomicIteratorIteratorX(final int upperBound, final IntFunction<String> intFunction) {
         return new BoundedIterator<>(upperBound, intFunction)::supplyNext;
     }
 
@@ -86,7 +91,7 @@ class AtomicIteratorTest {
             }
             return advance;
         };
-        Iterable<Integer> integers = toLengthMapperIterator::asIterator;
+        final Iterable<Integer> integers = toLengthMapperIterator::asIterator;
 
         assertIterableEquals(List.of(4, 2, 1, 4), integers);
     }
@@ -97,16 +102,16 @@ class AtomicIteratorTest {
         private final IntFunction<T> supplier;
         private int counter = 0;
 
-        private static <T> BoundedIterator<T> of(int upperBound, IntFunction<T> supplier) {
+        private static <T> BoundedIterator<T> of(final int upperBound, final IntFunction<T> supplier) {
             return new BoundedIterator<>(upperBound, supplier);
         }
 
-        private BoundedIterator(int upperBound, IntFunction<T> supplier) {
+        private BoundedIterator(final int upperBound, final IntFunction<T> supplier) {
             this.upperBound = upperBound;
             this.supplier = supplier;
         }
 
-        private boolean supplyNext(Consumer<? super T> consumer) {
+        private boolean supplyNext(final Consumer<? super T> consumer) {
             final var supplyNext = counter < upperBound;
             if (supplyNext) {
                 consumer.accept(supplier.apply(counter));
@@ -121,7 +126,7 @@ class AtomicIteratorTest {
     void testAsSpliterator() {
         final var upperBound = 9_000;
 
-        AtomicIterator<LocalDate> dateIterator = BoundedIterator.of(upperBound, LocalDate
+        final AtomicIterator<LocalDate> dateIterator = BoundedIterator.of(upperBound, LocalDate
                 .parse("2022-04-21")::minusDays)
                 ::supplyNext;
 
@@ -136,7 +141,7 @@ class AtomicIteratorTest {
     @Test
     @DisplayName("Test iterator from empty iteratorX throws no such element exception")
     void testIteratorFromEmptyIteratorXThrowsNoSuchElementException() {
-        AtomicIterator<String> atomicIterator = c -> false;
+        final AtomicIterator<String> atomicIterator = c -> false;
         final var stringIterator = atomicIterator.asIterator();
 
         assertAll(
@@ -148,7 +153,7 @@ class AtomicIteratorTest {
     @Test
     @DisplayName("Test iterator from single element iteratorX throws no such element exception after 1")
     void testIteratorFromOneThrowsNoSuchElementExceptionAfterOne() {
-        AtomicIterator<String> atomicIterator = BoundedIterator.of(1, String::valueOf)::supplyNext;
+        final AtomicIterator<String> atomicIterator = BoundedIterator.of(1, String::valueOf)::supplyNext;
         final var stringIterator = atomicIterator.asIterator();
 
         final var hasOne = stringIterator.hasNext();

@@ -20,7 +20,7 @@ class FloatSequenceTest {
 
         println(Arrays.toString(floats));
 
-        var expected = new float[]{.5F, 1.0F, 1.5F, 2F, 2.5F};
+        final var expected = new float[]{.5F, 1.0F, 1.5F, 2F, 2.5F};
 
         assertArrayEquals(expected, floats);
     }

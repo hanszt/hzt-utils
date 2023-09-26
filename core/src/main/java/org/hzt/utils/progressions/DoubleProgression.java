@@ -13,7 +13,7 @@ public class DoubleProgression implements DoubleSequence {
     private final double endInclusive;
     private final double step;
 
-    public DoubleProgression(double start, double endInclusive, double step) {
+    public DoubleProgression(final double start, final double endInclusive, final double step) {
         if (Double.compare(step, 0) == 0) {
             throw new IllegalArgumentException("step must be none-zero");
         }
@@ -22,19 +22,19 @@ public class DoubleProgression implements DoubleSequence {
         this.step = step;
     }
 
-    static DoubleX from(double start) {
+    static DoubleX from(final double start) {
         return DoubleX.of(start);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var doubles = (DoubleProgression) o;
+        final var doubles = (DoubleProgression) o;
         return Double.compare(doubles.start, start) == 0 &&
                 Double.compare(doubles.endInclusive, endInclusive) == 0 &&
                 Double.compare(doubles.getStep(), getStep()) == 0;

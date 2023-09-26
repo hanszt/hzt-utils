@@ -12,7 +12,7 @@ final class FloatFlatMappingIterator implements FloatIterator {
 
     private FloatIterator itemIterator = null;
 
-    FloatFlatMappingIterator(@NotNull FloatIterator iterator, @NotNull FloatFunction<? extends FloatIterator> mapper) {
+    FloatFlatMappingIterator(@NotNull final FloatIterator iterator, @NotNull final FloatFunction<? extends FloatIterator> mapper) {
         this.iterator = iterator;
         this.mapper = mapper;
     }

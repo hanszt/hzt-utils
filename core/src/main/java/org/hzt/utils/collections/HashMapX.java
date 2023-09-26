@@ -14,7 +14,7 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
 
     private final Map<K, V> map;
 
-    HashMapX(@NotNull Map<? extends K, ? extends V> map) {
+    HashMapX(@NotNull final Map<? extends K, ? extends V> map) {
         this.map = new LinkedHashMap<>(map);
     }
 
@@ -22,29 +22,29 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
         this(new HashMap<>());
     }
 
-    HashMapX(int capacity) {
-        this(new HashMap<>(capacity));
+    HashMapX(final int capacity) {
+        this(HashMap.newHashMap(capacity));
     }
 
-    HashMapX(Iterable<Entry<K, V>> iterable) {
+    HashMapX(final Iterable<Entry<K, V>> iterable) {
         map = new LinkedHashMap<>();
-        for (var entry : iterable) {
+        for (final var entry : iterable) {
             map.put(entry.getKey(), entry.getValue());
         }
     }
 
     @SafeVarargs
-    HashMapX(Pair<K, V>... pairs) {
+    HashMapX(final Pair<K, V>... pairs) {
         map = new HashMap<>();
-        for (var pair : pairs) {
+        for (final var pair : pairs) {
             map.put(pair.first(), pair.second());
         }
     }
 
     @SafeVarargs
-    HashMapX(Entry<? extends K, ? extends V>... entries) {
+    HashMapX(final Entry<? extends K, ? extends V>... entries) {
         map = new HashMap<>();
-        for (var entry : entries) {
+        for (final var entry : entries) {
             map.put(entry.getKey(), entry.getValue());
         }
     }
@@ -60,33 +60,33 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
     }
 
     @Override
-    public boolean containsKey(Object key) {
+    public boolean containsKey(final Object key) {
         return map.containsKey(key);
     }
 
     @Override
-    public boolean containsValue(Object value) {
+    public boolean containsValue(final Object value) {
         return map.containsValue(value);
     }
 
     @Override
-    public V get(Object key) {
+    public V get(final Object key) {
         return map.get(key);
     }
 
     @Nullable
     @Override
-    public V put(K key, V value) {
+    public V put(final K key, final V value) {
         return map.put(key, value);
     }
 
     @Override
-    public V remove(Object key) {
+    public V remove(final Object key) {
         return map.remove(key);
     }
 
     @Override
-    public void putAll(@NotNull Map<? extends K, ? extends V> m) {
+    public void putAll(@NotNull final Map<? extends K, ? extends V> m) {
         map.putAll(m);
     }
 
@@ -117,14 +117,14 @@ final class HashMapX<K, V> implements MutableMapX<K, V> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var mapX = (HashMapX<?, ?>) o;
+        final var mapX = (HashMapX<?, ?>) o;
         return map.equals(mapX.map);
     }
 

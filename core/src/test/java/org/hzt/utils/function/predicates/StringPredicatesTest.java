@@ -1,12 +1,18 @@
 package org.hzt.utils.function.predicates;
 
-import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Painting;
+import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import static org.hzt.utils.function.Functions.by;
-import static org.hzt.utils.function.predicates.StringPredicates.*;
+import static org.hzt.utils.function.predicates.StringPredicates.containsAllOf;
+import static org.hzt.utils.function.predicates.StringPredicates.containsAnyOf;
+import static org.hzt.utils.function.predicates.StringPredicates.containsNoneOf;
+import static org.hzt.utils.function.predicates.StringPredicates.endsWithAnyOf;
+import static org.hzt.utils.function.predicates.StringPredicates.hasEqualLength;
+import static org.hzt.utils.function.predicates.StringPredicates.isEqualIgnoreCase;
+import static org.hzt.utils.function.predicates.StringPredicates.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StringPredicatesTest {
@@ -108,9 +114,9 @@ class StringPredicatesTest {
 
         final var expected = paintingList.stream()
                 .filter(painting -> {
-                    var containsMeisje = painting.name().contains("Meisje");
-                    var containsDe = painting.name().contains("de");
-                    var containsA = painting.name().contains("first");
+                    final var containsMeisje = painting.name().contains("Meisje");
+                    final var containsDe = painting.name().contains("de");
+                    final var containsA = painting.name().contains("first");
                     return containsMeisje && containsDe && containsA;
                 }).toList();
 

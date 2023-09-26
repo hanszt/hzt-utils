@@ -7,7 +7,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IntRangeTest {
 
@@ -24,7 +29,7 @@ class IntRangeTest {
     @Test
     void testIterateIntRange() {
         final var range = IntRange.of(2, 10);
-        var list = IntMutableList.empty();
+        final var list = IntMutableList.empty();
         range.forEachInt(list::add);
         range.forEachInt(list::add);
         assertEquals(IntMutableList.of(2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9), list);

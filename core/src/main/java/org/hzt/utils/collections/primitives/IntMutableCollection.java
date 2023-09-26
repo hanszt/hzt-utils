@@ -5,7 +5,6 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 
@@ -15,9 +14,9 @@ public interface IntMutableCollection extends IntCollection,
     boolean add(int i);
 
     @Override
-    default boolean addAll(@NotNull Iterable<Integer> iterable) {
-        boolean allAdded = true;
-        if (iterable instanceof PrimitiveIterable.OfInt intIterable) {
+    default boolean addAll(@NotNull final Iterable<Integer> iterable) {
+        var allAdded = true;
+        if (iterable instanceof final PrimitiveIterable.OfInt intIterable) {
             final var iterator = intIterable.iterator();
             while (iterator.hasNext()) {
                 final var added = add(iterator.nextInt());
@@ -27,7 +26,7 @@ public interface IntMutableCollection extends IntCollection,
             }
             return allAdded;
         }
-        for (int i : iterable) {
+        for (final int i : iterable) {
             if (!add(i)) {
                 allAdded = false;
             }
@@ -36,9 +35,9 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default boolean addAll(int @NotNull ... array) {
+    default boolean addAll(final int @NotNull ... array) {
         final var iterator = PrimitiveIterators.intArrayIterator(array);
-        boolean allAdded = true;
+        var allAdded = true;
         while (iterator.hasNext()) {
             if (!add(iterator.nextInt())) {
                 allAdded = false;
@@ -50,9 +49,9 @@ public interface IntMutableCollection extends IntCollection,
     boolean remove(int i);
 
     @Override
-    default boolean removeAll(@NotNull Iterable<Integer> iterable) {
-        boolean allRemoved = true;
-        if (iterable instanceof PrimitiveIterable.OfInt intIterable) {
+    default boolean removeAll(@NotNull final Iterable<Integer> iterable) {
+        var allRemoved = true;
+        if (iterable instanceof final PrimitiveIterable.OfInt intIterable) {
             final var iterator = intIterable.iterator();
             while (iterator.hasNext()) {
                 if (!remove(iterator.nextInt())) {
@@ -61,7 +60,7 @@ public interface IntMutableCollection extends IntCollection,
             }
             return allRemoved;
         }
-        for (int i : iterable) {
+        for (final int i : iterable) {
             if (!remove(i)) {
                 allRemoved = false;
             }
@@ -70,8 +69,8 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default boolean removeAll(int @NotNull ... array) {
-        boolean allRemoved = true;
+    default boolean removeAll(final int @NotNull ... array) {
+        var allRemoved = true;
         final var iterator = PrimitiveIterators.intArrayIterator(array);
         while (iterator.hasNext()) {
             final var removed = remove(iterator.nextInt());
@@ -83,11 +82,11 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default boolean removeIf(@NotNull IntPredicate predicate) {
-        boolean removed = false;
-        final PrimitiveIterator.OfInt iterator = iterator();
+    default boolean removeIf(@NotNull final IntPredicate predicate) {
+        var removed = false;
+        final var iterator = iterator();
         while (iterator.hasNext()) {
-            final int value = iterator.nextInt();
+            final var value = iterator.nextInt();
             if (predicate.test(value)) {
                 removed = remove(value);
             }
@@ -96,12 +95,12 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default IntMutableList plus(@NotNull Iterable<Integer> iterable) {
+    default IntMutableList plus(@NotNull final Iterable<Integer> iterable) {
         return (IntMutableList) IntCollection.super.plus(iterable);
     }
 
     @Override
-    default IntMutableList plus(int @NotNull ... array) {
+    default IntMutableList plus(final int @NotNull ... array) {
         return (IntMutableList) IntCollection.super.plus(array);
     }
 

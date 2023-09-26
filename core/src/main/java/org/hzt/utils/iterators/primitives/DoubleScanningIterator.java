@@ -12,8 +12,8 @@ public class DoubleScanningIterator implements PrimitiveIterator.OfDouble {
 
     private State state = State.INIT_UNKNOWN;
 
-    public DoubleScanningIterator(PrimitiveIterator.OfDouble iterator, double initial,
-                                 DoubleBinaryOperator operation) {
+    public DoubleScanningIterator(final PrimitiveIterator.OfDouble iterator, final double initial,
+                                  final DoubleBinaryOperator operation) {
         this.iterator = iterator;
         this.operation = operation;
         accumulation = initial;

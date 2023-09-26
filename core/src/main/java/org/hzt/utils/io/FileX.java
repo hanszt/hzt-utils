@@ -20,11 +20,11 @@ public final class FileX extends File {
     @Serial
     private static final long serialVersionUID = 123L;
 
-    private FileX(@NotNull String pathname) {
+    private FileX(@NotNull final String pathname) {
         super(pathname);
     }
 
-    public static FileX of(String pathName) {
+    public static FileX of(final String pathName) {
         return new FileX(pathName);
     }
 
@@ -32,11 +32,11 @@ public final class FileX extends File {
         return readLines(StandardCharsets.UTF_8);
     }
 
-    public ListX<String> readLines(Charset charset) {
+    public ListX<String> readLines(final Charset charset) {
         return useLines(Collectable::toListX, charset);
     }
 
-    public String readText(Charset charset) {
+    public String readText(final Charset charset) {
         return useLines(s -> s.joinToString("\n"), charset);
     }
 
@@ -44,7 +44,7 @@ public final class FileX extends File {
         return readText(StandardCharsets.UTF_8);
     }
 
-    public StringX readTextX(Charset charset) {
+    public StringX readTextX(final Charset charset) {
         return useLines(s -> s.joinToStringX(String.format("%n")), charset);
     }
 
@@ -52,14 +52,14 @@ public final class FileX extends File {
         return readTextX(StandardCharsets.UTF_8);
     }
 
-    public <T> T useLines(Function<? super Sequence<String>, ? extends T> block) {
+    public <T> T useLines(final Function<? super Sequence<String>, ? extends T> block) {
         return useLines(block, StandardCharsets.UTF_8);
     }
 
-    public <T> T useLines(Function<? super Sequence<String>, ? extends T> block, Charset charset) {
-        try(var lines = Files.lines(Path.of(getPath()), charset)) {
+    public <T> T useLines(final Function<? super Sequence<String>, ? extends T> block, final Charset charset) {
+        try(final var lines = Files.lines(Path.of(getPath()), charset)) {
             return block.apply(Sequence.of(lines::iterator));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException(e);
         }
     }

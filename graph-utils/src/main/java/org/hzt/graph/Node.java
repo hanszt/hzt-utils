@@ -23,24 +23,24 @@ public interface Node<T, S extends Node<T, S>> {
         throw new UnsupportedOperationException("getMutableNeighbors() not supported by default. Implement it to use it");
     }
 
-    default S addNeighbor(S toAdd) {
-        final Collection<S> children = getMutableNeighbors();
+    default S addNeighbor(final S toAdd) {
+        final var children = getMutableNeighbors();
         children.add(toAdd);
         //noinspection unchecked
         return (S) this;
     }
 
-    default S addNeighbors(Iterable<S> toAdd) {
-        final Collection<S> children = getMutableNeighbors();
-        for (S child : toAdd) {
+    default S addNeighbors(final Iterable<S> toAdd) {
+        final var children = getMutableNeighbors();
+        for (final var child : toAdd) {
             children.add(child);
         }
         //noinspection unchecked
         return (S) this;
     }
 
-    default S bidiAddNeighbor(S toAdd) {
-        final Collection<S> neighbors = getMutableNeighbors();
+    default S bidiAddNeighbor(final S toAdd) {
+        final var neighbors = getMutableNeighbors();
         neighbors.add(toAdd);
         //noinspection unchecked
         toAdd.getMutableNeighbors().add((S) this);
@@ -48,9 +48,9 @@ public interface Node<T, S extends Node<T, S>> {
         return (S) this;
     }
 
-    default S bidiAddNeighbors(Iterable<S> toAdd) {
-        final Collection<S> neighbors = getMutableNeighbors();
-        for (S neighbor : toAdd) {
+    default S bidiAddNeighbors(final Iterable<S> toAdd) {
+        final var neighbors = getMutableNeighbors();
+        for (final var neighbor : toAdd) {
             neighbors.add(neighbor);
             //noinspection unchecked
             neighbor.getMutableNeighbors().add((S) this);
@@ -59,7 +59,7 @@ public interface Node<T, S extends Node<T, S>> {
         return (S) this;
     }
 
-    default Sequence<S> breadthFirstSequence(Mode mode) {
+    default Sequence<S> breadthFirstSequence(final Mode mode) {
         //noinspection unchecked
         return Sequence.of(() -> GraphIterators.breadthFirstIterator((S) this, mode == Mode.SET_PREDECESSORS));
     }
@@ -68,7 +68,7 @@ public interface Node<T, S extends Node<T, S>> {
         return breadthFirstSequence(Mode.NO_PREDECESSOR);
     }
 
-    default Sequence<S> depthFirstSequence(Mode mode) {
+    default Sequence<S> depthFirstSequence(final Mode mode) {
         //noinspection unchecked
         return Sequence.of(() -> GraphIterators.depthFirstIterator((S) this, mode == Mode.SET_PREDECESSORS));
     }
@@ -89,7 +89,7 @@ public interface Node<T, S extends Node<T, S>> {
      *
      * @param predecessor node
      */
-    default S withPredecessor(S predecessor) {
+    default S withPredecessor(final S predecessor) {
         throw new IllegalStateException("withPredecessor(Node) not supported by default. Override it if you want to use it. " +
                 "Tried to set " + predecessor + " as predecessor");
     }
@@ -104,7 +104,7 @@ public interface Node<T, S extends Node<T, S>> {
     }
 
 
-    private Iterator<S> predecessorIterator(S initial) {
+    private Iterator<S> predecessorIterator(final S initial) {
         return new Iterator<>() {
 
             private boolean isThis = true;
@@ -116,8 +116,8 @@ public interface Node<T, S extends Node<T, S>> {
                     isThis = false;
                     return true;
                 }
-                final Optional<S> predecessor = next.optionalPredecessor();
-                final boolean present = predecessor.isPresent();
+                final var predecessor = next.optionalPredecessor();
+                final var present = predecessor.isPresent();
                 if (present) {
                     next = predecessor.orElseThrow();
                 }

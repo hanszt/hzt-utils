@@ -18,7 +18,7 @@ final class TreeNodeDepthFirstDepthTrackingIterator<T, S extends TreeNode<T, S>>
     private final Deque<Iterator<DepthToTreeNode<S>>> stack = new ArrayDeque<>();
     private DepthToTreeNode<S> next;
 
-    TreeNodeDepthFirstDepthTrackingIterator(S source) {
+    TreeNodeDepthFirstDepthTrackingIterator(final S source) {
         stack.push(source.childrenSequence().map(c -> new DepthToTreeNode<>(1, c)).iterator());
         next = new DepthToTreeNode<>(0, source);
     }
@@ -41,7 +41,7 @@ final class TreeNodeDepthFirstDepthTrackingIterator<T, S extends TreeNode<T, S>>
     }
 
     private void advance() {
-        Iterator<DepthToTreeNode<S>> children = stack.getFirst();
+        var children = stack.getFirst();
         while (!children.hasNext()) {  // No more nodes -> back out a level
             stack.pop();
             if (stack.isEmpty()) { // All done!

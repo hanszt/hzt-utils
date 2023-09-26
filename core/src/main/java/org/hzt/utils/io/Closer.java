@@ -11,13 +11,13 @@ public final class Closer<T> implements AutoCloseable {
     private final T resource;
     private final ThrowingConsumer<? super T> closeable;
 
-    private Closer(T resource, ThrowingConsumer<? super T> consumingAutoClosable) {
+    private Closer(final T resource, final ThrowingConsumer<? super T> consumingAutoClosable) {
         this.resource = resource;
         this.closeable = consumingAutoClosable;
     }
 
-    public static <T> Closer<T> forResource(@NotNull T resource,
-                                            @NotNull ThrowingConsumer<? super T> consumingAutoClosable) {
+    public static <T> Closer<T> forResource(@NotNull final T resource,
+                                            @NotNull final ThrowingConsumer<? super T> consumingAutoClosable) {
         return new Closer<>(resource, consumingAutoClosable);
     }
 
@@ -25,44 +25,44 @@ public final class Closer<T> implements AutoCloseable {
     public void close() {
         try {
             closeable.accept(resource);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public <R> R apply(@NotNull ThrowingFunction<? super T, ? extends R> function) {
+    public <R> R apply(@NotNull final ThrowingFunction<? super T, ? extends R> function) {
         try {
             return function.apply(resource);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public <R> R applyAndClose(@NotNull ThrowingFunction<? super T, ? extends R> function) {
+    public <R> R applyAndClose(@NotNull final ThrowingFunction<? super T, ? extends R> function) {
         try (this) {
             return apply(function);
         }
     }
 
-    public void execute(@NotNull ThrowingConsumer<? super T> consumer) {
+    public void execute(@NotNull final ThrowingConsumer<? super T> consumer) {
         try {
             consumer.accept(resource);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public void executeAndClose(@NotNull ThrowingConsumer<? super T> consumer) {
+    public void executeAndClose(@NotNull final ThrowingConsumer<? super T> consumer) {
         try (this) {
             execute(consumer);
         }
     }
 
-    public boolean test(@NotNull Predicate<? super T> predicate) {
+    public boolean test(@NotNull final Predicate<? super T> predicate) {
         return predicate.test(resource);
     }
 
-    public boolean testAndClose(@NotNull Predicate<? super T> predicate) {
+    public boolean testAndClose(@NotNull final Predicate<? super T> predicate) {
         try (this) {
             return predicate.test(resource);
         }

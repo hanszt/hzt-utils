@@ -17,19 +17,19 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
         super();
     }
 
-    public DoubleStatistics(long count, double min, double max, double sum) {
+    public DoubleStatistics(final long count, final double min, final double max, final double sum) {
         super(count, min, max, sum);
     }
 
     @Override
-    public void accept(double value) {
+    public void accept(final double value) {
         super.accept(value);
-        var squareValue = value * value;
+        final var squareValue = value * value;
         simpleSumOfSquare += squareValue;
         sumOfSquareWithCompensation(squareValue);
     }
 
-    public DoubleStatistics combine(DoubleStatistics other) {
+    public DoubleStatistics combine(final DoubleStatistics other) {
         super.combine(other);
         simpleSumOfSquare += other.simpleSumOfSquare;
         sumOfSquareWithCompensation(other.sumOfSquare);
@@ -37,15 +37,15 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
         return this;
     }
 
-    private void sumOfSquareWithCompensation(double value) {
-        var tmp = value - sumOfSquareCompensation;
-        var velvel = sumOfSquare + tmp; // Little wolf of rounding error
+    private void sumOfSquareWithCompensation(final double value) {
+        final var tmp = value - sumOfSquareCompensation;
+        final var velvel = sumOfSquare + tmp; // Little wolf of rounding error
         sumOfSquareCompensation = (velvel - sumOfSquare) - tmp;
         sumOfSquare = velvel;
     }
 
     public double getSumOfSquare() {
-        var correctedSumOfSquare =  sumOfSquare + sumOfSquareCompensation;
+        final var correctedSumOfSquare =  sumOfSquare + sumOfSquareCompensation;
         if (Double.isNaN(correctedSumOfSquare) && Double.isInfinite(simpleSumOfSquare)) {
             return simpleSumOfSquare;
         }
@@ -58,14 +58,14 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var that = (DoubleStatistics) o;
+        final var that = (DoubleStatistics) o;
         return getCount() == that.getCount() &&
                 Double.compare(getAverage(), that.getAverage()) == 0 &&
                 Double.compare(that.getSumOfSquare(), getSumOfSquare()) == 0 &&

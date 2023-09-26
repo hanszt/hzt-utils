@@ -9,24 +9,24 @@ public interface MutableLinkedSetX<E> extends MutableSetX<E> {
         return new LinkedHashSetX<>();
     }
 
-    static <E> MutableLinkedSetX<E> withInitCapacity(int capacity) {
+    static <E> MutableLinkedSetX<E> withInitCapacity(final int capacity) {
         return new LinkedHashSetX<>(capacity);
     }
 
-    static <E> MutableLinkedSetX<E> of(Set<E> set) {
+    static <E> MutableLinkedSetX<E> of(final Set<E> set) {
         return new LinkedHashSetX<>(set);
     }
 
-    static <E> MutableLinkedSetX<E> of(Iterable<E> set) {
+    static <E> MutableLinkedSetX<E> of(final Iterable<E> set) {
         return new LinkedHashSetX<>(set);
     }
 
-    static <E> MutableLinkedSetX<E> of(Collection<E> collection) {
+    static <E> MutableLinkedSetX<E> of(final Collection<E> collection) {
         return new LinkedHashSetX<>(collection);
     }
 
     @SafeVarargs
-    static <E> MutableLinkedSetX<E> of(E first, E... others) {
+    static <E> MutableLinkedSetX<E> of(final E first, final E... others) {
         return new LinkedHashSetX<>(first, others);
     }
 

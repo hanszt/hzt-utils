@@ -12,13 +12,13 @@ final class FloatFilteringIterator implements FloatIterator {
     private State nextState = State.NEXT_UNKNOWN;
     private float nextFloat = 0.0F;
 
-    FloatFilteringIterator(FloatIterator iterator, FloatPredicate predicate, boolean sendWhen) {
+    FloatFilteringIterator(final FloatIterator iterator, final FloatPredicate predicate, final boolean sendWhen) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.sendWhen = sendWhen;
     }
 
-    public static FloatFilteringIterator of(FloatIterator iterator, FloatPredicate predicate, boolean sendWhen) {
+    public static FloatFilteringIterator of(final FloatIterator iterator, final FloatPredicate predicate, final boolean sendWhen) {
         return new FloatFilteringIterator(iterator, predicate, sendWhen);
     }
 
@@ -46,7 +46,7 @@ final class FloatFilteringIterator implements FloatIterator {
 
     private void calculateNext() {
         while (iterator.hasNext()) {
-            var next = iterator.nextFloat();
+            final var next = iterator.nextFloat();
             if (predicate.test(next) == sendWhen) {
                 this.nextFloat = next;
                 nextState = State.CONTINUE;

@@ -17,18 +17,18 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, LongConsumer, long[],
         this(0);
     }
 
-    public LongHashSet(long[] values) {
+    public LongHashSet(final long[] values) {
         this(values.length > 0 ? 1 : 0);
-        for (var value : values) {
+        for (final var value : values) {
             add(value);
         }
     }
 
-    public LongHashSet(int size) {
+    public LongHashSet(final int size) {
         super(size, new CollisionChainNode[INITIAL_CAPACITY]);
     }
 
-    public boolean add(long value) {
+    public boolean add(final long value) {
         if (contains(value)) {
             return false;
         }
@@ -45,7 +45,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, LongConsumer, long[],
         return true;
     }
 
-    public boolean contains(long value) {
+    public boolean contains(final long value) {
         final var collisionChainIndex = Long.hashCode(value) & mask;
         var node = table[collisionChainIndex];
 
@@ -58,7 +58,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, LongConsumer, long[],
         return false;
     }
 
-    public boolean remove(long value) {
+    public boolean remove(final long value) {
         if (!contains(value)) {
             return false;
         }
@@ -72,7 +72,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, LongConsumer, long[],
 
         PrimitiveNode previous = null;
         while (current != null) {
-            var next = current.next;
+            final var next = current.next;
             if (((CollisionChainNode) current).value == value) {
                 if (previous == null) {
                     table[targetCollisionChainIndex] = next;
@@ -118,7 +118,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, LongConsumer, long[],
         return MAXIMUM_LOAD_FACTOR * size * 4 < table.length;
     }
     private void expand() {
-        var newTable = new CollisionChainNode[table.length * 2];
+        final var newTable = new CollisionChainNode[table.length * 2];
 
         rehash(table, newTable);
         table = newTable;
@@ -126,24 +126,24 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, LongConsumer, long[],
     }
 
     private void contract() {
-        var newTable = new CollisionChainNode[table.length / 4];
+        final var newTable = new CollisionChainNode[table.length / 4];
         rehash(table, newTable);
         table = newTable;
         mask = table.length - 1;
     }
 
     @Override
-    int nextHashCode(PrimitiveIterator.OfLong iterator) {
+    int nextHashCode(final PrimitiveIterator.OfLong iterator) {
         return Long.hashCode(iterator.nextLong());
     }
 
     @Override
-    int rehash(PrimitiveNode node, int newTableLength) {
+    int rehash(final PrimitiveNode node, final int newTableLength) {
         return Long.hashCode(((CollisionChainNode) node).value) & (newTableLength - 1);
     }
 
     @Override
-    protected long[] newArray(int length) {
+    protected long[] newArray(final int length) {
         return new long[length];
     }
 
@@ -165,7 +165,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, LongConsumer, long[],
 
         private final long value;
 
-        CollisionChainNode(long value, PrimitiveNode next) {
+        CollisionChainNode(final long value, final PrimitiveNode next) {
             super(next);
             this.value = value;
         }
@@ -176,7 +176,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, LongConsumer, long[],
         }
     }
     @Override
-    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfLong iterator) {
+    protected void appendNextPrimitive(final StringBuilder sb, final PrimitiveIterator.OfLong iterator) {
         sb.append(iterator.nextLong());
     }
 }

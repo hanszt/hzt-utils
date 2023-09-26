@@ -9,7 +9,7 @@ class Grid2DUtilsTest {
 
     @Test
     void testMapGrid() {
-        var grid = new Integer[][]{
+        final var grid = new Integer[][]{
                 {1, 2, 3, 4},
                 {5, 6, 7, 8}
         };
@@ -25,7 +25,7 @@ class Grid2DUtilsTest {
 
     @Test
     void testSwapInListGrid() {
-        var grid = new Integer[][]{
+        final var grid = new Integer[][]{
                 {1, 2, 3, 4},
                 {5, 6, 7, 8}
         };
@@ -44,7 +44,7 @@ class Grid2DUtilsTest {
 
     @Test
     void testToIntGrid() {
-        var grid = new Integer[][]{
+        final var grid = new Integer[][]{
                 {1, 2, 3, 4},
                 {5, 6, 7, 8}
         };

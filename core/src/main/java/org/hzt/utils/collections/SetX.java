@@ -15,20 +15,20 @@ public interface SetX<E> extends CollectionX<E>, Transformable<SetX<E>> {
         return new ImmutableSetX<>();
     }
 
-    static <E> SetX<E> of(Iterable<E> iterable) {
+    static <E> SetX<E> of(final Iterable<E> iterable) {
         return new ImmutableSetX<>(iterable);
     }
 
     @SafeVarargs
-    static <E> SetX<E> of(E... values) {
+    static <E> SetX<E> of(final E... values) {
         return new ImmutableSetX<>(values);
     }
 
-    static <E> SetX<E> copyOf(Iterable<E> iterable) {
+    static <E> SetX<E> copyOf(final Iterable<E> iterable) {
         return new ImmutableSetX<>(iterable);
     }
 
-    static <E> SetX<E> copyOf(Collection<E> collection) {
+    static <E> SetX<E> copyOf(final Collection<E> collection) {
         return new ImmutableSetX<>(collection);
     }
 
@@ -43,13 +43,13 @@ public interface SetX<E> extends CollectionX<E>, Transformable<SetX<E>> {
     }
 
     @Override
-    default @NotNull SetX<E> onEach(@NotNull Consumer<? super E> consumer) {
+    default @NotNull SetX<E> onEach(@NotNull final Consumer<? super E> consumer) {
         return SetX.of(CollectionX.super.onEach(consumer));
     }
 
     @Override
     @NotNull
-    default <R> SetX<E> onEach(@NotNull Function<? super E, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
+    default <R> SetX<E> onEach(@NotNull final Function<? super E, ? extends R> selector, @NotNull final Consumer<? super R> consumer) {
         return SetX.of(CollectionX.super.onEach(selector, consumer));
     }
 

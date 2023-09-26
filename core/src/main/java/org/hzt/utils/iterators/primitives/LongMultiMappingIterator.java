@@ -14,12 +14,12 @@ public final class LongMultiMappingIterator implements PrimitiveIterator.OfLong 
 
     private PrimitiveIterator.OfLong itemIterator = null;
 
-    private LongMultiMappingIterator(@NotNull OfLong iterator, @NotNull LongSequence.LongMapMultiConsumer mapper) {
+    private LongMultiMappingIterator(@NotNull final OfLong iterator, @NotNull final LongSequence.LongMapMultiConsumer mapper) {
         this.iterator = iterator;
         this.mapper = mapper;
     }
 
-    public static LongMultiMappingIterator of(@NotNull OfLong iterator, @NotNull LongSequence.LongMapMultiConsumer mapper) {
+    public static LongMultiMappingIterator of(@NotNull final OfLong iterator, @NotNull final LongSequence.LongMapMultiConsumer mapper) {
         return new LongMultiMappingIterator(iterator, mapper);
     }
 
@@ -44,7 +44,7 @@ public final class LongMultiMappingIterator implements PrimitiveIterator.OfLong 
             if (!iterator.hasNext()) {
                 return false;
             }
-            var longBuffer = new SpinedBuffer.OfLong();
+            final var longBuffer = new SpinedBuffer.OfLong();
             mapper.accept(iterator.nextLong(), longBuffer);
             final var nextItemIterator = longBuffer.iterator();
             if (nextItemIterator.hasNext()) {

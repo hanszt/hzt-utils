@@ -6,7 +6,7 @@ import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
 
 import static java.util.function.Predicate.not;
-import static org.hzt.utils.tuples.Result.*;
+import static org.hzt.utils.tuples.Result.catching;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ResultTest {
@@ -25,7 +25,7 @@ class ResultTest {
         assertEquals(22, results.size());
     }
 
-    private static int throwingWhenLargerThan20Times2(int v1) throws MyCheckedException {
+    private static int throwingWhenLargerThan20Times2(final int v1) throws MyCheckedException {
         final var THROWING_BOUND = 20;
         if (v1 > THROWING_BOUND) {
             throw new MyCheckedException();

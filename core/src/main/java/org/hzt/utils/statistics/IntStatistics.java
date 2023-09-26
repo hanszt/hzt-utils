@@ -15,18 +15,18 @@ public final class IntStatistics extends IntSummaryStatistics
         super();
     }
 
-    public IntStatistics(long count, int min, int max, long sum) {
+    public IntStatistics(final long count, final int min, final int max, final long sum) {
         super(count, min, max, sum);
     }
 
     @Override
-    public void accept(int value) {
+    public void accept(final int value) {
         super.accept(value);
-        var squareValue = (long) value * (long) value;
+        final var squareValue = (long) value * (long) value;
         sumOfSquare += squareValue;
     }
 
-    public IntStatistics combine(IntStatistics other) {
+    public IntStatistics combine(final IntStatistics other) {
         super.combine(other);
         sumOfSquare = sumOfSquare + other.sumOfSquare;
         return this;
@@ -39,14 +39,14 @@ public final class IntStatistics extends IntSummaryStatistics
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var that = (IntStatistics) o;
+        final var that = (IntStatistics) o;
         return getCount() == that.getCount() &&
                 Double.compare(getAverage(), that.getAverage()) == 0 &&
                 sumOfSquare == that.sumOfSquare;

@@ -15,7 +15,7 @@ public final class LongCollectors {
                 LongMutableList::add, LongMutableList::plus, LongMutableList::toList);
     }
 
-    public static <A, R, R1> LongCollector<A, R1> collectingAndThen(LongCollector<A, R> downStream, Function<R, R1> finisher) {
+    public static <A, R, R1> LongCollector<A, R1> collectingAndThen(final LongCollector<A, R> downStream, final Function<R, R1> finisher) {
         return new LongCollectorImpl<>(
                 downStream.supplier(),
                 downStream.accumulator(),

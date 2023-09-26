@@ -14,13 +14,13 @@ public final class LongFilteringIterator implements PrimitiveIterator.OfLong {
     private State nextState = State.NEXT_UNKNOWN;
     private long nextLong = 0L;
 
-    private LongFilteringIterator(OfLong iterator, LongPredicate predicate, boolean sendWhen) {
+    private LongFilteringIterator(final OfLong iterator, final LongPredicate predicate, final boolean sendWhen) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.sendWhen = sendWhen;
     }
 
-    public static LongFilteringIterator of(OfLong iterator, LongPredicate predicate, boolean sendWhen) {
+    public static LongFilteringIterator of(final OfLong iterator, final LongPredicate predicate, final boolean sendWhen) {
         return new LongFilteringIterator(iterator, predicate, sendWhen);
     }
 
@@ -48,7 +48,7 @@ public final class LongFilteringIterator implements PrimitiveIterator.OfLong {
 
     private void calculateNext() {
         while (iterator.hasNext()) {
-            var next = iterator.nextLong();
+            final var next = iterator.nextLong();
             if (predicate.test(next) == sendWhen) {
                 this.nextLong = next;
                 nextState = State.CONTINUE;

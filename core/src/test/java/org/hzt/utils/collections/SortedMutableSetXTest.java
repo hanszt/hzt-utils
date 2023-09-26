@@ -1,8 +1,8 @@
 package org.hzt.utils.collections;
 
-import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
+import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
@@ -29,7 +29,7 @@ class SortedMutableSetXTest {
 
         final var names = museumListContainingNulls.toSortedSetOf(Museum::getName);
 
-        MutableListX<Integer> list = MutableListX.empty();
+        final MutableListX<Integer> list = MutableListX.empty();
 
         final var average = names
                 .onEach(String::length, It

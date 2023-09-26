@@ -9,7 +9,7 @@ class StreamXImpl<T> implements StreamX<T> {
 
     private final Stream<T> stream;
 
-    StreamXImpl(Stream<T> stream) {
+    StreamXImpl(final Stream<T> stream) {
         this.stream = stream;
     }
 

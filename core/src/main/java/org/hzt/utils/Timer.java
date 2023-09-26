@@ -11,12 +11,12 @@ public final class Timer<R> {
     private final R result;
     private final long durationInNanos;
 
-    private Timer(R result, long durationInNanos) {
+    private Timer(final R result, final long durationInNanos) {
         this.result = result;
         this.durationInNanos = durationInNanos;
     }
 
-    private Timer(long durationInNanos) {
+    private Timer(final long durationInNanos) {
         this(null, durationInNanos);
     }
 
@@ -45,24 +45,24 @@ public final class Timer<R> {
      * @return first Timer object that contains the time it took to execute the function and the result of the function
      */
     @SuppressWarnings("unused")
-    public static <T, R> Timer<R> timeAFunction(T t, Function<? super T, ? extends R> function) {
-        long start = System.nanoTime();
-        R result = function.apply(t);
-        long delta = System.nanoTime() - start;
+    public static <T, R> Timer<R> timeAFunction(final T t, final Function<? super T, ? extends R> function) {
+        final var start = System.nanoTime();
+        final var result = function.apply(t);
+        final var delta = System.nanoTime() - start;
         return new Timer<>(result, delta);
     }
 
-    public static <R> Timer<R> timeALongFunction(long aLong, LongFunction<? extends R> function) {
-        long start = System.nanoTime();
-        R result = function.apply(aLong);
-        long delta = System.nanoTime() - start;
+    public static <R> Timer<R> timeALongFunction(final long aLong, final LongFunction<? extends R> function) {
+        final var start = System.nanoTime();
+        final var result = function.apply(aLong);
+        final var delta = System.nanoTime() - start;
         return new Timer<>(result, delta);
     }
 
-    public static <R> Timer<R> timeAnIntFunction(int integer, IntFunction<? extends R> function) {
-        long start = System.nanoTime();
-        R result = function.apply(integer);
-        long delta = System.nanoTime() - start;
+    public static <R> Timer<R> timeAnIntFunction(final int integer, final IntFunction<? extends R> function) {
+        final var start = System.nanoTime();
+        final var result = function.apply(integer);
+        final var delta = System.nanoTime() - start;
         return new Timer<>(result, delta);
     }
 
@@ -72,17 +72,17 @@ public final class Timer<R> {
      * @param <T> The type of the parameter consumed
      * @return first Timer object that contains the time it took to execute the consumer
      */
-    public static <T> Timer<Void> timeAConsumer(T t, Consumer<? super T> consumer) {
-        long start = System.nanoTime();
+    public static <T> Timer<Void> timeAConsumer(final T t, final Consumer<? super T> consumer) {
+        final var start = System.nanoTime();
         consumer.accept(t);
-        long delta = System.nanoTime() - start;
+        final var delta = System.nanoTime() - start;
         return new Timer<>(delta);
     }
 
-    public static Timer<Void> timeARunnable(Runnable runnable) {
-        long start = System.nanoTime();
+    public static Timer<Void> timeARunnable(final Runnable runnable) {
+        final var start = System.nanoTime();
         runnable.run();
-        long delta = System.nanoTime() - start;
+        final var delta = System.nanoTime() - start;
         return new Timer<>(delta);
     }
 }

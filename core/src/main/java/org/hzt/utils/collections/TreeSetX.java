@@ -19,26 +19,26 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
 
     private final NavigableSet<E> navigableSet;
 
-    TreeSetX(Function<? super E, ? extends R> selector) {
+    TreeSetX(final Function<? super E, ? extends R> selector) {
         this.navigableSet = new TreeSet<>(comparing(selector));
     }
 
-    TreeSetX(NavigableSet<E> navigableSet) {
+    TreeSetX(final NavigableSet<E> navigableSet) {
         this.navigableSet = new TreeSet<>(navigableSet);
     }
 
-    TreeSetX(Collection<E> collection, Function<E, R> selector) {
+    TreeSetX(final Collection<E> collection, final Function<E, R> selector) {
         this.navigableSet = new TreeSet<>(comparing(selector));
         navigableSet.addAll(collection);
     }
 
-    TreeSetX(Iterable<E> iterable, Function<? super E, ? extends R> selector) {
+    TreeSetX(final Iterable<E> iterable, final Function<? super E, ? extends R> selector) {
         navigableSet = new TreeSet<>(comparing(selector));
         iterable.forEach(navigableSet::add);
     }
 
     @SafeVarargs
-    TreeSetX(Function<E, R> selector, E first, E @NotNull ... others) {
+    TreeSetX(final Function<E, R> selector, final E first, final E @NotNull ... others) {
         navigableSet = new TreeSet<>(comparing(selector));
         navigableSet.add(first);
         Collections.addAll(navigableSet, others);
@@ -55,7 +55,7 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
     }
 
     @Override
-    public boolean contains(Object value) {
+    public boolean contains(final Object value) {
         return navigableSet.contains(value);
     }
 
@@ -67,38 +67,38 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
 
     @NotNull
     @Override
-    public <T> T @NotNull [] toArray(@NotNull T @NotNull [] a) {
+    public <T> T @NotNull [] toArray(@NotNull final T @NotNull [] a) {
         //noinspection SuspiciousToArrayCall
         return navigableSet.toArray(a);
     }
 
     @Override
-    public boolean add(E e) {
+    public boolean add(final E e) {
         return navigableSet.add(e);
     }
 
     @Override
-    public boolean remove(Object o) {
+    public boolean remove(final Object o) {
         return navigableSet.remove(o);
     }
 
     @Override
-    public boolean containsAll(@NotNull Collection<?> c) {
+    public boolean containsAll(@NotNull final Collection<?> c) {
         return navigableSet.containsAll(c);
     }
 
     @Override
-    public boolean addAll(@NotNull Collection<? extends E> c) {
+    public boolean addAll(@NotNull final Collection<? extends E> c) {
         return navigableSet.addAll(c);
     }
 
     @Override
-    public boolean retainAll(@NotNull Collection<?> c) {
+    public boolean retainAll(@NotNull final Collection<?> c) {
         return navigableSet.retainAll(c);
     }
 
     @Override
-    public boolean removeAll(@NotNull Collection<?> c) {
+    public boolean removeAll(@NotNull final Collection<?> c) {
         return navigableSet.removeAll(c);
     }
 
@@ -115,25 +115,25 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
 
     @Nullable
     @Override
-    public E lower(E e) {
+    public E lower(final E e) {
         return navigableSet.lower(e);
     }
 
     @Nullable
     @Override
-    public E floor(E e) {
+    public E floor(final E e) {
         return navigableSet.floor(e);
     }
 
     @Nullable
     @Override
-    public E ceiling(E e) {
+    public E ceiling(final E e) {
         return navigableSet.ceiling(e);
     }
 
     @Nullable
     @Override
-    public E higher(E e) {
+    public E higher(final E e) {
         return navigableSet.higher(e);
     }
 
@@ -169,19 +169,19 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
 
     @NotNull
     @Override
-    public NavigableSet<E> subSet(E fromElement, boolean fromInclusive, E toElement, boolean toInclusive) {
+    public NavigableSet<E> subSet(final E fromElement, final boolean fromInclusive, final E toElement, final boolean toInclusive) {
         return navigableSet.subSet(fromElement, fromInclusive, toElement, toInclusive);
     }
 
     @NotNull
     @Override
-    public NavigableSet<E> headSet(E toElement, boolean inclusive) {
+    public NavigableSet<E> headSet(final E toElement, final boolean inclusive) {
         return navigableSet.headSet(toElement, inclusive);
     }
 
     @NotNull
     @Override
-    public NavigableSet<E> tailSet(E fromElement, boolean inclusive) {
+    public NavigableSet<E> tailSet(final E fromElement, final boolean inclusive) {
         return navigableSet.tailSet(fromElement, inclusive);
     }
 
@@ -197,31 +197,31 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
 
     @NotNull
     @Override
-    public SortedSet<E> subSet(E fromElement, E toElement) {
+    public SortedSet<E> subSet(final E fromElement, final E toElement) {
         return navigableSet.subSet(fromElement, toElement);
     }
 
     @NotNull
     @Override
-    public SortedSet<E> headSet(E toElement) {
+    public SortedSet<E> headSet(final E toElement) {
         return navigableSet.headSet(toElement);
     }
 
     @NotNull
     @Override
-    public SortedSet<E> tailSet(E fromElement) {
+    public SortedSet<E> tailSet(final E fromElement) {
         return navigableSet.tailSet(fromElement);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var treeSetX = (TreeSetX<?, ?>) o;
+        final var treeSetX = (TreeSetX<?, ?>) o;
         return navigableSet.equals(treeSetX.navigableSet);
     }
 
@@ -241,7 +241,7 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
     }
 
     @Override
-    public boolean containsNot(E e) {
+    public boolean containsNot(final E e) {
         return !contains(e);
     }
 }

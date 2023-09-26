@@ -26,25 +26,25 @@ public interface DoubleList extends DoubleCollection,
         return new DoubleImmutableList();
     }
 
-    static DoubleList of(double... array) {
+    static DoubleList of(final double... array) {
         return new DoubleImmutableList(array);
     }
 
-    static DoubleList of(Iterable<Double> iterable) {
+    static DoubleList of(final Iterable<Double> iterable) {
         return DoubleSequence.of(iterable).toList();
     }
 
-    static DoubleList copyOf(DoubleCollection doubleCollection) {
+    static DoubleList copyOf(final DoubleCollection doubleCollection) {
         return new DoubleImmutableList(doubleCollection);
     }
 
-    static DoubleList build(Consumer<? super DoubleMutableList> factory) {
+    static DoubleList build(final Consumer<? super DoubleMutableList> factory) {
         final var listX = DoubleMutableList.empty();
         factory.accept(listX);
         return listX;
     }
 
-    default boolean contains(double value) {
+    default boolean contains(final double value) {
         return indexOf(value) >= 0;
     }
 
@@ -82,8 +82,8 @@ public interface DoubleList extends DoubleCollection,
 
     @Override
     @NotNull
-    default OptionalDouble findLast(@NotNull DoublePredicate predicate) {
-        var iterator = listIterator(lastIndex());
+    default OptionalDouble findLast(@NotNull final DoublePredicate predicate) {
+        final var iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
             final var previousDouble = iterator.previousDouble();
             if (predicate.test(previousDouble)) {
@@ -112,7 +112,7 @@ public interface DoubleList extends DoubleCollection,
     }
 
     @Override
-    default DoubleList sorted(DoubleComparator comparator) {
+    default DoubleList sorted(final DoubleComparator comparator) {
         final var array = toArray();
         ArraysX.sort(comparator, array);
         return DoubleList.of(array);
@@ -133,11 +133,11 @@ public interface DoubleList extends DoubleCollection,
      * @see java.util.Arrays#binarySearch(double[], double)
      */
     @Override
-    default int binarySearch(int fromIndex, int toIndex, DoubleToIntFunction comparison) {
+    default int binarySearch(final int fromIndex, final int toIndex, final DoubleToIntFunction comparison) {
         return BinarySearchable.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
     }
 
-    default int binarySearch(double valueToSearch) {
+    default int binarySearch(final double valueToSearch) {
         return binarySearch(0, size(), e -> Double.compare(e, valueToSearch));
     }
 

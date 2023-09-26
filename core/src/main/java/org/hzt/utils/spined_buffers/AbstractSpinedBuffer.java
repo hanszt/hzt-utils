@@ -55,7 +55,7 @@ abstract class AbstractSpinedBuffer {
      *
      * @param initialCapacity The minimum expected number of elements
      */
-    protected AbstractSpinedBuffer(int initialCapacity) {
+    protected AbstractSpinedBuffer(final int initialCapacity) {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Capacity: "+ initialCapacity);
         }
@@ -82,8 +82,8 @@ abstract class AbstractSpinedBuffer {
     /**
      * How big should the nth chunk be?
      */
-    protected int chunkSize(int n) {
-        var power = ((n == 0) || (n == 1))
+    protected int chunkSize(final int n) {
+        final var power = ((n == 0) || (n == 1))
                 ? initialChunkPower
                 : Math.min((initialChunkPower + n) - 1, AbstractSpinedBuffer.MAX_CHUNK_POWER);
         return 1 << power;

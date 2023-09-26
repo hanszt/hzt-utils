@@ -18,7 +18,11 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TreeNodeTest {
 
@@ -206,7 +210,7 @@ class TreeNodeTest {
 
         private Person parent;
 
-        public Person(String name) {
+        public Person(final String name) {
             this.name = name;
             this.children = new ArrayList<>();
         }
@@ -227,7 +231,7 @@ class TreeNodeTest {
         }
 
         @Override
-        public Person withParent(Person parent) {
+        public Person withParent(final Person parent) {
             this.parent = parent;
             return this;
         }
@@ -263,7 +267,7 @@ class TreeNodeTest {
 
             System.out.println(root.toTreeString());
 
-            final List<String> fileNames = root.siblingSequence().map(File::getName).toList();
+            final var fileNames = root.siblingSequence().map(File::getName).toList();
 
             assertAll(
                     () -> assertFalse(fileNames.isEmpty()),
@@ -392,7 +396,7 @@ class TreeNodeTest {
             private final String name;
             private final Node[] children;
 
-            public Node(String name, Node... children) {
+            public Node(final String name, final Node... children) {
                 this.name = name;
                 this.children = children;
             }
@@ -406,11 +410,11 @@ class TreeNodeTest {
 
     private static final class FileX extends File implements TreeNode<FileX, FileX> {
 
-        public FileX(@NotNull String pathname) {
+        public FileX(@NotNull final String pathname) {
             super(pathname);
         }
 
-        public FileX(File file) {
+        public FileX(final File file) {
             this(file.getAbsolutePath());
         }
 

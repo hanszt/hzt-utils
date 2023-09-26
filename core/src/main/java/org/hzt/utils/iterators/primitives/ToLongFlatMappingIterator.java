@@ -12,8 +12,8 @@ final class ToLongFlatMappingIterator<T> implements PrimitiveIterator.OfLong {
 
     private PrimitiveIterator.OfLong itemIterator = null;
 
-    ToLongFlatMappingIterator(Iterator<T> iterator,
-                              Function<? super T, ? extends PrimitiveIterator.OfLong> toIteratorFunction) {
+    ToLongFlatMappingIterator(final Iterator<T> iterator,
+                              final Function<? super T, ? extends PrimitiveIterator.OfLong> toIteratorFunction) {
         this.iterator = iterator;
         this.toIteratorFunction = toIteratorFunction;
     }

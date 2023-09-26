@@ -64,7 +64,7 @@ public class PrefixIntRangeSumBenchmark {
     public long loopMapFilterSum() {
         long sum = 0;
         for (var i = 0; i < UPPER_BOUND_RANGE; i++) {
-            var i2 = i * 2;
+            final var i2 = i * 2;
             if (i2 % 4 == 0) {
                 sum += i2;
             }
@@ -72,8 +72,8 @@ public class PrefixIntRangeSumBenchmark {
         return sum;
     }
 
-    public static void main(String[] args) {
-        var options = new OptionsBuilder()
+    public static void main(final String[] args) {
+        final var options = new OptionsBuilder()
                 .include(PrefixIntRangeSumBenchmark.class.getSimpleName())
                 .forks(1)
                 .warmupIterations(2)
@@ -82,7 +82,7 @@ public class PrefixIntRangeSumBenchmark {
                 .build();
         try {
             new Runner(options).run();
-        } catch (RunnerException e) {
+        } catch (final RunnerException e) {
             throw new IllegalStateException(e);
         }
     }

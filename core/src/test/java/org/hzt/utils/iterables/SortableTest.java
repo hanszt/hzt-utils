@@ -15,7 +15,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.Comparator.reverseOrder;
 import static org.hzt.utils.Patterns.blankStringPattern;
 import static org.hzt.utils.Patterns.splitToSequence;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SortableTest {
 
@@ -114,7 +118,7 @@ class SortableTest {
             "Charlotte Hans Joop Marjolein  Matthijs Thom",
             "Adi Hans Judith Koen Pauline  Ted"
     })
-    void isSortedInNaturalOrder(String string) {
+    void isSortedInNaturalOrder(final String string) {
         final var people = blankStringPattern.splitAsStream(string)
                 .map(Person::new)
                 .collect(CollectorsX.toListX());
@@ -129,7 +133,7 @@ class SortableTest {
             "Charlotte Hans Marjolein Joop  Matthijs Thom",
             "Adi Judith Hans Koen Pauline  Ted"
     })
-    void isNotSortedInNaturalOrder(String string) {
+    void isNotSortedInNaturalOrder(final String string) {
         final var people = splitToSequence(blankStringPattern, string)
                 .map(Person::new);
 

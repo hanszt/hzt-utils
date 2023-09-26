@@ -21,14 +21,14 @@ public final class Painter extends Person implements Comparable<Painter>, Iterab
     private final NavigableSet<Painting> paintingList = new TreeSet<>();
     private LocalDate dateOfDeath;
 
-    public Painter(String firstName, String lastname, LocalDate dateOfBirth) {
+    public Painter(final String firstName, final String lastname, final LocalDate dateOfBirth) {
         super(firstName + " " + lastname);
         this.firstName = firstName;
         this.lastname = lastname;
         this.dateOfBirth = dateOfBirth;
     }
 
-    public Period age(LocalDate now) {
+    public Period age(final LocalDate now) {
         return Period.between(dateOfBirth, dateOfDeath != null ? dateOfDeath : now);
     }
 
@@ -48,30 +48,30 @@ public final class Painter extends Person implements Comparable<Painter>, Iterab
         return Optional.ofNullable(dateOfDeath);
     }
 
-    public void getDateOfDeathIfPresent(Consumer<LocalDate> consumer) {
+    public void getDateOfDeathIfPresent(final Consumer<LocalDate> consumer) {
         getDateOfDeath().ifPresent(consumer);
     }
 
-    public void setDateOfDeath(LocalDate dateOfDeath) {
+    public void setDateOfDeath(final LocalDate dateOfDeath) {
         this.dateOfDeath = dateOfDeath;
     }
 
-    public void addPaintings(Collection<Painting> collection) {
+    public void addPaintings(final Collection<Painting> collection) {
         paintingList.addAll(collection);
     }
 
-    public void addPaintings(Painting... paintings) {
+    public void addPaintings(final Painting... paintings) {
         paintingList.addAll(List.of(paintings));
     }
 
     @Override
-    public int compareTo(Painter o) {
+    public int compareTo(final Painter o) {
         return lastname.compareTo(o.lastname);
     }
 
     @Override
-    public boolean equals(Object o) {
-        return this == o || (o instanceof Painter painter &&
+    public boolean equals(final Object o) {
+        return this == o || (o instanceof final Painter painter &&
                 Objects.equals(this.firstName, painter.firstName) &&
                 Objects.equals(this.lastname, painter.lastname) &&
                 Objects.equals(this.dateOfBirth, painter.dateOfBirth));

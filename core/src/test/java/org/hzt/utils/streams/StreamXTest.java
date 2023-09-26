@@ -20,13 +20,18 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toUnmodifiableList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class StreamXTest {
 
     @Test
     void mapFilterReduce() {
-        var strings = List.of("This", "is", "a", "StreamX", "test");
+        final var strings = List.of("This", "is", "a", "StreamX", "test");
 
         final var lengthSum = StreamX.of(strings)
                 .filter("This is a test"::contains)
@@ -38,7 +43,7 @@ class StreamXTest {
 
     @Test
     void testStreamXIsLazyAndSequential() {
-        var strings = List.of("This", "is", "a", "StreamX", "test");
+        final var strings = List.of("This", "is", "a", "StreamX", "test");
 
         final var streamX = StreamX.of(strings)
                 .filter(this::contained)
@@ -51,7 +56,7 @@ class StreamXTest {
 
     @Test
     void testStreamXIsLazyAndParallel() {
-        var strings = List.of("This", "is", "a", "StreamX", "test");
+        final var strings = List.of("This", "is", "a", "StreamX", "test");
 
         final var streamX = StreamX.parallel(strings)
                 .filter(this::contained)
@@ -64,7 +69,7 @@ class StreamXTest {
 
     @Test
     void testStreamXCanBeConsumedOnlyOnce() {
-        var strings = List.of("This", "is", "a", "StreamX", "test");
+        final var strings = List.of("This", "is", "a", "StreamX", "test");
 
         final var stream = StreamX.of(strings);
 
@@ -80,7 +85,7 @@ class StreamXTest {
         );
     }
 
-    private boolean contained(String s) {
+    private boolean contained(final String s) {
         fail();
         return "This is a test".contains(s);
     }
@@ -106,9 +111,9 @@ class StreamXTest {
 
     @Test
     void testHasCharacteristics() {
-        Spliterator<String> spliterator = new Spliterator<>() {
+        final Spliterator<String> spliterator = new Spliterator<>() {
             @Override
-            public boolean tryAdvance(Consumer<? super String> action) {
+            public boolean tryAdvance(final Consumer<? super String> action) {
                 return false;
             }
 
@@ -170,7 +175,7 @@ class StreamXTest {
 
         var counter = 0;
         //noinspection unused
-        for (var s : strings) {
+        for (final var s : strings) {
             counter++;
         }
 
@@ -195,13 +200,13 @@ class StreamXTest {
 
     }
 
-    private boolean dateInLeapYear(LocalDate localDate) {
+    private boolean dateInLeapYear(final LocalDate localDate) {
         System.out.println("dateInLeapYear:");
         System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
         return localDate.isLeapYear();
     }
 
-    private Month dateToMonth(LocalDate localDate) {
+    private Month dateToMonth(final LocalDate localDate) {
         System.out.println("dateToMonth");
         System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
         return localDate.getMonth();

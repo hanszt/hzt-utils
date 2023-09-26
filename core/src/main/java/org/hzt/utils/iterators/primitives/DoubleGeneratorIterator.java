@@ -15,13 +15,13 @@ public final class DoubleGeneratorIterator implements PrimitiveIterator.OfDouble
     private double nextDouble;
     private State nextState = State.INIT_UNKNOWN;
 
-    private DoubleGeneratorIterator(DoubleSupplier initSupplier, DoubleUnaryOperator nextValueSupplier) {
+    private DoubleGeneratorIterator(final DoubleSupplier initSupplier, final DoubleUnaryOperator nextValueSupplier) {
         this.initSupplier = initSupplier;
         this.nextValueSupplier = nextValueSupplier;
         this.nextDouble = initSupplier.getAsDouble();
     }
 
-    public static OfDouble of(DoubleSupplier initSupplier, DoubleUnaryOperator nextValueSupplier) {
+    public static OfDouble of(final DoubleSupplier initSupplier, final DoubleUnaryOperator nextValueSupplier) {
         return new DoubleGeneratorIterator(initSupplier, nextValueSupplier);
     }
 

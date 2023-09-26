@@ -17,18 +17,18 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
         this(0);
     }
 
-    DoubleHashSet(double[] values) {
+    DoubleHashSet(final double[] values) {
         this(values.length > 0 ? 1 : 0);
-        for (var value : values) {
+        for (final var value : values) {
             add(value);
         }
     }
 
-    public DoubleHashSet(int size) {
+    public DoubleHashSet(final int size) {
         super(size, new CollisionChainNode[INITIAL_CAPACITY]);
     }
 
-    public boolean add(double value) {
+    public boolean add(final double value) {
         if (contains(value)) {
             return false;
         }
@@ -45,7 +45,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
         return true;
     }
 
-    public boolean contains(double value) {
+    public boolean contains(final double value) {
         final var collisionChainIndex = Double.hashCode(value) & mask;
         var node = table[collisionChainIndex];
 
@@ -58,7 +58,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
         return false;
     }
 
-    public boolean remove(double value) {
+    public boolean remove(final double value) {
         if (!contains(value)) {
             return false;
         }
@@ -72,7 +72,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
 
         PrimitiveNode previous = null;
         while (current != null) {
-            var next = current.next;
+            final var next = current.next;
             if (Double.compare(((CollisionChainNode) current).value, value) == 0) {
                 if (previous == null) {
                     table[targetCollisionChainIndex] = next;
@@ -118,7 +118,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
         return MAXIMUM_LOAD_FACTOR * size * 4 < table.length;
     }
     private void expand() {
-        var newTable = new CollisionChainNode[table.length * 2];
+        final var newTable = new CollisionChainNode[table.length * 2];
 
         rehash(table, newTable);
         table = newTable;
@@ -126,24 +126,24 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
     }
 
     private void contract() {
-        var newTable = new CollisionChainNode[table.length / 4];
+        final var newTable = new CollisionChainNode[table.length / 4];
         rehash(table, newTable);
         table = newTable;
         mask = table.length - 1;
     }
 
     @Override
-    int nextHashCode(PrimitiveIterator.OfDouble iterator) {
+    int nextHashCode(final PrimitiveIterator.OfDouble iterator) {
         return Double.hashCode(iterator.nextDouble());
     }
 
     @Override
-    int rehash(PrimitiveNode node, int newTableLength) {
+    int rehash(final PrimitiveNode node, final int newTableLength) {
         return Double.hashCode(((CollisionChainNode) node).value) & (newTableLength - 1);
     }
 
     @Override
-    protected double[] newArray(int length) {
+    protected double[] newArray(final int length) {
         return new double[length];
     }
 
@@ -165,7 +165,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
 
         private final double value;
 
-        CollisionChainNode(double value, PrimitiveNode next) {
+        CollisionChainNode(final double value, final PrimitiveNode next) {
             super(next);
             this.value = value;
         }
@@ -176,7 +176,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
         }
     }
     @Override
-    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfDouble iterator) {
+    protected void appendNextPrimitive(final StringBuilder sb, final PrimitiveIterator.OfDouble iterator) {
         sb.append(iterator.nextDouble());
     }
 }

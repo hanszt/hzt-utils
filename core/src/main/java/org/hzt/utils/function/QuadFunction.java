@@ -21,12 +21,12 @@ public interface QuadFunction<T, U, V, W, R> {
      * applies the {@code after} function
      * @throws NullPointerException if after is null
      */
-    default <X> QuadFunction<T, U, V, W, X> andThen(Function<? super R, ? extends X> after) {
+    default <X> QuadFunction<T, U, V, W, X> andThen(final Function<? super R, ? extends X> after) {
         Objects.requireNonNull(after);
         return (T t, U u, V v, W w) -> after.apply(apply(t, u, v, w));
     }
 
-    static <T, U, V, W, R> QuadFunction<T, U, V, W, R> of(QuadFunction<T, U, V, W, R> function) {
+    static <T, U, V, W, R> QuadFunction<T, U, V, W, R> of(final QuadFunction<T, U, V, W, R> function) {
         Objects.requireNonNull(function);
         return function;
     }

@@ -36,19 +36,19 @@ public interface LongCollection extends
     }
 
     @Override
-    default boolean containsAll(@NotNull Iterable<Long> iterable) {
+    default boolean containsAll(@NotNull final Iterable<Long> iterable) {
         return LongSequence.of(iterable).all(this::contains);
     }
 
     @Override
-    default boolean containsAll(long @NotNull ... array) {
+    default boolean containsAll(final long @NotNull ... array) {
         return LongSequence.of(array).all(this::contains);
     }
 
     boolean contains(long l);
 
-    default LongList filter(LongPredicate predicate) {
-        var longs = LongMutableList.withInitCapacity(size());
+    default LongList filter(final LongPredicate predicate) {
+        final var longs = LongMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             final var value = iterator.nextLong();
@@ -59,8 +59,8 @@ public interface LongCollection extends
         return LongList.copyOf(longs);
     }
 
-    default LongList map(LongUnaryOperator mapper) {
-        var list = LongMutableList.withInitCapacity(size());
+    default LongList map(final LongUnaryOperator mapper) {
+        final var list = LongMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             list.add(mapper.applyAsLong(iterator.nextLong()));
@@ -68,8 +68,8 @@ public interface LongCollection extends
         return LongList.copyOf(list);
     }
 
-    default IntList mapToInt(LongToIntFunction mapper) {
-        var ints = IntMutableList.withInitCapacity(size());
+    default IntList mapToInt(final LongToIntFunction mapper) {
+        final var ints = IntMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextLong()));
@@ -77,8 +77,8 @@ public interface LongCollection extends
         return IntList.copyOf(ints);
     }
 
-    default DoubleList mapToDouble(LongToDoubleFunction mapper) {
-        var doubles = DoubleMutableList.withInitCapacity(size());
+    default DoubleList mapToDouble(final LongToDoubleFunction mapper) {
+        final var doubles = DoubleMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextLong()));
@@ -86,8 +86,8 @@ public interface LongCollection extends
         return DoubleList.copyOf(doubles);
     }
 
-    default <R> ListX<R> mapToObj(LongFunction<R> mapper) {
-        MutableListX<R> mutableListX = MutableListX.withInitCapacity(size());
+    default <R> ListX<R> mapToObj(final LongFunction<R> mapper) {
+        final MutableListX<R> mutableListX = MutableListX.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             mutableListX.add(mapper.apply(iterator.nextLong()));
@@ -96,15 +96,15 @@ public interface LongCollection extends
     }
 
     @Override
-    default LongList plus(@NotNull Iterable<Long> values) {
-        var listX = toMutableList();
+    default LongList plus(@NotNull final Iterable<Long> values) {
+        final var listX = toMutableList();
         listX.addAll(values);
         return LongList.copyOf(listX);
     }
 
     @Override
-    default LongList plus(long @NotNull ... array) {
-        var list = toMutableList();
+    default LongList plus(final long @NotNull ... array) {
+        final var list = toMutableList();
         list.addAll(array);
         return list;
     }
@@ -119,11 +119,11 @@ public interface LongCollection extends
     }
 
     @Override
-    default LongList take(long n) {
+    default LongList take(final long n) {
         return LongList.copyOf(takeTo(() -> LongMutableList.withInitCapacity((int) n), n));
     }
 
-    default LongList skip(long n) {
+    default LongList skip(final long n) {
         PreConditions.require(n <= Integer.MAX_VALUE);
         return LongList.copyOf(skipTo(() -> LongMutableList.withInitCapacity((int) (size() - n)), (int) n));
     }

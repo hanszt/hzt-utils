@@ -1,7 +1,7 @@
 package org.hzt.utils.statistics;
 
-import org.hzt.utils.numbers.BigDecimalX;
 import org.hzt.utils.Transformable;
+import org.hzt.utils.numbers.BigDecimalX;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
@@ -17,18 +17,18 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
         super();
     }
 
-    public BigDecimalStatistics(long count, BigDecimal sum, BigDecimal min, BigDecimal max) {
+    public BigDecimalStatistics(final long count, final BigDecimal sum, final BigDecimal min, final BigDecimal max) {
         super(count, sum, min, max);
     }
 
     @Override
-    public void accept(BigDecimal value) {
+    public void accept(final BigDecimal value) {
         super.accept(value);
-        var squareValue = value.multiply(value);
+        final var squareValue = value.multiply(value);
         sumOfSquare = sumOfSquare.add(squareValue);
     }
 
-    public BigDecimalStatistics combine(BigDecimalStatistics other) {
+    public BigDecimalStatistics combine(final BigDecimalStatistics other) {
         super.combine(other);
         sumOfSquare = sumOfSquare.add(other.sumOfSquare);
         return this;
@@ -46,11 +46,11 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
         return getStandardDeviation(2, RoundingMode.HALF_UP, MathContext.DECIMAL32);
     }
 
-    public BigDecimalX getStandardDeviation(int scale, RoundingMode roundingMode) {
+    public BigDecimalX getStandardDeviation(final int scale, final RoundingMode roundingMode) {
         return getStandardDeviation(scale, roundingMode, MathContext.DECIMAL128);
     }
 
-    public BigDecimalX getStandardDeviation(int scale, RoundingMode roundingMode, MathContext mathContext) {
+    public BigDecimalX getStandardDeviation(final int scale, final RoundingMode roundingMode, final MathContext mathContext) {
         final BigDecimal average = getAverage(scale, roundingMode);
         final var subtract = (getSumOfSquare().divide(BigDecimal.valueOf(getCount()), scale, roundingMode))
                 .subtract(average.multiply(average));

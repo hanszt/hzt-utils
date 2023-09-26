@@ -14,14 +14,14 @@ public final class Painting
     private final Year yearOfCreation;
     private final boolean isInMuseum;
 
-    public Painting(String name, Painter painter, Year yearOfCreation, boolean isInMuseum) {
+    public Painting(final String name, final Painter painter, final Year yearOfCreation, final boolean isInMuseum) {
         this.name = name;
         this.painter = painter;
         this.yearOfCreation = yearOfCreation;
         this.isInMuseum = isInMuseum;
     }
 
-    public static Painting of(String name) {
+    public static Painting of(final String name) {
         return new Painting(name, null, null, false);
     }
 
@@ -48,7 +48,7 @@ public final class Painting
     }
 
     @Override
-    public int compareTo(Painting o) {
+    public int compareTo(final Painting o) {
         return name.compareTo(o.name);
     }
 
@@ -69,14 +69,14 @@ public final class Painting
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
         }
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        var that = (Painting) obj;
+        final var that = (Painting) obj;
         return Objects.equals(this.name, that.name) &&
                 Objects.equals(this.painter, that.painter) &&
                 Objects.equals(this.yearOfCreation, that.yearOfCreation) &&

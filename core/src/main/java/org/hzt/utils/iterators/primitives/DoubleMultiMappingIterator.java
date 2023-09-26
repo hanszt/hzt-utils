@@ -14,12 +14,12 @@ public final class DoubleMultiMappingIterator implements PrimitiveIterator.OfDou
 
     private OfDouble itemIterator = null;
 
-    private DoubleMultiMappingIterator(@NotNull OfDouble iterator, @NotNull DoubleSequence.DoubleMapMultiConsumer mapper) {
+    private DoubleMultiMappingIterator(@NotNull final OfDouble iterator, @NotNull final DoubleSequence.DoubleMapMultiConsumer mapper) {
         this.iterator = iterator;
         this.mapper = mapper;
     }
 
-    public static DoubleMultiMappingIterator of(@NotNull OfDouble iterator, @NotNull DoubleSequence.DoubleMapMultiConsumer mapper) {
+    public static DoubleMultiMappingIterator of(@NotNull final OfDouble iterator, @NotNull final DoubleSequence.DoubleMapMultiConsumer mapper) {
         return new DoubleMultiMappingIterator(iterator, mapper);
     }
 
@@ -44,7 +44,7 @@ public final class DoubleMultiMappingIterator implements PrimitiveIterator.OfDou
             if (!iterator.hasNext()) {
                 return false;
             }
-            var doubleBuffer = new SpinedBuffer.OfDouble();
+            final var doubleBuffer = new SpinedBuffer.OfDouble();
             mapper.accept(iterator.nextDouble(), doubleBuffer);
             final var nextItemIterator = doubleBuffer.iterator();
             if (nextItemIterator.hasNext()) {

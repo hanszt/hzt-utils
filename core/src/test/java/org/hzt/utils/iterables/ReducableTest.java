@@ -175,7 +175,7 @@ class ReducableTest {
 
     @Test
     void testFindLast() {
-        var list = ListX.of("hi", "hello", "this", "is", "a", "test");
+        final var list = ListX.of("hi", "hello", "this", "is", "a", "test");
         final var last = list.last(s -> s.contains("i"));
 
         assertEquals("is", last);

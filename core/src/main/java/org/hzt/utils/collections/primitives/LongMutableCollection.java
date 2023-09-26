@@ -16,7 +16,7 @@ public interface LongMutableCollection extends LongCollection,
 
     @Override
     default boolean addAll(@NotNull Iterable<Long> iterable) {
-        boolean allAdded= true;
+        boolean allAdded = true;
         if (iterable instanceof PrimitiveIterable.OfLong longIterable) {
             final var iterator = longIterable.iterator();
             while (iterator.hasNext()) {

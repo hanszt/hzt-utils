@@ -24,15 +24,15 @@ public interface Node<T, S extends Node<T, S>> {
     }
 
     default S addNeighbor(S toAdd) {
-        final Collection<S> children = getMutableNeighbors();
+        final var children = getMutableNeighbors();
         children.add(toAdd);
         //noinspection unchecked
         return (S) this;
     }
 
     default S addNeighbors(Iterable<S> toAdd) {
-        final Collection<S> children = getMutableNeighbors();
-        for (S child : toAdd) {
+        final var children = getMutableNeighbors();
+        for (var child : toAdd) {
             children.add(child);
         }
         //noinspection unchecked
@@ -40,7 +40,7 @@ public interface Node<T, S extends Node<T, S>> {
     }
 
     default S bidiAddNeighbor(S toAdd) {
-        final Collection<S> neighbors = getMutableNeighbors();
+        final var neighbors = getMutableNeighbors();
         neighbors.add(toAdd);
         //noinspection unchecked
         toAdd.getMutableNeighbors().add((S) this);
@@ -49,8 +49,8 @@ public interface Node<T, S extends Node<T, S>> {
     }
 
     default S bidiAddNeighbors(Iterable<S> toAdd) {
-        final Collection<S> neighbors = getMutableNeighbors();
-        for (S neighbor : toAdd) {
+        final var neighbors = getMutableNeighbors();
+        for (var neighbor : toAdd) {
             neighbors.add(neighbor);
             //noinspection unchecked
             neighbor.getMutableNeighbors().add((S) this);
@@ -116,8 +116,8 @@ public interface Node<T, S extends Node<T, S>> {
                     isThis = false;
                     return true;
                 }
-                final Optional<S> predecessor = next.optionalPredecessor();
-                final boolean present = predecessor.isPresent();
+                final var predecessor = next.optionalPredecessor();
+                final var present = predecessor.isPresent();
                 if (present) {
                     next = predecessor.orElseThrow();
                 }

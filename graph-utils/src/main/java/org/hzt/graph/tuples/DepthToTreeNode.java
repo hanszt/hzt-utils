@@ -28,7 +28,7 @@ public final class DepthToTreeNode<T> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DepthToTreeNode<?> that = (DepthToTreeNode<?>) o;
+        var that = (DepthToTreeNode<?>) o;
         return treeDepth == that.treeDepth && Objects.equals(node, that.node);
     }
 

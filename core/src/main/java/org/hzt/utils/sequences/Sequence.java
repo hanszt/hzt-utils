@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -158,6 +159,10 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
                                 Objects::nonNull, true),
                         mapper),
                 Objects::nonNull, true);
+    }
+
+    default <R> Sequence<R> mapIfPresent(@NotNull Function<? super T, Optional<R>> mapper) {
+        return () -> Iterators.multiMappingIterator(iterator(), (t, consumer) -> mapper.apply(t).ifPresent(consumer));
     }
 
     @Override

@@ -36,10 +36,10 @@ final class BreadthFirstIterator<T, S extends Node<T, S>> implements Iterator<S>
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        S next = queue.remove();
+        var next = queue.remove();
         final var iterator = next.neighborIterator();
         while (iterator.hasNext()) {
-            S neighbor = iterator.next();
+            var neighbor = iterator.next();
             if (!visited.contains(neighbor)) {
                 if (setPredecessor) {
                     neighbor.withPredecessor(next);

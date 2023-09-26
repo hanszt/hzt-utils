@@ -24,7 +24,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.averagingInt;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.maxBy;
+import static java.util.stream.Collectors.minBy;
+import static java.util.stream.Collectors.partitioningBy;
+import static java.util.stream.Collectors.summarizingInt;
+import static java.util.stream.Collectors.summingInt;
+import static java.util.stream.Collectors.summingLong;
+import static java.util.stream.Collectors.toList;
 import static org.hzt.utils.collectors.CollectorsX.branching;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -185,7 +196,6 @@ class CollectableTest {
     }
 
     private void assertStreamCanOnlyBeConsumedOnce(Stream<Year> yearStream) {
-        //noinspection ResultOfMethodCallIgnored
         final var exception = assertThrows(IllegalStateException.class, yearStream::findFirst);
         assertEquals("stream has already been operated upon or closed", exception.getMessage());
     }

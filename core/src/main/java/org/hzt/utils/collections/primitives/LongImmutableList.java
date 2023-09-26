@@ -42,7 +42,7 @@ final class LongImmutableList extends
     }
 
     int indexOfRange(long value, int end) {
-        for (int i = 0; i < end; i++) {
+        for (var i = 0; i < end; i++) {
             if (value == elementData[i]) {
                 return i;
             }
@@ -62,13 +62,13 @@ final class LongImmutableList extends
 
     @Override
     public LongList shuffled() {
-        final LongMutableList mutableList = LongMutableList.of(this);
+        final var mutableList = LongMutableList.of(this);
         PrimitiveListHelper.shuffle(mutableList);
         return mutableList;
     }
 
     private int lastIndexOfRange(long value, int end) {
-        for (int i = end - 1; i >= 0; i--) {
+        for (var i = end - 1; i >= 0; i--) {
             if (value == elementData[i]) {
                 return i;
             }
@@ -86,11 +86,11 @@ final class LongImmutableList extends
             return false;
         }
 
-        PrimitiveIterator.OfLong iterator1 = iterator();
-        PrimitiveIterator.OfLong iterator2 = ((LongList) o).iterator();
+        var iterator1 = iterator();
+        var iterator2 = ((LongList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            long l1 = iterator1.nextLong();
-            long l2 = iterator2.nextLong();
+            var l1 = iterator1.nextLong();
+            var l2 = iterator2.nextLong();
             if (l1 != l2) {
                 return false;
             }
@@ -100,7 +100,7 @@ final class LongImmutableList extends
 
     @Override
     public int hashCode() {
-        final int result = Objects.hash(elementData.length);
+        final var result = Objects.hash(elementData.length);
         return  31 * result + Arrays.hashCode(elementData);
     }
 

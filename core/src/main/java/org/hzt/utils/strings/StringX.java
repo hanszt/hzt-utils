@@ -5,6 +5,7 @@ import org.hzt.utils.Transformable;
 import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.comparables.ComparableX;
+import org.hzt.utils.iterables.Reversable;
 import org.hzt.utils.numbers.BigDecimalX;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.numbers.IntX;

@@ -26,7 +26,7 @@ public final class ArraysX {
     }
 
     public static <T> T[] generateArray(int size, IntFunction<T> generator, IntFunction<T[]> arrayFactory) {
-        final T[] array = arrayFactory.apply(size);
+        final var array = arrayFactory.apply(size);
         Arrays.setAll(array, generator);
         return array;
     }

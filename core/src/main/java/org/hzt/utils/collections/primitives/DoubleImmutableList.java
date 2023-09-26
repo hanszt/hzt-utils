@@ -42,7 +42,7 @@ final class DoubleImmutableList extends
     }
 
     int indexOfRange(double value, int end) {
-        for (int i = 0; i < end; i++) {
+        for (var i = 0; i < end; i++) {
             if (Double.compare(value, elementData[i]) == 0) {
                 return i;
             }
@@ -62,13 +62,13 @@ final class DoubleImmutableList extends
 
     @Override
     public DoubleList shuffled() {
-        final DoubleMutableList mutableList = DoubleMutableList.of(this);
+        final var mutableList = DoubleMutableList.of(this);
         PrimitiveListHelper.shuffle(mutableList);
         return mutableList;
     }
 
     private int lastIndexOfRange(double value, int end) {
-        for (int i = end - 1; i >= 0; i--) {
+        for (var i = end - 1; i >= 0; i--) {
             if (Double.compare(value, elementData[i]) == 0) {
                 return i;
             }
@@ -86,11 +86,11 @@ final class DoubleImmutableList extends
             return false;
         }
 
-        PrimitiveIterator.OfDouble iterator1 = iterator();
-        PrimitiveIterator.OfDouble iterator2 = ((DoubleList) o).iterator();
+        var iterator1 = iterator();
+        var iterator2 = ((DoubleList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            double l1 = iterator1.nextDouble();
-            double l2 = iterator2.nextDouble();
+            var l1 = iterator1.nextDouble();
+            var l2 = iterator2.nextDouble();
             if (Double.compare(l1, l2) != 0) {
                 return false;
             }
@@ -100,7 +100,7 @@ final class DoubleImmutableList extends
 
     @Override
     public int hashCode() {
-        final int result = Objects.hash(elementData.length);
+        final var result = Objects.hash(elementData.length);
         return  31 * result + Arrays.hashCode(elementData);
     }
 

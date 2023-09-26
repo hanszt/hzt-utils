@@ -5,7 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IntListTest {
 
@@ -103,7 +108,7 @@ class IntListTest {
 
     @Test
     void testMutableListAndImmutableListWithSameElementsAreEqualAccordingToEqualsMethod() {
-        IntList list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
+        var list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
         IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
 
         assertAll(
@@ -114,7 +119,7 @@ class IntListTest {
 
     @Test
     void testMutableListAndImmutableListWithSameElementsHaveSameHashCode() {
-        IntList list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
+        var list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
         IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
 
         assertEquals(list2.hashCode(), list1.hashCode());

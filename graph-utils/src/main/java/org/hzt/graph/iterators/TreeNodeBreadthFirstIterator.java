@@ -31,7 +31,7 @@ final class TreeNodeBreadthFirstIterator<T, S extends TreeNode<T, S>> implements
             throw new NoSuchElementException();
         }
         //removes from front of queue
-        S next = queue.remove();
+        var next = queue.remove();
         next.childrenSequence().forEach(queue::add);
         return next;
     }

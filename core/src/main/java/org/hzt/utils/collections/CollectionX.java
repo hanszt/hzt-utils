@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiConsumer;
@@ -185,6 +186,10 @@ public interface CollectionX<E> extends IterableX<E> {
         return ListX.copyOf(mapNotNullTo(() -> MutableListX.withInitCapacity(size()), mapper));
     }
 
+    default <R> ListX<R> mapIfPresent(@NotNull Function<? super E, Optional<R>> mapper) {
+        return ListX.copyOf(mapIfPresentTo(() -> MutableListX.withInitCapacity(size()), mapper));
+    }
+
     @Override
     default <R> ListX<R> castIfInstanceOf(@NotNull Class<R> aClass) {
         return asSequence().filter(aClass::isInstance).map(aClass::cast).toListX();
@@ -285,9 +290,9 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default <R> ListX<R> scan(R initial, BiFunction<? super R, ? super E, ? extends R> operation) {
-        R accumulation = initial;
+        var accumulation = initial;
         final var mutableListX = MutableListX.of(initial);
-        for (E value : this) {
+        for (var value : this) {
             accumulation = operation.apply(accumulation, value);
             mutableListX.add(accumulation);
         }

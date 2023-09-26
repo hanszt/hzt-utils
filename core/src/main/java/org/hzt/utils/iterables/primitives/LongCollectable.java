@@ -105,7 +105,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         var collection = collectionFactory.get();
         var counter = 0;
         for (var iterator = this.iterator(); iterator.hasNext(); ) {
-            long value = iterator.nextLong();
+            var value = iterator.nextLong();
             if (counter >= count) {
                 collection.add(value);
             }

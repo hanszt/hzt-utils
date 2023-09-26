@@ -32,8 +32,8 @@ final class TreeNodeBreadthFirstDepthTrackingIterator<T, S extends TreeNode<T, S
             throw new NoSuchElementException();
         }
         //removes from front of queue
-        DepthToTreeNode<S> next = queue.remove();
-        for (S child : next.node().childrenSequence()) {
+        var next = queue.remove();
+        for (var child : next.node().childrenSequence()) {
             queue.add(new DepthToTreeNode<>(next.treeDepth() + 1, child));
         }
         return next;

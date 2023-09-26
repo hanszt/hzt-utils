@@ -14,7 +14,9 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NodeTest {
 
@@ -57,7 +59,7 @@ class NodeTest {
     void testFindTouristicRoute() {
         var trainNet = buildTrainNet();
 
-        final RailWayStation leiden = trainNet.get("Leiden");
+        final var leiden = trainNet.get("Leiden");
 
         List<String> visitedStation = new ArrayList<>();
 

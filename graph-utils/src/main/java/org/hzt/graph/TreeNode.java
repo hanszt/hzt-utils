@@ -60,34 +60,34 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         throw new IllegalStateException("optionalParent() is not implemented by default. Override it if you want to use it");
     }
 
-    default S withParent(S parent) {
+    default S withParent(final S parent) {
         throw new IllegalStateException("withParent(TreeNode) not supported by default. Override it if you want to use it. " +
                 "Tried to set " + parent + " as parent");
     }
 
-    default S addChild(S toAdd) {
+    default S addChild(final S toAdd) {
         final var children = getMutableChildren();
         children.add(toAdd);
         //noinspection unchecked
         return (S) this;
     }
 
-    default S addChildren(Iterable<S> toAdd) {
+    default S addChildren(final Iterable<S> toAdd) {
         final var children = getMutableChildren();
-        for (var child : toAdd) {
+        for (final var child : toAdd) {
             children.add(child);
         }
         //noinspection unchecked
         return (S) this;
     }
 
-    default S addChildWithThisAsParent(S toAdd) {
+    default S addChildWithThisAsParent(final S toAdd) {
         final var children = getMutableChildren();
         children.add(toAdd);
         try {
             //noinspection unchecked
             toAdd.withParent((S) this);
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             final var message = "Could not set parent. Override withParent(TreeNode) or try to use addChild(TreeNode) instead...";
             throw new IllegalStateException(message, e);
         }
@@ -95,9 +95,9 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return (S) this;
     }
 
-    default S addChildrenWithThisAsParent(Iterable<S> toAdd) {
+    default S addChildrenWithThisAsParent(final Iterable<S> toAdd) {
         final var children = getMutableChildren();
-        for (var child : toAdd) {
+        for (final var child : toAdd) {
             children.add(child);
             //noinspection unchecked
             child.withParent((S) this);
@@ -106,9 +106,9 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return (S) this;
     }
 
-    default S removeSubTree(S branch) {
+    default S removeSubTree(final S branch) {
         final var branchChildren = branch.getMutableChildren();
-        for (var child : branchChildren) {
+        for (final var child : branchChildren) {
             if (!child.isLeaf()) {
                 removeSubTree(child);
             }
@@ -177,56 +177,56 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return toTreeString(Object::toString);
     }
 
-    default String toTreeString(Function<? super S, String> toStringFunction) {
+    default String toTreeString(final Function<? super S, String> toStringFunction) {
         return toTreeString("[", ", ", "]", toStringFunction);
     }
 
-    default String toTreeString(String opening, String separator, String closing,
-                                Function<? super S, String> toStringFunction) {
+    default String toTreeString(final String opening, final String separator, final String closing,
+                                final Function<? super S, String> toStringFunction) {
         final var sb = new StringBuilder();
         toTreeString(this, sb, opening, separator, closing, toStringFunction);
         return sb.toString();
     }
 
-    default String toTreeString(int indent) {
+    default String toTreeString(final int indent) {
         return toTreeString(indent, Object::toString);
     }
 
-    default String toTreeString(int indent, Function<? super S, String> toStringFunction) {
+    default String toTreeString(final int indent, final Function<? super S, String> toStringFunction) {
         return toTreeString(indent, " ", toStringFunction);
     }
 
-    default String toTreeString(int indent,
-                                String indentString,
-                                Function<? super S, String> toStringFunction) {
+    default String toTreeString(final int indent,
+                                final String indentString,
+                                final Function<? super S, String> toStringFunction) {
         final var sb = new StringBuilder();
         toTreeString(this, sb, 0, indent, indentString, toStringFunction);
         final var sbNoTrailingWhiteSpace = sb.replace(sb.length() - 1, sb.length(), "");
         return sbNoTrailingWhiteSpace.toString();
     }
 
-    default String toBFSTreeString(int indent) {
+    default String toBFSTreeString(final int indent) {
         return toBFSTreeString(indent, Object::toString);
     }
 
-    default String toBFSTreeString(int indent, Function<? super S, String> toStringFunction) {
+    default String toBFSTreeString(final int indent, final Function<? super S, String> toStringFunction) {
         return toBFSTreeString(indent, " ", toStringFunction);
     }
 
-    default String toBFSTreeString(int indent,
-                                   String indentString,
-                                   Function<? super S, String> toStringFunction) {
+    default String toBFSTreeString(final int indent,
+                                   final String indentString,
+                                   final Function<? super S, String> toStringFunction) {
         return breadthFirstDepthTrackingSequence()
                 .map(n -> indentString.repeat(n.treeDepth() * indent) + toStringFunction.apply(n.node()))
                 .joinToString("\n");
     }
 
-    private static <T, S extends TreeNode<T, S>> void toTreeString(TreeNode<T, S> treeNode,
-                                                                   StringBuilder sb,
-                                                                   int level,
-                                                                   int indent,
-                                                                   String indentString,
-                                                                   Function<? super S, String> toStringFunction) {
+    private static <T, S extends TreeNode<T, S>> void toTreeString(final TreeNode<T, S> treeNode,
+                                                                   final StringBuilder sb,
+                                                                   final int level,
+                                                                   final int indent,
+                                                                   final String indentString,
+                                                                   final Function<? super S, String> toStringFunction) {
         //noinspection unchecked
         sb.append(StringX.of(indentString).repeat(indent * level))
                 .append(toStringFunction.apply((S) treeNode))
@@ -234,26 +234,26 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         if (treeNode.childrenSequence().none()) {
             return;
         }
-        for (var child : treeNode.childrenSequence()) {
+        for (final var child : treeNode.childrenSequence()) {
             toTreeString(child, sb, level + 1, indent, indentString, toStringFunction);
         }
     }
 
-    private static <T, S extends TreeNode<T, S>> void toTreeString(TreeNode<T, S> treeNode,
-                                                                   StringBuilder sb,
-                                                                   String opening,
-                                                                   String levelSeparator,
-                                                                   String closing,
-                                                                   Function<? super S, String> toStringFunction) {
+    private static <T, S extends TreeNode<T, S>> void toTreeString(final TreeNode<T, S> treeNode,
+                                                                   final StringBuilder sb,
+                                                                   final String opening,
+                                                                   final String levelSeparator,
+                                                                   final String closing,
+                                                                   final Function<? super S, String> toStringFunction) {
         //noinspection unchecked
         sb.append(toStringFunction.apply((S) treeNode));
-        var iterator = treeNode.childrenIterator();
+        final var iterator = treeNode.childrenIterator();
         if (!iterator.hasNext()) {
             return;
         }
         sb.append(opening);
         while (iterator.hasNext()) {
-            var child = iterator.next();
+            final var child = iterator.next();
             toTreeString(child, sb, opening, levelSeparator, closing, toStringFunction);
             if (iterator.hasNext()) {
                 sb.append(levelSeparator);

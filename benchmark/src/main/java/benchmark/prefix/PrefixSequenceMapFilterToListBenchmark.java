@@ -55,9 +55,9 @@ public class PrefixSequenceMapFilterToListBenchmark {
 
     @Benchmark
     public List<Integer> imperativeMapFilterToList() {
-        List<Integer> result = new ArrayList<>();
-        for (var s : list) {
-            var length = s.length();
+        final List<Integer> result = new ArrayList<>();
+        for (final var s : list) {
+            final var length = s.length();
             if (IntX.isEven(length)) {
                 result.add(length);
             }
@@ -65,14 +65,14 @@ public class PrefixSequenceMapFilterToListBenchmark {
         return List.copyOf(result);
     }
 
-    public static void main(String[] args) {
-        var options = new OptionsBuilder()
+    public static void main(final String[] args) {
+        final var options = new OptionsBuilder()
                 .include(PrefixSequenceMapFilterToListBenchmark.class.getSimpleName())
                 .shouldFailOnError(true)
                 .build();
         try {
             new Runner(options).run();
-        } catch (RunnerException e) {
+        } catch (final RunnerException e) {
             throw new IllegalStateException(e);
         }
     }

@@ -20,7 +20,7 @@ class MutableSetXTest {
 
     @Test
     void testUnion() {
-        var set = MutableSetX.of(1, 2, 10, 4, 5, 6, 3);
+        final var set = MutableSetX.of(1, 2, 10, 4, 5, 6, 3);
 
         final var union = set.union(List.of(2, 3, 4, 5, 7));
 

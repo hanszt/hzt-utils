@@ -10,7 +10,7 @@ class SpinedBufferTest {
 
     @Test
     void testIntBufferInitCapacity() {
-        var intBuffer = new SpinedBuffer.OfInt(10);
+        final var intBuffer = new SpinedBuffer.OfInt(10);
         intBuffer.accept(1);
         final var count = StreamSupport.intStream(intBuffer.spliterator(), false).count();
 

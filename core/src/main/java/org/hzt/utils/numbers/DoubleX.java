@@ -51,59 +51,59 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
 
     private final Double thisDouble;
 
-    private DoubleX(double thisDouble) {
+    private DoubleX(final double thisDouble) {
         this.thisDouble = thisDouble;
     }
 
-    public static DoubleX of(double aDouble) {
+    public static DoubleX of(final double aDouble) {
         return new DoubleX(aDouble);
     }
 
-    public static DoubleX of(Number number) {
+    public static DoubleX of(final Number number) {
         return new DoubleX(number.doubleValue());
     }
 
-    public static DoubleX of(String s) throws NumberFormatException {
+    public static DoubleX of(final String s) throws NumberFormatException {
         return DoubleX.of(Double.valueOf(s));
     }
 
-    public static double parseDouble(String s) throws NumberFormatException {
+    public static double parseDouble(final String s) throws NumberFormatException {
         return Double.parseDouble(s);
     }
 
-    public static boolean isNaN(double v) {
+    public static boolean isNaN(final double v) {
         return Double.isNaN(v);
     }
 
-    public static boolean isInfinite(double v) {
+    public static boolean isInfinite(final double v) {
         return Double.isInfinite(v);
     }
 
-    public static boolean isParsableDouble(CharSequence charSequence) {
+    public static boolean isParsableDouble(final CharSequence charSequence) {
         return DOUBLE_PATTERN.matcher(charSequence).matches();
     }
 
-    public static boolean isFinite(double d) {
+    public static boolean isFinite(final double d) {
         return Double.isFinite(d);
     }
 
-    public static String toRoundedString(double d) {
+    public static String toRoundedString(final double d) {
         return String.format("%.2f", d);
     }
 
-    public static String toRoundedString(double d, int scale) {
+    public static String toRoundedString(final double d, final int scale) {
         return String.format(String.format("%%.%df", scale), d);
     }
 
-    public static String toRoundedString(double d, int scale, Locale locale) {
-        var defaultLocale = Locale.getDefault();
+    public static String toRoundedString(final double d, final int scale, final Locale locale) {
+        final var defaultLocale = Locale.getDefault();
         Locale.setDefault(locale);
         final var format = String.format(String.format("%%.%df", scale), d);
         Locale.setDefault(defaultLocale);
         return format;
     }
 
-    public static double times(double value1, double value2) {
+    public static double times(final double value1, final double value2) {
         return value1 * value2;
     }
 
@@ -161,53 +161,53 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var doubleX = (DoubleX) o;
+        final var doubleX = (DoubleX) o;
         return Double.compare(thisDouble, doubleX.thisDouble) == 0;
     }
 
-    public static long doubleToLongBits(double value) {
+    public static long doubleToLongBits(final double value) {
         return Double.doubleToLongBits(value);
     }
 
 
-    public static long doubleToRawLongBits(double value) {
+    public static long doubleToRawLongBits(final double value) {
         return Double.doubleToRawLongBits(value);
     }
 
 
-    public static double longBitsToDouble(long bits) {
+    public static double longBitsToDouble(final long bits) {
         return Double.longBitsToDouble(bits);
     }
 
     @SuppressWarnings("squid:S4351")
-    public int compareTo(Double anotherDouble) {
+    public int compareTo(final Double anotherDouble) {
         return thisDouble.compareTo(anotherDouble);
     }
 
-    public static int compare(double d1, double d2) {
+    public static int compare(final double d1, final double d2) {
         return Double.compare(d1, d2);
     }
 
-    public static int compareReversed(double d1, double d2) {
+    public static int compareReversed(final double d1, final double d2) {
         return Double.compare(d2, d1);
     }
 
-    public static double sum(double a, double b) {
+    public static double sum(final double a, final double b) {
         return Double.sum(a, b);
     }
 
-    public static double max(double a, double b) {
+    public static double max(final double a, final double b) {
         return Double.max(a, b);
     }
 
-    public static double min(double a, double b) {
+    public static double min(final double a, final double b) {
         return Double.min(a, b);
     }
 
@@ -222,7 +222,7 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
     }
 
     @Override
-    public int compareTo(@NotNull DoubleX o) {
+    public int compareTo(@NotNull final DoubleX o) {
         return thisDouble.compareTo(o.thisDouble);
     }
 }

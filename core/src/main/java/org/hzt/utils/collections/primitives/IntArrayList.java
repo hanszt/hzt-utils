@@ -23,19 +23,19 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
         super(0, new int[DEFAULT_CAPACITY]);
     }
 
-    IntArrayList(int initCapacity) {
+    IntArrayList(final int initCapacity) {
         super(0, new int[initCapacity]);
     }
 
-    IntArrayList(@NotNull IntList intList) {
+    IntArrayList(@NotNull final IntList intList) {
         super(intList.size(), intList.toArray());
     }
 
-    IntArrayList(int @NotNull ... array) {
+    IntArrayList(final int @NotNull ... array) {
         super(array.length, Arrays.copyOf(array, array.length));
     }
 
-    IntArrayList(@NotNull Iterable<Integer> iterable) {
+    IntArrayList(@NotNull final Iterable<Integer> iterable) {
         this();
         if (iterable instanceof PrimitiveIterable.OfInt) {
             final var iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
@@ -44,12 +44,12 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
             }
             return;
         }
-        for (int value : iterable) {
+        for (final int value : iterable) {
             add(value);
         }
     }
 
-    public boolean add(int value) {
+    public boolean add(final int value) {
         if (size == elementData.length) {
             final var isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
@@ -60,7 +60,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     @Override
-    public boolean add(int index, int value) {
+    public boolean add(final int index, final int value) {
         Objects.checkIndex(index, size + 1);
         if (size == elementData.length) {
             elementData = growArray(size, elementData.length == 0);
@@ -72,10 +72,10 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     @Override
-    public boolean addAll(int index, PrimitiveIterable.OfInt iterable) {
+    public boolean addAll(final int index, final PrimitiveIterable.OfInt iterable) {
         rangeCheckForAdd(index);
         final var a = iterable instanceof IntCollection ? ((IntCollection) iterable).toArray() : IntSequence.of(iterable).toArray();
-        var numNew = a.length;
+        final var numNew = a.length;
         if (numNew == 0) {
             return false;
         }
@@ -83,7 +83,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
         if (numNew > elementData.length - s) {
             elementData = growArray(s + numNew, false);
         }
-        var numMoved = s - index;
+        final var numMoved = s - index;
         if (numMoved > 0) {
             System.arraycopy(elementData, index, elementData, index + numNew, numMoved);
         }
@@ -93,16 +93,16 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     @Override
-    public int get(int index) {
+    public int get(final int index) {
         checkIndex(index, size);
         return elementData[index];
     }
 
-    public int indexOf(int value) {
+    public int indexOf(final int value) {
         return indexOfRange(value, size);
     }
 
-    private int indexOfRange(int value, int end) {
+    private int indexOfRange(final int value, final int end) {
         for (var i = 0; i < end; i++) {
             if (value == elementData[i]) {
                 return i;
@@ -112,7 +112,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     @Override
-    public int lastIndexOf(int value) {
+    public int lastIndexOf(final int value) {
         return lastIndexOfRange(value, size);
     }
 
@@ -128,7 +128,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
         return mutableListX;
     }
 
-    private int lastIndexOfRange(int value, int end) {
+    private int lastIndexOfRange(final int value, final int end) {
         for (var i = end - 1; i >= 0; i--) {
             if (value == elementData[i]) {
                 return i;
@@ -137,13 +137,13 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
         return -1;
     }
 
-    public int removeAt(int index) {
-        var oldValue = elementData[checkIndex(index, size)];
+    public int removeAt(final int index) {
+        final var oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveInt(elementData, size, index);
         return oldValue;
     }
 
-    static int fastRemoveInt(int[] array, int size, int index) {
+    static int fastRemoveInt(final int[] array, final int size, final int index) {
         final var newSize = size - 1;
         if (newSize > index) {
             System.arraycopy(array, index + 1, array, index, newSize - index);
@@ -154,7 +154,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
 
     @Override
     @SuppressWarnings("squid:S2162")
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
@@ -162,11 +162,11 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
             return false;
         }
 
-        var iterator1 = iterator();
-        var iterator2 = ((IntList) o).iterator();
+        final var iterator1 = iterator();
+        final var iterator2 = ((IntList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            var l1 = iterator1.nextInt();
-            var l2 = iterator2.nextInt();
+            final var l1 = iterator1.nextInt();
+            final var l2 = iterator2.nextInt();
             if (l1 != l2) {
                 return false;
             }
@@ -186,17 +186,17 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     @Override
-    protected int[] newArray(int length) {
+    protected int[] newArray(final int length) {
         return new int[length];
     }
 
     @Override
-    protected int[] copyElementData(int newLength) {
+    protected int[] copyElementData(final int newLength) {
         return Arrays.copyOf(elementData, newLength);
     }
 
     @Override
-    public int set(int index, int value) {
+    public int set(final int index, final int value) {
         checkIndex(index, size);
         elementData[index] = value;
         return value;
@@ -214,7 +214,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
 
     @Override
     @SuppressWarnings("squid:S1188")
-    public PrimitiveListIterator.OfInt listIterator(int startIndex) {
+    public PrimitiveListIterator.OfInt listIterator(final int startIndex) {
         return new PrimitiveListIterator.OfInt() {
             private int index = startIndex;
 
@@ -251,7 +251,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     @Override
-    public void sort(IntComparator comparator) {
+    public void sort(final IntComparator comparator) {
         ArraysX.sort(0, size, comparator, elementData);
     }
 
@@ -261,7 +261,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     @Override
-    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfInt iterator) {
+    protected void appendNextPrimitive(final StringBuilder sb, final PrimitiveIterator.OfInt iterator) {
         sb.append(iterator.nextInt());
     }
 }

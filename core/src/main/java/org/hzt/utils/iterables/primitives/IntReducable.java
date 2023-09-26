@@ -14,9 +14,9 @@ import java.util.function.IntPredicate;
 @FunctionalInterface
 public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducable<Integer, IntBinaryOperator, IntPredicate, OptionalInt> {
 
-    default int reduce(int initial, IntBinaryOperator operator) {
+    default int reduce(final int initial, final IntBinaryOperator operator) {
         var accumulator = initial;
-        var iterator = this.iterator();
+        final var iterator = this.iterator();
         while (iterator.hasNext()) {
             accumulator = operator.applyAsInt(accumulator, iterator.nextInt());
         }
@@ -24,14 +24,14 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
     }
 
     default <R> R reduceToTwo(
-            int initial1, @NotNull IntBinaryOperator operator1,
-            int initial2, @NotNull IntBinaryOperator operator2,
-            @NotNull IntBiFunction<R> finisher) {
-        var iterator = iterator();
+            final int initial1, @NotNull final IntBinaryOperator operator1,
+            final int initial2, @NotNull final IntBinaryOperator operator2,
+            @NotNull final IntBiFunction<R> finisher) {
+        final var iterator = iterator();
         var accumulator1 = initial1;
         var accumulator2 = initial2;
         while (iterator.hasNext()) {
-            var nextInt = iterator.nextInt();
+            final var nextInt = iterator.nextInt();
             accumulator1 = operator1.applyAsInt(accumulator1, nextInt);
             accumulator2 = operator2.applyAsInt(accumulator2, nextInt);
         }
@@ -39,16 +39,16 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
     }
 
     default <R> @NotNull Optional<R> reduceToTwo(
-            @NotNull IntBinaryOperator operator1,
-            @NotNull IntBinaryOperator operator2,
-            @NotNull IntBiFunction<R> finisher) {
-        var iterator = iterator();
+            @NotNull final IntBinaryOperator operator1,
+            @NotNull final IntBinaryOperator operator2,
+            @NotNull final IntBiFunction<R> finisher) {
+        final var iterator = iterator();
         if (iterator.hasNext()) {
             final var first = iterator.nextInt();
             var accumulator1 = first;
             var accumulator2 = first;
             while (iterator.hasNext()) {
-                var nextInt = iterator.nextInt();
+                final var nextInt = iterator.nextInt();
                 accumulator1 = operator1.applyAsInt(accumulator1, nextInt);
                 accumulator2 = operator2.applyAsInt(accumulator2, nextInt);
             }
@@ -57,8 +57,8 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return Optional.empty();
     }
 
-    default @NotNull OptionalInt reduce(@NotNull IntBinaryOperator operator) {
-        var iterator = iterator();
+    default @NotNull OptionalInt reduce(@NotNull final IntBinaryOperator operator) {
+        final var iterator = iterator();
         if (iterator.hasNext()) {
             var accumulator = iterator.nextInt();
             while (iterator.hasNext()) {
@@ -69,9 +69,9 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return OptionalInt.empty();
     }
 
-    default <R> @NotNull R reduce(int initial,
-                                  @NotNull IntFunction<R> mapper,
-                                  @NotNull IntBinaryOperator operation) {
+    default <R> @NotNull R reduce(final int initial,
+                                  @NotNull final IntFunction<R> mapper,
+                                  @NotNull final IntBinaryOperator operation) {
         return mapper.apply(reduce(initial, operation));
     }
 
@@ -79,10 +79,10 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return findFirst().orElseThrow();
     }
 
-    default int first(@NotNull IntPredicate predicate) {
-        var iterator = this.iterator();
+    default int first(@NotNull final IntPredicate predicate) {
+        final var iterator = this.iterator();
         while (iterator.hasNext()) {
-            var next = iterator.nextInt();
+            final var next = iterator.nextInt();
             if (predicate.test(next)) {
                 return next;
             }
@@ -90,7 +90,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         throw new NoSuchElementException();
     }
 
-    default int firstNot(@NotNull IntPredicate predicate) {
+    default int firstNot(@NotNull final IntPredicate predicate) {
         return first(predicate.negate());
     }
 
@@ -99,10 +99,10 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return iterator.hasNext() ? OptionalInt.of(iterator.nextInt()) : OptionalInt.empty();
     }
 
-    default @NotNull OptionalInt findFirst(@NotNull IntPredicate predicate) {
-        var iterator = this.iterator();
+    default @NotNull OptionalInt findFirst(@NotNull final IntPredicate predicate) {
+        final var iterator = this.iterator();
         while (iterator.hasNext()) {
-            var next = iterator.nextInt();
+            final var next = iterator.nextInt();
             if (predicate.test(next)) {
                 return OptionalInt.of(next);
             }
@@ -114,7 +114,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return findLast().orElseThrow();
     }
 
-    default int last(@NotNull IntPredicate predicate) {
+    default int last(@NotNull final IntPredicate predicate) {
         return findLast(predicate).orElseThrow();
     }
 
@@ -122,14 +122,14 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return findLast(It::noIntFilter);
     }
 
-    default @NotNull OptionalInt findLast(@NotNull IntPredicate predicate) {
-        var iterator = iterator();
+    default @NotNull OptionalInt findLast(@NotNull final IntPredicate predicate) {
+        final var iterator = iterator();
         var result = iterator.nextInt();
         if (!predicate.test(result) && !iterator.hasNext()) {
             return OptionalInt.empty();
         }
         while (iterator.hasNext()) {
-            var next = iterator.nextInt();
+            final var next = iterator.nextInt();
             if (predicate.test(next)) {
                 result = next;
             }
@@ -142,16 +142,15 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
         }
-        @SuppressWarnings("squid:S1941")
-        var single = iterator.nextInt();
+        @SuppressWarnings("squid:S1941") final var single = iterator.nextInt();
         if (iterator.hasNext()) {
             throw new IllegalArgumentException("Sequence has more than one element");
         }
         return single;
     }
 
-    default boolean any(@NotNull IntPredicate predicate) {
-        var iterator = this.iterator();
+    default boolean any(@NotNull final IntPredicate predicate) {
+        final var iterator = this.iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextInt())) {
                 return true;
@@ -160,8 +159,8 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return false;
     }
 
-    default boolean all(@NotNull IntPredicate predicate) {
-        var iterator = iterator();
+    default boolean all(@NotNull final IntPredicate predicate) {
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             if (!predicate.test(iterator.nextInt())) {
                 return false;
@@ -170,8 +169,8 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return true;
     }
 
-    default boolean none(@NotNull IntPredicate predicate) {
-        var iterator = this.iterator();
+    default boolean none(@NotNull final IntPredicate predicate) {
+        final var iterator = this.iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextInt())) {
                 return false;

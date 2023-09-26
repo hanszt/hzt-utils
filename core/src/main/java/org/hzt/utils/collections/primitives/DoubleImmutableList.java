@@ -21,27 +21,27 @@ final class DoubleImmutableList extends
         elementData = new double[0];
     }
 
-    DoubleImmutableList(double @NotNull... array) {
+    DoubleImmutableList(final double @NotNull... array) {
         super(array.length);
         elementData = ArraysX.copyOf(array);
     }
 
-    DoubleImmutableList(DoubleCollection collection) {
+    DoubleImmutableList(final DoubleCollection collection) {
         super(collection.size());
         elementData = ArraysX.copyOf(collection.toArray());
     }
 
     @Override
-    public double get(int index) {
+    public double get(final int index) {
         Objects.checkIndex(index, elementData.length);
         return elementData[index];
     }
 
-    public int indexOf(double value) {
+    public int indexOf(final double value) {
         return indexOfRange(value, elementData.length);
     }
 
-    int indexOfRange(double value, int end) {
+    int indexOfRange(final double value, final int end) {
         for (var i = 0; i < end; i++) {
             if (Double.compare(value, elementData[i]) == 0) {
                 return i;
@@ -51,7 +51,7 @@ final class DoubleImmutableList extends
     }
 
     @Override
-    public int lastIndexOf(double value) {
+    public int lastIndexOf(final double value) {
         return lastIndexOfRange(value, elementData.length);
     }
 
@@ -67,7 +67,7 @@ final class DoubleImmutableList extends
         return mutableList;
     }
 
-    private int lastIndexOfRange(double value, int end) {
+    private int lastIndexOfRange(final double value, final int end) {
         for (var i = end - 1; i >= 0; i--) {
             if (Double.compare(value, elementData[i]) == 0) {
                 return i;
@@ -78,7 +78,7 @@ final class DoubleImmutableList extends
 
     @Override
     @SuppressWarnings("squid:S2162")
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
@@ -86,11 +86,11 @@ final class DoubleImmutableList extends
             return false;
         }
 
-        var iterator1 = iterator();
-        var iterator2 = ((DoubleList) o).iterator();
+        final var iterator1 = iterator();
+        final var iterator2 = ((DoubleList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            var l1 = iterator1.nextDouble();
-            var l2 = iterator2.nextDouble();
+            final var l1 = iterator1.nextDouble();
+            final var l2 = iterator2.nextDouble();
             if (Double.compare(l1, l2) != 0) {
                 return false;
             }
@@ -105,7 +105,7 @@ final class DoubleImmutableList extends
     }
 
     @Override
-    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfDouble iterator) {
+    protected void appendNextPrimitive(final StringBuilder sb, final PrimitiveIterator.OfDouble iterator) {
         sb.append(iterator.nextDouble());
     }
 
@@ -115,7 +115,7 @@ final class DoubleImmutableList extends
     }
 
     @Override
-    protected double[] newArray(int length) {
+    protected double[] newArray(final int length) {
         return new double[length];
     }
 
@@ -137,7 +137,7 @@ final class DoubleImmutableList extends
 
     @Override
     @SuppressWarnings("squid:S1188")
-    public @NotNull PrimitiveListIterator.OfDouble listIterator(int startIndex) {
+    public @NotNull PrimitiveListIterator.OfDouble listIterator(final int startIndex) {
         return new PrimitiveListIterator.OfDouble() {
             private int index = startIndex;
 

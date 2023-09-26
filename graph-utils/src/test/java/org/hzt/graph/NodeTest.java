@@ -22,7 +22,7 @@ class NodeTest {
 
     @Test
     void testBreadthFirstSequence() {
-        var graph = buildTrainNet();
+        final var graph = buildTrainNet();
 
         final var stationNames = graph.get("Leiden").breadthFirstSequence()
                 .onEach(It::println)
@@ -34,14 +34,14 @@ class NodeTest {
 
     @Test
     void testFindRouteWithLeastStops() {
-        var graph = buildTrainNet();
+        final var graph = buildTrainNet();
 
         final var leiden = graph.get("Leiden");
         final var vlissingen = graph.get("Vlissingen");
 
-        List<String> visitedStation = new ArrayList<>();
+        final List<String> visitedStation = new ArrayList<>();
 
-        var leastStopsPath = leiden.breadthFirstSequence(Node.Mode.SET_PREDECESSORS)
+        final var leastStopsPath = leiden.breadthFirstSequence(Node.Mode.SET_PREDECESSORS)
                 .first(vlissingen::equals)
                 .predecessorSequence()
                 .onEach(n -> System.out.println(n.predecessorSequence().count()))
@@ -57,18 +57,18 @@ class NodeTest {
 
     @Test
     void testFindTouristicRoute() {
-        var trainNet = buildTrainNet();
+        final var trainNet = buildTrainNet();
 
         final var leiden = trainNet.get("Leiden");
 
-        List<String> visitedStation = new ArrayList<>();
+        final List<String> visitedStation = new ArrayList<>();
 
         final var vlissingen = leiden.depthFirstSequence(Node.Mode.SET_PREDECESSORS)
                 .onEach(It::println)
                 .onEach(s -> visitedStation.add(0, s.name))
                 .first(trainNet.get("Vlissingen")::equals);
 
-        var leastStopsPath = vlissingen.predecessorSequence().toListOf(station -> station.name);
+        final var leastStopsPath = vlissingen.predecessorSequence().toListOf(station -> station.name);
         final var expected = List.of("Vlissingen", "Middelburg", "Bergen op zoom", "Tilburg", "Utrecht", "Amsterdam", "Leiden");
 
         assertAll(
@@ -79,7 +79,7 @@ class NodeTest {
 
     @Test
     void testFindRouteWithLeastStopsNoRoute() {
-        var graph = buildTrainNet();
+        final var graph = buildTrainNet();
 
         final var source = graph.get("Leiden");
 
@@ -91,7 +91,7 @@ class NodeTest {
 
     @Test
     void testDepthFirstSequence() {
-        var graph = buildTrainNet();
+        final var graph = buildTrainNet();
 
         final var stationNames = graph.get("Leiden").depthFirstSequence()
                 .map(railWayStation -> railWayStation.name)
@@ -140,12 +140,12 @@ class NodeTest {
         private final Set<RailWayStation> neighbors = new LinkedHashSet<>();
         private RailWayStation predecessor;
 
-        public RailWayStation(String name) {
+        public RailWayStation(final String name) {
             this.name = name;
         }
 
         @Override
-        public RailWayStation withPredecessor(RailWayStation predecessor) {
+        public RailWayStation withPredecessor(final RailWayStation predecessor) {
             this.predecessor = predecessor;
             return this;
         }

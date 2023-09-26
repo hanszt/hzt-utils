@@ -57,9 +57,9 @@ public class PrefixDoubleSequenceToStatsBenchmark {
 
     @Benchmark
     public DoubleStatistics loopMapFilterToStats() {
-        var statistics = new DoubleStatistics();
+        final var statistics = new DoubleStatistics();
         for (var i = 0; i < UPPER_BOUND_RANGE; i++) {
-            var i2 = i * TWO;
+            final var i2 = i * TWO;
             if (i2 % SIX == 0) {
                 statistics.accept(i2);
             }
@@ -67,8 +67,8 @@ public class PrefixDoubleSequenceToStatsBenchmark {
         return statistics;
     }
 
-    public static void main(String[] args) {
-        var options = new OptionsBuilder()
+    public static void main(final String[] args) {
+        final var options = new OptionsBuilder()
                 .include(PrefixDoubleSequenceToStatsBenchmark.class.getSimpleName())
                 .forks(1)
                 .warmupIterations(1)
@@ -77,7 +77,7 @@ public class PrefixDoubleSequenceToStatsBenchmark {
                 .build();
         try {
             new Runner(options).run();
-        } catch (RunnerException e) {
+        } catch (final RunnerException e) {
             throw new IllegalStateException(e);
         }
     }

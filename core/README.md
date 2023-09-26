@@ -122,7 +122,7 @@ class Tests {
     void test2() {
         ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
-        ListX<Integer> evenNrs = list.filter(IntX::isEven);
+        final ListX<Integer> evenNrs = list.filter(IntX::isEven);
 
         assertEquals(ListX.of(2, 4, 6), evenNrs);
     }
@@ -153,12 +153,12 @@ This method is also overloaded to accept a vararg array: `Seqeunce.of(T... array
 
 ###### - map -> filter -> toSet
 
-````java
+```java
 class Samples() {
 
     @Test
     void testMapFilterToSetX() {
-        ListX<String> list = ListX.of("Hello", "this", "is", "a", "test");
+        final ListX<String> list = ListX.of("Hello", "this", "is", "a", "test");
 
         final SetX<Integer> set = Sequence.of(list)
                 .map(String::length)
@@ -168,7 +168,7 @@ class Samples() {
         assertEquals(Setx.of(5, 4), set);
     }
 }
-````
+```
 
 For more examples, look in the test class [SequenceTest.java](src/test/java/org/hzt/utils/sequences/SequenceTest.java)
 or on one of the other packages under test.

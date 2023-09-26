@@ -14,21 +14,21 @@ import static java.util.stream.Collectors.joining;
  */
 public class ReplaceCamelCaseBySentence extends DisplayNameGenerator.Standard {
     @Override
-    public String generateDisplayNameForClass(Class<?> testClass) {
+    public String generateDisplayNameForClass(final Class<?> testClass) {
         return replaceCamelCaseBySentence(super.generateDisplayNameForClass(testClass));
     }
 
     @Override
-    public String generateDisplayNameForNestedClass(Class<?> nestedClass) {
+    public String generateDisplayNameForNestedClass(final Class<?> nestedClass) {
         return replaceCamelCaseBySentence(super.generateDisplayNameForNestedClass(nestedClass));
     }
 
     @Override
-    public String generateDisplayNameForMethod(Class<?> testClass, Method testMethod) {
+    public String generateDisplayNameForMethod(final Class<?> testClass, final Method testMethod) {
         return replaceCamelCaseBySentence(testMethod.getName()) + parameterTypesAsString(testMethod);
     }
 
-    static String parameterTypesAsString(Method method) {
+    static String parameterTypesAsString(final Method method) {
         Objects.requireNonNull(method, "Method must not be null");
         final var parameterTypes = method.getParameterTypes();
         if (parameterTypes.length != 0) {
@@ -37,7 +37,7 @@ public class ReplaceCamelCaseBySentence extends DisplayNameGenerator.Standard {
         return "";
     }
 
-    public static String nullSafeToString(Function<? super Class<?>, String> mapper, Class<?>... classes) {
+    public static String nullSafeToString(final Function<? super Class<?>, String> mapper, final Class<?>... classes) {
         Objects.requireNonNull(mapper, "Mapping function must not be null");
         if (classes == null || classes.length == 0) {
             return "";
@@ -47,7 +47,7 @@ public class ReplaceCamelCaseBySentence extends DisplayNameGenerator.Standard {
                 .collect(joining(", "));
     }
 
-    static String replaceCamelCaseBySentence(String camelCase) {
+    static String replaceCamelCaseBySentence(final String camelCase) {
         final var result = new StringBuilder();
         result.append(Character.toUpperCase(camelCase.charAt(0)));
         for (var i = 1; i < camelCase.length(); i++) {

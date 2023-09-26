@@ -10,11 +10,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class IntTimSort extends PrimitiveTimSort<int[], IntComparator> {
 
-    private IntTimSort(int[] intArray, IntComparator intComparator) {
+    private IntTimSort(final int[] intArray, final IntComparator intComparator) {
         super(intArray.length, intArray, new int[getInitTempLength(intArray.length)], intComparator);
     }
 
-    static void sort(int @NotNull [] array, int fromIndex, int toIndex, @NotNull IntComparator comparator) {
+    static void sort(final int @NotNull [] array, final int fromIndex, final int toIndex, @NotNull final IntComparator comparator) {
         PreConditions.require(fromIndex >= 0 && fromIndex <= toIndex && toIndex <= array.length);
         final var nRemaining = toIndex - fromIndex;
         if (nRemaining >= 2) {
@@ -24,35 +24,35 @@ public final class IntTimSort extends PrimitiveTimSort<int[], IntComparator> {
     }
 
     @Override
-    protected void updateArrayForBinarySort(int[] array, int left, int pivotIndex, int difStartLeft) {
+    protected void updateArrayForBinarySort(final int[] array, final int left, final int pivotIndex, final int difStartLeft) {
         final var pivot = array[pivotIndex];
         updateArrayForBinarySort(array, left, difStartLeft);
         array[left] = pivot;
     }
 
     @Override
-    protected void swap(int[] array, int index1, int index2) {
-        var temp = array[index1];
+    protected void swap(final int[] array, final int index1, final int index2) {
+        final var temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }
 
     @Override
-    protected void setArrayValue(int[] sourceArray, int sourceIndex, int[] destArray, int destIndex) {
+    protected void setArrayValue(final int[] sourceArray, final int sourceIndex, final int[] destArray, final int destIndex) {
         destArray[destIndex] = sourceArray[sourceIndex];
     }
 
     @Override
-    protected int arrayLength(int[] array) {
+    protected int arrayLength(final int[] array) {
         return array.length;
     }
 
     @Override
-    protected int[] newArray(int length) {
+    protected int[] newArray(final int length) {
         return new int[length];
     }
 
-    protected int compare(IntComparator comparator, int[] array1, int index1, int[] array2, int index2) {
+    protected int compare(final IntComparator comparator, final int[] array1, final int index1, final int[] array2, final int index2) {
         return comparator.compare(array1[index1], array2[index2]);
     }
 }

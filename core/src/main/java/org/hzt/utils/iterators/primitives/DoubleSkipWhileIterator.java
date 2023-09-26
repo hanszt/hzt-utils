@@ -13,13 +13,13 @@ public final class DoubleSkipWhileIterator implements OfDouble {
     private boolean firstIteration = true;
     private SkipState state = SkipState.SKIPPING;
 
-    DoubleSkipWhileIterator(OfDouble iterator, DoublePredicate predicate, boolean inclusive) {
+    DoubleSkipWhileIterator(final OfDouble iterator, final DoublePredicate predicate, final boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
     }
 
-    public static OfDouble of(OfDouble iterator, DoublePredicate predicate, boolean inclusive) {
+    public static OfDouble of(final OfDouble iterator, final DoublePredicate predicate, final boolean inclusive) {
         return new DoubleSkipWhileIterator(iterator, predicate, inclusive);
     }
 
@@ -53,7 +53,7 @@ public final class DoubleSkipWhileIterator implements OfDouble {
             skip();
         }
         if (state == SkipState.NEXT_ITEM) {
-            var result = nextItem;
+            final var result = nextItem;
             state = SkipState.NORMAL_ITERATION;
             return result;
         }

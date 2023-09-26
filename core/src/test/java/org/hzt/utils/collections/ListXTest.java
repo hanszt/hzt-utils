@@ -88,7 +88,7 @@ class ListXTest {
     void testBinarySearch() {
         final var sortedList = ListX.of(-1, 0, 1, 2, 3, 4, 5);
 
-        var valueToSearchFor = 2;
+        final var valueToSearchFor = 2;
 
         final var indexInSortedList = sortedList.binarySearch(value -> value.compareTo(valueToSearchFor));
 
@@ -149,7 +149,7 @@ class ListXTest {
 
     @Test
     void testToListYieldsUnModifiableList() {
-        var auction = Generator.createVanGoghAuction();
+        final var auction = Generator.createVanGoghAuction();
         final var yearToAdd = Year.of(2000);
 
         final var years = auction.toListOf(Painting::getYearOfCreation);
@@ -167,7 +167,7 @@ class ListXTest {
         );
     }
 
-    private void getStringList(MutableListX<String> list) {
+    private void getStringList(final MutableListX<String> list) {
         for (var i = 0; i < 100; i++) {
             list.add(String.valueOf(i));
         }
@@ -184,7 +184,7 @@ class ListXTest {
                 .collect(Collectors.toList());
         datesFromStream.add(LocalDate.MIN);
         datesFromStream.add(LocalDate.MAX);
-        var expected = ListX.of(datesFromStream);
+        final var expected = ListX.of(datesFromStream);
 
         final var dates = auctions
                 .mapNotNull(PaintingAuction::getDateOfOpening)
@@ -197,7 +197,7 @@ class ListXTest {
 
     @Test
     void testSkipLast() {
-        var list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+        final var list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
         final var integers = list.skipLast(2);
 
@@ -215,7 +215,7 @@ class ListXTest {
 
     @Test
     void testTakeLast() {
-        var list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+        final var list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
         final var integers = list.takeLast(2);
 
@@ -224,7 +224,7 @@ class ListXTest {
 
     @Test
     void testTakeLastTo() {
-        var list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+        final var list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
         final var integers = list.takeLastTo(size -> new LinkedTransferQueue<>(), 5);
 
@@ -360,7 +360,7 @@ class ListXTest {
         }
     }
 
-    private static int calculateProduct(ListX<Integer> list) {
+    private static int calculateProduct(final ListX<Integer> list) {
         return list.reduce((acc, i) -> acc * i).orElse(0);
     }
 }

@@ -36,7 +36,7 @@ class ClosedRangeTest {
         private final LocalDate start;
         private final LocalDate endInclusive;
 
-        public LocalDateRange(LocalDate start, LocalDate endInclusive) {
+        public LocalDateRange(final LocalDate start, final LocalDate endInclusive) {
             this.start = start;
             this.endInclusive = endInclusive;
         }

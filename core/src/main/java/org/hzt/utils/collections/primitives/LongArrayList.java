@@ -23,19 +23,19 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
         super(0, new long[DEFAULT_CAPACITY]);
     }
 
-    LongArrayList(int initCapacity) {
+    LongArrayList(final int initCapacity) {
         super(0, new long[initCapacity]);
     }
 
-    LongArrayList(LongList longList) {
+    LongArrayList(final LongList longList) {
         super(longList.size(), longList.toArray());
     }
 
-    LongArrayList(long @NotNull... array) {
+    LongArrayList(final long @NotNull... array) {
         super(array.length, Arrays.copyOf(array, array.length));
     }
 
-    LongArrayList(@NotNull Iterable<Long> iterable) {
+    LongArrayList(@NotNull final Iterable<Long> iterable) {
         this();
         if (iterable instanceof PrimitiveIterable.OfLong) {
             final var iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
@@ -44,12 +44,12 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
             }
             return;
         }
-        for (long value : iterable) {
+        for (final long value : iterable) {
             add(value);
         }
     }
 
-    public boolean add(long value) {
+    public boolean add(final long value) {
         if (size == elementData.length) {
             final var isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
@@ -60,7 +60,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
-    public boolean add(int index, long value) {
+    public boolean add(final int index, final long value) {
         Objects.checkIndex(index, size + 1);
         if (size == elementData.length) {
             elementData = growArray(size, elementData.length == 0);
@@ -72,10 +72,10 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
-    public boolean addAll(int index, PrimitiveIterable.OfLong iterable) {
+    public boolean addAll(final int index, final PrimitiveIterable.OfLong iterable) {
         rangeCheckForAdd(index);
         final var a = iterable instanceof LongCollection ? ((LongCollection) iterable).toArray() : LongSequence.of(iterable).toArray();
-        var numNew = a.length;
+        final var numNew = a.length;
         if (numNew == 0) {
             return false;
         }
@@ -83,7 +83,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
         if (numNew > elementData.length - s) {
             elementData = growArray(s + numNew, false);
         }
-        var numMoved = s - index;
+        final var numMoved = s - index;
         if (numMoved > 0) {
             System.arraycopy(elementData, index, elementData, index + numNew, numMoved);
         }
@@ -93,16 +93,16 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
-    public long get(int index) {
+    public long get(final int index) {
         checkIndex(index, size);
         return elementData[index];
     }
 
-    public int indexOf(long value) {
+    public int indexOf(final long value) {
         return indexOfRange(value, size);
     }
 
-    int indexOfRange(long value, int end) {
+    int indexOfRange(final long value, final int end) {
         for (var i = 0; i < end; i++) {
             if (value == elementData[i]) {
                 return i;
@@ -112,7 +112,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
-    public int lastIndexOf(long value) {
+    public int lastIndexOf(final long value) {
         return lastIndexOfRange(value, size);
     }
 
@@ -128,7 +128,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
         return mutableList;
     }
 
-    private int lastIndexOfRange(long value, int end) {
+    private int lastIndexOfRange(final long value, final int end) {
         for (var i = end - 1; i >= 0; i--) {
             if (value == elementData[i]) {
                 return i;
@@ -137,13 +137,13 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
         return -1;
     }
 
-    public long removeAt(int index) {
-        var oldValue = elementData[checkIndex(index, size)];
+    public long removeAt(final int index) {
+        final var oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveLong(elementData, size, index);
         return oldValue;
     }
 
-    private static int fastRemoveLong(long[] array, int size, int index) {
+    private static int fastRemoveLong(final long[] array, final int size, final int index) {
         final var newSize = size - 1;
         if (newSize > index) {
             System.arraycopy(array, index + 1, array, index, newSize - index);
@@ -154,7 +154,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
 
     @Override
     @SuppressWarnings("squid:S2162")
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
@@ -162,11 +162,11 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
             return false;
         }
 
-        var iterator1 = iterator();
-        var iterator2 = ((LongList) o).iterator();
+        final var iterator1 = iterator();
+        final var iterator2 = ((LongList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            var l1 = iterator1.nextLong();
-            var l2 = iterator2.nextLong();
+            final var l1 = iterator1.nextLong();
+            final var l2 = iterator2.nextLong();
             if (l1 != l2) {
                 return false;
             }
@@ -186,17 +186,17 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
-    protected long[] newArray(int length) {
+    protected long[] newArray(final int length) {
         return new long[length];
     }
 
     @Override
-    protected long[] copyElementData(int newLength) {
+    protected long[] copyElementData(final int newLength) {
         return Arrays.copyOf(elementData, newLength);
     }
 
     @Override
-    public long set(int index, long value) {
+    public long set(final int index, final long value) {
         checkIndex(index, size);
         elementData[index] = value;
         return value;
@@ -214,7 +214,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
 
     @Override
     @SuppressWarnings("squid:S1188")
-    public PrimitiveListIterator.OfLong listIterator(int startIndex) {
+    public PrimitiveListIterator.OfLong listIterator(final int startIndex) {
         return new PrimitiveListIterator.OfLong() {
             private int index = startIndex;
 
@@ -251,7 +251,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
-    public void sort(LongComparator comparator) {
+    public void sort(final LongComparator comparator) {
         ArraysX.sort(0, size, comparator, elementData);
     }
 
@@ -261,7 +261,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
-    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfLong iterator) {
+    protected void appendNextPrimitive(final StringBuilder sb, final PrimitiveIterator.OfLong iterator) {
         sb.append(iterator.nextLong());
     }
 }

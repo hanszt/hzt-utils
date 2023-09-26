@@ -15,7 +15,9 @@ import org.junit.jupiter.api.Test;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TransformableTest {
 
@@ -76,7 +78,7 @@ class TransformableTest {
 
     interface TransformableSequence<T> extends Transformable<TransformableSequence<T>>, Sequence<T> {
 
-        static <T> TransformableSequence<T> of(Iterable<T> iterable) {
+        static <T> TransformableSequence<T> of(final Iterable<T> iterable) {
             return iterable::iterator;
         }
 

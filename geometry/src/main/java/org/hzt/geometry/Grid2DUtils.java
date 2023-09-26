@@ -18,21 +18,21 @@ public final class Grid2DUtils {
     private Grid2DUtils() {
     }
 
-    public static <T> List<List<T>> toListGrid(T[][] grid) {
-        List<List<T>> listGrid = new ArrayList<>();
-        for (var row : grid) {
-            List<T> newRow = new ArrayList<>();
+    public static <T> List<List<T>> toListGrid(final T[][] grid) {
+        final List<List<T>> listGrid = new ArrayList<>();
+        for (final var row : grid) {
+            final List<T> newRow = new ArrayList<>();
             Collections.addAll(newRow, row);
             listGrid.add(newRow);
         }
         return listGrid;
     }
 
-    public static <R> List<List<R>> toListGrid(int[][] grid, IntFunction<R> mapper) {
-        List<List<R>> listGrid = new ArrayList<>();
-        for (var row : grid) {
-            List<R> newRow = new ArrayList<>();
-            for (var value : row) {
+    public static <R> List<List<R>> toListGrid(final int[][] grid, final IntFunction<R> mapper) {
+        final List<List<R>> listGrid = new ArrayList<>();
+        for (final var row : grid) {
+            final List<R> newRow = new ArrayList<>();
+            for (final var value : row) {
                 newRow.add(mapper.apply(value));
             }
             listGrid.add(newRow);
@@ -40,15 +40,15 @@ public final class Grid2DUtils {
         return listGrid;
     }
 
-    public static List<List<Integer>> toListGrid(int[][] grid) {
+    public static List<List<Integer>> toListGrid(final int[][] grid) {
         return toListGrid(grid, i -> i);
     }
 
-    public static <R> List<List<R>> toListGrid(boolean[][] grid, Function<Boolean, ? extends R> mapper) {
+    public static <R> List<List<R>> toListGrid(final boolean[][] grid, final Function<Boolean, ? extends R> mapper) {
         final List<List<R>> resultGrid = new ArrayList<>();
-        for (var row : grid) {
-            List<R> newRow = new ArrayList<>();
-            for (var bool : row) {
+        for (final var row : grid) {
+            final List<R> newRow = new ArrayList<>();
+            for (final var bool : row) {
                 newRow.add(mapper.apply(bool));
             }
             resultGrid.add(newRow);
@@ -56,11 +56,11 @@ public final class Grid2DUtils {
         return resultGrid;
     }
 
-    public static <T> int[][] toIntGrid(T[][] grid, ToIntFunction<? super T> mapper) {
+    public static <T> int[][] toIntGrid(final T[][] grid, final ToIntFunction<? super T> mapper) {
         final var resultGrid = new int[grid.length][];
         for (var i = 0; i < grid.length; i++) {
-            var row = grid[i];
-            var newRow = new int[row.length];
+            final var row = grid[i];
+            final var newRow = new int[row.length];
             for (var j = 0; j < row.length; j++) {
                 newRow[j] = mapper.applyAsInt(row[j]);
             }
@@ -69,7 +69,7 @@ public final class Grid2DUtils {
         return resultGrid;
     }
 
-    public static <T> int[][] toIntGrid(Iterable<? extends Iterable<T>> grid, ToIntFunction<? super T> mapper) {
+    public static <T> int[][] toIntGrid(final Iterable<? extends Iterable<T>> grid, final ToIntFunction<? super T> mapper) {
         final Function<Iterable<T>, int[]> toIntArray = row -> StreamSupport.stream(row.spliterator(), false)
                 .mapToInt(mapper)
                 .toArray();
@@ -79,9 +79,9 @@ public final class Grid2DUtils {
                 .toArray(int[][]::new);
     }
 
-    public static <T> boolean anyInGrid(Iterable<? extends Iterable<T>> grid, Predicate<T> predicate) {
-        for (Iterable<T> row : grid) {
-            for (var item : row) {
+    public static <T> boolean anyInGrid(final Iterable<? extends Iterable<T>> grid, final Predicate<T> predicate) {
+        for (final Iterable<T> row : grid) {
+            for (final var item : row) {
                 if (predicate.test(item)) {
                     return true;
                 }
@@ -90,9 +90,9 @@ public final class Grid2DUtils {
         return false;
     }
 
-    public static <T> boolean anyInGrid(T[][] grid, Predicate<T> predicate) {
-        for (var row : grid) {
-            for (var item : row) {
+    public static <T> boolean anyInGrid(final T[][] grid, final Predicate<T> predicate) {
+        for (final var row : grid) {
+            for (final var item : row) {
                 if (predicate.test(item)) {
                     return true;
                 }
@@ -101,9 +101,9 @@ public final class Grid2DUtils {
         return false;
     }
 
-    public static <T> boolean allInGrid(Iterable<? extends Iterable<T>> grid, Predicate<T> predicate) {
-        for (Iterable<T> row : grid) {
-            for (var item : row) {
+    public static <T> boolean allInGrid(final Iterable<? extends Iterable<T>> grid, final Predicate<T> predicate) {
+        for (final Iterable<T> row : grid) {
+            for (final var item : row) {
                 if (!predicate.test(item)) {
                     return false;
                 }
@@ -112,9 +112,9 @@ public final class Grid2DUtils {
         return true;
     }
 
-    public static <T> boolean allInGrid(T[][] grid, Predicate<T> predicate) {
-        for (var row : grid) {
-            for (var item : row) {
+    public static <T> boolean allInGrid(final T[][] grid, final Predicate<T> predicate) {
+        for (final var row : grid) {
+            for (final var item : row) {
                 if (!predicate.test(item)) {
                     return false;
                 }
@@ -123,9 +123,9 @@ public final class Grid2DUtils {
         return true;
     }
 
-    public static <T> boolean noneInGrid(Iterable<? extends Iterable<T>> grid, Predicate<T> predicate) {
-        for (Iterable<T> row : grid) {
-            for (var item : row) {
+    public static <T> boolean noneInGrid(final Iterable<? extends Iterable<T>> grid, final Predicate<T> predicate) {
+        for (final Iterable<T> row : grid) {
+            for (final var item : row) {
                 if (predicate.test(item)) {
                     return false;
                 }
@@ -134,9 +134,9 @@ public final class Grid2DUtils {
         return true;
     }
 
-    public static <T> boolean noneInGrid(T[][] grid, Predicate<T> predicate) {
-        for (var row : grid) {
-            for (var item : row) {
+    public static <T> boolean noneInGrid(final T[][] grid, final Predicate<T> predicate) {
+        for (final var row : grid) {
+            for (final var item : row) {
                 if (predicate.test(item)) {
                     return false;
                 }
@@ -145,7 +145,7 @@ public final class Grid2DUtils {
         return true;
     }
 
-    public static <T, R> List<List<R>> mapGrid(Iterable<? extends Iterable<T>> grid, Function<? super T, ? extends R> mapper) {
+    public static <T, R> List<List<R>> mapGrid(final Iterable<? extends Iterable<T>> grid, final Function<? super T, ? extends R> mapper) {
         final Function<Iterable<T>, List<R>> rowToMapper = row -> StreamSupport.stream(row.spliterator(), false)
                 .map(mapper)
                 .collect(Collectors.toList());
@@ -155,7 +155,7 @@ public final class Grid2DUtils {
                 .collect(Collectors.toList());
     }
 
-    public static <T> String gridAsString(T[][] grid) {
+    public static <T> String gridAsString(final T[][] grid) {
         final Function<T[], String> rowToString = row -> Arrays.stream(row)
                 .map(Object::toString)
                 .collect(Collectors.joining(", "));
@@ -165,7 +165,7 @@ public final class Grid2DUtils {
                 .collect(Collectors.joining("\n"));
     }
 
-    public static <T> String gridAsString(Iterable<? extends Iterable<T>> grid) {
+    public static <T> String gridAsString(final Iterable<? extends Iterable<T>> grid) {
         final Function<Iterable<T>, String> rowToString = row -> StreamSupport.stream(row.spliterator(), false)
                 .map(Objects::toString)
                 .collect(Collectors.joining());
@@ -175,15 +175,15 @@ public final class Grid2DUtils {
                 .collect(Collectors.joining("\n"));
     }
 
-    public static <T> List<List<T>> swap(List<List<T>> grid, int rowi1, int coli1, int rowi2, int coli2) {
-        var item1 = grid.get(rowi1).get(coli1);
-        var item2 = grid.get(rowi2).get(coli2);
+    public static <T> List<List<T>> swap(final List<List<T>> grid, final int rowi1, final int coli1, final int rowi2, final int coli2) {
+        final var item1 = grid.get(rowi1).get(coli1);
+        final var item2 = grid.get(rowi2).get(coli2);
         grid.get(rowi1).set(coli1, item2);
         grid.get(rowi2).set(coli2, item1);
         return grid;
     }
 
-    public static <T> List<List<T>> swap(List<List<T>> grid, GridPoint2D point1, GridPoint2D point2) {
+    public static <T> List<List<T>> swap(final List<List<T>> grid, final GridPoint2D point1, final GridPoint2D point2) {
         return swap(grid, point1.getY(), point2.getX(), point2.getY(), point2.getX());
     }
 }

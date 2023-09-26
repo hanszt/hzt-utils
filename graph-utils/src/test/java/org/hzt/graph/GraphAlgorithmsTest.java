@@ -20,12 +20,12 @@ class GraphAlgorithmsTest {
     @Disabled("Needs to be fixed")
     @Test
     void testFindShortestPath() {
-        MutableMapX<String, WeightedNode<String>> graph = MutableMapX.empty();
-        var A = WeightedNode.of("A");
-        var B = WeightedNode.of("B");
-        var C = WeightedNode.of("C");
-        var D = WeightedNode.of("D");
-        var E = WeightedNode.of("E");
+        final MutableMapX<String, WeightedNode<String>> graph = MutableMapX.empty();
+        final var A = WeightedNode.of("A");
+        final var B = WeightedNode.of("B");
+        final var C = WeightedNode.of("C");
+        final var D = WeightedNode.of("D");
+        final var E = WeightedNode.of("E");
         WeightedEdge.edgesInBothDirectionsBetween(A, B, 3);
         A.addEdgeTo(C, 2)
                 .addEdgeTo(D, 6);

@@ -30,14 +30,14 @@ class LongListTest {
 
     @Test
     void testGet() {
-        var list = LongList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
+        final var list = LongList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
         final var value = list.get(4);
         assertEquals(5L, value);
     }
 
     @Test
     void testGetOutsideRangeYieldsIndexOutOfBound() {
-        var list = LongList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
+        final var list = LongList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
         assertThrows(IndexOutOfBoundsException.class, () -> list.get(14));
     }
 
@@ -45,7 +45,7 @@ class LongListTest {
     void testBinarySearch() {
         final var sortedList = LongList.of(-1, 0, 1, 2, 3, 4, 5);
 
-        var valueToSearchFor = 2;
+        final var valueToSearchFor = 2;
 
         final var indexInSortedList = sortedList.binarySearch(valueToSearchFor);
 

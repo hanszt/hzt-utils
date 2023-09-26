@@ -21,9 +21,9 @@ public final class IterableXHelper {
     private IterableXHelper() {
     }
 
-    static <T> long count(Iterable<T> iterable, @NotNull Predicate<T> predicate) {
+    static <T> long count(final Iterable<T> iterable, @NotNull final Predicate<T> predicate) {
         long counter = 0;
-        for (var t : iterable) {
+        for (final var t : iterable) {
             if (predicate.test(t)) {
                 counter++;
             }
@@ -32,13 +32,13 @@ public final class IterableXHelper {
     }
 
     static <T, R, C extends Collection<R>> C mapFilteringTo(
-            @NotNull Iterable<T> iterable,
-            @NotNull Supplier<C> collectionFactory,
-            @NotNull Predicate<? super T> predicate,
-            @NotNull Function<? super T, ? extends R> mapper,
-            @NotNull Predicate<R> resultFilter) {
-        var collection = collectionFactory.get();
-        for (var t : iterable) {
+            @NotNull final Iterable<T> iterable,
+            @NotNull final Supplier<C> collectionFactory,
+            @NotNull final Predicate<? super T> predicate,
+            @NotNull final Function<? super T, ? extends R> mapper,
+            @NotNull final Predicate<R> resultFilter) {
+        final var collection = collectionFactory.get();
+        for (final var t : iterable) {
             if (t != null && predicate.test(t)) {
                 final var r = mapper.apply(t);
                 if (resultFilter.test(r)) {
@@ -51,7 +51,7 @@ public final class IterableXHelper {
 
     @NotNull
     static <T, R extends Comparable<? super R>> Optional<T> compareBy(final Iterator<T> iterator,
-            @NotNull Function<? super T, ? extends R> selector, @NotNull IntPredicate predicate) {
+                                                                      @NotNull final Function<? super T, ? extends R> selector, @NotNull final IntPredicate predicate) {
         if (!iterator.hasNext()) {
             return Optional.empty();
         }
@@ -71,9 +71,9 @@ public final class IterableXHelper {
         return Optional.ofNullable(result);
     }
 
-    public static <R, K extends Comparable<? super K>> K asComparableOrThrow(R key) {
+    public static <R, K extends Comparable<? super K>> K asComparableOrThrow(final R key) {
         if (key instanceof Comparable) {
-            var c = (Comparable<?>) key;
+            final var c = (Comparable<?>) key;
             //noinspection unchecked
             return (K) c;
         }
@@ -82,9 +82,9 @@ public final class IterableXHelper {
 
     @NotNull
     static  <T, R extends Comparable<? super R>> R comparisonOf(
-            @NotNull Iterator<T> iterator,
-            @NotNull Function<? super T, ? extends R> selector,
-            @NotNull IntPredicate biPredicate) {
+            @NotNull final Iterator<T> iterator,
+            @NotNull final Function<? super T, ? extends R> selector,
+            @NotNull final IntPredicate biPredicate) {
         if (!iterator.hasNext()) {
             throw noValuePresentException();
         }
@@ -105,13 +105,13 @@ public final class IterableXHelper {
         throw noValuePresentException();
     }
 
-    static <T> Optional<T> findLastIfUnknownIterable(Predicate<? super T> predicate, Iterator<T> iterator) {
+    static <T> Optional<T> findLastIfUnknownIterable(final Predicate<? super T> predicate, final Iterator<T> iterator) {
         var result = iterator.next();
         if (!predicate.test(result) && !iterator.hasNext()) {
             return Optional.empty();
         }
         while (iterator.hasNext()) {
-            var next = iterator.next();
+            final var next = iterator.next();
             if (predicate.test(next)) {
                 result = next;
             }
@@ -119,7 +119,7 @@ public final class IterableXHelper {
         return Optional.ofNullable(result);
     }
 
-    static <T> Optional<T> findLastIfInstanceOfList(Predicate<? super T> predicate, List<T> list) {
+    static <T> Optional<T> findLastIfInstanceOfList(final Predicate<? super T> predicate, final List<T> list) {
         final var last = list.get(list.size() - 1);
         if (last != null && predicate.test(last)) {
             return Optional.of(last);
@@ -140,8 +140,8 @@ public final class IterableXHelper {
         return new NoSuchElementException("No value present");
     }
 
-    static <T> void exposeNonNullVal(@NotNull Iterable<T> iterable, @NotNull Consumer<T> consumer) {
-        for (var value : iterable) {
+    static <T> void exposeNonNullVal(@NotNull final Iterable<T> iterable, @NotNull final Consumer<T> consumer) {
+        for (final var value : iterable) {
             if (value != null) {
                 consumer.accept(value);
             }

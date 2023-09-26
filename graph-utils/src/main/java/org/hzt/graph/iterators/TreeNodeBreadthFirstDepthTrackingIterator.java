@@ -17,7 +17,7 @@ import java.util.Queue;
 final class TreeNodeBreadthFirstDepthTrackingIterator<T, S extends TreeNode<T, S>> implements Iterator<DepthToTreeNode<S>> {
     private final Queue<DepthToTreeNode<S>> queue = new LinkedList<>();
 
-    TreeNodeBreadthFirstDepthTrackingIterator(S node) {
+    TreeNodeBreadthFirstDepthTrackingIterator(final S node) {
         queue.add(new DepthToTreeNode<>(0, node));
     }
 
@@ -32,8 +32,8 @@ final class TreeNodeBreadthFirstDepthTrackingIterator<T, S extends TreeNode<T, S
             throw new NoSuchElementException();
         }
         //removes from front of queue
-        var next = queue.remove();
-        for (var child : next.node().childrenSequence()) {
+        final var next = queue.remove();
+        for (final var child : next.node().childrenSequence()) {
             queue.add(new DepthToTreeNode<>(next.treeDepth() + 1, child));
         }
         return next;

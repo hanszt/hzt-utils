@@ -29,25 +29,25 @@ public final class Iterators {
     }
 
     @SafeVarargs
-    public static <T>Iterator<T> arrayIterator(T... array) {
+    public static <T>Iterator<T> arrayIterator(final T... array) {
         return new ArrayIterator<>(array, false);
     }
 
     @SafeVarargs
-    public static <T> Iterator<T> reverseArrayIterator(T... array) {
+    public static <T> Iterator<T> reverseArrayIterator(final T... array) {
         return new ArrayIterator<>(array, true);
     }
 
-    public static <T> Iterator<T> reverseIterator(List<T> list) {
+    public static <T> Iterator<T> reverseIterator(final List<T> list) {
         return reverseIterator(list.listIterator(list.size()));
     }
 
-    public static <T> Iterator<T> reverseIterator(ListX<T> list) {
+    public static <T> Iterator<T> reverseIterator(final ListX<T> list) {
         return reverseIterator(list.listIterator(list.size()));
     }
 
     @NotNull
-    private static <T> Iterator<T> reverseIterator(ListIterator<T> listIterator) {
+    private static <T> Iterator<T> reverseIterator(final ListIterator<T> listIterator) {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -61,12 +61,12 @@ public final class Iterators {
         };
     }
 
-    public static <T> Iterator<T> generatorIterator(Supplier<? extends T> initValueSupplier,
-                                                    UnaryOperator<T> nextValueSupplier) {
+    public static <T> Iterator<T> generatorIterator(final Supplier<? extends T> initValueSupplier,
+                                                    final UnaryOperator<T> nextValueSupplier) {
         return new GeneratorIterator<>(initValueSupplier, nextValueSupplier);
     }
 
-    public static <T, R> @NotNull Iterator<R> transformingIterator(Iterator<T> iterator, Function<? super T, ? extends R> mapper) {
+    public static <T, R> @NotNull Iterator<R> transformingIterator(final Iterator<T> iterator, final Function<? super T, ? extends R> mapper) {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -80,7 +80,7 @@ public final class Iterators {
         };
     }
 
-    public static <T, R> Iterator<R> transformingIndexedIterator(Iterator<T> iterator, IndexedFunction<? super T, ? extends R> mapper) {
+    public static <T, R> Iterator<R> transformingIndexedIterator(final Iterator<T> iterator, final IndexedFunction<? super T, ? extends R> mapper) {
         return new Iterator<>() {
             private int index = 0;
 
@@ -91,7 +91,7 @@ public final class Iterators {
 
             @Override
             public R next() {
-                var prevIndex = index;
+                final var prevIndex = index;
                 if (prevIndex < 0) {
                     throw new IllegalStateException("indexed iterator index overflow");
                 }
@@ -102,8 +102,8 @@ public final class Iterators {
 
 
 
-    public static <T, R> Iterator<R> multiMappingIterator(@NotNull Iterator<T> iterator,
-                                                          @NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
+    public static <T, R> Iterator<R> multiMappingIterator(@NotNull final Iterator<T> iterator,
+                                                          @NotNull final BiConsumer<? super T, ? super Consumer<R>> mapper) {
         return flatMappingIterator(iterator, e -> {
             final var spinedBuffer = new SpinedBuffer<R>();
             mapper.accept(e, spinedBuffer);
@@ -111,51 +111,51 @@ public final class Iterators {
         });
     }
 
-    public static <T, R> Iterator<R> flatMappingIterator(@NotNull Iterator<T> iterator,
-                                                         @NotNull Function<? super T, ? extends Iterator<? extends R>> toIteratorFunction) {
+    public static <T, R> Iterator<R> flatMappingIterator(@NotNull final Iterator<T> iterator,
+                                                         @NotNull final Function<? super T, ? extends Iterator<? extends R>> toIteratorFunction) {
         return new FlatMappingIterator<>(iterator, toIteratorFunction);
     }
 
-    public static <T> Iterator<T> filteringIterator(Iterator<T> iterator, Predicate<? super T> predicate, boolean sendWhen) {
+    public static <T> Iterator<T> filteringIterator(final Iterator<T> iterator, final Predicate<? super T> predicate, final boolean sendWhen) {
         return new FilteringIterator<>(iterator, predicate, sendWhen);
     }
 
-    public static <T> Iterator<T> skipWhileIterator(Iterator<T> iterator, Predicate<? super T> predicate, boolean inclusive) {
+    public static <T> Iterator<T> skipWhileIterator(final Iterator<T> iterator, final Predicate<? super T> predicate, final boolean inclusive) {
         return new SkipWhileIterator<>(iterator, predicate, inclusive);
     }
 
-    public static <T> Iterator<T> takeWhileIterator(Iterator<T> iterator, Predicate<? super T> predicate, boolean inclusive) {
+    public static <T> Iterator<T> takeWhileIterator(final Iterator<T> iterator, final Predicate<? super T> predicate, final boolean inclusive) {
         return new TakeWhileIterator<>(iterator, predicate, inclusive);
     }
 
-    public static <T> Iterator<T> subIterator(Iterator<T> iterator, long startIndex, long endIndex) {
+    public static <T> Iterator<T> subIterator(final Iterator<T> iterator, final long startIndex, final long endIndex) {
         return new SubIterator<>(iterator, startIndex, endIndex);
     }
 
-    public static <T> Iterator<ListX<T>> windowedIterator(@NotNull Iterator<T> iterator,
-                                                          int initSize,
-                                                          @NotNull IntUnaryOperator nextSizeSupplier,
-                                                          int initStep,
-                                                          @NotNull IntUnaryOperator nextStepSupplier,
-                                                          boolean partialWindows) {
+    public static <T> Iterator<ListX<T>> windowedIterator(@NotNull final Iterator<T> iterator,
+                                                          final int initSize,
+                                                          @NotNull final IntUnaryOperator nextSizeSupplier,
+                                                          final int initStep,
+                                                          @NotNull final IntUnaryOperator nextStepSupplier,
+                                                          final boolean partialWindows) {
         return new WindowedIterator<>(iterator, initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
     }
 
     @NotNull
-    public static <T, K> Iterator<T> distinctIterator(Iterator<T> inputIterator, Function<? super T, ? extends K> selector) {
+    public static <T, K> Iterator<T> distinctIterator(final Iterator<T> inputIterator, final Function<? super T, ? extends K> selector) {
         final var iterator = AtomicIterator.of(inputIterator);
         final Set<K> observed = new HashSet<>();
         final AtomicIterator<T> atomicIterator = action -> nextDistinctValue(iterator, observed, action, selector);
         return atomicIterator.asIterator();
     }
 
-    private static <T, K> boolean nextDistinctValue(AtomicIterator<T> iterator,
-                                                    Set<K> observed,
-                                                    Consumer<? super T> action,
-                                                    Function<? super T, ? extends K> selector) {
-        var reference = new AtomicReference<T>();
+    private static <T, K> boolean nextDistinctValue(final AtomicIterator<T> iterator,
+                                                    final Set<K> observed,
+                                                    final Consumer<? super T> action,
+                                                    final Function<? super T, ? extends K> selector) {
+        final var reference = new AtomicReference<T>();
         while (iterator.tryAdvance(reference::set)) {
-            var next = reference.get();
+            final var next = reference.get();
             if (observed.add(selector.apply(next))) {
                 action.accept(next);
                 return true;
@@ -164,9 +164,9 @@ public final class Iterators {
         return false;
     }
 
-    public static <T, A, R> Iterator<R> mergingIterator(@NotNull Iterator<T> thisIterator,
-                                                 @NotNull Iterator<A> otherIterator,
-                                                 @NotNull BiFunction<? super T, ? super A, ? extends R> transform) {
+    public static <T, A, R> Iterator<R> mergingIterator(@NotNull final Iterator<T> thisIterator,
+                                                 @NotNull final Iterator<A> otherIterator,
+                                                 @NotNull final BiFunction<? super T, ? super A, ? extends R> transform) {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -180,7 +180,7 @@ public final class Iterators {
         };
     }
 
-    public static <T> Iterator<T> interspersingIterator(Iterator<T> iterator, UnaryOperator<T> operator) {
+    public static <T> Iterator<T> interspersingIterator(final Iterator<T> iterator, final UnaryOperator<T> operator) {
         return new Iterator<>() {
             private T current = null;
 
@@ -203,9 +203,9 @@ public final class Iterators {
         };
     }
 
-    public static <T> Iterator<T> interspersingIterator(Iterator<T> iterator,
-                                                        Supplier<T> initValSupplier,
-                                                        UnaryOperator<T> operator) {
+    public static <T> Iterator<T> interspersingIterator(final Iterator<T> iterator,
+                                                        final Supplier<T> initValSupplier,
+                                                        final UnaryOperator<T> operator) {
         return new Iterator<>() {
             private T valueToInsert = null;
             private boolean insertValue = false;
@@ -230,7 +230,7 @@ public final class Iterators {
     }
 
     @NotNull
-    public static <T> Iterator<T> removingIterator(Iterable<T> iterable, @NotNull T value) {
+    public static <T> Iterator<T> removingIterator(final Iterable<T> iterable, @NotNull final T value) {
         final var removed = new AtomicBoolean();
         return filteringIterator(iterable.iterator(), e -> {
             if (!removed.get() && e == value) {
@@ -243,7 +243,7 @@ public final class Iterators {
     }
 
     @NotNull
-    public static <T, I extends Iterator<T>> I constrainOnceIterator(I iterator, AtomicBoolean consumed) {
+    public static <T, I extends Iterator<T>> I constrainOnceIterator(final I iterator, final AtomicBoolean consumed) {
         if (consumed.get()) {
             throw new IllegalStateException("Sequence is already consumed");
         }
@@ -251,13 +251,13 @@ public final class Iterators {
         return iterator;
     }
 
-    public static <T> PrimitiveIterator.OfInt indexIterator(Iterator<T> iterator) {
+    public static <T> PrimitiveIterator.OfInt indexIterator(final Iterator<T> iterator) {
         return new IndexIterator<>(iterator);
     }
 
-    public static <R, T> Iterator<R> scanningIterator(Iterator<T> iterator,
-                                                      R initial,
-                                                      BiFunction<? super R, ? super T, ? extends R> operation) {
+    public static <R, T> Iterator<R> scanningIterator(final Iterator<T> iterator,
+                                                      final R initial,
+                                                      final BiFunction<? super R, ? super T, ? extends R> operation) {
         return new ScanningIterator<>(iterator, initial, operation);
     }
 }

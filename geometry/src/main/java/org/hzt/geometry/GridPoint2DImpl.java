@@ -7,7 +7,7 @@ final class GridPoint2DImpl implements GridPoint2D {
     private final int x;
     private final int y;
 
-    GridPoint2DImpl(int x, int y) {
+    GridPoint2DImpl(final int x, final int y) {
         this.x = x;
         this.y = y;
     }
@@ -23,14 +23,14 @@ final class GridPoint2DImpl implements GridPoint2D {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var that = (GridPoint2DImpl) o;
+        final var that = (GridPoint2DImpl) o;
         return x == that.x && y == that.y;
     }
 

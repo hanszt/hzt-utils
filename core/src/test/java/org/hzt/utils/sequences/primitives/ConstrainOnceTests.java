@@ -5,7 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import java.time.chrono.IsoChronology;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConstrainOnceTests {
 
@@ -49,7 +52,7 @@ class ConstrainOnceTests {
         );
     }
 
-    private static void assertThrowsAndAssertMessage(IntSequence integers) {
+    private static void assertThrowsAndAssertMessage(final IntSequence integers) {
         final var exception = assertThrows(IllegalStateException.class, integers::any);
         assertEquals("Sequence is already consumed", exception.getMessage());
     }

@@ -54,22 +54,22 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
 
     void forEach(@NotNull BiConsumer<? super K, ? super V> biConsumer);
 
-    default <R, C extends Collection<R>> C mapKeysTo(@NotNull Supplier<C> collectionFactory,
-                                                     @NotNull Function<? super K, ? extends R> mapper) {
+    default <R, C extends Collection<R>> C mapKeysTo(@NotNull final Supplier<C> collectionFactory,
+                                                     @NotNull final Function<? super K, ? extends R> mapper) {
         return Sequence.of(this::keyIterator).mapTo(collectionFactory, mapper);
     }
 
-    default <R, C extends Collection<R>> C mapValuesTo(@NotNull Supplier<C> collectionFactory,
-                                                       @NotNull Function<? super V, ? extends R> mapper) {
+    default <R, C extends Collection<R>> C mapValuesTo(@NotNull final Supplier<C> collectionFactory,
+                                                       @NotNull final Function<? super V, ? extends R> mapper) {
         return Sequence.of(this::valueIterator).mapTo(collectionFactory, mapper);
     }
 
-    default <R, C extends Collection<R>> C flatMapKeysTo(@NotNull Supplier<C> collectionFactory,
-                                                         @NotNull Function<? super K, ? extends Iterable<? extends R>> mapper) {
-        var destination = collectionFactory.get();
+    default <R, C extends Collection<R>> C flatMapKeysTo(@NotNull final Supplier<C> collectionFactory,
+                                                         @NotNull final Function<? super K, ? extends Iterable<? extends R>> mapper) {
+        final var destination = collectionFactory.get();
         final Iterable<K> keyIterable = this::keyIterator;
-        for (var e : keyIterable) {
-            var iterable = mapper.apply(e);
+        for (final var e : keyIterable) {
+            final var iterable = mapper.apply(e);
             if (iterable instanceof Collection<?>) {
                 //noinspection unchecked
                 destination.addAll((Collection<R>) iterable);
@@ -80,16 +80,16 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
         return destination;
     }
 
-    default <R> ListX<R> flatMapKeys(@NotNull Function<? super K, ? extends Iterable<? extends R>> mapper) {
+    default <R> ListX<R> flatMapKeys(@NotNull final Function<? super K, ? extends Iterable<? extends R>> mapper) {
         return flatMapKeysTo(MutableListX::empty, mapper);
     }
 
-    default <R, C extends Collection<R>> C flatMapValuesTo(@NotNull Supplier<C> collectionFactory,
-                                                           @NotNull Function<? super V, ? extends Iterable<? extends R>> mapper) {
-        var destination = collectionFactory.get();
+    default <R, C extends Collection<R>> C flatMapValuesTo(@NotNull final Supplier<C> collectionFactory,
+                                                           @NotNull final Function<? super V, ? extends Iterable<? extends R>> mapper) {
+        final var destination = collectionFactory.get();
         final Iterable<V> valueIterable = this::valueIterator;
-        for (var e : valueIterable) {
-            var iterable = mapper.apply(e);
+        for (final var e : valueIterable) {
+            final var iterable = mapper.apply(e);
             if (iterable instanceof Collection<?>) {
                 //noinspection unchecked
                 destination.addAll((Collection<R>) iterable);
@@ -100,13 +100,13 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
         return destination;
     }
 
-    default <R> ListX<R> flatMapValues(@NotNull Function<? super V, ? extends Iterable<? extends R>> mapper) {
+    default <R> ListX<R> flatMapValues(@NotNull final Function<? super V, ? extends Iterable<? extends R>> mapper) {
         return flatMapValuesTo(MutableListX::empty, mapper);
     }
 
     @NotNull
     default Iterator<V> valueIterator() {
-        var iterator = iterator();
+        final var iterator = iterator();
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -122,7 +122,7 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
 
     @NotNull
     default Iterator<K> keyIterator() {
-        var iterator = iterator();
+        final var iterator = iterator();
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -136,7 +136,7 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
         };
     }
 
-    default long count(BiPredicate<? super K, ? super V> predicate) {
+    default long count(final BiPredicate<? super K, ? super V> predicate) {
         return Sequence.of(this).count(e -> predicate.test(e.getKey(), e.getValue()));
     }
 
@@ -153,20 +153,20 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
     }
 
     default <R extends Comparable<? super R>> SortedMutableMapX<K, V> toSortedMap(
-            @NotNull Function<? super K, ? extends R> selector) {
+            @NotNull final Function<? super K, ? extends R> selector) {
         return SortedMutableMapX.of(this, selector);
     }
 
-    default <R> ListX<R> toListXOf(@NotNull BiFunction<? super K, ? super V, ? extends R> transform) {
+    default <R> ListX<R> toListXOf(@NotNull final BiFunction<? super K, ? super V, ? extends R> transform) {
         return ListX.of(map(transform));
     }
 
-    default <R> SetX<R> toSetXOf(@NotNull BiFunction<? super K, ? super V, ? extends R> transform) {
+    default <R> SetX<R> toSetXOf(@NotNull final BiFunction<? super K, ? super V, ? extends R> transform) {
         return Sequence.of(this).toSetXOf(e -> transform.apply(e.getKey(), e.getValue()));
     }
 
-    default boolean any(BiPredicate<K, V> biPredicate) {
-        for (var e : this) {
+    default boolean any(final BiPredicate<K, V> biPredicate) {
+        for (final var e : this) {
             if (biPredicate.test(e.getKey(), e.getValue())) {
                 return true;
             }
@@ -174,8 +174,8 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
         return false;
     }
 
-    default boolean all(BiPredicate<K, V> biPredicate) {
-        for (var e : this) {
+    default boolean all(final BiPredicate<K, V> biPredicate) {
+        for (final var e : this) {
             if (!biPredicate.test(e.getKey(), e.getValue())) {
                 return false;
             }
@@ -183,8 +183,8 @@ public interface EntryIterable<K, V> extends Iterable<Map.Entry<K, V>> {
         return true;
     }
 
-    default boolean none(BiPredicate<K, V> biPredicate) {
-        for (var e : this) {
+    default boolean none(final BiPredicate<K, V> biPredicate) {
+        for (final var e : this) {
             if (biPredicate.test(e.getKey(), e.getValue())) {
                 return false;
             }

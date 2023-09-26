@@ -52,25 +52,25 @@ public final class FxCollectors {
     }
 
     public static <T> Collector<T, ?, ObservableFloatArray> toObservableFloatArray(
-            ToFloatFunction<? super T> toFloatFunction) {
+            final ToFloatFunction<? super T> toFloatFunction) {
         return Collector.of(FloatArrayList::new,
                 (floatMutableList, value) -> floatMutableList.add(toFloatFunction.applyAsFloat(value)),
                 FloatArrayList::plus,
                 floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));
     }
 
-    public static IntCollector<?, ObservableFloatArray> toObservableFloatArray(IntToFloatFunction mapper) {
+    public static IntCollector<?, ObservableFloatArray> toObservableFloatArray(final IntToFloatFunction mapper) {
         return IntCollector.of(FloatArrayList::new,
                 (floatMutableList, value) -> floatMutableList.add(mapper.applyAsFloat(value)),
                 floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));
     }
 
-    public static LongCollector<?, ObservableFloatArray> toObservableFloatArray(LongToFloatFunction mapper) {
+    public static LongCollector<?, ObservableFloatArray> toObservableFloatArray(final LongToFloatFunction mapper) {
         return LongCollector.of(FloatArrayList::new,
                 (floatMutableList, value) -> floatMutableList.add(mapper.applyAsFloat(value)),
                 floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));
     }
-    public static DoubleCollector<?, ObservableFloatArray> toObservableFloatArray(DoubleToFloatFunction mapper) {
+    public static DoubleCollector<?, ObservableFloatArray> toObservableFloatArray(final DoubleToFloatFunction mapper) {
         return DoubleCollector.of(FloatArrayList::new,
                 (floatMutableList, value) -> floatMutableList.add(mapper.applyAsFloat(value)),
                 floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));

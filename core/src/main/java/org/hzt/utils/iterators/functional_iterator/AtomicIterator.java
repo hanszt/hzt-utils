@@ -14,9 +14,9 @@ import java.util.function.Consumer;
 @SuppressWarnings("squid:S1711")
 public interface AtomicIterator<T> {
 
-    static <T> AtomicIterator<T> of(Iterator<T> iterator) {
+    static <T> AtomicIterator<T> of(final Iterator<T> iterator) {
         return action -> {
-            var hasNext = iterator.hasNext();
+            final var hasNext = iterator.hasNext();
             if (hasNext) {
                 action.accept(iterator.next());
             }
@@ -24,16 +24,15 @@ public interface AtomicIterator<T> {
         };
     }
 
-    static <T> AtomicIterator<T> of(Spliterator<T> spliterator) {
+    static <T> AtomicIterator<T> of(final Spliterator<T> spliterator) {
         return spliterator::tryAdvance;
     }
 
     boolean tryAdvance(Consumer<? super T> action);
 
-    default void forEachRemaining(Consumer<? super T> action) {
+    default void forEachRemaining(final Consumer<? super T> action) {
         //noinspection StatementWithEmptyBody
-        while (tryAdvance(action)) {
-        }
+        while (tryAdvance(action));
     }
 
     /**

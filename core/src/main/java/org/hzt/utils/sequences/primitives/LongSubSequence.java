@@ -15,7 +15,7 @@ final class LongSubSequence implements LongSkipTakeSequence {
     private final long endIndex;
     private final long count;
 
-    LongSubSequence(LongSequence upstream, long startIndex, long endIndex) {
+    LongSubSequence(final LongSequence upstream, final long startIndex, final long endIndex) {
         require(startIndex >= 0, () -> "startIndex should be non-negative, but is " + startIndex);
         require(endIndex >= 0, () -> "endIndex should be non-negative, but is " + endIndex);
         require(endIndex >= startIndex, () -> "endIndex should be not less than startIndex, but was " + endIndex + " < " + startIndex);
@@ -32,12 +32,12 @@ final class LongSubSequence implements LongSkipTakeSequence {
     }
 
     @Override
-    public LongSequence skip(long n) {
+    public LongSequence skip(final long n) {
         return n >= count ? PrimitiveIterators::emptyLongIterator : new LongSubSequence(upstream, startIndex + n, endIndex);
     }
 
     @Override
-    public LongSubSequence take(long n) {
+    public LongSubSequence take(final long n) {
         return n >= count ? this : new LongSubSequence(upstream, startIndex, startIndex + 1);
     }
 

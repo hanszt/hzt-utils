@@ -8,7 +8,7 @@ public interface DoubleMutableSet extends DoubleMutableCollection {
         return new DoubleHashSet();
     }
 
-    static DoubleMutableSet of(double @NotNull ... values) {
+    static DoubleMutableSet of(final double @NotNull ... values) {
         return new DoubleHashSet(values);
     }
 }

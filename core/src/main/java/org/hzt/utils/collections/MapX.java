@@ -24,73 +24,73 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
         return new ImmutableMapX<>();
     }
 
-    static <K, V> MapX<K, V> of(Map<? extends K, ? extends V> map) {
+    static <K, V> MapX<K, V> of(final Map<? extends K, ? extends V> map) {
         return new ImmutableMapX<>(map);
     }
 
-    static <K, V> MapX<K, V> of(Iterable<Map.Entry<K, V>> entries) {
+    static <K, V> MapX<K, V> of(final Iterable<Map.Entry<K, V>> entries) {
         return new ImmutableMapX<>(entries);
     }
 
-    static <K, V> MapX<K, V> of(K k1, V v1) {
+    static <K, V> MapX<K, V> of(final K k1, final V v1) {
         return MapX.of(Map.of(k1, v1));
     }
 
-    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2) {
+    static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2) {
         return MapX.of(Map.of(k1, v1, k2, v2));
     }
 
-    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3) {
+    static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3) {
         return MapX.of(Map.of(k1, v1, k2, v2, k3, v3));
     }
 
-    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
+    static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4) {
         return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4));
     }
 
-    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
+    static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4, final K k5, final V v5) {
         return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5));
     }
 
-    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6) {
+    static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4, final K k5, final V v5, final K k6, final V v6) {
         return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6));
     }
 
-    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6, K k7, V v7) {
+    static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4, final K k5, final V v5, final K k6, final V v6, final K k7, final V v7) {
         return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7));
     }
 
-    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
-                                K k6, V v6, K k7, V v7, K k8, V v8) {
+    static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4, final K k5, final V v5,
+                                final K k6, final V v6, final K k7, final V v7, final K k8, final V v8) {
         return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8));
     }
 
-    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
-                                K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9) {
+    static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4, final K k5, final V v5,
+                                final K k6, final V v6, final K k7, final V v7, final K k8, final V v8, final K k9, final V v9) {
         return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9));
     }
 
-    static <K, V> MapX<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
-                                K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10) {
+    static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4, final K k5, final V v5,
+                                final K k6, final V v6, final K k7, final V v7, final K k8, final V v8, final K k9, final V v9, final K k10, final V v10) {
         return MapX.of(Map.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9, k10, v10));
     }
 
     @SafeVarargs
-    static <K, V> MapX<K, V> ofEntries(Map.Entry<? extends K, ? extends V>... entries) {
+    static <K, V> MapX<K, V> ofEntries(final Map.Entry<? extends K, ? extends V>... entries) {
         return new ImmutableMapX<>(entries);
     }
 
-    static <K, V> MapX<K, V> ofPairs(Iterable<Pair<K, V>> pairs) {
+    static <K, V> MapX<K, V> ofPairs(final Iterable<Pair<K, V>> pairs) {
         return new ImmutableMapX<>(EntrySequence.ofPairs(pairs));
     }
 
     @SafeVarargs
-    static <K, V> MapX<K, V> ofPairs(Pair<K, V>... pairs) {
+    static <K, V> MapX<K, V> ofPairs(final Pair<K, V>... pairs) {
         return new ImmutableMapX<>(pairs);
     }
 
-    static <K, V> MapX<K, V> build(Consumer<MutableMapX<K, V>> mapConsumer) {
-        MutableMapX<K, V> map = MutableMapX.empty();
+    static <K, V> MapX<K, V> build(final Consumer<MutableMapX<K, V>> mapConsumer) {
+        final MutableMapX<K, V> map = MutableMapX.empty();
         mapConsumer.accept(map);
         return MapX.copyOf(map);
     }
@@ -98,45 +98,45 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     <K1, V1> MapX<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper,
                               @NotNull Function<? super V, ? extends V1> valueMapper);
 
-    default <R> ListX<R> map(@NotNull BiFunction<? super K, ? super V, ? extends R> mapper) {
+    default <R> ListX<R> map(@NotNull final BiFunction<? super K, ? super V, ? extends R> mapper) {
         return MutableListX.of(this).mapNotNull(e -> mapper.apply(e.getKey(), e.getValue()));
     }
 
     @Override
-    default <K1> MapX<K1, V> mapByKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
+    default <K1> MapX<K1, V> mapByKeys(@NotNull final Function<? super K, ? extends K1> keyMapper) {
         return map(keyMapper, It::self);
     }
 
     @Override
-    default <K1> MapX<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, ? extends K1> toKeyMapper) {
+    default <K1> MapX<K1, V> mapKeys(@NotNull final BiFunction<? super K, ? super V, ? extends K1> toKeyMapper) {
         return MapX.of(asSequence().mapKeys(toKeyMapper));
     }
 
     @Override
-    default <V1> MapX<K, V1> mapByValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
+    default <V1> MapX<K, V1> mapByValues(@NotNull final Function<? super V, ? extends V1> valueMapper) {
         return map(It::self, valueMapper);
     }
 
     @Override
-    default <V1> MapX<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, ? extends V1> toValueMapper) {
+    default <V1> MapX<K, V1> mapValues(@NotNull final BiFunction<? super K, ? super V, ? extends V1> toValueMapper) {
         return MapX.of(asSequence().mapValues(toValueMapper));
     }
 
     @Override
-    default MapX<K, V> filter(@NotNull BiPredicate<? super K, ? super V> biPredicate) {
+    default MapX<K, V> filter(@NotNull final BiPredicate<? super K, ? super V> biPredicate) {
         return asSequence().filter(biPredicate).toMapX();
     }
 
-    default MapX<K, V> filterKeys(@NotNull Predicate<? super K> predicate) {
+    default MapX<K, V> filterKeys(@NotNull final Predicate<? super K> predicate) {
         return asSequence().filterKeys(predicate).toMapX();
     }
 
-    default MapX<K, V> filterValues(@NotNull Predicate<? super V> predicate) {
+    default MapX<K, V> filterValues(@NotNull final Predicate<? super V> predicate) {
         return asSequence().filterValues(predicate).toMapX();
     }
 
     @Override
-    default MapX<K, V> onEachKey(@NotNull Consumer<? super K> consumer) {
+    default MapX<K, V> onEachKey(@NotNull final Consumer<? super K> consumer) {
         return mapByKeys(k -> {
             consumer.accept(k);
             return k;
@@ -144,7 +144,7 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     }
 
     @Override
-    default MapX<K, V> onEachValue(@NotNull Consumer<? super V> consumer) {
+    default MapX<K, V> onEachValue(@NotNull final Consumer<? super V> consumer) {
         return mapByValues(v -> {
             consumer.accept(v);
             return v;
@@ -153,20 +153,20 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
 
     @Override
     @NotNull
-    default MapX<K, V> onEach(@NotNull Consumer<? super Map.Entry<K, V>> consumer) {
+    default MapX<K, V> onEach(@NotNull final Consumer<? super Map.Entry<K, V>> consumer) {
         return MapX.of(CollectionX.super.onEach(consumer));
     }
 
     @Override
-    default MapX<K, V> onEach(@NotNull BiConsumer<? super K, ? super V> biConsumer) {
+    default MapX<K, V> onEach(@NotNull final BiConsumer<? super K, ? super V> biConsumer) {
         return MapX.of(CollectionX.super.onEach(c -> biConsumer.accept(c.getKey(), c.getValue())));
     }
 
-    default <K1, V1> MapX<K1, V1> inverted(@NotNull Function<? super V, ? extends K1> toKeyMapper,
-                                           @NotNull Function<? super K, ? extends V1> toValueMapper) {
-        Map<K1, V1> resultMap = new HashMap<>();
-        for (var entry : this) {
-            var value = entry.getValue();
+    default <K1, V1> MapX<K1, V1> inverted(@NotNull final Function<? super V, ? extends K1> toKeyMapper,
+                                           @NotNull final Function<? super K, ? extends V1> toValueMapper) {
+        final Map<K1, V1> resultMap = new HashMap<>();
+        for (final var entry : this) {
+            final var value = entry.getValue();
             if (value != null) {
                 resultMap.put(toKeyMapper.apply(value), toValueMapper.apply(entry.getKey()));
             }
@@ -190,19 +190,19 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
 
     MutableSetX<Map.Entry<K, V>> entrySet();
 
-    default V getOrDefault(Object key, V defaultValue) {
-        var value = get(key);
+    default V getOrDefault(final Object key, final V defaultValue) {
+        final var value = get(key);
         return (value != null || containsKey(key)) ? value : defaultValue;
     }
 
-    default void forEach(@NotNull BiConsumer<? super K, ? super V> action) {
+    default void forEach(@NotNull final BiConsumer<? super K, ? super V> action) {
         Objects.requireNonNull(action);
-        for (var entry : entrySet()) {
+        for (final var entry : entrySet()) {
             try {
-                var k = entry.getKey();
-                var v = entry.getValue();
+                final var k = entry.getKey();
+                final var v = entry.getValue();
                 action.accept(k, v);
-            } catch (IllegalStateException ise) {
+            } catch (final IllegalStateException ise) {
                 // this usually means the entry is no longer in the map.
                 throw new ConcurrentModificationException(ise);
             }
@@ -214,7 +214,7 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
         return EntrySequence.of(this);
     }
 
-    static <K, V> MapX<K, V> copyOf(MapX<K, V> map) {
+    static <K, V> MapX<K, V> copyOf(final MapX<K, V> map) {
         return new ImmutableMapX<>(map);
     }
 }

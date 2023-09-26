@@ -10,20 +10,20 @@ final class IntSkipSequence implements IntSkipTakeSequence {
     private final IntSequence upstream;
     private final long count;
 
-    IntSkipSequence(IntSequence upstream, long count) {
+    IntSkipSequence(final IntSequence upstream, final long count) {
         PreConditions.require(count >= 0);
         this.upstream = upstream;
         this.count = count;
     }
 
     @Override
-    public IntSequence skip(long n) {
+    public IntSequence skip(final long n) {
         final var n1 = count + n;
         return n1 < 0 ? new IntSkipSequence(this, n) : new IntSkipSequence(upstream, n1);
     }
 
     @Override
-    public IntSequence take(long n) {
+    public IntSequence take(final long n) {
         final var n1 = count + n;
         return n1 < 0 ? new IntTakeSequence(this, n) : new IntSubSequence(upstream, count, n1);
     }

@@ -16,17 +16,17 @@ public final class LongTakeWhileIterator implements PrimitiveIterator.OfLong {
     private long nextLong;
     private State nextState = State.INIT_UNKNOWN;
 
-    private LongTakeWhileIterator(OfLong iterator, LongPredicate predicate, boolean inclusive) {
+    private LongTakeWhileIterator(final OfLong iterator, final LongPredicate predicate, final boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
     }
 
-    public static LongTakeWhileIterator of(OfLong iterator, LongPredicate predicate, boolean inclusive) {
+    public static LongTakeWhileIterator of(final OfLong iterator, final LongPredicate predicate, final boolean inclusive) {
         return new LongTakeWhileIterator(iterator, predicate, inclusive);
     }
 
-    public static LongTakeWhileIterator of(OfLong iterator, LongPredicate predicate) {
+    public static LongTakeWhileIterator of(final OfLong iterator, final LongPredicate predicate) {
         return new LongTakeWhileIterator(iterator, predicate, false);
     }
 
@@ -64,7 +64,7 @@ public final class LongTakeWhileIterator implements PrimitiveIterator.OfLong {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        var result = nextLong;
+        final var result = nextLong;
         nextState = State.NEXT_UNKNOWN;
         return result;
     }

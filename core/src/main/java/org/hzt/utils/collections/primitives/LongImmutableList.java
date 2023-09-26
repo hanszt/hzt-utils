@@ -21,27 +21,27 @@ final class LongImmutableList extends
         elementData = new long[0];
     }
 
-    LongImmutableList(long @NotNull... array) {
+    LongImmutableList(final long @NotNull... array) {
         super(array.length);
         elementData = ArraysX.copyOf(array);
     }
 
-    LongImmutableList(LongCollection collection) {
+    LongImmutableList(final LongCollection collection) {
         super(collection.size());
         elementData = ArraysX.copyOf(collection.toArray());
     }
 
     @Override
-    public long get(int index) {
+    public long get(final int index) {
         Objects.checkIndex(index, elementData.length);
         return elementData[index];
     }
 
-    public int indexOf(long value) {
+    public int indexOf(final long value) {
         return indexOfRange(value, elementData.length);
     }
 
-    int indexOfRange(long value, int end) {
+    int indexOfRange(final long value, final int end) {
         for (var i = 0; i < end; i++) {
             if (value == elementData[i]) {
                 return i;
@@ -51,7 +51,7 @@ final class LongImmutableList extends
     }
 
     @Override
-    public int lastIndexOf(long value) {
+    public int lastIndexOf(final long value) {
         return lastIndexOfRange(value, elementData.length);
     }
 
@@ -67,7 +67,7 @@ final class LongImmutableList extends
         return mutableList;
     }
 
-    private int lastIndexOfRange(long value, int end) {
+    private int lastIndexOfRange(final long value, final int end) {
         for (var i = end - 1; i >= 0; i--) {
             if (value == elementData[i]) {
                 return i;
@@ -78,7 +78,7 @@ final class LongImmutableList extends
 
     @Override
     @SuppressWarnings("squid:S2162")
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
@@ -86,11 +86,11 @@ final class LongImmutableList extends
             return false;
         }
 
-        var iterator1 = iterator();
-        var iterator2 = ((LongList) o).iterator();
+        final var iterator1 = iterator();
+        final var iterator2 = ((LongList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            var l1 = iterator1.nextLong();
-            var l2 = iterator2.nextLong();
+            final var l1 = iterator1.nextLong();
+            final var l2 = iterator2.nextLong();
             if (l1 != l2) {
                 return false;
             }
@@ -105,7 +105,7 @@ final class LongImmutableList extends
     }
 
     @Override
-    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfLong iterator) {
+    protected void appendNextPrimitive(final StringBuilder sb, final PrimitiveIterator.OfLong iterator) {
         sb.append(iterator.nextLong());
     }
 
@@ -115,7 +115,7 @@ final class LongImmutableList extends
     }
 
     @Override
-    protected long[] newArray(int length) {
+    protected long[] newArray(final int length) {
         return new long[length];
     }
 
@@ -137,7 +137,7 @@ final class LongImmutableList extends
 
     @Override
     @SuppressWarnings("squid:S1188")
-    public @NotNull PrimitiveListIterator.OfLong listIterator(int startIndex) {
+    public @NotNull PrimitiveListIterator.OfLong listIterator(final int startIndex) {
         return new PrimitiveListIterator.OfLong() {
             private int index = startIndex;
 

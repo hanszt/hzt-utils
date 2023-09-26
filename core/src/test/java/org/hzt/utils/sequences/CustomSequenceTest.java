@@ -16,11 +16,11 @@ import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static org.hzt.utils.It.*;
+import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.DynamicTest.*;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 class CustomSequenceTest {
 
@@ -57,23 +57,23 @@ class CustomSequenceTest {
 
     private interface CustomSequence<T> extends Sequence<T> {
 
-        static <T> CustomSequence<T> of(Iterable<T> iterable) {
+        static <T> CustomSequence<T> of(final Iterable<T> iterable) {
             return iterable::iterator;
         }
 
         @Override
-        default <R> CustomSequence<R> map(@NotNull Function<? super T, ? extends R> mapper) {
+        default <R> CustomSequence<R> map(@NotNull final Function<? super T, ? extends R> mapper) {
             return CustomSequence.of(Sequence.super.map(mapper));
         }
 
         @Override
-        default CustomSequence<T> filter(@NotNull Predicate<? super T> predicate) {
+        default CustomSequence<T> filter(@NotNull final Predicate<? super T> predicate) {
             return () -> Iterators.filteringIterator(iterator(), predicate, true);
         }
 
-        default float floatSumOf(@NotNull ToFloatFunction<? super T> selector) {
+        default float floatSumOf(@NotNull final ToFloatFunction<? super T> selector) {
             float sum = 0;
-            for (var t : this) {
+            for (final var t : this) {
                 if (t != null) {
                     sum += selector.applyAsFloat(t);
                 }
@@ -81,7 +81,7 @@ class CustomSequenceTest {
             return sum;
         }
 
-        static void main(String[] args) {
+        static void main(final String[] args) {
             fibonacciSequence()
                     .filter(bigInteger -> bigInteger.isProbablePrime(100))
                     .forEach(It::println);
@@ -94,7 +94,7 @@ class CustomSequenceTest {
         float applyAsFloat(T item);
     }
 
-    private static boolean isNaturalNr(String current) {
+    private static boolean isNaturalNr(final String current) {
         return current.chars().allMatch(Character::isDigit);
     }
 
@@ -118,7 +118,7 @@ class CustomSequenceTest {
                     .skip(3)
                     .joinToString(", ");
 
-            for (var s : fizzBuzzer.take(3)) {
+            for (final var s : fizzBuzzer.take(3)) {
                 println("s = " + s);
             }
             assertAll(
@@ -139,7 +139,7 @@ class CustomSequenceTest {
                     .take(100);
         }
 
-        private DynamicTest everyFifthContainsBuzz(IndexedValue<String> indexedValue) {
+        private DynamicTest everyFifthContainsBuzz(final IndexedValue<String> indexedValue) {
             final var n = indexedValue.index() + 1;
             final var name = "Value at n=" + n + " contains buzz";
             return dynamicTest(name, () -> assertTrue(indexedValue.value().contains("buzz")));
@@ -157,7 +157,7 @@ class CustomSequenceTest {
                     .take(100);
         }
 
-        private DynamicTest everyThirdContainsFizz(IndexedValue<String> indexedValue) {
+        private DynamicTest everyThirdContainsFizz(final IndexedValue<String> indexedValue) {
             final var n = indexedValue.index() + 1;
             final var name = "Value at n=" + n + " contains fizz";
             return dynamicTest(name, () -> assertTrue(indexedValue.value().contains("fizz")));
@@ -192,13 +192,13 @@ class CustomSequenceTest {
         }
 
         @NotNull
-        private static String next(int index, String current, int modulo, String string) {
+        private static String next(final int index, final String current, final int modulo, final String string) {
             return next(index, current, modulo, 0, string);
         }
 
         @NotNull
-        private static String next(int index, String current, int modulo, int offSet, String string) {
-            var value = index + 1;
+        private static String next(final int index, final String current, final int modulo, final int offSet, final String string) {
+            final var value = index + 1;
             final var isNaturalNr = isNaturalNr(current);
             final var match = value % modulo == offSet;
             if (isNaturalNr) {
@@ -207,7 +207,7 @@ class CustomSequenceTest {
             return match ? current + string : current;
         }
 
-        static void main(String[] args) {
+        static void main(final String[] args) {
             final var fizzBuzzer = FizzBuzzer
                     .start()
                     .fizz()

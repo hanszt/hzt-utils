@@ -8,7 +8,7 @@ public interface ClosedRange<T extends Comparable<? super T>> {
 
     @NotNull T endInclusive();
 
-    default boolean contains(T value) {
+    default boolean contains(final T value) {
         return 0 <= value.compareTo(start()) && value.compareTo(endInclusive()) <= 0;
     }
 

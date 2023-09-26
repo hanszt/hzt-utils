@@ -21,15 +21,15 @@ public final class IterableReductions {
     private IterableReductions() {
     }
 
-    public static <T> T reduce(Iterable<T> iterable, T initial, BinaryOperator<T> operator) {
+    public static <T> T reduce(final Iterable<T> iterable, final T initial, final BinaryOperator<T> operator) {
         var accumulator = initial;
-        for (var t : iterable) {
+        for (final var t : iterable) {
             accumulator = operator.apply(accumulator, t);
         }
         return accumulator;
     }
 
-    public static <T> Optional<T> reduce(Iterator<T> iterator, BinaryOperator<T> operator) {
+    public static <T> Optional<T> reduce(final Iterator<T> iterator, final BinaryOperator<T> operator) {
         if (iterator.hasNext()) {
             var accumulator = iterator.next();
             while (iterator.hasNext()) {
@@ -41,25 +41,25 @@ public final class IterableReductions {
     }
 
     public static <T, R, K> MapX<K, MutableListX<R>> groupMapping(
-            @NotNull Iterable<T> iterable,
-            @NotNull Function<? super T, ? extends K> classifier,
-            @NotNull Function<? super T, ? extends R> valueMapper) {
-        MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
-        for (var t : iterable) {
+            @NotNull final Iterable<T> iterable,
+            @NotNull final Function<? super T, ? extends K> classifier,
+            @NotNull final Function<? super T, ? extends R> valueMapper) {
+        final MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
+        for (final var t : iterable) {
             groupedMap.computeIfAbsent(classifier.apply(t), key -> MutableListX.empty()).add(valueMapper.apply(t));
         }
         return groupedMap;
     }
 
     public static <T, R> Pair<ListX<R>, ListX<R>> partitionMapping(
-            @NotNull Iterable<T> iterable,
-            @NotNull Predicate<T> predicate,
-            @NotNull Function<? super T, ? extends R> resultMapper) {
-        MutableListX<R> matchingList = MutableListX.empty();
-        MutableListX<R> nonMatchingList = MutableListX.empty();
-        for (var t : iterable) {
+            @NotNull final Iterable<T> iterable,
+            @NotNull final Predicate<T> predicate,
+            @NotNull final Function<? super T, ? extends R> resultMapper) {
+        final MutableListX<R> matchingList = MutableListX.empty();
+        final MutableListX<R> nonMatchingList = MutableListX.empty();
+        for (final var t : iterable) {
             if (t != null) {
-                var r = resultMapper.apply(t);
+                final var r = resultMapper.apply(t);
                 if (predicate.test(t)) {
                     matchingList.add(r);
                 } else {
@@ -71,14 +71,14 @@ public final class IterableReductions {
     }
 
     public static <T, S, I extends Iterable<S>, R> SetX<R> intersectionOf(
-            @NotNull Iterable<T> iterable,
-            @NotNull Function<? super T, ? extends I> toCollectionMapper,
-            @NotNull Function<? super S, ? extends R> selector) {
-        MutableSetX<R> common = MutableSetX.empty();
-        for (var t : iterable) {
+            @NotNull final Iterable<T> iterable,
+            @NotNull final Function<? super T, ? extends I> toCollectionMapper,
+            @NotNull final Function<? super S, ? extends R> selector) {
+        final MutableSetX<R> common = MutableSetX.empty();
+        for (final var t : iterable) {
             final var otherIterable = toCollectionMapper.apply(t);
             final MutableListX<R> resultList = MutableListX.empty();
-            for (var s : otherIterable) {
+            for (final var s : otherIterable) {
                 final var r = selector.apply(s);
                 resultList.add(r);
             }
@@ -91,8 +91,8 @@ public final class IterableReductions {
         return common;
     }
 
-    public static <T> boolean any(@NotNull Iterable<T> iterable, @NotNull Predicate<T> predicate) {
-        for (var element : iterable) {
+    public static <T> boolean any(@NotNull final Iterable<T> iterable, @NotNull final Predicate<T> predicate) {
+        for (final var element : iterable) {
             if (predicate.test(element)) {
                 return true;
             }
@@ -100,8 +100,8 @@ public final class IterableReductions {
         return false;
     }
 
-    public static <T> boolean all(@NotNull Iterable<T> iterable, @NotNull Predicate<T> predicate) {
-        for (var t : iterable) {
+    public static <T> boolean all(@NotNull final Iterable<T> iterable, @NotNull final Predicate<T> predicate) {
+        for (final var t : iterable) {
             if (!predicate.test(t)) {
                 return false;
             }
@@ -109,8 +109,8 @@ public final class IterableReductions {
         return true;
     }
 
-    public static <T> boolean none(@NotNull Iterable<T> iterable, @NotNull Predicate<T> predicate) {
-        for (var t : iterable) {
+    public static <T> boolean none(@NotNull final Iterable<T> iterable, @NotNull final Predicate<T> predicate) {
+        for (final var t : iterable) {
             if (predicate.test(t)) {
                 return false;
             }
@@ -118,12 +118,12 @@ public final class IterableReductions {
         return true;
     }
 
-    public static <T> Optional<T> findLastOf(Iterable<T> iterable) {
+    public static <T> Optional<T> findLastOf(final Iterable<T> iterable) {
         final var iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             return Optional.empty();
         } else if (iterable instanceof List) {
-            var list = (List<T>) iterable;
+            final var list = (List<T>) iterable;
             return Optional.ofNullable(list.get(list.size() - 1));
         } else {
             var result = iterator.next();
@@ -134,7 +134,7 @@ public final class IterableReductions {
         }
     }
 
-    public static <T> Optional<T> findLast(Iterable<T> iterable, @NotNull Predicate<T> predicate) {
+    public static <T> Optional<T> findLast(final Iterable<T> iterable, @NotNull final Predicate<T> predicate) {
         final var iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             throw IterableXHelper.noValuePresentException();

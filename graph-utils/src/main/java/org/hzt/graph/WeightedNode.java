@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public interface WeightedNode<T> extends Node<WeightedNode<T>, WeightedNode<T>> {
 
-    static <T> WeightedNode<T> of(T payload) {
+    static <T> WeightedNode<T> of(final T payload) {
         return new WeightedNode<T>() {
             @Override
             public Iterator<WeightedNode<T>> neighborIterator() {
@@ -26,8 +26,8 @@ public interface WeightedNode<T> extends Node<WeightedNode<T>, WeightedNode<T>> 
             }
 
             @Override
-            public void setCost(int i) {
-
+            public void setCost(final int i) {
+                // not implemented
             }
 
             @Override
@@ -51,7 +51,7 @@ public interface WeightedNode<T> extends Node<WeightedNode<T>, WeightedNode<T>> 
         return getEdges().iterator();
     }
 
-    default WeightedNode<T> addEdgeTo(WeightedNode<T> other, int weight) {
+    default WeightedNode<T> addEdgeTo(final WeightedNode<T> other, final int weight) {
         getEdges().add(WeightedEdge.of(this, other).withWeight(weight));
         return this;
     }

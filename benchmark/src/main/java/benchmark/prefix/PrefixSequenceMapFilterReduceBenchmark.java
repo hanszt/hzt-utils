@@ -58,8 +58,8 @@ public class PrefixSequenceMapFilterReduceBenchmark {
     @Benchmark
     public int imperativeMapFilterReduce() {
         var product = 1;
-        for (var s : list) {
-            var length = s.length();
+        for (final var s : list) {
+            final var length = s.length();
             if (IntX.isEven(length)) {
                 product *= length;
             }
@@ -67,8 +67,8 @@ public class PrefixSequenceMapFilterReduceBenchmark {
         return product;
     }
 
-    public static void main(String[] args) {
-        var options = new OptionsBuilder()
+    public static void main(final String[] args) {
+        final var options = new OptionsBuilder()
                 .include(PrefixSequenceMapFilterReduceBenchmark.class.getSimpleName())
                 .forks(2)
                 .warmupIterations(2)
@@ -77,7 +77,7 @@ public class PrefixSequenceMapFilterReduceBenchmark {
                 .build();
         try {
             new Runner(options).run();
-        } catch (RunnerException e) {
+        } catch (final RunnerException e) {
             throw new IllegalStateException(e);
         }
     }

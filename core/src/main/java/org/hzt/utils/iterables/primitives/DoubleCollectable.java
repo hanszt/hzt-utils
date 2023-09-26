@@ -18,15 +18,15 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection>, PrimitiveIterable.OfDouble {
 
-    default <R> R collect(@NotNull Supplier<R> supplier,
-                          @NotNull ObjDoubleConsumer<R> accumulator) {
+    default <R> R collect(@NotNull final Supplier<R> supplier,
+                          @NotNull final ObjDoubleConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
     }
 
-    default <A, R> R collect(@NotNull Supplier<? extends A> supplier,
-                             @NotNull ObjDoubleConsumer<? super A> accumulator,
-                             @NotNull Function<? super A, ? extends R> finisher) {
-        var iterator = iterator();
+    default <A, R> R collect(@NotNull final Supplier<? extends A> supplier,
+                             @NotNull final ObjDoubleConsumer<? super A> accumulator,
+                             @NotNull final Function<? super A, ? extends R> finisher) {
+        final var iterator = iterator();
         final var result = supplier.get();
         while (iterator.hasNext()) {
             accumulator.accept(result, iterator.nextDouble());
@@ -34,19 +34,19 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return finisher.apply(result);
     }
 
-    default <A, R> R collect(@NotNull DoubleCollector<A, R> collector) {
+    default <A, R> R collect(@NotNull final DoubleCollector<A, R> collector) {
         return collect(collector.supplier(), collector.accumulator(), collector.finisher());
     }
 
     default <A1, R1, A2, R2, R> R teeing(
-            @NotNull DoubleCollector<A1, R1> downStream1,
-            @NotNull DoubleCollector<A2, R2> downStream2,
-            @NotNull BiFunction<R1, R2, R> combiner) {
+            @NotNull final DoubleCollector<A1, R1> downStream1,
+            @NotNull final DoubleCollector<A2, R2> downStream2,
+            @NotNull final BiFunction<R1, R2, R> combiner) {
         final var result1 = downStream1.supplier().get();
         final var result2 = downStream2.supplier().get();
         final var accumulator1 = downStream1.accumulator();
         final var accumulator2 = downStream2.accumulator();
-        var iterator = iterator();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             final var value = iterator.nextDouble();
             accumulator1.accept(result1, value);
@@ -59,8 +59,8 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return DoubleList.copyOf(toMutableList());
     }
 
-    default <C extends DoubleMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {
-        var collection = collectionFactory.get();
+    default <C extends DoubleMutableCollection> C to(@NotNull final Supplier<C> collectionFactory) {
+        final var collection = collectionFactory.get();
         final var iterator = iterator();
         while(iterator.hasNext()) {
             collection.add(iterator.nextDouble());
@@ -77,15 +77,15 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return to(DoubleMutableSet::empty);
     }
 
-    default <C extends DoubleMutableCollection> C takeTo(@NotNull Supplier<C> collectionFactory, int n) {
+    default <C extends DoubleMutableCollection> C takeTo(@NotNull final Supplier<C> collectionFactory, final int n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
-        var collection = collectionFactory.get();
+        final var collection = collectionFactory.get();
         if (n == 0) {
             return collection;
         }
         final PrimitiveIterable.OfDouble iterable = this;
         if (iterable instanceof DoubleMutableCollection) {
-            var c = (DoubleMutableCollection) iterable;
+            final var c = (DoubleMutableCollection) iterable;
             if (n >= c.size()) {
                 collection.addAll(c);
                 return collection;
@@ -94,7 +94,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         var count = 0;
         final var iterator = iterator();
         while (iterator.hasNext()) {
-            var value = iterator.nextDouble();
+            final var value = iterator.nextDouble();
             collection.add(value);
             if (++count == n) {
                 break;
@@ -103,11 +103,11 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return collection;
     }
 
-    default <C extends DoubleMutableCollection> C skipTo(Supplier<C> collectionFactory, int count) {
-        var collection = collectionFactory.get();
+    default <C extends DoubleMutableCollection> C skipTo(final Supplier<C> collectionFactory, final int count) {
+        final var collection = collectionFactory.get();
         var counter = 0;
-        for (var iterator = this.iterator(); iterator.hasNext(); ) {
-            var value = iterator.nextDouble();
+        for (final var iterator = this.iterator(); iterator.hasNext(); ) {
+            final var value = iterator.nextDouble();
             if (counter >= count) {
                 collection.add(value);
             }

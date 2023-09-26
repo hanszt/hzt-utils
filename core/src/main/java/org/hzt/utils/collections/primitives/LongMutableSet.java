@@ -8,7 +8,7 @@ public interface LongMutableSet extends LongMutableCollection {
         return new LongHashSet();
     }
 
-    static LongMutableSet of(long @NotNull ... values) {
+    static LongMutableSet of(final long @NotNull ... values) {
         return new LongHashSet(values);
     }
 }

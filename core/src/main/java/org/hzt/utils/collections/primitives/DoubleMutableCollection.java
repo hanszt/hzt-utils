@@ -14,7 +14,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
     boolean add(double d);
 
     @Override
-    default boolean addAll(@NotNull Iterable<Double> iterable) {
+    default boolean addAll(@NotNull final Iterable<Double> iterable) {
         var allAdded = true;
         if (iterable instanceof PrimitiveIterable.OfDouble) {
             final var iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
@@ -26,7 +26,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
             }
             return allAdded;
         }
-        for (double i : iterable) {
+        for (final double i : iterable) {
             if (!add(i)) {
                 allAdded = false;
             }
@@ -35,7 +35,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default boolean addAll(double @NotNull ... array) {
+    default boolean addAll(final double @NotNull ... array) {
         final var iterator = PrimitiveIterators.doubleArrayIterator(array);
         var allAdded = true;
         while (iterator.hasNext()) {
@@ -49,7 +49,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
     boolean remove(double d);
 
     @Override
-    default boolean removeAll(@NotNull Iterable<Double> iterable) {
+    default boolean removeAll(@NotNull final Iterable<Double> iterable) {
         var allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfDouble) {
             final var iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
@@ -60,7 +60,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
             }
             return allRemoved;
         }
-        for (double d : iterable) {
+        for (final double d : iterable) {
             if (!remove(d)) {
                 allRemoved = false;
             }
@@ -69,7 +69,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default boolean removeAll(double @NotNull ... array) {
+    default boolean removeAll(final double @NotNull ... array) {
         var allRemoved = true;
         final var iterator = PrimitiveIterators.doubleArrayIterator(array);
         while (iterator.hasNext()) {
@@ -82,7 +82,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default boolean removeIf(@NotNull DoublePredicate predicate) {
+    default boolean removeIf(@NotNull final DoublePredicate predicate) {
         var removed = false;
         final var iterator = iterator();
         while (iterator.hasNext()) {
@@ -95,12 +95,12 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default DoubleMutableList plus(@NotNull Iterable<Double> iterable) {
+    default DoubleMutableList plus(@NotNull final Iterable<Double> iterable) {
         return (DoubleMutableList) DoubleCollection.super.plus(iterable);
     }
 
     @Override
-    default DoubleMutableList plus(double @NotNull ... array) {
+    default DoubleMutableList plus(final double @NotNull ... array) {
         return (DoubleMutableList) DoubleCollection.super.plus(array);
     }
 

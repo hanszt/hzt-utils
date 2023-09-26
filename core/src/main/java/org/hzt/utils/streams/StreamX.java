@@ -41,31 +41,31 @@ import java.util.stream.StreamSupport;
 @SuppressWarnings("squid:S1448")
 public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Spliterable<T> {
 
-    static <T> StreamX<T> generate(Supplier<? extends T> operator) {
+    static <T> StreamX<T> generate(final Supplier<? extends T> operator) {
         return StreamX.of(Stream.generate(operator));
     }
 
-    static <T> StreamX<T> generate(T initial, UnaryOperator<T> operator) {
+    static <T> StreamX<T> generate(final T initial, final UnaryOperator<T> operator) {
         return StreamX.of(Stream.iterate(initial, operator));
     }
 
     @SafeVarargs
-    static <T> StreamX<T> of(@NotNull T... values) {
+    static <T> StreamX<T> of(@NotNull final T... values) {
         return new StreamXImpl<>(stream(Spliterators.spliterator(values, 0), false));
     }
-    static <T> StreamX<T> of(@NotNull Iterable<T> iterable) {
+    static <T> StreamX<T> of(@NotNull final Iterable<T> iterable) {
         return new StreamXImpl<>(stream(iterable.spliterator(), false));
     }
 
-    static <K, V> EntryStreamX<K, V> ofMap(Map<K, V> map) {
+    static <K, V> EntryStreamX<K, V> ofMap(final Map<K, V> map) {
         return () -> map.entrySet().spliterator();
     }
 
-    static <T> StreamX<T> parallel(@NotNull Iterable<T> iterable) {
+    static <T> StreamX<T> parallel(@NotNull final Iterable<T> iterable) {
         return new StreamXImpl<>(stream(iterable.spliterator(), true));
     }
 
-    static <T> StreamX<T> of(Stream<T> stream) {
+    static <T> StreamX<T> of(final Stream<T> stream) {
         return new StreamXImpl<>(stream);
     }
 
@@ -93,51 +93,51 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     }
 
     @Override
-    default StreamX<T> filter(Predicate<? super T> predicate) {
+    default StreamX<T> filter(final Predicate<? super T> predicate) {
         return StreamX.of(stream().filter(predicate));
     }
 
     @Override
-    default <R> StreamX<R> map(Function<? super T, ? extends R> mapper) {
+    default <R> StreamX<R> map(final Function<? super T, ? extends R> mapper) {
         return StreamX.of(stream().map(mapper));
     }
 
     @Override
-    default IntStreamX mapToInt(ToIntFunction<? super T> mapper) {
+    default IntStreamX mapToInt(final ToIntFunction<? super T> mapper) {
         return IntStreamX.of(stream().mapToInt(mapper));
     }
 
     @Override
-    default LongStreamX mapToLong(ToLongFunction<? super T> mapper) {
+    default LongStreamX mapToLong(final ToLongFunction<? super T> mapper) {
         return LongStreamX.of(stream().mapToLong(mapper));
     }
 
     @Override
-    default DoubleStreamX mapToDouble(ToDoubleFunction<? super T> mapper) {
+    default DoubleStreamX mapToDouble(final ToDoubleFunction<? super T> mapper) {
         return DoubleStreamX.of(stream().mapToDouble(mapper));
     }
 
     @Override
-    default <R> StreamX<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
+    default <R> StreamX<R> flatMap(final Function<? super T, ? extends Stream<? extends R>> mapper) {
         return StreamX.of(stream().flatMap(mapper));
     }
 
-    default <R> StreamX<R> flatMapIterable(Function<? super T, ? extends Iterable<? extends R>> mapper) {
+    default <R> StreamX<R> flatMapIterable(final Function<? super T, ? extends Iterable<? extends R>> mapper) {
         return flatMap(e -> StreamSupport.stream(mapper.apply(e).spliterator(), isParallel()));
     }
 
     @Override
-    default IntStreamX flatMapToInt(Function<? super T, ? extends IntStream> mapper) {
+    default IntStreamX flatMapToInt(final Function<? super T, ? extends IntStream> mapper) {
         return IntStreamX.of(stream().flatMapToInt(mapper));
     }
 
     @Override
-    default LongStreamX flatMapToLong(Function<? super T, ? extends LongStream> mapper) {
+    default LongStreamX flatMapToLong(final Function<? super T, ? extends LongStream> mapper) {
         return LongStreamX.of(stream().flatMapToLong(mapper));
     }
 
     @Override
-    default DoubleStreamX flatMapToDouble(Function<? super T, ? extends DoubleStream> mapper) {
+    default DoubleStreamX flatMapToDouble(final Function<? super T, ? extends DoubleStream> mapper) {
         return DoubleStreamX.of(stream().flatMapToDouble(mapper));
     }
 
@@ -152,12 +152,12 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     }
 
     @Override
-    default StreamX<T> sorted(Comparator<? super T> comparator) {
+    default StreamX<T> sorted(final Comparator<? super T> comparator) {
         return StreamX.of(stream().sorted(comparator));
     }
 
     @Override
-    default <R extends Comparable<? super R>> StreamX<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> StreamX<T> sortedBy(@NotNull final Function<? super T, ? extends R> selector) {
         return sorted(Comparator.comparing(selector));
     }
 
@@ -167,43 +167,43 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     }
 
     @Override
-    default <R extends Comparable<? super R>> StreamX<T> sortedByDescending(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> StreamX<T> sortedByDescending(@NotNull final Function<? super T, ? extends R> selector) {
         return sorted(Comparator.comparing(selector).reversed());
     }
 
     @Override
-    default <R extends Comparable<? super R>> SortedMutableSetX<T> toSortedSet(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> SortedMutableSetX<T> toSortedSet(@NotNull final Function<? super T, ? extends R> selector) {
         return collect(Collectors.toCollection(() -> SortedMutableSetX.comparingBy(selector)));
     }
 
     @Override
-    default <R extends Comparable<? super R>> SortedMutableSetX<R> toSortedSetOf(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> SortedMutableSetX<R> toSortedSetOf(@NotNull final Function<? super T, ? extends R> selector) {
         return map(selector).collect(Collectors.toCollection(() -> SortedMutableSetX.comparingBy(It::self)));
     }
 
     @Override
     @SuppressWarnings("squid:S3864")
-    default StreamX<T> peek(Consumer<? super T> action) {
+    default StreamX<T> peek(final Consumer<? super T> action) {
         return StreamX.of(stream().peek(action));
     }
 
     @Override
-    default StreamX<T> limit(long maxSize) {
+    default StreamX<T> limit(final long maxSize) {
         return StreamX.of(stream().limit(maxSize));
     }
 
     @Override
-    default StreamX<T> skip(long n) {
+    default StreamX<T> skip(final long n) {
         return StreamX.of(stream().skip(n));
     }
 
     @Override
-    default void forEach(Consumer<? super T> action) {
+    default void forEach(final Consumer<? super T> action) {
         stream().forEach(action);
     }
 
     @Override
-    default void forEachOrdered(Consumer<? super T> action) {
+    default void forEachOrdered(final Consumer<? super T> action) {
         stream().forEachOrdered(action);
     }
 
@@ -215,68 +215,68 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
 
     @NotNull
     @Override
-    default <A> A @NotNull [] toArray(IntFunction<A[]> generator) {
+    default <A> A @NotNull [] toArray(final IntFunction<A[]> generator) {
         //noinspection SuspiciousToArrayCall
         return stream().toArray(generator);
     }
 
     @Override
-    default T reduce(T identity, BinaryOperator<T> accumulator) {
+    default T reduce(final T identity, final BinaryOperator<T> accumulator) {
         return stream().reduce(identity, accumulator);
     }
 
     @NotNull
     @Override
-    default Optional<T> reduce(BinaryOperator<T> accumulator) {
+    default Optional<T> reduce(final BinaryOperator<T> accumulator) {
         return stream().reduce(accumulator);
     }
 
     @Override
-    default <U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner) {
+    default <U> U reduce(final U identity, final BiFunction<U, ? super T, U> accumulator, final BinaryOperator<U> combiner) {
         return stream().reduce(identity, accumulator, combiner);
     }
 
     @Override
-    default <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner) {
+    default <R> R collect(final Supplier<R> supplier, final BiConsumer<R, ? super T> accumulator, final BiConsumer<R, R> combiner) {
         return stream().collect(supplier, accumulator, combiner);
     }
 
     @Override
-    default <R, A> R collect(@NotNull Collector<? super T, A, R> collector) {
+    default <R, A> R collect(@NotNull final Collector<? super T, A, R> collector) {
         return stream().collect(collector);
     }
 
     @Override
     @NotNull
-    default <R extends Comparable<? super R>> Optional<T> minBy(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Optional<T> minBy(@NotNull final Function<? super T, ? extends R> selector) {
         return min(Comparator.comparing(selector));
     }
 
     @Override
-    default <R extends Comparable<? super R>> @NotNull R minOf(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> @NotNull R minOf(@NotNull final Function<? super T, ? extends R> selector) {
         return map(selector).minBy(It::self).orElseThrow();
     }
 
     @NotNull
     @Override
-    default Optional<T> min(Comparator<? super T> comparator) {
+    default Optional<T> min(final Comparator<? super T> comparator) {
         return stream().min(comparator);
     }
 
     @Override
     @NotNull
-    default <R extends Comparable<? super R>> Optional<T> maxBy(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Optional<T> maxBy(@NotNull final Function<? super T, ? extends R> selector) {
         return max(Comparator.comparing(selector));
     }
 
     @Override
-    default <R extends Comparable<? super R>> @NotNull R maxOf(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> @NotNull R maxOf(@NotNull final Function<? super T, ? extends R> selector) {
         return map(selector).maxBy(It::self).orElseThrow();
     }
 
     @NotNull
     @Override
-    default Optional<T> max(Comparator<? super T> comparator) {
+    default Optional<T> max(final Comparator<? super T> comparator) {
         return stream().max(comparator);
     }
 
@@ -287,17 +287,17 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     }
 
     @Override
-    default boolean anyMatch(Predicate<? super T> predicate) {
+    default boolean anyMatch(final Predicate<? super T> predicate) {
         return stream().anyMatch(predicate);
     }
 
     @Override
-    default boolean allMatch(Predicate<? super T> predicate) {
+    default boolean allMatch(final Predicate<? super T> predicate) {
         return stream().allMatch(predicate);
     }
 
     @Override
-    default boolean noneMatch(Predicate<? super T> predicate) {
+    default boolean noneMatch(final Predicate<? super T> predicate) {
         return stream().noneMatch(predicate);
     }
 
@@ -324,7 +324,7 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
         throw new UnsupportedOperationException("isParallel() not supported in StreamX interface");
     }
 
-    default StreamX<T> isParallel(Consumer<Boolean> resultSupplier) {
+    default StreamX<T> isParallel(final Consumer<Boolean> resultSupplier) {
         return peek(s -> resultSupplier.accept(isParallel()));
     }
 
@@ -348,7 +348,7 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
 
     @NotNull
     @Override
-    default StreamX<T> onClose(Runnable closeHandler) {
+    default StreamX<T> onClose(final Runnable closeHandler) {
         return this;
     }
 
@@ -357,19 +357,19 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
         throw new UnsupportedOperationException("Not supported in StreamX interface");
     }
 
-    default <R> StreamX<R> mapMulti(@NotNull BiConsumer<? super T, ? super Consumer<R>> mapper) {
+    default <R> StreamX<R> mapMulti(@NotNull final BiConsumer<? super T, ? super Consumer<R>> mapper) {
         final var sequence = Sequence.of(stream()::iterator).mapMulti(mapper);
         final var parallel = isParallel();
         return new StreamXImpl<>(parallel ? sequence.parallelStream() : sequence.stream());
     }
 
     @Override
-    default StreamX<T> takeWhile(Predicate<? super T> predicate) {
+    default StreamX<T> takeWhile(final Predicate<? super T> predicate) {
         return StreamX.of(Stream.super.takeWhile(predicate));
     }
 
     @Override
-    default StreamX<T> dropWhile(Predicate<? super T> predicate) {
+    default StreamX<T> dropWhile(final Predicate<? super T> predicate) {
         return StreamX.of(Stream.super.dropWhile(predicate));
     }
 
@@ -381,15 +381,15 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
         return collect(CollectorsX.toListX());
     }
 
-    default <V> Map<T, V> associateWith(@NotNull Function<? super T, ? extends V> valueMapper) {
+    default <V> Map<T, V> associateWith(@NotNull final Function<? super T, ? extends V> valueMapper) {
         return collect(Collectors.toUnmodifiableMap(It::self, valueMapper));
     }
 
-    default <K> Map<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper) {
+    default <K> Map<K, T> associateBy(@NotNull final Function<? super T, ? extends K> keyMapper) {
         return collect(Collectors.toUnmodifiableMap(keyMapper, It::self));
     }
 
-    default <K> Map<K, List<T>> groupBy(@NotNull Function<? super T, ? extends K> selector) {
+    default <K> Map<K, List<T>> groupBy(@NotNull final Function<? super T, ? extends K> selector) {
         return collect(Collectors.groupingBy(selector));
     }
 

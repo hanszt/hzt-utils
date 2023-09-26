@@ -21,7 +21,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class StringXTest {
@@ -113,7 +117,7 @@ class StringXTest {
 
     @ParameterizedTest
     @MethodSource("anagrams")
-    void testStringsAreEachOthersAnagram(String string1, String string2) {
+    void testStringsAreEachOthersAnagram(final String string1, final String string2) {
         assertAll(
                 () -> assertTrue(StringX.of(string1).isAnagramOf(string2)),
                 () -> assertTrue(isAnagram(string1, string2))
@@ -137,14 +141,14 @@ class StringXTest {
             "Laptop machines, Microsoft windows",
             "Avida Dollars, Salvador Dalis",
             "Altissimum planetam tergeminum observavi, Salve umbistineum geminatum Martia proles"})
-    void testStringIsNotAnagram(String string1, String string2) {
+    void testStringIsNotAnagram(final String string1, final String string2) {
         assertAll(
                 () -> assertFalse(StringX.of(string1).isAnagramOf(string2)),
                 () -> assertFalse(isAnagram(string1, string2))
         );
     }
 
-    private static boolean isAnagram(String s1, String s2) {
+    private static boolean isAnagram(final String s1, final String s2) {
         final var parsed1 = s1.trim().toLowerCase(Locale.ROOT).replace(" ", "");
         final var parsed2 = s2.trim().toLowerCase(Locale.ROOT).replace(" ", "");
         final var grouping1 = groupByChars(parsed1);
@@ -152,7 +156,7 @@ class StringXTest {
         return grouping1.equals(grouping2);
     }
 
-    private static Map<Character, List<Character>> groupByChars(String s1) {
+    private static Map<Character, List<Character>> groupByChars(final String s1) {
         return s1.chars()
                 .mapToObj(i -> (char) i)
                 .collect(Collectors.groupingBy(Function.identity()));
@@ -164,7 +168,7 @@ class StringXTest {
             "hANS, Hans",
             "1233, 1233",
             "THIS IS A LITTLE TO MUCH!, This is a little to much!"})
-    void testCapitalized(String input, String expected) {
+    void testCapitalized(final String input, final String expected) {
 
         final var actual = StringX.capitalized(input);
 
@@ -176,7 +180,7 @@ class StringXTest {
 
         @Test
         void testSplitToSequence() {
-            var string = "hallo, this, is, a, test -> answer";
+            final var string = "hallo, this, is, a, test -> answer";
             final var comma = StringX.of(", ");
             final var strings = StringX.of(string).splitToSequence(comma, " -> ");
 
@@ -187,7 +191,7 @@ class StringXTest {
 
         @Test
         void testSplitToSequenceIgnoreCase() {
-            var string = "hallo O this o is O a, test -> answer";
+            final var string = "hallo O this o is O a, test -> answer";
             final var oDelimiter = new StringBuilder(" o ");
             final var strings = StringX.of(string).splitToSequence(true, ", ", oDelimiter, " -> ");
 
@@ -276,7 +280,7 @@ class StringXTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"This is a string", "abbreviate", "Another string"})
-    void testAbbreviate(String string) {
+    void testAbbreviate(final String string) {
         final var MAX_LENGTH = 12;
         final var abbreviate = StringX.of(string).abbreviate(MAX_LENGTH);
 
@@ -290,14 +294,14 @@ class StringXTest {
 
         @ParameterizedTest
         @ValueSource(chars = {'a', 't', 'c', 'm', '!', 'T'})
-        void testStringContainsChars(char c) {
+        void testStringContainsChars(final char c) {
             final var s = "This is a test string to test contains method!";
             assertTrue(StringX.of(s).contains(c));
         }
 
         @ParameterizedTest
         @ValueSource(chars = {'A', '?', 'b', 'z', 'M'})
-        void testStringDoesNotContainChars(char c) {
+        void testStringDoesNotContainChars(final char c) {
             final var s = "This is a test string to test contains method!";
             assertFalse(StringX.of(s).contains(c));
         }

@@ -10,13 +10,13 @@ public final class Triple<A, B, C> implements Transformable<Triple<A, B, C>> {
     private final B second;
     private final C third;
 
-    private Triple(A first, B second, C third) {
+    private Triple(final A first, final B second, final C third) {
         this.first = first;
         this.second = second;
         this.third = third;
     }
 
-    public static <A, B, C> Triple<A, B, C> of(A a, B b, C c) {
+    public static <A, B, C> Triple<A, B, C> of(final A a, final B b, final C c) {
         return new Triple<>(a, b, c);
     }
 
@@ -33,7 +33,7 @@ public final class Triple<A, B, C> implements Transformable<Triple<A, B, C>> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
         }
@@ -41,7 +41,7 @@ public final class Triple<A, B, C> implements Transformable<Triple<A, B, C>> {
             return false;
         }
         //noinspection unchecked
-        var that = (Triple<A, B, C>) obj;
+        final var that = (Triple<A, B, C>) obj;
         return Objects.equals(this.first, that.first) &&
                 Objects.equals(this.second, that.second) &&
                 Objects.equals(this.third, that.third);

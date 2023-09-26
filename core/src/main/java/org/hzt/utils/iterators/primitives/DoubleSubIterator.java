@@ -11,13 +11,13 @@ public final class DoubleSubIterator implements PrimitiveIterator.OfDouble {
 
     private long position;
 
-    private DoubleSubIterator(OfDouble iterator, long startIndex, long endIndex) {
+    private DoubleSubIterator(final OfDouble iterator, final long startIndex, final long endIndex) {
         this.iterator = iterator;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
     }
 
-    public static DoubleSubIterator of(OfDouble iterator, long startIndex, long endIndex) {
+    public static DoubleSubIterator of(final OfDouble iterator, final long startIndex, final long endIndex) {
         return new DoubleSubIterator(iterator, startIndex, endIndex);
     }
 

@@ -1,8 +1,8 @@
 package org.hzt.utils.iterables.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.statistics.IntStatistics;
-import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.IntPredicate;
@@ -15,9 +15,9 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return count(It::noIntFilter);
     }
 
-    default long count(@NotNull IntPredicate predicate) {
+    default long count(@NotNull final IntPredicate predicate) {
         long count = 0;
-        var iterator = this.iterator();
+        final var iterator = this.iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextInt())) {
                 count++;
@@ -30,7 +30,7 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return stats().getMin();
     }
 
-    default int min(IntPredicate predicate) {
+    default int min(final IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).min();
     }
 
@@ -38,7 +38,7 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return stats().getMax();
     }
 
-    default int max(IntPredicate predicate) {
+    default int max(final IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).max();
     }
 
@@ -46,20 +46,20 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return stats().getAverage();
     }
 
-    default double average(IntPredicate predicate) {
+    default double average(final IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).average();
     }
 
     default long sum() {
         long sum = 0;
-        var iterator = iterator();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             sum += iterator.nextInt();
         }
         return sum;
     }
 
-    default long sum(IntPredicate predicate) {
+    default long sum(final IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).sum();
     }
 
@@ -67,20 +67,20 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return stats().getStandardDeviation();
     }
 
-    default double stdDev(IntPredicate predicate) {
+    default double stdDev(final IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).stdDev();
     }
 
     default @NotNull IntStatistics stats() {
-        var intStatistics = new IntStatistics();
-        var iterator = iterator();
+        final var intStatistics = new IntStatistics();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             intStatistics.accept(iterator.nextInt());
         }
         return intStatistics;
     }
 
-    default @NotNull IntStatistics stats(@NotNull IntPredicate predicate) {
+    default @NotNull IntStatistics stats(@NotNull final IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).stats();
     }
 

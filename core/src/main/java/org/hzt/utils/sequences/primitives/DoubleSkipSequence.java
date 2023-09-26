@@ -10,20 +10,20 @@ final class DoubleSkipSequence implements DoubleSkipTakeSequence {
     private final DoubleSequence upstream;
     private final long count;
 
-    DoubleSkipSequence(DoubleSequence upstream, long count) {
+    DoubleSkipSequence(final DoubleSequence upstream, final long count) {
         PreConditions.require(count >= 0);
         this.upstream = upstream;
         this.count = count;
     }
 
     @Override
-    public DoubleSequence skip(long n) {
+    public DoubleSequence skip(final long n) {
         final var n1 = count + n;
         return n1 < 0 ? new DoubleSkipSequence(this, n) : new DoubleSkipSequence(upstream, n1);
     }
 
     @Override
-    public DoubleSequence take(long n) {
+    public DoubleSequence take(final long n) {
         final var n1 = count + n;
         return n1 < 0 ? new DoubleTakeSequence(this, n) : new DoubleSubSequence(upstream, count, n1);
     }

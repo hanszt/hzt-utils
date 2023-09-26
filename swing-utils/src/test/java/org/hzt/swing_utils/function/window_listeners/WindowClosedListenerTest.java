@@ -2,8 +2,7 @@ package org.hzt.swing_utils.function.window_listeners;
 
 import org.junit.jupiter.api.Test;
 
-import java.awt.Frame;
-import java.awt.Window;
+import java.awt.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.awaitility.Awaitility.await;
@@ -19,8 +18,8 @@ class WindowClosedListenerTest {
     }
 
     private void testWindowClosed() {
-        var isCalled = new AtomicBoolean(false);
-        Window frame = new Frame();
+        final var isCalled = new AtomicBoolean(false);
+        final Window frame = new Frame();
         frame.addWindowListener((WindowClosedListener) e -> isCalled.set(true));
         frame.setVisible(true);
         frame.setVisible(false);

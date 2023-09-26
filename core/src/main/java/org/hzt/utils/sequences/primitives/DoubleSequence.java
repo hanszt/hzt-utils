@@ -54,7 +54,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         return PrimitiveIterators::emptyDoubleIterator;
     }
 
-    static DoubleSequence of(Iterable<Double> iterable) {
+    static DoubleSequence of(final Iterable<Double> iterable) {
         if (iterable instanceof OfDouble) {
             final var doubleIterable = (OfDouble) iterable;
             return doubleIterable::iterator;
@@ -62,50 +62,50 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         return of(iterable, It::asDouble);
     }
 
-    static <T> DoubleSequence of(@NotNull Iterable<T> iterable,
-                                 @NotNull ToDoubleFunction<? super T> mapper) {
+    static <T> DoubleSequence of(@NotNull final Iterable<T> iterable,
+                                 @NotNull final ToDoubleFunction<? super T> mapper) {
         return () -> PrimitiveIterators.doubleIteratorOf(iterable.iterator(), mapper);
     }
 
-    static DoubleSequence of(double... doubles) {
+    static DoubleSequence of(final double... doubles) {
         return () -> PrimitiveIterators.doubleArrayIterator(doubles);
     }
 
-    static DoubleSequence of(DoubleStream stream) {
+    static DoubleSequence of(final DoubleStream stream) {
         return stream::iterator;
     }
 
-    static DoubleSequence reverseOf(DoubleList doubleList) {
+    static DoubleSequence reverseOf(final DoubleList doubleList) {
         return () -> PrimitiveIterators.reverseIterator(doubleList);
     }
 
-    static DoubleSequence iterate(double seedValue, DoubleUnaryOperator nextFunction) {
+    static DoubleSequence iterate(final double seedValue, final DoubleUnaryOperator nextFunction) {
         return generate(() -> seedValue, nextFunction);
     }
 
-    static DoubleSequence generate(@NotNull DoubleSupplier nextFunction) {
+    static DoubleSequence generate(@NotNull final DoubleSupplier nextFunction) {
         return generate(nextFunction, t -> nextFunction.getAsDouble());
     }
 
-    static DoubleSequence generate(@NotNull DoubleSupplier seedFunction, @NotNull DoubleUnaryOperator nextFunction) {
+    static DoubleSequence generate(@NotNull final DoubleSupplier seedFunction, @NotNull final DoubleUnaryOperator nextFunction) {
         return () -> DoubleGeneratorIterator.of(seedFunction, nextFunction);
     }
 
-    default DoubleSequence plus(double @NotNull ... values) {
+    default DoubleSequence plus(final double @NotNull ... values) {
         return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(OfDouble::forEachDouble);
     }
 
-    default DoubleSequence plus(@NotNull Iterable<Double> values) {
+    default DoubleSequence plus(@NotNull final Iterable<Double> values) {
         return Sequence.of(this, DoubleSequence.of(values)).mapMultiToDouble(OfDouble::forEachDouble);
     }
 
-    default DoubleSequence minus(double @NotNull... values) {
+    default DoubleSequence minus(final double @NotNull... values) {
         final var others = DoubleSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
 
     }
 
-    default DoubleSequence minus(@NotNull Iterable<Double> values) {
+    default DoubleSequence minus(@NotNull final Iterable<Double> values) {
         final var others = values instanceof DoubleMutableSet ? (DoubleMutableSet) values : DoubleSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
@@ -116,24 +116,24 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     @Override
-    default DoubleSequence map(@NotNull DoubleUnaryOperator mapper) {
+    default DoubleSequence map(@NotNull final DoubleUnaryOperator mapper) {
         return () -> PrimitiveIterators.doubleTransformingIterator(iterator(), mapper);
     }
 
-    default DoubleSequence mapIndexed(@NotNull DoubleIndexedFunction indexedFunction) {
+    default DoubleSequence mapIndexed(@NotNull final DoubleIndexedFunction indexedFunction) {
         return () -> PrimitiveIterators.doubleIndexedTransformingIterator(iterator(), indexedFunction);
     }
 
-    default DoubleSequence scan(long initial, DoubleBinaryOperator operation) {
+    default DoubleSequence scan(final long initial, final DoubleBinaryOperator operation) {
         return () -> PrimitiveIterators.doubleScanningIterator(iterator(), initial, operation);
     }
 
 
-    default DoubleSequence flatMap(DoubleFunction<? extends Iterable<Double>> flatMapper) {
+    default DoubleSequence flatMap(final DoubleFunction<? extends Iterable<Double>> flatMapper) {
         return mapMulti((value, doubleConsumer) -> consumeForEach(flatMapper.apply(value), doubleConsumer));
     }
 
-    private static void consumeForEach(Iterable<Double> iterable, DoubleConsumer consumer) {
+    private static void consumeForEach(final Iterable<Double> iterable, final DoubleConsumer consumer) {
         if (iterable instanceof OfDouble) {
             ((OfDouble) iterable).forEachDouble(consumer);
         } else {
@@ -141,7 +141,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         }
     }
 
-    default DoubleSequence mapMulti(DoubleMapMultiConsumer mapMultiConsumer) {
+    default DoubleSequence mapMulti(final DoubleMapMultiConsumer mapMultiConsumer) {
         return () -> DoubleMultiMappingIterator.of(iterator(), mapMultiConsumer);
     }
 
@@ -150,15 +150,15 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         void accept(double value, DoubleConsumer intConsumer);
     }
 
-    default IntSequence mapToInt(DoubleToIntFunction mapper) {
+    default IntSequence mapToInt(final DoubleToIntFunction mapper) {
         return () -> PrimitiveIterators.doubleToIntIterator(iterator(), mapper);
     }
 
-    default LongSequence mapToLong(DoubleToLongFunction mapper) {
+    default LongSequence mapToLong(final DoubleToLongFunction mapper) {
         return () -> PrimitiveIterators.doubleToLongIterator(iterator(), mapper);
     }
 
-    default <R> Sequence<R> mapToObj(@NotNull DoubleFunction<? extends R> mapper) {
+    default <R> Sequence<R> mapToObj(@NotNull final DoubleFunction<? extends R> mapper) {
         return () -> PrimitiveIterators.doubleToObjIterator(iterator(), mapper);
     }
 
@@ -168,12 +168,12 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     @Override
-    default DoubleSequence take(long n) {
+    default DoubleSequence take(final long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
             return PrimitiveIterators::emptyDoubleIterator;
         } else if (this instanceof DoubleSkipTakeSequence) {
-            var skipTakeSequence = (DoubleSkipTakeSequence) this;
+            final var skipTakeSequence = (DoubleSkipTakeSequence) this;
             return skipTakeSequence.take(n);
         } else {
             return new DoubleTakeSequence(this, n);
@@ -181,22 +181,22 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     @Override
-    default DoubleSequence takeWhile(@NotNull DoublePredicate predicate) {
+    default DoubleSequence takeWhile(@NotNull final DoublePredicate predicate) {
         return () -> DoubleTakeWhileIterator.of(iterator(), predicate);
     }
 
     @Override
-    default DoubleSequence takeWhileInclusive(@NotNull DoublePredicate predicate) {
+    default DoubleSequence takeWhileInclusive(@NotNull final DoublePredicate predicate) {
         return () -> DoubleTakeWhileIterator.of(iterator(), predicate, true);
     }
 
     @Override
-    default DoubleSequence skip(long n) {
+    default DoubleSequence skip(final long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
             return this;
         } else if (this instanceof DoubleSkipTakeSequence) {
-            var skipTakeSequence = (DoubleSkipTakeSequence) this;
+            final var skipTakeSequence = (DoubleSkipTakeSequence) this;
             return skipTakeSequence.skip(n);
         } else {
             return new DoubleSkipSequence(this, n);
@@ -204,12 +204,12 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     @Override
-    default DoubleSequence skipWhile(@NotNull DoublePredicate predicate) {
+    default DoubleSequence skipWhile(@NotNull final DoublePredicate predicate) {
         return () -> DoubleSkipWhileIterator.of(iterator(), predicate, false);
     }
 
     @Override
-    default DoubleSequence skipWhileInclusive(@NotNull DoublePredicate predicate) {
+    default DoubleSequence skipWhileInclusive(@NotNull final DoublePredicate predicate) {
         return () -> DoubleSkipWhileIterator.of(iterator(), predicate, true);
     }
 
@@ -218,7 +218,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         return () -> toList().sorted().iterator();
     }
 
-    default DoubleSequence sorted(DoubleComparator comparator) {
+    default DoubleSequence sorted(final DoubleComparator comparator) {
         return () -> toList().sorted(comparator).iterator();
     }
 
@@ -228,37 +228,37 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     @Override
-    default @NotNull DoubleSequence filter(@NotNull DoublePredicate predicate) {
+    default @NotNull DoubleSequence filter(@NotNull final DoublePredicate predicate) {
         return () -> DoubleFilteringIterator.of(iterator(), predicate, true);
     }
 
     @Override
-    default DoubleSequence filterNot(@NotNull DoublePredicate predicate) {
+    default DoubleSequence filterNot(@NotNull final DoublePredicate predicate) {
         return () -> DoubleFilteringIterator.of(iterator(), predicate, false);
     }
 
     @Override
     @NotNull
-    default DoubleSequence onEach(@NotNull DoubleConsumer consumer) {
+    default DoubleSequence onEach(@NotNull final DoubleConsumer consumer) {
         return map(d -> {
             consumer.accept(d);
             return d;
         });
     }
 
-    default DoubleSequence zip(@NotNull DoubleBinaryOperator merger, double @NotNull ... array) {
+    default DoubleSequence zip(@NotNull final DoubleBinaryOperator merger, final double @NotNull ... array) {
         final var iterator = PrimitiveIterators.doubleArrayIterator(array);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
-    default DoubleSequence zip(@NotNull DoubleBinaryOperator merger, @NotNull Iterable<Double> other) {
+    default DoubleSequence zip(@NotNull final DoubleBinaryOperator merger, @NotNull final Iterable<Double> other) {
         final var iterator = PrimitiveIterators.doubleIteratorOf(other.iterator(), It::asDouble);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
-    default DoubleSequence zipWithNext(@NotNull DoubleBinaryOperator merger) {
+    default DoubleSequence zipWithNext(@NotNull final DoubleBinaryOperator merger) {
         return windowed(2, w -> merger.applyAsDouble(w.first(), w.last()));
     }
 
@@ -266,7 +266,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         return toList().toArray();
     }
 
-    default <R> R transform(@NotNull Function<? super DoubleSequence, ? extends R> resultMapper) {
+    default <R> R transform(@NotNull final Function<? super DoubleSequence, ? extends R> resultMapper) {
         return resultMapper.apply(this);
     }
 
@@ -281,32 +281,32 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
         return StreamSupport.doubleStream(() -> Spliterators.spliteratorUnknownSize(iterator(), ordered), ordered, false);
     }
 
-    default DoubleSequence onSequence(Consumer<? super DoubleSequence> consumer) {
+    default DoubleSequence onSequence(final Consumer<? super DoubleSequence> consumer) {
         consumer.accept(this);
         return this;
     }
 
-    default <R1, R2, R> R doublesToTwo(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,
-                                       @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2,
-                                       @NotNull BiFunction<? super R1, ? super R2, ? extends R> merger) {
+    default <R1, R2, R> R doublesToTwo(@NotNull final Function<? super DoubleSequence, ? extends R1> resultMapper1,
+                                       @NotNull final Function<? super DoubleSequence, ? extends R2> resultMapper2,
+                                       @NotNull final BiFunction<? super R1, ? super R2, ? extends R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
     }
 
-    default <R1, R2> Pair<R1, R2> doublesToTwo(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,
-                                               @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2) {
+    default <R1, R2> Pair<R1, R2> doublesToTwo(@NotNull final Function<? super DoubleSequence, ? extends R1> resultMapper1,
+                                               @NotNull final Function<? super DoubleSequence, ? extends R2> resultMapper2) {
         return doublesToTwo(resultMapper1, resultMapper2, Pair::of);
     }
 
-    default <R1, R2, R3, R> R doublesToThree(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,
-                                             @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2,
-                                             @NotNull Function<? super DoubleSequence, ? extends R3> resultMapper3,
-                                             @NotNull TriFunction<? super R1, ? super R2, ? super R3, ? extends R> merger) {
+    default <R1, R2, R3, R> R doublesToThree(@NotNull final Function<? super DoubleSequence, ? extends R1> resultMapper1,
+                                             @NotNull final Function<? super DoubleSequence, ? extends R2> resultMapper2,
+                                             @NotNull final Function<? super DoubleSequence, ? extends R3> resultMapper3,
+                                             @NotNull final TriFunction<? super R1, ? super R2, ? super R3, ? extends R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this), resultMapper3.apply(this));
     }
 
-    default <R1, R2, R3> Triple<R1, R2, R3> doublesToThree(@NotNull Function<? super DoubleSequence, ? extends R1> resultMapper1,
-                                                           @NotNull Function<? super DoubleSequence, ? extends R2> resultMapper2,
-                                                           @NotNull Function<? super DoubleSequence, ? extends R3> resultMapper3) {
+    default <R1, R2, R3> Triple<R1, R2, R3> doublesToThree(@NotNull final Function<? super DoubleSequence, ? extends R1> resultMapper1,
+                                                           @NotNull final Function<? super DoubleSequence, ? extends R2> resultMapper2,
+                                                           @NotNull final Function<? super DoubleSequence, ? extends R3> resultMapper3) {
         return doublesToThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
     }
 }

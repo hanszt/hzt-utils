@@ -13,30 +13,30 @@ public interface DoubleMutableList extends DoubleList, DoubleMutableCollection,
         return new DoubleArrayList();
     }
 
-    static DoubleMutableList of(Iterable<Double> iterable) {
+    static DoubleMutableList of(final Iterable<Double> iterable) {
         return new DoubleArrayList(iterable);
     }
 
-    static DoubleMutableList of(DoubleList doubleList) {
+    static DoubleMutableList of(final DoubleList doubleList) {
         return new DoubleArrayList(doubleList);
     }
 
-    static DoubleMutableList of(double... array) {
+    static DoubleMutableList of(final double... array) {
         return new DoubleArrayList(array);
     }
 
-    static DoubleMutableList withInitCapacity(int capacity) {
+    static DoubleMutableList withInitCapacity(final int capacity) {
         return new DoubleArrayList(capacity);
     }
 
     @Override
-    default DoubleMutableList plus(@NotNull Iterable<Double> iterable) {
+    default DoubleMutableList plus(@NotNull final Iterable<Double> iterable) {
         addAll(iterable);
         return this;
     }
 
     @Override
-    default DoubleMutableList plus(double @NotNull ... iterable) {
+    default DoubleMutableList plus(final double @NotNull ... iterable) {
         addAll(iterable);
         return this;
     }
@@ -53,7 +53,7 @@ public interface DoubleMutableList extends DoubleList, DoubleMutableCollection,
     boolean addAll(int index, PrimitiveIterable.OfDouble iterable);
 
     @Override
-    default boolean remove(double d) {
+    default boolean remove(final double d) {
         final var index = indexOf(d);
         if (index >= 0) {
             removeAt(index);

@@ -19,21 +19,21 @@ final class ImmutableListX<T> implements ListX<T> {
     private final List<T> immutableList;
 
     @SafeVarargs
-    ImmutableListX(T... values) {
+    ImmutableListX(final T... values) {
         this.immutableList = List.of(values);
     }
 
-    ImmutableListX(Iterable<T> iterable) {
+    ImmutableListX(final Iterable<T> iterable) {
         immutableList = StreamSupport.stream(iterable.spliterator(), false)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    ImmutableListX(Collection<T> collection) {
+    ImmutableListX(final Collection<T> collection) {
         immutableList = List.copyOf(collection);
     }
 
-    ImmutableListX(List<T> list) {
+    ImmutableListX(final List<T> list) {
         immutableList = Collections.unmodifiableList(list);
     }
 
@@ -66,24 +66,24 @@ final class ImmutableListX<T> implements ListX<T> {
 
     @SuppressWarnings("SuspiciousMethodCalls")
     @Override
-    public boolean contains(Object value) {
+    public boolean contains(final Object value) {
         return immutableList.contains(value);
     }
 
     @Override
-    public T get(int index) {
+    public T get(final int index) {
         return immutableList.get(index);
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
     @Override
-    public int indexOf(Object o) {
+    public int indexOf(final Object o) {
         return immutableList.indexOf(o);
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
     @Override
-    public int lastIndexOf(Object o) {
+    public int lastIndexOf(final Object o) {
         return immutableList.lastIndexOf(o);
     }
 
@@ -93,22 +93,22 @@ final class ImmutableListX<T> implements ListX<T> {
     }
 
     @Override
-    public ListIterator<T> listIterator(int index) {
+    public ListIterator<T> listIterator(final int index) {
         return immutableList.listIterator(index);
     }
 
     @Override
-    public ListX<T> headTo(int toIndex) {
+    public ListX<T> headTo(final int toIndex) {
         return subList(0, toIndex);
     }
 
     @Override
-    public ListX<T> tailFrom(int fromIndex) {
+    public ListX<T> tailFrom(final int fromIndex) {
         return subList(fromIndex, size());
     }
 
     @Override
-    public ListX<T> subList(int fromIndex, int toIndex) {
+    public ListX<T> subList(final int fromIndex, final int toIndex) {
         return ListX.copyOf(immutableList.subList(fromIndex, toIndex));
     }
 
@@ -119,7 +119,7 @@ final class ImmutableListX<T> implements ListX<T> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
@@ -130,12 +130,12 @@ final class ImmutableListX<T> implements ListX<T> {
         return equalsRange((ListX<?>) o, size());
     }
 
-    private boolean equalsRange(Iterable<?> other, int to) {
+    private boolean equalsRange(final Iterable<?> other, final int to) {
         final var es = immutableList.toArray();
         if (to > es.length) {
             throw new ConcurrentModificationException();
         }
-        var oit = other.iterator();
+        final var oit = other.iterator();
         for (var from = 0; from < to; from++) {
             if (!oit.hasNext() || !Objects.equals(es[from], oit.next())) {
                 return false;

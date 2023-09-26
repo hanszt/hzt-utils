@@ -9,20 +9,20 @@ public interface LinkedSetX<E> extends SetX<E> {
         return new LinkedHashSetX<>();
     }
 
-    static <E> LinkedSetX<E> of(Set<E> set) {
+    static <E> LinkedSetX<E> of(final Set<E> set) {
         return new LinkedHashSetX<>(set);
     }
 
-    static <E> LinkedSetX<E> of(Iterable<E> set) {
+    static <E> LinkedSetX<E> of(final Iterable<E> set) {
         return new LinkedHashSetX<>(set);
     }
 
-    static <E> LinkedSetX<E> of(Collection<E> collection) {
+    static <E> LinkedSetX<E> of(final Collection<E> collection) {
         return new LinkedHashSetX<>(collection);
     }
 
     @SafeVarargs
-    static <E> LinkedSetX<E> of(E first, E... others) {
+    static <E> LinkedSetX<E> of(final E first, final E... others) {
         return new LinkedHashSetX<>(first, others);
     }
 }

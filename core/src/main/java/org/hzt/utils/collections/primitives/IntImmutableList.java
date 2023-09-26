@@ -21,27 +21,27 @@ final class IntImmutableList extends
         elementData = new int[0];
     }
 
-    IntImmutableList(int @NotNull... array) {
+    IntImmutableList(final int @NotNull... array) {
         super(array.length);
         elementData = ArraysX.copyOf(array);
     }
 
-    IntImmutableList(IntCollection collection) {
+    IntImmutableList(final IntCollection collection) {
         super(collection.size());
         elementData = ArraysX.copyOf(collection.toArray());
     }
 
     @Override
-    public int get(int index) {
+    public int get(final int index) {
         Objects.checkIndex(index, elementData.length);
         return elementData[index];
     }
 
-    public int indexOf(int value) {
+    public int indexOf(final int value) {
         return indexOfRange(value, elementData.length);
     }
 
-    int indexOfRange(int value, int end) {
+    int indexOfRange(final int value, final int end) {
         for (var i = 0; i < end; i++) {
             if (value == elementData[i]) {
                 return i;
@@ -51,7 +51,7 @@ final class IntImmutableList extends
     }
 
     @Override
-    public int lastIndexOf(int value) {
+    public int lastIndexOf(final int value) {
         return lastIndexOfRange(value, elementData.length);
     }
 
@@ -67,7 +67,7 @@ final class IntImmutableList extends
         return mutableList;
     }
 
-    private int lastIndexOfRange(int value, int end) {
+    private int lastIndexOfRange(final int value, final int end) {
         for (var i = end - 1; i >= 0; i--) {
             if (value == elementData[i]) {
                 return i;
@@ -78,7 +78,7 @@ final class IntImmutableList extends
 
     @Override
     @SuppressWarnings("squid:S2162")
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
@@ -86,11 +86,11 @@ final class IntImmutableList extends
             return false;
         }
 
-        var iterator1 = iterator();
-        var iterator2 = ((IntList) o).iterator();
+        final var iterator1 = iterator();
+        final var iterator2 = ((IntList) o).iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            var l1 = iterator1.nextInt();
-            var l2 = iterator2.nextInt();
+            final var l1 = iterator1.nextInt();
+            final var l2 = iterator2.nextInt();
             if (l1 != l2) {
                 return false;
             }
@@ -105,7 +105,7 @@ final class IntImmutableList extends
     }
 
     @Override
-    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfInt iterator) {
+    protected void appendNextPrimitive(final StringBuilder sb, final PrimitiveIterator.OfInt iterator) {
         sb.append(iterator.nextInt());
     }
 
@@ -115,7 +115,7 @@ final class IntImmutableList extends
     }
 
     @Override
-    protected int[] newArray(int length) {
+    protected int[] newArray(final int length) {
         return new int[length];
     }
 
@@ -137,7 +137,7 @@ final class IntImmutableList extends
 
     @Override
     @SuppressWarnings("squid:S1188")
-    public @NotNull PrimitiveListIterator.OfInt listIterator(int startIndex) {
+    public @NotNull PrimitiveListIterator.OfInt listIterator(final int startIndex) {
         return new PrimitiveListIterator.OfInt() {
             private int index = startIndex;
 

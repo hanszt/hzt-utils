@@ -16,11 +16,11 @@ public final class IntCollectorImpl<A, R> implements IntCollector<A, R> {
     private final Function<A, R> finisher;
     private final Set<Collector.Characteristics> characteristics;
 
-    IntCollectorImpl(Supplier<A> supplier,
-                     ObjIntConsumer<A> accumulator,
-                     BinaryOperator<A> combiner,
-                     Function<A, R> finisher,
-                     Set<Collector.Characteristics> characteristics) {
+    IntCollectorImpl(final Supplier<A> supplier,
+                     final ObjIntConsumer<A> accumulator,
+                     final BinaryOperator<A> combiner,
+                     final Function<A, R> finisher,
+                     final Set<Collector.Characteristics> characteristics) {
         this.supplier = supplier;
         this.accumulator = accumulator;
         this.combiner = combiner;
@@ -28,16 +28,16 @@ public final class IntCollectorImpl<A, R> implements IntCollector<A, R> {
         this.characteristics = characteristics;
     }
 
-    IntCollectorImpl(Supplier<A> supplier, ObjIntConsumer<A> accumulator, Function<A, R> finisher) {
+    IntCollectorImpl(final Supplier<A> supplier, final ObjIntConsumer<A> accumulator, final Function<A, R> finisher) {
         this(supplier, accumulator, (a, b) -> {
             throw new UnsupportedOperationException("This collector implementation does not support combining operations");
         }, finisher, Collections.emptySet());
     }
 
-    IntCollectorImpl(Supplier<A> supplier,
-                     ObjIntConsumer<A> accumulator,
-                     BinaryOperator<A> combiner,
-                     Set<Collector.Characteristics> characteristics) {
+    IntCollectorImpl(final Supplier<A> supplier,
+                     final ObjIntConsumer<A> accumulator,
+                     final BinaryOperator<A> combiner,
+                     final Set<Collector.Characteristics> characteristics) {
         this(supplier, accumulator, combiner, castingIdentity(), characteristics);
     }
 

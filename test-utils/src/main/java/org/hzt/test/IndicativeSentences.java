@@ -8,12 +8,12 @@ import java.lang.reflect.Method;
 public class IndicativeSentences extends ReplaceCamelCaseBySentence {
 
     @Override
-    public String generateDisplayNameForNestedClass(Class<?> nestedClass) {
+    public String generateDisplayNameForNestedClass(final Class<?> nestedClass) {
         return super.generateDisplayNameForNestedClass(nestedClass) + "...";
     }
 
     @Override
-    public String generateDisplayNameForMethod(Class<?> testClass, Method testMethod) {
+    public String generateDisplayNameForMethod(final Class<?> testClass, final Method testMethod) {
         return replaceCamelCaseBySentence(testClass.getSimpleName() + " " + testMethod.getName()) + ".";
     }
 }

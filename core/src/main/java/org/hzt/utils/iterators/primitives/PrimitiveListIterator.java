@@ -32,12 +32,12 @@ public interface PrimitiveListIterator<T> extends ListIterator<T> {
         }
 
         @Override
-        default void set(Integer integer) {
+        default void set(final Integer integer) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        default void add(Integer integer) {
+        default void add(final Integer integer) {
             throw new UnsupportedOperationException();
         }
     }
@@ -68,12 +68,12 @@ public interface PrimitiveListIterator<T> extends ListIterator<T> {
         }
 
         @Override
-        default void set(Long l) {
+        default void set(final Long l) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        default void add(Long l) {
+        default void add(final Long l) {
             throw new UnsupportedOperationException();
         }
     }
@@ -104,12 +104,12 @@ public interface PrimitiveListIterator<T> extends ListIterator<T> {
         }
 
         @Override
-        default void set(Double d) {
+        default void set(final Double d) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        default void add(Double d) {
+        default void add(final Double d) {
             throw new UnsupportedOperationException();
         }
     }

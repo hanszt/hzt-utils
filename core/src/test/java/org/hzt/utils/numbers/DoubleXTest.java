@@ -6,7 +6,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DoubleXTest {
 
@@ -24,13 +26,13 @@ class DoubleXTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"8e3", "2.73", "10.34E4", "3", "3.0d", "4.8F", "NaN", "Infinity"})
-    void testIsParsableDouble(String string) {
+    void testIsParsableDouble(final String string) {
         assertTrue(DoubleX.isParsableDouble(string));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"8e3.3", "hallo", "3,123", "3.0e", "4.8q"})
-    void testIsNotAParsableDouble(String string) {
+    void testIsNotAParsableDouble(final String string) {
         assertFalse(DoubleX.isParsableDouble(string));
     }
 

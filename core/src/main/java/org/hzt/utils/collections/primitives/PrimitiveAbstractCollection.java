@@ -14,7 +14,7 @@ abstract class PrimitiveAbstractCollection<T, T_CONS, A, I extends PrimitiveIter
 
     protected int size;
 
-    PrimitiveAbstractCollection(int size) {
+    PrimitiveAbstractCollection(final int size) {
         this.size = size;
     }
 
@@ -24,11 +24,11 @@ abstract class PrimitiveAbstractCollection<T, T_CONS, A, I extends PrimitiveIter
 
     @Override
     public String toString() {
-        var iterator = iterator();
+        final var iterator = iterator();
         if (!iterator.hasNext()) {
             return "[]";
         }
-        var sb = new StringBuilder();
+        final var sb = new StringBuilder();
         sb.append('[');
         while (iterator.hasNext()) {
             appendNextPrimitive(sb, iterator);

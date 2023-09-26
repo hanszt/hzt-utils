@@ -17,7 +17,7 @@ class MutableLinkedSetXTest {
     void testMutableLinkedSetOfIterableMaintainsOrder() {
         final var bookList = TestSampleGenerator.createBookList();
 
-        var set = MutableLinkedSetX.of(bookList);
+        final var set = MutableLinkedSetX.of(bookList);
 
         assertEquals(bookList.get(0), set.first());
     }

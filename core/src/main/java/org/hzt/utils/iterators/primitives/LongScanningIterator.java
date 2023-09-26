@@ -13,7 +13,7 @@ public class LongScanningIterator implements PrimitiveIterator.OfLong {
 
     private State state = State.INIT_UNKNOWN;
 
-    public LongScanningIterator(PrimitiveIterator.OfLong iterator, long initial, LongBinaryOperator operation) {
+    public LongScanningIterator(final PrimitiveIterator.OfLong iterator, final long initial, final LongBinaryOperator operation) {
         this.iterator = iterator;
         this.operation = operation;
         accumulation = initial;

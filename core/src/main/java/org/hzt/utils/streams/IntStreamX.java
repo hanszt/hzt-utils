@@ -31,27 +31,27 @@ import java.util.stream.StreamSupport;
 @SuppressWarnings("squid:S1448")
 public interface IntStreamX extends IntStream, Spliterable.OfInt {
 
-    static IntStreamX generate(IntSupplier operator) {
+    static IntStreamX generate(final IntSupplier operator) {
         return of(IntStream.generate(operator));
     }
 
-    static IntStreamX generate(int initial, IntUnaryOperator operator) {
+    static IntStreamX generate(final int initial, final IntUnaryOperator operator) {
         return of(IntStream.iterate(initial, operator));
     }
 
-    static IntStreamX of(int @NotNull ... values) {
+    static IntStreamX of(final int @NotNull ... values) {
         return new IntStreamXImpl(stream(Spliterators.spliterator(values, 0), false));
     }
 
-    static IntStreamX of(@NotNull PrimitiveIterable.OfInt iterable) {
+    static IntStreamX of(@NotNull final PrimitiveIterable.OfInt iterable) {
         return new IntStreamXImpl(stream(iterable.spliterator(), false));
     }
 
-    static IntStreamX parallel(@NotNull PrimitiveIterable.OfInt iterable) {
+    static IntStreamX parallel(@NotNull final PrimitiveIterable.OfInt iterable) {
         return new IntStreamXImpl(stream(iterable.spliterator(), true));
     }
 
-    static IntStreamX of(IntStream stream) {
+    static IntStreamX of(final IntStream stream) {
         return new IntStreamXImpl(stream);
     }
 
@@ -65,7 +65,7 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
         return stream(spliterator, parallel);
     }
 
-    private static IntStream stream(Spliterator.OfInt spliterator, boolean parallel) {
+    private static IntStream stream(final Spliterator.OfInt spliterator, final boolean parallel) {
         if (spliterator.hasCharacteristics(Spliterator.IMMUTABLE) ||
                 spliterator.hasCharacteristics(Spliterator.CONCURRENT)) {
             return StreamSupport.intStream(spliterator, parallel);
@@ -79,32 +79,32 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
     }
 
     @Override
-    default IntStreamX filter(IntPredicate predicate) {
+    default IntStreamX filter(final IntPredicate predicate) {
         return IntStreamX.of(stream().filter(predicate));
     }
 
     @Override
-    default  IntStreamX map(IntUnaryOperator mapper) {
+    default  IntStreamX map(final IntUnaryOperator mapper) {
         return IntStreamX.of(stream().map(mapper));
     }
 
     @Override
-    default LongStreamX mapToLong(IntToLongFunction mapper) {
+    default LongStreamX mapToLong(final IntToLongFunction mapper) {
         return LongStreamX.of(stream().mapToLong(mapper));
     }
 
     @Override
-    default DoubleStreamX mapToDouble(IntToDoubleFunction mapper) {
+    default DoubleStreamX mapToDouble(final IntToDoubleFunction mapper) {
         return DoubleStreamX.of(stream().mapToDouble(mapper));
     }
 
     @Override
-    default <U> StreamX<U> mapToObj(IntFunction<? extends U> mapper) {
+    default <U> StreamX<U> mapToObj(final IntFunction<? extends U> mapper) {
         return new StreamXImpl<>(stream().mapToObj(mapper));
     }
 
     @Override
-    default IntStreamX flatMap(IntFunction<? extends IntStream> mapper) {
+    default IntStreamX flatMap(final IntFunction<? extends IntStream> mapper) {
         return IntStreamX.of(stream().flatMap(mapper));
     }
 
@@ -120,27 +120,27 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
 
     @Override
     @SuppressWarnings("squid:S3864")
-    default IntStreamX peek(IntConsumer action) {
+    default IntStreamX peek(final IntConsumer action) {
         return IntStreamX.of(stream().peek(action));
     }
 
     @Override
-    default IntStreamX limit(long maxSize) {
+    default IntStreamX limit(final long maxSize) {
         return IntStreamX.of(stream().limit(maxSize));
     }
 
     @Override
-    default IntStreamX skip(long n) {
+    default IntStreamX skip(final long n) {
         return IntStreamX.of(stream().skip(n));
     }
 
     @Override
-    default void forEach(IntConsumer action) {
+    default void forEach(final IntConsumer action) {
         stream().forEach(action);
     }
 
     @Override
-    default void forEachOrdered(IntConsumer action) {
+    default void forEachOrdered(final IntConsumer action) {
         stream().forEachOrdered(action);
     }
 
@@ -150,20 +150,20 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
     }
 
     @Override
-    default int reduce(int identity, IntBinaryOperator accumulator) {
+    default int reduce(final int identity, final IntBinaryOperator accumulator) {
         return stream().reduce(identity, accumulator);
     }
 
     @NotNull
     @Override
-    default OptionalInt reduce(IntBinaryOperator accumulator) {
+    default OptionalInt reduce(final IntBinaryOperator accumulator) {
         return stream().reduce(accumulator);
     }
 
     @Override
-    default <R> R collect(Supplier<R> supplier,
-                          ObjIntConsumer<R> accumulator,
-                          BiConsumer<R, R> combiner) {
+    default <R> R collect(final Supplier<R> supplier,
+                          final ObjIntConsumer<R> accumulator,
+                          final BiConsumer<R, R> combiner) {
         return stream().collect(supplier, accumulator, combiner);
     }
 
@@ -214,17 +214,17 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
     }
 
     @Override
-    default boolean anyMatch(IntPredicate predicate) {
+    default boolean anyMatch(final IntPredicate predicate) {
         return stream().anyMatch(predicate);
     }
 
     @Override
-    default boolean allMatch(IntPredicate predicate) {
+    default boolean allMatch(final IntPredicate predicate) {
         return stream().allMatch(predicate);
     }
 
     @Override
-    default boolean noneMatch(IntPredicate predicate) {
+    default boolean noneMatch(final IntPredicate predicate) {
         return stream().noneMatch(predicate);
     }
 
@@ -270,7 +270,7 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
 
     @NotNull
     @Override
-    default IntStreamX onClose(Runnable closeHandler) {
+    default IntStreamX onClose(final Runnable closeHandler) {
         return this;
     }
 
@@ -280,12 +280,12 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
     }
 
     @Override
-    default IntStreamX takeWhile(IntPredicate predicate) {
+    default IntStreamX takeWhile(final IntPredicate predicate) {
         return IntStreamX.of(IntStream.super.takeWhile(predicate));
     }
 
     @Override
-    default IntStreamX dropWhile(IntPredicate predicate) {
+    default IntStreamX dropWhile(final IntPredicate predicate) {
         return IntStreamX.of(IntStream.super.dropWhile(predicate));
     }
 }

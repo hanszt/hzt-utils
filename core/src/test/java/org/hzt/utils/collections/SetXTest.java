@@ -14,7 +14,7 @@ class SetXTest {
 
     @Test
     void testToSetYieldsUnModifiableSet() {
-        var auction = Generator.createVanGoghAuction();
+        final var auction = Generator.createVanGoghAuction();
         final var yearToAdd = Year.of(2000);
 
         final var years = auction.toSetOf(Painting::getYearOfCreation);

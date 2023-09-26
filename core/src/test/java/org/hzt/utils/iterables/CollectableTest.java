@@ -195,14 +195,14 @@ class CollectableTest {
         );
     }
 
-    private void assertStreamCanOnlyBeConsumedOnce(Stream<Year> yearStream) {
+    private void assertStreamCanOnlyBeConsumedOnce(final Stream<Year> yearStream) {
         final var exception = assertThrows(IllegalStateException.class, yearStream::findFirst);
         assertEquals("stream has already been operated upon or closed", exception.getMessage());
     }
 
     @Test
     void testFrom3DStringArrayToTripleIntArray() {
-        var grid = new String[][][]{{{"1"}, {"2"}, {"3"}}};
+        final var grid = new String[][][]{{{"1"}, {"2"}, {"3"}}};
         final var expected = Arrays.stream(grid).map(g -> Arrays.stream(g).map(row -> Stream.of(row)
                 .mapToInt(Integer::parseInt).toArray()).toArray(int[][]::new)).toArray(int[][][]::new);
 
@@ -266,7 +266,7 @@ class CollectableTest {
 
     @Test
     void testCollectJoining() {
-        var strings = Set.of("collect", "joining", "requires",
+        final var strings = Set.of("collect", "joining", "requires",
                 "Collector<? super T, A, R>", "as", "collector", "definition",
                 "instead", "of", "Collector<T, A, R>");
 

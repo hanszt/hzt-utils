@@ -13,7 +13,7 @@ class ListenersTest {
 
     @Test
     void testListenerForNewValue() {
-        IntegerProperty value = new SimpleIntegerProperty(2);
+        final IntegerProperty value = new SimpleIntegerProperty(2);
 
         value.addListener(forNewValue(newValue -> assertEquals(4, newValue)));
 
@@ -22,12 +22,12 @@ class ListenersTest {
 
     @Test
     void testBoundProperty() {
-        IntegerProperty value1 = new SimpleIntegerProperty();
-        IntegerProperty value2 = new SimpleIntegerProperty();
+        final IntegerProperty value1 = new SimpleIntegerProperty();
+        final IntegerProperty value2 = new SimpleIntegerProperty();
 
         value1.bindBidirectional(value2);
 
-        for (int value : Set.of(1, 2, 4, 56, 400, -4, 6, 3)) {
+        for (final int value : Set.of(1, 2, 4, 56, 400, -4, 6, 3)) {
             value1.set(value);
             assertEquals(value1.get(), value2.get());
         }

@@ -17,10 +17,10 @@ final class DelimitedRangesSequence implements Sequence<IntRange> {
     private final int limit;
     private final NextMatchFunction nextMatchFunction;
 
-    DelimitedRangesSequence(CharSequence input,
-                                   int startIndex,
-                                   int limit,
-                                   NextMatchFunction nextMatchFunction) {
+    DelimitedRangesSequence(final CharSequence input,
+                            final int startIndex,
+                            final int limit,
+                            final NextMatchFunction nextMatchFunction) {
         this.input = input;
         this.startIndex = startIndex;
         this.limit = limit;

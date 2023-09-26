@@ -49,27 +49,27 @@ public final class ComparingPredicates {
         return value -> value <= other;
     }
 
-    public static <T> Predicate<Collection<T>> collectionGreaterThan(int size) {
+    public static <T> Predicate<Collection<T>> collectionGreaterThan(final int size) {
         return collection -> collection.size() > size;
     }
 
-    public static <T> Predicate<Collection<T>> collectionSmallerThan(int size) {
+    public static <T> Predicate<Collection<T>> collectionSmallerThan(final int size) {
         return collection -> collection.size() < size;
     }
 
-    public static <T> Predicate<T[]> arrayGreaterThan(int size) {
+    public static <T> Predicate<T[]> arrayGreaterThan(final int size) {
         return array -> array.length > size;
     }
 
-    public static <T> Predicate<T[]> arraySmallerThan(int size) {
+    public static <T> Predicate<T[]> arraySmallerThan(final int size) {
         return array -> array.length < size;
     }
 
-    public static Predicate<int[]> intArrayGreaterThan(int size) {
+    public static Predicate<int[]> intArrayGreaterThan(final int size) {
         return array -> array.length > size;
     }
 
-    public static Predicate<int[]> intArraySmallerThan(int size) {
+    public static Predicate<int[]> intArraySmallerThan(final int size) {
         return array -> array.length < size;
     }
 }

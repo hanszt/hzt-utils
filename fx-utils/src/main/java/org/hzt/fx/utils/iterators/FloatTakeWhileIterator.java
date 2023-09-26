@@ -14,17 +14,17 @@ final class FloatTakeWhileIterator implements FloatIterator {
     private float nextLong;
     private State nextState = State.INIT_UNKNOWN;
 
-    private FloatTakeWhileIterator(FloatIterator iterator, FloatPredicate predicate, boolean inclusive) {
+    private FloatTakeWhileIterator(final FloatIterator iterator, final FloatPredicate predicate, final boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
     }
 
-    public static FloatTakeWhileIterator of(FloatIterator iterator, FloatPredicate predicate, boolean inclusive) {
+    public static FloatTakeWhileIterator of(final FloatIterator iterator, final FloatPredicate predicate, final boolean inclusive) {
         return new FloatTakeWhileIterator(iterator, predicate, inclusive);
     }
 
-    public static FloatTakeWhileIterator of(FloatIterator iterator, FloatPredicate predicate) {
+    public static FloatTakeWhileIterator of(final FloatIterator iterator, final FloatPredicate predicate) {
         return new FloatTakeWhileIterator(iterator, predicate, false);
     }
 
@@ -62,7 +62,7 @@ final class FloatTakeWhileIterator implements FloatIterator {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        var result = nextLong;
+        final var result = nextLong;
         nextState = State.NEXT_UNKNOWN;
         return result;
     }

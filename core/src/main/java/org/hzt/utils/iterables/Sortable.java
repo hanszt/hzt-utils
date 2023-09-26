@@ -1,8 +1,8 @@
 package org.hzt.utils.iterables;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SortedMutableSetX;
-import org.hzt.utils.It;
 import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
@@ -17,13 +17,13 @@ public interface Sortable<T> extends Iterable<T> {
         return toMutableListSortedBy((Function<T, R>) IterableXHelper::asComparableOrThrow);
     }
 
-    default Sortable<T> sorted(Comparator<? super T> comparator) {
+    default Sortable<T> sorted(final Comparator<? super T> comparator) {
         final var list = MutableListX.of(this);
         list.sort(comparator);
         return list;
     }
 
-    default <R extends Comparable<? super R>> Sortable<T> sortedBy(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Sortable<T> sortedBy(@NotNull final Function<? super T, ? extends R> selector) {
         return toMutableListSortedBy(selector);
     }
 
@@ -31,21 +31,21 @@ public interface Sortable<T> extends Iterable<T> {
         return sortedByDescending(IterableXHelper::asComparableOrThrow);
     }
 
-    default <R extends Comparable<? super R>> Sortable<T> sortedByDescending(@NotNull Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Sortable<T> sortedByDescending(@NotNull final Function<? super T, ? extends R> selector) {
         final var list = MutableListX.of(this);
         list.sort(Comparator.comparing(selector).reversed());
         return list;
     }
 
-    private <R extends Comparable<? super R>> MutableListX<T> toMutableListSortedBy(@NotNull Function<? super T, ? extends R> selector) {
+    private <R extends Comparable<? super R>> MutableListX<T> toMutableListSortedBy(@NotNull final Function<? super T, ? extends R> selector) {
         final var list = MutableListX.of(this);
         list.sort(Comparator.comparing(selector));
         return list;
     }
 
-    default <R extends Comparable<? super R>> SortedMutableSetX<T> toSortedSet(@NotNull Function<? super T, ? extends R> selector) {
-        SortedMutableSetX<T> sortedMutableSet = SortedMutableSetX.comparingBy(selector);
-        for (var t : this) {
+    default <R extends Comparable<? super R>> SortedMutableSetX<T> toSortedSet(@NotNull final Function<? super T, ? extends R> selector) {
+        final SortedMutableSetX<T> sortedMutableSet = SortedMutableSetX.comparingBy(selector);
+        for (final var t : this) {
             if (t != null && selector.apply(t) != null) {
                 sortedMutableSet.add(t);
             }
@@ -53,9 +53,9 @@ public interface Sortable<T> extends Iterable<T> {
         return sortedMutableSet;
     }
 
-    default <R extends Comparable<? super R>> SortedMutableSetX<R> toSortedSetOf(@NotNull Function<? super T, ? extends R> selector) {
-        MutableListX<R> list = MutableListX.empty();
-        for (var t : this) {
+    default <R extends Comparable<? super R>> SortedMutableSetX<R> toSortedSetOf(@NotNull final Function<? super T, ? extends R> selector) {
+        final MutableListX<R> list = MutableListX.empty();
+        for (final var t : this) {
             if (t != null) {
                 final var r = selector.apply(t);
                 if (r != null) {
@@ -66,7 +66,7 @@ public interface Sortable<T> extends Iterable<T> {
         return SortedMutableSetX.of(list, It::self);
     }
 
-    default <R extends Comparable<? super R>> boolean isSortedBy(Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> boolean isSortedBy(final Function<? super T, ? extends R> selector) {
         return Sequence.of(this)
                 .map(selector)
                 .zipWithNext()
@@ -83,7 +83,7 @@ public interface Sortable<T> extends Iterable<T> {
      * @param comparator the comparator to use for testing weather the Sortable is sorted
      * @return true if it is sorted else false
      */
-    default boolean isSorted(Comparator<T> comparator) {
+    default boolean isSorted(final Comparator<T> comparator) {
         return Sequence.of(this)
                 .zipWithNext()
                 .all((first, second) -> comparator.compare(first, second) <= 0);

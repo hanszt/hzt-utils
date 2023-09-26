@@ -18,7 +18,7 @@ public final class IntCollectors {
         return IntCollector.of(IntMutableList::empty, IntMutableList::add, IntMutableList::plus);
     }
 
-    public static <A, R, R1> IntCollector<A, R1> collectingAndThen(IntCollector<A, R> downStream, Function<R, R1> finisher) {
+    public static <A, R, R1> IntCollector<A, R1> collectingAndThen(final IntCollector<A, R> downStream, final Function<R, R1> finisher) {
         return new IntCollectorImpl<>(
                 downStream.supplier(),
                 downStream.accumulator(),

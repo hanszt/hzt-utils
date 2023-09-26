@@ -44,7 +44,7 @@ class GroupingTest {
         assertEquals(expected, aggregated);
     }
 
-    private static StringBuilder toStringBuilder(int key, StringBuilder stringBuilder, int element, boolean firstElement) {
+    private static StringBuilder toStringBuilder(final int key, final StringBuilder stringBuilder, final int element, final boolean firstElement) {
         if (firstElement) {
             return new StringBuilder().append(key).append(":").append(element);
         }
@@ -84,7 +84,7 @@ class GroupingTest {
                 .eachCountTo(TreeMap::new)
                 .descendingMap();
 
-        NavigableMap<Integer, Long> expected = new TreeMap<>(MutableMapX.of(0, 3L, 1, 2L, 2, 2L));
+        final NavigableMap<Integer, Long> expected = new TreeMap<>(MutableMapX.of(0, 3L, 1, 2L, 2, 2L));
 
         println("expected = " + expected);
         println("aggregated = " + aggregated);
@@ -94,7 +94,7 @@ class GroupingTest {
 
     @Test
     void testGroupingByFoldTo() {
-        var fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
+        final var fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
 
         final Map<Character, List<String>> evenFruits = fruits
                 .groupingBy(fruit -> fruit.charAt(0))
@@ -114,7 +114,7 @@ class GroupingTest {
         assertEquals(expected, sorted);
     }
 
-    private static List<String> addEvenFruits(char key, List<String> fruits, String fruit) {
+    private static List<String> addEvenFruits(final char key, final List<String> fruits, final String fruit) {
         if (fruit.length() % 2 == 0) {
             fruits.add(fruit);
         }
@@ -123,7 +123,7 @@ class GroupingTest {
 
     @Test
     void testGroupingByFold() {
-        var fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
+        final var fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
 
         final var fruitNameLengthSum = fruits
                 .groupingBy(fruit -> fruit.charAt(0))
@@ -158,7 +158,7 @@ class GroupingTest {
                 .collect(mapping(Integer::doubleValue,
                                 reducing(0.0, Double::sum)));
 
-        var expected = MapX.of(0, 18.0, 1, 11.0, 2, 13.0);
+        final var expected = MapX.of(0, 18.0, 1, 11.0, 2, 13.0);
 
         assertTrue(expected.containsAll(aggregated));
     }

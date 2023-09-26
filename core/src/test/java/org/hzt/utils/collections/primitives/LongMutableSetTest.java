@@ -14,7 +14,7 @@ class LongMutableSetTest {
 
     @Test
     void testLongSetSize() {
-        var set = LongMutableSet.empty();
+        final var set = LongMutableSet.empty();
         set.addAll(LongList.of(-1, -2231, 0, 3, 3, 4, 5, 6, 5));
 
         assertEquals(7, set.size());
@@ -22,7 +22,7 @@ class LongMutableSetTest {
 
     @Test
     void testCountElementsInLongSetThroughSequence() {
-        var set = LongMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
+        final var set = LongMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
 
         final var count = set.asSequence().count();
 
@@ -31,7 +31,7 @@ class LongMutableSetTest {
 
     @Test
     void testSequenceToLongSet() {
-        var longs = LongMutableSet.empty();
+        final var longs = LongMutableSet.empty();
         longs.addAll(LongRange.of(-10_000, 9_000));
         longs.addAll(LongRange.of(1_000, 90_000));
         longs.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);

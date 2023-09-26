@@ -11,7 +11,7 @@ public interface IntStringable extends PrimitiveIterable.OfInt {
         return joinToString(", ");
     }
 
-    default String joinToString(CharSequence delimiter) {
+    default String joinToString(final CharSequence delimiter) {
         final var sb = new StringBuilder();
         final var iterator = iterator();
         while (iterator.hasNext()) {
@@ -20,11 +20,11 @@ public interface IntStringable extends PrimitiveIterable.OfInt {
         return sb.toString().trim();
     }
 
-    default <R> String joinToStringBy(@NotNull IntFunction<? extends R> selector) {
+    default <R> String joinToStringBy(@NotNull final IntFunction<? extends R> selector) {
         return joinToStringBy(selector, ", ");
     }
 
-    default <R> String joinToStringBy(@NotNull IntFunction<? extends R> selector, CharSequence delimiter) {
+    default <R> String joinToStringBy(@NotNull final IntFunction<? extends R> selector, final CharSequence delimiter) {
         final var sb = new StringBuilder();
         final var iterator = iterator();
         while (iterator.hasNext()) {

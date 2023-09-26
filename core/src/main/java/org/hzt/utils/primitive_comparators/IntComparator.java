@@ -7,7 +7,7 @@ public interface IntComparator extends PrimitiveComparator {
 
     int compare(int i1, int i2);
 
-    static IntComparator comparing(IntUnaryOperator selector) {
+    static IntComparator comparing(final IntUnaryOperator selector) {
         return (i1, i2) -> Integer.compare(selector.applyAsInt(i1), selector.applyAsInt(i2));
     }
 
@@ -19,7 +19,7 @@ public interface IntComparator extends PrimitiveComparator {
         return (i1, i2) -> Integer.compare(i2, i1);
     }
 
-    default IntComparator thenComparing(IntComparator comparator) {
+    default IntComparator thenComparing(final IntComparator comparator) {
         return comparator;
     }
 

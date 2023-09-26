@@ -17,7 +17,7 @@ class CloserTest {
 
     @Test
     void testCloserForResourceNotImplementingAutoClosable() {
-        var closer = Closer.forResource(new Resource("Resource 1"), Resource::close);
+        final var closer = Closer.forResource(new Resource("Resource 1"), Resource::close);
         try (closer) {
             assertFalse(closer.getResource().closed);
             closer.execute(Resource::load);
@@ -42,7 +42,7 @@ class CloserTest {
 
     @Test
     void testExecuteAndClose() {
-        List<String> list = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
 
         final var resource = new Resource("Resource 1");
 
@@ -58,12 +58,12 @@ class CloserTest {
     @Test
     void testCloserCLosingFunctionThrowingException() {
         //noinspection resource
-        var closer = Closer.forResource(new Resource("Resource 1"), Resource::closeThrowingException);
+        final var closer = Closer.forResource(new Resource("Resource 1"), Resource::closeThrowingException);
         assertThrows(IllegalStateException.class, () -> closeThrowingException(closer));
 
     }
 
-    private void closeThrowingException(Closer<Resource> closer) {
+    private void closeThrowingException(final Closer<Resource> closer) {
         try (closer) {
             assertFalse(closer.getResource().closed);
             closer.execute(Resource::load);
@@ -77,7 +77,7 @@ class CloserTest {
         private final String name;
         private boolean closed;
 
-        public Resource(String name) {
+        public Resource(final String name) {
             this.name = name;
         }
 

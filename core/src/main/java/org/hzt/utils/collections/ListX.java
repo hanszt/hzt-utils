@@ -39,31 +39,31 @@ public interface ListX<E> extends CollectionX<E>,
         return new ImmutableListX<>();
     }
 
-    static <E> ListX<E> of(Iterable<E> iterable) {
+    static <E> ListX<E> of(final Iterable<E> iterable) {
         return new ImmutableListX<>(iterable);
     }
 
     @SafeVarargs
-    static <E> ListX<E> of(E... values) {
+    static <E> ListX<E> of(final E... values) {
         return new ImmutableListX<>(values);
     }
 
-    static <E> ListX<E> build(Consumer<? super MutableListX<E>> mutableListConsumer) {
-        MutableListX<E> list = MutableListX.empty();
+    static <E> ListX<E> build(final Consumer<? super MutableListX<E>> mutableListConsumer) {
+        final MutableListX<E> list = MutableListX.empty();
         mutableListConsumer.accept(list);
         return copyOf(list);
     }
 
-    static <E> ListX<E> copyOf(Collection<E> collection) {
+    static <E> ListX<E> copyOf(final Collection<E> collection) {
         return new ImmutableListX<>(collection);
     }
 
-    static <E> ListX<E> copyOfNullsAllowed(List<E> list) {
+    static <E> ListX<E> copyOfNullsAllowed(final List<E> list) {
         return new ImmutableListX<>(list);
     }
 
-    default <R> R foldRight(@NotNull R initial, @NotNull BiFunction<E, R, R> operation) {
-        var list = this;
+    default <R> R foldRight(@NotNull final R initial, @NotNull final BiFunction<E, R, R> operation) {
+        final var list = this;
         var accumulator = initial;
         if (list.isNotEmpty()) {
             final var listIterator = list.listIterator(list.size());
@@ -74,7 +74,7 @@ public interface ListX<E> extends CollectionX<E>,
         return accumulator;
     }
 
-    default <C extends Collection<E>> C takeLastTo(IntFunction<C> collectionFactory, int n) {
+    default <C extends Collection<E>> C takeLastTo(final IntFunction<C> collectionFactory, final int n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         final var emptyCollection = collectionFactory.apply(0);
         if (n == 0) {
@@ -84,18 +84,18 @@ public interface ListX<E> extends CollectionX<E>,
             emptyCollection.add(last());
             return emptyCollection;
         }
-        var size = size();
+        final var size = size();
         if (n >= size) {
             return to(() -> collectionFactory.apply(size));
         }
-        var result = collectionFactory.apply(n);
+        final var result = collectionFactory.apply(n);
         for (var index = size - n; index < size; index++) {
             result.add(get(index));
         }
         return result;
     }
 
-    default ListX<E> takeLast(int n) {
+    default ListX<E> takeLast(final int n) {
         return ListX.copyOfNullsAllowed(takeLastTo(MutableListX::withInitCapacity, n));
     }
 
@@ -111,11 +111,11 @@ public interface ListX<E> extends CollectionX<E>,
         return findRandom().orElseThrow();
     }
 
-    default Optional<E> findRandom(Random random) {
+    default Optional<E> findRandom(final Random random) {
         return isNotEmpty() ? Optional.of(get(random.nextInt(size()))) : Optional.empty();
     }
 
-    default E random(Random random) {
+    default E random(final Random random) {
         return findRandom(random).orElseThrow();
     }
 
@@ -123,11 +123,11 @@ public interface ListX<E> extends CollectionX<E>,
      * @see BinarySearchable#binarySearch(int, int, Object)
      * @see java.util.Arrays#binarySearch(Object[], Object, Comparator)
      */
-    default int binarySearch(int fromIndex, int toIndex, ToIntFunction<E> comparison) {
+    default int binarySearch(final int fromIndex, final int toIndex, final ToIntFunction<E> comparison) {
         return BinarySearchable.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
     }
 
-    default <T extends Comparable<? super T>> int binarySearchFor(E valueToSearch) {
+    default <T extends Comparable<? super T>> int binarySearchFor(final E valueToSearch) {
         if (valueToSearch instanceof Comparable<?>) {
             //noinspection unchecked
             return binarySearch(0, size(), (E e) -> ((T) e).compareTo((T) valueToSearch));
@@ -155,7 +155,7 @@ public interface ListX<E> extends CollectionX<E>,
     boolean contains(Object value);
 
     @Override
-    default boolean containsNot(E e) {
+    default boolean containsNot(final E e) {
         return !contains(e);
     }
 
@@ -187,27 +187,27 @@ public interface ListX<E> extends CollectionX<E>,
 
     ListX<E> subList(int fromIndex, int toIndex);
 
-    default <C extends Collection<E>> C skipLastTo(IntFunction<C> collectionFactory, int n) {
+    default <C extends Collection<E>> C skipLastTo(final IntFunction<C> collectionFactory, final int n) {
         require(n >= 0, () -> "Requested element count " + n + " is less than zero.");
         final var newSize = size() - n;
         return takeTo(() -> collectionFactory.apply(newSize), Math.max(newSize, 0));
     }
 
-    default ListX<E> skipLast(int n) {
+    default ListX<E> skipLast(final int n) {
         return ListX.copyOf(skipLastTo(MutableListX::withInitCapacity, n));
     }
 
-    default ListX<E> skipLastWhile(@NotNull Predicate<? super E> predicate) {
+    default ListX<E> skipLastWhile(@NotNull final Predicate<? super E> predicate) {
         return ListX.copyOf(skipLastWhileTo(MutableListX::withInitCapacity, predicate));
     }
 
-    default <C extends Collection<E>> C skipLastWhileTo(IntFunction<C> collectionFactory,
-                                                        Predicate<? super E> predicate) {
+    default <C extends Collection<E>> C skipLastWhileTo(final IntFunction<C> collectionFactory,
+                                                        final Predicate<? super E> predicate) {
         final var empty = collectionFactory.apply(0);
         if (isEmpty()) {
             return empty;
         }
-        var iterator = listIterator(size());
+        final var iterator = listIterator(size());
         var counter = 0;
         while (iterator.hasPrevious()) {
             if (!predicate.test(iterator.previous())) {
@@ -219,26 +219,26 @@ public interface ListX<E> extends CollectionX<E>,
         return empty;
     }
 
-    default ListX<E> takeLastWhile(@NotNull Predicate<? super E> predicate) {
+    default ListX<E> takeLastWhile(@NotNull final Predicate<? super E> predicate) {
         return ListX.copyOf(takeLastWhileTo(MutableListX::withInitCapacity, predicate));
     }
 
-    default <C extends Collection<E>> C takeLastWhileTo(@NotNull IntFunction<C> collectionFactory,
-                                                        @NotNull Predicate<? super E> predicate) {
-        var collection = collectionFactory.apply(0);
+    default <C extends Collection<E>> C takeLastWhileTo(@NotNull final IntFunction<C> collectionFactory,
+                                                        @NotNull final Predicate<? super E> predicate) {
+        final var collection = collectionFactory.apply(0);
         if (isEmpty()) {
             return collection;
         }
         final var size = size();
-        var iterator = listIterator(size);
+        final var iterator = listIterator(size);
         while (iterator.hasPrevious()) {
             if (!predicate.test(iterator.previous())) {
                 iterator.next();
-                var expectedSize = size - iterator.nextIndex();
+                final var expectedSize = size - iterator.nextIndex();
                 if (expectedSize == 0) {
                     return collection;
                 }
-                var result = collectionFactory.apply(expectedSize);
+                final var result = collectionFactory.apply(expectedSize);
                 while (iterator.hasNext()) {
                     result.add(iterator.next());
                 }
@@ -249,13 +249,13 @@ public interface ListX<E> extends CollectionX<E>,
     }
 
     @Override
-    default @NotNull ListX<E> onEach(@NotNull Consumer<? super E> consumer) {
+    default @NotNull ListX<E> onEach(@NotNull final Consumer<? super E> consumer) {
         return ListX.of(CollectionX.super.onEach(consumer));
     }
 
     @Override
     @NotNull
-    default <R> ListX<E> onEach(@NotNull Function<? super E, ? extends R> selector, @NotNull Consumer<? super R> consumer) {
+    default <R> ListX<E> onEach(@NotNull final Function<? super E, ? extends R> selector, @NotNull final Consumer<? super R> consumer) {
         return ListX.of(CollectionX.super.onEach(selector, consumer));
     }
 

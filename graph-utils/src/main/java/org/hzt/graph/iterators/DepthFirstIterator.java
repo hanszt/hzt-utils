@@ -21,7 +21,7 @@ final class DepthFirstIterator<T, S extends Node<T, S>> implements Iterator<S> {
     private final boolean setPredecessor;
     private S next;
 
-    DepthFirstIterator(S source, boolean setPredecessor) {
+    DepthFirstIterator(final S source, final boolean setPredecessor) {
         this.setPredecessor = setPredecessor;
         this.stack.push(source.neighborIterator());
         this.next = source;

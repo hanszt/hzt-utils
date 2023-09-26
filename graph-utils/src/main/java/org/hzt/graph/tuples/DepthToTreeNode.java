@@ -7,7 +7,7 @@ public final class DepthToTreeNode<T> {
     private final int treeDepth;
     private final T node;
 
-    public DepthToTreeNode(int treeDepth, T node) {
+    public DepthToTreeNode(final int treeDepth, final T node) {
         this.treeDepth = treeDepth;
         this.node = node;
     }
@@ -21,14 +21,14 @@ public final class DepthToTreeNode<T> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var that = (DepthToTreeNode<?>) o;
+        final var that = (DepthToTreeNode<?>) o;
         return treeDepth == that.treeDepth && Objects.equals(node, that.node);
     }
 

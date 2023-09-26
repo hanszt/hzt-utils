@@ -16,7 +16,7 @@ import java.util.Queue;
 final class TreeNodeBreadthFirstIterator<T, S extends TreeNode<T, S>> implements Iterator<S> {
     private final Queue<S> queue = new LinkedList<>();
 
-    TreeNodeBreadthFirstIterator(S node) {
+    TreeNodeBreadthFirstIterator(final S node) {
         queue.add(node);
     }
 
@@ -31,7 +31,7 @@ final class TreeNodeBreadthFirstIterator<T, S extends TreeNode<T, S>> implements
             throw new NoSuchElementException();
         }
         //removes from front of queue
-        var next = queue.remove();
+        final var next = queue.remove();
         next.childrenSequence().forEach(queue::add);
         return next;
     }

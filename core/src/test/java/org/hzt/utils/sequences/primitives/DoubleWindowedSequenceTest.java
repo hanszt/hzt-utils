@@ -16,7 +16,7 @@ class DoubleWindowedSequenceTest {
 
     @Test
     void testPartialWindowedDoubleSequence() {
-        var array = new double[]{1 * Math.PI, 2, 3, 4, 5, 6, 7};
+        final var array = new double[]{1 * Math.PI, 2, 3, 4, 5, 6, 7};
 
         final var windows = DoubleSequence.of(array)
                 .windowed(3, 2, true)
@@ -54,7 +54,7 @@ class DoubleWindowedSequenceTest {
 
     @Test
     void testApproximateGoldenRatioUsingDoubleSequence() {
-        var goldenRatio = (1 + Math.sqrt(5)) / 2;
+        final var goldenRatio = (1 + Math.sqrt(5)) / 2;
         final var scale = 20;
 
         final var approximations = IntSequence.iterate(1, i -> ++i)

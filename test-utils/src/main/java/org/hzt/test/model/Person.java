@@ -11,7 +11,7 @@ public class Person {
     private final String name;
     private String mail;
 
-    public Person(String name) {
+    public Person(final String name) {
         this.id = next++;
         this.name = name;
     }
@@ -28,19 +28,19 @@ public class Person {
         return mail;
     }
 
-    public void setMail(String mail) {
+    public void setMail(final String mail) {
         this.mail = mail;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var person = (Person) o;
+        final var person = (Person) o;
         return getId() == person.getId() && Objects.equals(getName(), person.getName());
     }
 

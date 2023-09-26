@@ -17,7 +17,7 @@ extends PrimitiveAbstractCollection<T, T_CONS, A, I> implements PrimitiveCollect
     protected static final int DEFAULT_CAPACITY = 10;
     protected A elementData;
 
-    protected PrimitiveAbstractArrayList(int initSize, A elementData) {
+    protected PrimitiveAbstractArrayList(final int initSize, final A elementData) {
         super(initSize);
         this.elementData = elementData;
     }
@@ -38,43 +38,43 @@ extends PrimitiveAbstractCollection<T, T_CONS, A, I> implements PrimitiveCollect
      * @param isInitEmptyArray check if array empty
      * @return the grown array
      */
-    protected A growArray(int oldCapacity, boolean isInitEmptyArray) {
-        var minCapacity = oldCapacity + 1;
+    protected A growArray(final int oldCapacity, final boolean isInitEmptyArray) {
+        final var minCapacity = oldCapacity + 1;
         if (isInitEmptyArray) {
             return newArray(minCapacity);
         }
         final var minGrowth = minCapacity - oldCapacity;
         final var prefGrowth = oldCapacity >> 1;
-        var newCapacity = newLength(oldCapacity, minGrowth, prefGrowth);
+        final var newCapacity = newLength(oldCapacity, minGrowth, prefGrowth);
         return copyElementData(newCapacity);
     }
 
-    private static int newLength(int oldLength, int minGrowth, int prefGrowth) {
+    private static int newLength(final int oldLength, final int minGrowth, final int prefGrowth) {
         PreConditions.require(oldLength >= 0);
         PreConditions.require(minGrowth > 0);
         // might overflow
-        var prefLength = oldLength + Math.max(minGrowth, prefGrowth);
+        final var prefLength = oldLength + Math.max(minGrowth, prefGrowth);
         if (0 < prefLength && prefLength <= SOFT_MAX_ARRAY_LENGTH) {
             return prefLength;
         }
         return hugeLength(oldLength, minGrowth);
     }
 
-    private static int hugeLength(int oldLength, int minGrowth) {
-        var minLength = oldLength + minGrowth;
+    private static int hugeLength(final int oldLength, final int minGrowth) {
+        final var minLength = oldLength + minGrowth;
         if (minLength < 0) { // overflow
             throw new OutOfMemoryError("Required array length " + oldLength + " + " + minGrowth + " is too large");
         }
         return Math.max(minLength, SOFT_MAX_ARRAY_LENGTH);
     }
 
-    protected void rangeCheckForAdd(int index) {
+    protected void rangeCheckForAdd(final int index) {
         if (index > size || index < 0) {
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
         }
     }
 
-    private String outOfBoundsMsg(int index) {
+    private String outOfBoundsMsg(final int index) {
         return "Index: " + index + ", Size: " + size;
     }
 }

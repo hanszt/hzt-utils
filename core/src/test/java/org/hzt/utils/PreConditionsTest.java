@@ -1,6 +1,5 @@
 package org.hzt.utils;
 
-import org.hzt.utils.PreConditions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -24,14 +23,14 @@ class PreConditionsTest {
         final var aDouble = 6.0;
 
         final var bigInteger = BigInteger.valueOf(4);
-        Throwable throwable = assertThrows(NullPointerException.class, () -> PreConditions
+        final Throwable throwable = assertThrows(NullPointerException.class, () -> PreConditions
                 .requireAllNonNull(Number.class, integer, bigInteger, aDouble, null));
 
         final Set<?> treeSet = new TreeSet<>();
         final List<?> list = new ArrayList<>();
         final Set<?> hashSet = new HashSet<>();
         final Deque<?> arrayDeque = new ArrayDeque<>();
-        Throwable throwable2 = assertThrows(NullPointerException.class, () -> PreConditions
+        final Throwable throwable2 = assertThrows(NullPointerException.class, () -> PreConditions
                 .requireAllNonNull(Iterable.class, list, hashSet, null, arrayDeque, treeSet, null));
 
         assertEquals("Number 4 is null", throwable.getMessage());
@@ -44,7 +43,7 @@ class PreConditionsTest {
         final var aDouble = 6.0;
 
         final var bigInteger = BigInteger.valueOf(4);
-        Throwable throwable = assertThrows(IllegalArgumentException.class, () -> PreConditions.requireAllNonNull(
+        final Throwable throwable = assertThrows(IllegalArgumentException.class, () -> PreConditions.requireAllNonNull(
                 integer, bigInteger, aDouble, null, "", null));
 
         throwable.printStackTrace();

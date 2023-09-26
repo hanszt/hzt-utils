@@ -36,7 +36,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.filtering;
+import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.stream.Collectors.toUnmodifiableMap;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 
 @SuppressWarnings({"DuplicatedCode"})
 public final class CollectorsX {
@@ -44,21 +47,21 @@ public final class CollectorsX {
     private CollectorsX() {
     }
 
-    public static <T, U, A, R> Collector<T, ?, R> multiMapping(BiConsumer<? super T, ? super Consumer<U>> mapper,
-                                                               Collector<? super U, A, R> downstream) {
+    public static <T, U, A, R> Collector<T, ?, R> multiMapping(final BiConsumer<? super T, ? super Consumer<U>> mapper,
+                                                               final Collector<? super U, A, R> downstream) {
         return Collectors.flatMapping(e -> {
-            var buffer = new SpinedBuffer<U>();
+            final var buffer = new SpinedBuffer<U>();
             mapper.accept(e, buffer);
             return StreamSupport.stream(buffer.spliterator(), false);
         }, downstream);
     }
 
     static <T, A, R> Collector<T, A, R> collectorOf(
-            Supplier<A> supplier,
-            BiConsumer<A, T> accumulator,
-            BinaryOperator<A> combiner,
-            Function<A, R> finisher,
-            Set<Collector.Characteristics> characteristics) {
+            final Supplier<A> supplier,
+            final BiConsumer<A, T> accumulator,
+            final BinaryOperator<A> combiner,
+            final Function<A, R> finisher,
+            final Set<Collector.Characteristics> characteristics) {
         return Collector.of(supplier, accumulator, combiner, finisher, characteristics.toArray(Collector.Characteristics[]::new));
     }
 
@@ -70,40 +73,40 @@ public final class CollectorsX {
         return toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue);
     }
 
-    public static <T> Collector<T, ?, List<T>> filteringToList(Predicate<? super T> predicate) {
+    public static <T> Collector<T, ?, List<T>> filteringToList(final Predicate<? super T> predicate) {
         return filtering(predicate, toUnmodifiableList());
     }
 
-    public static <T, R> Collector<T, ?, List<R>> mappingToList(Function<? super T, ? extends R> mapper) {
+    public static <T, R> Collector<T, ?, List<R>> mappingToList(final Function<? super T, ? extends R> mapper) {
         return Collectors.mapping(mapper, toUnmodifiableList());
     }
 
-    public static <T, R> Collector<T, ?, List<R>> multiMappingToList(BiConsumer<? super T, ? super Consumer<R>> mapper) {
+    public static <T, R> Collector<T, ?, List<R>> multiMappingToList(final BiConsumer<? super T, ? super Consumer<R>> mapper) {
         return multiMapping(mapper, toUnmodifiableList());
     }
 
-    public static <T, R> Collector<T, ?, List<R>> flatMappingToList(Function<? super T, ? extends Stream<? extends R>> mapper) {
+    public static <T, R> Collector<T, ?, List<R>> flatMappingToList(final Function<? super T, ? extends Stream<? extends R>> mapper) {
         return Collectors.flatMapping(mapper, toUnmodifiableList());
     }
 
-    public static <T> Collector<T, ?, Set<T>> filteringToSet(Predicate<? super T> predicate) {
+    public static <T> Collector<T, ?, Set<T>> filteringToSet(final Predicate<? super T> predicate) {
         return filtering(predicate, toUnmodifiableSet());
     }
 
-    public static <T, R> Collector<T, ?, Set<R>> mappingToSet(Function<? super T, ? extends R> mapper) {
+    public static <T, R> Collector<T, ?, Set<R>> mappingToSet(final Function<? super T, ? extends R> mapper) {
         return Collectors.mapping(mapper, toUnmodifiableSet());
     }
 
-    public static <T, R> Collector<T, ?, Set<R>> multiMappingToSet(BiConsumer<? super T, ? super Consumer<R>> mapper) {
+    public static <T, R> Collector<T, ?, Set<R>> multiMappingToSet(final BiConsumer<? super T, ? super Consumer<R>> mapper) {
         return multiMapping(mapper, toUnmodifiableSet());
     }
 
-    public static <T, R> Collector<T, ?, Set<R>> flatMappingToSet(Function<? super T, ? extends Stream<? extends R>> mapper) {
+    public static <T, R> Collector<T, ?, Set<R>> flatMappingToSet(final Function<? super T, ? extends Stream<? extends R>> mapper) {
         return Collectors.flatMapping(mapper, toUnmodifiableSet());
     }
 
-    public static <T, A, K> Collector<T, ?, Map<K, List<T>>> groupingBy(Function<? super T, ? extends A> classifierPart1,
-                                                                        Function<? super A, ? extends K> classifierPart2) {
+    public static <T, A, K> Collector<T, ?, Map<K, List<T>>> groupingBy(final Function<? super T, ? extends A> classifierPart1,
+                                                                        final Function<? super A, ? extends K> classifierPart2) {
 
         return Collectors.groupingBy(classifierPart1.andThen(classifierPart2));
     }
@@ -112,7 +115,7 @@ public final class CollectorsX {
         return Collector.of(MutableListX::empty, List::add, MutableListX::plus, ListX::of);
     }
 
-    public static <T, R> Collector<T, ?, ListX<R>> toListXOf(Function<T, R> mapper) {
+    public static <T, R> Collector<T, ?, ListX<R>> toListXOf(final Function<T, R> mapper) {
         return Collectors.mapping(mapper, toListX());
     }
 
@@ -120,26 +123,26 @@ public final class CollectorsX {
         return Collector.of(MutableListX::empty, List::add, MutableCollectionX::plus, SetX::of);
     }
 
-    public static <T, R> Collector<T, ?, SetX<R>> toSetXOf(Function<T, R> mapper) {
+    public static <T, R> Collector<T, ?, SetX<R>> toSetXOf(final Function<T, R> mapper) {
         return Collectors.mapping(mapper, toSetX());
     }
 
-    public static <T, K, V> Collector<T, ?, MapX<K, V>> toMapX(Function<T, K> keyMapper, Function<T, V> valueMapper) {
+    public static <T, K, V> Collector<T, ?, MapX<K, V>> toMapX(final Function<T, K> keyMapper, final Function<T, V> valueMapper) {
         return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper), MapX::of);
     }
 
     public static <T, K, V> Collector<T, ?, MapX<K, V>> toMapX(
-            Function<T, K> keyMapper, Function<T, V> valueMapper, BinaryOperator<V> mergeFunction) {
+            final Function<T, K> keyMapper, final Function<T, V> valueMapper, final BinaryOperator<V> mergeFunction) {
         return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper, mergeFunction), MapX::of);
     }
 
     public static <T, R1, R2> Collector<T, ?, Map.Entry<R1, R2>> teeingToEntry(
-            Collector<? super T, ?, R1> downstream1,
-            Collector<? super T, ?, R2> downstream2) {
+            final Collector<? super T, ?, R1> downstream1,
+            final Collector<? super T, ?, R2> downstream2) {
         return teeing(downstream1, downstream2, Map::entry);
     }
 
-    public static <T> Collector<T, ?, DoubleStatistics> toDoubleStatisticsBy(ToDoubleFunction<? super T> toDoubleFunction) {
+    public static <T> Collector<T, ?, DoubleStatistics> toDoubleStatisticsBy(final ToDoubleFunction<? super T> toDoubleFunction) {
         Objects.requireNonNull(toDoubleFunction);
         return Collector.of(
                 DoubleStatistics::new,
@@ -149,7 +152,7 @@ public final class CollectorsX {
         );
     }
 
-    public static <T> Collector<T, ?, Double> standardDeviatingDouble(ToDoubleFunction<? super T> toDoubleFunction) {
+    public static <T> Collector<T, ?, Double> standardDeviatingDouble(final ToDoubleFunction<? super T> toDoubleFunction) {
         Objects.requireNonNull(toDoubleFunction);
         return Collector.of(
                 DoubleStatistics::new,
@@ -191,58 +194,58 @@ public final class CollectorsX {
      * @return first {@code Collector} which aggregates the results of three supplied collectors.
      */
     public static <T, R1, R2, R>
-    Collector<T, ?, R> teeing(Collector<? super T, ?, R1> downstream1,
-                              Collector<? super T, ?, R2> downstream2,
-                              BiFunction<? super R1, ? super R2, R> merger) {
+    Collector<T, ?, R> teeing(final Collector<? super T, ?, R1> downstream1,
+                              final Collector<? super T, ?, R2> downstream2,
+                              final BiFunction<? super R1, ? super R2, R> merger) {
         return teeing0(downstream1, downstream2, merger);
     }
 
     public static <T, R1, R2>
-    Collector<T, ?, Pair<R1, R2>> branching(Collector<? super T, ?, R1> downstream1,
-                                            Collector<? super T, ?, R2> downstream2) {
+    Collector<T, ?, Pair<R1, R2>> branching(final Collector<? super T, ?, R1> downstream1,
+                                            final Collector<? super T, ?, R2> downstream2) {
         return teeing0(downstream1, downstream2, Pair::of);
     }
 
     private static <T, A1, A2, R1, R2, R>
-    Collector<T, ?, R> teeing0(Collector<? super T, A1, R1> downstream1,
-                               Collector<? super T, A2, R2> downstream2,
-                               BiFunction<? super R1, ? super R2, R> merger) {
+    Collector<T, ?, R> teeing0(final Collector<? super T, A1, R1> downstream1,
+                               final Collector<? super T, A2, R2> downstream2,
+                               final BiFunction<? super R1, ? super R2, R> merger) {
         PreConditions.requireAllNonNull(downstream1, downstream2, merger);
 
-        var c1Supplier = Objects.requireNonNull(downstream1.supplier());
-        var c2Supplier = Objects.requireNonNull(downstream2.supplier());
+        final var c1Supplier = Objects.requireNonNull(downstream1.supplier());
+        final var c2Supplier = Objects.requireNonNull(downstream2.supplier());
 
-        var c1Accumulator = Objects.requireNonNull(downstream1.accumulator());
-        var c2Accumulator = Objects.requireNonNull(downstream2.accumulator());
+        final var c1Accumulator = Objects.requireNonNull(downstream1.accumulator());
+        final var c2Accumulator = Objects.requireNonNull(downstream2.accumulator());
 
-        var c1Combiner = Objects.requireNonNull(downstream1.combiner());
-        var c2Combiner = Objects.requireNonNull(downstream2.combiner());
+        final var c1Combiner = Objects.requireNonNull(downstream1.combiner());
+        final var c2Combiner = Objects.requireNonNull(downstream2.combiner());
 
-        var c1Finisher = Objects.requireNonNull(downstream1.finisher());
-        var c2Finisher = Objects.requireNonNull(downstream2.finisher());
+        final var c1Finisher = Objects.requireNonNull(downstream1.finisher());
+        final var c2Finisher = Objects.requireNonNull(downstream2.finisher());
 
         class DuoBox {
             private A1 left = c1Supplier.get();
             private A2 middle = c2Supplier.get();
 
-            void add(T t) {
+            void add(final T t) {
                 c1Accumulator.accept(left, t);
                 c2Accumulator.accept(middle, t);
             }
 
-            DuoBox combine(DuoBox other) {
+            DuoBox combine(final DuoBox other) {
                 left = c1Combiner.apply(left, other.left);
                 middle = c2Combiner.apply(middle, other.middle);
                 return this;
             }
 
             R get() {
-                var r1 = c1Finisher.apply(left);
-                var r2 = c2Finisher.apply(middle);
+                final var r1 = c1Finisher.apply(left);
+                final var r2 = c2Finisher.apply(middle);
                 return merger.apply(r1, r2);
             }
         }
-        var characteristics = evaluateCharacteristics(downstream1, downstream2);
+        final var characteristics = evaluateCharacteristics(downstream1, downstream2);
         return collectorOf(DuoBox::new, DuoBox::add, DuoBox::combine, DuoBox::get, characteristics);
     }
 
@@ -280,55 +283,55 @@ public final class CollectorsX {
      * @return first {@code Collector} which aggregates the results of three supplied collectors.
      */
     public static <T, R1, R2, R3, R>
-    Collector<T, ?, R> branching(Collector<? super T, ?, R1> downstream1,
-                                 Collector<? super T, ?, R2> downstream2,
-                                 Collector<? super T, ?, R3> downstream3,
-                                 TriFunction<? super R1, ? super R2, ? super R3, R> merger) {
+    Collector<T, ?, R> branching(final Collector<? super T, ?, R1> downstream1,
+                                 final Collector<? super T, ?, R2> downstream2,
+                                 final Collector<? super T, ?, R3> downstream3,
+                                 final TriFunction<? super R1, ? super R2, ? super R3, R> merger) {
         return branching0(downstream1, downstream2, downstream3, merger);
     }
 
     public static <T, R1, R2, R3>
-    Collector<T, ?, Triple<R1, R2, R3>> branching(Collector<? super T, ?, R1> downstream1,
-                                                  Collector<? super T, ?, R2> downstream2,
-                                                  Collector<? super T, ?, R3> downstream3) {
+    Collector<T, ?, Triple<R1, R2, R3>> branching(final Collector<? super T, ?, R1> downstream1,
+                                                  final Collector<? super T, ?, R2> downstream2,
+                                                  final Collector<? super T, ?, R3> downstream3) {
         return branching0(downstream1, downstream2, downstream3, Triple::of);
     }
 
     private static <T, A1, A2, A3, R1, R2, R3, R>
-    Collector<T, ?, R> branching0(Collector<? super T, A1, R1> downstream1,
-                                  Collector<? super T, A2, R2> downstream2,
-                                  Collector<? super T, A3, R3> downstream3,
-                                  TriFunction<? super R1, ? super R2, ? super R3, R> merger) {
+    Collector<T, ?, R> branching0(final Collector<? super T, A1, R1> downstream1,
+                                  final Collector<? super T, A2, R2> downstream2,
+                                  final Collector<? super T, A3, R3> downstream3,
+                                  final TriFunction<? super R1, ? super R2, ? super R3, R> merger) {
         PreConditions.requireAllNonNull(downstream1, downstream2, downstream3, merger);
 
-        var c1Supplier = Objects.requireNonNull(downstream1.supplier());
-        var c2Supplier = Objects.requireNonNull(downstream2.supplier());
-        var c3Supplier = Objects.requireNonNull(downstream3.supplier());
+        final var c1Supplier = Objects.requireNonNull(downstream1.supplier());
+        final var c2Supplier = Objects.requireNonNull(downstream2.supplier());
+        final var c3Supplier = Objects.requireNonNull(downstream3.supplier());
 
-        var c1Accumulator = Objects.requireNonNull(downstream1.accumulator());
-        var c2Accumulator = Objects.requireNonNull(downstream2.accumulator());
-        var c3Accumulator = Objects.requireNonNull(downstream3.accumulator());
+        final var c1Accumulator = Objects.requireNonNull(downstream1.accumulator());
+        final var c2Accumulator = Objects.requireNonNull(downstream2.accumulator());
+        final var c3Accumulator = Objects.requireNonNull(downstream3.accumulator());
 
-        var c1Combiner = Objects.requireNonNull(downstream1.combiner());
-        var c2Combiner = Objects.requireNonNull(downstream2.combiner());
-        var c3Combiner = Objects.requireNonNull(downstream3.combiner());
+        final var c1Combiner = Objects.requireNonNull(downstream1.combiner());
+        final var c2Combiner = Objects.requireNonNull(downstream2.combiner());
+        final var c3Combiner = Objects.requireNonNull(downstream3.combiner());
 
-        var c1Finisher = Objects.requireNonNull(downstream1.finisher());
-        var c2Finisher = Objects.requireNonNull(downstream2.finisher());
-        var c3Finisher = Objects.requireNonNull(downstream3.finisher());
+        final var c1Finisher = Objects.requireNonNull(downstream1.finisher());
+        final var c2Finisher = Objects.requireNonNull(downstream2.finisher());
+        final var c3Finisher = Objects.requireNonNull(downstream3.finisher());
 
         class TriBox {
             private A1 left = c1Supplier.get();
             private A2 middle = c2Supplier.get();
             private A3 right = c3Supplier.get();
 
-            void add(T t) {
+            void add(final T t) {
                 c1Accumulator.accept(left, t);
                 c2Accumulator.accept(middle, t);
                 c3Accumulator.accept(right, t);
             }
 
-            TriBox combine(TriBox other) {
+            TriBox combine(final TriBox other) {
                 left = c1Combiner.apply(left, other.left);
                 middle = c2Combiner.apply(middle, other.middle);
                 right = c3Combiner.apply(right, other.right);
@@ -336,13 +339,13 @@ public final class CollectorsX {
             }
 
             R get() {
-                var r1 = c1Finisher.apply(left);
-                var r2 = c2Finisher.apply(middle);
-                var r3 = c3Finisher.apply(right);
+                final var r1 = c1Finisher.apply(left);
+                final var r2 = c2Finisher.apply(middle);
+                final var r3 = c3Finisher.apply(right);
                 return merger.apply(r1, r2, r3);
             }
         }
-        var characteristics = evaluateCharacteristics(downstream1, downstream2, downstream3);
+        final var characteristics = evaluateCharacteristics(downstream1, downstream2, downstream3);
         return collectorOf(TriBox::new, TriBox::add, TriBox::combine, TriBox::get, characteristics);
     }
 
@@ -382,41 +385,41 @@ public final class CollectorsX {
      * @return first {@code Collector} which aggregates the results of four supplied collectors.
      */
     public static <T, R1, R2, R3, R4, R>
-    Collector<T, ?, R> branching(Collector<? super T, ?, R1> downstream1,
-                                 Collector<? super T, ?, R2> downstream2,
-                                 Collector<? super T, ?, R3> downstream3,
-                                 Collector<? super T, ?, R4> downstream4,
-                                 QuadFunction<? super R1, ? super R2, ? super R3, ? super R4, R> merger) {
+    Collector<T, ?, R> branching(final Collector<? super T, ?, R1> downstream1,
+                                 final Collector<? super T, ?, R2> downstream2,
+                                 final Collector<? super T, ?, R3> downstream3,
+                                 final Collector<? super T, ?, R4> downstream4,
+                                 final QuadFunction<? super R1, ? super R2, ? super R3, ? super R4, R> merger) {
         return branching0(downstream1, downstream2, downstream3, downstream4, merger);
     }
 
     private static <T, A1, A2, A3, A4, R1, R2, R3, R4, R>
-    Collector<T, ?, R> branching0(Collector<? super T, A1, R1> downstream1,
-                                  Collector<? super T, A2, R2> downstream2,
-                                  Collector<? super T, A3, R3> downstream3,
-                                  Collector<? super T, A4, R4> downstream4,
-                                  QuadFunction<? super R1, ? super R2, ? super R3, ? super R4, R> merger) {
+    Collector<T, ?, R> branching0(final Collector<? super T, A1, R1> downstream1,
+                                  final Collector<? super T, A2, R2> downstream2,
+                                  final Collector<? super T, A3, R3> downstream3,
+                                  final Collector<? super T, A4, R4> downstream4,
+                                  final QuadFunction<? super R1, ? super R2, ? super R3, ? super R4, R> merger) {
         PreConditions.requireAllNonNull(downstream1, downstream2, downstream3, downstream4, merger);
 
-        var c1Supplier = Objects.requireNonNull(downstream1.supplier());
-        var c2Supplier = Objects.requireNonNull(downstream2.supplier());
-        var c3Supplier = Objects.requireNonNull(downstream3.supplier());
-        var c4Supplier = Objects.requireNonNull(downstream4.supplier());
+        final var c1Supplier = Objects.requireNonNull(downstream1.supplier());
+        final var c2Supplier = Objects.requireNonNull(downstream2.supplier());
+        final var c3Supplier = Objects.requireNonNull(downstream3.supplier());
+        final var c4Supplier = Objects.requireNonNull(downstream4.supplier());
 
-        var c1Accumulator = Objects.requireNonNull(downstream1.accumulator());
-        var c2Accumulator = Objects.requireNonNull(downstream2.accumulator());
-        var c3Accumulator = Objects.requireNonNull(downstream3.accumulator());
-        var c4Accumulator = Objects.requireNonNull(downstream4.accumulator());
+        final var c1Accumulator = Objects.requireNonNull(downstream1.accumulator());
+        final var c2Accumulator = Objects.requireNonNull(downstream2.accumulator());
+        final var c3Accumulator = Objects.requireNonNull(downstream3.accumulator());
+        final var c4Accumulator = Objects.requireNonNull(downstream4.accumulator());
 
-        var c1Combiner = Objects.requireNonNull(downstream1.combiner());
-        var c2Combiner = Objects.requireNonNull(downstream2.combiner());
-        var c3Combiner = Objects.requireNonNull(downstream3.combiner());
-        var c4Combiner = Objects.requireNonNull(downstream4.combiner());
+        final var c1Combiner = Objects.requireNonNull(downstream1.combiner());
+        final var c2Combiner = Objects.requireNonNull(downstream2.combiner());
+        final var c3Combiner = Objects.requireNonNull(downstream3.combiner());
+        final var c4Combiner = Objects.requireNonNull(downstream4.combiner());
 
-        var c1Finisher = Objects.requireNonNull(downstream1.finisher());
-        var c2Finisher = Objects.requireNonNull(downstream2.finisher());
-        var c3Finisher = Objects.requireNonNull(downstream3.finisher());
-        var c4Finisher = Objects.requireNonNull(downstream4.finisher());
+        final var c1Finisher = Objects.requireNonNull(downstream1.finisher());
+        final var c2Finisher = Objects.requireNonNull(downstream2.finisher());
+        final var c3Finisher = Objects.requireNonNull(downstream3.finisher());
+        final var c4Finisher = Objects.requireNonNull(downstream4.finisher());
 
         class QuadBox {
             private A1 left = c1Supplier.get();
@@ -424,14 +427,14 @@ public final class CollectorsX {
             private A3 middleRight = c3Supplier.get();
             private A4 right = c4Supplier.get();
 
-            void add(T t) {
+            void add(final T t) {
                 c1Accumulator.accept(left, t);
                 c2Accumulator.accept(middleLeft, t);
                 c3Accumulator.accept(middleRight, t);
                 c4Accumulator.accept(right, t);
             }
 
-            QuadBox combine(QuadBox other) {
+            QuadBox combine(final QuadBox other) {
                 left = c1Combiner.apply(left, other.left);
                 middleLeft = c2Combiner.apply(middleLeft, other.middleLeft);
                 middleRight = c3Combiner.apply(middleRight, other.middleRight);
@@ -440,14 +443,14 @@ public final class CollectorsX {
             }
 
             R get() {
-                var r1 = c1Finisher.apply(left);
-                var r2 = c2Finisher.apply(middleLeft);
-                var r3 = c3Finisher.apply(middleRight);
-                var r4 = c4Finisher.apply(right);
+                final var r1 = c1Finisher.apply(left);
+                final var r2 = c2Finisher.apply(middleLeft);
+                final var r3 = c3Finisher.apply(middleRight);
+                final var r4 = c4Finisher.apply(right);
                 return merger.apply(r1, r2, r3, r4);
             }
         }
-        var characteristics = evaluateCharacteristics(downstream1, downstream2, downstream3, downstream4);
+        final var characteristics = evaluateCharacteristics(downstream1, downstream2, downstream3, downstream4);
         return collectorOf(QuadBox::new, QuadBox::add, QuadBox::combine, QuadBox::get, characteristics);
     }
 
@@ -489,47 +492,47 @@ public final class CollectorsX {
      * @return first {@code Collector} which aggregates the results of five supplied collectors.
      */
     public static <T, R1, R2, R3, R4, R5, R>
-    Collector<T, ?, R> branching(Collector<? super T, ?, R1> downstream1,
-                                 Collector<? super T, ?, R2> downstream2,
-                                 Collector<? super T, ?, R3> downstream3,
-                                 Collector<? super T, ?, R4> downstream4,
-                                 Collector<? super T, ?, R5> downstream5,
-                                 QuintFunction<? super R1, ? super R2, ? super R3, ? super R4, ? super R5, R> merger) {
+    Collector<T, ?, R> branching(final Collector<? super T, ?, R1> downstream1,
+                                 final Collector<? super T, ?, R2> downstream2,
+                                 final Collector<? super T, ?, R3> downstream3,
+                                 final Collector<? super T, ?, R4> downstream4,
+                                 final Collector<? super T, ?, R5> downstream5,
+                                 final QuintFunction<? super R1, ? super R2, ? super R3, ? super R4, ? super R5, R> merger) {
         return branching0(downstream1, downstream2, downstream3, downstream4, downstream5, merger);
     }
 
     private static <T, A1, A2, A3, A4, A5, R1, R2, R3, R4, R5, R>
-    Collector<T, ?, R> branching0(Collector<? super T, A1, R1> downstream1,
-                                  Collector<? super T, A2, R2> downstream2,
-                                  Collector<? super T, A3, R3> downstream3,
-                                  Collector<? super T, A4, R4> downstream4,
-                                  Collector<? super T, A5, R5> downstream5,
-                                  QuintFunction<? super R1, ? super R2, ? super R3, ? super R4, ? super R5, R> merger) {
+    Collector<T, ?, R> branching0(final Collector<? super T, A1, R1> downstream1,
+                                  final Collector<? super T, A2, R2> downstream2,
+                                  final Collector<? super T, A3, R3> downstream3,
+                                  final Collector<? super T, A4, R4> downstream4,
+                                  final Collector<? super T, A5, R5> downstream5,
+                                  final QuintFunction<? super R1, ? super R2, ? super R3, ? super R4, ? super R5, R> merger) {
         PreConditions.requireAllNonNull(downstream1, downstream2, downstream3, downstream4, downstream5, merger);
 
-        var c1Supplier = Objects.requireNonNull(downstream1.supplier());
-        var c2Supplier = Objects.requireNonNull(downstream2.supplier());
-        var c3Supplier = Objects.requireNonNull(downstream3.supplier());
-        var c4Supplier = Objects.requireNonNull(downstream4.supplier());
-        var c5Supplier = Objects.requireNonNull(downstream5.supplier());
+        final var c1Supplier = Objects.requireNonNull(downstream1.supplier());
+        final var c2Supplier = Objects.requireNonNull(downstream2.supplier());
+        final var c3Supplier = Objects.requireNonNull(downstream3.supplier());
+        final var c4Supplier = Objects.requireNonNull(downstream4.supplier());
+        final var c5Supplier = Objects.requireNonNull(downstream5.supplier());
 
-        var c1Accumulator = Objects.requireNonNull(downstream1.accumulator());
-        var c2Accumulator = Objects.requireNonNull(downstream2.accumulator());
-        var c3Accumulator = Objects.requireNonNull(downstream3.accumulator());
-        var c4Accumulator = Objects.requireNonNull(downstream4.accumulator());
-        var c5Accumulator = Objects.requireNonNull(downstream5.accumulator());
+        final var c1Accumulator = Objects.requireNonNull(downstream1.accumulator());
+        final var c2Accumulator = Objects.requireNonNull(downstream2.accumulator());
+        final var c3Accumulator = Objects.requireNonNull(downstream3.accumulator());
+        final var c4Accumulator = Objects.requireNonNull(downstream4.accumulator());
+        final var c5Accumulator = Objects.requireNonNull(downstream5.accumulator());
 
-        var c1Combiner = Objects.requireNonNull(downstream1.combiner());
-        var c2Combiner = Objects.requireNonNull(downstream2.combiner());
-        var c3Combiner = Objects.requireNonNull(downstream3.combiner());
-        var c4Combiner = Objects.requireNonNull(downstream4.combiner());
-        var c5Combiner = Objects.requireNonNull(downstream5.combiner());
+        final var c1Combiner = Objects.requireNonNull(downstream1.combiner());
+        final var c2Combiner = Objects.requireNonNull(downstream2.combiner());
+        final var c3Combiner = Objects.requireNonNull(downstream3.combiner());
+        final var c4Combiner = Objects.requireNonNull(downstream4.combiner());
+        final var c5Combiner = Objects.requireNonNull(downstream5.combiner());
 
-        var c1Finisher = Objects.requireNonNull(downstream1.finisher());
-        var c2Finisher = Objects.requireNonNull(downstream2.finisher());
-        var c3Finisher = Objects.requireNonNull(downstream3.finisher());
-        var c4Finisher = Objects.requireNonNull(downstream4.finisher());
-        var c5Finisher = Objects.requireNonNull(downstream5.finisher());
+        final var c1Finisher = Objects.requireNonNull(downstream1.finisher());
+        final var c2Finisher = Objects.requireNonNull(downstream2.finisher());
+        final var c3Finisher = Objects.requireNonNull(downstream3.finisher());
+        final var c4Finisher = Objects.requireNonNull(downstream4.finisher());
+        final var c5Finisher = Objects.requireNonNull(downstream5.finisher());
 
         class QuintBox {
             private A1 a1 = c1Supplier.get();
@@ -538,7 +541,7 @@ public final class CollectorsX {
             private A4 a4 = c4Supplier.get();
             private A5 a5 = c5Supplier.get();
 
-            void add(T t) {
+            void add(final T t) {
                 c1Accumulator.accept(a1, t);
                 c2Accumulator.accept(a2, t);
                 c3Accumulator.accept(a3, t);
@@ -546,7 +549,7 @@ public final class CollectorsX {
                 c5Accumulator.accept(a5, t);
             }
 
-            QuintBox combine(QuintBox other) {
+            QuintBox combine(final QuintBox other) {
                 a1 = c1Combiner.apply(a1, other.a1);
                 a2 = c2Combiner.apply(a2, other.a2);
                 a3 = c3Combiner.apply(a3, other.a3);
@@ -556,15 +559,15 @@ public final class CollectorsX {
             }
 
             R get() {
-                var r1 = c1Finisher.apply(a1);
-                var r2 = c2Finisher.apply(a2);
-                var r3 = c3Finisher.apply(a3);
-                var r4 = c4Finisher.apply(a4);
-                var r5 = c5Finisher.apply(a5);
+                final var r1 = c1Finisher.apply(a1);
+                final var r2 = c2Finisher.apply(a2);
+                final var r3 = c3Finisher.apply(a3);
+                final var r4 = c4Finisher.apply(a4);
+                final var r5 = c5Finisher.apply(a5);
                 return merger.apply(r1, r2, r3, r4, r5);
             }
         }
-        var characteristics = evaluateCharacteristics(
+        final var characteristics = evaluateCharacteristics(
                 downstream1, downstream2, downstream3, downstream4, downstream5);
         return collectorOf(QuintBox::new, QuintBox::add, QuintBox::combine, QuintBox::get, characteristics);
     }
@@ -573,7 +576,7 @@ public final class CollectorsX {
         class Accumulator {
             private Set<T> result = null;
 
-            void accept(S s) {
+            void accept(final S s) {
                 if (result == null) {
                     result = new HashSet<>(s);
                 } else {
@@ -581,7 +584,7 @@ public final class CollectorsX {
                 }
             }
 
-            Accumulator combine(Accumulator other) {
+            Accumulator combine(final Accumulator other) {
                 if (result == null) {
                     return other;
                 }
@@ -600,12 +603,12 @@ public final class CollectorsX {
     }
 
     public static <S extends Collection<T>, T, R>
-    Collector<S, ?, Set<R>> intersectingBy(Function<? super T, ? extends R> toTestValMapper) {
+    Collector<S, ?, Set<R>> intersectingBy(final Function<? super T, ? extends R> toTestValMapper) {
         class Accumulator {
 
             private Set<R> result = null;
 
-            void accept(S collection) {
+            void accept(final S collection) {
                 final var set = collection.stream()
                         .map(toTestValMapper)
                         .collect(Collectors.toSet());
@@ -616,7 +619,7 @@ public final class CollectorsX {
                 }
             }
 
-            Accumulator combine(Accumulator other) {
+            Accumulator combine(final Accumulator other) {
                 if (result == null) {
                     return other;
                 }
@@ -634,8 +637,8 @@ public final class CollectorsX {
                 Collector.Characteristics.UNORDERED);
     }
 
-    private static Set<Collector.Characteristics> evaluateCharacteristics(Collector<?, ?, ?>... collectors) {
-        var anyMatchOnChIDContainsAll = Stream.of(collectors)
+    private static Set<Collector.Characteristics> evaluateCharacteristics(final Collector<?, ?, ?>... collectors) {
+        final var anyMatchOnChIDContainsAll = Stream.of(collectors)
                 .map(Collector::characteristics)
                 .anyMatch(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH)::containsAll);
 

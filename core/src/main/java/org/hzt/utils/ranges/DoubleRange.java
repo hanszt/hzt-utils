@@ -6,23 +6,23 @@ import org.jetbrains.annotations.NotNull;
 
 public final class DoubleRange extends DoubleProgression implements ClosedRange<Double> {
 
-    private DoubleRange(double start, double endInclusive) {
+    private DoubleRange(final double start, final double endInclusive) {
         super(start, endInclusive, 1);
     }
 
-    private DoubleRange(double start, double endInclusive, double step) {
+    private DoubleRange(final double start, final double endInclusive, final double step) {
         super(start, endInclusive, step);
     }
 
-    public static DoubleRange closed(double start, double endInclusive) {
+    public static DoubleRange closed(final double start, final double endInclusive) {
         return new DoubleRange(start, endInclusive);
     }
 
-    public static DoubleRange closed(double start, double endInclusive, double step) {
+    public static DoubleRange closed(final double start, final double endInclusive, final double step) {
         return new DoubleRange(start, endInclusive, step);
     }
 
-    public boolean containsAll(double @NotNull ... array) {
+    public boolean containsAll(final double @NotNull ... array) {
         return DoubleSequence.of(array).all(this::contains);
     }
 }

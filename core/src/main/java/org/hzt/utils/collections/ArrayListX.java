@@ -22,28 +22,28 @@ final class ArrayListX<E> implements MutableListX<E> {
         this.list = new ArrayList<>();
     }
 
-    ArrayListX(int initialCapacity) {
+    ArrayListX(final int initialCapacity) {
         this.list = new ArrayList<>(initialCapacity);
     }
 
-    ArrayListX(Collection<E> collection) {
+    ArrayListX(final Collection<E> collection) {
         this.list = new ArrayList<>(collection);
     }
 
-    ArrayListX(Iterable<E> iterable) {
+    ArrayListX(final Iterable<E> iterable) {
         list = new ArrayList<>();
-        for (var e : iterable) {
+        for (final var e : iterable) {
             list.add(e);
         }
     }
 
     @SafeVarargs
-    ArrayListX(E... values) {
+    ArrayListX(final E... values) {
         list = new ArrayList<>(values.length + 1);
         list.addAll(List.of(values));
     }
 
-    ArrayListX(E value) {
+    ArrayListX(final E value) {
         list = new ArrayList<>(1);
         list.add(value);
     }
@@ -71,7 +71,7 @@ final class ArrayListX<E> implements MutableListX<E> {
     }
 
     @Override
-    public boolean contains(Object value) {
+    public boolean contains(final Object value) {
         return list.contains(value);
     }
 
@@ -89,43 +89,43 @@ final class ArrayListX<E> implements MutableListX<E> {
 
     @NotNull
     @Override
-    public <T1> T1 @NotNull [] toArray(@NotNull T1 @NotNull [] a) {
+    public <T1> T1 @NotNull [] toArray(@NotNull final T1 @NotNull [] a) {
         return list.toArray(a);
     }
 
     @Override
-    public boolean add(E e) {
+    public boolean add(final E e) {
         return list.add(e);
     }
 
     @Override
     @SuppressWarnings("squid:S2250")
-    public boolean remove(Object o) {
+    public boolean remove(final Object o) {
         return list.remove(o);
     }
 
     @Override
-    public boolean containsAll(@NotNull Collection<?> c) {
+    public boolean containsAll(@NotNull final Collection<?> c) {
         return new HashSet<>(list).containsAll(c);
     }
 
     @Override
-    public boolean addAll(@NotNull Collection<? extends E> c) {
+    public boolean addAll(@NotNull final Collection<? extends E> c) {
         return list.addAll(c);
     }
 
     @Override
-    public boolean addAll(int index, @NotNull Collection<? extends E> c) {
+    public boolean addAll(final int index, @NotNull final Collection<? extends E> c) {
         return list.addAll(index, c);
     }
 
     @Override
-    public boolean removeAll(@NotNull Collection<?> c) {
+    public boolean removeAll(@NotNull final Collection<?> c) {
         return list.removeAll(c);
     }
 
     @Override
-    public boolean retainAll(@NotNull Collection<?> c) {
+    public boolean retainAll(@NotNull final Collection<?> c) {
         return list.retainAll(c);
     }
 
@@ -135,32 +135,32 @@ final class ArrayListX<E> implements MutableListX<E> {
     }
 
     @Override
-    public E get(int index) {
+    public E get(final int index) {
         return list.get(index);
     }
 
     @Override
-    public E set(int index, E element) {
+    public E set(final int index, final E element) {
         return list.set(index, element);
     }
 
     @Override
-    public void add(int index, E element) {
+    public void add(final int index, final E element) {
         list.add(index, element);
     }
 
     @Override
-    public E remove(int index) {
+    public E remove(final int index) {
         return list.remove(index);
     }
 
     @Override
-    public int indexOf(Object o) {
+    public int indexOf(final Object o) {
         return list.indexOf(o);
     }
 
     @Override
-    public int lastIndexOf(Object o) {
+    public int lastIndexOf(final Object o) {
         return list.lastIndexOf(o);
     }
 
@@ -172,30 +172,30 @@ final class ArrayListX<E> implements MutableListX<E> {
 
     @NotNull
     @Override
-    public ListIterator<E> listIterator(int index) {
+    public ListIterator<E> listIterator(final int index) {
         return list.listIterator(index);
     }
 
     @NotNull
     @Override
-    public MutableListX<E> headTo(int toIndex) {
+    public MutableListX<E> headTo(final int toIndex) {
         return subList(0, toIndex);
     }
 
     @NotNull
     @Override
-    public MutableListX<E> tailFrom(int fromIndex) {
+    public MutableListX<E> tailFrom(final int fromIndex) {
         return subList(fromIndex, size());
     }
 
     @NotNull
     @Override
-    public MutableListX<E> subList(int fromIndex, int toIndex) {
+    public MutableListX<E> subList(final int fromIndex, final int toIndex) {
         return MutableListX.of(list.subList(fromIndex, toIndex));
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -205,12 +205,12 @@ final class ArrayListX<E> implements MutableListX<E> {
         return equalsRange((Iterable<?>) o, size());
     }
 
-    private boolean equalsRange(Iterable<?> other, int to) {
+    private boolean equalsRange(final Iterable<?> other, final int to) {
         final var es = list.toArray();
         if (to > es.length) {
             throw new ConcurrentModificationException();
         }
-        var oit = other.iterator();
+        final var oit = other.iterator();
         for (var from = 0; from < to; from++) {
             if (!oit.hasNext() || !Objects.equals(es[from], oit.next())) {
                 return false;

@@ -23,7 +23,7 @@ public interface LongGroupable extends PrimitiveGroupable<Long, LongMutableList,
         return map;
     }
 
-    default <K> MapX<K, LongMutableList> groupBy(@NotNull LongFunction<? extends K> classifier) {
+    default <K> MapX<K, LongMutableList> groupBy(@NotNull final LongFunction<? extends K> classifier) {
         final var iterator = iterator();
         final MutableMapX<K, LongMutableList> map = MutableMapX.empty();
         while (iterator.hasNext()) {
@@ -34,7 +34,7 @@ public interface LongGroupable extends PrimitiveGroupable<Long, LongMutableList,
     }
 
     @Override
-    default Pair<LongMutableList, LongMutableList> partition(@NotNull LongPredicate predicate) {
+    default Pair<LongMutableList, LongMutableList> partition(@NotNull final LongPredicate predicate) {
         final var matchingList = LongMutableList.empty();
         final var nonMatchingList = LongMutableList.empty();
         final var iterator = iterator();

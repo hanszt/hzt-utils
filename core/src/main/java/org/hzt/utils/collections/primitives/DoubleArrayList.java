@@ -103,7 +103,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     int indexOfRange(double value, int end) {
-        for (int i = 0; i < end; i++) {
+        for (var i = 0; i < end; i++) {
             if (Double.compare(value, elementData[i]) == 0) {
                 return i;
             }
@@ -123,13 +123,13 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
 
     @Override
     public DoubleList shuffled() {
-        final DoubleMutableList mutableList = DoubleMutableList.of(this);
+        final var mutableList = DoubleMutableList.of(this);
         PrimitiveListHelper.shuffle(mutableList);
         return mutableList;
     }
 
     private int lastIndexOfRange(double value, int end) {
-        for (int i = end - 1; i >= 0; i--) {
+        for (var i = end - 1; i >= 0; i--) {
             if (Double.compare(value, elementData[i]) == 0) {
                 return i;
             }
@@ -138,13 +138,13 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     public double removeAt(int index) {
-        double oldValue = elementData[checkIndex(index, size)];
+        var oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveDouble(elementData, size, index);
         return oldValue;
     }
 
     private static int fastRemoveDouble(double[] array, int size, int index) {
-        final int newSize = size - 1;
+        final var newSize = size - 1;
         if (newSize > index) {
             System.arraycopy(array, index + 1, array, index, newSize - index);
         }
@@ -162,11 +162,11 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
             return false;
         }
 
-        PrimitiveIterator.OfDouble iterator1 = iterator();
-        PrimitiveIterator.OfDouble iterator2 = doubleList.iterator();
+        var iterator1 = iterator();
+        var iterator2 = doubleList.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            double l1 = iterator1.nextDouble();
-            double l2 = iterator2.nextDouble();
+            var l1 = iterator1.nextDouble();
+            var l2 = iterator2.nextDouble();
             if (Double.compare(l1, l2) != 0) {
                 return false;
             }
@@ -176,7 +176,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
 
     @Override
     public int hashCode() {
-        final int result = Objects.hash(size);
+        final var result = Objects.hash(size);
         return  31 * result + Arrays.hashCode(elementData);
     }
 

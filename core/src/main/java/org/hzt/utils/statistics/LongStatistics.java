@@ -15,18 +15,18 @@ public final class LongStatistics extends LongSummaryStatistics
         super();
     }
 
-    public LongStatistics(long count, long min, long max, long sum) {
+    public LongStatistics(final long count, final long min, final long max, final long sum) {
         super(count, min, max, sum);
     }
 
     @Override
-    public void accept(long value) {
+    public void accept(final long value) {
         super.accept(value);
-        var squareValue = value * value;
+        final var squareValue = value * value;
         sumOfSquare += squareValue;
     }
 
-    public LongStatistics combine(LongStatistics other) {
+    public LongStatistics combine(final LongStatistics other) {
         super.combine(other);
         sumOfSquare = sumOfSquare + other.sumOfSquare;
         return this;
@@ -39,14 +39,14 @@ public final class LongStatistics extends LongSummaryStatistics
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var that = (LongStatistics) o;
+        final var that = (LongStatistics) o;
         return getCount() == that.getCount() &&
                 Double.compare(getAverage(), that.getAverage()) == 0 &&
                 sumOfSquare == that.sumOfSquare;

@@ -36,19 +36,19 @@ public interface IntCollection extends
     }
 
     @Override
-    default boolean containsAll(@NotNull Iterable<Integer> iterable) {
+    default boolean containsAll(@NotNull final Iterable<Integer> iterable) {
         return IntSequence.of(iterable).all(this::contains);
     }
 
     @Override
-    default boolean containsAll(int @NotNull ... array) {
+    default boolean containsAll(final int @NotNull ... array) {
         return IntSequence.of(array).all(this::contains);
     }
 
     boolean contains(int i);
 
-    default IntList filter(IntPredicate predicate) {
-        var ints = IntMutableList.withInitCapacity(size());
+    default IntList filter(final IntPredicate predicate) {
+        final var ints = IntMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             final var value = iterator.nextInt();
@@ -59,8 +59,8 @@ public interface IntCollection extends
         return IntList.copyOf(ints);
     }
 
-    default IntList map(IntUnaryOperator mapper) {
-        var list = IntMutableList.withInitCapacity(size());
+    default IntList map(final IntUnaryOperator mapper) {
+        final var list = IntMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             list.add(mapper.applyAsInt(iterator.nextInt()));
@@ -68,8 +68,8 @@ public interface IntCollection extends
         return IntList.copyOf(list);
     }
 
-    default LongList mapToLong(IntToLongFunction mapper) {
-        var longs = LongMutableList.withInitCapacity(size());
+    default LongList mapToLong(final IntToLongFunction mapper) {
+        final var longs = LongMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextInt()));
@@ -77,8 +77,8 @@ public interface IntCollection extends
         return LongList.copyOf(longs);
     }
 
-    default DoubleList mapToDouble(IntToDoubleFunction mapper) {
-        var doubles = DoubleMutableList.withInitCapacity(size());
+    default DoubleList mapToDouble(final IntToDoubleFunction mapper) {
+        final var doubles = DoubleMutableList.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextInt()));
@@ -86,8 +86,8 @@ public interface IntCollection extends
         return doubles;
     }
 
-    default <R> ListX<R> mapToObj(IntFunction<R> mapper) {
-        MutableListX<R> listX = MutableListX.withInitCapacity(size());
+    default <R> ListX<R> mapToObj(final IntFunction<R> mapper) {
+        final MutableListX<R> listX = MutableListX.withInitCapacity(size());
         final var iterator = iterator();
         while (iterator.hasNext()) {
             listX.add(mapper.apply(iterator.nextInt()));
@@ -96,15 +96,15 @@ public interface IntCollection extends
     }
 
     @Override
-    default IntList plus(@NotNull Iterable<Integer> values) {
-        var list = toMutableList();
+    default IntList plus(@NotNull final Iterable<Integer> values) {
+        final var list = toMutableList();
         list.addAll(values);
         return IntList.copyOf(list);
     }
 
     @Override
-    default IntList plus(int @NotNull ... array) {
-        var list = toMutableList();
+    default IntList plus(final int @NotNull ... array) {
+        final var list = toMutableList();
         list.addAll(array);
         return IntList.copyOf(list);
     }
@@ -119,11 +119,11 @@ public interface IntCollection extends
     }
 
     @Override
-    default IntList take(long n) {
+    default IntList take(final long n) {
         return IntList.copyOf(takeTo(() -> IntMutableList.withInitCapacity((int) n), n));
     }
 
-    default IntList skip(long n) {
+    default IntList skip(final long n) {
         PreConditions.require(n <= Integer.MAX_VALUE);
         return IntList.copyOf(skipTo(() -> IntMutableList.withInitCapacity((int) (size() - n)), (int) n));
     }

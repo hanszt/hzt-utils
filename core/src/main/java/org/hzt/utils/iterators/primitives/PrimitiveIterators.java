@@ -47,7 +47,7 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfInt intArrayIterator(int @NotNull ... array) {
+    public static PrimitiveIterator.OfInt intArrayIterator(final int @NotNull ... array) {
         return new PrimitiveIterator.OfInt() {
             int index = 0;
 
@@ -58,7 +58,7 @@ public final class PrimitiveIterators {
 
             @Override
             public int nextInt() {
-                var prevIndex = index;
+                final var prevIndex = index;
                 if (prevIndex < 0 || prevIndex >= array.length) {
                     throw new NoSuchElementException(getMessage(index));
                 }
@@ -68,8 +68,8 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static <T> PrimitiveIterator.OfInt intIteratorOf(@NotNull Iterator<T> iterator,
-                                                            @NotNull ToIntFunction<? super T> mapper) {
+    public static <T> PrimitiveIterator.OfInt intIteratorOf(@NotNull final Iterator<T> iterator,
+                                                            @NotNull final ToIntFunction<? super T> mapper) {
         return new PrimitiveIterator.OfInt() {
             @Override
             public int nextInt() {
@@ -86,27 +86,27 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static <T> PrimitiveIterator.OfInt toIntFlatMappingIterator(@NotNull Iterator<T> iterator,
-                                                                       @NotNull Function<? super T,
+    public static <T> PrimitiveIterator.OfInt toIntFlatMappingIterator(@NotNull final Iterator<T> iterator,
+                                                                       @NotNull final Function<? super T,
                                                                                ? extends PrimitiveIterator.OfInt> mapper) {
         return new ToIntFlatMappingIterator<>(iterator, mapper);
     }
 
-    public static <T> PrimitiveIterator.OfLong toLongFlatMappingIterator(@NotNull Iterator<T> iterator,
-                                                                         @NotNull Function<? super T,
+    public static <T> PrimitiveIterator.OfLong toLongFlatMappingIterator(@NotNull final Iterator<T> iterator,
+                                                                         @NotNull final Function<? super T,
                                                                                  ? extends PrimitiveIterator.OfLong> mapper) {
         return new ToLongFlatMappingIterator<>(iterator, mapper);
     }
 
-    public static <T> PrimitiveIterator.OfDouble toDoubleFlatMappingIterator(@NotNull Iterator<T> iterator,
-                                                                             @NotNull Function<? super T,
+    public static <T> PrimitiveIterator.OfDouble toDoubleFlatMappingIterator(@NotNull final Iterator<T> iterator,
+                                                                             @NotNull final Function<? super T,
                                                                                      ? extends PrimitiveIterator.OfDouble> mapper) {
         return new ToDoubleFlatMappingIterator<>(iterator, mapper);
     }
 
     @NotNull
-    public static PrimitiveIterator.OfInt intTransformingIterator(@NotNull PrimitiveIterator.OfInt iterator,
-                                                                  @NotNull IntUnaryOperator mapper) {
+    public static PrimitiveIterator.OfInt intTransformingIterator(@NotNull final PrimitiveIterator.OfInt iterator,
+                                                                  @NotNull final IntUnaryOperator mapper) {
         return new PrimitiveIterator.OfInt() {
             @Override
             public int nextInt() {
@@ -121,7 +121,7 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfInt intIndexedTransformingIterator(PrimitiveIterator.OfInt iterator, IntBinaryOperator mapper) {
+    public static PrimitiveIterator.OfInt intIndexedTransformingIterator(final PrimitiveIterator.OfInt iterator, final IntBinaryOperator mapper) {
         return new PrimitiveIterator.OfInt() {
 
             int index = 0;
@@ -142,8 +142,8 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfLong intToLongIterator(@NotNull PrimitiveIterator.OfInt iterator,
-                                                             @NotNull IntToLongFunction mapper) {
+    public static PrimitiveIterator.OfLong intToLongIterator(@NotNull final PrimitiveIterator.OfInt iterator,
+                                                             @NotNull final IntToLongFunction mapper) {
         return new PrimitiveIterator.OfLong() {
             @Override
             public long nextLong() {
@@ -158,8 +158,8 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfDouble intToDoubleIterator(@NotNull PrimitiveIterator.OfInt iterator,
-                                                                 @NotNull IntToDoubleFunction mapper) {
+    public static PrimitiveIterator.OfDouble intToDoubleIterator(@NotNull final PrimitiveIterator.OfInt iterator,
+                                                                 @NotNull final IntToDoubleFunction mapper) {
         return new PrimitiveIterator.OfDouble() {
             @Override
             public double nextDouble() {
@@ -173,8 +173,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static <R> Iterator<R> intToObjIterator(@NotNull PrimitiveIterator.OfInt iterator,
-                                                   @NotNull IntFunction<? extends R> mapper) {
+    public static <R> Iterator<R> intToObjIterator(@NotNull final PrimitiveIterator.OfInt iterator,
+                                                   @NotNull final IntFunction<? extends R> mapper) {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -190,7 +190,7 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfLong longArrayIterator(long @NotNull ... array) {
+    public static PrimitiveIterator.OfLong longArrayIterator(final long @NotNull ... array) {
         return new PrimitiveIterator.OfLong() {
             int index = 0;
 
@@ -201,7 +201,7 @@ public final class PrimitiveIterators {
 
             @Override
             public long nextLong() {
-                var prevIndex = index;
+                final var prevIndex = index;
                 if (prevIndex < 0 || prevIndex >= array.length) {
                     throw new NoSuchElementException(getMessage(index));
                 }
@@ -211,7 +211,7 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static <T> PrimitiveIterator.OfLong longIteratorOf(Iterator<T> iterator, ToLongFunction<? super T> mapper) {
+    public static <T> PrimitiveIterator.OfLong longIteratorOf(final Iterator<T> iterator, final ToLongFunction<? super T> mapper) {
         return new PrimitiveIterator.OfLong() {
             @Override
             public long nextLong() {
@@ -229,7 +229,7 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfLong longTransformingIterator(PrimitiveIterator.OfLong iterator, LongUnaryOperator mapper) {
+    public static PrimitiveIterator.OfLong longTransformingIterator(final PrimitiveIterator.OfLong iterator, final LongUnaryOperator mapper) {
         return new PrimitiveIterator.OfLong() {
             @Override
             public long nextLong() {
@@ -244,7 +244,7 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfLong longIndexedTransformingIterator(PrimitiveIterator.OfLong iterator, LongIndexedFunction mapper) {
+    public static PrimitiveIterator.OfLong longIndexedTransformingIterator(final PrimitiveIterator.OfLong iterator, final LongIndexedFunction mapper) {
         return new PrimitiveIterator.OfLong() {
 
             int index = 0;
@@ -265,8 +265,8 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfInt longToIntIterator(@NotNull PrimitiveIterator.OfLong iterator,
-                                                            @NotNull LongToIntFunction mapper) {
+    public static PrimitiveIterator.OfInt longToIntIterator(@NotNull final PrimitiveIterator.OfLong iterator,
+                                                            @NotNull final LongToIntFunction mapper) {
         return new PrimitiveIterator.OfInt() {
             @Override
             public int nextInt() {
@@ -281,8 +281,8 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfDouble longToDoubleIterator(@NotNull PrimitiveIterator.OfLong iterator,
-                                                                  @NotNull LongToDoubleFunction mapper) {
+    public static PrimitiveIterator.OfDouble longToDoubleIterator(@NotNull final PrimitiveIterator.OfLong iterator,
+                                                                  @NotNull final LongToDoubleFunction mapper) {
         return new PrimitiveIterator.OfDouble() {
             @Override
             public double nextDouble() {
@@ -296,8 +296,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static <R> Iterator<R> longToObjIterator(@NotNull PrimitiveIterator.OfLong iterator,
-                                                    @NotNull LongFunction<? extends R> mapper) {
+    public static <R> Iterator<R> longToObjIterator(@NotNull final PrimitiveIterator.OfLong iterator,
+                                                    @NotNull final LongFunction<? extends R> mapper) {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -313,7 +313,7 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfDouble doubleArrayIterator(double @NotNull ... array) {
+    public static PrimitiveIterator.OfDouble doubleArrayIterator(final double @NotNull ... array) {
         return new PrimitiveIterator.OfDouble() {
             int index = 0;
 
@@ -324,7 +324,7 @@ public final class PrimitiveIterators {
 
             @Override
             public double nextDouble() {
-                var prevIndex = index;
+                final var prevIndex = index;
                 if (prevIndex < 0 || prevIndex >= array.length) {
                     throw new NoSuchElementException(getMessage(index));
                 }
@@ -334,8 +334,8 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static <T> PrimitiveIterator.OfDouble doubleIteratorOf(@NotNull Iterator<T> iterator,
-                                                                  @NotNull ToDoubleFunction<? super T> mapper) {
+    public static <T> PrimitiveIterator.OfDouble doubleIteratorOf(@NotNull final Iterator<T> iterator,
+                                                                  @NotNull final ToDoubleFunction<? super T> mapper) {
         return new PrimitiveIterator.OfDouble() {
             @Override
             public double nextDouble() {
@@ -358,8 +358,8 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfDouble doubleTransformingIterator(@NotNull PrimitiveIterator.OfDouble iterator,
-                                                                        @NotNull DoubleUnaryOperator mapper) {
+    public static PrimitiveIterator.OfDouble doubleTransformingIterator(@NotNull final PrimitiveIterator.OfDouble iterator,
+                                                                        @NotNull final DoubleUnaryOperator mapper) {
         return new PrimitiveIterator.OfDouble() {
             @Override
             public double nextDouble() {
@@ -374,8 +374,8 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfDouble doubleIndexedTransformingIterator(@NotNull PrimitiveIterator.OfDouble iterator,
-                                                                               @NotNull DoubleIndexedFunction mapper) {
+    public static PrimitiveIterator.OfDouble doubleIndexedTransformingIterator(@NotNull final PrimitiveIterator.OfDouble iterator,
+                                                                               @NotNull final DoubleIndexedFunction mapper) {
         return new PrimitiveIterator.OfDouble() {
 
             int index = 0;
@@ -395,8 +395,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static PrimitiveIterator.OfInt doubleToIntIterator(@NotNull PrimitiveIterator.OfDouble doubleIterator,
-                                                              @NotNull DoubleToIntFunction mapper) {
+    public static PrimitiveIterator.OfInt doubleToIntIterator(@NotNull final PrimitiveIterator.OfDouble doubleIterator,
+                                                              @NotNull final DoubleToIntFunction mapper) {
         return new PrimitiveIterator.OfInt() {
             @Override
             public int nextInt() {
@@ -410,8 +410,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static PrimitiveIterator.OfLong doubleToLongIterator(@NotNull PrimitiveIterator.OfDouble doubleIterator,
-                                                                @NotNull DoubleToLongFunction mapper) {
+    public static PrimitiveIterator.OfLong doubleToLongIterator(@NotNull final PrimitiveIterator.OfDouble doubleIterator,
+                                                                @NotNull final DoubleToLongFunction mapper) {
         return new PrimitiveIterator.OfLong() {
             @Override
             public long nextLong() {
@@ -425,8 +425,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static <R> Iterator<R> doubleToObjIterator(@NotNull PrimitiveIterator.OfDouble iterator,
-                                                      @NotNull DoubleFunction<? extends R> mapper) {
+    public static <R> Iterator<R> doubleToObjIterator(@NotNull final PrimitiveIterator.OfDouble iterator,
+                                                      @NotNull final DoubleFunction<? extends R> mapper) {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -442,9 +442,9 @@ public final class PrimitiveIterators {
     }
 
     public static PrimitiveIterator.OfInt mergingIterator(
-            @NotNull PrimitiveIterator.OfInt iterator,
-            @NotNull PrimitiveIterator.OfInt otherIterator,
-            @NotNull IntBinaryOperator merger) {
+            @NotNull final PrimitiveIterator.OfInt iterator,
+            @NotNull final PrimitiveIterator.OfInt otherIterator,
+            @NotNull final IntBinaryOperator merger) {
         return new PrimitiveIterator.OfInt() {
             @Override
             public boolean hasNext() {
@@ -459,9 +459,9 @@ public final class PrimitiveIterators {
     }
 
     public static PrimitiveIterator.OfLong mergingIterator(
-            @NotNull PrimitiveIterator.OfLong iterator,
-            @NotNull PrimitiveIterator.OfLong otherIterator,
-            @NotNull LongBinaryOperator merger) {
+            @NotNull final PrimitiveIterator.OfLong iterator,
+            @NotNull final PrimitiveIterator.OfLong otherIterator,
+            @NotNull final LongBinaryOperator merger) {
         return new PrimitiveIterator.OfLong() {
             @Override
             public boolean hasNext() {
@@ -476,9 +476,9 @@ public final class PrimitiveIterators {
     }
 
     public static PrimitiveIterator.OfDouble mergingIterator(
-            @NotNull PrimitiveIterator.OfDouble iterator,
-            @NotNull PrimitiveIterator.OfDouble otherIterator,
-            @NotNull DoubleBinaryOperator merger) {
+            @NotNull final PrimitiveIterator.OfDouble iterator,
+            @NotNull final PrimitiveIterator.OfDouble otherIterator,
+            @NotNull final DoubleBinaryOperator merger) {
         return new PrimitiveIterator.OfDouble() {
             @Override
             public boolean hasNext() {
@@ -535,17 +535,17 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfInt distinctIterator(@NotNull PrimitiveIterator.OfInt iterator) {
+    public static PrimitiveIterator.OfInt distinctIterator(@NotNull final PrimitiveIterator.OfInt iterator) {
         final var observed = IntMutableSet.empty();
         final PrimitiveAtomicIterator.OfInt iteratorX = action -> nextDistinctInt(iterator, observed, action);
         return iteratorX.asIterator();
     }
 
-    private static boolean nextDistinctInt(@NotNull PrimitiveIterator.OfInt iterator,
-                                           @NotNull IntMutableCollection observed,
-                                           @NotNull IntConsumer action) {
+    private static boolean nextDistinctInt(@NotNull final PrimitiveIterator.OfInt iterator,
+                                           @NotNull final IntMutableCollection observed,
+                                           @NotNull final IntConsumer action) {
         while (iterator.hasNext()) {
-            var next = iterator.nextInt();
+            final var next = iterator.nextInt();
             if (observed.add(next)) {
                 action.accept(next);
                 return true;
@@ -555,17 +555,17 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfLong distinctIterator(@NotNull PrimitiveIterator.OfLong iterator) {
+    public static PrimitiveIterator.OfLong distinctIterator(@NotNull final PrimitiveIterator.OfLong iterator) {
         final var observed = LongMutableSet.empty();
         final PrimitiveAtomicIterator.OfLong iteratorX = action -> nextDistinctLong(iterator, observed, action);
         return iteratorX.asIterator();
     }
 
-    private static boolean nextDistinctLong(@NotNull PrimitiveIterator.OfLong iterator,
-                                            @NotNull LongMutableSet observed,
-                                            @NotNull LongConsumer action) {
+    private static boolean nextDistinctLong(@NotNull final PrimitiveIterator.OfLong iterator,
+                                            @NotNull final LongMutableSet observed,
+                                            @NotNull final LongConsumer action) {
         while (iterator.hasNext()) {
-            var next = iterator.nextLong();
+            final var next = iterator.nextLong();
             if (observed.add(next)) {
                 action.accept(next);
                 return true;
@@ -575,17 +575,17 @@ public final class PrimitiveIterators {
     }
 
     @NotNull
-    public static PrimitiveIterator.OfDouble distinctIterator(@NotNull PrimitiveIterator.OfDouble iterator) {
+    public static PrimitiveIterator.OfDouble distinctIterator(@NotNull final PrimitiveIterator.OfDouble iterator) {
         final var observed = DoubleMutableSet.empty();
         final PrimitiveAtomicIterator.OfDouble iteratorX = action -> nextDistinctDouble(iterator, observed, action);
         return iteratorX.asIterator();
     }
 
-    private static boolean nextDistinctDouble(@NotNull PrimitiveIterator.OfDouble iterator,
-                                              @NotNull DoubleMutableSet observed,
-                                              @NotNull DoubleConsumer action) {
+    private static boolean nextDistinctDouble(@NotNull final PrimitiveIterator.OfDouble iterator,
+                                              @NotNull final DoubleMutableSet observed,
+                                              @NotNull final DoubleConsumer action) {
         while (iterator.hasNext()) {
-            var next = iterator.nextDouble();
+            final var next = iterator.nextDouble();
             if (observed.add(next)) {
                 action.accept(next);
                 return true;
@@ -594,27 +594,27 @@ public final class PrimitiveIterators {
         return false;
     }
 
-    public static PrimitiveIterator.OfInt intScanningIterator(PrimitiveIterator.OfInt iterator,
-                                                int initial, IntBinaryOperator operation) {
+    public static PrimitiveIterator.OfInt intScanningIterator(final PrimitiveIterator.OfInt iterator,
+                                                              final int initial, final IntBinaryOperator operation) {
         return new IntScanningIterator(iterator, initial, operation);
     }
 
-    public static PrimitiveIterator.OfLong longScanningIterator(PrimitiveIterator.OfLong iterator,
-                                                long initial, LongBinaryOperator operation) {
+    public static PrimitiveIterator.OfLong longScanningIterator(final PrimitiveIterator.OfLong iterator,
+                                                                final long initial, final LongBinaryOperator operation) {
         return new LongScanningIterator(iterator, initial, operation);
     }
 
-    public static PrimitiveIterator.OfDouble doubleScanningIterator(PrimitiveIterator.OfDouble iterator,
-                                                double initial, DoubleBinaryOperator operation) {
+    public static PrimitiveIterator.OfDouble doubleScanningIterator(final PrimitiveIterator.OfDouble iterator,
+                                                                    final double initial, final DoubleBinaryOperator operation) {
         return new DoubleScanningIterator(iterator, initial, operation);
     }
 
     @NotNull
-    private static String getMessage(int index) {
+    private static String getMessage(final int index) {
         return "index out of bounds. (Index value: " + index + ")";
     }
 
-    public static PrimitiveIterator.OfInt reverseIterator(IntList doubleList) {
+    public static PrimitiveIterator.OfInt reverseIterator(final IntList doubleList) {
         final var listIterator = doubleList.listIterator(doubleList.size());
         return new PrimitiveIterator.OfInt() {
             @Override
@@ -629,7 +629,7 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static PrimitiveIterator.OfLong reverseIterator(LongList doubleList) {
+    public static PrimitiveIterator.OfLong reverseIterator(final LongList doubleList) {
         final var listIterator = doubleList.listIterator(doubleList.size());
         return new PrimitiveIterator.OfLong() {
 
@@ -645,7 +645,7 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static PrimitiveIterator.OfDouble reverseIterator(DoubleList doubleList) {
+    public static PrimitiveIterator.OfDouble reverseIterator(final DoubleList doubleList) {
         final var listIterator = doubleList.listIterator(doubleList.size());
         return new PrimitiveIterator.OfDouble() {
 

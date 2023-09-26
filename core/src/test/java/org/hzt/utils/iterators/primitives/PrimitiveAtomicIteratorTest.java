@@ -14,7 +14,7 @@ class PrimitiveAtomicIteratorTest {
 
     @Test
     void testForEachRemaining() {
-        var listX = IntMutableList.empty();
+        final var listX = IntMutableList.empty();
 
         IntList.of(1, 3, 5, 7, 8, 9).atomicIterator().forEachRemaining((IntConsumer) listX::add);
 
@@ -30,7 +30,7 @@ class PrimitiveAtomicIteratorTest {
     /**
      * @see java.util.Spliterator.OfInt#tryAdvance(Consumer)
      */
-    private static boolean isIntConsumer(Consumer<? super Integer> consumer) {
+    private static boolean isIntConsumer(final Consumer<? super Integer> consumer) {
         return consumer instanceof IntConsumer;
     }
 
@@ -38,12 +38,12 @@ class PrimitiveAtomicIteratorTest {
 
         private int value = 0;
         @Override
-        public void accept(Integer integer) {
+        public void accept(final Integer integer) {
             value = integer;
         }
 
         @Override
-        public void accept(int value) {
+        public void accept(final int value) {
             this.value = value;
         }
 

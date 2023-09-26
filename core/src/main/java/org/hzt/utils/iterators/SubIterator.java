@@ -11,7 +11,7 @@ final class SubIterator<T> implements Iterator<T> {
 
     private long position;
 
-    SubIterator(Iterator<T> iterator, long startIndex, long endIndex) {
+    SubIterator(final Iterator<T> iterator, final long startIndex, final long endIndex) {
         this.iterator = iterator;
         this.startIndex = startIndex;
         this.endIndex = endIndex;

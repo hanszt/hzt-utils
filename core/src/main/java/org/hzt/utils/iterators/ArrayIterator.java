@@ -11,7 +11,7 @@ final class ArrayIterator<E> implements Iterator<E> {
     private final boolean reverse;
     private int index;
 
-    ArrayIterator(E[] array, boolean reverse) {
+    ArrayIterator(final E[] array, final boolean reverse) {
         this.array = Arrays.copyOf(array, array.length);
         this.reverse = reverse;
         this.index = reverse ? (array.length - 1) : 0;

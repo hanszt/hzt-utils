@@ -14,13 +14,13 @@ public final class DoubleFilteringIterator implements PrimitiveIterator.OfDouble
     private State nextState = State.NEXT_UNKNOWN;
     private double nextDouble = 0.0;
 
-    private DoubleFilteringIterator(OfDouble iterator, DoublePredicate predicate, boolean sendWhen) {
+    private DoubleFilteringIterator(final OfDouble iterator, final DoublePredicate predicate, final boolean sendWhen) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.sendWhen = sendWhen;
     }
 
-    public static DoubleFilteringIterator of(OfDouble iterator, DoublePredicate predicate, boolean sendWhen) {
+    public static DoubleFilteringIterator of(final OfDouble iterator, final DoublePredicate predicate, final boolean sendWhen) {
         return new DoubleFilteringIterator(iterator, predicate, sendWhen);
     }
 
@@ -48,7 +48,7 @@ public final class DoubleFilteringIterator implements PrimitiveIterator.OfDouble
 
     private void calculateNext() {
         while (iterator.hasNext()) {
-            var next = iterator.nextDouble();
+            final var next = iterator.nextDouble();
             if (predicate.test(next) == sendWhen) {
                 this.nextDouble = next;
                 nextState = State.CONTINUE;

@@ -23,7 +23,7 @@ public interface IntGroupable extends PrimitiveGroupable<Integer, IntMutableList
         return map;
     }
 
-    default <K> MapX<K, IntMutableList> groupBy(@NotNull IntFunction<? extends K> classifier) {
+    default <K> MapX<K, IntMutableList> groupBy(@NotNull final IntFunction<? extends K> classifier) {
         final var iterator = iterator();
         final MutableMapX<K, IntMutableList> map = MutableMapX.empty();
         while (iterator.hasNext()) {
@@ -34,7 +34,7 @@ public interface IntGroupable extends PrimitiveGroupable<Integer, IntMutableList
     }
 
     @Override
-    default Pair<IntMutableList, IntMutableList> partition(@NotNull IntPredicate predicate) {
+    default Pair<IntMutableList, IntMutableList> partition(@NotNull final IntPredicate predicate) {
         final var matchingList = IntMutableList.empty();
         final var nonMatchingList = IntMutableList.empty();
         final var iterator = iterator();

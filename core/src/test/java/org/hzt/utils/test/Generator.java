@@ -1,10 +1,10 @@
 package org.hzt.utils.test;
 
-import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.test.model.PaintingAuction;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
+import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.test.model.PaintingAuction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -48,31 +48,31 @@ public final class Generator {
         return new PaintingAuction("Van Gogh Auction", LocalDate.of(1992, Month.APRIL, 2), vanGoghPaintings);
     }
 
-    public static String printAndReturnAsString(int integer) {
+    public static String printAndReturnAsString(final int integer) {
         final var s = "val " + integer;
         println(s);
         return s;
     }
 
-    public static long fib(long n) {
+    public static long fib(final long n) {
         long first = 0;
         long next = 1;
         if (n == 0) {
             return first;
         }
         for (var i = 2; i <= n; i++) {
-            var temp = first + next;
+            final var temp = first + next;
             first = next;
             next = temp;
         }
         return next;
     }
 
-    public static long fibSum(int n) {
+    public static long fibSum(final int n) {
         if (n <= 0) {
             return 0;
         }
-        var fib = new long[n + 1];
+        final var fib = new long[n + 1];
         fib[0] = 0;
         fib[1] = 1;
 
@@ -87,7 +87,7 @@ public final class Generator {
         return sum;
     }
 
-    public static BigDecimal fibSumBd(int n) {
+    public static BigDecimal fibSumBd(final int n) {
         if (n <= 0) {
             return BigDecimal.ZERO;
         }
@@ -99,7 +99,7 @@ public final class Generator {
 
         // Add remaining terms
         for (var i = 2; i <= n; i++) {
-            var next = last.add(forLast);
+            final var next = last.add(forLast);
             sum = sum.add(next);
             forLast = last;
             last = next;

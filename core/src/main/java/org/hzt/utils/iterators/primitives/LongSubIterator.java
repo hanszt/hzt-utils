@@ -11,13 +11,13 @@ public final class LongSubIterator implements PrimitiveIterator.OfLong {
 
     private int position;
 
-    private LongSubIterator(PrimitiveIterator.OfLong iterator, long startIndex, long endIndex) {
+    private LongSubIterator(final PrimitiveIterator.OfLong iterator, final long startIndex, final long endIndex) {
         this.iterator = iterator;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
     }
 
-    public static LongSubIterator of(PrimitiveIterator.OfLong iterator, long startIndex, long endIndex) {
+    public static LongSubIterator of(final PrimitiveIterator.OfLong iterator, final long startIndex, final long endIndex) {
         return new LongSubIterator(iterator, startIndex, endIndex);
     }
 

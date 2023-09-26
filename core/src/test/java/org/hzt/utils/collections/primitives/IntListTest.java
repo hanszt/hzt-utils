@@ -66,7 +66,7 @@ class IntListTest {
     void testBinarySearch() {
         final var sortedList = IntList.of(-1, 0, 1, 2, 3, 4, 5);
 
-        var valueToSearchFor = 2;
+        final var valueToSearchFor = 2;
 
         final var indexInSortedList = sortedList.binarySearch(valueToSearchFor);
 
@@ -86,17 +86,17 @@ class IntListTest {
     void testIndices() {
         System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
         final var intList = IntList.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
-        var indices1 = new int[intList.size()];
+        final var indices1 = new int[intList.size()];
         final var indices = intList.indices();
         for (final var iterator = indices.iterator(); iterator.hasNext(); ) {
-            var i = iterator.nextInt();
+            final var i = iterator.nextInt();
             indices1[i] = i;
         }
-        var indices2 = new int[intList.size()];
+        final var indices2 = new int[intList.size()];
         for (var i = 0; i < intList.size(); i++) {
             indices2[i] = i;
         }
-        var indices3 = intList.indicesAsStream().toArray();
+        final var indices3 = intList.indicesAsStream().toArray();
 
         assertAll(
                 () -> assertArrayEquals(indices1, indices2),
@@ -108,8 +108,8 @@ class IntListTest {
 
     @Test
     void testMutableListAndImmutableListWithSameElementsAreEqualAccordingToEqualsMethod() {
-        var list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
-        IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
+        final var list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
+        final IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
 
         assertAll(
                 () -> assertEquals(list2, list1),
@@ -119,8 +119,8 @@ class IntListTest {
 
     @Test
     void testMutableListAndImmutableListWithSameElementsHaveSameHashCode() {
-        var list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
-        IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
+        final var list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
+        final IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
 
         assertEquals(list2.hashCode(), list1.hashCode());
     }

@@ -14,13 +14,13 @@ public final class IntFilteringIterator implements PrimitiveIterator.OfInt {
     private State nextState = State.NEXT_UNKNOWN;
     private int nextInt = 0;
 
-    private IntFilteringIterator(OfInt iterator, IntPredicate predicate, boolean sendWhen) {
+    private IntFilteringIterator(final OfInt iterator, final IntPredicate predicate, final boolean sendWhen) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.sendWhen = sendWhen;
     }
 
-    public static IntFilteringIterator of(OfInt iterator, IntPredicate predicate, boolean sendWhen) {
+    public static IntFilteringIterator of(final OfInt iterator, final IntPredicate predicate, final boolean sendWhen) {
         return new IntFilteringIterator(iterator, predicate, sendWhen);
     }
 
@@ -48,7 +48,7 @@ public final class IntFilteringIterator implements PrimitiveIterator.OfInt {
 
     private void calculateNext() {
         while (iterator.hasNext()) {
-            var next = iterator.nextInt();
+            final var next = iterator.nextInt();
             if (predicate.test(next) == sendWhen) {
                 this.nextInt = next;
                 nextState = State.CONTINUE;

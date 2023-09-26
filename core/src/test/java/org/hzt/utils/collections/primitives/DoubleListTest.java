@@ -9,7 +9,10 @@ import java.util.Arrays;
 
 import static java.util.function.Predicate.not;
 import static org.hzt.utils.Patterns.commaPattern;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DoubleListTest {
 
@@ -39,7 +42,7 @@ class DoubleListTest {
             "100.4",
             "1,1,1,1,1,1,1.1,2"
     })
-    void testIsSorted(String string) {
+    void testIsSorted(final String string) {
         final var doubles = toDoubleArrayByCommaPattern(string);
 
         System.out.println(Arrays.toString(doubles));
@@ -55,7 +58,7 @@ class DoubleListTest {
             "100, 2.71",
             "2e10,1,1,1,1,1,1.1,2"
     })
-    void testIsNotSorted(String string) {
+    void testIsNotSorted(final String string) {
         final var doubles = toDoubleArrayByCommaPattern(string);
 
         System.out.println(Arrays.toString(doubles));
@@ -65,7 +68,7 @@ class DoubleListTest {
         assertFalse(isSorted);
     }
 
-    private double[] toDoubleArrayByCommaPattern(String string) {
+    private double[] toDoubleArrayByCommaPattern(final String string) {
         return commaPattern.splitAsStream(string)
                 .filter(not(String::isEmpty))
                 .map(String::strip)

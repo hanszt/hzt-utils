@@ -23,7 +23,7 @@ public final class Patterns {
     private Patterns() {
     }
 
-    public static Sequence<String> splitToSequence(Pattern pattern, CharSequence charSequence) {
+    public static Sequence<String> splitToSequence(final Pattern pattern, final CharSequence charSequence) {
         return Sequence.of(pattern.splitAsStream(charSequence)::iterator);
     }
 }

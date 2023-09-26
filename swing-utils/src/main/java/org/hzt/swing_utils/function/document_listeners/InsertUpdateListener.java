@@ -7,10 +7,10 @@ import javax.swing.event.DocumentListener;
 public interface InsertUpdateListener extends DocumentListener {
 
     @Override
-    default void removeUpdate(DocumentEvent ev) {
+    default void removeUpdate(final DocumentEvent ev) {
     }
 
     @Override
-    default void changedUpdate(DocumentEvent ev) {
+    default void changedUpdate(final DocumentEvent ev) {
     }
 }

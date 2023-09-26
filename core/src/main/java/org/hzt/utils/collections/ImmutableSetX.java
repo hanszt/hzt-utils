@@ -15,21 +15,21 @@ final class ImmutableSetX<T> implements SetX<T> {
     private final Set<T> immutableSet;
 
     @SafeVarargs
-    ImmutableSetX(T... values) {
+    ImmutableSetX(final T... values) {
         this.immutableSet = Set.of(values);
     }
 
-    ImmutableSetX(Iterable<T> iterable) {
+    ImmutableSetX(final Iterable<T> iterable) {
         immutableSet = StreamSupport.stream(iterable.spliterator(), false)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableSet());
     }
 
-    ImmutableSetX(Collection<T> collection) {
+    ImmutableSetX(final Collection<T> collection) {
         immutableSet = Set.copyOf(collection);
     }
 
-    ImmutableSetX(Set<T> set) {
+    ImmutableSetX(final Set<T> set) {
         immutableSet = Collections.unmodifiableSet(set);
     }
 
@@ -50,7 +50,7 @@ final class ImmutableSetX<T> implements SetX<T> {
 
     @SuppressWarnings("SuspiciousMethodCalls")
     @Override
-    public boolean contains(Object value) {
+    public boolean contains(final Object value) {
         return immutableSet.contains(value);
     }
 
@@ -61,14 +61,14 @@ final class ImmutableSetX<T> implements SetX<T> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var that = (ImmutableSetX<?>) o;
+        final var that = (ImmutableSetX<?>) o;
         return Objects.equals(immutableSet, that.immutableSet);
     }
 

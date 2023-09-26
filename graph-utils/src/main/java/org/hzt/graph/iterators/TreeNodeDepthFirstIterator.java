@@ -17,7 +17,7 @@ final class TreeNodeDepthFirstIterator<T, S extends TreeNode<T, S>> implements I
     private final Deque<Iterator<S>> stack = new ArrayDeque<>();
     private S next;
 
-    TreeNodeDepthFirstIterator(S source) {
+    TreeNodeDepthFirstIterator(final S source) {
         stack.push(source.childrenIterator());
         next = source;
     }

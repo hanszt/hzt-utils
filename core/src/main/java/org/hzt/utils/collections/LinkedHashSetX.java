@@ -17,37 +17,37 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
         this.set = new LinkedHashSet<>();
     }
 
-    LinkedHashSetX(int n) {
+    LinkedHashSetX(final int n) {
         this.set = new LinkedHashSet<>(n);
     }
 
-    LinkedHashSetX(Collection<E> collection) {
+    LinkedHashSetX(final Collection<E> collection) {
         this.set = new LinkedHashSet<>(collection);
     }
 
-    LinkedHashSetX(Iterable<E> iterable) {
+    LinkedHashSetX(final Iterable<E> iterable) {
         set = new LinkedHashSet<>();
-        for (var e : iterable) {
+        for (final var e : iterable) {
             set.add(e);
         }
     }
 
     @SafeVarargs
-    LinkedHashSetX(E first, E @NotNull ... others) {
+    LinkedHashSetX(final E first, final E @NotNull ... others) {
         set = new LinkedHashSet<>();
         set.add(first);
         Collections.addAll(set, others);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        var that = (LinkedHashSetX<?>) o;
+        final var that = (LinkedHashSetX<?>) o;
         return set.equals(that.set);
     }
 
@@ -67,7 +67,7 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
     }
 
     @Override
-    public boolean contains(Object value) {
+    public boolean contains(final Object value) {
         return set.contains(value);
     }
 
@@ -85,38 +85,38 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
 
     @NotNull
     @Override
-    public <T> T @NotNull [] toArray(@NotNull T @NotNull [] a) {
+    public <T> T @NotNull [] toArray(@NotNull final T @NotNull [] a) {
         //noinspection SuspiciousToArrayCall
         return set.toArray(a);
     }
 
     @Override
-    public boolean add(E e) {
+    public boolean add(final E e) {
         return set.add(e);
     }
 
     @Override
-    public boolean remove(Object o) {
+    public boolean remove(final Object o) {
         return set.remove(o);
     }
 
     @Override
-    public boolean containsAll(@NotNull Collection<?> c) {
+    public boolean containsAll(@NotNull final Collection<?> c) {
         return set.containsAll(c);
     }
 
     @Override
-    public boolean addAll(@NotNull Collection<? extends E> c) {
+    public boolean addAll(@NotNull final Collection<? extends E> c) {
         return set.addAll(c);
     }
 
     @Override
-    public boolean retainAll(@NotNull Collection<?> c) {
+    public boolean retainAll(@NotNull final Collection<?> c) {
         return set.retainAll(c);
     }
 
     @Override
-    public boolean removeAll(@NotNull Collection<?> c) {
+    public boolean removeAll(@NotNull final Collection<?> c) {
         return set.removeAll(c);
     }
 
@@ -131,7 +131,7 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
     }
 
     @Override
-    public boolean containsNot(E e) {
+    public boolean containsNot(final E e) {
         return !contains(e);
     }
 

@@ -5,7 +5,6 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
 
@@ -16,7 +15,7 @@ public interface IntMutableCollection extends IntCollection,
 
     @Override
     default boolean addAll(@NotNull Iterable<Integer> iterable) {
-        boolean allAdded = true;
+        var allAdded = true;
         if (iterable instanceof PrimitiveIterable.OfInt intIterable) {
             final var iterator = intIterable.iterator();
             while (iterator.hasNext()) {
@@ -38,7 +37,7 @@ public interface IntMutableCollection extends IntCollection,
     @Override
     default boolean addAll(int @NotNull ... array) {
         final var iterator = PrimitiveIterators.intArrayIterator(array);
-        boolean allAdded = true;
+        var allAdded = true;
         while (iterator.hasNext()) {
             if (!add(iterator.nextInt())) {
                 allAdded = false;
@@ -51,7 +50,7 @@ public interface IntMutableCollection extends IntCollection,
 
     @Override
     default boolean removeAll(@NotNull Iterable<Integer> iterable) {
-        boolean allRemoved = true;
+        var allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfInt intIterable) {
             final var iterator = intIterable.iterator();
             while (iterator.hasNext()) {
@@ -71,7 +70,7 @@ public interface IntMutableCollection extends IntCollection,
 
     @Override
     default boolean removeAll(int @NotNull ... array) {
-        boolean allRemoved = true;
+        var allRemoved = true;
         final var iterator = PrimitiveIterators.intArrayIterator(array);
         while (iterator.hasNext()) {
             final var removed = remove(iterator.nextInt());
@@ -84,10 +83,10 @@ public interface IntMutableCollection extends IntCollection,
 
     @Override
     default boolean removeIf(@NotNull IntPredicate predicate) {
-        boolean removed = false;
-        final PrimitiveIterator.OfInt iterator = iterator();
+        var removed = false;
+        final var iterator = iterator();
         while (iterator.hasNext()) {
-            final int value = iterator.nextInt();
+            final var value = iterator.nextInt();
             if (predicate.test(value)) {
                 removed = remove(value);
             }

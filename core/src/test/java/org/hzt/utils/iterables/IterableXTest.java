@@ -80,7 +80,7 @@ class IterableXTest {
 
     @Test
     void testFlatMapToSet() {
-        var museumList = MutableListX.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final var museumList = MutableListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final var expected = museumList.stream()
                 .map(Museum::getPaintings)
@@ -167,20 +167,20 @@ class IterableXTest {
 
     @Test
     void testSortedIfOfComparableType() {
-        var list = MutableListX.of(1, 3, 5, 4, 2, 7, 214, 5, 8, 3, 4, 123);
+        final var list = MutableListX.of(1, 3, 5, 4, 2, 7, 214, 5, 8, 3, 4, 123);
         final var sorted = list.sorted();
         assertIterableEquals(ListX.of(1, 2, 3, 3, 4, 4, 5, 5, 7, 8, 123, 214), sorted);
     }
 
     @Test
     void testSortedThrowsExceptionWhenNotOfComparableType() {
-        var bankAccountList = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final var bankAccountList = ListX.of(TestSampleGenerator.createSampleBankAccountList());
         assertThrows(IllegalStateException.class, bankAccountList::sorted);
     }
 
     @Test
     void testMaxOf() {
-        var bankAccountList = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final var bankAccountList = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         final var expected = bankAccountList.stream()
                 .max(Comparator.comparing(BankAccount::getBalance))
@@ -196,7 +196,7 @@ class IterableXTest {
 
     @Test
     void testMinOf() {
-        var list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final var list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         final var expected = list.stream()
                 .min(Comparator.comparing(BankAccount::getBalance))
@@ -212,7 +212,7 @@ class IterableXTest {
 
     @Test
     void testAuctionImplementingIterableX() {
-        var auctions = Generator.createAuctions();
+        final var auctions = Generator.createAuctions();
 
         final var auction = auctions.first();
 
@@ -228,7 +228,7 @@ class IterableXTest {
 
     @Test
     void testMinBy() {
-        Set<BankAccount> bankAccounts = new HashSet<>(TestSampleGenerator.createSampleBankAccountList());
+        final Set<BankAccount> bankAccounts = new HashSet<>(TestSampleGenerator.createSampleBankAccountList());
 
         final var expected = bankAccounts.stream().min(Comparator.comparing(BankAccount::getBalance));
 
@@ -239,7 +239,7 @@ class IterableXTest {
 
     @Test
     void testMaxBy() {
-        var set = ListX.of(new HashSet<>(TestSampleGenerator.createSampleBankAccountList()));
+        final var set = ListX.of(new HashSet<>(TestSampleGenerator.createSampleBankAccountList()));
 
         final var expected = set.stream().max(Comparator.comparing(BankAccount::getBalance));
 
@@ -364,7 +364,7 @@ class IterableXTest {
     void testMapToExistingCollection() {
         final var museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        Deque<LocalDate> deque = new ArrayDeque<>();
+        final Deque<LocalDate> deque = new ArrayDeque<>();
         deque.add(LocalDate.MAX);
 
         final var expectedLocalDates = museumList.stream()
@@ -383,7 +383,7 @@ class IterableXTest {
 
     @Test
     void testUnion() {
-        var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        final var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         final var union = list.union(List.of(2, 3, 4, 5, 7));
 
@@ -439,7 +439,7 @@ class IterableXTest {
     void testIntersectMuseumPaintings() {
         final var museums = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        var expected = museums.stream()
+        final var expected = museums.stream()
                 .map(Museum::getPaintings)
                 .collect(intersectingBy(Painting::getMillenniumOfCreation));
 
@@ -452,7 +452,7 @@ class IterableXTest {
 
     @Test
     void testSumBigDecimals() {
-        var list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final var list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         final var expected = list.stream()
                 .map(BankAccount::getBalance)
@@ -498,7 +498,7 @@ class IterableXTest {
 
     @Test
     void testFoldRight() {
-        var list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final var list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         list.forEach(It::println);
 
@@ -509,7 +509,7 @@ class IterableXTest {
 
     @Test
     void testDropLastWhile() {
-        var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        final var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         list.forEach(It::println);
 
@@ -522,7 +522,7 @@ class IterableXTest {
 
     @Test
     void testSkipWhile() {
-        var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        final var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         list.forEach(It::println);
 
@@ -535,7 +535,7 @@ class IterableXTest {
 
     @Test
     void testSkipWhileInclusive() {
-        var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        final var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         list.forEach(It::println);
 
@@ -548,8 +548,8 @@ class IterableXTest {
 
     @Test
     void testListIteratorGetPreviousOnlyWorksBeforeWhenIsAtEnd() {
-        var list = List.of(22, 44, 88, 11, 33);
-        var listIterator = list.listIterator();
+        final var list = List.of(22, 44, 88, 11, 33);
+        final var listIterator = list.listIterator();
 
         assertFalse(listIterator.hasPrevious());
 
@@ -568,7 +568,7 @@ class IterableXTest {
 
     @Test
     void testCountBy() {
-        var bankAccounts = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final var bankAccounts = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         final var expected = bankAccounts.stream().filter(BankAccount::isDutchAccount).count();
 
@@ -581,7 +581,7 @@ class IterableXTest {
 
     @Test
     void testSumOf() {
-        var list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final var list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         final var expected = list.stream()
                 .map(BankAccount::getBalance)
@@ -596,7 +596,7 @@ class IterableXTest {
 
     @Test
     void testSumOfInt() {
-        var list = ListX.of(TestSampleGenerator.createPaintingList());
+        final var list = ListX.of(TestSampleGenerator.createPaintingList());
 
         final var expected = list.stream().mapToInt(Painting::ageInYears).sum();
 
@@ -609,7 +609,7 @@ class IterableXTest {
 
     @Test
     void testAverageOf() {
-        var list = ListX.of(TestSampleGenerator.createPaintingList());
+        final var list = ListX.of(TestSampleGenerator.createPaintingList());
 
         final var expected = list.stream().mapToInt(Painting::ageInYears).average().orElseThrow();
 
@@ -622,7 +622,7 @@ class IterableXTest {
 
     @Test
     void testIterXOfIterable() {
-        var listX = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final var listX = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         final var expected = listX.stream()
                 .map(BankAccount::getBalance)
@@ -778,7 +778,7 @@ class IterableXTest {
 
     @Test
     void testMapNotNullMaxOf() {
-        var paintingList = ListX.of(TestSampleGenerator.createPaintingList());
+        final var paintingList = ListX.of(TestSampleGenerator.createPaintingList());
 
         final var expected = paintingList.stream()
                 .map(Painting::painter)
@@ -803,7 +803,7 @@ class IterableXTest {
 
     @Test
     void testCollectingToMap() {
-        var paintingList = TestSampleGenerator.createPaintingList();
+        final var paintingList = TestSampleGenerator.createPaintingList();
 
         final var expected = paintingList.stream()
                 .map(Painting::painter)
@@ -825,7 +825,7 @@ class IterableXTest {
 
     @Test
     void testMapNotNull() {
-        var bankAccounts = MutableListX
+        final var bankAccounts = MutableListX
                 .of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
 
         final var expected = bankAccounts.stream()
@@ -846,7 +846,7 @@ class IterableXTest {
 
     @Test
     void testMapIfPresent() {
-        var list = ListX.of(TestSampleGenerator.createMuseumList());
+        final var list = ListX.of(TestSampleGenerator.createMuseumList());
 
         final var dates = list.mapIfPresent(Museum::dateOfOpening);
 
@@ -861,7 +861,7 @@ class IterableXTest {
 
     @Test
     void testZipWithNext() {
-        var museumList = ListX.of(TestSampleGenerator.createPaintingList());
+        final var museumList = ListX.of(TestSampleGenerator.createPaintingList());
 
         final var integers = museumList
                 .mapNotNull(Painting::name)
@@ -872,8 +872,8 @@ class IterableXTest {
 
     @Test
     void testZipTwoCollections() {
-        var values = ListX.of(0, 1, 2, 3, 4, 5, 6, 7);
-        var others = List.of(6, 5, 4, 3, 2, 1, 0);
+        final var values = ListX.of(0, 1, 2, 3, 4, 5, 6, 7);
+        final var others = List.of(6, 5, 4, 3, 2, 1, 0);
 
         final var integers = values.zip(others, Integer::compareTo);
 
@@ -882,8 +882,8 @@ class IterableXTest {
 
     @Test
     void testToUnion() {
-        var values = ListX.of(0, 1, 2, 1, 3, 4, 5, 6, 7);
-        var other = List.of(6, 5, 4, 3, 2, 1, 0);
+        final var values = ListX.of(0, 1, 2, 1, 3, 4, 5, 6, 7);
+        final var other = List.of(6, 5, 4, 3, 2, 1, 0);
 
         final var union = values.union(other, String::valueOf);
 
@@ -911,7 +911,7 @@ class IterableXTest {
         assertIterableEquals(expected, actual);
     }
 
-    private void printEvery10_000stElement(int i) {
+    private void printEvery10_000stElement(final int i) {
         if (IntX.of(i).isMultipleOf(10_000)) {
             println(i);
         }

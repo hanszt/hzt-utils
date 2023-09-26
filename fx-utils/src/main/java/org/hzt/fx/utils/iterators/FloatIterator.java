@@ -8,7 +8,7 @@ import java.util.PrimitiveIterator;
 public interface FloatIterator extends PrimitiveIterator<Float, FloatConsumer> {
 
     @Override
-    default void forEachRemaining(FloatConsumer action) {
+    default void forEachRemaining(final FloatConsumer action) {
         while (hasNext()) {
             action.accept(nextFloat());
         }

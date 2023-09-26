@@ -5,7 +5,6 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.function.LongConsumer;
 import java.util.function.LongPredicate;
 
@@ -16,7 +15,7 @@ public interface LongMutableCollection extends LongCollection,
 
     @Override
     default boolean addAll(@NotNull Iterable<Long> iterable) {
-        boolean allAdded= true;
+        var allAdded= true;
         if (iterable instanceof PrimitiveIterable.OfLong longIterable) {
             final var iterator = longIterable.iterator();
             while (iterator.hasNext()) {
@@ -38,7 +37,7 @@ public interface LongMutableCollection extends LongCollection,
     @Override
     default boolean addAll(long @NotNull ... array) {
         final var iterator = PrimitiveIterators.longArrayIterator(array);
-        boolean allAdded = true;
+        var allAdded = true;
         while (iterator.hasNext()) {
             if (!add(iterator.nextLong())) {
                 allAdded = false;
@@ -51,7 +50,7 @@ public interface LongMutableCollection extends LongCollection,
 
     @Override
     default boolean removeAll(@NotNull Iterable<Long> iterable) {
-        boolean allRemoved = true;
+        var allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfLong longIterable) {
             final var iterator = longIterable.iterator();
             while (iterator.hasNext()) {
@@ -71,7 +70,7 @@ public interface LongMutableCollection extends LongCollection,
 
     @Override
     default boolean removeAll(long @NotNull ... array) {
-        boolean allRemoved = true;
+        var allRemoved = true;
         final var iterator = PrimitiveIterators.longArrayIterator(array);
         while (iterator.hasNext()) {
             final var removed = remove(iterator.nextLong());
@@ -84,10 +83,10 @@ public interface LongMutableCollection extends LongCollection,
 
     @Override
     default boolean removeIf(@NotNull LongPredicate predicate) {
-        boolean removed = false;
-        final PrimitiveIterator.OfLong iterator = iterator();
+        var removed = false;
+        final var iterator = iterator();
         while (iterator.hasNext()) {
-            final long value = iterator.nextLong();
+            final var value = iterator.nextLong();
             if (predicate.test(value)) {
                 removed = remove(value);
             }

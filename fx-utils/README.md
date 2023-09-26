@@ -27,16 +27,16 @@ See the [tests](src/test/java/org/hzt) in this project to see how the fx utiliti
 
 ## Examples
 
-````java
+```java
  class ListenersTest {
 
     @Test
     void testListenerForNewValue() {
-        IntegerProperty value = new SimpleIntegerProperty(2);
+        final IntegerProperty value = new SimpleIntegerProperty(2);
 
         value.addListener(forNewValue(newValue -> assertEquals(4, newValue)));
 
         value.set(4);
     }
 }
-````
+```

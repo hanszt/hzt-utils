@@ -9,7 +9,7 @@ public final class FloatIterators {
     private FloatIterators() {
     }
 
-    public static FloatIterator arrayIterator(float... floats) {
+    public static FloatIterator arrayIterator(final float... floats) {
         return new FloatIterator() {
             int index = 0;
 
@@ -25,7 +25,7 @@ public final class FloatIterators {
         };
     }
 
-    public static FloatIterator mappingIterator(FloatIterator iterator, FloatUnaryOperator operator) {
+    public static FloatIterator mappingIterator(final FloatIterator iterator, final FloatUnaryOperator operator) {
         return new FloatIterator() {
             @Override
             public boolean hasNext() {
@@ -39,11 +39,11 @@ public final class FloatIterators {
         };
     }
 
-    public static FloatIterator filteringIterator(FloatIterator iterator, FloatPredicate predicate) {
+    public static FloatIterator filteringIterator(final FloatIterator iterator, final FloatPredicate predicate) {
         return new FloatFilteringIterator(iterator, predicate, true);
     }
 
-    public static FloatIterator generatorIterator(FloatSupplier initValueSupplier, FloatUnaryOperator nextValueSupplier) {
+    public static FloatIterator generatorIterator(final FloatSupplier initValueSupplier, final FloatUnaryOperator nextValueSupplier) {
         return new FloatGeneratorIterator(initValueSupplier, nextValueSupplier);
     }
 }

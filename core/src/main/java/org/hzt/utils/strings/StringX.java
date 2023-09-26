@@ -1,6 +1,5 @@
 package org.hzt.utils.strings;
 
-import org.hzt.utils.iterables.Reversable;
 import org.hzt.utils.Transformable;
 import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.collections.ListX;
@@ -27,8 +26,8 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;

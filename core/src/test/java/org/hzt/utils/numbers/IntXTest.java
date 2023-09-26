@@ -59,7 +59,7 @@ class IntXTest {
      * @param upperPrimeSize primes smaller or equal to this nr
      * @return IntSequence of primes
      */
-    private static IntSequence primeNrSequence(@SuppressWarnings("SameParameterValue") int upperPrimeSize) {
+    private static IntSequence primeNrSequence(@SuppressWarnings("SameParameterValue") final int upperPrimeSize) {
         final var prime = new boolean[upperPrimeSize + 1];
         Arrays.fill(prime, true);
 
@@ -78,7 +78,7 @@ class IntXTest {
 
     @Test
     void testAsChar() {
-        var s = "This is a string";
+        final var s = "This is a string";
 
         final var characters = s.chars()
                 .mapToObj(IntX::asChar)

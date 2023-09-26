@@ -1,8 +1,8 @@
 package org.hzt.utils.collections;
 
-import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
+import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.NavigableMap;
@@ -18,7 +18,7 @@ class SortedMutableMapXTest {
 
     @Test
     void testNavigableMapComparingByKey() {
-        SortedMutableMapX<String, Integer> map = SortedMutableMapX.comparingByKey(String::length);
+        final SortedMutableMapX<String, Integer> map = SortedMutableMapX.comparingByKey(String::length);
         map.put("hallo", 1);
         map.put("Hi", 2);
         map.put("greetings", 3);

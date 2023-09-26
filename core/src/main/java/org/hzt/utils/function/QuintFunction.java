@@ -21,12 +21,12 @@ public interface QuintFunction<T, U, V, W, X, R> {
      * applies the {@code after} function
      * @throws NullPointerException if after is null
      */
-    default <Y> QuintFunction<T, U, V, W, X, Y> andThen(Function<? super R, ? extends Y> after) {
+    default <Y> QuintFunction<T, U, V, W, X, Y> andThen(final Function<? super R, ? extends Y> after) {
         Objects.requireNonNull(after);
         return (T t, U u, V v, W w, X x) -> after.apply(apply(t, u, v, w, x));
     }
 
-    static <T, U, V, W, X, R> QuintFunction<T, U, V, W, X, R> of(QuintFunction<T, U, V, W, X, R> function) {
+    static <T, U, V, W, X, R> QuintFunction<T, U, V, W, X, R> of(final QuintFunction<T, U, V, W, X, R> function) {
         Objects.requireNonNull(function);
         return function;
     }

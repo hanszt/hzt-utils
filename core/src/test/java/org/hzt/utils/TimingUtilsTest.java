@@ -23,7 +23,7 @@ class TimingUtilsTest {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static void sleepAndPrint(int millis) {
+    private static void sleepAndPrint(final int millis) {
         System.out.println("Start sleeping...");
         final double startTime = System.nanoTime();
         sleep(Duration.ofMillis(millis));

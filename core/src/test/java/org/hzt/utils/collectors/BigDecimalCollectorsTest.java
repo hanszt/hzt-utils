@@ -1,16 +1,22 @@
 package org.hzt.utils.collectors;
 
 import org.hzt.test.ReplaceCamelCaseBySentence;
-import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
+import org.hzt.utils.It;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import static org.hzt.utils.collectors.BigDecimalCollectors.*;
+import static org.hzt.utils.collectors.BigDecimalCollectors.averagingBigDecimal;
+import static org.hzt.utils.collectors.BigDecimalCollectors.standardDeviatingBigDecimal;
+import static org.hzt.utils.collectors.BigDecimalCollectors.summarizingBigDecimal;
+import static org.hzt.utils.collectors.BigDecimalCollectors.summingBigDecimal;
+import static org.hzt.utils.collectors.BigDecimalCollectors.toBigDecimalStatisticsBy;
+import static org.hzt.utils.collectors.BigDecimalCollectors.toMaxBigDecimal;
+import static org.hzt.utils.collectors.BigDecimalCollectors.toMinBigDecimal;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -86,8 +92,8 @@ class BigDecimalCollectorsTest {
 
     @Test
     void testStatisticsFromRandomGaussianDataset() {
-        var targetMean = BigDecimal.valueOf(3);
-        var targetStdDev = BigDecimal.valueOf(4);
+        final var targetMean = BigDecimal.valueOf(3);
+        final var targetStdDev = BigDecimal.valueOf(4);
 
         final var statistics = TestSampleGenerator
                 .gaussianDoubles(100_000, targetMean.doubleValue(), targetStdDev.doubleValue())

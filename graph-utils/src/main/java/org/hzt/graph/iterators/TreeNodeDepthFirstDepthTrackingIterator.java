@@ -41,7 +41,7 @@ final class TreeNodeDepthFirstDepthTrackingIterator<T, S extends TreeNode<T, S>>
     }
 
     private void advance() {
-        Iterator<DepthToTreeNode<S>> children = stack.getFirst();
+        var children = stack.getFirst();
         while (!children.hasNext()) {  // No more nodes -> back out a level
             stack.pop();
             if (stack.isEmpty()) { // All done!

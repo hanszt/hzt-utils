@@ -61,10 +61,10 @@ The master branch is updated with the java 11 version. The java 11 branch can be
 
 Below table gives an overview of the versioning so far:
 
-| java 8  | java 11 | java 17 |
-|---------|---------|---------|
-| 7.1.8   | 7.11    | 7.17    |
-| 7.5.1.8 | 7.5.11  | 7.5.17  |
+| java 8  | java 11 | java 17 | java 21 |
+|---------|---------|---------|---------|
+| 7.1.8   | 7.11    | 7.17    | -       |
+| 7.5.1.8 | 7.5.11  | 7.5.17  | 7.5.21  |
 
 ---
 

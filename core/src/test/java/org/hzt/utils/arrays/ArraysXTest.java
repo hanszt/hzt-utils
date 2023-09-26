@@ -18,8 +18,11 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import static org.hzt.utils.It.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hzt.utils.It.println;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ArraysXTest {
 
@@ -38,8 +41,8 @@ class ArraysXTest {
 
     @Test
     void generateArrayShouldCreateAFilledArray() {
-        final String[] strings = ArraysX.generateArray(5, i -> "nr " + i, String[]::new);
-        final String[] expected = {"nr 0", "nr 1", "nr 2", "nr 3", "nr 4"};
+        final var strings = ArraysX.generateArray(5, i -> "nr " + i, String[]::new);
+        final var expected = new String[]{"nr 0", "nr 1", "nr 2", "nr 3", "nr 4"};
         assertArrayEquals(expected, strings);
     }
 
@@ -225,16 +228,16 @@ class ArraysXTest {
 
         @Test
         void testToBooleanArray() {
-            String[] strings = {"This", "is", "a", "test"};
+            var strings = new String[]{"This", "is", "a", "test"};
 
-            boolean[] array = ArraysX.toBooleanArray(s -> s.contains("i"), strings);
+            var array = ArraysX.toBooleanArray(s -> s.contains("i"), strings);
 
             assertArrayEquals(new boolean[] {true, true, false, false}, array);
         }
 
         @Test
         void testGenerateIntArray() {
-            final int[] ints = ArraysX.generateIntArray(6, i -> i * 2);
+            final var ints = ArraysX.generateIntArray(6, i -> i * 2);
             assertArrayEquals(new int[] {0, 2, 4, 6, 8, 10}, ints);
         }
 

@@ -43,11 +43,24 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.partitioningBy;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 import static org.hzt.utils.It.println;
 import static org.hzt.utils.collectors.CollectorsX.intersectingBy;
 import static org.hzt.utils.collectors.CollectorsX.toListX;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IterableXTest {
 
@@ -829,6 +842,21 @@ class IterableXTest {
                 .maxOf(Customer::getCustomerId);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testMapIfPresent() {
+        var list = ListX.of(TestSampleGenerator.createMuseumList());
+
+        final var dates = list.mapIfPresent(Museum::dateOfOpening);
+
+        final var expected = ListX.of("1992-04-02", "1940-01-23", "1965-08-04").map(LocalDate::parse);
+
+        assertAll(
+                () -> assertEquals(expected, dates),
+                () -> assertEquals(4, list.size())
+
+        );
     }
 
     @Test

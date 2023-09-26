@@ -102,7 +102,7 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
     }
 
     default SetX<T> union(@NotNull Iterable<T> other) {
-        final MutableSetX<T> union = toMutableSet();
+        final var union = toMutableSet();
         return SetX.copyOf(union.plus(other));
     }
 

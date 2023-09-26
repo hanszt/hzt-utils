@@ -43,7 +43,7 @@ public interface MutableSetX<E> extends Set<E>, SetX<E>, MutableCollectionX<E> {
 
     @Override
     default MutableSetX<E> intersect(@NotNull Iterable<E> other) {
-        final Collection<E> otherCollection = other instanceof Collectable<?> ? (Collection<E>) other : MutableSetX.of(other);
+        final var otherCollection = other instanceof Collectable<?> ? (Collection<E>) other : MutableSetX.of(other);
         retainAll(otherCollection);
         return this;
     }

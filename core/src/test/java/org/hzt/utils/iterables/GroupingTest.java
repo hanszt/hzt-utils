@@ -4,7 +4,6 @@ import org.hzt.test.ReplaceCamelCaseBySentence;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
-import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.SortedMutableMapX;
 import org.hzt.utils.sequences.Sequence;
@@ -19,7 +18,9 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.toList;
 import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -164,14 +165,14 @@ class GroupingTest {
 
     @Test
     void testFilteringCollect() {
-        final ListX<Integer> numbers = ListX.of(3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+        final var numbers = ListX.of(3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 
-        final MapX<Integer, List<Integer>> aggregated = numbers
+        final var aggregated = numbers
                 .groupingBy(nr -> nr % 3)
                 .filtering(nr -> nr % 2 == 0)
                 .collect(toList());
 
-        final MapX<Integer, MutableListX<Integer>> expected = numbers
+        final var expected = numbers
                 .filter(nr -> nr % 2 == 0)
                 .groupBy(nr -> nr % 3);
 

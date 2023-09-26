@@ -107,7 +107,7 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
         var collection = collectionFactory.get();
         var counter = 0;
         for (var iterator = this.iterator(); iterator.hasNext(); ) {
-            int value = iterator.nextInt();
+            var value = iterator.nextInt();
             if (counter >= count) {
                 collection.add(value);
             }

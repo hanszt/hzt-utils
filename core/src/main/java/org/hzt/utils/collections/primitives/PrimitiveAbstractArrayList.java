@@ -67,4 +67,14 @@ extends PrimitiveAbstractCollection<T, T_CONS, A, I> implements PrimitiveCollect
         }
         return Math.max(minLength, SOFT_MAX_ARRAY_LENGTH);
     }
+
+    protected void rangeCheckForAdd(int index) {
+        if (index > size || index < 0) {
+            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+        }
+    }
+
+    private String outOfBoundsMsg(int index) {
+        return "Index: " + index + ", Size: " + size;
+    }
 }

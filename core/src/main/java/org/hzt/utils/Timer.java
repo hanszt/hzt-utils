@@ -46,23 +46,23 @@ public final class Timer<R> {
      */
     @SuppressWarnings("unused")
     public static <T, R> Timer<R> timeAFunction(T t, Function<? super T, ? extends R> function) {
-        long start = System.nanoTime();
-        R result = function.apply(t);
-        long delta = System.nanoTime() - start;
+        var start = System.nanoTime();
+        var result = function.apply(t);
+        var delta = System.nanoTime() - start;
         return new Timer<>(result, delta);
     }
 
     public static <R> Timer<R> timeALongFunction(long aLong, LongFunction<? extends R> function) {
-        long start = System.nanoTime();
-        R result = function.apply(aLong);
-        long delta = System.nanoTime() - start;
+        var start = System.nanoTime();
+        var result = function.apply(aLong);
+        var delta = System.nanoTime() - start;
         return new Timer<>(result, delta);
     }
 
     public static <R> Timer<R> timeAnIntFunction(int integer, IntFunction<? extends R> function) {
-        long start = System.nanoTime();
-        R result = function.apply(integer);
-        long delta = System.nanoTime() - start;
+        var start = System.nanoTime();
+        var result = function.apply(integer);
+        var delta = System.nanoTime() - start;
         return new Timer<>(result, delta);
     }
 
@@ -73,16 +73,16 @@ public final class Timer<R> {
      * @return first Timer object that contains the time it took to execute the consumer
      */
     public static <T> Timer<Void> timeAConsumer(T t, Consumer<? super T> consumer) {
-        long start = System.nanoTime();
+        var start = System.nanoTime();
         consumer.accept(t);
-        long delta = System.nanoTime() - start;
+        var delta = System.nanoTime() - start;
         return new Timer<>(delta);
     }
 
     public static Timer<Void> timeARunnable(Runnable runnable) {
-        long start = System.nanoTime();
+        var start = System.nanoTime();
         runnable.run();
-        long delta = System.nanoTime() - start;
+        var delta = System.nanoTime() - start;
         return new Timer<>(delta);
     }
 }

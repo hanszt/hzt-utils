@@ -107,7 +107,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         var collection = collectionFactory.get();
         var counter = 0;
         for (var iterator = this.iterator(); iterator.hasNext(); ) {
-            double value = iterator.nextDouble();
+            var value = iterator.nextDouble();
             if (counter >= count) {
                 collection.add(value);
             }

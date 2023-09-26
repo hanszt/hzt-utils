@@ -46,7 +46,7 @@ final class DepthFirstIterator<T, S extends Node<T, S>> implements Iterator<S> {
     }
 
     private void advance() {
-        Iterator<S> neighbors = stack.getFirst();
+        var neighbors = stack.getFirst();
         do {
             while (!neighbors.hasNext()) {  // No more nodes -> back out a level
                 stack.pop();

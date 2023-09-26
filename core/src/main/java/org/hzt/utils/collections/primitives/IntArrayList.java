@@ -5,6 +5,7 @@ import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.IntComparator;
+import org.hzt.utils.sequences.primitives.IntSequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -72,7 +73,23 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
 
     @Override
     public boolean addAll(int index, PrimitiveIterable.OfInt iterable) {
-        throw new UnsupportedOperationException();
+        rangeCheckForAdd(index);
+        final var a = iterable instanceof IntCollection ? ((IntCollection) iterable).toArray() : IntSequence.of(iterable).toArray();
+        var numNew = a.length;
+        if (numNew == 0) {
+            return false;
+        }
+        final var s = size;
+        if (numNew > elementData.length - s) {
+            elementData = growArray(s + numNew, false);
+        }
+        var numMoved = s - index;
+        if (numMoved > 0) {
+            System.arraycopy(elementData, index, elementData, index + numNew, numMoved);
+        }
+        System.arraycopy(a, 0, elementData, index, numNew);
+        size = s + numNew;
+        return true;
     }
 
     @Override

@@ -18,7 +18,11 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TreeNodeTest {
 
@@ -262,7 +266,7 @@ class TreeNodeTest {
 
             System.out.println(root.toTreeString());
 
-            final List<String> fileNames = root.siblingSequence().map(File::getName).toList();
+            final var fileNames = root.siblingSequence().map(File::getName).toList();
 
             assertAll(
                     () -> assertFalse(fileNames.isEmpty()),

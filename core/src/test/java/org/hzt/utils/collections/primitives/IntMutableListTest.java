@@ -3,13 +3,16 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.It;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.sequences.primitives.IntSequence;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IntMutableListTest {
 
@@ -45,15 +48,15 @@ class IntMutableListTest {
 
     @Test
     void testAddAtIndex() {
-        IntMutableList list = IntMutableList.of(1, 2, 5);
+        var list = IntMutableList.of(1, 2, 5);
         list.add(list.size(), 3);
-        List<Integer> refList = new ArrayList<>(Arrays.asList(1, 2, 5));
+        List<Integer> refList = new ArrayList<>(List.of(1, 2, 5));
         refList.add(refList.size(), 3);
 
         System.out.println("list = " + list);
         assertAll(
                 () -> assertEquals(IntMutableList.of(1, 2, 5, 3), list),
-                () -> assertEquals(Arrays.asList(1, 2, 5, 3), refList)
+                () -> assertEquals(List.of(1, 2, 5, 3), refList)
         );
     }
 
@@ -97,6 +100,26 @@ class IntMutableListTest {
         ints.sort(IntComparator.reverseOrder());
 
         assertEquals(IntList.of(-1, -2, -3, -4, -5, -6, -7, -8, -9, -10), ints.take(10));
+    }
+
+    @Nested
+    class AddTests {
+
+        @Test
+        void testAddAllAtIndex() {
+            final var list = IntMutableList.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            list.addAll(4, IntList.of(1, 2, 3));
+
+            assertEquals(IntList.of(1, 2, 3, 4, 1, 2, 3, 5, 6, 7, 8, 9), list);
+        }
+
+        @Test
+        void testAddAll() {
+            final var list = IntMutableList.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
+            list.addAll(IntList.of(1, 2, 3));
+
+            assertEquals(IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3), list);
+        }
     }
 
 }

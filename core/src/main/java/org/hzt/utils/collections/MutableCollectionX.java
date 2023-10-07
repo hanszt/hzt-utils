@@ -1,12 +1,14 @@
 package org.hzt.utils.collections;
 
+import org.hzt.utils.iterables.MutableIterable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Spliterator;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E> {
+public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E>, MutableIterable<E> {
 
     int size();
 
@@ -51,6 +53,11 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E> {
     boolean contains(Object value);
 
     boolean containsAll(@NotNull Collection<?> c);
+
+    @Override
+    default boolean removeIf(final Predicate<? super E> filter) {
+        return Collection.super.removeIf(filter);
+    }
 
     default E removeFirst() {
         final var first = first();

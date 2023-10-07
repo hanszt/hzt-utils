@@ -16,6 +16,7 @@
 
     <properties>
         <kotlin.version>1.9.0</kotlin.version>
+        <kotest.version>5.7.0</kotest.version>
         <kotlin-maven-plugin.jvmTarget>17</kotlin-maven-plugin.jvmTarget>
     </properties>
 
@@ -29,6 +30,13 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test</artifactId>
             <version>${kotlin.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.kotest/kotest-assertions-core-jvm -->
+        <dependency>
+            <groupId>io.kotest</groupId>
+            <artifactId>kotest-assertions-core-jvm</artifactId>
+            <version>${kotest.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

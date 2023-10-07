@@ -1,8 +1,9 @@
 package org.hzt.utils.io;
 
+import org.hzt.utils.It;
+import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.strings.StringX;
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -54,5 +55,17 @@ class FileXTest {
         Arrays.stream(grid).map(Arrays::toString).forEach(It::println);
 
         assertArrayEquals(new int[] {1, 1, 0, 0, 0, 0, 0}, grid[0]);
+    }
+
+    @Test
+    void testReadFromResourceFile() {
+        final var result = FileX.fromResource("/testfiles/day1aoc2021.txt").useLines(lines ->
+                lines.mapToInt(Integer::parseInt)
+                        .windowed(3)
+                        .mapToLong(IntList::sum)
+                        .zipWithNext((sum, nextSum) -> sum - nextSum)
+                        .count(diff -> diff < 0));
+
+        assertEquals(1748, result);
     }
 }

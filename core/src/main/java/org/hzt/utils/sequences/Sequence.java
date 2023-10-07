@@ -65,6 +65,10 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return new EmptySequence<>();
     }
 
+    static <T> Sequence.Builder<T> builder() {
+        return new SequenceBuilder<>();
+    }
+
     @SafeVarargs
     static <T> Sequence<T> of(final T... values) {
         return () -> Iterators.arrayIterator(values);
@@ -435,5 +439,47 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         final var r3 = resultMapper3.apply(this);
         final var r4 = resultMapper4.apply(this);
         return merger.apply(r1, r2, r3, r4);
+    }
+
+    interface Builder<T> extends Consumer<T> {
+
+        /**
+         * Adds an element to the sequence being built.
+         *
+         * @throws IllegalStateException if the builder has already transitioned to the built state
+         */
+        @Override
+        void accept(T t);
+
+        /**
+         * Adds an element to the sequence being built.
+         *
+         * @implSpec
+         * The default implementation behaves as if:
+         * <pre>{@code
+         *     accept(t)
+         *     return this;
+         * }</pre>
+         *
+         * @param t the element to add
+         * @return {@code this} builder
+         * @throws IllegalStateException if the builder has already transitioned to
+         * the built state
+         */
+        default Sequence.Builder<T> add(final T t) {
+            accept(t);
+            return this;
+        }
+
+        /**
+         * Builds the sequence, transitioning this builder to the built state.
+         * An {@code IllegalStateException} is thrown if there are further attempts
+         * to operate on the builder after it has entered the built state.
+         *
+         * @return the built sequence
+         * @throws IllegalStateException if the builder has already transitioned to the built state
+         */
+        Sequence<T> build();
+
     }
 }

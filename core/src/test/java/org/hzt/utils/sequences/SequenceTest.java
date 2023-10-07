@@ -1240,4 +1240,18 @@ class SequenceTest {
             assertEquals(expected, actual);
         }
     }
+
+    @Nested
+    class BuilderTests {
+
+        @Test
+        void testBuildSequence() {
+            final var builder = Sequence.<String>builder();
+
+            builder.accept("This");
+            final var strings = builder.add("is").add("a").add("test").build();
+
+            assertIterableEquals(List.of("This", "is", "a", "test"), strings);
+        }
+    }
 }

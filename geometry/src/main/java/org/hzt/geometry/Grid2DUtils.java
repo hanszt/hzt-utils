@@ -146,12 +146,12 @@ public final class Grid2DUtils {
     }
 
     public static <T, R> List<List<R>> mapGrid(final Iterable<? extends Iterable<T>> grid, final Function<? super T, R> mapper) {
-        final Function<Iterable<T>, List<R>> rowToMapper = row -> StreamSupport.stream(row.spliterator(), false)
+        final Function<Iterable<T>, List<R>> rowMapper = row -> StreamSupport.stream(row.spliterator(), false)
                 .map(mapper)
                 .toList();
 
         return StreamSupport.stream(grid.spliterator(), false)
-                .map(rowToMapper)
+                .map(rowMapper)
                 .toList();
     }
 

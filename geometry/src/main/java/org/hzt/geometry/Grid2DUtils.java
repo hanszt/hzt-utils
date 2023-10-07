@@ -146,13 +146,17 @@ public final class Grid2DUtils {
     }
 
     public static <T, R> List<List<R>> mapGrid(final Iterable<? extends Iterable<T>> grid, final Function<? super T, ? extends R> mapper) {
-        final Function<Iterable<T>, List<R>> rowToMapper = row -> StreamSupport.stream(row.spliterator(), false)
-                .map(mapper)
-                .collect(Collectors.toList());
-
+        final Function<Iterable<T>, List<R>> roMapper = row -> {
+            List<R> list = new ArrayList<>();
+            for (T t : row) {
+                R r = mapper.apply(t);
+                list.add(r);
+            }
+            return List.copyOf(list);
+        };
         return StreamSupport.stream(grid.spliterator(), false)
-                .map(rowToMapper)
-                .collect(Collectors.toList());
+                .map(roMapper)
+                .toList();
     }
 
     public static <T> String gridAsString(final T[][] grid) {
@@ -184,7 +188,7 @@ public final class Grid2DUtils {
     }
 
     public static <T> List<List<T>> swap(final List<List<T>> grid, final GridPoint2D point1, final GridPoint2D point2) {
-        return swap(grid, point1.getY(), point2.getX(), point2.getY(), point2.getX());
+        return swap(grid, point1.y(), point2.x(), point2.y(), point2.x());
     }
 }
 

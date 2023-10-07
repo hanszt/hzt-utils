@@ -10,7 +10,6 @@ import org.hzt.utils.collections.primitives.LongMutableSet;
 import org.hzt.utils.collectors.primitves.LongCollector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ObjLongConsumer;
@@ -19,15 +18,15 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface LongCollectable extends PrimitiveCollectable<LongCollection>, PrimitiveIterable.OfLong {
 
-    default <R> R collect(@NotNull Supplier<R> supplier,
-                          @NotNull ObjLongConsumer<R> accumulator) {
+    default <R> R collect(@NotNull final Supplier<R> supplier,
+                          @NotNull final ObjLongConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
     }
 
-    default <A, R> R collect(@NotNull Supplier<A> supplier,
-                             @NotNull ObjLongConsumer<A> accumulator,
-                             @NotNull Function<? super A, ? extends R> finisher) {
-        PrimitiveIterator.OfLong iterator = iterator();
+    default <A, R> R collect(@NotNull final Supplier<A> supplier,
+                             @NotNull final ObjLongConsumer<A> accumulator,
+                             @NotNull final Function<? super A, ? extends R> finisher) {
+        final var iterator = iterator();
         final var result = supplier.get();
         while (iterator.hasNext()) {
             accumulator.accept(result, iterator.nextLong());
@@ -35,19 +34,19 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         return finisher.apply(result);
     }
 
-    default <A, R> R collect(@NotNull LongCollector<A, R> collector) {
+    default <A, R> R collect(@NotNull final LongCollector<A, R> collector) {
         return collect(collector.supplier(), collector.accumulator(), collector.finisher());
     }
 
     default <A1, R1, A2, R2, R> R teeing(
-            @NotNull LongCollector<A1, R1> downStream1,
-            @NotNull LongCollector<A2, R2> downStream2,
-            @NotNull BiFunction<? super R1, ? super R2, ? extends R> combiner) {
+            @NotNull final LongCollector<A1, R1> downStream1,
+            @NotNull final LongCollector<A2, R2> downStream2,
+            @NotNull final BiFunction<? super R1, ? super R2, ? extends R> combiner) {
         final var result1 = downStream1.supplier().get();
         final var result2 = downStream2.supplier().get();
         final var accumulator1 = downStream1.accumulator();
         final var accumulator2 = downStream2.accumulator();
-        PrimitiveIterator.OfLong iterator = iterator();
+        final var iterator = iterator();
         while (iterator.hasNext()) {
             final var value = iterator.nextLong();
             accumulator1.accept(result1, value);
@@ -60,8 +59,8 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         return LongList.copyOf(toMutableList());
     }
 
-    default <C extends LongMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {
-        C collection = collectionFactory.get();
+    default <C extends LongMutableCollection> C to(@NotNull final Supplier<C> collectionFactory) {
+        final var collection = collectionFactory.get();
         final var iterator = iterator();
         while (iterator.hasNext()) {
             collection.add(iterator.nextLong());
@@ -78,21 +77,21 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         return to(LongMutableSet::empty);
     }
 
-    default <C extends LongMutableCollection> C takeTo(@NotNull Supplier<C> collectionFactory, long n) {
+    default <C extends LongMutableCollection> C takeTo(@NotNull final Supplier<C> collectionFactory, final long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
-        C collection = collectionFactory.get();
+        final var collection = collectionFactory.get();
         if (n == 0) {
             return collection;
         }
         final PrimitiveIterable.OfLong iterable = this;
-        if (iterable instanceof LongMutableCollection c && n >= c.size()) {
+        if (iterable instanceof final LongMutableCollection c && n >= c.size()) {
             collection.addAll(c);
             return collection;
         }
-        int count = 0;
+        var count = 0;
         final var iterator = iterator();
         while (iterator.hasNext()) {
-            long value = iterator.nextLong();
+            final var value = iterator.nextLong();
             collection.add(value);
             if (++count == n) {
                 break;
@@ -101,11 +100,11 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         return collection;
     }
 
-    default <C extends LongMutableCollection> C skipTo(Supplier<C> collectionFactory, int count) {
-        var collection = collectionFactory.get();
+    default <C extends LongMutableCollection> C skipTo(final Supplier<C> collectionFactory, final int count) {
+        final var collection = collectionFactory.get();
         var counter = 0;
-        for (var iterator = this.iterator(); iterator.hasNext(); ) {
-            var value = iterator.nextLong();
+        for (final var iterator = this.iterator(); iterator.hasNext(); ) {
+            final var value = iterator.nextLong();
             if (counter >= count) {
                 collection.add(value);
             }

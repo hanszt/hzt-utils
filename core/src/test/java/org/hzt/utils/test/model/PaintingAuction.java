@@ -1,9 +1,9 @@
 package org.hzt.utils.test.model;
 
+import org.hzt.test.model.Painting;
+import org.hzt.utils.Transformable;
 import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.Transformable;
-import org.hzt.test.model.Painting;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -25,7 +25,7 @@ public final class PaintingAuction implements
 
     private Painting mostPopularPainting;
 
-    public PaintingAuction(String name, LocalDate dateOfOpening, List<Painting> paintings) {
+    public PaintingAuction(final String name, final LocalDate dateOfOpening, final List<Painting> paintings) {
         Objects.requireNonNull(paintings);
         this.name = name;
         this.dateOfOpening = dateOfOpening;
@@ -51,7 +51,7 @@ public final class PaintingAuction implements
         return mostPopularPainting;
     }
 
-    public void setMostPopularPainting(Painting mostPopularPainting) {
+    public void setMostPopularPainting(final Painting mostPopularPainting) {
         this.mostPopularPainting = mostPopularPainting;
     }
 
@@ -59,7 +59,7 @@ public final class PaintingAuction implements
         return Collections.unmodifiableList(paintingList);
     }
 
-    public void toDatesOfBirthPainters(Consumer<LocalDate> dateOfBirthConsumer) {
+    public void toDatesOfBirthPainters(final Consumer<LocalDate> dateOfBirthConsumer) {
         toPainterDateOfBirthStream()
                 .forEach(dateOfBirthConsumer);
     }
@@ -69,8 +69,8 @@ public final class PaintingAuction implements
     }
 
     @Override
-    public boolean equals(Object o) {
-        return this == o || (o instanceof PaintingAuction auction &&
+    public boolean equals(final Object o) {
+        return this == o || (o instanceof final PaintingAuction auction &&
                 Objects.equals(name, auction.name) &&
                 Objects.equals(dateOfOpening, auction.dateOfOpening) &&
                 Objects.equals(mostPopularPainting, auction.mostPopularPainting));
@@ -82,7 +82,7 @@ public final class PaintingAuction implements
     }
 
     @Override
-    public int compareTo(PaintingAuction o) {
+    public int compareTo(final PaintingAuction o) {
         return name.compareTo(o.getName());
     }
 

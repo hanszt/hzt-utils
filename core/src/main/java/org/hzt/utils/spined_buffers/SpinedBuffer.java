@@ -100,17 +100,17 @@ public class SpinedBuffer<E>
      * Ensure that the buffer has at least capacity to hold the target size
      */
     @SuppressWarnings("unchecked")
-    protected final void ensureCapacity(long targetSize) {
+    protected final void ensureCapacity(final long targetSize) {
         var capacity = capacity();
         if (targetSize > capacity) {
             inflateSpine();
             for (var i = spineIndex + 1; targetSize > capacity; i++) {
                 if (i >= spine.length) {
-                    var newSpineSize = spine.length * 2;
+                    final var newSpineSize = spine.length * 2;
                     spine = Arrays.copyOf(spine, newSpineSize);
                     priorElementCount = Arrays.copyOf(priorElementCount, newSpineSize);
                 }
-                var nextChunkSize = chunkSize(i);
+                final var nextChunkSize = chunkSize(i);
                 spine[i] = (E[]) new Object[nextChunkSize];
                 priorElementCount[i] = priorElementCount[i - 1] + spine[i - 1].length;
                 capacity += nextChunkSize;
@@ -128,7 +128,7 @@ public class SpinedBuffer<E>
     /**
      * Retrieve the element at the specified index.
      */
-    public E get(long index) {
+    public E get(final long index) {
         // @@@ can further optimize by caching last seen spineIndex,
         // which is going to be right most of the time
 
@@ -177,10 +177,10 @@ public class SpinedBuffer<E>
     }
 
     @Override
-    public void forEach(Consumer<? super E> consumer) {
+    public void forEach(final Consumer<? super E> consumer) {
         // completed chunks, if any
         for (var j = 0; j < spineIndex; j++) {
-            for (var t : spine[j]) {
+            for (final var t : spine[j]) {
                 consumer.accept(t);
             }
         }
@@ -192,7 +192,7 @@ public class SpinedBuffer<E>
     }
 
     @Override
-    public void accept(E e) {
+    public void accept(final E e) {
         if (elementIndex == curChunk.length) {
             inflateSpine();
             if (((spineIndex + 1) >= spine.length) || (spine[spineIndex + 1] == null)) {
@@ -207,7 +207,7 @@ public class SpinedBuffer<E>
 
     @Override
     public String toString() {
-        List<E> list = new ArrayList<>();
+        final List<E> list = new ArrayList<>();
         forEach(list::add);
         return "SpinedBuffer:" + list;
     }
@@ -239,8 +239,8 @@ public class SpinedBuffer<E>
             // The current spine array
             private E[] splChunk;
 
-            Splitr(int firstSpineIndex, int lastSpineIndex,
-                   int firstSpineElementIndex, int lastSpineElementFence) {
+            Splitr(final int firstSpineIndex, final int lastSpineIndex,
+                   final int firstSpineElementIndex, final int lastSpineElementFence) {
                 //noinspection DuplicatedCode
                 this.splSpineIndex = firstSpineIndex;
                 this.lastSpineIndex = lastSpineIndex;
@@ -266,7 +266,7 @@ public class SpinedBuffer<E>
             }
 
             @Override
-            public boolean tryAdvance(Consumer<? super E> consumer) {
+            public boolean tryAdvance(final Consumer<? super E> consumer) {
                 Objects.requireNonNull(consumer);
 
                 if ((splSpineIndex < lastSpineIndex)
@@ -286,7 +286,7 @@ public class SpinedBuffer<E>
             }
 
             @Override
-            public void forEachRemaining(Consumer<? super E> consumer) {
+            public void forEachRemaining(final Consumer<? super E> consumer) {
                 Objects.requireNonNull(consumer);
 
                 if ((splSpineIndex < lastSpineIndex)
@@ -294,14 +294,14 @@ public class SpinedBuffer<E>
                     var i = splElementIndex;
                     // completed chunks, if any
                     for (var sp = splSpineIndex; sp < lastSpineIndex; sp++) {
-                        var chunk = spine[sp];
+                        final var chunk = spine[sp];
                         for (; i < chunk.length; i++) {
                             consumer.accept(chunk[i]);
                         }
                         i = 0;
                     }
                     // last (or current uncompleted) chunk
-                    var chunk = (splSpineIndex == lastSpineIndex) ? splChunk : spine[lastSpineIndex];
+                    final var chunk = (splSpineIndex == lastSpineIndex) ? splChunk : spine[lastSpineIndex];
                     for (; i < lastSpineElementFence; i++) {
                         consumer.accept(chunk[i]);
                     }
@@ -315,7 +315,7 @@ public class SpinedBuffer<E>
             public Spliterator<E> trySplit() {
                 if (splSpineIndex < lastSpineIndex) {
                     // split just before last chunk (if it is full this means 50:50 split)
-                    Spliterator<E> ret = new Splitr(splSpineIndex, lastSpineIndex - 1,
+                    final Spliterator<E> ret = new Splitr(splSpineIndex, lastSpineIndex - 1,
                             splElementIndex, spine[lastSpineIndex - 1].length);
                     // position to start of last chunk
                     splSpineIndex = lastSpineIndex;
@@ -323,11 +323,11 @@ public class SpinedBuffer<E>
                     splChunk = spine[splSpineIndex];
                     return ret;
                 } else if (splSpineIndex == lastSpineIndex) {
-                    var t = (lastSpineElementFence - splElementIndex) / 2;
+                    final var t = (lastSpineElementFence - splElementIndex) / 2;
                     if (t == 0) {
                         return null;
                     } else {
-                        var ret = Arrays.spliterator(splChunk, splElementIndex, splElementIndex + t);
+                        final var ret = Arrays.spliterator(splChunk, splElementIndex, splElementIndex + t);
                         splElementIndex += t;
                         return ret;
                     }
@@ -389,7 +389,7 @@ public class SpinedBuffer<E>
          * @throws IllegalArgumentException if the specified initial capacity
          *                                  is negative
          */
-        OfPrimitive(int initialCapacity) {
+        OfPrimitive(final int initialCapacity) {
             super(initialCapacity);
             curChunk = newArray(1 << initialChunkPower);
         }
@@ -437,17 +437,17 @@ public class SpinedBuffer<E>
             }
         }
 
-        protected final void ensureCapacity(long targetSize) {
+        protected final void ensureCapacity(final long targetSize) {
             var capacity = capacity();
             if (targetSize > capacity) {
                 inflateSpine();
                 for (var i = spineIndex + 1; targetSize > capacity; i++) {
                     if (i >= spine.length) {
-                        var newSpineSize = spine.length * 2;
+                        final var newSpineSize = spine.length * 2;
                         spine = Arrays.copyOf(spine, newSpineSize);
                         priorElementCount = Arrays.copyOf(priorElementCount, newSpineSize);
                     }
-                    var nextChunkSize = chunkSize(i);
+                    final var nextChunkSize = chunkSize(i);
                     spine[i] = newArray(nextChunkSize);
                     priorElementCount[i] = priorElementCount[i - 1] + arrayLength(spine[i - 1]);
                     capacity += nextChunkSize;
@@ -459,7 +459,7 @@ public class SpinedBuffer<E>
             ensureCapacity(capacity() + 1);
         }
 
-        protected int chunkFor(long index) {
+        protected int chunkFor(final long index) {
             if (spineIndex == 0) {
                 if (index < elementIndex) {
                     return 0;
@@ -482,8 +482,8 @@ public class SpinedBuffer<E>
         }
 
         @SuppressWarnings("SuspiciousSystemArraycopy")
-        public void copyInto(T_ARR array, int offset) {
-            var finalOffset = offset + count();
+        public void copyInto(final T_ARR array, int offset) {
+            final var finalOffset = offset + count();
             if ((finalOffset > arrayLength(array)) || (finalOffset < offset)) {
                 throw new IndexOutOfBoundsException("does not fit");
             }
@@ -503,11 +503,11 @@ public class SpinedBuffer<E>
         }
 
         public T_ARR asPrimitiveArray() {
-            var size = count();
+            final var size = count();
             if (size >= MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(BAD_SIZE);
             }
-            var result = newArray((int) size);
+            final var result = newArray((int) size);
             copyInto(result, 0);
             return result;
         }
@@ -534,7 +534,7 @@ public class SpinedBuffer<E>
             spineIndex = 0;
         }
 
-        public void forEach(T_CONS consumer) {
+        public void forEach(final T_CONS consumer) {
             // completed chunks, if any
             for (var j = 0; j < spineIndex; j++) {
                 arrayForEach(spine[j], 0, arrayLength(spine[j]), consumer);
@@ -566,8 +566,8 @@ public class SpinedBuffer<E>
             // The current spine array
             private T_ARR splChunk;
 
-            BaseSpliterator(int firstSpineIndex, int lastSpineIndex,
-                            int firstSpineElementIndex, int lastSpineElementFence) {
+            BaseSpliterator(final int firstSpineIndex, final int lastSpineIndex,
+                            final int firstSpineElementIndex, final int lastSpineElementFence) {
                 //noinspection DuplicatedCode
                 this.splSpineIndex = firstSpineIndex;
                 this.lastSpineIndex = lastSpineIndex;
@@ -600,7 +600,7 @@ public class SpinedBuffer<E>
             }
 
             @Override
-            public boolean tryAdvance(T_CONS consumer) {
+            public boolean tryAdvance(final T_CONS consumer) {
                 Objects.requireNonNull(consumer);
 
                 if ((splSpineIndex < lastSpineIndex)
@@ -620,7 +620,7 @@ public class SpinedBuffer<E>
             }
 
             @Override
-            public void forEachRemaining(T_CONS consumer) {
+            public void forEachRemaining(final T_CONS consumer) {
                 Objects.requireNonNull(consumer);
 
                 if ((splSpineIndex < lastSpineIndex)
@@ -628,12 +628,12 @@ public class SpinedBuffer<E>
                     var i = splElementIndex;
                     // completed chunks, if any
                     for (var sp = splSpineIndex; sp < lastSpineIndex; sp++) {
-                        var chunk = spine[sp];
+                        final var chunk = spine[sp];
                         arrayForEach(chunk, i, arrayLength(chunk), consumer);
                         i = 0;
                     }
                     // last (or current uncompleted) chunk
-                    var chunk = (splSpineIndex == lastSpineIndex) ? splChunk : spine[lastSpineIndex];
+                    final var chunk = (splSpineIndex == lastSpineIndex) ? splChunk : spine[lastSpineIndex];
                     arrayForEach(chunk, i, lastSpineElementFence, consumer);
                     // mark consumed
                     splSpineIndex = lastSpineIndex;
@@ -645,7 +645,7 @@ public class SpinedBuffer<E>
             public T_SPLITR trySplit() {
                 if (splSpineIndex < lastSpineIndex) {
                     // split just before last chunk (if it is full this means 50:50 split)
-                    var ret = newSpliterator(splSpineIndex, lastSpineIndex - 1,
+                    final var ret = newSpliterator(splSpineIndex, lastSpineIndex - 1,
                             splElementIndex, arrayLength(spine[lastSpineIndex - 1]));
                     // position us to start of last chunk
                     splSpineIndex = lastSpineIndex;
@@ -653,11 +653,11 @@ public class SpinedBuffer<E>
                     splChunk = spine[splSpineIndex];
                     return ret;
                 } else if (splSpineIndex == lastSpineIndex) {
-                    var t = (lastSpineElementFence - splElementIndex) / 2;
+                    final var t = (lastSpineElementFence - splElementIndex) / 2;
                     if (t == 0) {
                         return null;
                     } else {
-                        var ret = arraySpliterator(splChunk, splElementIndex, t);
+                        final var ret = arraySpliterator(splChunk, splElementIndex, t);
                         splElementIndex += t;
                         return ret;
                     }
@@ -677,13 +677,13 @@ public class SpinedBuffer<E>
         public OfInt() {
         }
 
-        OfInt(int initialCapacity) {
+        OfInt(final int initialCapacity) {
             super(initialCapacity);
         }
 
         @Override
-        public void forEach(Consumer<? super Integer> consumer) {
-            if (consumer instanceof IntConsumer intConsumer) {
+        public void forEach(final Consumer<? super Integer> consumer) {
+            if (consumer instanceof final IntConsumer intConsumer) {
                 super.forEach(intConsumer);
             } else {
                 spliterator().forEachRemaining(consumer);
@@ -696,34 +696,34 @@ public class SpinedBuffer<E>
         }
 
         @Override
-        public int[] newArray(int size) {
+        public int[] newArray(final int size) {
             return new int[size];
         }
 
         @Override
-        protected int arrayLength(int[] array) {
+        protected int arrayLength(final int[] array) {
             return array.length;
         }
 
         @Override
-        protected void arrayForEach(int[] array,
-                                    int from, int to,
-                                    IntConsumer consumer) {
+        protected void arrayForEach(final int[] array,
+                                    final int from, final int to,
+                                    final IntConsumer consumer) {
             for (var i = from; i < to; i++) {
                 consumer.accept(array[i]);
             }
         }
 
         @Override
-        public void accept(int i) {
+        public void accept(final int i) {
             preAccept();
             curChunk[elementIndex++] = i;
         }
 
-        public int get(long index) {
+        public int get(final long index) {
             // Casts to int are safe since the spine array index is the index minus
             // the prior element count from the current spine
-            var ch = chunkFor(index);
+            final var ch = chunkFor(index);
             return ((spineIndex == 0) && (ch == 0)) ? curChunk[(int) index] : spine[ch][(int) (index - priorElementCount[ch])];
         }
 
@@ -736,26 +736,26 @@ public class SpinedBuffer<E>
         public Spliterator.OfInt spliterator() {
             class Splitr extends BaseSpliterator<Spliterator.OfInt>
                     implements Spliterator.OfInt {
-                Splitr(int firstSpineIndex, int lastSpineIndex,
-                       int firstSpineElementIndex, int lastSpineElementFence) {
+                Splitr(final int firstSpineIndex, final int lastSpineIndex,
+                       final int firstSpineElementIndex, final int lastSpineElementFence) {
                     super(firstSpineIndex, lastSpineIndex,
                             firstSpineElementIndex, lastSpineElementFence);
                 }
 
                 @Override
-                Splitr newSpliterator(int firstSpineIndex, int lastSpineIndex,
-                                      int firstSpineElementIndex, int lastSpineElementFence) {
+                Splitr newSpliterator(final int firstSpineIndex, final int lastSpineIndex,
+                                      final int firstSpineElementIndex, final int lastSpineElementFence) {
                     return new Splitr(firstSpineIndex, lastSpineIndex,
                             firstSpineElementIndex, lastSpineElementFence);
                 }
 
                 @Override
-                void arrayForOne(int[] array, int index, IntConsumer consumer) {
+                void arrayForOne(final int[] array, final int index, final IntConsumer consumer) {
                     consumer.accept(array[index]);
                 }
 
                 @Override
-                Spliterator.OfInt arraySpliterator(int[] array, int offset, int len) {
+                Spliterator.OfInt arraySpliterator(final int[] array, final int offset, final int len) {
                     return Arrays.spliterator(array, offset, offset + len);
                 }
             }
@@ -764,13 +764,13 @@ public class SpinedBuffer<E>
 
         @Override
         public String toString() {
-            var array = asPrimitiveArray();
+            final var array = asPrimitiveArray();
             if (array.length < 200) {
                 return String.format(CHUNK_TO_STRING_FORMAT,
                         getClass().getSimpleName(), array.length,
                         spineIndex, Arrays.toString(array));
             } else {
-                var array2 = Arrays.copyOf(array, 200);
+                final var array2 = Arrays.copyOf(array, 200);
                 return String.format(CHUNK_TO_STRING_FORMAT + "...",
                         getClass().getSimpleName(), array.length,
                         spineIndex, Arrays.toString(array2));
@@ -787,13 +787,13 @@ public class SpinedBuffer<E>
         public OfLong() {
         }
 
-        OfLong(int initialCapacity) {
+        OfLong(final int initialCapacity) {
             super(initialCapacity);
         }
 
         @Override
-        public void forEach(Consumer<? super Long> consumer) {
-            if (consumer instanceof LongConsumer longConsumer) {
+        public void forEach(final Consumer<? super Long> consumer) {
+            if (consumer instanceof final LongConsumer longConsumer) {
                 super.forEach(longConsumer);
             } else {
                 spliterator().forEachRemaining(consumer);
@@ -806,34 +806,34 @@ public class SpinedBuffer<E>
         }
 
         @Override
-        public long[] newArray(int size) {
+        public long[] newArray(final int size) {
             return new long[size];
         }
 
         @Override
-        protected int arrayLength(long[] array) {
+        protected int arrayLength(final long[] array) {
             return array.length;
         }
 
         @Override
-        protected void arrayForEach(long[] array,
-                                    int from, int to,
-                                    LongConsumer consumer) {
+        protected void arrayForEach(final long[] array,
+                                    final int from, final int to,
+                                    final LongConsumer consumer) {
             for (var i = from; i < to; i++) {
                 consumer.accept(array[i]);
             }
         }
 
         @Override
-        public void accept(long i) {
+        public void accept(final long i) {
             preAccept();
             curChunk[elementIndex++] = i;
         }
 
-        public long get(long index) {
+        public long get(final long index) {
             // Casts to int are safe since the spine array index is the index minus
             // the prior element count from the current spine
-            var ch = chunkFor(index);
+            final var ch = chunkFor(index);
             return ((spineIndex == 0) && (ch == 0)) ? curChunk[(int) index] :
                     spine[ch][(int) (index - priorElementCount[ch])];
         }
@@ -848,26 +848,26 @@ public class SpinedBuffer<E>
         public Spliterator.OfLong spliterator() {
             class Splitr extends BaseSpliterator<Spliterator.OfLong>
                     implements Spliterator.OfLong {
-                Splitr(int firstSpineIndex, int lastSpineIndex,
-                       int firstSpineElementIndex, int lastSpineElementFence) {
+                Splitr(final int firstSpineIndex, final int lastSpineIndex,
+                       final int firstSpineElementIndex, final int lastSpineElementFence) {
                     super(firstSpineIndex, lastSpineIndex,
                             firstSpineElementIndex, lastSpineElementFence);
                 }
 
                 @Override
-                Splitr newSpliterator(int firstSpineIndex, int lastSpineIndex,
-                                      int firstSpineElementIndex, int lastSpineElementFence) {
+                Splitr newSpliterator(final int firstSpineIndex, final int lastSpineIndex,
+                                      final int firstSpineElementIndex, final int lastSpineElementFence) {
                     return new Splitr(firstSpineIndex, lastSpineIndex,
                             firstSpineElementIndex, lastSpineElementFence);
                 }
 
                 @Override
-                void arrayForOne(long[] array, int index, LongConsumer consumer) {
+                void arrayForOne(final long[] array, final int index, final LongConsumer consumer) {
                     consumer.accept(array[index]);
                 }
 
                 @Override
-                Spliterator.OfLong arraySpliterator(long[] array, int offset, int len) {
+                Spliterator.OfLong arraySpliterator(final long[] array, final int offset, final int len) {
                     return Arrays.spliterator(array, offset, offset + len);
                 }
             }
@@ -876,13 +876,13 @@ public class SpinedBuffer<E>
 
         @Override
         public String toString() {
-            var array = asPrimitiveArray();
+            final var array = asPrimitiveArray();
             if (array.length < 200) {
                 return String.format(CHUNK_TO_STRING_FORMAT,
                         getClass().getSimpleName(), array.length,
                         spineIndex, Arrays.toString(array));
             } else {
-                var array2 = Arrays.copyOf(array, 200);
+                final var array2 = Arrays.copyOf(array, 200);
                 return String.format(CHUNK_TO_STRING_FORMAT + "...",
                         getClass().getSimpleName(), array.length,
                         spineIndex, Arrays.toString(array2));
@@ -900,13 +900,13 @@ public class SpinedBuffer<E>
         public OfDouble() {
         }
 
-        OfDouble(int initialCapacity) {
+        OfDouble(final int initialCapacity) {
             super(initialCapacity);
         }
 
         @Override
-        public void forEach(Consumer<? super Double> consumer) {
-            if (consumer instanceof DoubleConsumer doubleConsumer) {
+        public void forEach(final Consumer<? super Double> consumer) {
+            if (consumer instanceof final DoubleConsumer doubleConsumer) {
                 super.forEach(doubleConsumer);
             } else {
                 spliterator().forEachRemaining(consumer);
@@ -919,34 +919,34 @@ public class SpinedBuffer<E>
         }
 
         @Override
-        public double[] newArray(int size) {
+        public double[] newArray(final int size) {
             return new double[size];
         }
 
         @Override
-        protected int arrayLength(double[] array) {
+        protected int arrayLength(final double[] array) {
             return array.length;
         }
 
         @Override
-        protected void arrayForEach(double[] array,
-                                    int from, int to,
-                                    DoubleConsumer consumer) {
+        protected void arrayForEach(final double[] array,
+                                    final int from, final int to,
+                                    final DoubleConsumer consumer) {
             for (var i = from; i < to; i++) {
                 consumer.accept(array[i]);
             }
         }
 
         @Override
-        public void accept(double i) {
+        public void accept(final double i) {
             preAccept();
             curChunk[elementIndex++] = i;
         }
 
-        public double get(long index) {
+        public double get(final long index) {
             // Casts to int are safe since the spine array index is the index minus
             // the prior element count from the current spine
-            var ch = chunkFor(index);
+            final var ch = chunkFor(index);
             if ((spineIndex == 0) && (ch == 0)) {
                 return curChunk[(int) index];
             } else {
@@ -963,26 +963,26 @@ public class SpinedBuffer<E>
         public Spliterator.OfDouble spliterator() {
             class Splitr extends BaseSpliterator<Spliterator.OfDouble>
                     implements Spliterator.OfDouble {
-                Splitr(int firstSpineIndex, int lastSpineIndex,
-                       int firstSpineElementIndex, int lastSpineElementFence) {
+                Splitr(final int firstSpineIndex, final int lastSpineIndex,
+                       final int firstSpineElementIndex, final int lastSpineElementFence) {
                     super(firstSpineIndex, lastSpineIndex,
                             firstSpineElementIndex, lastSpineElementFence);
                 }
 
                 @Override
-                Splitr newSpliterator(int firstSpineIndex, int lastSpineIndex,
-                                      int firstSpineElementIndex, int lastSpineElementFence) {
+                Splitr newSpliterator(final int firstSpineIndex, final int lastSpineIndex,
+                                      final int firstSpineElementIndex, final int lastSpineElementFence) {
                     return new Splitr(firstSpineIndex, lastSpineIndex,
                             firstSpineElementIndex, lastSpineElementFence);
                 }
 
                 @Override
-                void arrayForOne(double[] array, int index, DoubleConsumer consumer) {
+                void arrayForOne(final double[] array, final int index, final DoubleConsumer consumer) {
                     consumer.accept(array[index]);
                 }
 
                 @Override
-                Spliterator.OfDouble arraySpliterator(double[] array, int offset, int len) {
+                Spliterator.OfDouble arraySpliterator(final double[] array, final int offset, final int len) {
                     return Arrays.spliterator(array, offset, offset + len);
                 }
             }
@@ -991,13 +991,13 @@ public class SpinedBuffer<E>
 
         @Override
         public String toString() {
-            var array = asPrimitiveArray();
+            final var array = asPrimitiveArray();
             if (array.length < 200) {
                 return String.format(CHUNK_TO_STRING_FORMAT,
                         getClass().getSimpleName(), array.length,
                         spineIndex, Arrays.toString(array));
             } else {
-                var array2 = Arrays.copyOf(array, 200);
+                final var array2 = Arrays.copyOf(array, 200);
                 return String.format(CHUNK_TO_STRING_FORMAT + "...",
                         getClass().getSimpleName(), array.length,
                         spineIndex, Arrays.toString(array2));

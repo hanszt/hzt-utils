@@ -21,7 +21,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
 
     private Painting mostPopularPainting;
 
-    public Museum(String name, LocalDate dateOfOpening, List<Painting> paintingList) {
+    public Museum(final String name, final LocalDate dateOfOpening, final List<Painting> paintingList) {
         Objects.requireNonNull(paintingList);
         this.name = name;
         this.dateOfOpening = dateOfOpening;
@@ -54,7 +54,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
         return mostPopularPainting;
     }
 
-    public void setMostPopularPainting(Painting mostPopularPainting) {
+    public void setMostPopularPainting(final Painting mostPopularPainting) {
         this.mostPopularPainting = mostPopularPainting;
     }
 
@@ -62,7 +62,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
         return Collections.unmodifiableList(paintingList);
     }
 
-    public void toDatesOfBirthPainters(Consumer<LocalDate> dateOfBirthConsumer) {
+    public void toDatesOfBirthPainters(final Consumer<LocalDate> dateOfBirthConsumer) {
         toPainterDateOfBirthStream()
                 .forEach(dateOfBirthConsumer);
     }
@@ -75,8 +75,8 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        return this == o || (o instanceof Museum museum &&
+    public boolean equals(final Object o) {
+        return this == o || (o instanceof final Museum museum &&
                 Objects.equals(name, museum.name) &&
                 Objects.equals(dateOfOpening, museum.dateOfOpening) &&
                 Objects.equals(mostPopularPainting, museum.mostPopularPainting));
@@ -88,7 +88,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
     }
 
     @Override
-    public int compareTo(@NotNull Museum o) {
+    public int compareTo(@NotNull final Museum o) {
         if (name == null) {
             return -1;
         }

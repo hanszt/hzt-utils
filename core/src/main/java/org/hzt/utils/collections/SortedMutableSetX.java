@@ -41,10 +41,6 @@ public interface SortedMutableSetX<E> extends NavigableSet<E>, MutableSetX<E> {
     @Override
     @NotNull E last();
 
-    default SortedMutableSetX<E> toNavigableSet() {
-        return this;
-    }
-
     @Override
     default Spliterator<E> spliterator() {
         return NavigableSet.super.spliterator();

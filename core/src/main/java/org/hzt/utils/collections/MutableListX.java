@@ -1,5 +1,6 @@
 package org.hzt.utils.collections;
 
+import org.hzt.utils.sequences.Sequence;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -63,13 +64,22 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
     boolean isEmpty();
 
     @Override
-    default boolean removeFirst() {
-        return remove(get(0));
+    default E removeFirst() {
+        final var o = get(0);
+        remove(o);
+        return o;
     }
 
     @Override
-    default boolean removeLast() {
-        return remove(get(lastIndex()));
+    default E removeLast() {
+        final var o = get(lastIndex());
+        remove(o);
+        return o;
+    }
+
+    @Override
+    default MutableListX<E> reversed() {
+        return Sequence.reverseOf((ListX<E>) this).toMutableList();
     }
 
     @Override

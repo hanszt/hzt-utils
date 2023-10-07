@@ -7,34 +7,34 @@ public interface GridPoint3D {
     static GridPoint3D from(final int x, final int y, final int z) {
         return new GridPoint3DImpl(x, y, z);
     }
-    int getX();
+    int x();
 
-    int getY();
+    int y();
     
-    int getZ();
+    int z();
 
     default GridPoint3D multiply(final GridPoint3D other) {
-        return new GridPoint3DImpl(getX() * other.getX(), getY() * other.getY(), getZ() * other.getZ());
+        return new GridPoint3DImpl(x() * other.x(), y() * other.y(), z() * other.z());
     }
 
     default GridPoint3D multiply(final int scalar) {
-        return new GridPoint3DImpl(getX() * scalar, getY() * scalar, getZ() * scalar);
+        return new GridPoint3DImpl(x() * scalar, y() * scalar, z() * scalar);
     }
 
     default GridPoint3D add(final GridPoint3D other) {
-        return new GridPoint3DImpl(getX() + other.getX(), getY() + other.getY(), getZ() + other.getZ());
+        return new GridPoint3DImpl(x() + other.x(), y() + other.y(), z() + other.z());
     }
 
     default GridPoint3D subtract(final GridPoint3D other) {
-        return new GridPoint3DImpl(getX() - other.getX(), getY() - other.getY(), getZ() - other.getZ());
+        return new GridPoint3DImpl(x() - other.x(), y() - other.y(), z() - other.z());
     }
 
     default int gridDistance(final int x, final int y, final int z) {
-        return Math.abs(getX() - x) + Math.abs(getY() - y) + Math.abs(getZ() - z);
+        return Math.abs(x() - x) + Math.abs(y() - y) + Math.abs(z() - z);
     }
 
     default int gridDistance(final GridPoint3D other) {
-        return gridDistance(other.getX(), other.getY(), other.getZ());
+        return gridDistance(other.x(), other.y(), other.z());
     }
 
     default int distanceSquared(final int x, final int y, final int z) {
@@ -42,7 +42,7 @@ public interface GridPoint3D {
     }
 
     default int distanceSquared(final GridPoint3D gridPoint3D) {
-        return distanceSquared(gridPoint3D.getX(), gridPoint3D.getY(), gridPoint3D.getZ());
+        return distanceSquared(gridPoint3D.x(), gridPoint3D.y(), gridPoint3D.z());
     }
 
     default double distance(final int x, final int y, final int z) {
@@ -50,7 +50,7 @@ public interface GridPoint3D {
     }
 
     default double distance(final GridPoint3D other) {
-        return distance(other.getX(), other.getY(), other.getZ());
+        return distance(other.x(), other.y(), other.z());
     }
 
     default int gridMagnitude() {
@@ -62,28 +62,28 @@ public interface GridPoint3D {
     }
 
     default GridPoint3D midpoint(final GridPoint3D gridPoint2D) {
-        return midpoint(gridPoint2D.getX(), gridPoint2D.getY(), gridPoint2D.getZ());
+        return midpoint(gridPoint2D.x(), gridPoint2D.y(), gridPoint2D.z());
     }
 
     default GridPoint3D midpoint(final int x, final int y, final int z) {
         return new GridPoint3DImpl(
-                x + (getX() - x) / 2,
-                y + (getY() - y) / 2,
-                z + (getZ() - z) / 2);
+                x + (x() - x) / 2,
+                y + (y() - y) / 2,
+                z + (z() - z) / 2);
     }
 
     default int dotProduct(final int x, final int y, final int z) {
-        return getX() * x + getY() * y + getZ() * z;
+        return x() * x + y() * y + z() * z;
     }
 
     default int dotProduct(final GridPoint3D point3D) {
-        return dotProduct(point3D.getX(), point3D.getY(), point3D.getZ());
+        return dotProduct(point3D.x(), point3D.y(), point3D.z());
     }
 
     default GridPoint3D crossProduct(final int x, final int y, final int z) {
-        final var ax = getX();
-        final var ay = getY();
-        final var az = getZ();
+        final var ax = x();
+        final var ay = y();
+        final var az = z();
 
         return new GridPoint3DImpl(
                 ay * z - az * y,
@@ -92,6 +92,6 @@ public interface GridPoint3D {
     }
 
     default GridPoint3D crossProduct(final GridPoint3D point3D) {
-       return crossProduct(point3D.getX(), point3D.getY(), point3D.getZ());
+       return crossProduct(point3D.x(), point3D.y(), point3D.z());
     }
 }

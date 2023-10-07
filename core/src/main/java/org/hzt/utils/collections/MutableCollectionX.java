@@ -1,12 +1,14 @@
 package org.hzt.utils.collections;
 
+import org.hzt.utils.iterables.MutableIterable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Spliterator;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E> {
+public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E>, MutableIterable<E> {
 
     int size();
 
@@ -21,22 +23,22 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E> {
     }
 
     @Override
-    default MutableListX<E> plus(@NotNull E value) {
+    default MutableListX<E> plus(@NotNull final E value) {
         return (MutableListX<E>) CollectionX.super.plus(value);
     }
 
     @Override
-    default MutableListX<E> plus(@NotNull Iterable<? extends E> iterable) {
+    default MutableListX<E> plus(@NotNull final Iterable<? extends E> iterable) {
         return MutableListX.of(this).plus(iterable);
     }
 
-    default boolean addAll(Iterable<? extends E> iterable) {
-        if (iterable instanceof Collection<?> c) {
+    default boolean addAll(final Iterable<? extends E> iterable) {
+        if (iterable instanceof final Collection<?> c) {
             //noinspection unchecked
             return addAll((Collection<? extends E>) c);
         }
         var allAdded = true;
-        for (E item : iterable) {
+        for (final E item : iterable) {
             if (!add(item)) {
                 allAdded = false;
             }
@@ -52,12 +54,21 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E> {
 
     boolean containsAll(@NotNull Collection<?> c);
 
-    default boolean removeFirst() {
-        return remove(first());
+    @Override
+    default boolean removeIf(final Predicate<? super E> filter) {
+        return Collection.super.removeIf(filter);
     }
 
-    default boolean removeLast() {
-        return remove(last());
+    default E removeFirst() {
+        final var first = first();
+        remove(first);
+        return first;
+    }
+
+    default E removeLast() {
+        final var last = last();
+        remove(last);
+        return last;
     }
 
     @Override

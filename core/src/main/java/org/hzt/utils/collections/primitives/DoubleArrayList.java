@@ -23,33 +23,33 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
         super(0, new double[DEFAULT_CAPACITY]);
     }
 
-    DoubleArrayList(int initCapacity) {
+    DoubleArrayList(final int initCapacity) {
         super(0, new double[initCapacity]);
     }
 
-    DoubleArrayList(DoubleList doubleList) {
+    DoubleArrayList(final DoubleList doubleList) {
         super(doubleList.size(), doubleList.toArray());
     }
 
-    DoubleArrayList(double @NotNull... array) {
+    DoubleArrayList(final double @NotNull... array) {
         super(array.length, Arrays.copyOf(array, array.length));
     }
 
-    DoubleArrayList(@NotNull Iterable<Double> iterable) {
+    DoubleArrayList(@NotNull final Iterable<Double> iterable) {
         this();
-        if (iterable instanceof PrimitiveIterable.OfDouble doubleIterable) {
+        if (iterable instanceof final PrimitiveIterable.OfDouble doubleIterable) {
             final var iterator = doubleIterable.iterator();
             while (iterator.hasNext()) {
                 add(iterator.nextDouble());
             }
             return;
         }
-        for (double value : iterable) {
+        for (final double value : iterable) {
             add(value);
         }
     }
 
-    public boolean add(double value) {
+    public boolean add(final double value) {
         if (size == elementData.length) {
             final var isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
@@ -60,7 +60,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
-    public boolean add(int index, double value) {
+    public boolean add(final int index, final double value) {
         Objects.checkIndex(index, size + 1);
         if (size == elementData.length) {
             elementData = growArray(size, elementData.length == 0);
@@ -72,10 +72,10 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
-    public boolean addAll(int index, PrimitiveIterable.OfDouble iterable) {
+    public boolean addAll(final int index, final PrimitiveIterable.OfDouble iterable) {
         rangeCheckForAdd(index);
-        final var a = iterable instanceof DoubleCollection ? ((DoubleCollection) iterable).toArray() : DoubleSequence.of(iterable).toArray();
-        var numNew = a.length;
+        final var a = iterable instanceof final DoubleCollection c ? c.toArray() : DoubleSequence.of(iterable).toArray();
+        final var numNew = a.length;
         if (numNew == 0) {
             return false;
         }
@@ -83,7 +83,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
         if (numNew > elementData.length - s) {
             elementData = growArray(s + numNew, false);
         }
-        var numMoved = s - index;
+        final var numMoved = s - index;
         if (numMoved > 0) {
             System.arraycopy(elementData, index, elementData, index + numNew, numMoved);
         }
@@ -93,16 +93,16 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
-    public double get(int index) {
+    public double get(final int index) {
         checkIndex(index, size);
         return elementData[index];
     }
 
-    public int indexOf(double value) {
+    public int indexOf(final double value) {
         return indexOfRange(value, size);
     }
 
-    int indexOfRange(double value, int end) {
+    int indexOfRange(final double value, final int end) {
         for (var i = 0; i < end; i++) {
             if (Double.compare(value, elementData[i]) == 0) {
                 return i;
@@ -112,7 +112,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
-    public int lastIndexOf(double value) {
+    public int lastIndexOf(final double value) {
         return lastIndexOfRange(value, size);
     }
 
@@ -128,7 +128,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
         return mutableList;
     }
 
-    private int lastIndexOfRange(double value, int end) {
+    private int lastIndexOfRange(final double value, final int end) {
         for (var i = end - 1; i >= 0; i--) {
             if (Double.compare(value, elementData[i]) == 0) {
                 return i;
@@ -137,13 +137,13 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
         return -1;
     }
 
-    public double removeAt(int index) {
-        var oldValue = elementData[checkIndex(index, size)];
+    public double removeAt(final int index) {
+        final var oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveDouble(elementData, size, index);
         return oldValue;
     }
 
-    private static int fastRemoveDouble(double[] array, int size, int index) {
+    private static int fastRemoveDouble(final double[] array, final int size, final int index) {
         final var newSize = size - 1;
         if (newSize > index) {
             System.arraycopy(array, index + 1, array, index, newSize - index);
@@ -154,19 +154,19 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
 
     @Override
     @SuppressWarnings("squid:S2162")
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof DoubleList doubleList)) {
+        if (!(o instanceof final DoubleList doubleList)) {
             return false;
         }
 
-        var iterator1 = iterator();
-        var iterator2 = doubleList.iterator();
+        final var iterator1 = iterator();
+        final var iterator2 = doubleList.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            var l1 = iterator1.nextDouble();
-            var l2 = iterator2.nextDouble();
+            final var l1 = iterator1.nextDouble();
+            final var l2 = iterator2.nextDouble();
             if (Double.compare(l1, l2) != 0) {
                 return false;
             }
@@ -186,17 +186,17 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
-    protected double[] newArray(int length) {
+    protected double[] newArray(final int length) {
         return new double[length];
     }
 
     @Override
-    protected double[] copyElementData(int newLength) {
+    protected double[] copyElementData(final int newLength) {
         return Arrays.copyOf(elementData, newLength);
     }
 
     @Override
-    public double set(int index, double value) {
+    public double set(final int index, final double value) {
         checkIndex(index, size);
         elementData[index] = value;
         return value;
@@ -214,7 +214,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
 
     @Override
     @SuppressWarnings("squid:S1188")
-    public @NotNull PrimitiveListIterator.OfDouble listIterator(int startIndex) {
+    public @NotNull PrimitiveListIterator.OfDouble listIterator(final int startIndex) {
         return new PrimitiveListIterator.OfDouble() {
             private int index = startIndex;
 
@@ -251,7 +251,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
-    public void sort(DoubleComparator comparator) {
+    public void sort(final DoubleComparator comparator) {
         ArraysX.sort(0, size, comparator, elementData);
     }
 
@@ -261,7 +261,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
-    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfDouble iterator) {
+    protected void appendNextPrimitive(final StringBuilder sb, final PrimitiveIterator.OfDouble iterator) {
         sb.append(iterator.nextDouble());
     }
 }

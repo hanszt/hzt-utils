@@ -196,10 +196,10 @@ final class ArrayListX<E> implements MutableListX<E> {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) {
+        if (o == this) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof List) && !(o instanceof ListX)) {
             return false;
         }
         return equalsRange((Iterable<?>) o, size());

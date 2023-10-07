@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Random;
 
 import static org.hzt.utils.collectors.BigDecimalCollectors.averagingBigDecimal;
 import static org.hzt.utils.collectors.BigDecimalCollectors.standardDeviatingBigDecimal;
@@ -96,7 +97,7 @@ class BigDecimalCollectorsTest {
         final var targetStdDev = BigDecimal.valueOf(4);
 
         final var statistics = TestSampleGenerator
-                .gaussianDoubles(100_000, targetMean.doubleValue(), targetStdDev.doubleValue())
+                .gaussianDoubles(100_000, targetMean.doubleValue(), targetStdDev.doubleValue(), new Random(0))
                 .mapToObj(BigDecimal::valueOf)
                 .collect(BigDecimalCollectors.toBigDecimalStatistics());
 

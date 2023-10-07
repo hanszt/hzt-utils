@@ -30,56 +30,56 @@ public final class It {
     private It() {
     }
 
-    public static <T> T self(T t) {
+    public static <T> T self(final T t) {
         return t;
     }
 
-    public static int asInt(int i) {
+    public static int asInt(final int i) {
         return i;
     }
 
-    public static int doubleAsInt(double d) {
+    public static int doubleAsInt(final double d) {
         return (int) d;
     }
 
-    public static int longAsInt(long l) {
+    public static int longAsInt(final long l) {
         return (int) l;
     }
 
-    public static long doubleAsLong(double d) {
+    public static long doubleAsLong(final double d) {
         return (long) d;
     }
 
-    public static long asLong(long l) {
+    public static long asLong(final long l) {
         return l;
     }
 
-    public static double asDouble(double d) {
+    public static double asDouble(final double d) {
         return d;
     }
 
     @SuppressWarnings("SameReturnValue")
-    public static <T> boolean noFilter(@SuppressWarnings("unused") T t) {
+    public static <T> boolean noFilter(@SuppressWarnings("unused") final T t) {
         return true;
     }
 
     @SuppressWarnings("SameReturnValue")
-    public static boolean noIntFilter(@SuppressWarnings("unused") int t) {
+    public static boolean noIntFilter(@SuppressWarnings("unused") final int t) {
         return true;
     }
 
     @SuppressWarnings("SameReturnValue")
-    public static boolean noLongFilter(@SuppressWarnings("unused") long t) {
+    public static boolean noLongFilter(@SuppressWarnings("unused") final long t) {
         return true;
     }
 
     @SuppressWarnings("SameReturnValue")
-    public static boolean noDoubleFilter(@SuppressWarnings("unused") double t) {
+    public static boolean noDoubleFilter(@SuppressWarnings("unused") final double t) {
         return true;
     }
 
     @SuppressWarnings("SameReturnValue")
-    public static <T> boolean blockingFilter(@SuppressWarnings("unused") T t) {
+    public static <T> boolean blockingFilter(@SuppressWarnings("unused") final T t) {
         return false;
     }
 
@@ -87,19 +87,19 @@ public final class It {
         System.out.println();
     }
 
-    public static <T> void println(T value) {
+    public static <T> void println(final T value) {
         System.out.println(value);
     }
 
-    public static <T> void print(T value) {
+    public static <T> void print(final T value) {
         System.out.print(value);
     }
 
-    public static void printf(String format, Object... values) {
+    public static void printf(final String format, final Object... values) {
         System.out.printf(format, values);
     }
 
-    public static <T> boolean notEquals(T t1, T t2) {
+    public static <T> boolean notEquals(final T t1, final T t2) {
         return !t1.equals(t2);
     }
 }

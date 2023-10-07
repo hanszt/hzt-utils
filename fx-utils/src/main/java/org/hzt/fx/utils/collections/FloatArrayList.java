@@ -21,11 +21,11 @@ public final class FloatArrayList extends PrimitiveAbstractArrayList<Float, Floa
         this(0, new float[DEFAULT_CAPACITY]);
     }
 
-    private FloatArrayList(int initSize, float[] elementData) {
+    private FloatArrayList(final int initSize, final float[] elementData) {
         super(initSize, elementData);
     }
 
-    public boolean add(float l) {
+    public boolean add(final float l) {
         final var size = this.size;
         if (size == elementData.length) {
             final var isInitEmptyArray = elementData.length == 0;
@@ -37,7 +37,7 @@ public final class FloatArrayList extends PrimitiveAbstractArrayList<Float, Floa
     }
 
     @Override
-    protected float[] copyElementData(int newLength) {
+    protected float[] copyElementData(final int newLength) {
         return Arrays.copyOf(elementData, newLength);
     }
 
@@ -47,19 +47,19 @@ public final class FloatArrayList extends PrimitiveAbstractArrayList<Float, Floa
     }
 
     @Override
-    public boolean containsAll(@NotNull Iterable<Float> iterable) {
+    public boolean containsAll(@NotNull final Iterable<Float> iterable) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean containsAll(float @NotNull [] array) {
+    public boolean containsAll(final float @NotNull [] array) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean addAll(@NotNull Iterable<Float> iterable) {
+    public boolean addAll(@NotNull final Iterable<Float> iterable) {
         var allAdded = true;
-        if (iterable instanceof FloatArrayList list) {
+        if (iterable instanceof final FloatArrayList list) {
             final var iterator = list.iterator();
             while (iterator.hasNext()) {
                 final var added = add(iterator.nextFloat());
@@ -69,7 +69,7 @@ public final class FloatArrayList extends PrimitiveAbstractArrayList<Float, Floa
             }
             return allAdded;
         }
-        for (float i : iterable) {
+        for (final float i : iterable) {
             if (!add(i)) {
                 allAdded = false;
             }
@@ -78,9 +78,9 @@ public final class FloatArrayList extends PrimitiveAbstractArrayList<Float, Floa
     }
 
     @Override
-    public boolean addAll(float @NotNull ... array) {
+    public boolean addAll(final float @NotNull ... array) {
         var allAdded = true;
-        for (var f : array) {
+        for (final var f : array) {
             if (!add(f)) {
                 allAdded = false;
             }
@@ -89,56 +89,56 @@ public final class FloatArrayList extends PrimitiveAbstractArrayList<Float, Floa
     }
 
     @Override
-    public boolean removeAll(@NotNull Iterable<Float> iterable) {
+    public boolean removeAll(@NotNull final Iterable<Float> iterable) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean removeAll(float @NotNull [] array) {
+    public boolean removeAll(final float @NotNull [] array) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean removeIf(@NotNull FloatPredicate predicate) {
+    public boolean removeIf(@NotNull final FloatPredicate predicate) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public FloatArrayList plus(@NotNull Iterable<Float> iterable) {
-        var list = new FloatArrayList();
+    public FloatArrayList plus(@NotNull final Iterable<Float> iterable) {
+        final var list = new FloatArrayList();
         list.addAll(iterable);
         return list;
     }
 
     @Override
-    public FloatArrayList plus(float @NotNull [] array) {
+    public FloatArrayList plus(final float @NotNull [] array) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public FloatArrayList take(long n) {
+    public FloatArrayList take(final long n) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public FloatArrayList skip(long n) {
+    public FloatArrayList skip(final long n) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof FloatArrayList list)) {
+        if (!(o instanceof final FloatArrayList list)) {
             return false;
         }
 
-        var iterator1 = iterator();
-        var iterator2 = list.iterator();
+        final var iterator1 = iterator();
+        final var iterator2 = list.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
-            var l1 = iterator1.nextFloat();
-            var l2 = iterator2.nextFloat();
+            final var l1 = iterator1.nextFloat();
+            final var l2 = iterator2.nextFloat();
             if (Float.compare(l1, l2) != 0) {
                 return false;
             }
@@ -170,12 +170,12 @@ public final class FloatArrayList extends PrimitiveAbstractArrayList<Float, Floa
     }
 
     @Override
-    protected float[] newArray(int length) {
+    protected float[] newArray(final int length) {
         return new float[length];
     }
 
     @Override
-    protected void appendNextPrimitive(StringBuilder sb, FloatIterator iterator) {
+    protected void appendNextPrimitive(final StringBuilder sb, final FloatIterator iterator) {
         sb.append(iterator.nextFloat());
     }
 

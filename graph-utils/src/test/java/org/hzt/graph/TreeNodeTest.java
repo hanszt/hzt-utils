@@ -391,21 +391,13 @@ class TreeNodeTest {
                     new Node("leaf 10"));
         }
 
-        private class Node implements TreeNode<Node, Node> {
-
-            private final String name;
-            private final Node[] children;
-
-            public Node(final String name, final Node... children) {
-                this.name = name;
-                this.children = children;
-            }
+        private record Node(String name, SimpleNodeTests.Node... children) implements TreeNode<Node, Node> {
 
             @Override
-            public @NotNull Iterator<Node> childrenIterator() {
-                return Sequence.of(children).iterator();
-            }
-        }
+                    public @NotNull Iterator<Node> childrenIterator() {
+                        return Sequence.of(children).iterator();
+                    }
+                }
     }
 
     private static final class FileX extends File implements TreeNode<FileX, FileX> {

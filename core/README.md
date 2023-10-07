@@ -120,7 +120,7 @@ class Tests {
     @Test
     @DisplayName("An example of an immutable list on which the filter method is called")
     void test2() {
-        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+        final ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
         final ListX<Integer> evenNrs = list.filter(IntX::isEven);
 

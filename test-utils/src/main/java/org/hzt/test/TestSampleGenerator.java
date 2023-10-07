@@ -10,7 +10,6 @@ import org.hzt.test.model.Painting;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.URL;
 import java.nio.file.Files;
 import java.time.LocalDate;
@@ -23,8 +22,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -32,23 +29,11 @@ import java.util.stream.IntStream;
 
 public final class TestSampleGenerator {
 
-    private static final Random RANDOM = new Random();
     private static final String FICTION = "Fiction";
 
-    private static final List<Function<Integer, Number>> TO_NUMBER_TYPE_FUNCTIONS = List.of(
-            Integer::byteValue,
-            Integer::shortValue,
-            Integer::valueOf,
-            Float::valueOf,
-            Long::valueOf,
-            Double::valueOf,
-            BigInteger::valueOf,
-            BigDecimal::valueOf,
-            AtomicInteger::new,
-            AtomicLong::new
-    );
-
-    private static List<Museum> museums;
+    private static final class Holder {
+        private static final List<Museum> museums = createMuseumList();
+    }
 
     private TestSampleGenerator() {
     }
@@ -73,27 +58,24 @@ public final class TestSampleGenerator {
 
         final var guernica = new Painting("Guernica", picasso, Year.of(1937), true);
         final var lesDemoiselles = new Painting("Les Demoiselles d'Avignon", picasso, Year.of(1907), true);
-        final var le_reve = new Painting("Le Rêve", picasso, Year.of(1932), true);
-        final var meisje_met_de_parel = new Painting("Meisje met de parel", vermeer, Year.of(1665), true);
-        final var het_melkmeisje = new Painting("Het melkmeisje", vermeer, Year.of(1658), true);
-        final var meisje_met_de_rode_hoed = new Painting("Meisje met de rode hoed", vermeer, Year.of(1665), true);
+        final var leReve = new Painting("Le Rêve", picasso, Year.of(1932), true);
+        final var meisjeMetDeParel = new Painting("Meisje met de parel", vermeer, Year.of(1665), true);
+        final var hetMelkmeisje = new Painting("Het melkmeisje", vermeer, Year.of(1658), true);
+        final var meisjeMetDeRodeHoed = new Painting("Meisje met de rode hoed", vermeer, Year.of(1665), true);
         final var lenteTuin = new Painting("Lentetuin, de pastorietuin te Nuenen in het voorjaar", vanGogh, Year.of(1884), false);
-        final var de_sterrennacht = new Painting("De sterrennacht", vanGogh, Year.of(1889), true);
+        final var deSterrennacht = new Painting("De sterrennacht", vanGogh, Year.of(1889), true);
 
-        picasso.addPaintings(guernica, lesDemoiselles, le_reve);
-        vermeer.addPaintings(meisje_met_de_parel, meisje_met_de_rode_hoed, het_melkmeisje);
-        vanGogh.addPaintings(lenteTuin, de_sterrennacht);
+        picasso.addPaintings(guernica, lesDemoiselles, leReve);
+        vermeer.addPaintings(meisjeMetDeParel, meisjeMetDeRodeHoed, hetMelkmeisje);
+        vanGogh.addPaintings(lenteTuin, deSterrennacht);
 
-        return List.of(guernica, lesDemoiselles, le_reve, meisje_met_de_parel, het_melkmeisje,
-                meisje_met_de_rode_hoed, lenteTuin, de_sterrennacht
+        return List.of(guernica, lesDemoiselles, leReve, meisjeMetDeParel, hetMelkmeisje,
+                meisjeMetDeRodeHoed, lenteTuin, deSterrennacht
         );
     }
 
     public static List<Museum> getMuseumListContainingNulls() {
-        if (museums == null) {
-            museums = createMuseumList();
-        }
-        return List.copyOf(museums);
+        return Holder.museums;
     }
 
     public static List<Museum> createMuseumList() {
@@ -131,29 +113,12 @@ public final class TestSampleGenerator {
         return bankAccounts;
     }
 
-    public static List<Number> createRandomNumberTypeList(int amount) {
+    public static DoubleStream gaussianDoubles(final int amount,
+                                               final double targetMean,
+                                               final double targetStdDev,
+                                               final Random random) {
         return IntStream.range(0, amount)
-                .mapToObj(TestSampleGenerator::toRandomNumberType)
-                .toList();
-    }
-
-    private static Number toRandomNumberType(int integer) {
-        return TO_NUMBER_TYPE_FUNCTIONS.get(RANDOM.nextInt(TO_NUMBER_TYPE_FUNCTIONS.size())).apply(integer);
-    }
-
-    public static List<Number> createNumberTypeList(int amount) {
-        return IntStream.range(0, amount)
-                .mapToObj(TestSampleGenerator::toNumberType)
-                .toList();
-    }
-
-    public static DoubleStream gaussianDoubles(int amount, double targetMean, double targetStdDev) {
-        return IntStream.range(0, amount)
-                .mapToDouble(i -> targetMean + targetStdDev * RANDOM.nextGaussian());
-    }
-
-    private static Number toNumberType(int integer) {
-        return TO_NUMBER_TYPE_FUNCTIONS.get(integer % TO_NUMBER_TYPE_FUNCTIONS.size()).apply(integer);
+                .mapToDouble(i -> targetMean + targetStdDev * random.nextGaussian());
     }
 
     public static Map<String, Museum> createMuseumMap() {
@@ -170,9 +135,9 @@ public final class TestSampleGenerator {
                 .map(File::toPath)
                 .orElseThrow(() -> new NoSuchElementException("Could not find resource " + name));
 
-        try (var s = Files.lines(path)) {
+        try (final var s = Files.lines(path)) {
             return s.toList();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException(e);
         }
     }

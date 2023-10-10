@@ -58,6 +58,8 @@ import static java.lang.System.setProperty;
 import static org.hzt.utils.It.print;
 import static org.hzt.utils.It.printf;
 import static org.hzt.utils.It.println;
+import static org.hzt.utils.sequences.SequenceExtensions.runningFold;
+import static org.hzt.utils.sequences.SequenceExtensions.windowed;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -88,9 +90,9 @@ class SequenceTest {
 
     @Test
     void testMapReduce() {
-        final var list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final var sequence = Sequence.of("Hallo", "dit", "is", "een", "test");
 
-        final var sum = list
+        final var sum = sequence
                 .map(String::length)
                 .mapToDouble(Double::valueOf)
                 .sum();
@@ -544,7 +546,7 @@ class SequenceTest {
 
             println("sizes = " + sizes);
 
-            println("windows.first() = " + sizes.findFirst());
+            println("windows.current() = " + sizes.findFirst());
             println("windows.last() = " + sizes.findLast());
 
             assertEquals(22, sizes.size());
@@ -573,7 +575,7 @@ class SequenceTest {
 
         println("\nsums = " + sums);
 
-        println("sums.first() = " + sums.findFirst());
+        println("sums.current() = " + sums.findFirst());
         println("sums.last() = " + sums.findLast());
 
         assertEquals(99, sums.size());
@@ -657,7 +659,7 @@ class SequenceTest {
         final var first = leapYears.first();
         final var last = leapYears.last();
 
-        println("first = " + first);
+        println("current = " + first);
         println("last = " + last);
         final var stats = leapYears.intStatsOf(Year::getValue);
 
@@ -676,8 +678,8 @@ class SequenceTest {
                 .sorted();
 
         final var first = names.first();
-        println("first = " + first);
-        println("first = " + names.first());
+        println("current = " + first);
+        println("current = " + names.first());
         final var nameList = names.toList();
         final var last = names.last();
 
@@ -723,7 +725,7 @@ class SequenceTest {
 
             final int first = integers.first();
 
-            System.out.println("first = " + first);
+            System.out.println("current = " + first);
 
             assertAll(
                     () -> assertEquals(2, first),
@@ -739,7 +741,7 @@ class SequenceTest {
 
             final var first = integers.firstOf(String::valueOf);
 
-            System.out.println("first = " + first);
+            System.out.println("current = " + first);
 
             assertAll(
                     () -> assertEquals("2", first),
@@ -781,14 +783,14 @@ class SequenceTest {
         final List<String> orderCalledSequence = new ArrayList<>();
 
         final var ints1 = IntStream.of(6, 1, 456, 2)
-                .peek(s -> orderCalledStream.add("first"))
+                .peek(s -> orderCalledStream.add("current"))
                 .peek(s -> orderCalledStream.add("pre-sort"))
                 .sorted()
                 .peek(s -> orderCalledStream.add("post-sort"))
                 .toArray();
 
         final var ints2 = IntSequence.of(6, 1, 456, 2)
-                .onEach(s -> orderCalledSequence.add("first"))
+                .onEach(s -> orderCalledSequence.add("current"))
                 .onEach(s -> orderCalledSequence.add("pre-sort"))
                 .sorted()
                 .onEach(s -> orderCalledSequence.add("post-sort"))
@@ -1051,7 +1053,7 @@ class SequenceTest {
             );
         }
 
-        private class Nodes {
+        private static class Nodes {
 
             private final List<String> strings = new ArrayList<>();
 
@@ -1115,7 +1117,7 @@ class SequenceTest {
 
             final var first = sequence.first();
 
-            System.out.println("first = " + first);
+            System.out.println("current = " + first);
 
             assertAll(
                     () -> assertArrayEquals(new int[]{2, 4}, ints),
@@ -1136,7 +1138,7 @@ class SequenceTest {
 
             final var first = sequence.first();
 
-            System.out.println("first = " + first);
+            System.out.println("current = " + first);
 
             assertAll(
                     () -> assertArrayEquals(new int[]{2, 4}, ints),
@@ -1181,13 +1183,14 @@ class SequenceTest {
                     .toList();
 
             final var expected = List.of(10, 11, 13, 17, 25, 41, 73, 137, 265, 521, 1033, 2057, 4105, 8201, 16393, 32777, 65545, 131081, 262153, 524297);
+
             assertEquals(expected, integers);
         }
 
         /**
-         * @see <a href="https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/">1614. Maximum Nesting Depth of the Parentheses</a>
-         * @param s The nesting string
+         * @param s        The nesting string
          * @param expected the expected depth
+         * @see <a href="https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/">1614. Maximum Nesting Depth of the Parentheses</a>
          */
         @ParameterizedTest
         @CsvSource({
@@ -1201,6 +1204,61 @@ class SequenceTest {
                     .max();
             assertEquals(expected, actual);
         }
+    }
+
+    @Nested
+    class ExtensionsTests {
+
+        @Test
+        void testWindowedExtension() {
+            final var windows = Sequence.iterate(0, i -> i + 1)
+                    .extend(windowed(4, 4, true))
+                    .take(10)
+                    .toList();
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .chunked(4)
+                    .take(10)
+                    .map(ListX::toList)
+                    .toList();
+
+            assertEquals(expected, windows);
+        }
+
+        @Test
+        void extendedExtension() {
+            final var windows = Sequence.iterate(0, i -> i + 1)
+                    .extend(SequenceExtensions.<Integer>windowed(4, 4, true)
+                            .andThen(runningFold(1, (acc, t) -> acc + t.size())))
+                    .take(10)
+                    .toList();
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .chunked(4)
+                    .scan(1, (acc, t) -> acc + t.size())
+                    .take(10)
+                    .toList();
+
+            assertEquals(expected, windows);
+        }
+
+        @Test
+        void composedExtension() {
+            final var windows = Sequence.iterate(0, i -> i + 1)
+                    .extend(SequenceExtensions.<List<Integer>, Integer>runningFold(1, (acc, t) -> acc + t.size())
+                            .compose(windowed(4, 4, true)))
+                    .take(10)
+                    .toList();
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .chunked(4)
+                    .scan(1, (acc, t) -> acc + t.size())
+                    .take(10)
+                    .toList();
+
+            assertEquals(expected, windows);
+        }
+
     }
 
     @Nested

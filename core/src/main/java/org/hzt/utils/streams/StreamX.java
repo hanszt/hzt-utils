@@ -7,7 +7,9 @@ import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.Numerable;
 import org.hzt.utils.iterables.Sortable;
+import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.sequences.SequenceHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
@@ -23,6 +25,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
@@ -45,7 +48,7 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
         return StreamX.of(Stream.generate(operator));
     }
 
-    static <T> StreamX<T> generate(final T initial, final UnaryOperator<T> operator) {
+    static <T> StreamX<T> iterate(final T initial, final UnaryOperator<T> operator) {
         return StreamX.of(Stream.iterate(initial, operator));
     }
 
@@ -197,6 +200,16 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
         return StreamX.of(stream().skip(n));
     }
 
+    default StreamX<ListX<T>> windowed(final int initSize,
+                                        @NotNull final IntUnaryOperator nextSizeSupplier,
+                                        final int initStep,
+                                        @NotNull final IntUnaryOperator nextStepSupplier,
+                                        final boolean partialWindows) {
+        SequenceHelper.checkInitWindowSizeAndStep(initSize, initStep);
+        return new StreamXImpl<>(stream(Spliterators.spliteratorUnknownSize(Iterators.windowedIterator(iterator(),
+                initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows), Spliterator.ORDERED), isParallel()));
+    }
+
     @Override
     default void forEach(final Consumer<? super T> action) {
         stream().forEach(action);
@@ -216,7 +229,6 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     @NotNull
     @Override
     default <A> A @NotNull [] toArray(final IntFunction<A[]> generator) {
-        //noinspection SuspiciousToArrayCall
         return stream().toArray(generator);
     }
 
@@ -234,6 +246,10 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     @Override
     default <U> U reduce(final U identity, final BiFunction<U, ? super T, U> accumulator, final BinaryOperator<U> combiner) {
         return stream().reduce(identity, accumulator, combiner);
+    }
+
+    default <R> StreamX<R> then(StreamExtension<T, R> extension) {
+        return new StreamXImpl<>(extension.extend(this));
     }
 
     @Override

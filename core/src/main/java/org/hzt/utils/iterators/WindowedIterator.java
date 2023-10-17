@@ -40,9 +40,9 @@ final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
         final var gap = step - size;
         size = calculateNextSize(size);
         if (gap >= 0) {
-            computeNextForWindowedSequenceNoOverlap(windowInitCapacity, gap);
+            computeNextNoOverlap(windowInitCapacity, gap);
         } else {
-            computeNextForWindowedSequenceOverlapping(windowInitCapacity);
+            computeNextOverlapping(windowInitCapacity);
         }
         step = calculateNextStep(step);
         return ListX.copyOf(nextWindow);
@@ -58,7 +58,7 @@ final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
         return (next > 0) ? next : 1;
     }
 
-    private void computeNextForWindowedSequenceOverlapping(final int windowInitCapacity) {
+    private void computeNextOverlapping(final int windowInitCapacity) {
         nextWindow = nextWindow.isEmpty() ? MutableListX.withInitCapacity(windowInitCapacity) : MutableListX.of(nextWindow);
         calculateNextOverlappingWindow();
         if (!partialWindows && nextWindow.size() < size) {
@@ -77,7 +77,7 @@ final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
         }
     }
 
-    private void computeNextForWindowedSequenceNoOverlap(final int bufferInitCapacity, final int gap) {
+    private void computeNextNoOverlap(final int bufferInitCapacity, final int gap) {
         var skip = gap;
         nextWindow = MutableListX.withInitCapacity(bufferInitCapacity);
         while (iterator.hasNext()) {

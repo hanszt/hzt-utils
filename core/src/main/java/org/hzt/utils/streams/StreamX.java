@@ -248,7 +248,7 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
         return stream().reduce(identity, accumulator, combiner);
     }
 
-    default <R> StreamX<R> extend(StreamExtension<T, R> extension) {
+    default <R> StreamX<R> then(StreamExtension<T, R> extension) {
         return new StreamXImpl<>(extension.extend(this));
     }
 

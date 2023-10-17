@@ -376,10 +376,6 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return EntrySequence.ofPairs(map(e -> Pair.of(e, valueMapper.apply(e))));
     }
 
-    default <R> Sequence<R> extend(SequenceExtension<T, R> extension) {
-        return extension.extend(this);
-    }
-
     @Override
     default IntSequence mapToInt(@NotNull final ToIntFunction<? super T> toIntMapper) {
         return () -> PrimitiveIterators.intIteratorOf(iterator(), toIntMapper);

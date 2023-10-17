@@ -14,6 +14,7 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
+import org.hzt.utils.iterables.IterableExtensions;
 import org.hzt.utils.iterables.Numerable;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.numbers.IntX;
@@ -58,8 +59,8 @@ import static java.lang.System.setProperty;
 import static org.hzt.utils.It.print;
 import static org.hzt.utils.It.printf;
 import static org.hzt.utils.It.println;
-import static org.hzt.utils.sequences.SequenceExtensions.runningFold;
-import static org.hzt.utils.sequences.SequenceExtensions.windowed;
+import static org.hzt.utils.iterables.IterableExtensions.runningFold;
+import static org.hzt.utils.iterables.IterableExtensions.windowed;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -1212,7 +1213,7 @@ class SequenceTest {
         @Test
         void testWindowedExtension() {
             final var windows = Sequence.iterate(0, i -> i + 1)
-                    .extend(windowed(4, 4, true))
+                    .then(windowed(4, 4, true))
                     .take(10)
                     .toList();
 
@@ -1228,7 +1229,7 @@ class SequenceTest {
         @Test
         void extendedExtension() {
             final var windows = Sequence.iterate(0, i -> i + 1)
-                    .extend(SequenceExtensions.<Integer>windowed(4, 4, true)
+                    .then(IterableExtensions.<Integer>windowed(4, 4, true)
                             .andThen(runningFold(1, (acc, t) -> acc + t.size())))
                     .take(10)
                     .toList();
@@ -1243,9 +1244,28 @@ class SequenceTest {
         }
 
         @Test
+        void collectFromExtensionChain() {
+            final var extension = IterableExtensions.<Integer>chunked(4)
+                    .andThen(runningFold(1, (acc, t) -> acc + t.size()))
+                    .collect(Collectors.groupingBy(i -> i % 4));
+
+            final var windows = Sequence.iterate(0, i -> i + 1)
+                    .take(10)
+                    .collect(extension);
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .take(10)
+                    .chunked(4)
+                    .scan(1, (acc, t) -> acc + t.size())
+                    .collect(Collectors.groupingBy(i -> i % 4));
+
+            assertEquals(expected, windows);
+        }
+
+        @Test
         void composedExtension() {
             final var windows = Sequence.iterate(0, i -> i + 1)
-                    .extend(SequenceExtensions.<List<Integer>, Integer>runningFold(1, (acc, t) -> acc + t.size())
+                    .then(IterableExtensions.<List<Integer>, Integer>runningFold(1, (acc, t) -> acc + t.size())
                             .compose(windowed(4, 4, true)))
                     .take(10)
                     .toList();

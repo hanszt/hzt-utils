@@ -85,6 +85,10 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         return this;
     }
 
+    default <R> Sequence<R> then(IterableExtension<T, R> extension) {
+        return () -> extension.extend(this).iterator();
+    }
+
     default SetX<T> intersect(@NotNull final Iterable<T> other) {
         final var intersection = toMutableSet();
         final var otherCollection = other instanceof final Collection<T> collection ? collection : MutableSetX.of(other);

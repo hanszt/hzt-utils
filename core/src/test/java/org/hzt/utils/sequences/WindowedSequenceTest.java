@@ -1,10 +1,10 @@
 package org.hzt.utils.sequences;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.tuples.Pair;
-import org.hzt.utils.It;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +52,7 @@ class WindowedSequenceTest {
 
     @Test
     void testVariableSizeChunkedSequenceSineShape() {
-        final var chunkSizes = Sequence.iterate(0, i -> ++i)
+        final var chunkSizes = Sequence.iterate(0, i -> i + 2)
                 .chunked(sineWaveGenerator())
                 .take(20)
                 .onEach(It::println)
@@ -69,7 +69,7 @@ class WindowedSequenceTest {
 
             @Override
             public int getAsInt() {
-                return (int) (8 * (1 + Math.sin(.3 * x++)));
+                return (int) (8 * (1 + Math.sin(0.3 * x++)));
             }
         };
     }

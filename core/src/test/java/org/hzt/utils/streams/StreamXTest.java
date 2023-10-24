@@ -11,25 +11,34 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.util.Spliterator.ORDERED;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.StreamSupport.stream;
 import static org.hzt.utils.streams.StreamExtensions.chunked;
 import static org.hzt.utils.streams.StreamExtensions.filter;
 import static org.hzt.utils.streams.StreamExtensions.map;
+import static org.hzt.utils.streams.StreamExtensions.mapConcurrent;
 import static org.hzt.utils.streams.StreamExtensions.peek;
 import static org.hzt.utils.streams.StreamExtensions.scan;
 import static org.hzt.utils.streams.StreamExtensions.windowed;
+import static org.hzt.utils.streams.StreamFinishers.fold;
+import static org.hzt.utils.streams.StreamFinishers.toSet;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -259,6 +268,48 @@ class StreamXTest {
         }
 
         @Test
+        void mapConcurrentVsSequential() {
+            var start = System.nanoTime();
+
+            final var strings = StreamX.iterate(1, i -> i + 2)
+                    .limit(10)
+                    .then(mapConcurrent(10, this::toStringAndSleep))
+                    .toList();
+
+            var end = System.nanoTime();
+            final var durationConcurrent = Duration.ofNanos(end - start);
+
+            start = System.nanoTime();
+
+            final var stringsRegularMap = Sequence.iterate(1, i -> i + 2)
+                    .take(10)
+                    .map(this::toStringAndSleep)
+                    .toList();
+
+            final var expected = List.of("1", "3", "5", "7", "9", "11", "13", "15", "17", "19");
+            end = System.nanoTime();
+            final var durationSequential = Duration.ofNanos(end - start);
+
+            System.out.println("durationConcurrent = " + durationConcurrent);
+            System.out.println("durationSequential = " + durationSequential);
+
+            assertAll(
+                    () -> assertTrue(durationConcurrent.compareTo(durationSequential) < 0),
+                    () -> assertEquals(stringsRegularMap, strings),
+                    () -> assertEquals(expected, strings)
+            );
+        }
+
+        private String toStringAndSleep(int i) {
+            try {
+                Thread.sleep(Duration.ofMillis(10));
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            return String.valueOf(i);
+        }
+
+        @Test
         void extendedExtension() {
             final var windows = StreamX.iterate(0, i -> i + 1)
                     .then(StreamExtensions.<Integer>windowed(4)
@@ -328,6 +379,8 @@ class StreamXTest {
             );
         }
 
+
+
         @Test
         void composedExtension() {
             final var windows = StreamX.iterate(0, i -> i + 1)
@@ -347,4 +400,72 @@ class StreamXTest {
 
     }
 
+    @Nested
+    class StreamFinisherTests {
+
+        @Test
+        void finishByFold() {
+            final var windows = StreamX.iterate(0, i -> i + 1)
+                    .limit(10)
+                    .finish(fold(new StringBuilder(), StringBuilder::append))
+                    .toString();
+
+            final var expected = Sequence.iterate(0, i -> i + 1).take(10).joinToString("");
+
+            assertEquals(expected, windows);
+        }
+
+        @Test
+        void finishByExtendedFinisher() {
+            final var set = StreamX.iterate(0, i -> i + 1)
+                    .limit(10)
+                    .finish(StreamExtensions.<Integer>windowed(2)
+                            .andThen(scan(0, (sum, window) -> sum + window.size()))
+                            .finish(toSet()));
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .take(10)
+                    .windowed(2)
+                    .scan(0, (sum, window) -> sum + window.size())
+                    .toSet();
+
+            assertEquals(expected, set);
+        }
+
+        @Test
+        void finishByCustomFinisher() {
+            final var set = StreamX.iterate(0, i -> i + 1)
+                    .limit(10)
+                    .finish(CustomExtension.<Integer>windowed(2)
+                            .andThen(peek(System.out::println))
+                            .andThen(scan(0, (sum, window) -> sum + window.size()))
+                            .toSet());
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .take(10)
+                    .windowed(2)
+                    .scan(0, (sum, window) -> sum + window.size())
+                    .toSet();
+
+            assertEquals(expected, set);
+        }
+
+        interface CustomExtension<T, R> extends StreamExtension<T, R> {
+
+            static <T> CustomExtension<T, List<T>> windowed(int size) {
+                return stream -> stream(() -> Spliterators.spliteratorUnknownSize(Sequence.of(stream::iterator)
+                        .windowed(size, 1, false)
+                        .map(Collectable::toList).iterator(), ORDERED), ORDERED, false);
+            }
+
+            @Override
+            default <V> CustomExtension<T, V> andThen(StreamExtension<R, V> after) {
+                return tStream -> after.extend(extend(tStream));
+            }
+
+            default Function<Stream<T>, Set<R>> toSet() {
+                return finish(s -> s.collect(Collectors.toSet()));
+            }
+        }
+    }
 }

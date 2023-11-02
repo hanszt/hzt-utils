@@ -24,18 +24,10 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
-import static org.hzt.utils.streams.StreamExtensions.chunked;
-import static org.hzt.utils.streams.StreamExtensions.filter;
-import static org.hzt.utils.streams.StreamExtensions.map;
-import static org.hzt.utils.streams.StreamExtensions.peek;
-import static org.hzt.utils.streams.StreamExtensions.scan;
-import static org.hzt.utils.streams.StreamExtensions.windowed;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.hzt.utils.streams.StreamExtensions.*;
+import static org.hzt.utils.streams.StreamFinishers.fold;
+import static org.hzt.utils.streams.StreamFinishers.toSet;
+import static org.junit.jupiter.api.Assertions.*;
 
 class StreamXTest {
 
@@ -328,6 +320,8 @@ class StreamXTest {
             );
         }
 
+
+
         @Test
         void composedExtension() {
             final var windows = StreamX.iterate(0, i -> i + 1)
@@ -347,4 +341,36 @@ class StreamXTest {
 
     }
 
+    @Nested
+    class StreamFinisherTests {
+
+        @Test
+        void finishByFold() {
+            final var windows = StreamX.iterate(0, i -> i + 1)
+                    .limit(10)
+                    .finish(fold(new StringBuilder(), StringBuilder::append))
+                    .toString();
+
+            final var expected = Sequence.iterate(0, i -> i + 1).take(10).joinToString("");
+
+            assertEquals(expected, windows);
+        }
+
+        @Test
+        void finishByExtendedFinisher() {
+            final var set = StreamX.iterate(0, i -> i + 1)
+                    .limit(10)
+                    .finish(StreamExtensions.<Integer>windowed(2)
+                            .andThen(scan(0, (sum, window) -> sum + window.size()))
+                            .finish(toSet()));
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .take(10)
+                    .windowed(2)
+                    .scan(0, (sum, window) -> sum + window.size())
+                    .toSet();
+
+            assertEquals(expected, set);
+        }
+    }
 }

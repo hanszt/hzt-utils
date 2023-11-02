@@ -1,7 +1,5 @@
 package org.hzt.utils.iterators;
 
-import org.hzt.utils.PreConditions;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -20,11 +18,11 @@ public abstract class AbstractIterator<T> implements Iterator<T> {
 
     @Override
     public boolean hasNext() {
-        PreConditions.require(state != State.FAILED);
         return switch (state) {
             case DONE -> false;
             case CONTINUE -> true;
-            default -> tryToComputeNext();
+            case INIT_UNKNOWN, NEXT_UNKNOWN -> tryToComputeNext();
+            case FAILED -> throw new IllegalArgumentException();
         };
     }
 

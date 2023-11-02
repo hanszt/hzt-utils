@@ -1,8 +1,11 @@
 package org.hzt.utils.streams;
 
+import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.sequences.primitives.IntSequence;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
@@ -24,6 +27,7 @@ public final class StreamExtensions {
             return stream(new Spliterators.AbstractSpliterator<R>(spliterator.estimateSize(), spliterator.characteristics()) {
 
                 private final AtomicReference<T> atomicReference = new AtomicReference<>();
+
                 @Override
                 public boolean tryAdvance(Consumer<? super R> action) {
                     final var hasNext = spliterator.tryAdvance(atomicReference::set);
@@ -59,31 +63,50 @@ public final class StreamExtensions {
     }
 
     public static <T> StreamExtension<T, List<T>> windowed(int size,
-                                                        int step,
-                                                        boolean partialWindows) {
+                                                           int step,
+                                                           boolean partialWindows) {
         return windowed(size, step, partialWindows, s -> s);
     }
+
     public static <T, R> StreamExtension<T, R> windowed(int size,
-                                                           int step,
-                                                           boolean partialWindows,
-                                                           Function<List<T>, R> mapper) {
-        return stream -> {
-            final var map = Sequence.of(stream::iterator)
-                    .windowed(size, step, partialWindows)
-                    .map(s -> mapper.apply(s.toList()));
-            return stream(() -> Spliterators.spliteratorUnknownSize(map.iterator(), ORDERED), ORDERED, false);
-        };
+                                                        int step,
+                                                        boolean partialWindows,
+                                                        Function<List<T>, R> mapper) {
+        return stream -> stream(() -> Spliterators.spliteratorUnknownSize(Sequence.of(stream::iterator)
+                .windowed(size, step, partialWindows)
+                .map(s -> mapper.apply(s.toList())).iterator(), ORDERED), ORDERED, false);
+    }
+
+    public static IntToObjStreamExtension<IntList> intWindowed(int size) {
+        return intWindowed(size, 1, false, w -> w);
+    }
+
+    public static <R> IntToObjStreamExtension<R> intWindowed(int size,
+                                                        int step,
+                                                        boolean partialWindows,
+                                                        Function<IntList, ? extends R> mapper) {
+        return stream -> stream(() -> Spliterators.spliteratorUnknownSize(IntSequence.of(stream::iterator)
+                .windowed(size, step, partialWindows)
+                .map(mapper).iterator(), ORDERED), ORDERED, false);
+    }
+
+    public static <T, R> StreamExtension<T, R> zipWithNext(BiFunction<? super T, ? super T, ? extends R> mapper) {
+        return stream -> stream(() -> Spliterators.spliteratorUnknownSize(Sequence.of(stream::iterator)
+                .zipWithNext(mapper)
+                .iterator(), ORDERED), ORDERED, false);
     }
 
     public static <T, R> StreamExtension<T, R> scan(R initial, BiFunction<R, T, R> function) {
-        return tStream -> {
-            final var scan = Sequence.of(tStream::iterator).scan(initial, function);
-            return stream(() -> Spliterators.spliteratorUnknownSize(scan.iterator(), ORDERED), ORDERED, false);
-        };
-
+        return tStream -> stream(() -> Spliterators
+                .spliteratorUnknownSize(Sequence.of(tStream::iterator)
+                        .scan(initial, function).iterator(), ORDERED), ORDERED, false);
     }
 
     public static <T> StreamExtension<T, T> filter(Predicate<? super T> predicate) {
         return s -> s.filter(predicate);
+    }
+
+    public static <T, R> StreamExtension<T, R> mapNotNull(Function<? super T, R> mapper) {
+        return s -> s.filter(Objects::nonNull).map(mapper).filter(Objects::nonNull);
     }
 }

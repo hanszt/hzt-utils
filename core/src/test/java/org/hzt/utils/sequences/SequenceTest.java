@@ -47,6 +47,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -160,11 +161,27 @@ class SequenceTest {
     void testMapNotNull() {
         final var list = ListX.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
 
-        final var sum = Sequence.of(list)
+        final var balances = Sequence.of(list)
                 .mapNotNull(BankAccount::getBalance)
                 .toMutableList();
 
-        assertFalse(sum.contains(null));
+        assertFalse(balances.contains(null));
+    }
+
+    @Test
+    void testMapIfPresent() {
+        final var list = ListX.of(TestSampleGenerator.createMuseumList());
+
+        final var dates = Sequence.of(list)
+                .mapIfPresent(Museum::dateOfOpening)
+                .toList();
+
+        final var expected = ListX.of("1992-04-02", "1940-01-23", "1965-08-04").toListOf(LocalDate::parse);
+
+        assertAll(
+                () -> assertEquals(expected, dates),
+                () -> assertEquals(4, list.size())
+        );
     }
 
     @Test

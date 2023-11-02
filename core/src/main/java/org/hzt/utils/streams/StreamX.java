@@ -120,6 +120,14 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
         return DoubleStreamX.of(stream().mapToDouble(mapper));
     }
 
+    default <R> StreamX<R> then(StreamExtension<T, R> extension) {
+        return new StreamXImpl<>(extension.extend(this));
+    }
+
+    default <R> R finish(Function<Stream<T>, ? extends R> finisher) {
+        return finisher.apply(this);
+    }
+
     @Override
     default <R> StreamX<R> flatMap(final Function<? super T, ? extends Stream<? extends R>> mapper) {
         return StreamX.of(stream().flatMap(mapper));
@@ -246,10 +254,6 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     @Override
     default <U> U reduce(final U identity, final BiFunction<U, ? super T, U> accumulator, final BinaryOperator<U> combiner) {
         return stream().reduce(identity, accumulator, combiner);
-    }
-
-    default <R> StreamX<R> then(StreamExtension<T, R> extension) {
-        return new StreamXImpl<>(extension.extend(this));
     }
 
     @Override

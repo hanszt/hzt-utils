@@ -35,7 +35,7 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
         return of(IntStream.generate(operator));
     }
 
-    static IntStreamX generate(final int initial, final IntUnaryOperator operator) {
+    static IntStreamX iterate(final int initial, final IntUnaryOperator operator) {
         return of(IntStream.iterate(initial, operator));
     }
 
@@ -101,6 +101,10 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
     @Override
     default <U> StreamX<U> mapToObj(final IntFunction<? extends U> mapper) {
         return new StreamXImpl<>(stream().mapToObj(mapper));
+    }
+
+    default <R> StreamX<R> then(IntToObjStreamExtension<R> extension) {
+        return new StreamXImpl<>(extension.extend(this));
     }
 
     @Override

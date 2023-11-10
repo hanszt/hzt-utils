@@ -7,7 +7,7 @@ import java.util.function.BiFunction;
 
 public interface Zippable<T> extends Iterable<T> {
 
-    default <R> EntrySequence<T, R> zip(Iterable<R> iterable) {
+    default <R> EntrySequence<T, R> zip(final Iterable<R> iterable) {
         return EntrySequence.of(zip(iterable, MapX::entry));
     }
 

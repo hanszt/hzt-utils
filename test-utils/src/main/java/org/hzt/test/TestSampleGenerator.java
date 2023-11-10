@@ -134,28 +134,28 @@ public final class TestSampleGenerator {
         return bankAccounts;
     }
 
-    public static List<Number> createRandomNumberTypeList(int amount) {
+    public static List<Number> createRandomNumberTypeList(final int amount) {
         return IntStream.range(0, amount)
                 .mapToObj(TestSampleGenerator::toRandomNumberType)
                 .collect(Collectors.toList());
     }
 
-    private static Number toRandomNumberType(int integer) {
+    private static Number toRandomNumberType(final int integer) {
         return TO_NUMBER_TYPE_FUNCTIONS.get(RANDOM.nextInt(TO_NUMBER_TYPE_FUNCTIONS.size())).apply(integer);
     }
 
-    public static List<Number> createNumberTypeList(int amount) {
+    public static List<Number> createNumberTypeList(final int amount) {
         return IntStream.range(0, amount)
                 .mapToObj(TestSampleGenerator::toNumberType)
                 .collect(Collectors.toList());
     }
 
-    public static DoubleStream gaussianDoubles(int amount, double targetMean, double targetStdDev) {
+    public static DoubleStream gaussianDoubles(final int amount, final double targetMean, final double targetStdDev) {
         return IntStream.range(0, amount)
                 .mapToDouble(i -> targetMean + targetStdDev * RANDOM.nextGaussian());
     }
 
-    private static Number toNumberType(int integer) {
+    private static Number toNumberType(final int integer) {
         return TO_NUMBER_TYPE_FUNCTIONS.get(integer % TO_NUMBER_TYPE_FUNCTIONS.size()).apply(integer);
     }
 
@@ -173,9 +173,9 @@ public final class TestSampleGenerator {
                 .map(File::toPath)
                 .orElseThrow(() -> new NoSuchElementException("Could not find resource " + name));
 
-        try (Stream<String> s = Files.lines(path)) {
+        try (final Stream<String> s = Files.lines(path)) {
             return s.collect(Collectors.toList());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException(e);
         }
     }

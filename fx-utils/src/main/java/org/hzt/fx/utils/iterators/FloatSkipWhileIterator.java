@@ -12,13 +12,13 @@ final class FloatSkipWhileIterator implements FloatIterator {
     private boolean firstIteration = true;
     private SkipState state = SkipState.SKIPPING;
 
-    FloatSkipWhileIterator(FloatIterator iterator, FloatPredicate predicate, boolean inclusive) {
+    FloatSkipWhileIterator(final FloatIterator iterator, final FloatPredicate predicate, final boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
     }
 
-    public static FloatIterator of(FloatIterator iterator, FloatPredicate predicate, boolean inclusive) {
+    public static FloatIterator of(final FloatIterator iterator, final FloatPredicate predicate, final boolean inclusive) {
         return new FloatSkipWhileIterator(iterator, predicate, inclusive);
     }
 
@@ -52,7 +52,7 @@ final class FloatSkipWhileIterator implements FloatIterator {
             skip();
         }
         if (state == SkipState.NEXT_ITEM) {
-            float result = nextItem;
+            final float result = nextItem;
             state = SkipState.NORMAL_ITERATION;
             return result;
         }

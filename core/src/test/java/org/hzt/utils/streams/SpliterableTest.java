@@ -17,7 +17,7 @@ class SpliterableTest {
 
         final AtomicIterator<Integer> atomicIterator = spliterable.atomicIterator();
 
-        Set<Integer> set = new HashSet<>();
+        final Set<Integer> set = new HashSet<>();
 
         //noinspection StatementWithEmptyBody
         while (atomicIterator.tryAdvance(set::add)) {

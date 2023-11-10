@@ -23,8 +23,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
-import static org.hzt.fx.utils.FxCollectors.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hzt.fx.utils.FxCollectors.toObservableFloatArray;
+import static org.hzt.fx.utils.FxCollectors.toObservableIntArray;
+import static org.hzt.fx.utils.FxCollectors.toObservableList;
+import static org.hzt.fx.utils.FxCollectors.toObservableMap;
+import static org.hzt.fx.utils.FxCollectors.toObservableSet;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FxCollectorsTest {
 
@@ -39,7 +46,7 @@ class FxCollectorsTest {
                 .collect(toObservableList());
 
         strings.addListener((ListChangeListener<String>) c -> changeListenerFired.set(true));
-        IntegerProperty size = new SimpleIntegerProperty();
+        final IntegerProperty size = new SimpleIntegerProperty();
         strings.add("Kaas");
         size.bind(Bindings.size(strings));
 
@@ -61,7 +68,7 @@ class FxCollectorsTest {
                 .collect(toObservableSet());
 
         strings.addListener((SetChangeListener<String>) c -> changeListenerFired.set(true));
-        IntegerProperty size = new SimpleIntegerProperty();
+        final IntegerProperty size = new SimpleIntegerProperty();
         strings.add("Kaas");
         size.bind(Bindings.size(strings));
 
@@ -84,7 +91,7 @@ class FxCollectorsTest {
                 .collect(toObservableMap(t -> t, t -> Integer.toString(t)));
 
         map.addListener((MapChangeListener<Integer, String>) c -> changeListenerFired.set(true));
-        IntegerProperty size = new SimpleIntegerProperty();
+        final IntegerProperty size = new SimpleIntegerProperty();
         map.put(5, "Kaas");
         size.bind(Bindings.size(map));
 

@@ -11,7 +11,7 @@ class Grid2DUtilsTest {
 
     @Test
     void testMapGrid() {
-        Integer[][] grid = {
+        final Integer[][] grid = {
                 {1, 2, 3, 4},
                 {5, 6, 7, 8}
         };
@@ -27,7 +27,7 @@ class Grid2DUtilsTest {
 
     @Test
     void testSwapInListGrid() {
-        Integer[][] grid = {
+        final Integer[][] grid = {
                 {1, 2, 3, 4},
                 {5, 6, 7, 8}
         };
@@ -46,7 +46,7 @@ class Grid2DUtilsTest {
 
     @Test
     void testToIntGrid() {
-        Integer[][] grid = {
+        final Integer[][] grid = {
                 {1, 2, 3, 4},
                 {5, 6, 7, 8}
         };

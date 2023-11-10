@@ -13,7 +13,7 @@ final class SubSequence<T> implements SkipTakeSequence<T> {
     private final long endIndex;
     private final long count;
 
-    SubSequence(Sequence<T> upstream, long startIndex, long endIndex) {
+    SubSequence(final Sequence<T> upstream, final long startIndex, final long endIndex) {
         require(startIndex >= 0, () -> "startIndex should be non-negative, but is " + startIndex);
         require(endIndex >= 0, () -> "endIndex should be non-negative, but is " + endIndex);
         require(endIndex >= startIndex, () -> "endIndex should be not less than startIndex, but was " + endIndex + " < " + startIndex);
@@ -29,12 +29,12 @@ final class SubSequence<T> implements SkipTakeSequence<T> {
     }
 
     @Override
-    public Sequence<T> skip(long n) {
+    public Sequence<T> skip(final long n) {
         return n >= count ? new EmptySequence<>() : new SubSequence<>(upstream, startIndex + n, endIndex);
     }
 
     @Override
-    public Sequence<T> take(long n) {
+    public Sequence<T> take(final long n) {
         return n >= count ? this : new SubSequence<>(upstream, startIndex, startIndex + 1);
     }
 

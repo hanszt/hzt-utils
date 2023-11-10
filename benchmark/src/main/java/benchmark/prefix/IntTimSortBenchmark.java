@@ -60,7 +60,7 @@ public class IntTimSortBenchmark {
     @Benchmark
     @SuppressWarnings("squid:S2384")
     public int[] arraySort() {
-        int[] copy = Arrays.copyOf(array, array.length);
+        final int[] copy = Arrays.copyOf(array, array.length);
         Arrays.sort(copy);
         return copy;
     }
@@ -80,8 +80,8 @@ public class IntTimSortBenchmark {
         return list;
     }
 
-    public static void main(String[] args) {
-        Options options = new OptionsBuilder()
+    public static void main(final String[] args) {
+        final Options options = new OptionsBuilder()
                 .include(IntTimSortBenchmark.class.getSimpleName())
                 .forks(2)
                 .warmupIterations(2)
@@ -90,7 +90,7 @@ public class IntTimSortBenchmark {
                 .build();
         try {
             new Runner(options).run();
-        } catch (RunnerException e) {
+        } catch (final RunnerException e) {
             throw new IllegalStateException(e);
         }
     }

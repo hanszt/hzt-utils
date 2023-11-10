@@ -17,19 +17,19 @@ public interface Groupable<T> extends Iterable<T> {
         return groupBy(It::self);
     }
 
-    default <K> MapX<K, MutableListX<T>> groupBy(Function<? super T, ? extends K> classifier) {
+    default <K> MapX<K, MutableListX<T>> groupBy(final Function<? super T, ? extends K> classifier) {
         return groupMapping(classifier, It::self);
     }
 
-    default <K, R> MapX<K, MutableListX<R>> groupMapping(Function<? super T, ? extends K> classifier,
-                                                         Function<? super T, ? extends R> valueMapper) {
+    default <K, R> MapX<K, MutableListX<R>> groupMapping(final Function<? super T, ? extends K> classifier,
+                                                         final Function<? super T, ? extends R> valueMapper) {
         return IterableReductions.groupMapping(this, classifier, valueMapper);
     }
 
-    default <K> Grouping<T, K> groupingBy(Function<? super T, ? extends K> classifier) {
+    default <K> Grouping<T, K> groupingBy(final Function<? super T, ? extends K> classifier) {
         return new Grouping<T, K>() {
             @Override
-            public K keyOf(T element) {
+            public K keyOf(final T element) {
                 return classifier.apply(element);
             }
 
@@ -40,12 +40,12 @@ public interface Groupable<T> extends Iterable<T> {
         };
     }
 
-    default Pair<ListX<T>, ListX<T>> partition(Predicate<T> predicate) {
+    default Pair<ListX<T>, ListX<T>> partition(final Predicate<T> predicate) {
         return partitionMapping(predicate, It::self);
     }
 
-    default <R> Pair<ListX<R>, ListX<R>> partitionMapping(Predicate<T> predicate,
-                                                          Function<? super T, ? extends R> resultMapper) {
+    default <R> Pair<ListX<R>, ListX<R>> partitionMapping(final Predicate<T> predicate,
+                                                          final Function<? super T, ? extends R> resultMapper) {
         return IterableReductions.partitionMapping(this, predicate, resultMapper);
     }
 }

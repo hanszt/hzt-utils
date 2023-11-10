@@ -43,11 +43,11 @@ public interface NumberX<T extends Number> {
         return BigDecimal.valueOf(getValue().longValue());
     }
 
-    default BigDecimalX toBigDecimalX(int scale, RoundingMode roundingMode) {
+    default BigDecimalX toBigDecimalX(final int scale, final RoundingMode roundingMode) {
         return BigDecimalX.of(getValue()).setScale(scale, roundingMode);
     }
 
-    default BigDecimal toBigDecimal(int scale, RoundingMode roundingMode) {
+    default BigDecimal toBigDecimal(final int scale, final RoundingMode roundingMode) {
         return BigDecimal.valueOf(getValue().longValue()).setScale(scale, roundingMode);
     }
 

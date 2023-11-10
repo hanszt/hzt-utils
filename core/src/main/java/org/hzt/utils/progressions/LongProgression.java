@@ -12,7 +12,7 @@ public class LongProgression implements LongSequence {
     private final long endInclusive;
     private final long step;
 
-    protected LongProgression(long start, long endInclusive, long step) {
+    protected LongProgression(final long start, final long endInclusive, final long step) {
         if (step == 0) {
             throw new IllegalArgumentException("step must be none-zero");
         }
@@ -24,11 +24,11 @@ public class LongProgression implements LongSequence {
         this.step = step;
     }
 
-    public static LongX from(long start) {
+    public static LongX from(final long start) {
         return LongX.of(start);
     }
 
-    public static LongProgression downTo(long l) {
+    public static LongProgression downTo(final long l) {
         if (l > 0) {
             return new LongProgression(0L, 0, -1);
         }
@@ -36,14 +36,14 @@ public class LongProgression implements LongSequence {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LongProgression longs = (LongProgression) o;
+        final LongProgression longs = (LongProgression) o;
         return start == longs.start && endInclusive == longs.endInclusive && step == longs.step;
     }
 

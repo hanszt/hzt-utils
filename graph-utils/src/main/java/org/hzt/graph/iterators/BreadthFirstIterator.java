@@ -19,7 +19,7 @@ final class BreadthFirstIterator<T, S extends Node<T, S>> implements Iterator<S>
     private final Set<S> visited = new HashSet<>();
     private final Queue<S> queue = new LinkedList<>();
 
-    BreadthFirstIterator(S node) {
+    BreadthFirstIterator(final S node) {
         queue.add(node);
         visited.add(node);
     }
@@ -34,8 +34,8 @@ final class BreadthFirstIterator<T, S extends Node<T, S>> implements Iterator<S>
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        S next = queue.remove();
-        for (S neighbor : next.getNeighbors()) {
+        final S next = queue.remove();
+        for (final S neighbor : next.getNeighbors()) {
             if (!this.visited.contains(neighbor)) {
                 neighbor.withPredecessor(next);
                 this.queue.add(neighbor);

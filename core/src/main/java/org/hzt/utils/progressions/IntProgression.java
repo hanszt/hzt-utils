@@ -12,7 +12,7 @@ public class IntProgression implements IntSequence {
     private final int endInclusive;
     private final int step;
 
-    protected IntProgression(int start, int endInclusive, int step) {
+    protected IntProgression(final int start, final int endInclusive, final int step) {
         if (step == 0) {
             throw new IllegalArgumentException("step must be none-zero");
         }
@@ -28,42 +28,42 @@ public class IntProgression implements IntSequence {
         return new IntProgression(0, -1, 1);
     }
 
-    public static IntX from(int start) {
+    public static IntX from(final int start) {
         return IntX.of(start);
     }
 
-    public static IntProgression until(int end) {
+    public static IntProgression until(final int end) {
         return new IntProgression(0, end, 1);
     }
 
-    public static IntProgression until(int end, int step) {
+    public static IntProgression until(final int end, final int step) {
         return new IntProgression(0, end, step);
     }
 
-    public static IntProgression downTo(int endInclusive) {
+    public static IntProgression downTo(final int endInclusive) {
         if (endInclusive > 0) {
             return new IntProgression(0, 0, -1);
         }
         return new IntProgression(0, endInclusive, -1);
     }
 
-    public static IntProgression closed(int start, int endInclusive, int step) {
+    public static IntProgression closed(final int start, final int endInclusive, final int step) {
         return new IntProgression(start, endInclusive, step);
     }
 
-    public static IntProgression closed(int start, int endInclusive) {
+    public static IntProgression closed(final int start, final int endInclusive) {
         return new IntProgression(start, endInclusive, -1);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        IntProgression integers = (IntProgression) o;
+        final IntProgression integers = (IntProgression) o;
         return start == integers.start && endInclusive == integers.endInclusive && getStep() == integers.getStep();
     }
 

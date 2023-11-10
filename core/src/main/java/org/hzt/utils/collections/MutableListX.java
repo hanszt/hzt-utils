@@ -11,35 +11,35 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
         return new ArrayListX<>();
     }
 
-    static <E> MutableListX<E> withInitCapacity(int capacity) {
+    static <E> MutableListX<E> withInitCapacity(final int capacity) {
         return new ArrayListX<>(capacity);
     }
 
-    static <E> MutableListX<E> of(Iterable<E> iterable) {
+    static <E> MutableListX<E> of(final Iterable<E> iterable) {
         return new ArrayListX<>(iterable);
     }
 
-    static <E> MutableListX<E> of(Collection<E> collection) {
+    static <E> MutableListX<E> of(final Collection<E> collection) {
         return new ArrayListX<>(collection);
     }
 
     @SafeVarargs
-    static <E> MutableListX<E> of(E... values) {
+    static <E> MutableListX<E> of(final E... values) {
         return new ArrayListX<>(values);
     }
 
-    static <E> MutableListX<E> of(E value) {
+    static <E> MutableListX<E> of(final E value) {
         return new ArrayListX<>(value);
     }
 
     @Override
-    default MutableListX<E> plus(E value) {
+    default MutableListX<E> plus(final E value) {
         add(value);
         return this;
     }
 
     @Override
-    default MutableListX<E> plus(Iterable<? extends E> iterable) {
+    default MutableListX<E> plus(final Iterable<? extends E> iterable) {
        addAll(iterable);
        return this;
     }
@@ -51,7 +51,7 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
     MutableListX<E> subList(int fromIndex, int toIndex);
 
     @Override
-    default boolean containsAll(Iterable<E> iterable) {
+    default boolean containsAll(final Iterable<E> iterable) {
         return ListX.super.containsAll(iterable);
     }
 

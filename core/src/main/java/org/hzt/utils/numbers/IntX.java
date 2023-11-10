@@ -16,23 +16,23 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
 
     private final Integer integer;
 
-    private IntX(int integer) {
+    private IntX(final int integer) {
         this.integer = integer;
     }
 
-    public static IntX of(Number number) {
+    public static IntX of(final Number number) {
         return new IntX(number.intValue());
     }
 
-    public IntProgression downTo(int target) {
+    public IntProgression downTo(final int target) {
         return target > integer ? IntProgression.empty() : IntProgression.closed(integer, target, -1);
     }
 
-    public IntRange upTo(int target) {
+    public IntRange upTo(final int target) {
         return target < integer ? IntRange.empty() : IntRange.closed(integer, target);
     }
 
-    public IntRange until(int bound) {
+    public IntRange until(final int bound) {
         return IntRange.of(integer, bound);
     }
 
@@ -40,7 +40,7 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return coerceIn(integer, minimumValue, maximumValue);
     }
 
-    public static int coerceIn(int integer, int minimumValue, int maximumValue) {
+    public static int coerceIn(final int integer, final int minimumValue, final int maximumValue) {
         if (minimumValue > maximumValue) {
             throw new IllegalArgumentException("Cannot coerce value to an empty range: maximum " +
                     maximumValue + " is less than minimum " + minimumValue);
@@ -51,51 +51,51 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return Math.min(integer, maximumValue);
     }
 
-    public static String toString(int i, int radix) {
+    public static String toString(final int i, final int radix) {
         return Integer.toString(i, radix);
     }
 
-    public static String toUnsignedString(int i, int radix) {
+    public static String toUnsignedString(final int i, final int radix) {
         return Integer.toUnsignedString(i, radix);
     }
 
-    public static String toHexString(int i) {
+    public static String toHexString(final int i) {
         return Integer.toHexString(i);
     }
 
-    public static String toOctalString(int i) {
+    public static String toOctalString(final int i) {
         return Integer.toOctalString(i);
     }
 
-    public static String toBinaryString(int i) {
+    public static String toBinaryString(final int i) {
         return Integer.toBinaryString(i);
     }
 
-    public static String toString(int i) {
+    public static String toString(final int i) {
         return Integer.toString(i);
     }
 
-    public static String toUnsignedString(int i) {
+    public static String toUnsignedString(final int i) {
         return Integer.toUnsignedString(i);
     }
 
-    public static int parseInt(String s, int radix) throws NumberFormatException {
+    public static int parseInt(final String s, final int radix) throws NumberFormatException {
         return Integer.parseInt(s, radix);
     }
 
-    public static IntPredicate multipleOf(int multiple) {
+    public static IntPredicate multipleOf(final int multiple) {
         return i -> i % multiple == 0;
     }
 
-    public boolean isMultipleOf(int multiple) {
+    public boolean isMultipleOf(final int multiple) {
         return multipleOf(multiple).test(integer);
     }
 
-    public static boolean isEven(int i) {
+    public static boolean isEven(final int i) {
         return multipleOf(2).test(i);
     }
 
-    public static int times(int value1, int value2) {
+    public static int times(final int value1, final int value2) {
         return value1 * value2;
     }
 
@@ -103,7 +103,7 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return isEven(integer);
     }
 
-    public static boolean isOdd(int i) {
+    public static boolean isOdd(final int i) {
         return i % 2 != 0;
     }
 
@@ -111,35 +111,35 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return isOdd(integer);
     }
 
-    public static int parseInt(String s) throws NumberFormatException {
+    public static int parseInt(final String s) throws NumberFormatException {
         return Integer.parseInt(s);
     }
 
-    public static char asChar(int i) {
+    public static char asChar(final int i) {
         return (char) i;
     }
 
-    public static String asString(int i) {
+    public static String asString(final int i) {
         return String.valueOf(asChar(i));
     }
 
-    public static int parseUnsignedInt(String s, int radix) throws NumberFormatException {
+    public static int parseUnsignedInt(final String s, final int radix) throws NumberFormatException {
         return Integer.parseUnsignedInt(s, radix);
     }
 
-    public static int parseUnsignedInt(String s) throws NumberFormatException {
+    public static int parseUnsignedInt(final String s) throws NumberFormatException {
         return Integer.parseUnsignedInt(s);
     }
 
-    public static Integer valueOf(String s, int radix) throws NumberFormatException {
+    public static Integer valueOf(final String s, final int radix) throws NumberFormatException {
         return Integer.valueOf(s, radix);
     }
 
-    public static Integer valueOf(String s) throws NumberFormatException {
+    public static Integer valueOf(final String s) throws NumberFormatException {
         return Integer.valueOf(s);
     }
 
-    public static Integer valueOf(int i) {
+    public static Integer valueOf(final int i) {
         return i;
     }
 
@@ -149,7 +149,7 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
                 .filter(IntX::isPrimeNr);
     }
 
-    public static boolean isPrimeNr(long nrToCheck) {
+    public static boolean isPrimeNr(final long nrToCheck) {
         long counter = 0;
         for (long num = nrToCheck; num >= 1; num--) {
             if (nrToCheck % num == 0) {
@@ -170,7 +170,7 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return integer.shortValue();
     }
 
-    public static IntX of(int i) {
+    public static IntX of(final int i) {
         return new IntX(i);
     }
 
@@ -204,14 +204,14 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        IntX intX = (IntX) o;
+        final IntX intX = (IntX) o;
         return Objects.equals(integer, intX.integer);
     }
 
@@ -220,100 +220,100 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return Objects.hash(integer);
     }
 
-    public static Integer getInteger(String nm) {
+    public static Integer getInteger(final String nm) {
         return Integer.getInteger(nm);
     }
 
-    public static Integer getInteger(String nm, int val) {
+    public static Integer getInteger(final String nm, final int val) {
         return Integer.getInteger(nm, val);
     }
 
-    public static Integer getInteger(String nm, Integer val) {
+    public static Integer getInteger(final String nm, final Integer val) {
         return Integer.getInteger(nm, val);
     }
 
-    public static Integer decode(String nm) throws NumberFormatException {
+    public static Integer decode(final String nm) throws NumberFormatException {
         return Integer.decode(nm);
     }
 
     @SuppressWarnings("squid:S4351")
-    public int compareTo(Integer anotherInteger) {
+    public int compareTo(final Integer anotherInteger) {
         return integer.compareTo(anotherInteger);
     }
 
-    public static int compare(int x, int y) {
+    public static int compare(final int x, final int y) {
         return Integer.compare(x, y);
     }
 
-    public static int compareReversed(int x, int y) {
+    public static int compareReversed(final int x, final int y) {
         return Integer.compare(y, x);
     }
 
-    public static int compareUnsigned(int x, int y) {
+    public static int compareUnsigned(final int x, final int y) {
         return Integer.compareUnsigned(x, y);
     }
 
-    public static long toUnsignedLong(int x) {
+    public static long toUnsignedLong(final int x) {
         return Integer.toUnsignedLong(x);
     }
 
-    public static int divideUnsigned(int dividend, int divisor) {
+    public static int divideUnsigned(final int dividend, final int divisor) {
         return Integer.divideUnsigned(dividend, divisor);
     }
 
-    public static int remainderUnsigned(int dividend, int divisor) {
+    public static int remainderUnsigned(final int dividend, final int divisor) {
         return Integer.remainderUnsigned(dividend, divisor);
     }
 
-    public static int highestOneBit(int i) {
+    public static int highestOneBit(final int i) {
         return Integer.highestOneBit(i);
     }
 
-    public static int lowestOneBit(int i) {
+    public static int lowestOneBit(final int i) {
         return Integer.lowestOneBit(i);
     }
 
-    public static int numberOfLeadingZeros(int i) {
+    public static int numberOfLeadingZeros(final int i) {
         return Integer.numberOfLeadingZeros(i);
     }
 
-    public static int numberOfTrailingZeros(int i) {
+    public static int numberOfTrailingZeros(final int i) {
         return Integer.numberOfTrailingZeros(i);
     }
 
-    public static int bitCount(int i) {
+    public static int bitCount(final int i) {
         return Integer.bitCount(i);
     }
 
-    public static int rotateLeft(int i, int distance) {
+    public static int rotateLeft(final int i, final int distance) {
         return Integer.rotateLeft(i, distance);
     }
 
-    public static int rotateRight(int i, int distance) {
+    public static int rotateRight(final int i, final int distance) {
         return Integer.rotateRight(i, distance);
     }
 
-    public static int reverse(int i) {
+    public static int reverse(final int i) {
         return Integer.reverse(i);
     }
 
-    public static int signum(int i) {
+    public static int signum(final int i) {
         return Integer.signum(i);
     }
 
-    public static int reverseBytes(int i) {
+    public static int reverseBytes(final int i) {
         return Integer.reverseBytes(i);
     }
 
-    public static int sum(int a, int b) {
+    public static int sum(final int a, final int b) {
         return Integer.sum(a, b);
     }
 
-    public static int max(int a, int b) {
+    public static int max(final int a, final int b) {
         return Integer.max(a, b);
     }
 
-    public static int min(int a, int b) {
+    public static int min(final int a, final int b) {
         return Integer.min(a, b);
     }
 
@@ -323,7 +323,7 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
     }
 
     @Override
-    public int compareTo(IntX o) {
+    public int compareTo(final IntX o) {
         return integer.compareTo(o.integer);
     }
 }

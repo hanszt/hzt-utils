@@ -11,19 +11,19 @@ final class LongTakeSequence implements LongSkipTakeSequence {
     private final LongSequence upstream;
     private final long count;
 
-    LongTakeSequence(LongSequence upstream, long count) {
+    LongTakeSequence(final LongSequence upstream, final long count) {
         PreConditions.require(count >= 0);
         this.upstream = upstream;
         this.count = count;
     }
 
     @Override
-    public LongSequence skip(long n) {
+    public LongSequence skip(final long n) {
         return n >= count ? PrimitiveIterators::emptyLongIterator : new LongSubSequence(upstream, n, count);
     }
 
     @Override
-    public LongSequence take(long n) {
+    public LongSequence take(final long n) {
         return n >= count ? this : new LongTakeSequence(upstream, n);
     }
 

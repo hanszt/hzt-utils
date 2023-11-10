@@ -16,17 +16,17 @@ public final class IntTakeWhileIterator implements PrimitiveIterator.OfInt {
     private int nextLong;
     private State nextState = State.INIT_UNKNOWN;
 
-    private IntTakeWhileIterator(OfInt iterator, IntPredicate predicate, boolean inclusive) {
+    private IntTakeWhileIterator(final OfInt iterator, final IntPredicate predicate, final boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
     }
 
-    public static IntTakeWhileIterator of(OfInt iterator, IntPredicate predicate, boolean inclusive) {
+    public static IntTakeWhileIterator of(final OfInt iterator, final IntPredicate predicate, final boolean inclusive) {
         return new IntTakeWhileIterator(iterator, predicate, inclusive);
     }
 
-    public static IntTakeWhileIterator of(OfInt iterator, IntPredicate predicate) {
+    public static IntTakeWhileIterator of(final OfInt iterator, final IntPredicate predicate) {
         return new IntTakeWhileIterator(iterator, predicate, false);
     }
 
@@ -64,7 +64,7 @@ public final class IntTakeWhileIterator implements PrimitiveIterator.OfInt {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        int result = nextLong;
+        final int result = nextLong;
         nextState = State.NEXT_UNKNOWN;
         return result;
     }

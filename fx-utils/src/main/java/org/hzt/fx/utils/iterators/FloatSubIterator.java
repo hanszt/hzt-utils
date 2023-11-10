@@ -10,13 +10,13 @@ final class FloatSubIterator implements FloatIterator {
 
     private long position;
 
-    private FloatSubIterator(FloatIterator iterator, long startIndex, long endIndex) {
+    private FloatSubIterator(final FloatIterator iterator, final long startIndex, final long endIndex) {
         this.iterator = iterator;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
     }
 
-    public static FloatSubIterator of(FloatIterator iterator, long startIndex, long endIndex) {
+    public static FloatSubIterator of(final FloatIterator iterator, final long startIndex, final long endIndex) {
         return new FloatSubIterator(iterator, startIndex, endIndex);
     }
 

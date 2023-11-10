@@ -18,15 +18,15 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface IntCollectable extends PrimitiveCollectable<IntCollection>, PrimitiveIterable.OfInt {
 
-    default <R> R collect(Supplier<R> supplier,
-                          ObjIntConsumer<R> accumulator) {
+    default <R> R collect(final Supplier<R> supplier,
+                          final ObjIntConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
     }
 
-    default <A, R> R collect(Supplier<A> supplier,
-                             ObjIntConsumer<A> accumulator,
-                             Function<? super A, ? extends R> finisher) {
-        PrimitiveIterator.OfInt iterator = iterator();
+    default <A, R> R collect(final Supplier<A> supplier,
+                             final ObjIntConsumer<A> accumulator,
+                             final Function<? super A, ? extends R> finisher) {
+        final PrimitiveIterator.OfInt iterator = iterator();
         final A result = supplier.get();
         while (iterator.hasNext()) {
             accumulator.accept(result, iterator.nextInt());
@@ -34,19 +34,19 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
         return finisher.apply(result);
     }
 
-    default <A, R> R collect(IntCollector<A, R> collector) {
+    default <A, R> R collect(final IntCollector<A, R> collector) {
         return collect(collector.supplier(), collector.accumulator(), collector.finisher());
     }
 
     default <A1, R1, A2, R2, R> R teeing(
-            IntCollector<A1, ? extends R1> downStream1,
-            IntCollector<A2, ? extends R2> downStream2,
-            BiFunction<? super R1, ? super R2, ? extends R> combiner) {
+            final IntCollector<A1, ? extends R1> downStream1,
+            final IntCollector<A2, ? extends R2> downStream2,
+            final BiFunction<? super R1, ? super R2, ? extends R> combiner) {
         final A1 result1 = downStream1.supplier().get();
         final A2 result2 = downStream2.supplier().get();
         final ObjIntConsumer<A1> accumulator1 = downStream1.accumulator();
         final ObjIntConsumer<A2> accumulator2 = downStream2.accumulator();
-        PrimitiveIterator.OfInt iterator = iterator();
+        final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             final int value = iterator.nextInt();
             accumulator1.accept(result1, value);
@@ -59,8 +59,8 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
         return IntList.copyOf(toMutableList());
     }
 
-    default <C extends IntMutableCollection> C to(Supplier<C> collectionFactory) {
-        C collection = collectionFactory.get();
+    default <C extends IntMutableCollection> C to(final Supplier<C> collectionFactory) {
+        final C collection = collectionFactory.get();
         final PrimitiveIterator.OfInt iterator = iterator();
         while(iterator.hasNext()) {
             collection.add(iterator.nextInt());
@@ -77,15 +77,15 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
         return to(IntMutableSet::empty);
     }
 
-    default <C extends IntMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {
+    default <C extends IntMutableCollection> C takeTo(final Supplier<C> collectionFactory, final long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
-        C collection = collectionFactory.get();
+        final C collection = collectionFactory.get();
         if (n == 0) {
             return collection;
         }
         final PrimitiveIterable.OfInt iterable = this;
         if (iterable instanceof IntMutableCollection) {
-            IntMutableCollection c = (IntMutableCollection) iterable;
+            final IntMutableCollection c = (IntMutableCollection) iterable;
             if (n >= c.size()) {
                 collection.addAll(c);
                 return collection;
@@ -94,7 +94,7 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
         int count = 0;
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
-            int value = iterator.nextInt();
+            final int value = iterator.nextInt();
             collection.add(value);
             if (++count == n) {
                 break;
@@ -103,11 +103,11 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
         return collection;
     }
 
-    default <C extends IntMutableCollection> C skipTo(Supplier<C> collectionFactory, int count) {
-        C collection = collectionFactory.get();
+    default <C extends IntMutableCollection> C skipTo(final Supplier<C> collectionFactory, final int count) {
+        final C collection = collectionFactory.get();
         int counter = 0;
-        for (PrimitiveIterator.OfInt iterator = this.iterator(); iterator.hasNext(); ) {
-            int value = iterator.nextInt();
+        for (final PrimitiveIterator.OfInt iterator = this.iterator(); iterator.hasNext(); ) {
+            final int value = iterator.nextInt();
             if (counter >= count) {
                 collection.add(value);
             }

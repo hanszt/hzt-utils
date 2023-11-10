@@ -20,15 +20,15 @@ public final class IterableReductions {
     private IterableReductions() {
     }
 
-    public static <T> T reduce(Iterable<T> iterable, T initial, BinaryOperator<T> operator) {
+    public static <T> T reduce(final Iterable<T> iterable, final T initial, final BinaryOperator<T> operator) {
         T accumulator = initial;
-        for (T t : iterable) {
+        for (final T t : iterable) {
             accumulator = operator.apply(accumulator, t);
         }
         return accumulator;
     }
 
-    public static <T> Optional<T> reduce(Iterator<T> iterator, BinaryOperator<T> operator) {
+    public static <T> Optional<T> reduce(final Iterator<T> iterator, final BinaryOperator<T> operator) {
         if (iterator.hasNext()) {
             T accumulator = iterator.next();
             while (iterator.hasNext()) {
@@ -40,25 +40,25 @@ public final class IterableReductions {
     }
 
     public static <T, R, K> MapX<K, MutableListX<R>> groupMapping(
-            Iterable<T> iterable,
-            Function<? super T, ? extends K> classifier,
-            Function<? super T, ? extends R> valueMapper) {
-        MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
-        for (T t : iterable) {
+            final Iterable<T> iterable,
+            final Function<? super T, ? extends K> classifier,
+            final Function<? super T, ? extends R> valueMapper) {
+        final MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
+        for (final T t : iterable) {
             groupedMap.computeIfAbsent(classifier.apply(t), key -> MutableListX.empty()).add(valueMapper.apply(t));
         }
         return groupedMap;
     }
 
     public static <T, R> Pair<ListX<R>, ListX<R>> partitionMapping(
-            Iterable<T> iterable,
-            Predicate<T> predicate,
-            Function<? super T, ? extends R> resultMapper) {
-        MutableListX<R> matchingList = MutableListX.empty();
-        MutableListX<R> nonMatchingList = MutableListX.empty();
-        for (T t : iterable) {
+            final Iterable<T> iterable,
+            final Predicate<T> predicate,
+            final Function<? super T, ? extends R> resultMapper) {
+        final MutableListX<R> matchingList = MutableListX.empty();
+        final MutableListX<R> nonMatchingList = MutableListX.empty();
+        for (final T t : iterable) {
             if (t != null) {
-                R r = resultMapper.apply(t);
+                final R r = resultMapper.apply(t);
                 if (predicate.test(t)) {
                     matchingList.add(r);
                 } else {
@@ -70,14 +70,14 @@ public final class IterableReductions {
     }
 
     public static <T, S, I extends Iterable<S>, R> SetX<R> intersectionOf(
-            Iterable<T> iterable,
-            Function<? super T, ? extends I> toCollectionMapper,
-            Function<? super S, ? extends R> selector) {
-        MutableSetX<R> common = MutableSetX.empty();
-        for (T t : iterable) {
+            final Iterable<T> iterable,
+            final Function<? super T, ? extends I> toCollectionMapper,
+            final Function<? super S, ? extends R> selector) {
+        final MutableSetX<R> common = MutableSetX.empty();
+        for (final T t : iterable) {
             final I otherIterable = toCollectionMapper.apply(t);
             final MutableListX<R> resultList = MutableListX.empty();
-            for (S s : otherIterable) {
+            for (final S s : otherIterable) {
                 final R r = selector.apply(s);
                 resultList.add(r);
             }
@@ -90,8 +90,8 @@ public final class IterableReductions {
         return common;
     }
 
-    public static <T> boolean any(Iterable<T> iterable, Predicate<T> predicate) {
-        for (T element : iterable) {
+    public static <T> boolean any(final Iterable<T> iterable, final Predicate<T> predicate) {
+        for (final T element : iterable) {
             if (predicate.test(element)) {
                 return true;
             }
@@ -99,8 +99,8 @@ public final class IterableReductions {
         return false;
     }
 
-    public static <T> boolean all(Iterable<T> iterable, Predicate<T> predicate) {
-        for (T t : iterable) {
+    public static <T> boolean all(final Iterable<T> iterable, final Predicate<T> predicate) {
+        for (final T t : iterable) {
             if (!predicate.test(t)) {
                 return false;
             }
@@ -108,8 +108,8 @@ public final class IterableReductions {
         return true;
     }
 
-    public static <T> boolean none(Iterable<T> iterable, Predicate<T> predicate) {
-        for (T t : iterable) {
+    public static <T> boolean none(final Iterable<T> iterable, final Predicate<T> predicate) {
+        for (final T t : iterable) {
             if (predicate.test(t)) {
                 return false;
             }
@@ -117,12 +117,12 @@ public final class IterableReductions {
         return true;
     }
 
-    public static <T> Optional<T> findLastOf(Iterable<T> iterable) {
+    public static <T> Optional<T> findLastOf(final Iterable<T> iterable) {
         final Iterator<T> iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             return Optional.empty();
         } else if (iterable instanceof List) {
-            List<T> list = (List<T>) iterable;
+            final List<T> list = (List<T>) iterable;
             return Optional.ofNullable(list.get(list.size() - 1));
         } else {
             T result = iterator.next();
@@ -133,7 +133,7 @@ public final class IterableReductions {
         }
     }
 
-    public static <T> Optional<T> findLast(Iterable<T> iterable, Predicate<T> predicate) {
+    public static <T> Optional<T> findLast(final Iterable<T> iterable, final Predicate<T> predicate) {
         final Iterator<T> iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             throw IterableXHelper.noValuePresentException();

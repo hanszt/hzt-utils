@@ -12,8 +12,8 @@ final class ToDoubleFlatMappingIterator<T> implements PrimitiveIterator.OfDouble
 
     private PrimitiveIterator.OfDouble itemIterator = null;
 
-    ToDoubleFlatMappingIterator(Iterator<T> iterator,
-                                Function<? super T, ? extends PrimitiveIterator.OfDouble> toIteratorFunction) {
+    ToDoubleFlatMappingIterator(final Iterator<T> iterator,
+                                final Function<? super T, ? extends PrimitiveIterator.OfDouble> toIteratorFunction) {
         this.iterator = iterator;
         this.toIteratorFunction = toIteratorFunction;
     }

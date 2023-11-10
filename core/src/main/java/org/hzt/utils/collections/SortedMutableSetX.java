@@ -9,28 +9,28 @@ import java.util.function.Function;
 public interface SortedMutableSetX<E> extends NavigableSet<E>, MutableSetX<E> {
 
     static <E, R extends Comparable<? super R>> SortedMutableSetX<E> comparingBy(
-            Function<? super E, ? extends R> selector) {
+            final Function<? super E, ? extends R> selector) {
         return new TreeSetX<>(selector);
     }
 
-    static <E> SortedMutableSetX<E> of(NavigableSet<E> set) {
+    static <E> SortedMutableSetX<E> of(final NavigableSet<E> set) {
         return new TreeSetX<>(set);
     }
 
     static <E, R extends Comparable<? super R>> SortedMutableSetX<E> of(
-            Iterable<E> iterable,
-            Function<? super E, ? extends R> selector) {
+            final Iterable<E> iterable,
+            final Function<? super E, ? extends R> selector) {
         return new TreeSetX<>(iterable, selector);
     }
 
     static <E, R extends Comparable<? super R>> SortedMutableSetX<E> of(
-            Collection<E> collection,
-            Function<? super E, ? extends R> selector) {
+            final Collection<E> collection,
+            final Function<? super E, ? extends R> selector) {
         return new TreeSetX<>(collection, selector);
     }
 
     @SafeVarargs
-    static <E, R extends Comparable<? super R>> SortedMutableSetX<E> of(Function<E, R> selector, E first, E... others) {
+    static <E, R extends Comparable<? super R>> SortedMutableSetX<E> of(final Function<E, R> selector, final E first, final E... others) {
         return new TreeSetX<>(selector, first, others);
     }
 

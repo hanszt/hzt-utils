@@ -13,12 +13,12 @@ public final class DoubleMultiMappingIterator implements PrimitiveIterator.OfDou
 
     private OfDouble itemIterator = null;
 
-    private DoubleMultiMappingIterator(OfDouble iterator, DoubleSequence.DoubleMapMultiConsumer mapper) {
+    private DoubleMultiMappingIterator(final OfDouble iterator, final DoubleSequence.DoubleMapMultiConsumer mapper) {
         this.iterator = iterator;
         this.mapper = mapper;
     }
 
-    public static DoubleMultiMappingIterator of(OfDouble iterator, DoubleSequence.DoubleMapMultiConsumer mapper) {
+    public static DoubleMultiMappingIterator of(final OfDouble iterator, final DoubleSequence.DoubleMapMultiConsumer mapper) {
         return new DoubleMultiMappingIterator(iterator, mapper);
     }
 
@@ -43,7 +43,7 @@ public final class DoubleMultiMappingIterator implements PrimitiveIterator.OfDou
             if (!iterator.hasNext()) {
                 return false;
             }
-            SpinedBuffer.OfDouble doubleBuffer = new SpinedBuffer.OfDouble();
+            final SpinedBuffer.OfDouble doubleBuffer = new SpinedBuffer.OfDouble();
             mapper.accept(iterator.nextDouble(), doubleBuffer);
             final OfDouble nextItemIterator = doubleBuffer.iterator();
             if (nextItemIterator.hasNext()) {

@@ -9,7 +9,12 @@ import java.util.PrimitiveIterator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IntListTest {
 
@@ -65,7 +70,7 @@ class IntListTest {
     void testBinarySearch() {
         final IntList sortedList = IntList.of(-1, 0, 1, 2, 3, 4, 5);
 
-        int valueToSearchFor = 2;
+        final int valueToSearchFor = 2;
 
         final int indexInSortedList = sortedList.binarySearch(valueToSearchFor);
 
@@ -76,17 +81,17 @@ class IntListTest {
     void testIndices() {
         System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
         final IntList intList = IntList.of(2, 2, 2, 2, 2, 2, 3, 45, 1, 5);
-        int[] indices1 = new int[intList.size()];
+        final int[] indices1 = new int[intList.size()];
         final IntRange indices = intList.indices();
-        for (PrimitiveIterator.OfInt iterator = indices.iterator(); iterator.hasNext(); ) {
-            int i = iterator.nextInt();
+        for (final PrimitiveIterator.OfInt iterator = indices.iterator(); iterator.hasNext(); ) {
+            final int i = iterator.nextInt();
             indices1[i] = i;
         }
-        int[] indices2 = new int[intList.size()];
+        final int[] indices2 = new int[intList.size()];
         for (int i = 0; i < intList.size(); i++) {
             indices2[i] = i;
         }
-        int[] indices3 = intList.indicesAsStream().toArray();
+        final int[] indices3 = intList.indicesAsStream().toArray();
 
         assertAll(
                 () -> assertArrayEquals(indices1, indices2),
@@ -98,8 +103,8 @@ class IntListTest {
 
     @Test
     void testMutableListAndImmutableListWithSameElementsAreEqualAccordingToEqualsMethod() {
-        IntList list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
-        IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
+        final IntList list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
+        final IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
 
         assertAll(
                 () -> assertEquals(list2, list1),
@@ -109,8 +114,8 @@ class IntListTest {
 
     @Test
     void testMutableListAndImmutableListWithSameElementsHaveSameHashCode() {
-        IntList list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
-        IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
+        final IntList list1 = IntList.of(1, 2, 5, 4, 5, 6, 8);
+        final IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
 
         assertEquals(list2.hashCode(), list1.hashCode());
     }

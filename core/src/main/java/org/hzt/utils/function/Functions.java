@@ -36,7 +36,7 @@ public final class Functions {
      * }</pre>
      * It can help clean up code
      */
-    public static <T, R> Predicate<T> by(Function<? super T, ? extends R> mapper, Predicate<? super R> predicate) {
+    public static <T, R> Predicate<T> by(final Function<? super T, ? extends R> mapper, final Predicate<? super R> predicate) {
         Objects.requireNonNull(predicate);
         Objects.requireNonNull(mapper);
         return t -> {
@@ -46,9 +46,9 @@ public final class Functions {
     }
 
     public static <T, U, R> Predicate<T> by(
-            Function<? super T, ? extends U> toUMapper,
-            Function<? super U, ? extends R> toRMapper,
-            Predicate<? super R> predicate) {
+            final Function<? super T, ? extends U> toUMapper,
+            final Function<? super U, ? extends R> toRMapper,
+            final Predicate<? super R> predicate) {
         Objects.requireNonNull(predicate);
         Objects.requireNonNull(toUMapper);
         Objects.requireNonNull(toRMapper);
@@ -60,10 +60,10 @@ public final class Functions {
     }
 
     public static <T, U, V, R> Predicate<T> by(
-            Function<? super T, ? extends U> toUMapper,
-            Function<? super U, ? extends V> toVMapper,
-            Function<? super V, ? extends R> toRMapper,
-            Predicate<? super R> predicate) {
+            final Function<? super T, ? extends U> toUMapper,
+            final Function<? super U, ? extends V> toVMapper,
+            final Function<? super V, ? extends R> toRMapper,
+            final Predicate<? super R> predicate) {
         PreConditions.requireAllNonNull(Object.class, toUMapper, toVMapper, toRMapper, predicate);
         return t -> {
             final U u = toUMapper.apply(t);
@@ -91,33 +91,33 @@ public final class Functions {
      * @see java.util.function.Predicate#and(Predicate)
      * @see java.util.function.Predicate#or(Predicate)
      */
-    public static <T> Predicate<T> by(Predicate<T> predicate) {
+    public static <T> Predicate<T> by(final Predicate<T> predicate) {
         Objects.requireNonNull(predicate);
         return predicate;
     }
 
-    public static <T, U> BiPredicate<T, U> not(BiPredicate<T, U> predicate) {
+    public static <T, U> BiPredicate<T, U> not(final BiPredicate<T, U> predicate) {
         return predicate.negate();
     }
 
-    public static IntPredicate notInt(IntPredicate predicate) {
+    public static IntPredicate notInt(final IntPredicate predicate) {
         return predicate.negate();
     }
 
-    public static LongPredicate notLong(LongPredicate predicate) {
+    public static LongPredicate notLong(final LongPredicate predicate) {
         return predicate.negate();
     }
 
-    public static DoublePredicate notDouble(DoublePredicate predicate) {
+    public static DoublePredicate notDouble(final DoublePredicate predicate) {
         return predicate.negate();
     }
 
-    public static <T> Predicate<T> not(Predicate<T> predicate) {
+    public static <T> Predicate<T> not(final Predicate<T> predicate) {
         return predicate.negate();
     }
 
-    public static <T, R> Predicate<T> distinctBy(Function<? super T, ? extends R> function) {
-        Set<R> seen = new HashSet<>();
+    public static <T, R> Predicate<T> distinctBy(final Function<? super T, ? extends R> function) {
+        final Set<R> seen = new HashSet<>();
         return t -> seen.add(function.apply(t));
     }
 }

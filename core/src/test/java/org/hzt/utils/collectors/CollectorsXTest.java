@@ -1,14 +1,14 @@
 package org.hzt.utils.collectors;
 
-import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.statistics.BigDecimalStatistics;
-import org.hzt.utils.statistics.BigDecimalSummaryStatistics;
-import org.hzt.utils.statistics.DoubleStatistics;
-import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
+import org.hzt.utils.It;
+import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.statistics.BigDecimalStatistics;
+import org.hzt.utils.statistics.BigDecimalSummaryStatistics;
+import org.hzt.utils.statistics.DoubleStatistics;
 import org.junit.jupiter.api.Test;
 
 import java.time.Period;
@@ -65,7 +65,7 @@ class CollectorsXTest {
         final DoubleStatistics summarizingAges = paintingList.stream()
                 .collect(CollectorsX.toDoubleStatisticsBy(Painting::ageInYears));
 
-        OptionalDouble optionalAverage = paintingList.stream()
+        final OptionalDouble optionalAverage = paintingList.stream()
                 .mapToDouble(Painting::ageInYears)
                 .average();
 
@@ -86,7 +86,7 @@ class CollectorsXTest {
         final List<String> list5 = Arrays.asList("lol", "asdad", "wer", "werwe", "Hoi");
         final List<String> list6 = Arrays.asList("sdfsf", "", "awr", "awr", "Hoi", "lol");
 
-        List<List<String>> stringLists = Arrays.asList(list1, list2, list3, list4, list5, list6);
+        final List<List<String>> stringLists = Arrays.asList(list1, list2, list3, list4, list5, list6);
 
         final Set<String> intersection = stringLists.stream()
                 .collect(toIntersection());
@@ -104,7 +104,7 @@ class CollectorsXTest {
     void testIntersectingBy() {
         final List<Museum> museumList = TestSampleGenerator.getMuseumListContainingNulls();
 
-        Set<Period> paintingNamesPresentInAllMuseums = museumList.stream()
+        final Set<Period> paintingNamesPresentInAllMuseums = museumList.stream()
                 .map(Museum::getPaintings)
                 .collect(intersectingBy(Painting::getMillenniumOfCreation));
 

@@ -36,19 +36,19 @@ public interface DoubleCollection extends
     }
 
     @Override
-    default boolean containsAll(Iterable<Double> iterable) {
+    default boolean containsAll(final Iterable<Double> iterable) {
         return DoubleSequence.of(iterable).all(this::contains);
     }
 
     @Override
-    default boolean containsAll(double... array) {
+    default boolean containsAll(final double... array) {
         return DoubleSequence.of(array).all(this::contains);
     }
 
     boolean contains(double o);
 
-    default DoubleList filter(DoublePredicate predicate) {
-        DoubleMutableList doubles = DoubleMutableList.withInitCapacity(size());
+    default DoubleList filter(final DoublePredicate predicate) {
+        final DoubleMutableList doubles = DoubleMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             final double value = iterator.nextDouble();
@@ -59,8 +59,8 @@ public interface DoubleCollection extends
         return DoubleList.copyOf(doubles);
     }
 
-    default DoubleList map(DoubleUnaryOperator mapper) {
-        DoubleMutableList list = DoubleMutableList.withInitCapacity(size());
+    default DoubleList map(final DoubleUnaryOperator mapper) {
+        final DoubleMutableList list = DoubleMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             list.add(mapper.applyAsDouble(iterator.nextDouble()));
@@ -68,8 +68,8 @@ public interface DoubleCollection extends
         return DoubleList.copyOf(list);
     }
 
-    default IntList mapToInt(DoubleToIntFunction mapper) {
-        IntMutableList ints = IntMutableList.withInitCapacity(size());
+    default IntList mapToInt(final DoubleToIntFunction mapper) {
+        final IntMutableList ints = IntMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextDouble()));
@@ -77,8 +77,8 @@ public interface DoubleCollection extends
         return IntList.copyOf(ints);
     }
 
-    default LongList mapToLong(DoubleToLongFunction mapper) {
-        LongMutableList longs = LongMutableList.withInitCapacity(size());
+    default LongList mapToLong(final DoubleToLongFunction mapper) {
+        final LongMutableList longs = LongMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             longs.add(mapper.applyAsLong(iterator.nextDouble()));
@@ -86,8 +86,8 @@ public interface DoubleCollection extends
         return LongList.copyOf(longs);
     }
 
-    default <R> ListX<R> mapToObj(DoubleFunction<R> mapper) {
-        MutableListX<R> list = MutableListX.withInitCapacity(size());
+    default <R> ListX<R> mapToObj(final DoubleFunction<R> mapper) {
+        final MutableListX<R> list = MutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             list.add(mapper.apply(iterator.nextDouble()));
@@ -96,15 +96,15 @@ public interface DoubleCollection extends
     }
 
     @Override
-    default DoubleList plus(Iterable<Double> values) {
-        DoubleMutableList list = toMutableList();
+    default DoubleList plus(final Iterable<Double> values) {
+        final DoubleMutableList list = toMutableList();
         list.addAll(values);
         return DoubleList.copyOf(list);
     }
 
     @Override
-    default DoubleList plus(double... array) {
-        DoubleMutableList list = toMutableList();
+    default DoubleList plus(final double... array) {
+        final DoubleMutableList list = toMutableList();
         list.addAll(array);
         return DoubleList.copyOf(list);
     }
@@ -118,12 +118,12 @@ public interface DoubleCollection extends
         return Spliterators.spliterator(iterator(), size(), Spliterator.ORDERED | Spliterator.NONNULL);
     }
 
-    default DoubleList take(long n) {
+    default DoubleList take(final long n) {
         PreConditions.require(n <= Integer.MAX_VALUE);
         return DoubleList.copyOf(takeTo(() -> DoubleMutableList.withInitCapacity((int) n), (int) n));
     }
 
-    default DoubleList skip(long n) {
+    default DoubleList skip(final long n) {
         PreConditions.require(n <= Integer.MAX_VALUE);
         return DoubleList.copyOf(skipTo(() -> DoubleMutableList.withInitCapacity((int) (size() - n)), (int) n));
     }

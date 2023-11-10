@@ -23,7 +23,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class StringXTest {
@@ -109,7 +113,7 @@ class StringXTest {
 
     @ParameterizedTest
     @MethodSource("anagrams")
-    void testStringsAreEachOthersAnagram(String string1, String string2) {
+    void testStringsAreEachOthersAnagram(final String string1, final String string2) {
         assertAll(
                 () -> assertTrue(StringX.of(string1).isAnagramOf(string2)),
                 () -> assertTrue(isAnagram(string1, string2))
@@ -133,14 +137,14 @@ class StringXTest {
             "Laptop machines, Microsoft windows",
             "Avida Dollars, Salvador Dalis",
             "Altissimum planetam tergeminum observavi, Salve umbistineum geminatum Martia proles"})
-    void testStringIsNotAnagram(String string1, String string2) {
+    void testStringIsNotAnagram(final String string1, final String string2) {
         assertAll(
                 () -> assertFalse(StringX.of(string1).isAnagramOf(string2)),
                 () -> assertFalse(isAnagram(string1, string2))
         );
     }
 
-    private static boolean isAnagram(String s1, String s2) {
+    private static boolean isAnagram(final String s1, final String s2) {
         final String parsed1 = s1.trim().toLowerCase(Locale.ROOT).replace(" ", "");
         final String parsed2 = s2.trim().toLowerCase(Locale.ROOT).replace(" ", "");
         final Map<Character, List<Character>> grouping1 = groupByChars(parsed1);
@@ -148,7 +152,7 @@ class StringXTest {
         return grouping1.equals(grouping2);
     }
 
-    private static Map<Character, List<Character>> groupByChars(String s1) {
+    private static Map<Character, List<Character>> groupByChars(final String s1) {
         return StringX.of(s1).chars()
                 .mapToObj(i -> (char) i)
                 .collect(Collectors.groupingBy(Function.identity()));
@@ -160,7 +164,7 @@ class StringXTest {
             "hANS, Hans",
             "1233, 1233",
             "THIS IS A LITTLE TO MUCH!, This is a little to much!"})
-    void testCapitalized(String input, String expected) {
+    void testCapitalized(final String input, final String expected) {
 
         final String actual = StringX.capitalized(input);
 
@@ -172,7 +176,7 @@ class StringXTest {
 
         @Test
         void testSplitToSequence() {
-            String string = "hallo, this, is, a, test -> answer";
+            final String string = "hallo, this, is, a, test -> answer";
             final StringX comma = StringX.of(", ");
             final Sequence<String> strings = StringX.of(string).splitToSequence(comma, " -> ");
 
@@ -183,7 +187,7 @@ class StringXTest {
 
         @Test
         void testSplitToSequenceIgnoreCase() {
-            String string = "hallo O this o is O a, test -> answer";
+            final String string = "hallo O this o is O a, test -> answer";
             final StringBuilder oDelimiter = new StringBuilder(" o ");
             final Sequence<String> strings = StringX.of(string).splitToSequence(true, ", ", oDelimiter, " -> ");
 
@@ -261,7 +265,7 @@ class StringXTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"This is a string", "abbreviate", "Another string"})
-    void testAbbreviate(String string) {
+    void testAbbreviate(final String string) {
         final int MAX_LENGTH = 12;
         final StringX abbreviate = StringX.of(string).abbreviate(MAX_LENGTH);
 

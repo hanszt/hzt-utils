@@ -22,18 +22,18 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
         this(0);
     }
 
-    public IntHashSet(int[] values) {
+    public IntHashSet(final int[] values) {
         this(values.length > 0 ? 1 : 0);
-        for (int value : values) {
+        for (final int value : values) {
             add(value);
         }
     }
 
-    public IntHashSet(int size) {
+    public IntHashSet(final int size) {
         super(size, new CollisionChainNode[INITIAL_CAPACITY]);
     }
 
-    public boolean add(int value) {
+    public boolean add(final int value) {
         if (contains(value)) {
             return false;
         }
@@ -50,7 +50,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
         return true;
     }
 
-    public boolean contains(int value) {
+    public boolean contains(final int value) {
         final int collisionChainIndex = value & mask;
         PrimitiveNode node = table[collisionChainIndex];
 
@@ -63,7 +63,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
         return false;
     }
 
-    public boolean remove(int value) {
+    public boolean remove(final int value) {
         if (!contains(value)) {
             return false;
         }
@@ -77,7 +77,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
 
         PrimitiveNode previous = null;
         while (current != null) {
-            PrimitiveNode next = current.next;
+            final PrimitiveNode next = current.next;
             if (((CollisionChainNode) current).value == value) {
                 if (previous == null) {
                     table[targetCollisionChainIndex] = next;
@@ -123,7 +123,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
         return MAXIMUM_LOAD_FACTOR * size * 4 < table.length;
     }
     private void expand() {
-        CollisionChainNode[] newTable = new CollisionChainNode[table.length * 2];
+        final CollisionChainNode[] newTable = new CollisionChainNode[table.length * 2];
 
         rehash(table, newTable);
         table = newTable;
@@ -131,24 +131,24 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
     }
 
     private void contract() {
-        CollisionChainNode[] newTable = new CollisionChainNode[table.length / 4];
+        final CollisionChainNode[] newTable = new CollisionChainNode[table.length / 4];
         rehash(table, newTable);
         table = newTable;
         mask = table.length - 1;
     }
 
     @Override
-    int nextHashCode(PrimitiveIterator.OfInt iterator) {
+    int nextHashCode(final PrimitiveIterator.OfInt iterator) {
         return Integer.hashCode(iterator.nextInt());
     }
 
     @Override
-    int rehash(PrimitiveNode node, int newTableLength) {
+    int rehash(final PrimitiveNode node, final int newTableLength) {
         return ((CollisionChainNode) node).value & (newTableLength - 1);
     }
 
     @Override
-    protected int[] newArray(int length) {
+    protected int[] newArray(final int length) {
         return new int[length];
     }
 
@@ -170,7 +170,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
 
         private final int value;
 
-        CollisionChainNode(int value, PrimitiveNode next) {
+        CollisionChainNode(final int value, final PrimitiveNode next) {
             super(next);
             this.value = value;
         }
@@ -181,7 +181,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
         }
     }
     @Override
-    protected void appendNextPrimitive(StringBuilder sb, PrimitiveIterator.OfInt iterator) {
+    protected void appendNextPrimitive(final StringBuilder sb, final PrimitiveIterator.OfInt iterator) {
         sb.append(iterator.nextInt());
     }
 }

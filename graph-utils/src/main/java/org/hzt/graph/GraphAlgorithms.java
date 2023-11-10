@@ -10,19 +10,19 @@ public final class GraphAlgorithms {
     private GraphAlgorithms() {
     }
 
-    public static <T> WeightedNode<T> dijkstra(WeightedNode<T> start, WeightedNode<T> goal) {
+    public static <T> WeightedNode<T> dijkstra(final WeightedNode<T> start, final WeightedNode<T> goal) {
         start.setCost(0);
-        Set<WeightedNode<T>> unsettled = new HashSet<>();
-        Set<WeightedNode<T>> settled = new HashSet<>();
+        final Set<WeightedNode<T>> unsettled = new HashSet<>();
+        final Set<WeightedNode<T>> settled = new HashSet<>();
         unsettled.add(start);
         while (!unsettled.isEmpty()) {
-            WeightedNode<T> current = unsettled.stream()
+            final WeightedNode<T> current = unsettled.stream()
                     .min(Comparator.comparing(WeightedNode::getCost))
                     .orElseThrow(NoSuchElementException::new);
 
-            for (WeightedEdge<T> edge : current.getEdges()) {
-                WeightedEdge<T> weightedEdge = edge;
-                WeightedNode<T> neighbor = weightedEdge.getOpposite(current);
+            for (final WeightedEdge<T> edge : current.getEdges()) {
+                final WeightedEdge<T> weightedEdge = edge;
+                final WeightedNode<T> neighbor = weightedEdge.getOpposite(current);
                 if (!settled.contains(neighbor)) {
                     neighbor.setCost(current.getCost());
                     unsettled.add(neighbor);

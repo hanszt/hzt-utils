@@ -13,7 +13,7 @@ final class GeneratorIterator<T> implements Iterator<T> {
     private T nextItem = null;
     private State nextState = State.INIT_UNKNOWN;
 
-    GeneratorIterator(Supplier<? extends T> initSupplier, UnaryOperator<T> nextValueSupplier) {
+    GeneratorIterator(final Supplier<? extends T> initSupplier, final UnaryOperator<T> nextValueSupplier) {
         this.initSupplier = initSupplier;
         this.nextValueSupplier = nextValueSupplier;
     }

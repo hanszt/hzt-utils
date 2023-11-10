@@ -1,15 +1,21 @@
 package org.hzt.utils.function.predicates;
 
-import org.hzt.utils.It;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Painting;
+import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hzt.utils.function.Functions.by;
-import static org.hzt.utils.function.predicates.StringPredicates.*;
+import static org.hzt.utils.function.predicates.StringPredicates.containsAllOf;
+import static org.hzt.utils.function.predicates.StringPredicates.containsAnyOf;
+import static org.hzt.utils.function.predicates.StringPredicates.containsNoneOf;
+import static org.hzt.utils.function.predicates.StringPredicates.endsWithAnyOf;
+import static org.hzt.utils.function.predicates.StringPredicates.hasEqualLength;
+import static org.hzt.utils.function.predicates.StringPredicates.isEqualIgnoreCase;
+import static org.hzt.utils.function.predicates.StringPredicates.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StringPredicatesTest {
@@ -111,9 +117,9 @@ class StringPredicatesTest {
 
         final List<Painting> expected = paintingList.stream()
                 .filter(painting -> {
-                    boolean containsMeisje = painting.name().contains("Meisje");
-                    boolean containsDe = painting.name().contains("de");
-                    boolean containsA = painting.name().contains("first");
+                    final boolean containsMeisje = painting.name().contains("Meisje");
+                    final boolean containsDe = painting.name().contains("de");
+                    final boolean containsA = painting.name().contains("first");
                     return containsMeisje && containsDe && containsA;
                 }).collect(Collectors.toList());
 

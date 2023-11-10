@@ -25,25 +25,25 @@ public interface IntList extends IntCollection,
         return new IntImmutableList();
     }
 
-    static IntList of(Iterable<Integer> iterable) {
+    static IntList of(final Iterable<Integer> iterable) {
         return IntSequence.of(iterable).toList();
     }
 
-    static IntList of(int... array) {
+    static IntList of(final int... array) {
         return new IntImmutableList(array);
     }
 
-    static IntList copyOf(IntCollection intCollection) {
+    static IntList copyOf(final IntCollection intCollection) {
         return new IntImmutableList(intCollection);
     }
 
-    static IntList build(Consumer<? super IntMutableList> factory) {
+    static IntList build(final Consumer<? super IntMutableList> factory) {
         final IntMutableList mutableList = IntMutableList.empty();
         factory.accept(mutableList);
         return IntList.copyOf(mutableList);
     }
 
-    default boolean contains(int value) {
+    default boolean contains(final int value) {
         return indexOf(value) >= 0;
     }
 
@@ -74,8 +74,8 @@ public interface IntList extends IntCollection,
     }
 
     @Override
-    default OptionalInt findLast(IntPredicate predicate) {
-        PrimitiveListIterator.OfInt iterator = listIterator(lastIndex());
+    default OptionalInt findLast(final IntPredicate predicate) {
+        final PrimitiveListIterator.OfInt iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
             final int previousInt = iterator.previousInt();
             if (predicate.test(previousInt)) {
@@ -104,7 +104,7 @@ public interface IntList extends IntCollection,
     }
 
     @Override
-    default IntList sorted(IntComparator comparator) {
+    default IntList sorted(final IntComparator comparator) {
         final int[] array = toArray();
         ArraysX.sort(comparator, array);
         return IntList.of(array);
@@ -124,11 +124,11 @@ public interface IntList extends IntCollection,
      * @see BinarySearchable#binarySearch(int, int, Object)
      * @see java.util.Arrays#binarySearch(int[], int)
      */
-    default int binarySearch(int fromIndex, int toIndex, IntUnaryOperator comparison) {
+    default int binarySearch(final int fromIndex, final int toIndex, final IntUnaryOperator comparison) {
         return BinarySearchable.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
     }
 
-    default int binarySearch(int valueToSearch) {
+    default int binarySearch(final int valueToSearch) {
         return binarySearch(0, size(), e -> Integer.compare(e, valueToSearch));
     }
 

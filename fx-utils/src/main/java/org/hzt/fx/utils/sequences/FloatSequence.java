@@ -14,25 +14,25 @@ import java.util.NoSuchElementException;
 @FunctionalInterface
 public interface FloatSequence extends FloatIterable {
 
-    static FloatSequence of(float... floats) {
+    static FloatSequence of(final float... floats) {
         return () -> FloatIterators.arrayIterator(floats);
     }
 
-    static FloatSequence of(FloatIterable floatIterable) {
+    static FloatSequence of(final FloatIterable floatIterable) {
         return floatIterable::iterator;
     }
 
-    static FloatSequence iterate(float seed, FloatUnaryOperator nextValueSupplier) {
+    static FloatSequence iterate(final float seed, final FloatUnaryOperator nextValueSupplier) {
         return () -> FloatIterators.generatorIterator(() -> seed, nextValueSupplier);
     }
 
     FloatIterator iterator();
 
-    default FloatSequence map(FloatUnaryOperator operator) {
+    default FloatSequence map(final FloatUnaryOperator operator) {
         return () -> FloatIterators.mappingIterator(iterator(), operator);
     }
 
-    default FloatSequence filter(FloatPredicate predicate) {
+    default FloatSequence filter(final FloatPredicate predicate) {
         return () -> FloatIterators.filteringIterator(iterator(), predicate);
     }
 

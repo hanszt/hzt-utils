@@ -202,14 +202,14 @@ class CollectableTest {
         );
     }
 
-    private void assertStreamCanOnlyBeConsumedOnce(Stream<Year> yearStream) {
+    private void assertStreamCanOnlyBeConsumedOnce(final Stream<Year> yearStream) {
         final IllegalStateException exception = assertThrows(IllegalStateException.class, yearStream::findFirst);
         assertEquals("stream has already been operated upon or closed", exception.getMessage());
     }
 
     @Test
     void testFrom3DStringArrayToTripleIntArray() {
-        String[][][] grid = {{{"1"}, {"2"}, {"3"}}};
+        final String[][][] grid = {{{"1"}, {"2"}, {"3"}}};
         final int[][][] expected = Arrays.stream(grid).map(g -> Arrays.stream(g).map(row -> Stream.of(row)
                 .mapToInt(Integer::parseInt).toArray()).toArray(int[][]::new)).toArray(int[][][]::new);
 
@@ -273,7 +273,7 @@ class CollectableTest {
 
     @Test
     void testCollectJoining() {
-        Set<String> strings = new HashSet<>(Arrays.asList("collect", "joining", "requires",
+        final Set<String> strings = new HashSet<>(Arrays.asList("collect", "joining", "requires",
                 "Collector<? super T, A, R>", "as", "collector", "definition",
                 "instead", "of", "Collector<T, A, R>"));
 

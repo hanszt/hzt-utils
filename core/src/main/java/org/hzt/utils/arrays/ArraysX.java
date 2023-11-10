@@ -24,189 +24,189 @@ public final class ArraysX {
     private ArraysX() {
     }
 
-    public static <T> T[] generateArray(int size, IntFunction<T> generator, IntFunction<T[]> arrayFactory) {
+    public static <T> T[] generateArray(final int size, final IntFunction<T> generator, final IntFunction<T[]> arrayFactory) {
         final T[] array = arrayFactory.apply(size);
         Arrays.setAll(array, generator);
         return array;
     }
 
-    public static int[] generateIntArray(int size, IntUnaryOperator generator) {
+    public static int[] generateIntArray(final int size, final IntUnaryOperator generator) {
         final int[] ints = new int[size];
         Arrays.setAll(ints, generator);
         return ints;
     }
 
-    public static long[] generateLongArray(int size, IntToLongFunction generator) {
+    public static long[] generateLongArray(final int size, final IntToLongFunction generator) {
         final long[] longs = new long[size];
         Arrays.setAll(longs, generator);
         return longs;
     }
 
-    public static double[] generateDoubleArray(int size, IntToDoubleFunction generator) {
+    public static double[] generateDoubleArray(final int size, final IntToDoubleFunction generator) {
         final double[] doubles = new double[size];
         Arrays.setAll(doubles, generator);
         return doubles;
     }
 
-    public static <T> T[] copyOf(T[] array) {
+    public static <T> T[] copyOf(final T[] array) {
         return Arrays.copyOf(array, array.length);
     }
 
-    public static int[] copyOf(int[] array) {
+    public static int[] copyOf(final int[] array) {
         return Arrays.copyOf(array, array.length);
     }
 
-    public static long[] copyOf(long[] array) {
+    public static long[] copyOf(final long[] array) {
         return Arrays.copyOf(array, array.length);
     }
 
-    public static double[] copyOf(double[] array) {
+    public static double[] copyOf(final double[] array) {
         return Arrays.copyOf(array, array.length);
     }
 
     @SafeVarargs
-    public static <T> boolean[] toBooleanArray(Predicate<? super T> predicate, T... array) {
-        boolean[] result = new boolean[array.length];
+    public static <T> boolean[] toBooleanArray(final Predicate<? super T> predicate, final T... array) {
+        final boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
         }
         return result;
     }
 
-    public static boolean[] toBooleanArray(IntPredicate predicate, int... array) {
-        boolean[] result = new boolean[array.length];
+    public static boolean[] toBooleanArray(final IntPredicate predicate, final int... array) {
+        final boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
         }
         return result;
     }
 
-    public static boolean[] toBooleanArray(LongPredicate predicate, long... array) {
-        boolean[] result = new boolean[array.length];
+    public static boolean[] toBooleanArray(final LongPredicate predicate, final long... array) {
+        final boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
         }
         return result;
     }
 
-    public static boolean[] toBooleanArray(DoublePredicate predicate, double... array) {
-        boolean[] result = new boolean[array.length];
+    public static boolean[] toBooleanArray(final DoublePredicate predicate, final double... array) {
+        final boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
         }
         return result;
     }
 
-    public static <T> void reverse(T[] array) {
+    public static <T> void reverse(final T[] array) {
         for (int lowI = 0, highI = array.length - 1; lowI < array.length / 2; lowI++, highI--) {
             swap(array, lowI, highI);
         }
     }
 
-    public static void reverse(int[] array) {
+    public static void reverse(final int[] array) {
         for (int lowI = 0, highI = array.length - 1; lowI < array.length / 2; lowI++, highI--) {
             swap(array, lowI, highI);
         }
     }
 
-    public static <T> void swap(T[] array, int index1, int index2) {
+    public static <T> void swap(final T[] array, final int index1, final int index2) {
         final T temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }
 
-    public static void swap(int[] array, int index1, int index2) {
+    public static void swap(final int[] array, final int index1, final int index2) {
         final int temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }
 
-    public static void reverse(long[] array) {
+    public static void reverse(final long[] array) {
         for (int lowI = 0, highI = array.length - 1; lowI < array.length / 2; lowI++, highI--) {
             swap(array, lowI, highI);
         }
     }
 
-    public static void swap(long[] array, int index1, int index2) {
+    public static void swap(final long[] array, final int index1, final int index2) {
         final long temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }
 
-    public static void reverse(double[] array) {
+    public static void reverse(final double[] array) {
         for (int lowI = 0, highI = array.length - 1; lowI < array.length / 2; lowI++, highI--) {
             swap(array, lowI, highI);
         }
     }
 
-    public static void swap(double[] array, int index1, int index2) {
+    public static void swap(final double[] array, final int index1, final int index2) {
         final double temp = array[index1];
         array[index1] = array[index2];
         array[index2] = temp;
     }
 
-    public static void sort(IntComparator comparator, int... array) {
+    public static void sort(final IntComparator comparator, final int... array) {
         sort(0, array.length, comparator, array);
     }
 
-    public static void sort(int fromIndex, int toIndex, IntComparator comparator, int... array) {
+    public static void sort(final int fromIndex, final int toIndex, final IntComparator comparator, final int... array) {
         checkBounds(array.length, fromIndex, toIndex);
         IntTimSort.sort(array, fromIndex, toIndex, comparator);
     }
 
-    public static void sort(LongComparator comparator, long... array) {
+    public static void sort(final LongComparator comparator, final long... array) {
         sort(0, array.length, comparator, array);
     }
 
-    public static void sort(int fromIndex, int toIndex, LongComparator comparator, long... array) {
+    public static void sort(final int fromIndex, final int toIndex, final LongComparator comparator, final long... array) {
         checkBounds(array.length, fromIndex, toIndex);
         LongTimSort.sort(array, fromIndex, toIndex, comparator);
     }
 
-    public static void sort(DoubleComparator comparator, double... array) {
+    public static void sort(final DoubleComparator comparator, final double... array) {
         sort(0, array.length, comparator, array);
     }
 
-    public static void sort(int fromIndex, int toIndex, DoubleComparator comparator, double... array) {
+    public static void sort(final int fromIndex, final int toIndex, final DoubleComparator comparator, final double... array) {
         checkBounds(array.length, fromIndex, toIndex);
         DoubleTimSort.sort(array, fromIndex, toIndex, comparator);
     }
 
     @SafeVarargs
-    public static <T extends Comparable<? super T>> boolean isSorted(T... array) {
+    public static <T extends Comparable<? super T>> boolean isSorted(final T... array) {
         return Sequence.of(array).zipWithNext().map(Comparable::compareTo).all((comparison -> comparison <= 0));
     }
 
     @SafeVarargs
-    public static <T> boolean isSorted(Comparator<T> comparator, T... array) {
+    public static <T> boolean isSorted(final Comparator<T> comparator, final T... array) {
         return Sequence.of(array).zipWithNext().map(comparator::compare).all((comparison -> comparison <= 0));
     }
 
-    public static boolean isSorted(int... array) {
+    public static boolean isSorted(final int... array) {
         return IntSequence.of(array).zipWithNext(Integer::compare).all(comparison -> comparison <= 0);
     }
 
-    public static boolean isSorted(IntComparator intComparator, int... array) {
+    public static boolean isSorted(final IntComparator intComparator, final int... array) {
         return IntSequence.of(array).zipWithNext(intComparator::compare).all(comparison -> comparison <= 0);
     }
 
-    public static boolean isSorted(long... array) {
+    public static boolean isSorted(final long... array) {
         return LongSequence.of(array).zipWithNext(Long::compare).all(comparison -> comparison <= 0);
     }
 
-    public static boolean isSorted(LongComparator longComparator, long... array) {
+    public static boolean isSorted(final LongComparator longComparator, final long... array) {
         return LongSequence.of(array).zipWithNext(longComparator::compare).all(comparison -> comparison <= 0);
     }
 
-    public static boolean isSorted(double... array) {
+    public static boolean isSorted(final double... array) {
         return DoubleSequence.of(array).zipWithNext(Double::compare).all(comparison -> comparison <= 0);
     }
 
-    public static boolean isSorted(DoubleComparator doubleComparator, double... array) {
+    public static boolean isSorted(final DoubleComparator doubleComparator, final double... array) {
         return DoubleSequence.of(array).zipWithNext(doubleComparator::compare).all(comparison -> comparison <= 0);
     }
 
-    private static void checkBounds(int length, int fromIndex, int toIndex) {
+    private static void checkBounds(final int length, final int fromIndex, final int toIndex) {
         if (fromIndex < 0) {
             throw new ArrayIndexOutOfBoundsException("fromIndex < 0");
         }

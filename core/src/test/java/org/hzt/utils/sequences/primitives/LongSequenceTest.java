@@ -13,13 +13,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.LongStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LongSequenceTest {
 
     @Test
     void longRangeFromLongArray() {
-        long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+        final long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
         final long[] expected = LongStream.of(array)
                 .filter(l -> l > 3)
@@ -37,7 +40,7 @@ class LongSequenceTest {
 
     @Test
     void testLongSequencePlusArray() {
-        long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, Long.MAX_VALUE};
+        final long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, Long.MAX_VALUE};
 
         final long[] result = LongSequence.of(1, 3, 2, 5, 4, 2)
                 .filter(LongX::isEven)
@@ -89,7 +92,7 @@ class LongSequenceTest {
 
     @Test
     void longRangeForEachLong() {
-        long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+        final long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
         LongSequence.of(array)
                 .filter(l -> l > 3)
@@ -99,7 +102,7 @@ class LongSequenceTest {
 
     @Test
     void testLongRangeMapMulti() {
-        long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+        final long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
         final long[] expected = LongStream.of(array)
                 .flatMap((v) -> LongStream.of(array).map(l -> v + l))
@@ -129,7 +132,7 @@ class LongSequenceTest {
 
     @Test
     void testSortedDescending() {
-        long[] array = {1, 4, 5, 3, 6, 7, 4, 8, 5, 9, 4};
+        final long[] array = {1, 4, 5, 3, 6, 7, 4, 8, 5, 9, 4};
 
         final long[] sorted = LongSequence.of(array)
                 .sortedDescending()
@@ -142,7 +145,7 @@ class LongSequenceTest {
 
     @Test
     void testZipLongSequenceWithLongArray() {
-        long[] array = {1, 2, 3, 4, 5, 6};
+        final long[] array = {1, 2, 3, 4, 5, 6};
 
         final long[] zipped = LongSequence.of(array)
                 .zip(Long::sum, 1, 2, 3, 4)
@@ -155,8 +158,8 @@ class LongSequenceTest {
 
     @Test
     void testZipLongSequenceWithIterableOfLong() {
-        List<Long> list = MutableListX.of(1L, 2L, 3L, 4L, 5L, 6L);
-        long[] array = {1, 2, 3, 4, 5, 6, 7};
+        final List<Long> list = MutableListX.of(1L, 2L, 3L, 4L, 5L, 6L);
+        final long[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final long[] zipped = LongSequence.of(array)
                 .zip(Long::sum, list)
@@ -169,7 +172,7 @@ class LongSequenceTest {
 
     @Test
     void testWindowedLongSequence() {
-        long[] array = {1, 2, 3, 4, 5, 6, 7};
+        final long[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final long[][] windowed = LongSequence.of(array)
                 .windowed(5)
@@ -183,7 +186,7 @@ class LongSequenceTest {
 
     @Test
     void testWindowedLongSequenceWindowReduced() {
-        long[] array = {1, 2, 3, 4, 5, 6, 7};
+        final long[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final long[] sums = LongSequence.of(array)
                 .windowed(3, LongList::sum)
@@ -196,7 +199,7 @@ class LongSequenceTest {
 
     @Test
     void testPartialWindowedLongSequence() {
-        long[] array = {1, 2, 3, 4, 5, 6, 7};
+        final long[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final long[][] windows = LongSequence.of(array)
                 .windowed(3, 2, true)
@@ -210,7 +213,7 @@ class LongSequenceTest {
 
     @Test
     void testPartialWindowedLongSequenceWindowReduced() {
-        long[] array = {1, 2, 3, 4, 5, 6, 7};
+        final long[] array = {1, 2, 3, 4, 5, 6, 7};
 
         final long[] sums = LongSequence.of(array)
                 .windowed(3, 2, true, LongList::sum)

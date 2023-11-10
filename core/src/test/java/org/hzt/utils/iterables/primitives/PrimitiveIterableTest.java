@@ -17,7 +17,7 @@ class PrimitiveIterableTest {
 
     @Test
     void longStreamFromPrimitiveIterable() {
-        PrimitiveIterable.OfLong longSequence = LongSequence.of(1, 2, 3, 4, 5).map(l -> l * 3);
+        final PrimitiveIterable.OfLong longSequence = LongSequence.of(1, 2, 3, 4, 5).map(l -> l * 3);
 
         final long count = LongSequence.of(longSequence).count();
 

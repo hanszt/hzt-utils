@@ -54,7 +54,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return PrimitiveIterators::emptyIntIterator;
     }
 
-    static IntSequence of(Iterable<Integer> iterable) {
+    static IntSequence of(final Iterable<Integer> iterable) {
         if (iterable instanceof OfInt) {
             final PrimitiveIterable.OfInt intIterable = (OfInt) iterable;
             return intIterable::iterator;
@@ -62,53 +62,53 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return of(iterable, It::asInt);
     }
 
-    static <T> IntSequence of(Iterable<T> iterable, ToIntFunction<T> mapper) {
+    static <T> IntSequence of(final Iterable<T> iterable, final ToIntFunction<T> mapper) {
         return () -> PrimitiveIterators.intIteratorOf(iterable.iterator(), mapper);
     }
 
-    static IntSequence of(int... array) {
+    static IntSequence of(final int... array) {
         return () -> PrimitiveIterators.intArrayIterator(array);
     }
 
-    static IntSequence of(IntStream stream) {
+    static IntSequence of(final IntStream stream) {
         return stream::iterator;
     }
 
-    static IntSequence reverseOf(IntList intList) {
+    static IntSequence reverseOf(final IntList intList) {
         return () -> PrimitiveIterators.reverseIterator(intList);
     }
 
-    static IntSequence iterate(int seedValue, IntUnaryOperator nextFunction) {
+    static IntSequence iterate(final int seedValue, final IntUnaryOperator nextFunction) {
         return generate(() -> seedValue, nextFunction);
     }
 
-    static IntSequence generate(IntSupplier nextFunction) {
+    static IntSequence generate(final IntSupplier nextFunction) {
         return generate(nextFunction, t -> nextFunction.getAsInt());
     }
 
-    static IntSequence generate(IntSupplier seedFunction, IntUnaryOperator nextFunction) {
+    static IntSequence generate(final IntSupplier seedFunction, final IntUnaryOperator nextFunction) {
         return () -> IntGeneratorIterator.of(seedFunction, nextFunction);
     }
 
-    default IntSequence step(int step) {
+    default IntSequence step(final int step) {
         return filter(i -> i % step == 0);
     }
 
-    default IntSequence plus(int... values) {
+    default IntSequence plus(final int... values) {
         return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(OfInt::forEachInt);
     }
 
-    default IntSequence plus(Iterable<Integer> values) {
+    default IntSequence plus(final Iterable<Integer> values) {
         return Sequence.of(this, IntSequence.of(values)).mapMultiToInt(OfInt::forEachInt);
     }
 
-    default IntSequence minus(int... values) {
+    default IntSequence minus(final int... values) {
         final IntMutableSet others = IntSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
 
     }
 
-    default IntSequence minus(Iterable<Integer> values) {
+    default IntSequence minus(final Iterable<Integer> values) {
         final IntMutableSet others = values instanceof IntMutableSet ? (IntMutableSet) values : IntSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
@@ -119,19 +119,19 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     @Override
-    default IntSequence map(IntUnaryOperator mapper) {
+    default IntSequence map(final IntUnaryOperator mapper) {
         return () -> PrimitiveIterators.intTransformingIterator(iterator(), mapper);
     }
 
-    default IntSequence mapIndexed(IntBinaryOperator indexedFunction) {
+    default IntSequence mapIndexed(final IntBinaryOperator indexedFunction) {
         return () -> PrimitiveIterators.intIndexedTransformingIterator(iterator(), indexedFunction);
     }
 
-    default IntSequence scan(int initial, IntBinaryOperator operation) {
+    default IntSequence scan(final int initial, final IntBinaryOperator operation) {
         return () -> PrimitiveIterators.intScanningIterator(iterator(), initial, operation);
     }
 
-    default IntSequence flatMap(IntFunction<? extends Iterable<Integer>> flatMapper) {
+    default IntSequence flatMap(final IntFunction<? extends Iterable<Integer>> flatMapper) {
         return mapMulti((value, consumer) -> {
             final Iterable<Integer> iterable = flatMapper.apply(value);
             if (iterable instanceof OfInt) {
@@ -142,7 +142,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         });
     }
 
-    default IntSequence mapMulti(IntMapMultiConsumer intMapMultiConsumer) {
+    default IntSequence mapMulti(final IntMapMultiConsumer intMapMultiConsumer) {
         return () -> IntMultiMappingIterator.of(iterator(), intMapMultiConsumer);
     }
 
@@ -151,7 +151,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         void accept(int value, IntConsumer intConsumer);
     }
 
-    default LongSequence mapToLong(IntToLongFunction mapper) {
+    default LongSequence mapToLong(final IntToLongFunction mapper) {
         return () -> PrimitiveIterators.intToLongIterator(iterator(), mapper);
     }
 
@@ -159,7 +159,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return mapToLong(i -> i);
     }
 
-    default DoubleSequence mapToDouble(IntToDoubleFunction mapper) {
+    default DoubleSequence mapToDouble(final IntToDoubleFunction mapper) {
         return () -> PrimitiveIterators.intToDoubleIterator(iterator(), mapper);
     }
 
@@ -167,7 +167,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return mapToDouble(i -> i);
     }
 
-    default <R> Sequence<R> mapToObj(IntFunction<R> function) {
+    default <R> Sequence<R> mapToObj(final IntFunction<R> function) {
         return () -> PrimitiveIterators.intToObjIterator(iterator(), function);
     }
 
@@ -176,12 +176,12 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     @Override
-    default IntSequence take(long n) {
+    default IntSequence take(final long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
             return PrimitiveIterators::emptyIntIterator;
         } else if (this instanceof IntSkipTakeSequence) {
-            IntSkipTakeSequence skipTakeSequence = (IntSkipTakeSequence) this;
+            final IntSkipTakeSequence skipTakeSequence = (IntSkipTakeSequence) this;
             return skipTakeSequence.take(n);
         } else {
             return new IntTakeSequence(this, n);
@@ -189,22 +189,22 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     @Override
-    default IntSequence takeWhile(IntPredicate predicate) {
+    default IntSequence takeWhile(final IntPredicate predicate) {
         return () -> IntTakeWhileIterator.of(iterator(), predicate);
     }
 
     @Override
-    default IntSequence takeWhileInclusive(IntPredicate predicate) {
+    default IntSequence takeWhileInclusive(final IntPredicate predicate) {
         return () -> IntTakeWhileIterator.of(iterator(), predicate, true);
     }
 
     @Override
-    default IntSequence skip(long n) {
+    default IntSequence skip(final long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         if (n == 0) {
             return this;
         } else if (this instanceof IntSkipTakeSequence) {
-            IntSkipTakeSequence skipTakeSequence = (IntSkipTakeSequence) this;
+            final IntSkipTakeSequence skipTakeSequence = (IntSkipTakeSequence) this;
             return skipTakeSequence.skip(n);
         } else {
             return new IntSkipSequence(this, n);
@@ -212,12 +212,12 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     @Override
-    default IntSequence skipWhile(IntPredicate predicate) {
+    default IntSequence skipWhile(final IntPredicate predicate) {
         return () -> IntSkipWhileIterator.of(iterator(), predicate, false);
     }
 
     @Override
-    default IntSequence skipWhileInclusive(IntPredicate predicate) {
+    default IntSequence skipWhileInclusive(final IntPredicate predicate) {
         return () -> IntSkipWhileIterator.of(iterator(), predicate, true);
     }
 
@@ -226,7 +226,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return () -> toList().sorted().iterator();
     }
 
-    default IntSequence sorted(IntComparator intComparator) {
+    default IntSequence sorted(final IntComparator intComparator) {
         return () -> toList().sorted(intComparator).iterator();
     }
 
@@ -240,34 +240,34 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     @Override
-    default IntSequence filter(IntPredicate predicate) {
+    default IntSequence filter(final IntPredicate predicate) {
         return () -> IntFilteringIterator.of(iterator(), predicate, true);
     }
 
-    default IntSequence filterNot(IntPredicate predicate) {
+    default IntSequence filterNot(final IntPredicate predicate) {
         return () -> IntFilteringIterator.of(iterator(), predicate, false);
     }
 
-    default IntSequence onEach(IntConsumer consumer) {
+    default IntSequence onEach(final IntConsumer consumer) {
         return map(i -> {
             consumer.accept(i);
             return i;
         });
     }
 
-    default IntSequence zip(IntBinaryOperator merger, int... array) {
+    default IntSequence zip(final IntBinaryOperator merger, final int... array) {
         final PrimitiveIterator.OfInt iterator = PrimitiveIterators.intArrayIterator(array);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
-    default IntSequence zip(IntBinaryOperator merger, Iterable<Integer> other) {
+    default IntSequence zip(final IntBinaryOperator merger, final Iterable<Integer> other) {
         final PrimitiveIterator.OfInt iterator = PrimitiveIterators.intIteratorOf(other.iterator(), It::asInt);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
-    default IntSequence zipWithNext(IntBinaryOperator merger) {
+    default IntSequence zipWithNext(final IntBinaryOperator merger) {
         return windowed(2, w -> merger.applyAsInt(w.first(), w.last()));
     }
 
@@ -275,7 +275,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return toList().toArray();
     }
 
-    default <R> R transform(Function<? super IntSequence, ? extends R> resultMapper) {
+    default <R> R transform(final Function<? super IntSequence, ? extends R> resultMapper) {
         return resultMapper.apply(this);
     }
 
@@ -290,32 +290,32 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
         return StreamSupport.intStream(() -> Spliterators.spliteratorUnknownSize(iterator(), ordered), ordered, false);
     }
 
-    default IntSequence onSequence(Consumer<? super IntSequence> consumer) {
+    default IntSequence onSequence(final Consumer<? super IntSequence> consumer) {
         consumer.accept(this);
         return this;
     }
 
-    default <R1, R2, R> R intsToTwo(Function<? super IntSequence, ? extends R1> resultMapper1,
-                                    Function<? super IntSequence, ? extends R2> resultMapper2,
-                                    BiFunction<R1, R2, R> merger) {
+    default <R1, R2, R> R intsToTwo(final Function<? super IntSequence, ? extends R1> resultMapper1,
+                                    final Function<? super IntSequence, ? extends R2> resultMapper2,
+                                    final BiFunction<R1, R2, R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
     }
 
-    default <R1, R2> Pair<R1, R2> intsToTwo(Function<? super IntSequence, ? extends R1> resultMapper1,
-                                            Function<? super IntSequence, ? extends R2> resultMapper2) {
+    default <R1, R2> Pair<R1, R2> intsToTwo(final Function<? super IntSequence, ? extends R1> resultMapper1,
+                                            final Function<? super IntSequence, ? extends R2> resultMapper2) {
         return intsToTwo(resultMapper1, resultMapper2, Pair::of);
     }
 
-    default <R1, R2, R3, R> R intsToThree(Function<? super IntSequence, ? extends R1> resultMapper1,
-                                          Function<? super IntSequence, ? extends R2> resultMapper2,
-                                          Function<? super IntSequence, ? extends R3> resultMapper3,
-                                          TriFunction<R1, R2, R3, R> merger) {
+    default <R1, R2, R3, R> R intsToThree(final Function<? super IntSequence, ? extends R1> resultMapper1,
+                                          final Function<? super IntSequence, ? extends R2> resultMapper2,
+                                          final Function<? super IntSequence, ? extends R3> resultMapper3,
+                                          final TriFunction<R1, R2, R3, R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this), resultMapper3.apply(this));
     }
 
-    default <R1, R2, R3> Triple<R1, R2, R3> intsToThree(Function<? super IntSequence, ? extends R1> resultMapper1,
-                                                        Function<? super IntSequence, ? extends R2> resultMapper2,
-                                                        Function<? super IntSequence, ? extends R3> resultMapper3) {
+    default <R1, R2, R3> Triple<R1, R2, R3> intsToThree(final Function<? super IntSequence, ? extends R1> resultMapper1,
+                                                        final Function<? super IntSequence, ? extends R2> resultMapper2,
+                                                        final Function<? super IntSequence, ? extends R3> resultMapper3) {
         return intsToThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
     }
 }

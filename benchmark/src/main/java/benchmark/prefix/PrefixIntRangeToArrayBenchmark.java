@@ -26,10 +26,10 @@ public class PrefixIntRangeToArrayBenchmark {
 
     @Benchmark
     public int[] loopMapFilterToArray() {
-        int[] array = new int[UPPER_BOUND_RANGE / 2];
+        final int[] array = new int[UPPER_BOUND_RANGE / 2];
         int index = 0;
         for (int i = 0; i < UPPER_BOUND_RANGE; i++) {
-            int i2 = i * 2;
+            final int i2 = i * 2;
             if (i2 % 4 == 0) {
                 array[index] = i2;
                 index++;
@@ -63,8 +63,8 @@ public class PrefixIntRangeToArrayBenchmark {
                 .toArray();
     }
 
-    public static void main(String[] args) {
-        Options options = new OptionsBuilder()
+    public static void main(final String[] args) {
+        final Options options = new OptionsBuilder()
                 .include(PrefixIntRangeToArrayBenchmark.class.getSimpleName())
                 .forks(2)
                 .warmupIterations(2)
@@ -73,7 +73,7 @@ public class PrefixIntRangeToArrayBenchmark {
                 .build();
         try {
             new Runner(options).run();
-        } catch (RunnerException e) {
+        } catch (final RunnerException e) {
             throw new IllegalStateException(e);
         }
     }

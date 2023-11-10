@@ -21,7 +21,7 @@ class IndexedIterableTest {
 
     @Test
     void testForEachIndexed() {
-        List<IndexedValue<Integer>> list = new ArrayList<>();
+        final List<IndexedValue<Integer>> list = new ArrayList<>();
 
         IntRange.closed(1, 100)
                 .filter(IntX::isEven)

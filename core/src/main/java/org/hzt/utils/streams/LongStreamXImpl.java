@@ -8,7 +8,7 @@ final class LongStreamXImpl implements LongStreamX {
 
     private final LongStream stream;
 
-    LongStreamXImpl(LongStream stream) {
+    LongStreamXImpl(final LongStream stream) {
         this.stream = stream;
     }
 

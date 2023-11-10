@@ -13,7 +13,7 @@ public class IntScanningIterator implements PrimitiveIterator.OfInt {
 
     private State state = State.INIT_UNKNOWN;
 
-    public IntScanningIterator(PrimitiveIterator.OfInt iterator, int initial, IntBinaryOperator operation) {
+    public IntScanningIterator(final PrimitiveIterator.OfInt iterator, final int initial, final IntBinaryOperator operation) {
         this.iterator = iterator;
         this.operation = operation;
         accumulation = initial;

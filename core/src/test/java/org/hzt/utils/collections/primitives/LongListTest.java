@@ -30,14 +30,14 @@ class LongListTest {
 
     @Test
     void testGet() {
-        LongList list = LongList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
+        final LongList list = LongList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
         final long value = list.get(4);
         assertEquals(5L, value);
     }
 
     @Test
     void testGetOutsideRangeYieldsIndexOutOfBound() {
-        LongList list = LongList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
+        final LongList list = LongList.of(1, 2, 3, 4, 5, -1, 3, 6, 3, 2, 5);
         assertThrows(IndexOutOfBoundsException.class, () -> list.get(14));
     }
 
@@ -45,7 +45,7 @@ class LongListTest {
     void testBinarySearch() {
         final LongList sortedList = LongList.of(-1, 0, 1, 2, 3, 4, 5);
 
-        int valueToSearchFor = 2;
+        final int valueToSearchFor = 2;
 
         final int indexInSortedList = sortedList.binarySearch(valueToSearchFor);
 

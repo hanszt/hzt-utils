@@ -15,13 +15,13 @@ public final class LongGeneratorIterator implements PrimitiveIterator.OfLong {
     private long nextLong;
     private State nextState = State.INIT_UNKNOWN;
 
-    private LongGeneratorIterator(LongSupplier initSupplier, LongUnaryOperator nextValueSupplier) {
+    private LongGeneratorIterator(final LongSupplier initSupplier, final LongUnaryOperator nextValueSupplier) {
         this.initSupplier = initSupplier;
         this.nextValueSupplier = nextValueSupplier;
         this.nextLong = initSupplier.getAsLong();
     }
 
-    public static OfLong of(LongSupplier initSupplier, LongUnaryOperator nextValueSupplier) {
+    public static OfLong of(final LongSupplier initSupplier, final LongUnaryOperator nextValueSupplier) {
         return new LongGeneratorIterator(initSupplier, nextValueSupplier);
     }
 

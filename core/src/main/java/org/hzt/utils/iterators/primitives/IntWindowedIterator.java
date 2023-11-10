@@ -21,12 +21,12 @@ public final class IntWindowedIterator extends AbstractIterator<IntList> {
     private IntMutableList nextWindow = IntMutableList.empty();
 
     private IntWindowedIterator(
-            PrimitiveIterator.OfInt iterator,
-            int initSize,
-            IntUnaryOperator nextSizeSupplier,
-            int initStep,
-            IntUnaryOperator nextStepSupplier,
-            boolean partialWindows) {
+            final PrimitiveIterator.OfInt iterator,
+            final int initSize,
+            final IntUnaryOperator nextSizeSupplier,
+            final int initStep,
+            final IntUnaryOperator nextStepSupplier,
+            final boolean partialWindows) {
         this.iterator = iterator;
         this.initSize = initSize;
         this.nextSizeSupplier = nextSizeSupplier;
@@ -35,17 +35,17 @@ public final class IntWindowedIterator extends AbstractIterator<IntList> {
         this.partialWindows = partialWindows;
     }
 
-    public static IntWindowedIterator of(PrimitiveIterator.OfInt iterator,
-                                         int initSize,
-                                         IntUnaryOperator nextSizeSupplier,
-                                         int initStep,
-                                         IntUnaryOperator nextStepSupplier,
-                                         boolean partialWindows) {
+    public static IntWindowedIterator of(final PrimitiveIterator.OfInt iterator,
+                                         final int initSize,
+                                         final IntUnaryOperator nextSizeSupplier,
+                                         final int initStep,
+                                         final IntUnaryOperator nextStepSupplier,
+                                         final boolean partialWindows) {
         return new IntWindowedIterator(iterator, initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
     }
 
     private IntMutableList computeNextWindow() {
-        int windowInitCapacity = Math.min(size, 1024);
+        final int windowInitCapacity = Math.min(size, 1024);
         final int gap = step - size;
         size = calculateNextSize(size);
         if (gap >= 0) {
@@ -57,17 +57,17 @@ public final class IntWindowedIterator extends AbstractIterator<IntList> {
         return nextWindow;
     }
 
-    private int calculateNextSize(int cur) {
-        int next = cur <= 0 ? initSize : nextSizeSupplier.applyAsInt(cur);
+    private int calculateNextSize(final int cur) {
+        final int next = cur <= 0 ? initSize : nextSizeSupplier.applyAsInt(cur);
         return (next > 0) ? next : 1;
     }
 
-    private int calculateNextStep(int cur) {
-        int next = cur <= 0 ? initStep : nextStepSupplier.applyAsInt(cur);
+    private int calculateNextStep(final int cur) {
+        final int next = cur <= 0 ? initStep : nextStepSupplier.applyAsInt(cur);
         return (next > 0) ? next : 1;
     }
 
-    private void computeNextForWindowedSequenceOverlapping(int windowInitCapacity) {
+    private void computeNextForWindowedSequenceOverlapping(final int windowInitCapacity) {
         nextWindow = nextWindow.isEmpty() ? IntMutableList.withInitCapacity(windowInitCapacity) : IntMutableList.of(nextWindow);
         calculateNextOverlappingWindow();
         if (!partialWindows && nextWindow.size() < size) {
@@ -86,11 +86,11 @@ public final class IntWindowedIterator extends AbstractIterator<IntList> {
         }
     }
 
-    private void computeNextForWindowedSequenceNoOverlap(int bufferInitCapacity, int gap) {
+    private void computeNextForWindowedSequenceNoOverlap(final int bufferInitCapacity, final int gap) {
         int skip = gap;
         nextWindow = IntMutableList.withInitCapacity(bufferInitCapacity);
         while (iterator.hasNext()) {
-            int item = iterator.nextInt();
+            final int item = iterator.nextInt();
             if (skip > 0) {
                 skip--;
                 continue;

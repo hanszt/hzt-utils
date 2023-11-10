@@ -12,7 +12,7 @@ final class StreamXHelper {
     private StreamXHelper() {
     }
 
-    static <T> Stream<T> stream(Stream<T> stream) {
+    static <T> Stream<T> stream(final Stream<T> stream) {
         final Spliterator<T> spliterator = stream.spliterator();
         final boolean parallel = stream instanceof StreamXImpl && stream.isParallel();
         return stream(spliterator, parallel);
@@ -26,13 +26,13 @@ final class StreamXHelper {
         return StreamSupport.stream(() -> spliterator, spliterator.characteristics(), parallel);
     }
 
-    static IntStream stream(IntStream stream) {
+    static IntStream stream(final IntStream stream) {
         final Spliterator.OfInt spliterator = stream.spliterator();
         final boolean parallel = stream instanceof IntStreamXImpl && stream.isParallel();
         return stream(spliterator, parallel);
     }
 
-    static IntStream stream(Spliterator.OfInt spliterator, boolean parallel) {
+    static IntStream stream(final Spliterator.OfInt spliterator, final boolean parallel) {
         if (spliterator.hasCharacteristics(Spliterator.IMMUTABLE) ||
                 spliterator.hasCharacteristics(Spliterator.CONCURRENT)) {
             return StreamSupport.intStream(spliterator, parallel);
@@ -40,7 +40,7 @@ final class StreamXHelper {
         return StreamSupport.intStream(() -> spliterator, spliterator.characteristics(), parallel);
     }
 
-    static LongStream stream(Spliterator.OfLong spliterator, boolean parallel) {
+    static LongStream stream(final Spliterator.OfLong spliterator, final boolean parallel) {
         if (spliterator.hasCharacteristics(Spliterator.IMMUTABLE) ||
                 spliterator.hasCharacteristics(Spliterator.CONCURRENT)) {
             return StreamSupport.longStream(spliterator, parallel);
@@ -48,19 +48,19 @@ final class StreamXHelper {
         return StreamSupport.longStream(() -> spliterator, spliterator.characteristics(), parallel);
     }
 
-    static LongStream stream(LongStream stream) {
+    static LongStream stream(final LongStream stream) {
         final Spliterator.OfLong spliterator = stream.spliterator();
         final boolean parallel = stream instanceof LongStreamXImpl && stream.isParallel();
         return stream(spliterator, parallel);
     }
 
-    static DoubleStream stream(DoubleStream stream) {
+    static DoubleStream stream(final DoubleStream stream) {
         final Spliterator.OfDouble spliterator = stream.spliterator();
         final boolean parallel = stream instanceof DoubleStreamXImpl && stream.isParallel();
         return stream(spliterator, parallel);
     }
 
-    static DoubleStream stream(Spliterator.OfDouble spliterator, boolean parallel) {
+    static DoubleStream stream(final Spliterator.OfDouble spliterator, final boolean parallel) {
         if (spliterator.hasCharacteristics(Spliterator.IMMUTABLE) ||
                 spliterator.hasCharacteristics(Spliterator.CONCURRENT)) {
             return StreamSupport.doubleStream(spliterator, parallel);

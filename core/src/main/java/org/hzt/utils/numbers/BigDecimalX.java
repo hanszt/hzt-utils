@@ -17,126 +17,126 @@ public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>
     public static final BigDecimalX ZERO = BigDecimalX.of(BigDecimal.ZERO);
     public static final BigDecimalX ONE = BigDecimalX.of(BigDecimal.ONE);
 
-    private BigDecimalX(char[] in, int offset, int len) {
+    private BigDecimalX(final char[] in, final int offset, final int len) {
         super(in, offset, len);
     }
 
-    private BigDecimalX(String val) {
+    private BigDecimalX(final String val) {
         super(val);
     }
 
-    private BigDecimalX(String val, MathContext mc) {
+    private BigDecimalX(final String val, final MathContext mc) {
         super(val, mc);
     }
 
-    public static BigDecimalX of(BigDecimal bigDecimal) {
+    public static BigDecimalX of(final BigDecimal bigDecimal) {
         return new BigDecimalX(bigDecimal.toPlainString());
     }
 
-    public static BigDecimalX of(String s) {
+    public static BigDecimalX of(final String s) {
         return new BigDecimalX(s);
     }
 
-    public static BigDecimalX of(String s, MathContext mathContext) {
+    public static BigDecimalX of(final String s, final MathContext mathContext) {
         return new BigDecimalX(s, mathContext);
     }
 
-    public static BigDecimalX of(Number n) {
+    public static BigDecimalX of(final Number n) {
         return new BigDecimalX(n.toString());
     }
 
-    public static BigDecimalX of(int s) {
+    public static BigDecimalX of(final int s) {
         return BigDecimalX.of(BigDecimal.valueOf(s));
     }
 
-    public static BigDecimalX of(long s) {
+    public static BigDecimalX of(final long s) {
         return BigDecimalX.of(BigDecimal.valueOf(s));
     }
 
-    public static BigDecimalX of(double s) {
+    public static BigDecimalX of(final double s) {
         return BigDecimalX.of(BigDecimal.valueOf(s));
     }
 
     @Override
-    public BigDecimalX add(BigDecimal augend) {
+    public BigDecimalX add(final BigDecimal augend) {
         return BigDecimalX.of(super.add(augend));
     }
 
     @Override
-    public BigDecimalX add(BigDecimal augend, MathContext mc) {
+    public BigDecimalX add(final BigDecimal augend, final MathContext mc) {
         return of(super.add(augend, mc));
     }
 
     @Override
-    public BigDecimalX subtract(BigDecimal subtrahend) {
+    public BigDecimalX subtract(final BigDecimal subtrahend) {
         return of(super.subtract(subtrahend));
     }
 
     @Override
-    public BigDecimalX subtract(BigDecimal subtrahend, MathContext mc) {
+    public BigDecimalX subtract(final BigDecimal subtrahend, final MathContext mc) {
         return of(super.subtract(subtrahend, mc));
     }
 
     @Override
-    public BigDecimalX multiply(BigDecimal multiplicand) {
+    public BigDecimalX multiply(final BigDecimal multiplicand) {
         return of(super.multiply(multiplicand));
     }
 
     @Override
-    public BigDecimalX multiply(BigDecimal multiplicand, MathContext mc) {
+    public BigDecimalX multiply(final BigDecimal multiplicand, final MathContext mc) {
         return of(super.multiply(multiplicand, mc));
     }
 
     @Override
-    public BigDecimalX divide(BigDecimal divisor, int scale, RoundingMode roundingMode) {
+    public BigDecimalX divide(final BigDecimal divisor, final int scale, final RoundingMode roundingMode) {
         return of(super.divide(divisor, scale, roundingMode));
     }
 
     @Override
-    public BigDecimalX divide(BigDecimal divisor, RoundingMode roundingMode) {
+    public BigDecimalX divide(final BigDecimal divisor, final RoundingMode roundingMode) {
         return of(super.divide(divisor, roundingMode));
     }
 
     @Override
-    public BigDecimalX divide(BigDecimal divisor, MathContext mc) {
+    public BigDecimalX divide(final BigDecimal divisor, final MathContext mc) {
         return of(super.divide(divisor, mc));
     }
 
     @Override
-    public BigDecimalX divideToIntegralValue(BigDecimal divisor) {
+    public BigDecimalX divideToIntegralValue(final BigDecimal divisor) {
         return of(super.divideToIntegralValue(divisor));
     }
 
     @Override
-    public BigDecimalX divideToIntegralValue(BigDecimal divisor, MathContext mc) {
+    public BigDecimalX divideToIntegralValue(final BigDecimal divisor, final MathContext mc) {
         return of(super.divideToIntegralValue(divisor, mc));
     }
 
     @Override
-    public BigDecimalX remainder(BigDecimal divisor) {
+    public BigDecimalX remainder(final BigDecimal divisor) {
         return of(super.remainder(divisor));
     }
 
     @Override
-    public BigDecimalX remainder(BigDecimal divisor, MathContext mc) {
+    public BigDecimalX remainder(final BigDecimal divisor, final MathContext mc) {
         return of(super.remainder(divisor, mc));
     }
 
-    public ListX<BigDecimalX> divideAndRemainderX(BigDecimal divisor) {
+    public ListX<BigDecimalX> divideAndRemainderX(final BigDecimal divisor) {
         return Sequence.of(super.divideAndRemainder(divisor)).map(BigDecimalX::of).toListX();
     }
 
-    public ListX<BigDecimalX> divideAndRemainderX(BigDecimal divisor, MathContext mc) {
+    public ListX<BigDecimalX> divideAndRemainderX(final BigDecimal divisor, final MathContext mc) {
         return Sequence.of(super.divideAndRemainder(divisor, mc)).map(BigDecimalX::of).toListX();
     }
 
     @Override
-    public BigDecimalX pow(int n) {
+    public BigDecimalX pow(final int n) {
         return of(super.pow(n));
     }
 
     @Override
-    public BigDecimalX pow(int n, MathContext mc) {
+    public BigDecimalX pow(final int n, final MathContext mc) {
         return of(super.pow(n, mc));
     }
 
@@ -146,7 +146,7 @@ public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>
     }
 
     @Override
-    public BigDecimalX abs(MathContext mc) {
+    public BigDecimalX abs(final MathContext mc) {
         return of(super.abs(mc));
     }
 
@@ -156,7 +156,7 @@ public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>
     }
 
     @Override
-    public BigDecimalX negate(MathContext mc) {
+    public BigDecimalX negate(final MathContext mc) {
         return of(super.negate(mc));
     }
 
@@ -166,32 +166,32 @@ public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>
     }
 
     @Override
-    public BigDecimalX plus(MathContext mc) {
+    public BigDecimalX plus(final MathContext mc) {
         return of(super.plus(mc));
     }
 
     @Override
-    public BigDecimalX round(MathContext mc) {
+    public BigDecimalX round(final MathContext mc) {
         return of(super.round(mc));
     }
 
     @Override
-    public BigDecimalX setScale(int newScale, RoundingMode roundingMode) {
+    public BigDecimalX setScale(final int newScale, final RoundingMode roundingMode) {
         return of(super.setScale(newScale, roundingMode));
     }
 
     @Override
-    public BigDecimalX movePointLeft(int n) {
+    public BigDecimalX movePointLeft(final int n) {
         return of(super.movePointLeft(n));
     }
 
     @Override
-    public BigDecimalX movePointRight(int n) {
+    public BigDecimalX movePointRight(final int n) {
         return of(super.movePointRight(n));
     }
 
     @Override
-    public BigDecimalX scaleByPowerOfTen(int n) {
+    public BigDecimalX scaleByPowerOfTen(final int n) {
         return of(super.scaleByPowerOfTen(n));
     }
 
@@ -201,12 +201,12 @@ public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>
     }
 
     @Override
-    public BigDecimalX min(BigDecimal val) {
+    public BigDecimalX min(final BigDecimal val) {
         return of(super.min(val));
     }
 
     @Override
-    public BigDecimalX max(BigDecimal val) {
+    public BigDecimalX max(final BigDecimal val) {
         return of(super.max(val));
     }
 

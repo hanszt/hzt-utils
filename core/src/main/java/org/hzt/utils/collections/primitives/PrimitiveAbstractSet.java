@@ -13,14 +13,14 @@ public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIte
 
     int mask = INITIAL_CAPACITY - 1;
 
-    PrimitiveAbstractSet(int size, PrimitiveNode[] table) {
+    PrimitiveAbstractSet(final int size, final PrimitiveNode[] table) {
         super(size);
         this.table = table;
     }
 
     @Override
     @SuppressWarnings("squid:S1166")
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -28,7 +28,7 @@ public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIte
             return false;
         }
         //noinspection unchecked
-        PrimitiveAbstractSet<T, T_CONST, A, I> that = (PrimitiveAbstractSet<T, T_CONST, A, I>) o;
+        final PrimitiveAbstractSet<T, T_CONST, A, I> that = (PrimitiveAbstractSet<T, T_CONST, A, I>) o;
         if (size != that.size) {
             return false;
         }
@@ -47,7 +47,7 @@ public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIte
 
     abstract int nextHashCode(I i);
 
-    void rehash(PrimitiveNode[] table, PrimitiveNode[] newTable) {
+    void rehash(final PrimitiveNode[] table, final PrimitiveNode[] newTable) {
         for (PrimitiveNode node : table) {
             while (node != null) {
                 final PrimitiveNode next = node.next;
@@ -81,7 +81,7 @@ public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIte
             }
             next = current.next;
             if (next == null) {
-                PrimitiveNode[] t = table;
+                final PrimitiveNode[] t = table;
                 while (index < t.length) {
                     next = t[index];
                     index++;
@@ -102,7 +102,7 @@ public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIte
 
         PrimitiveNode next;
 
-        PrimitiveNode(PrimitiveNode next) {
+        PrimitiveNode(final PrimitiveNode next) {
             this.next = next;
         }
     }

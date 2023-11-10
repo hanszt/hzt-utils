@@ -13,8 +13,8 @@ class IntArrayListTest {
 
     @Test
     void testNoConcurrentModExceptionInForLoopWhenRemove() {
-        IntMutableList list = new IntArrayList(1, 2, 3, 4, 5, 6);
-        for (int i : list) {
+        final IntMutableList list = new IntArrayList(1, 2, 3, 4, 5, 6);
+        for (final int i : list) {
             if (i == 3 || i == 5) {
                 list.remove(i);
             }
@@ -26,11 +26,11 @@ class IntArrayListTest {
 
     @Test
     void testConcurrentModExceptionInForLoopRemove() {
-        ArrayList<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6));
+        final ArrayList<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6));
         final ConcurrentModificationException exception =
                 assertThrows(ConcurrentModificationException.class, () -> {
                     //noinspection Java8CollectionRemoveIf
-                    for (Integer integer : list) {
+                    for (final Integer integer : list) {
                         if (integer == 3 || integer == 5) {
                             list.remove(integer);
                         }

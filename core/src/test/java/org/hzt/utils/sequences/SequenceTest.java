@@ -16,6 +16,7 @@ import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
+import org.hzt.utils.iterables.IterableExtensions;
 import org.hzt.utils.iterables.Numerable;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.numbers.IntX;
@@ -56,6 +57,7 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -64,6 +66,8 @@ import static java.lang.System.setProperty;
 import static org.hzt.utils.It.print;
 import static org.hzt.utils.It.printf;
 import static org.hzt.utils.It.println;
+import static org.hzt.utils.iterables.IterableExtensions.runningFold;
+import static org.hzt.utils.iterables.IterableExtensions.windowed;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,7 +83,7 @@ class SequenceTest {
 
     @Test
     void testSimpleStreamWithMapYieldsIteratorWithNext() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
 
         final Sequence<Integer> sequence = Sequence.of(list)
                 .map(SequenceTest::lengthMappingNotCalledWhenNotConsumed);
@@ -87,14 +91,14 @@ class SequenceTest {
         assertTrue(sequence.iterator()::hasNext);
     }
 
-    private static int lengthMappingNotCalledWhenNotConsumed(String s) {
+    private static int lengthMappingNotCalledWhenNotConsumed(final String s) {
         fail("Should only be called when consumed with terminal operation");
         return s.length();
     }
 
     @Test
     void testMapReduce() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
 
         final double sum = list
                 .map(String::length)
@@ -118,14 +122,14 @@ class SequenceTest {
         assertNotNull(sequence);
     }
 
-    private static boolean filterNotCalledWhenNotConsumed(int i) {
+    private static boolean filterNotCalledWhenNotConsumed(final int i) {
         fail("Should only be called when consumed with terminal operation");
         return i < 3;
     }
 
     @Test
     void testFilterReduce() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
         final int sum = Sequence.of(list)
                 .map(String::length)
                 .filter(l -> l > 3)
@@ -137,7 +141,7 @@ class SequenceTest {
 
     @Test
     void testMapFilterReduce() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
         final double sum = Sequence.of(list)
                 .map(String::length)
                 .map(Double::valueOf)
@@ -149,7 +153,7 @@ class SequenceTest {
 
     @Test
     void testFilterIndexed() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
 
         final long sum = Sequence.of(list)
                 .map(String::length)
@@ -161,18 +165,34 @@ class SequenceTest {
 
     @Test
     void testMapNotNull() {
-        ListX<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
+        final ListX<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
 
-        final ListX<BigDecimal> sum = Sequence.of(list)
+        final ListX<BigDecimal> balances = Sequence.of(list)
                 .mapNotNull(BankAccount::getBalance)
                 .toMutableList();
 
-        assertFalse(sum.contains(null));
+        assertFalse(balances.contains(null));
+    }
+
+    @Test
+    void testMapIfPresent() {
+        final ListX<Museum> list = ListX.of(TestSampleGenerator.createMuseumList());
+
+        final List<LocalDate> dates = Sequence.of(list)
+                .mapIfPresent(Museum::dateOfOpening)
+                .toList();
+
+        final List<LocalDate> expected = ListX.of("1992-04-02", "1940-01-23", "1965-08-04").toListOf(LocalDate::parse);
+
+        assertAll(
+                () -> assertIterableEquals(expected, dates),
+                () -> assertEquals(4, list.size())
+        );
     }
 
     @Test
     void testMapFilterReduceToIntArray() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
 
         final int[] result = list
                 .mapToInt(String::length)
@@ -184,7 +204,7 @@ class SequenceTest {
 
     @Test
     void testMapFilterReduceToList() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
         final ListX<Integer> result = list.asSequence()
                 .map(String::length)
                 .filter(l -> l > 3)
@@ -195,7 +215,7 @@ class SequenceTest {
 
     @Test
     void testMapFilterReduceToSet() {
-        ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
+        final ListX<String> list = ListX.of("Hallo", "dit", "is", "een", "test");
 
         final SetX<Integer> result = list.asSequence()
                 .map(String::length)
@@ -294,7 +314,7 @@ class SequenceTest {
         assertEquals(LinkedSetX.of(115, 116, 101, 104, 108, 111), map.keySet());
     }
 
-    private MapX<Integer, String> toFilteredMapX(IntSequence sequence) {
+    private MapX<Integer, String> toFilteredMapX(final IntSequence sequence) {
         return sequence.boxed()
                 .associateWith(String::valueOf)
                 .filterValues(s -> s.startsWith("1"))
@@ -364,7 +384,7 @@ class SequenceTest {
 
     @Test
     void testSkipWhile() {
-        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        final ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         final List<Integer> integers = list.asSequence()
                 .skipWhile(i -> i != 5)
@@ -377,7 +397,7 @@ class SequenceTest {
 
     @Test
     void testSkipWhileInclusive() {
-        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        final ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         final List<Integer> integers = list.asSequence()
                 .skipWhileInclusive(i -> i != 5)
@@ -425,7 +445,7 @@ class SequenceTest {
 
         @Test
         void testGenerateWindowedThenMapMultiToList() {
-            MutableListX<ListX<Integer>> windows = MutableListX.empty();
+            final MutableListX<ListX<Integer>> windows = MutableListX.empty();
 
             final ListX<Integer> result = Sequence.iterate(0, i -> ++i)
                     .windowed(8, 3)
@@ -560,8 +580,8 @@ class SequenceTest {
 
     @Test
     void testZipSequenceWithIterable() {
-        Sequence<Integer> values = Sequence.of(0, 1, 2, 3, 4, 5, 6, 7, 4);
-        List<Integer> others = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
+        final Sequence<Integer> values = Sequence.of(0, 1, 2, 3, 4, 5, 6, 7, 4);
+        final List<Integer> others = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
 
         final List<Integer> integers = values.zip(others, Integer::compareTo).toList();
 
@@ -658,7 +678,7 @@ class SequenceTest {
 
     @Test
     void testGeneratedSequenceCanBeConsumedMultipleTimes() {
-        Sequence<Year> leapYears = IntRange.from(1900).upTo(2000).step(2)
+        final Sequence<Year> leapYears = IntRange.from(1900).upTo(2000).step(2)
                 .mapToObj(Year::of)
                 .filter(Year::isLeap);
 
@@ -678,7 +698,7 @@ class SequenceTest {
 
     @Test
     void testSequenceCanBeConsumedMultipleTimes() {
-        Sequence<Year> names = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
+        final Sequence<Year> names = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
                 .onEach(It::println)
                 .mapNotNull(Year::of)
                 .sorted();
@@ -705,7 +725,7 @@ class SequenceTest {
 
         @Test
         void testSequenceWithConstrainOnceMethodCanOnlyBeUsedOnce() {
-            Sequence<ListX<Integer>> windowedSequence = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
+            final Sequence<ListX<Integer>> windowedSequence = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
                     .onEach(It::println)
                     .filter(i -> i % 2 == 0)
                     .windowed(2)
@@ -725,7 +745,7 @@ class SequenceTest {
 
         @Test
         void testSequenceWithConstrainOnceMethodCanOnlyBeUsedOncAfterShortCircuitingOperations() {
-            Sequence<Integer> integers = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
+            final Sequence<Integer> integers = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
                     .filter(i -> i % 2 == 0)
                     .constrainOnce();
 
@@ -741,7 +761,7 @@ class SequenceTest {
 
         @Test
         void testSequenceWithConstrainOnceMethodCanOnlyBeUsedOncAfterShortCircuitingOperationsAndThen() {
-            Sequence<Integer> integers = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
+            final Sequence<Integer> integers = Sequence.of(Arrays.asList(1, 2, 3, 4, 5, 3, -1, 6, 12))
                     .constrainOnce()
                     .filter(i -> i % 2 == 0);
 
@@ -785,8 +805,8 @@ class SequenceTest {
 
     @Test
     void testExecutionOrderSameForSequenceAndStreamWithSortedMethod() {
-        List<String> orderCalledStream = new ArrayList<>();
-        List<String> orderCalledSequence = new ArrayList<>();
+        final List<String> orderCalledStream = new ArrayList<>();
+        final List<String> orderCalledSequence = new ArrayList<>();
 
         final int[] ints1 = IntStream.of(6, 1, 456, 2)
                 .peek(s -> orderCalledStream.add("first"))
@@ -878,8 +898,8 @@ class SequenceTest {
 
     @Test
     void testSequenceOfZoneIds() {
-        Instant now = Instant.parse("2023-02-02T23:43:24Z");
-        ZonedDateTime current = now.atZone(ZoneId.of("Europe/Amsterdam"));
+        final Instant now = Instant.parse("2023-02-02T23:43:24Z");
+        final ZonedDateTime current = now.atZone(ZoneId.of("Europe/Amsterdam"));
         printf("Current time is %s%n%n", current);
 
         final Sequence<String> noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
@@ -889,14 +909,14 @@ class SequenceTest {
         assertEquals(23, noneWholeHourZoneOffsetSummaries.count());
     }
 
-    private boolean nonWholeHourOffsets(Instant instant, ZoneId id) {
+    private boolean nonWholeHourOffsets(final Instant instant, final ZoneId id) {
         return instant.atZone(id).getOffset().getTotalSeconds() % 3600 != 0;
     }
 
     @Test
     void testTimeZonesAntarctica() {
-        Instant now = Instant.now();
-        ZonedDateTime current = now.atZone(ZoneId.systemDefault());
+        final Instant now = Instant.now();
+        final ZonedDateTime current = now.atZone(ZoneId.systemDefault());
         printf("Current time is %s%n%n", current);
 
         final Sequence<String> timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.getId().contains("Antarctica"));
@@ -906,7 +926,7 @@ class SequenceTest {
         assertEquals(12, timeZonesAntarctica.count());
     }
 
-    private Sequence<String> getTimeZoneSummaries(Instant now, Predicate<ZoneId> predicate) {
+    private Sequence<String> getTimeZoneSummaries(final Instant now, final Predicate<ZoneId> predicate) {
         return Sequence.of(ZoneId.getAvailableZoneIds())
                 .map(ZoneId::of)
                 .filter(predicate)
@@ -915,7 +935,7 @@ class SequenceTest {
                 .map(this::toZoneSummary);
     }
 
-    private String toZoneSummary(ZonedDateTime zonedDateTime) {
+    private String toZoneSummary(final ZonedDateTime zonedDateTime) {
         return String.format("%10s %-25s %10s", zonedDateTime.getOffset(), zonedDateTime.getZone(),
                 zonedDateTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
     }
@@ -962,7 +982,7 @@ class SequenceTest {
     void testGoldenRatioConvergenceBigDecimal() {
         final int scale = 200;
         final BigDecimal sqrtOf5 = BigDecimal.valueOf(Math.sqrt(5.0));
-        BigDecimal goldenRatio = (BigDecimal.ONE.add(sqrtOf5)).divide(BigDecimal.valueOf(2), scale, RoundingMode.HALF_UP);
+        final BigDecimal goldenRatio = (BigDecimal.ONE.add(sqrtOf5)).divide(BigDecimal.valueOf(2), scale, RoundingMode.HALF_UP);
 
         println("goldenRatio by sqrt = " + goldenRatio);
 
@@ -1020,7 +1040,7 @@ class SequenceTest {
 
     @Test
     void testSequenceMinusOtherIterable() {
-        List<Integer> intsToRemove = Arrays.asList(1, 34, 3, 5);
+        final List<Integer> intsToRemove = Arrays.asList(1, 34, 3, 5);
 
         final Pair<List<Integer>, Long> pair = IntRange.of(0, 10)
                 .boxed()
@@ -1042,7 +1062,7 @@ class SequenceTest {
 
             final AtomicInteger index = new AtomicInteger();
             final AtomicIterator<String> atomicIterator = action -> {
-                boolean hasNext = index.get() < nodes.size();
+                final boolean hasNext = index.get() < nodes.size();
                 if (hasNext) {
                     action.accept(nodes.get(index.getAndIncrement()));
                 }
@@ -1063,7 +1083,7 @@ class SequenceTest {
 
             private final List<String> strings = new ArrayList<>();
 
-            public Nodes(String... strings) {
+            public Nodes(final String... strings) {
                 this.strings.addAll(Arrays.asList(strings));
             }
 
@@ -1071,7 +1091,7 @@ class SequenceTest {
                 return strings.size();
             }
 
-            private String get(int index) {
+            private String get(final int index) {
                 return strings.get(index);
             }
         }
@@ -1079,7 +1099,7 @@ class SequenceTest {
 
     @Test
     void testSequenceFromIndexedDataStructure() {
-        Nodes<String> nodes = new Nodes<>("This", "is", "a", "test");
+        final Nodes<String> nodes = new Nodes<>("This", "is", "a", "test");
 
         final List<String> strings = IntRange.of(0, nodes.size())
                 .mapToObj(nodes::get)
@@ -1093,7 +1113,7 @@ class SequenceTest {
 
         @Test
         void testReverseSequenceFromArray() {
-            String[] strings = {"This", "is", "a", "test"};
+            final String[] strings = {"This", "is", "a", "test"};
 
             final Sequence<String> sequence = Sequence.reverseOf(strings);
 
@@ -1112,7 +1132,7 @@ class SequenceTest {
 
         @Test
         void testReverseSequenceFromList() {
-            List<String> strings = Arrays.asList("This", "is", "a", "test");
+            final List<String> strings = Arrays.asList("This", "is", "a", "test");
 
             final Sequence<String> sequence = Sequence.reverseOf(strings);
 
@@ -1133,7 +1153,7 @@ class SequenceTest {
 
         @Test
         void testReverseSequenceFromListX() {
-            ListX<String> strings = ListX.of("This", "is", "a", "test");
+            final ListX<String> strings = ListX.of("This", "is", "a", "test");
 
             final Sequence<String> sequence = Sequence.reverseOf(strings);
 
@@ -1158,7 +1178,7 @@ class SequenceTest {
         private final List<T> nodes = new ArrayList<>();
 
         @SafeVarargs
-        public Nodes(T... values) {
+        public Nodes(final T... values) {
             Collections.addAll(nodes, values);
         }
 
@@ -1166,7 +1186,7 @@ class SequenceTest {
             return nodes.size();
         }
 
-        public T get(int index) {
+        public T get(final int index) {
             return nodes.get(index);
         }
     }
@@ -1193,21 +1213,109 @@ class SequenceTest {
         }
 
         /**
-         * @see <a href="https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/">1614. Maximum Nesting Depth of the Parentheses</a>
-         * @param s The nesting string
+         * @param s        The nesting string
          * @param expected the expected depth
+         * @see <a href="https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/">1614. Maximum Nesting Depth of the Parentheses</a>
          */
         @ParameterizedTest
         @CsvSource({
                 "(1+(2*3)+((8)/4))+1, 3",
                 "(1)+((2))+(((3))), 3"})
-        void testMaximumNestingDepthUSingScan(String s, int expected) {
+        void testMaximumNestingDepthUSingScan(final String s, final int expected) {
             final int actual = StringX.of(s)
                     .filter(StringX.of("()")::contains)
                     .mapToInt(c -> c == '(' ? 1 : -1)
                     .scan(0, Integer::sum)
                     .max();
             assertEquals(expected, actual);
+        }
+    }
+
+    @Nested
+    class ExtensionsTests {
+
+        @Test
+        void testWindowedExtension() {
+            final List<List<Integer>> windows = Sequence.iterate(0, i -> i + 1)
+                    .then(windowed(4, 4, true))
+                    .take(10)
+                    .toList();
+
+            final List<List<Integer>> expected = Sequence.iterate(0, i -> i + 1)
+                    .chunked(4)
+                    .take(10)
+                    .map(ListX::toList)
+                    .toList();
+
+            assertIterableEquals(expected, windows);
+        }
+
+        @Test
+        void extendedExtension() {
+            final List<Integer> windows = Sequence.iterate(0, i -> i + 1)
+                    .then(IterableExtensions.<Integer>windowed(4, 4, true)
+                            .andThen(runningFold(1, (acc, t) -> acc + t.size())))
+                    .take(10)
+                    .toList();
+
+            final List<Integer> expected = Sequence.iterate(0, i -> i + 1)
+                    .chunked(4)
+                    .scan(1, (acc, t) -> acc + t.size())
+                    .take(10)
+                    .toList();
+
+            assertIterableEquals(expected, windows);
+        }
+
+        @Test
+        void collectFromExtensionChain() {
+            final Collector<Integer, ?, Map<Integer, List<Integer>>> extension = IterableExtensions.<Integer>chunked(4)
+                    .andThen(runningFold(1, (acc, t) -> acc + t.size()))
+                    .collect(Collectors.groupingBy(i -> i % 4));
+
+            final Map<Integer, List<Integer>> windows = Sequence.iterate(0, i -> i + 1)
+                    .take(10)
+                    .collect(extension);
+
+            final Map<Integer, List<Integer>> expected = Sequence.iterate(0, i -> i + 1)
+                    .take(10)
+                    .chunked(4)
+                    .scan(1, (acc, t) -> acc + t.size())
+                    .collect(Collectors.groupingBy(i -> i % 4));
+
+            assertEquals(expected, windows);
+        }
+
+        @Test
+        void composedExtension() {
+            final List<Integer> windows = Sequence.iterate(0, i -> i + 1)
+                    .then(IterableExtensions.<List<Integer>, Integer>runningFold(1, (acc, t) -> acc + t.size())
+                            .compose(windowed(4, 4, true)))
+                    .take(10)
+                    .toList();
+
+            final List<Integer> expected = Sequence.iterate(0, i -> i + 1)
+                    .chunked(4)
+                    .scan(1, (acc, t) -> acc + t.size())
+                    .take(10)
+                    .toList();
+
+            assertIterableEquals(expected, windows);
+        }
+
+    }
+
+    @Nested
+    class BuilderTests {
+
+        @Test
+        void testBuildSequence() {
+            final Sequence.Builder<String> builder = Sequence.<String>builder();
+
+            builder.accept("This");
+            final Sequence<String> strings = builder.add("is").add("a").add("test").build();
+
+            assertIterableEquals(Arrays.asList("This", "is", "a", "test"), strings);
         }
     }
 }

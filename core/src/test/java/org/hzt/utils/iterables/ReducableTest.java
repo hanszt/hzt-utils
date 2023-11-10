@@ -178,7 +178,7 @@ class ReducableTest {
 
     @Test
     void testFindLast() {
-        ListX<String> list = ListX.of("hi", "hello", "this", "is", "a", "test");
+        final ListX<String> list = ListX.of("hi", "hello", "this", "is", "a", "test");
         final String last = list.last(s -> s.contains("i"));
 
         assertEquals("is", last);

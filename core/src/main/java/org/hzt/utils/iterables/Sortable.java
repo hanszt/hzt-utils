@@ -20,11 +20,11 @@ public interface Sortable<T> extends Iterable<T> {
         return IterableXHelper.toSortedListX(this, (Function<T, R>) IterableXHelper::asComparableOrThrow);
     }
 
-    default <R extends Comparable<? super R>> Sortable<T> sortedBy(Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Sortable<T> sortedBy(final Function<? super T, ? extends R> selector) {
         return IterableXHelper.toSortedListX(this, selector);
     }
 
-    default Sortable<T> sorted(Comparator<? super T> comparator) {
+    default Sortable<T> sorted(final Comparator<? super T> comparator) {
         final MutableListX<T> list = MutableListX.of(this);
         list.sort(comparator);
         return list;
@@ -34,15 +34,15 @@ public interface Sortable<T> extends Iterable<T> {
         return sortedByDescending(IterableXHelper::asComparableOrThrow);
     }
 
-    default <R extends Comparable<? super R>> Sortable<T> sortedByDescending(Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Sortable<T> sortedByDescending(final Function<? super T, ? extends R> selector) {
         final MutableListX<T> list = MutableListX.of(this);
         list.sort(Comparator.comparing(selector).reversed());
         return list;
     }
 
-    default <R extends Comparable<? super R>> SortedMutableSetX<T> toSortedSet(Function<? super T, ? extends R> selector) {
-        SortedMutableSetX<T> sortedMutableSet = SortedMutableSetX.comparingBy(selector);
-        for (T t : this) {
+    default <R extends Comparable<? super R>> SortedMutableSetX<T> toSortedSet(final Function<? super T, ? extends R> selector) {
+        final SortedMutableSetX<T> sortedMutableSet = SortedMutableSetX.comparingBy(selector);
+        for (final T t : this) {
             if (t != null && selector.apply(t) != null) {
                 sortedMutableSet.add(t);
             }
@@ -50,9 +50,9 @@ public interface Sortable<T> extends Iterable<T> {
         return sortedMutableSet;
     }
 
-    default <R extends Comparable<? super R>> SortedMutableSetX<R> toSortedSetOf(Function<? super T, ? extends R> selector) {
-        MutableListX<R> list = MutableListX.empty();
-        for (T t : this) {
+    default <R extends Comparable<? super R>> SortedMutableSetX<R> toSortedSetOf(final Function<? super T, ? extends R> selector) {
+        final MutableListX<R> list = MutableListX.empty();
+        for (final T t : this) {
             if (t != null) {
                 final R r = selector.apply(t);
                 if (r != null) {
@@ -63,7 +63,7 @@ public interface Sortable<T> extends Iterable<T> {
         return SortedMutableSetX.of(list, It::self);
     }
 
-    default <R extends Comparable<? super R>> boolean isSortedBy(Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> boolean isSortedBy(final Function<? super T, ? extends R> selector) {
         return Sequence.of(this)
                 .map(selector)
                 .zipWithNext()
@@ -80,7 +80,7 @@ public interface Sortable<T> extends Iterable<T> {
      * @param comparator the comparator to use for testing weather the Sortable is sorted
      * @return true if it is sorted else false
      */
-    default boolean isSorted(Comparator<T> comparator) {
+    default boolean isSorted(final Comparator<T> comparator) {
         return Sequence.of(this)
                 .zipWithNext()
                 .all((first, second) -> comparator.compare(first, second) <= 0);

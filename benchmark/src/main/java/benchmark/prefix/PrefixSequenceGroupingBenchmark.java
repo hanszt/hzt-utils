@@ -67,10 +67,10 @@ public class PrefixSequenceGroupingBenchmark {
 
     @Benchmark
     public Map<Integer, List<Integer>> groupByImperative() {
-        Map<Integer, List<Integer>> grouping = new HashMap<>();
+        final Map<Integer, List<Integer>> grouping = new HashMap<>();
         for (int i = 0; i < UPPER_BOUND_RANGE; i++) {
             if (fibonacciNrs.contains(i)) {
-                int groupingNr = i % GROUP_BY_VALUE;
+                final int groupingNr = i % GROUP_BY_VALUE;
                 final List<Integer> integers = grouping.computeIfAbsent(groupingNr, integer -> new ArrayList<>());
                 integers.add(i);
             }
@@ -78,8 +78,8 @@ public class PrefixSequenceGroupingBenchmark {
         return grouping;
     }
 
-    public static void main(String[] args) {
-        Options options = new OptionsBuilder()
+    public static void main(final String[] args) {
+        final Options options = new OptionsBuilder()
                 .include(PrefixSequenceGroupingBenchmark.class.getSimpleName())
                 .forks(2)
                 .warmupIterations(2)
@@ -88,7 +88,7 @@ public class PrefixSequenceGroupingBenchmark {
                 .build();
         try {
             new Runner(options).run();
-        } catch (RunnerException e) {
+        } catch (final RunnerException e) {
             throw new IllegalStateException(e);
         }
     }

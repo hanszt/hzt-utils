@@ -1,7 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.It;
+import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,7 +34,7 @@ class DoubleMutableCollectionTest {
 
     @Test
     void testStreamFromDoubleCollection() {
-        DoubleList listX = IntSequence.iterate(1, d -> d + 2)
+        final DoubleList listX = IntSequence.iterate(1, d -> d + 2)
                 .mapToDouble(i -> 1. / i)
                 .take(1_000_000)
                 .toList();

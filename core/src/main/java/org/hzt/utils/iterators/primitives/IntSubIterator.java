@@ -11,13 +11,13 @@ public final class IntSubIterator implements PrimitiveIterator.OfInt {
 
     private long position;
 
-    private IntSubIterator(OfInt iterator, long startIndex, long endIndex) {
+    private IntSubIterator(final OfInt iterator, final long startIndex, final long endIndex) {
         this.iterator = iterator;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
     }
 
-    public static IntSubIterator of(OfInt iterator, long startIndex, long endIndex) {
+    public static IntSubIterator of(final OfInt iterator, final long startIndex, final long endIndex) {
         return new IntSubIterator(iterator, startIndex, endIndex);
     }
 

@@ -11,24 +11,24 @@ public final class Result<T, R> {
     private final T originalValue;
     private final R resultVal;
 
-    public Result(T value, R resultValue) {
+    public Result(final T value, final R resultValue) {
         this.originalValue = value;
         this.resultVal = resultValue;
         this.throwable = null;
     }
 
-    public Result(T value, Throwable throwable) {
+    public Result(final T value, final Throwable throwable) {
         this.originalValue = value;
         this.resultVal = null;
         this.throwable = throwable;
     }
 
-    public static <T, R> Function<T, Result<T, R>> catching(ThrowingFunction<? super T, ? extends R> throwingFunction) {
+    public static <T, R> Function<T, Result<T, R>> catching(final ThrowingFunction<? super T, ? extends R> throwingFunction) {
         return t -> {
             try {
                 final R result = throwingFunction.apply(t);
                 return new Result<>(t, result);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 return new Result<>(t, e);
             }
         };

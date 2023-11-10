@@ -15,13 +15,13 @@ public final class IntGeneratorIterator implements PrimitiveIterator.OfInt {
     private int nextInt;
     private State nextState = State.INIT_UNKNOWN;
 
-    private IntGeneratorIterator(IntSupplier initSupplier, IntUnaryOperator nextValueSupplier) {
+    private IntGeneratorIterator(final IntSupplier initSupplier, final IntUnaryOperator nextValueSupplier) {
         this.initSupplier = initSupplier;
         this.nextValueSupplier = nextValueSupplier;
         this.nextInt = initSupplier.getAsInt();
     }
 
-    public static PrimitiveIterator.OfInt of(IntSupplier initSupplier, IntUnaryOperator nextValueSupplier) {
+    public static PrimitiveIterator.OfInt of(final IntSupplier initSupplier, final IntUnaryOperator nextValueSupplier) {
         return new IntGeneratorIterator(initSupplier, nextValueSupplier);
     }
 

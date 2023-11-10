@@ -80,7 +80,7 @@ class ListXTest {
     void testBinarySearch() {
         final ListX<Integer> sortedList = ListX.of(-1, 0, 1, 2, 3, 4, 5);
 
-        int valueToSearchFor = 2;
+        final int valueToSearchFor = 2;
 
         final int indexInSortedList = sortedList.binarySearch(value -> value.compareTo(valueToSearchFor));
 
@@ -141,7 +141,7 @@ class ListXTest {
 
     @Test
     void testToListYieldsUnModifiableList() {
-        PaintingAuction auction = Generator.createVanGoghAuction();
+        final PaintingAuction auction = Generator.createVanGoghAuction();
         final Year yearToAdd = Year.of(2000);
 
         final List<Year> years = auction.toListOf(Painting::getYearOfCreation);
@@ -159,7 +159,7 @@ class ListXTest {
         );
     }
 
-    private void getStringList(MutableListX<String> list) {
+    private void getStringList(final MutableListX<String> list) {
         for (int i = 0; i < 100; i++) {
             list.add(String.valueOf(i));
         }
@@ -176,7 +176,7 @@ class ListXTest {
                 .collect(Collectors.toList());
         datesFromStream.add(LocalDate.MIN);
         datesFromStream.add(LocalDate.MAX);
-        ListX<LocalDate> expected = ListX.of(datesFromStream);
+        final ListX<LocalDate> expected = ListX.of(datesFromStream);
 
         final ListX<LocalDate> dates = auctions
                 .mapNotNull(PaintingAuction::getDateOfOpening)
@@ -189,7 +189,7 @@ class ListXTest {
 
     @Test
     void testSkipLast() {
-        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+        final ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
         final ListX<Integer> integers = list.skipLast(2);
 
@@ -207,7 +207,7 @@ class ListXTest {
 
     @Test
     void testTakeLast() {
-        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+        final ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
         final ListX<Integer> integers = list.takeLast(2);
 
@@ -216,7 +216,7 @@ class ListXTest {
 
     @Test
     void testTakeLastTo() {
-        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+        final ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
         final Collection<Integer> integers = list.takeLastTo(size -> new LinkedTransferQueue<>(), 5);
 
@@ -352,7 +352,7 @@ class ListXTest {
         }
     }
 
-    private static int calculateProduct(ListX<Integer> list) {
+    private static int calculateProduct(final ListX<Integer> list) {
         return list.reduce((acc, i) -> acc * i).orElse(0);
     }
 }

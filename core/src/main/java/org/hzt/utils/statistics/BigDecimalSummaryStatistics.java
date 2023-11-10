@@ -20,7 +20,7 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
         super();
     }
 
-    public BigDecimalSummaryStatistics(long count, BigDecimal sum, BigDecimal min, BigDecimal max) {
+    public BigDecimalSummaryStatistics(final long count, final BigDecimal sum, final BigDecimal min, final BigDecimal max) {
         if (count < 0L) {
             throw new IllegalArgumentException("Negative count value");
         }
@@ -34,7 +34,7 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
     }
 
     @Override
-    public void accept(BigDecimal value) {
+    public void accept(final BigDecimal value) {
         if (value != null) {
             ++count;
             sum = sum.add(value);
@@ -43,7 +43,7 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
         }
     }
 
-    public BigDecimalSummaryStatistics combine(BigDecimalSummaryStatistics other) {
+    public BigDecimalSummaryStatistics combine(final BigDecimalSummaryStatistics other) {
         count += other.count;
         sum = sum.add(other.sum);
         min = min.compareTo(other.min) < 0 ? min : other.min;
@@ -56,12 +56,12 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
         return getAverage(SCALE);
     }
 
-    public BigDecimalX getAverage(int scale) {
+    public BigDecimalX getAverage(final int scale) {
         return getAverage(scale, RoundingMode.HALF_UP);
     }
 
-    public BigDecimalX getAverage(int scale, RoundingMode roundingMode) {
-        BigDecimal countAsBD = BigDecimal.valueOf(this.count);
+    public BigDecimalX getAverage(final int scale, final RoundingMode roundingMode) {
+        final BigDecimal countAsBD = BigDecimal.valueOf(this.count);
         return BigDecimalX.of(BigDecimal.ZERO.compareTo(countAsBD) == 0 ? BigDecimal.ZERO : sum.divide(countAsBD, scale, roundingMode));
     }
 

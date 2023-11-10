@@ -6,8 +6,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.regex.Pattern;
 
-import static org.hzt.utils.Patterns.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hzt.utils.Patterns.emailPattern;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PatternsTest {
 
@@ -22,7 +23,7 @@ class PatternsTest {
             "user.name@domain.com",
             "user_name@domain.com"})
     @DisplayName("Test valid email addresses")
-    void testValidEmailAddresses(String mail) {
+    void testValidEmailAddresses(final String mail) {
         final boolean isValidMailAddress = emailPattern.matcher(mail).matches();
         assertTrue(isValidMailAddress);
     }
@@ -35,7 +36,7 @@ class PatternsTest {
             "username_@domai@test.com",
             "username|test@domain.com"})
     @DisplayName("Test invalid email addresses")
-    void testInValidEmailAddresses(String mail) {
+    void testInValidEmailAddresses(final String mail) {
         final boolean isValidMailAddress = emailPattern.matcher(mail).matches();
         assertFalse(isValidMailAddress);
     }

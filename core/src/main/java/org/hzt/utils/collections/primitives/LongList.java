@@ -25,25 +25,25 @@ public interface LongList extends LongCollection,
         return new LongImmutableList();
     }
 
-    static LongList of(long... array) {
+    static LongList of(final long... array) {
         return new LongImmutableList(array);
     }
 
-    static LongList of(Iterable<Long> iterable) {
+    static LongList of(final Iterable<Long> iterable) {
         return LongSequence.of(iterable).toList();
     }
 
-    static LongList copyOf(LongCollection longCollection) {
+    static LongList copyOf(final LongCollection longCollection) {
         return new LongImmutableList(longCollection);
     }
 
-    static LongList build(Consumer<? super LongMutableList> factory) {
+    static LongList build(final Consumer<? super LongMutableList> factory) {
         final LongMutableList mutableList = LongMutableList.empty();
         factory.accept(mutableList);
         return LongList.copyOf(mutableList);
     }
 
-    default boolean contains(long value) {
+    default boolean contains(final long value) {
         return indexOf(value) >= 0;
     }
 
@@ -74,8 +74,8 @@ public interface LongList extends LongCollection,
     }
 
     @Override
-    default OptionalLong findLast(LongPredicate predicate) {
-        PrimitiveListIterator.OfLong iterator = listIterator(lastIndex());
+    default OptionalLong findLast(final LongPredicate predicate) {
+        final PrimitiveListIterator.OfLong iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
             final long previousLong = iterator.previousLong();
             if (predicate.test(previousLong)) {
@@ -104,7 +104,7 @@ public interface LongList extends LongCollection,
     }
 
     @Override
-    default LongList sorted(LongComparator comparator) {
+    default LongList sorted(final LongComparator comparator) {
         final long[] longs = toArray();
         ArraysX.sort(comparator, longs);
         return LongList.of(longs);
@@ -125,11 +125,11 @@ public interface LongList extends LongCollection,
      * @see java.util.Arrays#binarySearch(long[], long)
      */
     @Override
-    default int binarySearch(int fromIndex, int toIndex, LongToIntFunction comparison) {
+    default int binarySearch(final int fromIndex, final int toIndex, final LongToIntFunction comparison) {
         return BinarySearchable.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
     }
 
-    default int binarySearch(int valueToSearch) {
+    default int binarySearch(final int valueToSearch) {
         return binarySearch(0, size(), e -> Long.compare(e, valueToSearch));
     }
 

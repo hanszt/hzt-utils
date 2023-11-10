@@ -15,9 +15,9 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
         return count(It::noLongFilter);
     }
 
-    default long count(LongPredicate predicate) {
+    default long count(final LongPredicate predicate) {
         long count = 0;
-        PrimitiveIterator.OfLong iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextLong())) {
                 count++;
@@ -30,7 +30,7 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
         return stats().getMin();
     }
 
-    default long min(LongPredicate predicate) {
+    default long min(final LongPredicate predicate) {
         return LongSequence.of(this).filter(predicate).min();
     }
 
@@ -38,7 +38,7 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
         return stats().getMax();
     }
 
-    default long max(LongPredicate predicate) {
+    default long max(final LongPredicate predicate) {
         return LongSequence.of(this).filter(predicate).max();
     }
 
@@ -46,20 +46,20 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
         return stats().getAverage();
     }
 
-    default double average(LongPredicate predicate) {
+    default double average(final LongPredicate predicate) {
         return LongSequence.of(this).filter(predicate).average();
     }
 
     default long sum() {
         long sum = 0;
-        PrimitiveIterator.OfLong iterator = iterator();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             sum += iterator.nextLong();
         }
         return sum;
     }
 
-    default long sum(LongPredicate predicate) {
+    default long sum(final LongPredicate predicate) {
         return LongSequence.of(this).filter(predicate).sum();
     }
 
@@ -67,20 +67,20 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
         return stats().getStandardDeviation();
     }
 
-    default double stdDev(LongPredicate predicate) {
+    default double stdDev(final LongPredicate predicate) {
         return LongSequence.of(this).filter(predicate).stdDev();
     }
 
     default LongStatistics stats() {
-        LongStatistics longStatistics = new LongStatistics();
-        PrimitiveIterator.OfLong iterator = iterator();
+        final LongStatistics longStatistics = new LongStatistics();
+        final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             longStatistics.accept(iterator.nextLong());
         }
         return longStatistics;
     }
 
-    default LongStatistics stats(LongPredicate predicate) {
+    default LongStatistics stats(final LongPredicate predicate) {
         return LongSequence.of(this).filter(predicate).stats();
     }
 

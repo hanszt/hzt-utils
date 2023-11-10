@@ -12,12 +12,12 @@ public final class Grid3DUtils {
     private Grid3DUtils() {
     }
 
-    public static <T> List<List<List<T>>> toListGrid(T[][][] grid) {
-        List<List<List<T>>> newGrid = new ArrayList<>();
-        for (T[][] plane : grid) {
-            List<List<T>> newPlane = new ArrayList<>();
-            for (T[] row : plane) {
-                List<T> newRow = new ArrayList<>();
+    public static <T> List<List<List<T>>> toListGrid(final T[][][] grid) {
+        final List<List<List<T>>> newGrid = new ArrayList<>();
+        for (final T[][] plane : grid) {
+            final List<List<T>> newPlane = new ArrayList<>();
+            for (final T[] row : plane) {
+                final List<T> newRow = new ArrayList<>();
                 Collections.addAll(newRow, row);
                 newPlane.add(newRow);
             }
@@ -26,13 +26,13 @@ public final class Grid3DUtils {
         return newGrid;
     }
 
-    public static <T> List<List<List<T>>> toListGrid(int[][][] grid, IntFunction<T> mapper) {
-        List<List<List<T>>> newGrid = new ArrayList<>();
-        for (int[][] plane : grid) {
-            List<List<T>> newPlane = new ArrayList<>();
-            for (int[] row : plane) {
-                List<T> newRow = new ArrayList<>();
-                for (int value : row) {
+    public static <T> List<List<List<T>>> toListGrid(final int[][][] grid, final IntFunction<T> mapper) {
+        final List<List<List<T>>> newGrid = new ArrayList<>();
+        for (final int[][] plane : grid) {
+            final List<List<T>> newPlane = new ArrayList<>();
+            for (final int[] row : plane) {
+                final List<T> newRow = new ArrayList<>();
+                for (final int value : row) {
                     newRow.add(mapper.apply(value));
                 }
                 newPlane.add(newRow);
@@ -42,10 +42,10 @@ public final class Grid3DUtils {
         return newGrid;
     }
 
-    public static <T> boolean anyInGrid(T[][][] grid, Predicate<T> predicate) {
-        for (T[][] plane : grid) {
-            for (T[] row : plane) {
-                for (T item : row) {
+    public static <T> boolean anyInGrid(final T[][][] grid, final Predicate<T> predicate) {
+        for (final T[][] plane : grid) {
+            for (final T[] row : plane) {
+                for (final T item : row) {
                     if (predicate.test(item)) {
                         return true;
                     }
@@ -55,10 +55,10 @@ public final class Grid3DUtils {
         return false;
     }
 
-    public static <T> boolean noneInGrid(T[][][] grid, Predicate<T> predicate) {
-        for (T[][] plane : grid) {
-            for (T[] row : plane) {
-                for (T item : row) {
+    public static <T> boolean noneInGrid(final T[][][] grid, final Predicate<T> predicate) {
+        for (final T[][] plane : grid) {
+            for (final T[] row : plane) {
+                for (final T item : row) {
                     if (predicate.test(item)) {
                         return false;
                     }
@@ -68,10 +68,10 @@ public final class Grid3DUtils {
         return true;
     }
 
-    public static <T> boolean allInGrid(T[][][] grid, Predicate<T> predicate) {
-        for (T[][] plane : grid) {
-            for (T[] row : plane) {
-                for (T item : row) {
+    public static <T> boolean allInGrid(final T[][][] grid, final Predicate<T> predicate) {
+        for (final T[][] plane : grid) {
+            for (final T[] row : plane) {
+                for (final T item : row) {
                     if (!predicate.test(item)) {
                         return false;
                     }

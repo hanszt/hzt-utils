@@ -21,12 +21,12 @@ public interface TriFunction<T, U, V, R> {
      * applies the {@code after} function
      * @throws NullPointerException if after is null
      */
-    default <W> TriFunction<T, U, V, W> andThen(Function<? super R, ? extends W> after) {
+    default <W> TriFunction<T, U, V, W> andThen(final Function<? super R, ? extends W> after) {
         Objects.requireNonNull(after);
         return (T t, U u, V v) -> after.apply(apply(t, u, v));
     }
 
-    static <T, U, V, R> TriFunction<T, U, V, R> of(TriFunction<T, U, V, R> function) {
+    static <T, U, V, R> TriFunction<T, U, V, R> of(final TriFunction<T, U, V, R> function) {
         Objects.requireNonNull(function);
         return function;
     }

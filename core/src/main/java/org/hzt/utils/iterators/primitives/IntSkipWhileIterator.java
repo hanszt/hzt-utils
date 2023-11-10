@@ -13,13 +13,13 @@ public final class IntSkipWhileIterator implements OfInt {
     private boolean firstIteration = true;
     private SkipState state = SkipState.SKIPPING;
 
-    IntSkipWhileIterator(OfInt iterator, IntPredicate predicate, boolean inclusive) {
+    IntSkipWhileIterator(final OfInt iterator, final IntPredicate predicate, final boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
     }
 
-    public static OfInt of(OfInt iterator, IntPredicate predicate, boolean inclusive) {
+    public static OfInt of(final OfInt iterator, final IntPredicate predicate, final boolean inclusive) {
         return new IntSkipWhileIterator(iterator, predicate, inclusive);
     }
 
@@ -53,7 +53,7 @@ public final class IntSkipWhileIterator implements OfInt {
             skip();
         }
         if (state == SkipState.NEXT_ITEM) {
-            int result = nextItem;
+            final int result = nextItem;
             state = SkipState.NORMAL_ITERATION;
             return result;
         }

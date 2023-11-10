@@ -7,26 +7,26 @@ import java.awt.event.WindowListener;
 public interface WindowDeiconifiedListener extends WindowListener {
 
     @Override
-    default void windowOpened(WindowEvent e) {
+    default void windowOpened(final WindowEvent e) {
     }
 
     @Override
-    default void windowClosing(WindowEvent e) {
+    default void windowClosing(final WindowEvent e) {
     }
 
     @Override
-    default void windowClosed(WindowEvent e) {
+    default void windowClosed(final WindowEvent e) {
     }
 
     @Override
-    default void windowIconified(WindowEvent e) {
+    default void windowIconified(final WindowEvent e) {
     }
 
     @Override
-    default void windowActivated(WindowEvent e) {
+    default void windowActivated(final WindowEvent e) {
     }
 
     @Override
-    default void windowDeactivated(WindowEvent e) {
+    default void windowDeactivated(final WindowEvent e) {
     }
 }

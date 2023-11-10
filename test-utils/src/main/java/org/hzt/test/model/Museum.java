@@ -21,7 +21,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
 
     private Painting mostPopularPainting;
 
-    public Museum(String name, LocalDate dateOfOpening, List<Painting> paintingList) {
+    public Museum(final String name, final LocalDate dateOfOpening, final List<Painting> paintingList) {
         Objects.requireNonNull(paintingList);
         this.name = name;
         this.dateOfOpening = dateOfOpening;
@@ -54,7 +54,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
         return mostPopularPainting;
     }
 
-    public void setMostPopularPainting(Painting mostPopularPainting) {
+    public void setMostPopularPainting(final Painting mostPopularPainting) {
         this.mostPopularPainting = mostPopularPainting;
     }
 
@@ -62,7 +62,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
         return Collections.unmodifiableList(paintingList);
     }
 
-    public void toDatesOfBirthPainters(Consumer<LocalDate> dateOfBirthConsumer) {
+    public void toDatesOfBirthPainters(final Consumer<LocalDate> dateOfBirthConsumer) {
         toPainterDateOfBirthStream()
                 .forEach(dateOfBirthConsumer);
     }
@@ -75,7 +75,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         return this == o || (o instanceof Museum &&
                 Objects.equals(name, ((Museum) o).name) &&
                 Objects.equals(dateOfOpening, ((Museum) o).dateOfOpening) &&
@@ -88,7 +88,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
     }
 
     @Override
-    public int compareTo(Museum o) {
+    public int compareTo(final Museum o) {
         if (name == null) {
             return -1;
         }

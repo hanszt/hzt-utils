@@ -81,7 +81,7 @@ class TransformableTest {
 
     interface TransformableSequence<T> extends Transformable<TransformableSequence<T>>, Sequence<T> {
 
-        static <T> TransformableSequence<T> of(Iterable<T> iterable) {
+        static <T> TransformableSequence<T> of(final Iterable<T> iterable) {
             return iterable::iterator;
         }
 

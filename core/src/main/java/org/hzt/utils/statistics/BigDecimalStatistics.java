@@ -15,18 +15,18 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
         super();
     }
 
-    public BigDecimalStatistics(long count, BigDecimal sum, BigDecimal min, BigDecimal max) {
+    public BigDecimalStatistics(final long count, final BigDecimal sum, final BigDecimal min, final BigDecimal max) {
         super(count, sum, min, max);
     }
 
     @Override
-    public void accept(BigDecimal value) {
+    public void accept(final BigDecimal value) {
         super.accept(value);
-        BigDecimal squareValue = value.multiply(value);
+        final BigDecimal squareValue = value.multiply(value);
         sumOfSquare = sumOfSquare.add(squareValue);
     }
 
-    public BigDecimalStatistics combine(BigDecimalStatistics other) {
+    public BigDecimalStatistics combine(final BigDecimalStatistics other) {
         super.combine(other);
         sumOfSquare = sumOfSquare.add(other.sumOfSquare);
         return this;
@@ -44,7 +44,7 @@ public final class BigDecimalStatistics extends BigDecimalSummaryStatistics
         return getStandardDeviation(2, RoundingMode.HALF_UP);
     }
 
-    public BigDecimalX getStandardDeviation(int scale, RoundingMode roundingMode) {
+    public BigDecimalX getStandardDeviation(final int scale, final RoundingMode roundingMode) {
         final BigDecimal average = getAverage(scale, roundingMode);
         final double subtract = (getSumOfSquare().divide(BigDecimal.valueOf(getCount()), scale, roundingMode))
                 .subtract(average.multiply(average)).doubleValue();

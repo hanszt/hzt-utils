@@ -10,18 +10,18 @@ public final class PreConditions {
     }
 
     @SafeVarargs
-    public static <T> void requireAllNonNull(final Class<T> aClass, T... objects) {
+    public static <T> void requireAllNonNull(final Class<T> aClass, final T... objects) {
         int counter = 1;
-        for (T t : objects) {
+        for (final T t : objects) {
             Objects.requireNonNull(t, aClass.getSimpleName() + " " + counter + " is null");
             counter++;
         }
     }
 
-    public static void requireAllNonNull(Object... objects) {
-        RuntimeException exception = new IllegalArgumentException("Some objects where null");
+    public static void requireAllNonNull(final Object... objects) {
+        final RuntimeException exception = new IllegalArgumentException("Some objects where null");
         int counter = 1;
-        for (Object object : objects) {
+        for (final Object object : objects) {
             if (object == null) {
                 exception.addSuppressed(new NullPointerException("object " + counter + " is null"));
             }
@@ -32,31 +32,31 @@ public final class PreConditions {
         }
     }
 
-    public static void requireGreaterThanOrEqualToZero(int n) {
+    public static void requireGreaterThanOrEqualToZero(final int n) {
         require(n >= 0, () -> errorMessage(n));
     }
 
-    public static void requireGreaterThanOrEqualToZero(long n) {
+    public static void requireGreaterThanOrEqualToZero(final long n) {
         require(n >= 0, () -> errorMessage(n));
     }
 
-    private static String errorMessage(long n) {
+    private static String errorMessage(final long n) {
         return "Requested element count " + n + " is less than zero.";
     }
 
-    public static void require(boolean value, Supplier<String> messageSupplier) {
+    public static void require(final boolean value, final Supplier<String> messageSupplier) {
         if (!value) {
             throw new IllegalArgumentException(messageSupplier.get());
         }
     }
 
-    public static void require(boolean value) {
+    public static void require(final boolean value) {
         if (!value) {
             throw new IllegalArgumentException();
         }
     }
 
-    public static void rangeCheck(int size, int fromIndex, int toIndex) {
+    public static void rangeCheck(final int size, final int fromIndex, final int toIndex) {
         if (fromIndex > toIndex) {
             throw new IllegalArgumentException("fromIndex (" + fromIndex + ") is greater than toIndex (" + toIndex + ").");
         }
@@ -68,7 +68,7 @@ public final class PreConditions {
         }
     }
 
-    public static <E extends RuntimeException> void requireOrThrow(boolean value, Supplier<E> runtimeException) {
+    public static <E extends RuntimeException> void requireOrThrow(final boolean value, final Supplier<E> runtimeException) {
         if (!value) {
             throw runtimeException.get();
         }

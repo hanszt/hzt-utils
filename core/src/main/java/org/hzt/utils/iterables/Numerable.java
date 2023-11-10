@@ -19,7 +19,7 @@ import java.util.function.ToLongFunction;
 @FunctionalInterface
 public interface Numerable<T> extends Iterable<T> {
 
-    default long count(Predicate<T> predicate) {
+    default long count(final Predicate<T> predicate) {
         return IterableXHelper.count(this, predicate);
     }
 
@@ -27,9 +27,9 @@ public interface Numerable<T> extends Iterable<T> {
         return count(It::noFilter);
     }
 
-    default long intSumOf(ToIntFunction<? super T> selector) {
+    default long intSumOf(final ToIntFunction<? super T> selector) {
         long sum = 0;
-        for (T t : this) {
+        for (final T t : this) {
             if (t != null) {
                 sum += selector.applyAsInt(t);
             }
@@ -37,9 +37,9 @@ public interface Numerable<T> extends Iterable<T> {
         return sum;
     }
 
-    default long longSumOf(ToLongFunction<? super T> selector) {
+    default long longSumOf(final ToLongFunction<? super T> selector) {
         long sum = 0;
-        for (T t : this) {
+        for (final T t : this) {
             if (t != null) {
                 sum += selector.applyAsLong(t);
             }
@@ -47,9 +47,9 @@ public interface Numerable<T> extends Iterable<T> {
         return sum;
     }
 
-    default double doubleSumOf(ToDoubleFunction<? super T> selector) {
+    default double doubleSumOf(final ToDoubleFunction<? super T> selector) {
         double sum = 0;
-        for (T t : this) {
+        for (final T t : this) {
             if (t != null) {
                 sum += selector.applyAsDouble(t);
             }
@@ -57,9 +57,9 @@ public interface Numerable<T> extends Iterable<T> {
         return sum;
     }
 
-    default BigDecimalX bigDecimalSumOf(Function<? super T, ? extends BigDecimal> selector) {
+    default BigDecimalX bigDecimalSumOf(final Function<? super T, ? extends BigDecimal> selector) {
         BigDecimal sum = BigDecimal.ZERO;
-        for (T t : this) {
+        for (final T t : this) {
             if (t != null) {
                 final BigDecimal augend = selector.apply(t);
                 if (augend != null) {
@@ -70,10 +70,10 @@ public interface Numerable<T> extends Iterable<T> {
         return BigDecimalX.of(sum);
     }
 
-    default double averageOf(Function<T, Number> selector) {
+    default double averageOf(final Function<T, Number> selector) {
         double sum = 0;
         long counter = 0;
-        for (T t : this) {
+        for (final T t : this) {
             if (t != null) {
                 final double value = selector.apply(t).doubleValue();
                 sum += value;
@@ -83,15 +83,15 @@ public interface Numerable<T> extends Iterable<T> {
         return (counter != 0) ? (sum / counter) : 0;
     }
 
-    default BigDecimalX bigDecimalAverageOf(Function<? super T, ? extends BigDecimal> selector) {
+    default BigDecimalX bigDecimalAverageOf(final Function<? super T, ? extends BigDecimal> selector) {
         return bigDecimalAverageOf(selector, 2, RoundingMode.HALF_UP);
     }
 
-    default BigDecimalX bigDecimalAverageOf(Function<? super T, ? extends BigDecimal> selector, int scale,
-                                            RoundingMode roundingMode) {
+    default BigDecimalX bigDecimalAverageOf(final Function<? super T, ? extends BigDecimal> selector, final int scale,
+                                            final RoundingMode roundingMode) {
         BigDecimal sum = BigDecimal.ZERO;
         long counter = 0;
-        for (T t : this) {
+        for (final T t : this) {
             if (t != null) {
                 final BigDecimal value = selector.apply(t);
                 if (value != null) {
@@ -103,42 +103,42 @@ public interface Numerable<T> extends Iterable<T> {
         return BigDecimalX.of(sum.divide(BigDecimal.valueOf(counter), scale, roundingMode));
     }
 
-    default <R extends Comparable<? super R>> Optional<T> minBy(Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Optional<T> minBy(final Function<? super T, ? extends R> selector) {
         return IterableXHelper.compareBy(iterator(), selector, i -> i > 0);
     }
 
-    default <R extends Comparable<? super R>> Optional<T> maxBy(Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Optional<T> maxBy(final Function<? super T, ? extends R> selector) {
         return IterableXHelper.compareBy(iterator(), selector, i -> i < 0);
     }
 
-    default <R extends Comparable<? super R>> R minOf(Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> R minOf(final Function<? super T, ? extends R> selector) {
         return IterableXHelper.comparisonOf(iterator(), selector, i -> i > 0);
     }
 
-    default <R extends Comparable<? super R>> R maxOf(Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> R maxOf(final Function<? super T, ? extends R> selector) {
         return IterableXHelper.comparisonOf(iterator(), selector, i -> i < 0);
     }
 
-    default IntStatistics intStatsOf(ToIntFunction<? super T> mapper) {
-        IntStatistics statistics = new IntStatistics();
+    default IntStatistics intStatsOf(final ToIntFunction<? super T> mapper) {
+        final IntStatistics statistics = new IntStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> statistics.accept(mapper.applyAsInt(v)));
         return statistics;
     }
 
-    default LongStatistics longStatsOf(ToLongFunction<? super T> mapper) {
-        LongStatistics statistics = new LongStatistics();
+    default LongStatistics longStatsOf(final ToLongFunction<? super T> mapper) {
+        final LongStatistics statistics = new LongStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> statistics.accept(mapper.applyAsLong(v)));
         return statistics;
     }
 
-    default DoubleStatistics doubleStatsOf(ToDoubleFunction<? super T> mapper) {
-        DoubleStatistics statistics = new DoubleStatistics();
+    default DoubleStatistics doubleStatsOf(final ToDoubleFunction<? super T> mapper) {
+        final DoubleStatistics statistics = new DoubleStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> statistics.accept(mapper.applyAsDouble(v)));
         return statistics;
     }
 
-    default BigDecimalStatistics bigDecimalStatsOf(Function<T, ? extends BigDecimal> mapper) {
-        BigDecimalStatistics statistics = new BigDecimalStatistics();
+    default BigDecimalStatistics bigDecimalStatsOf(final Function<T, ? extends BigDecimal> mapper) {
+        final BigDecimalStatistics statistics = new BigDecimalStatistics();
         IterableXHelper.exposeNonNullVal(this, v -> {
             final BigDecimal bigDecimal = mapper.apply(v);
             if (bigDecimal != null) {

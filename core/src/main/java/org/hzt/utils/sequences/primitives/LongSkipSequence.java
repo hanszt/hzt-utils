@@ -9,20 +9,20 @@ final class LongSkipSequence implements LongSkipTakeSequence {
     private final LongSequence upstream;
     private final long count;
 
-    LongSkipSequence(LongSequence upstream, long count) {
+    LongSkipSequence(final LongSequence upstream, final long count) {
         PreConditions.require(count >= 0);
         this.upstream = upstream;
         this.count = count;
     }
 
     @Override
-    public LongSequence skip(long n) {
+    public LongSequence skip(final long n) {
         final long n1 = count + n;
         return n1 < 0 ? new LongSkipSequence(this, n) : new LongSkipSequence(upstream, n1);
     }
 
     @Override
-    public LongSequence take(long n) {
+    public LongSequence take(final long n) {
         final long n1 = count + n;
         return n1 < 0 ? new LongTakeSequence(this, n) : new LongSubSequence(upstream, count, n1);
     }

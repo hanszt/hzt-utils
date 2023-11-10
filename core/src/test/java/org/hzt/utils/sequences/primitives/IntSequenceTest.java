@@ -21,14 +21,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class IntSequenceTest {
 
     @Test
     void testSteppedIntRange() {
-        IntList list = IntRange.until(15)
+        final IntList list = IntRange.until(15)
                 .step(4)
                 .onEach(System.out::println)
                 .toList();
@@ -55,7 +58,7 @@ class IntSequenceTest {
 
     @Test
     void testIntSequencePlusArray() {
-        int[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+        final int[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
         final int[] result = IntSequence.of(1, 3, 2, 5, 4, 2)
                 .filter(IntX::isEven)
@@ -119,7 +122,7 @@ class IntSequenceTest {
 
     @Test
     void testDescendingSteppedIntRange() {
-        MutableListX<Integer> list = MutableListX.empty();
+        final MutableListX<Integer> list = MutableListX.empty();
         IntRange.from(100).downTo(20).step(5)
                 .onEach(System.out::println)
                 .forEachInt(list::add);
@@ -177,7 +180,7 @@ class IntSequenceTest {
 
     @Test
     void intRangeFromIntArray() {
-        int[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+        final int[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
         final long[] expected = IntStream.of(array)
                 .asLongStream()
@@ -198,7 +201,7 @@ class IntSequenceTest {
 
     @Test
     void testSortedDescending() {
-        int[] array = {1, 4, 5, 3, 6, 7, 4, 8, 5, 9, 4};
+        final int[] array = {1, 4, 5, 3, 6, 7, 4, 8, 5, 9, 4};
 
         final int[] sorted = IntSequence.of(array)
                 .sortedDescending()
@@ -211,7 +214,7 @@ class IntSequenceTest {
 
     @Test
     void testSortedThenComparingUnsignedUsingIntComparator() {
-        int[] array = {-1, 4, -5, 3, -6, 7, -4, 8, -5, 9, -4};
+        final int[] array = {-1, 4, -5, 3, -6, 7, -4, 8, -5, 9, -4};
 
         final int[] sorted = IntSequence.of(array)
                 .sorted(IntComparator.comparing(It::asInt)
@@ -239,16 +242,16 @@ class IntSequenceTest {
         assertEquals(10_000, doubles.length);
     }
 
-    private double multiplyByPi(int i) {
+    private double multiplyByPi(final int i) {
 //        It.println(Thread.currentThread().getName());
         return i * Math.E;
     }
 
     @Test
     void testToByteArray() {
-        AtomicInteger index = new AtomicInteger();
+        final AtomicInteger index = new AtomicInteger();
         final int LENGTH = 10_000_000;
-        byte[] array = new byte[LENGTH];
+        final byte[] array = new byte[LENGTH];
 
         IntSequence.iterate(Byte.MIN_VALUE, i -> (i == Byte.MAX_VALUE) ? Byte.MIN_VALUE : ++i)
                 .take(LENGTH)

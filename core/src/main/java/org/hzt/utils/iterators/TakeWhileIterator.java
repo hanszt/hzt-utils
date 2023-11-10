@@ -14,13 +14,13 @@ final class TakeWhileIterator<T> implements Iterator<T> {
     private T nextItem;
     private State nextState = State.INIT_UNKNOWN;
 
-    TakeWhileIterator(Iterator<T> iterator, Predicate<? super T> predicate, boolean inclusive) {
+    TakeWhileIterator(final Iterator<T> iterator, final Predicate<? super T> predicate, final boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
     }
 
-    public static <T> TakeWhileIterator<T> of(Iterator<T> iterator, Predicate<T> predicate) {
+    public static <T> TakeWhileIterator<T> of(final Iterator<T> iterator, final Predicate<T> predicate) {
         return new TakeWhileIterator<>(iterator, predicate, false);
     }
 
@@ -58,7 +58,7 @@ final class TakeWhileIterator<T> implements Iterator<T> {
         if (nextState == State.DONE) {
             throw new NoSuchElementException();
         }
-        T result = nextItem;
+        final T result = nextItem;
         // Clean next to avoid keeping reference on yielded instance
         nextItem = null;
         nextState = State.NEXT_UNKNOWN;

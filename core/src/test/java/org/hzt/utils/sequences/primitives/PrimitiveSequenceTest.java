@@ -1,10 +1,10 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.numbers.BigDecimalX;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.ranges.LongRange;
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
@@ -23,7 +23,7 @@ class PrimitiveSequenceTest {
 
         It.println("average = " + average);
 
-        Locale defaultLocale = Locale.getDefault();
+        final Locale defaultLocale = Locale.getDefault();
         Locale.setDefault(Locale.ENGLISH);
 
         final int length = average.toStringX().filter(c -> c != '.').length();

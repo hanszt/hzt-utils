@@ -18,67 +18,67 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
 
     private final Long thisLong;
 
-    private LongX(Long thisLong) {
+    private LongX(final Long thisLong) {
         this.thisLong = thisLong;
     }
 
-    public static LongX of(long aLong) {
+    public static LongX of(final long aLong) {
         return new LongX(aLong);
     }
 
-    public static LongX of(Number number) {
+    public static LongX of(final Number number) {
         return new LongX(number.longValue());
     }
 
-    public static String toString(long i, int radix) {
+    public static String toString(final long i, final int radix) {
         return Long.toString(i, radix);
     }
 
-    public static String toUnsignedString(long i, int radix) {
+    public static String toUnsignedString(final long i, final int radix) {
         return Long.toUnsignedString(i, radix);
     }
 
-    public static String toHexString(long i) {
+    public static String toHexString(final long i) {
         return Long.toHexString(i);
     }
 
-    public static String toOctalString(long i) {
+    public static String toOctalString(final long i) {
         return Long.toOctalString(i);
     }
 
-    public static String toBinaryString(long i) {
+    public static String toBinaryString(final long i) {
         return Long.toBinaryString(i);
     }
 
-    public static String toString(long i) {
+    public static String toString(final long i) {
         return Long.toString(i);
     }
 
-    public static String toUnsignedString(long i) {
+    public static String toUnsignedString(final long i) {
         return Long.toUnsignedString(i);
     }
 
-    public static long parseLong(String s, int radix) throws NumberFormatException {
+    public static long parseLong(final String s, final int radix) throws NumberFormatException {
         return Long.parseLong(s, radix);
     }
 
-    public static long parseLong(String s) throws NumberFormatException {
+    public static long parseLong(final String s) throws NumberFormatException {
         return Long.parseLong(s);
     }
 
-    public static LongPredicate multipleOf(long multiple) {
+    public static LongPredicate multipleOf(final long multiple) {
         return l -> l % multiple == 0;
     }
 
-    public static long times(long value1, long value2) {
+    public static long times(final long value1, final long value2) {
         return value1 * value2;
     }
 
-    public boolean isMultipleOf(long multiple) {
+    public boolean isMultipleOf(final long multiple) {
         return multipleOf(multiple).test(thisLong);
     }
 
-    public static boolean isEven(long i) {
+    public static boolean isEven(final long i) {
         return multipleOf(2).test(i);
     }
 
@@ -86,7 +86,7 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         return isEven(thisLong);
     }
 
-    public static boolean isOdd(long l) {
+    public static boolean isOdd(final long l) {
         return l % 2 != 0;
     }
 
@@ -94,23 +94,23 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
         return isOdd(thisLong);
     }
 
-    public static long parseUnsignedLong(String s, int radix) throws NumberFormatException {
+    public static long parseUnsignedLong(final String s, final int radix) throws NumberFormatException {
         return Long.parseUnsignedLong(s, radix);
     }
 
-    public static long parseUnsignedLong(String s) throws NumberFormatException {
+    public static long parseUnsignedLong(final String s) throws NumberFormatException {
         return Long.parseUnsignedLong(s);
     }
 
-    public static Long valueOf(String s, int radix) throws NumberFormatException {
+    public static Long valueOf(final String s, final int radix) throws NumberFormatException {
         return Long.valueOf(s, radix);
     }
 
-    public static Long valueOf(String s) throws NumberFormatException {
+    public static Long valueOf(final String s) throws NumberFormatException {
         return Long.valueOf(s);
     }
 
-    public static Long valueOf(long l) {
+    public static Long valueOf(final long l) {
         return l;
     }
 
@@ -125,18 +125,18 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
                 });
     }
 
-    public static long nthFibonacciNumber(int n) {
+    public static long nthFibonacciNumber(final int n) {
         PreConditions.require(n > 0, () -> "n must be greater than 0");
         return fibonacciSequence()
                 .take(n)
                 .reduce(0, (first, second) -> second);
     }
 
-    public static Long decode(String nm) throws NumberFormatException {
+    public static Long decode(final String nm) throws NumberFormatException {
         return Long.decode(nm);
     }
 
-    public LongRange until(long l) {
+    public LongRange until(final long l) {
         return LongRange.of(thisLong, l);
     }
 
@@ -181,107 +181,107 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LongX longX = (LongX) o;
+        final LongX longX = (LongX) o;
         return Objects.equals(thisLong, longX.thisLong);
     }
 
-    public static Long getLong(String nm) {
+    public static Long getLong(final String nm) {
         return Long.getLong(nm);
     }
 
-    public static Long getLong(String nm, long val) {
+    public static Long getLong(final String nm, final long val) {
         return Long.getLong(nm, val);
     }
 
-    public static Long getLong(String nm, Long val) {
+    public static Long getLong(final String nm, final Long val) {
         return Long.getLong(nm, val);
     }
 
     @SuppressWarnings("squid:S4351")
-    public int compareTo(Long anotherLong) {
+    public int compareTo(final Long anotherLong) {
         return thisLong.compareTo(anotherLong);
     }
 
-    public static int compare(long x, long y) {
+    public static int compare(final long x, final long y) {
         return Long.compare(x, y);
     }
 
-    public static int compareReversed(long x, long y) {
+    public static int compareReversed(final long x, final long y) {
         return Long.compare(y, x);
     }
 
-    public static int compareUnsigned(long x, long y) {
+    public static int compareUnsigned(final long x, final long y) {
         return Long.compareUnsigned(x, y);
     }
 
-    public static long divideUnsigned(long dividend, long divisor) {
+    public static long divideUnsigned(final long dividend, final long divisor) {
         return Long.divideUnsigned(dividend, divisor);
     }
 
-    public static long remainderUnsigned(long dividend, long divisor) {
+    public static long remainderUnsigned(final long dividend, final long divisor) {
         return Long.remainderUnsigned(dividend, divisor);
     }
 
-    public static long highestOneBit(long i) {
+    public static long highestOneBit(final long i) {
         return Long.highestOneBit(i);
     }
 
-    public static long lowestOneBit(long i) {
+    public static long lowestOneBit(final long i) {
         return Long.lowestOneBit(i);
     }
 
 
-    public static int numberOfLeadingZeros(long i) {
+    public static int numberOfLeadingZeros(final long i) {
         return Long.numberOfLeadingZeros(i);
     }
 
 
-    public static int numberOfTrailingZeros(long i) {
+    public static int numberOfTrailingZeros(final long i) {
         return Long.numberOfTrailingZeros(i);
     }
 
 
-    public static int bitCount(long i) {
+    public static int bitCount(final long i) {
         return Long.bitCount(i);
     }
 
-    public static long rotateLeft(long i, int distance) {
+    public static long rotateLeft(final long i, final int distance) {
         return Long.rotateLeft(i, distance);
     }
 
-    public static long rotateRight(long i, int distance) {
+    public static long rotateRight(final long i, final int distance) {
         return Long.rotateRight(i, distance);
     }
 
-    public static long reverse(long i) {
+    public static long reverse(final long i) {
         return Long.reverse(i);
     }
 
-    public static int signum(long i) {
+    public static int signum(final long i) {
         return Long.signum(i);
     }
 
 
-    public static long reverseBytes(long i) {
+    public static long reverseBytes(final long i) {
         return Long.reverseBytes(i);
     }
 
-    public static long sum(long a, long b) {
+    public static long sum(final long a, final long b) {
         return Long.sum(a, b);
     }
 
-    public static long max(long a, long b) {
+    public static long max(final long a, final long b) {
         return Long.max(a, b);
     }
 
-    public static long min(long a, long b) {
+    public static long min(final long a, final long b) {
         return Long.min(a, b);
     }
 
@@ -296,7 +296,7 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
     }
 
     @Override
-    public int compareTo(LongX o) {
+    public int compareTo(final LongX o) {
         return thisLong.compareTo(o.thisLong);
     }
 }

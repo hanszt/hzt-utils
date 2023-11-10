@@ -27,7 +27,7 @@ class DoubleRangeTest {
 
     @Test
     void doubleRangeFromDoubleArray() {
-        double[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+        final double[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
         final long[] expected = DoubleStream.of(array)
                 .mapToLong(d -> (long) d)

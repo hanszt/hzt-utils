@@ -8,7 +8,7 @@ final class DoubleStreamXImpl implements DoubleStreamX {
 
     private final DoubleStream stream;
 
-    DoubleStreamXImpl(DoubleStream stream) {
+    DoubleStreamXImpl(final DoubleStream stream) {
         this.stream = stream;
     }
 

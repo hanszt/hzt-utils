@@ -11,7 +11,7 @@ public interface DoubleStringable extends PrimitiveIterable.OfDouble {
         return joinToString(", ");
     }
 
-    default String joinToString(CharSequence delimiter) {
+    default String joinToString(final CharSequence delimiter) {
         final StringBuilder sb = new StringBuilder();
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
@@ -20,11 +20,11 @@ public interface DoubleStringable extends PrimitiveIterable.OfDouble {
         return sb.toString().trim();
     }
 
-    default <R> String joinToStringBy(DoubleFunction<? extends R> selector) {
+    default <R> String joinToStringBy(final DoubleFunction<? extends R> selector) {
         return joinToStringBy(selector, ", ");
     }
 
-    default <R> String joinToStringBy(DoubleFunction<? extends R> selector, CharSequence delimiter) {
+    default <R> String joinToStringBy(final DoubleFunction<? extends R> selector, final CharSequence delimiter) {
         final StringBuilder sb = new StringBuilder();
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {

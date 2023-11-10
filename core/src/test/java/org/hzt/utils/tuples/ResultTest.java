@@ -26,7 +26,7 @@ class ResultTest {
         assertEquals(22, results.size());
     }
 
-    private static int throwingWhenLargerThan20Times2(int v1) throws MyCheckedException {
+    private static int throwingWhenLargerThan20Times2(final int v1) throws MyCheckedException {
         final int THROWING_BOUND = 20;
         if (v1 > THROWING_BOUND) {
             throw new MyCheckedException();

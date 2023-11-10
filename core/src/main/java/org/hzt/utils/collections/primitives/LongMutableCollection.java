@@ -14,7 +14,7 @@ public interface LongMutableCollection extends LongCollection,
     boolean add(long l);
 
     @Override
-    default boolean addAll(Iterable<Long> iterable) {
+    default boolean addAll(final Iterable<Long> iterable) {
         boolean allAdded= true;
         if (iterable instanceof PrimitiveIterable.OfLong) {
             final PrimitiveIterator.OfLong iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
@@ -26,7 +26,7 @@ public interface LongMutableCollection extends LongCollection,
             }
             return allAdded;
         }
-        for (long i : iterable) {
+        for (final long i : iterable) {
             if (!add(i)) {
                 allAdded = false;
             }
@@ -35,7 +35,7 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default boolean addAll(long... array) {
+    default boolean addAll(final long... array) {
         final PrimitiveIterator.OfLong iterator = PrimitiveIterators.longArrayIterator(array);
         boolean allAdded = true;
         while (iterator.hasNext()) {
@@ -49,7 +49,7 @@ public interface LongMutableCollection extends LongCollection,
     boolean remove(long l);
 
     @Override
-    default boolean removeAll(Iterable<Long> iterable) {
+    default boolean removeAll(final Iterable<Long> iterable) {
         boolean allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfLong) {
             final PrimitiveIterator.OfLong iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
@@ -60,7 +60,7 @@ public interface LongMutableCollection extends LongCollection,
             }
             return allRemoved;
         }
-        for (long i : iterable) {
+        for (final long i : iterable) {
             if (!remove(i)) {
                 allRemoved = false;
             }
@@ -69,7 +69,7 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default boolean removeAll(long... array) {
+    default boolean removeAll(final long... array) {
         boolean allRemoved = true;
         final PrimitiveIterator.OfLong iterator = PrimitiveIterators.longArrayIterator(array);
         while (iterator.hasNext()) {
@@ -82,7 +82,7 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default boolean removeIf(LongPredicate predicate) {
+    default boolean removeIf(final LongPredicate predicate) {
         boolean removed = false;
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
@@ -95,12 +95,12 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default LongMutableList plus(Iterable<Long> iterable) {
+    default LongMutableList plus(final Iterable<Long> iterable) {
         return (LongMutableList) LongCollection.super.plus(iterable);
     }
 
     @Override
-    default LongMutableList plus(long... array) {
+    default LongMutableList plus(final long... array) {
         return (LongMutableList) LongCollection.super.plus(array);
     }
 

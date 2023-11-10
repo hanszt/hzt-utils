@@ -2,15 +2,15 @@ package org.hzt.graph;
 
 public interface WeightedEdge<T> {
 
-    static <T> WeightedEdge<T> from(WeightedNode<T> from) {
+    static <T> WeightedEdge<T> from(final WeightedNode<T> from) {
         return new DefaultWeightedEdge<>(from);
     }
 
-    static <T> WeightedEdge<T> of(WeightedNode<T> weightedNode, WeightedNode<T> other) {
+    static <T> WeightedEdge<T> of(final WeightedNode<T> weightedNode, final WeightedNode<T> other) {
         return new DefaultWeightedEdge<>(weightedNode).withToNode(other);
     }
 
-    static <T> void edgesInBothDirectionsBetween(WeightedNode<T> node, WeightedNode<T> other, int weight) {
+    static <T> void edgesInBothDirectionsBetween(final WeightedNode<T> node, final WeightedNode<T> other, final int weight) {
         node.getEdges().add(WeightedEdge.of(node, other).withWeight(weight));
         other.getEdges().add(WeightedEdge.of(other, node).withWeight(weight));
     }
@@ -35,7 +35,7 @@ public interface WeightedEdge<T> {
      * @param node node
      * @return the other node opposite to the given node
      */
-    default WeightedNode<T> getOpposite(WeightedNode<T> node) {
+    default WeightedNode<T> getOpposite(final WeightedNode<T> node) {
         if (node.equals(fromNode())) {
             return toNode();
         }
@@ -59,7 +59,7 @@ final class DefaultWeightedEdge<T> implements  WeightedEdge<T> {
 
     private int weight;
 
-    public DefaultWeightedEdge(WeightedNode<T> from) {
+    public DefaultWeightedEdge(final WeightedNode<T> from) {
         this.from = from;
     }
 
@@ -69,7 +69,7 @@ final class DefaultWeightedEdge<T> implements  WeightedEdge<T> {
     }
 
     @Override
-    public WeightedEdge<T> withToNode(WeightedNode<T> weightedNode) {
+    public WeightedEdge<T> withToNode(final WeightedNode<T> weightedNode) {
         to = weightedNode;
         return this;
     }
@@ -80,7 +80,7 @@ final class DefaultWeightedEdge<T> implements  WeightedEdge<T> {
     }
 
     @Override
-    public WeightedEdge<T> withWeight(int weight) {
+    public WeightedEdge<T> withWeight(final int weight) {
         this.weight = weight;
         return this;
     }

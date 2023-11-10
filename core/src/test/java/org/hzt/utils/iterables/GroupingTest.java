@@ -20,7 +20,9 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.toList;
 import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -38,12 +40,12 @@ class GroupingTest {
 
         println(aggregated);
 
-        MapX<Integer, String> expected = MapX.of(0, "0:3-6-9", 1, "1:4-7", 2, "2:5-8");
+        final MapX<Integer, String> expected = MapX.of(0, "0:3-6-9", 1, "1:4-7", 2, "2:5-8");
 
         assertEquals(expected, aggregated);
     }
 
-    private static StringBuilder toStringBuilder(int key, StringBuilder stringBuilder, int element, boolean firstElement) {
+    private static StringBuilder toStringBuilder(final int key, final StringBuilder stringBuilder, final int element, final boolean firstElement) {
         if (firstElement) {
             return new StringBuilder().append(key).append(":").append(element);
         }
@@ -58,7 +60,7 @@ class GroupingTest {
                 .groupingBy(nr -> nr % 3)
                 .eachCount();
 
-        MapX<Integer, Long> expected = MapX.of(0, 3L, 1, 2L, 2, 2L);
+        final MapX<Integer, Long> expected = MapX.of(0, 3L, 1, 2L, 2, 2L);
 
         assertEquals(expected, aggregated);
     }
@@ -83,7 +85,7 @@ class GroupingTest {
                 .eachCountTo(TreeMap::new)
                 .descendingMap();
 
-        NavigableMap<Integer, Long> expected = new TreeMap<>(MutableMapX.of(0, 3L, 1, 2L, 2, 2L));
+        final NavigableMap<Integer, Long> expected = new TreeMap<>(MutableMapX.of(0, 3L, 1, 2L, 2, 2L));
 
         println("expected = " + expected);
         println("aggregated = " + aggregated);
@@ -93,7 +95,7 @@ class GroupingTest {
 
     @Test
     void testGroupingByFoldTo() {
-        ListX<String> fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
+        final ListX<String> fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
 
         final Map<Character, List<String>> evenFruits = fruits
                 .groupingBy(fruit -> fruit.charAt(0))
@@ -113,7 +115,7 @@ class GroupingTest {
         assertEquals(expected, sorted);
     }
 
-    private static List<String> addEvenFruits(char key, List<String> fruits, String fruit) {
+    private static List<String> addEvenFruits(final char key, final List<String> fruits, final String fruit) {
         if (fruit.length() % 2 == 0) {
             fruits.add(fruit);
         }
@@ -122,7 +124,7 @@ class GroupingTest {
 
     @Test
     void testGroupingByFold() {
-        ListX<String> fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
+        final ListX<String> fruits = ListX.of("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut");
 
         final MapX<Character, Integer> fruitNameLengthSum = fruits
                 .groupingBy(fruit -> fruit.charAt(0))
@@ -130,7 +132,7 @@ class GroupingTest {
 
         println(fruitNameLengthSum);
 
-        MapX<Character, Integer> expected = MapX.of('c', 19, 'b', 15, 'a', 12);
+        final MapX<Character, Integer> expected = MapX.of('c', 19, 'b', 15, 'a', 12);
 
         assertEquals(expected, fruitNameLengthSum);
     }
@@ -143,7 +145,7 @@ class GroupingTest {
                 .groupingBy(nr -> nr % 3)
                 .reduce(Integer::sum);
 
-        MapX<Integer, Integer> expected = MapX.of(0, 18, 1, 11, 2, 13);
+        final MapX<Integer, Integer> expected = MapX.of(0, 18, 1, 11, 2, 13);
 
         assertEquals(expected, aggregated);
     }
@@ -157,7 +159,7 @@ class GroupingTest {
                 .collect(mapping(Integer::doubleValue,
                                 reducing(0.0, Double::sum)));
 
-        MapX<Integer, Double> expected = MapX.of(0, 18.0, 1, 11.0, 2, 13.0);
+        final MapX<Integer, Double> expected = MapX.of(0, 18.0, 1, 11.0, 2, 13.0);
 
         assertEquals(expected, aggregated);
     }

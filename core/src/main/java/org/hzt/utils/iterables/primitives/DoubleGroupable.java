@@ -23,7 +23,7 @@ public interface DoubleGroupable extends PrimitiveGroupable<Double, DoubleMutabl
         return map;
     }
 
-    default <K> MapX<K, DoubleMutableList> groupBy(DoubleFunction<? extends K> classifier) {
+    default <K> MapX<K, DoubleMutableList> groupBy(final DoubleFunction<? extends K> classifier) {
         final PrimitiveIterator.OfDouble iterator = iterator();
         final MutableMapX<K, DoubleMutableList> map = MutableMapX.empty();
         while (iterator.hasNext()) {
@@ -34,7 +34,7 @@ public interface DoubleGroupable extends PrimitiveGroupable<Double, DoubleMutabl
     }
 
     @Override
-    default Pair<DoubleMutableList, DoubleMutableList> partition(DoublePredicate predicate) {
+    default Pair<DoubleMutableList, DoubleMutableList> partition(final DoublePredicate predicate) {
         final DoubleMutableList matchingList = DoubleMutableList.empty();
         final DoubleMutableList nonMatchingList = DoubleMutableList.empty();
         final PrimitiveIterator.OfDouble iterator = iterator();

@@ -28,12 +28,12 @@ class AtomicIteratorTest {
 
     @Test
     void testFunctionalIteratorImpl() {
-        List<String> list1 = new ArrayList<>();
-        List<String> list2 = new ArrayList<>();
+        final List<String> list1 = new ArrayList<>();
+        final List<String> list2 = new ArrayList<>();
 
         final int upperBound = 100;
 
-        AtomicIterator<String> stringIterator = getBoundedStringIteratorX(upperBound);
+        final AtomicIterator<String> stringIterator = getBoundedStringIteratorX(upperBound);
         //noinspection StatementWithEmptyBody
         while (stringIterator.tryAdvance(list1::add)) {
         }
@@ -47,11 +47,11 @@ class AtomicIteratorTest {
 
     @Test
     void testForEachRemaining() {
-        List<String> list1 = new ArrayList<>();
-        List<String> list2 = new ArrayList<>();
+        final List<String> list1 = new ArrayList<>();
+        final List<String> list2 = new ArrayList<>();
 
         final int upperBound = 200;
-        AtomicIterator<String> stringIterator = getBoundedStringIteratorX(upperBound);
+        final AtomicIterator<String> stringIterator = getBoundedStringIteratorX(upperBound);
         stringIterator.forEachRemaining(list1::add);
         stringIterator.forEachRemaining(list2::add);
 
@@ -65,15 +65,15 @@ class AtomicIteratorTest {
     @DisplayName("Test get correct iterator from iteratorX instance")
     void testGetCorrectIteratorFromIteratorXInstance() {
         final int bound = 241;
-        AtomicInteger atomicInteger = new AtomicInteger();
+        final AtomicInteger atomicInteger = new AtomicInteger();
 
-        AtomicIterator<String> stringIterator = getBoundedStringIteratorX(bound);
+        final AtomicIterator<String> stringIterator = getBoundedStringIteratorX(bound);
         stringIterator.asIterator().forEachRemaining(e -> atomicInteger.incrementAndGet());
 
         assertEquals(bound, atomicInteger.get());
     }
 
-    private AtomicIterator<String> getBoundedStringIteratorX(int upperBound) {
+    private AtomicIterator<String> getBoundedStringIteratorX(final int upperBound) {
         return new BoundedIterator<>(upperBound, String::valueOf)::supplyNext;
     }
 
@@ -91,7 +91,7 @@ class AtomicIteratorTest {
             }
             return advance;
         };
-        Iterable<Integer> integers = toLengthMapperIterator::asIterator;
+        final Iterable<Integer> integers = toLengthMapperIterator::asIterator;
 
         assertIterableEquals(Arrays.asList(4, 2, 1, 4), integers);
     }
@@ -102,16 +102,16 @@ class AtomicIteratorTest {
         private final IntFunction<T> supplier;
         private int counter = 0;
 
-        private static <T> BoundedIterator<T> of(int upperBound, IntFunction<T> supplier) {
+        private static <T> BoundedIterator<T> of(final int upperBound, final IntFunction<T> supplier) {
             return new BoundedIterator<>(upperBound, supplier);
         }
 
-        private BoundedIterator(int upperBound, IntFunction<T> supplier) {
+        private BoundedIterator(final int upperBound, final IntFunction<T> supplier) {
             this.upperBound = upperBound;
             this.supplier = supplier;
         }
 
-        private boolean supplyNext(Consumer<? super T> consumer) {
+        private boolean supplyNext(final Consumer<? super T> consumer) {
             final boolean supplyNext = counter < upperBound;
             if (supplyNext) {
                 consumer.accept(supplier.apply(counter));
@@ -126,7 +126,7 @@ class AtomicIteratorTest {
     void testAsSpliterator() {
         final int upperBound = 9_000;
 
-        AtomicIterator<LocalDate> dateIterator = BoundedIterator.of(upperBound, LocalDate
+        final AtomicIterator<LocalDate> dateIterator = BoundedIterator.of(upperBound, LocalDate
                 .parse("2022-04-21")::minusDays)
                 ::supplyNext;
 
@@ -141,7 +141,7 @@ class AtomicIteratorTest {
     @Test
     @DisplayName("Test iterator from empty iteratorX throws no such element exception")
     void testIteratorFromEmptyIteratorXThrowsNoSuchElementException() {
-        AtomicIterator<String> atomicIterator = c -> false;
+        final AtomicIterator<String> atomicIterator = c -> false;
         final Iterator<String> stringIterator = atomicIterator.asIterator();
 
         assertAll(
@@ -153,7 +153,7 @@ class AtomicIteratorTest {
     @Test
     @DisplayName("Test iterator from single element iteratorX throws no such element exception after 1")
     void testIteratorFromOneThrowsNoSuchElementExceptionAfterOne() {
-        AtomicIterator<String> atomicIterator = BoundedIterator.of(1, String::valueOf)::supplyNext;
+        final AtomicIterator<String> atomicIterator = BoundedIterator.of(1, String::valueOf)::supplyNext;
         final Iterator<String> stringIterator = atomicIterator.asIterator();
 
         final boolean hasOne = stringIterator.hasNext();

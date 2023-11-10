@@ -15,9 +15,9 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return count(It::noIntFilter);
     }
 
-    default long count(IntPredicate predicate) {
+    default long count(final IntPredicate predicate) {
         long count = 0;
-        PrimitiveIterator.OfInt iterator = this.iterator();
+        final PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextInt())) {
                 count++;
@@ -30,7 +30,7 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return stats().getMin();
     }
 
-    default int min(IntPredicate predicate) {
+    default int min(final IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).min();
     }
 
@@ -38,7 +38,7 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return stats().getMax();
     }
 
-    default int max(IntPredicate predicate) {
+    default int max(final IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).max();
     }
 
@@ -46,20 +46,20 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return stats().getAverage();
     }
 
-    default double average(IntPredicate predicate) {
+    default double average(final IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).average();
     }
 
     default long sum() {
         long sum = 0;
-        PrimitiveIterator.OfInt iterator = iterator();
+        final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             sum += iterator.nextInt();
         }
         return sum;
     }
 
-    default long sum(IntPredicate predicate) {
+    default long sum(final IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).sum();
     }
 
@@ -67,20 +67,20 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return stats().getStandardDeviation();
     }
 
-    default double stdDev(IntPredicate predicate) {
+    default double stdDev(final IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).stdDev();
     }
 
     default IntStatistics stats() {
-        IntStatistics intStatistics = new IntStatistics();
-        PrimitiveIterator.OfInt iterator = iterator();
+        final IntStatistics intStatistics = new IntStatistics();
+        final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             intStatistics.accept(iterator.nextInt());
         }
         return intStatistics;
     }
 
-    default IntStatistics stats(IntPredicate predicate) {
+    default IntStatistics stats(final IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).stats();
     }
 

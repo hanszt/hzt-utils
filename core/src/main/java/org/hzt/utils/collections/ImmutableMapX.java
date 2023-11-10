@@ -14,7 +14,7 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
 
     private final Map<K, V> map;
 
-    ImmutableMapX(Map<? extends K, ? extends V> map) {
+    ImmutableMapX(final Map<? extends K, ? extends V> map) {
         this.map = Collections.unmodifiableMap(map);
     }
 
@@ -22,27 +22,27 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
         this(Collections.emptyMap());
     }
 
-    ImmutableMapX(Iterable<Entry<K, V>> iterable) {
+    ImmutableMapX(final Iterable<Entry<K, V>> iterable) {
         final HashMap<K, V> hashMap = new HashMap<>();
-        for (Entry<K, V> entry : iterable) {
+        for (final Entry<K, V> entry : iterable) {
             hashMap.put(entry.getKey(), entry.getValue());
         }
         this.map = Collections.unmodifiableMap(hashMap);
     }
 
     @SafeVarargs
-    ImmutableMapX(Pair<K, V>... pairs) {
+    ImmutableMapX(final Pair<K, V>... pairs) {
         final Map<K, V> hashMap = new HashMap<>();
-        for (Pair<K, V> pair : pairs) {
+        for (final Pair<K, V> pair : pairs) {
             hashMap.put(pair.first(), pair.second());
         }
         this.map = Collections.unmodifiableMap(hashMap);
     }
 
     @SafeVarargs
-    ImmutableMapX(Entry<? extends K, ? extends V>... entries) {
+    ImmutableMapX(final Entry<? extends K, ? extends V>... entries) {
         final HashMap<K, V> hashMap = new HashMap<>();
-        for (Entry<? extends K, ? extends V> entry : entries) {
+        for (final Entry<? extends K, ? extends V> entry : entries) {
             hashMap.put(entry.getKey(), entry.getValue());
         }
         this.map = Collections.unmodifiableMap(hashMap);
@@ -59,11 +59,11 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
     }
 
     @Override
-    public <K1, V1> MapX<K1, V1> map(Function<? super K, ? extends K1> keyMapper,
-                                     Function<? super V, ? extends V1> valueMapper) {
-        Map<K1, V1> resultMap = new HashMap<>();
-        for (Map.Entry<K, V> entry : this) {
-            K key = entry.getKey();
+    public <K1, V1> MapX<K1, V1> map(final Function<? super K, ? extends K1> keyMapper,
+                                     final Function<? super V, ? extends V1> valueMapper) {
+        final Map<K1, V1> resultMap = new HashMap<>();
+        for (final Map.Entry<K, V> entry : this) {
+            final K key = entry.getKey();
             if (key != null) {
                 resultMap.put(keyMapper.apply(key), valueMapper.apply(entry.getValue()));
             }
@@ -72,19 +72,19 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
     }
 
     @Override
-    public boolean containsKey(Object key) {
+    public boolean containsKey(final Object key) {
         //noinspection SuspiciousMethodCalls
         return map.containsKey(key);
     }
 
     @Override
-    public boolean containsValue(Object value) {
+    public boolean containsValue(final Object value) {
         //noinspection SuspiciousMethodCalls
         return map.containsValue(value);
     }
 
     @Override
-    public V get(Object key) {
+    public V get(final Object key) {
         //noinspection SuspiciousMethodCalls
         return map.get(key);
     }
@@ -110,14 +110,14 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ImmutableMapX<?, ?> mapX = (ImmutableMapX<?, ?>) o;
+        final ImmutableMapX<?, ?> mapX = (ImmutableMapX<?, ?>) o;
         return map.equals(mapX.map);
     }
 

@@ -14,7 +14,7 @@ class DoubleReducableTest {
 
     @Test
     void testReduceDouble() {
-        Locale defaultLocale = Locale.getDefault();
+        final Locale defaultLocale = Locale.getDefault();
         Locale.setDefault(Locale.ENGLISH);
 
         final double sum = DoubleSequence.iterate(0, d -> d + .1)

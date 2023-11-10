@@ -6,7 +6,7 @@ public final class IndexedValue<T> {
     private final int index;
     private final T value;
 
-    public IndexedValue(int index, T value) {
+    public IndexedValue(final int index, final T value) {
         this.index = index;
         this.value = value;
     }
@@ -20,14 +20,14 @@ public final class IndexedValue<T> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
         }
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        IndexedValue<T> that = (IndexedValue<T>) obj;
+        final IndexedValue<T> that = (IndexedValue<T>) obj;
         return this.index == that.index &&
                 Objects.equals(this.value, that.value);
     }

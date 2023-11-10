@@ -13,30 +13,31 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
 
     private final NavigableMap<K, V> map;
 
-    TreeMapX(SortedMap<K, V> map) {
+    TreeMapX(final SortedMap<K, V> map) {
         this.map = new TreeMap<>(map);
     }
 
-    TreeMapX(Function<K, R> selector) {
+    TreeMapX(final Function<K, R> selector) {
         this(new TreeMap<>(Comparator.comparing(selector)));
     }
 
-    TreeMapX(Map<K, V> map, Function<? super K, ? extends R> selector) {
+    TreeMapX(final Map<K, V> map, final Function<? super K, ? extends R> selector) {
         this.map = new TreeMap<>(Comparator.comparing(selector));
         this.map.putAll(map);
     }
-    TreeMapX(Iterable<Entry<K, V>> iterable, Function<? super K, ? extends R> selector) {
+
+    TreeMapX(final Iterable<Entry<K, V>> iterable, final Function<? super K, ? extends R> selector) {
         map = new TreeMap<>(Comparator.comparing(selector));
-        for (Map.Entry<K, V> entry : iterable) {
+        for (final Map.Entry<K, V> entry : iterable) {
             map.put(entry.getKey(), entry.getValue());
         }
     }
 
     @SafeVarargs
-    TreeMapX(Function<? super K, ? extends R> selector, Entry<K, V> first, Entry<K, V>... others) {
+    TreeMapX(final Function<? super K, ? extends R> selector, final Entry<K, V> first, final Entry<K, V>... others) {
         map = new TreeMap<>(Comparator.comparing(selector));
         map.put(first.getKey(), first.getValue());
-        for (Map.Entry<K, V> entry : others) {
+        for (final Map.Entry<K, V> entry : others) {
             map.put(entry.getKey(), entry.getValue());
         }
     }
@@ -52,32 +53,32 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
     }
 
     @Override
-    public boolean containsKey(Object key) {
+    public boolean containsKey(final Object key) {
         return map.containsKey(key);
     }
 
     @Override
-    public boolean containsValue(Object value) {
+    public boolean containsValue(final Object value) {
         return map.containsValue(value);
     }
 
     @Override
-    public V get(Object key) {
+    public V get(final Object key) {
         return map.get(key);
     }
 
     @Override
-    public V put(K key, V value) {
+    public V put(final K key, final V value) {
         return map.put(key, value);
     }
 
     @Override
-    public V remove(Object key) {
+    public V remove(final Object key) {
         return map.remove(key);
     }
 
     @Override
-    public void putAll(Map<? extends K, ? extends V> m) {
+    public void putAll(final Map<? extends K, ? extends V> m) {
         map.putAll(m);
     }
 
@@ -92,17 +93,17 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
     }
 
     @Override
-    public SortedMutableMapX<K, V> subMap(K fromKey, K toKey) {
+    public SortedMutableMapX<K, V> subMap(final K fromKey, final K toKey) {
         return SortedMutableMapX.ofSortedMap(map.subMap(fromKey, toKey));
     }
 
     @Override
-    public SortedMutableMapX<K, V> headMap(K toKey) {
+    public SortedMutableMapX<K, V> headMap(final K toKey) {
         return SortedMutableMapX.ofSortedMap(map.headMap(toKey));
     }
 
     @Override
-    public SortedMutableMapX<K, V> tailMap(K fromKey) {
+    public SortedMutableMapX<K, V> tailMap(final K fromKey) {
         return SortedMutableMapX.ofSortedMap(map.tailMap(fromKey));
     }
 
@@ -142,42 +143,42 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
     }
     
     @Override
-    public K lowerKey(K key) {
+    public K lowerKey(final K key) {
         return map.lowerKey(key);
     }
 
     @Override
-    public K floorKey(K key) {
+    public K floorKey(final K key) {
         return map.floorKey(key);
     }
 
     @Override
-    public K ceilingKey(K key) {
+    public K ceilingKey(final K key) {
         return map.ceilingKey(key);
     }
 
     @Override
-    public K higherKey(K key) {
+    public K higherKey(final K key) {
         return map.higherKey(key);
     }
 
     @Override
-    public Entry<K, V> lowerEntry(K key) {
+    public Entry<K, V> lowerEntry(final K key) {
         return map.lowerEntry(key);
     }
 
     @Override
-    public Entry<K, V> floorEntry(K key) {
+    public Entry<K, V> floorEntry(final K key) {
         return map.floorEntry(key);
     }
 
     @Override
-    public Entry<K, V> ceilingEntry(K key) {
+    public Entry<K, V> ceilingEntry(final K key) {
         return map.ceilingEntry(key);
     }
 
     @Override
-    public Entry<K, V> higherEntry(K key) {
+    public Entry<K, V> higherEntry(final K key) {
         return map.higherEntry(key);
     }
 
@@ -217,29 +218,29 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
     }
 
     @Override
-    public SortedMutableMapX<K, V> subMap(K fromKey, boolean fromInclusive, K toKey, boolean toInclusive) {
+    public SortedMutableMapX<K, V> subMap(final K fromKey, final boolean fromInclusive, final K toKey, final boolean toInclusive) {
         return SortedMutableMapX.ofSortedMap(map.subMap(fromKey, fromInclusive, toKey, toInclusive));
     }
 
     @Override
-    public SortedMutableMapX<K, V> headMap(K toKey, boolean inclusive) {
+    public SortedMutableMapX<K, V> headMap(final K toKey, final boolean inclusive) {
         return SortedMutableMapX.ofSortedMap(map.headMap(toKey, inclusive));
     }
 
     @Override
-    public SortedMutableMapX<K, V> tailMap(K fromKey, boolean inclusive) {
+    public SortedMutableMapX<K, V> tailMap(final K fromKey, final boolean inclusive) {
         return SortedMutableMapX.ofSortedMap(map.tailMap(fromKey, inclusive));
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TreeMapX<?, ?, ?> treeMapX = (TreeMapX<?, ?, ?>) o;
+        final TreeMapX<?, ?, ?> treeMapX = (TreeMapX<?, ?, ?>) o;
         return this.map.equals(treeMapX.map);
     }
 

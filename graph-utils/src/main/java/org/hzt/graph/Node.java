@@ -17,23 +17,23 @@ public interface Node<T, S extends Node<T, S>> {
 
     Collection<S> getNeighbors();
 
-    default S addNeighbor(S toAdd) {
+    default S addNeighbor(final S toAdd) {
         final Collection<S> children = getNeighbors();
         children.add(toAdd);
         //noinspection unchecked
         return (S) this;
     }
 
-    default S addNeighbors(Iterable<S> toAdd) {
+    default S addNeighbors(final Iterable<S> toAdd) {
         final Collection<S> children = getNeighbors();
-        for (S child : toAdd) {
+        for (final S child : toAdd) {
             children.add(child);
         }
         //noinspection unchecked
         return (S) this;
     }
 
-    default S bidiAddNeighbor(S toAdd) {
+    default S bidiAddNeighbor(final S toAdd) {
         final Collection<S> neighbors = getNeighbors();
         neighbors.add(toAdd);
         //noinspection unchecked
@@ -42,9 +42,9 @@ public interface Node<T, S extends Node<T, S>> {
         return (S) this;
     }
 
-    default S bidiAddNeighbors(Iterable<S> toAdd) {
+    default S bidiAddNeighbors(final Iterable<S> toAdd) {
         final Collection<S> neighbors = getNeighbors();
-        for (S neighbor : toAdd) {
+        for (final S neighbor : toAdd) {
             neighbors.add(neighbor);
             //noinspection unchecked
             neighbor.getNeighbors().add((S) this);
@@ -83,7 +83,7 @@ public interface Node<T, S extends Node<T, S>> {
      */
     S getPredecessor();
 
-    default <R, C extends Collection<R>> C mapTo(Supplier<C> collectionFactory, Function<? super S, ? extends R> function) {
+    default <R, C extends Collection<R>> C mapTo(final Supplier<C> collectionFactory, final Function<? super S, ? extends R> function) {
         final C collection = collectionFactory.get();
         //noinspection unchecked
         NodeHelper.map((S) this, function, collection);

@@ -37,33 +37,33 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return optionalParent().orElseThrow(() -> new IllegalStateException("No parent found for node: " + this));
     }
 
-    default S setParent(S parent) {
+    default S setParent(final S parent) {
         throw new IllegalStateException("setParent(TreeNode) not supported by default. tried to set " + parent + " as parent");
     }
 
-    default S addChild(S toAdd) {
+    default S addChild(final S toAdd) {
         final Collection<S> children = getChildren();
         children.add(toAdd);
         //noinspection unchecked
         return (S) this;
     }
 
-    default S addChildren(Iterable<S> toAdd) {
+    default S addChildren(final Iterable<S> toAdd) {
         final Collection<S> children = getChildren();
-        for (S child : toAdd) {
+        for (final S child : toAdd) {
             children.add(child);
         }
         //noinspection unchecked
         return (S) this;
     }
 
-    default S addChildAndSetParent(S toAdd) {
+    default S addChildAndSetParent(final S toAdd) {
         final Collection<S> children = getChildren();
         children.add(toAdd);
         try {
             //noinspection unchecked
             toAdd.setParent((S) this);
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             final String message = "Could not set parent. Override setParent(TreeNode) or try to use addChild(TreeNode) instead...";
             throw new IllegalStateException(message, e);
         }
@@ -71,9 +71,9 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return (S) this;
     }
 
-    default S addChildrenAndSetParent(Iterable<S> toAdd) {
+    default S addChildrenAndSetParent(final Iterable<S> toAdd) {
         final Collection<S> children = getChildren();
-        for (S child : toAdd) {
+        for (final S child : toAdd) {
             children.add(child);
             //noinspection unchecked
             child.setParent((S) this);
@@ -82,9 +82,9 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return (S) this;
     }
 
-    default S removeSubTree(S branch) {
+    default S removeSubTree(final S branch) {
         final Collection<S> branchChildren = branch.getChildren();
-        for (S child : branchChildren) {
+        for (final S child : branchChildren) {
             if (!child.isLeaf()) {
                 removeSubTree(child);
             }
@@ -133,14 +133,14 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return Sequence.of(() -> iterator);
     }
 
-    default <R, C extends Collection<R>> C mapTo(Supplier<C> collectionFactory, Function<? super S, ? extends R> function) {
+    default <R, C extends Collection<R>> C mapTo(final Supplier<C> collectionFactory, final Function<? super S, ? extends R> function) {
         final C collection = collectionFactory.get();
         //noinspection unchecked
         TreeNodeHelper.map((S) this, function, collection);
         return collection;
     }
 
-    default <R, C extends Collection<R>> C mapLeafsTo(Supplier<C> supplier, Function<? super S, ? extends R> function) {
+    default <R, C extends Collection<R>> C mapLeafsTo(final Supplier<C> supplier, final Function<? super S, ? extends R> function) {
         final C collection = supplier.get();
         //noinspection unchecked
         TreeNodeHelper.mapLeafs((S) this, function, collection);
@@ -151,28 +151,28 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return toTreeString(Object::toString);
     }
 
-    default String toTreeString(Function<? super S, String> toStringFunction) {
+    default String toTreeString(final Function<? super S, String> toStringFunction) {
         return toTreeString( "[", ", ", "]", toStringFunction);
     }
 
-    default String toTreeString(String opening, String separator, String closing,
-                                Function<? super S, String> toStringFunction) {
+    default String toTreeString(final String opening, final String separator, final String closing,
+                                final Function<? super S, String> toStringFunction) {
         final StringBuilder sb = new StringBuilder();
         TreeNodeHelper.toTreeString(this, sb, opening, separator, closing, toStringFunction);
         return sb.toString();
     }
 
-    default String toTreeString(int indent) {
+    default String toTreeString(final int indent) {
         return toTreeString(indent, Object::toString);
     }
 
-    default String toTreeString(int indent, Function<? super S, String> toStringFunction) {
+    default String toTreeString(final int indent, final Function<? super S, String> toStringFunction) {
         return toTreeString(indent, " ", toStringFunction);
     }
 
-    default String toTreeString(int indent,
-                                String indentString,
-                                Function<? super S, String> toStringFunction) {
+    default String toTreeString(final int indent,
+                                final String indentString,
+                                final Function<? super S, String> toStringFunction) {
         final StringBuilder sb = new StringBuilder();
         TreeNodeHelper.toTreeString(this, sb, 0, indent, indentString, toStringFunction);
         return sb.toString();

@@ -11,7 +11,7 @@ public final class IntPair implements Transformable<IntPair> {
     private final int first;
     private final int second;
 
-    private IntPair(int first, int second) {
+    private IntPair(final int first, final int second) {
         this.first = first;
         this.second = second;
     }
@@ -25,14 +25,14 @@ public final class IntPair implements Transformable<IntPair> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
         }
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        IntPair that = (IntPair) obj;
+        final IntPair that = (IntPair) obj;
         return Objects.equals(this.first, that.first) &&
                 Objects.equals(this.second, that.second);
     }
@@ -42,15 +42,15 @@ public final class IntPair implements Transformable<IntPair> {
         return Objects.hash(first, second);
     }
 
-    public static IntPair of(int first, int second) {
+    public static IntPair of(final int first, final int second) {
         return new IntPair(first, second);
     }
 
-    public <R> R to(IntBiFunction<R> mapper) {
+    public <R> R to(final IntBiFunction<R> mapper) {
         return mapper.apply(first, second);
     }
 
-    public <A1, B1> Pair<A1, B1> mapBoth(IntFunction<A1> firstValueMapper, IntFunction<B1> secondValueMapper) {
+    public <A1, B1> Pair<A1, B1> mapBoth(final IntFunction<A1> firstValueMapper, final IntFunction<B1> secondValueMapper) {
         return Pair.of(firstValueMapper.apply(first), secondValueMapper.apply(second));
     }
 

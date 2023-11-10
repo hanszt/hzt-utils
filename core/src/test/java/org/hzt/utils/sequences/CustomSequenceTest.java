@@ -56,23 +56,23 @@ class CustomSequenceTest {
 
     private interface CustomSequence<T> extends Sequence<T> {
 
-        static <T> CustomSequence<T> of(Iterable<T> iterable) {
+        static <T> CustomSequence<T> of(final Iterable<T> iterable) {
             return iterable::iterator;
         }
 
         @Override
-        default <R> CustomSequence<R> map(Function<? super T, ? extends R> mapper) {
+        default <R> CustomSequence<R> map(final Function<? super T, ? extends R> mapper) {
             return CustomSequence.of(Sequence.super.map(mapper));
         }
 
         @Override
-        default CustomSequence<T> filter(Predicate<? super T> predicate) {
+        default CustomSequence<T> filter(final Predicate<? super T> predicate) {
             return () -> Iterators.filteringIterator(iterator(), predicate, true);
         }
 
-        default float floatSumOf(ToFloatFunction<? super T> selector) {
+        default float floatSumOf(final ToFloatFunction<? super T> selector) {
             float sum = 0;
-            for (T t : this) {
+            for (final T t : this) {
                 if (t != null) {
                     sum += selector.applyAsFloat(t);
                 }
@@ -80,7 +80,7 @@ class CustomSequenceTest {
             return sum;
         }
 
-        static void main(String[] args) {
+        static void main(final String[] args) {
             fibonacciSequence()
                     .filter(bigInteger -> bigInteger.isProbablePrime(100))
                     .forEach(It::println);
@@ -93,7 +93,7 @@ class CustomSequenceTest {
         float applyAsFloat(T item);
     }
 
-    private static boolean isNaturalNr(String current) {
+    private static boolean isNaturalNr(final String current) {
         return current.chars().allMatch(Character::isDigit);
     }
 
@@ -117,7 +117,7 @@ class CustomSequenceTest {
                     .skip(3)
                     .joinToString(", ");
 
-            for (String s : fizzBuzzer.take(3)) {
+            for (final String s : fizzBuzzer.take(3)) {
                 println("s = " + s);
             }
             assertAll(
@@ -138,9 +138,9 @@ class CustomSequenceTest {
                     .take(100);
         }
 
-        private DynamicTest everyFifthContainsBuzz(IndexedValue<String> indexedValue) {
+        private DynamicTest everyFifthContainsBuzz(final IndexedValue<String> indexedValue) {
             final  int n = indexedValue.index() + 1;
-            String name = "Value at n=" + n + " contains buzz";
+            final String name = "Value at n=" + n + " contains buzz";
             return dynamicTest(name, () -> assertTrue(indexedValue.value().contains("buzz")));
         }
 
@@ -156,19 +156,19 @@ class CustomSequenceTest {
                     .take(100);
         }
 
-        private DynamicTest everyThirdContainsFizz(IndexedValue<String> indexedValue) {
+        private DynamicTest everyThirdContainsFizz(final IndexedValue<String> indexedValue) {
             final  int n = indexedValue.index() + 1;
-            String name = "Value at n=" + n + " contains fizz";
+            final String name = "Value at n=" + n + " contains fizz";
             return dynamicTest(name, () -> assertTrue(indexedValue.value().contains("fizz")));
         }
     }
 
-    private static String next(int index, String current, int modulo,  String string) {
+    private static String next(final int index, final String current, final int modulo, final String string) {
         return next(index, current, modulo, 0, string);
     }
 
-    private static String next(int index, String current, int modulo, int offSet, String string) {
-        int value = index + 1;
+    private static String next(final int index, final String current, final int modulo, final int offSet, final String string) {
+        final int value = index + 1;
         final boolean isNaturalNr = isNaturalNr(current);
         final boolean match = value % modulo == offSet;
         if (isNaturalNr) {
@@ -204,7 +204,7 @@ class CustomSequenceTest {
             return mapIndexed((index, value) -> next(index, value, 2, 1, "odd"))::iterator;
         }
 
-        static void main(String[] args) {
+        static void main(final String[] args) {
             final FizzBuzzer fizzBuzzer = FizzBuzzer
                     .start()
                     .fizz()

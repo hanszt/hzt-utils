@@ -1,14 +1,15 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.ranges.IntRange;
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IntWindowedSequenceTest {
 
@@ -59,7 +60,7 @@ class IntWindowedSequenceTest {
 
     @Test
     void testChunkedVariableWindowSize() {
-        AtomicInteger chunkSize = new AtomicInteger();
+        final AtomicInteger chunkSize = new AtomicInteger();
 
         final int[] sizes = IntRange.of(0, 1000)
                 .chunked(chunkSize::incrementAndGet)

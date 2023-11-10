@@ -17,7 +17,7 @@ class CloserTest {
 
     @Test
     void testCloserForResourceNotImplementingAutoClosable() {
-        try (Closer<Resource> closer = Closer.forResource(new Resource("Resource 1"), Resource::close)) {
+        try (final Closer<Resource> closer = Closer.forResource(new Resource("Resource 1"), Resource::close)) {
             assertFalse(closer.getResource().closed);
             closer.execute(Resource::load);
             final String result = closer.apply(Resource::read);
@@ -39,7 +39,7 @@ class CloserTest {
 
     @Test
     void testExecuteAndClose() {
-        List<String> list = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
 
         final Resource resource = new Resource("Resource 1");
 
@@ -58,7 +58,7 @@ class CloserTest {
     }
 
     private void closeThrowingException() {
-        try (Closer<Resource> closer = Closer.forResource(new Resource("Resource 1"), Resource::closeThrowingException)) {
+        try (final Closer<Resource> closer = Closer.forResource(new Resource("Resource 1"), Resource::closeThrowingException)) {
             assertFalse(closer.getResource().closed);
             closer.execute(Resource::load);
             final String result = closer.apply(Resource::read);
@@ -71,7 +71,7 @@ class CloserTest {
         private final String name;
         private boolean closed;
 
-        public Resource(String name) {
+        public Resource(final String name) {
             this.name = name;
         }
 

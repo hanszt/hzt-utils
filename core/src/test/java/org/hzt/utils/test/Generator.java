@@ -1,10 +1,10 @@
 package org.hzt.utils.test;
 
-import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.test.model.PaintingAuction;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
+import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.test.model.PaintingAuction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -46,35 +46,35 @@ public final class Generator {
         return new PaintingAuction("Van Gogh Auction", LocalDate.of(1992, Month.APRIL, 2), vanGoghPaintings);
     }
 
-    public static String toStringIn50Millis(int integer) {
+    public static String toStringIn50Millis(final int integer) {
         try {
             Thread.sleep(50);
             return "val " + integer;
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
             return "error " + integer;
         }
     }
 
-    public static long fib(long n) {
+    public static long fib(final long n) {
         long first = 0;
         long next = 1;
         if (n == 0) {
             return first;
         }
         for (int i = 2; i <= n; i++) {
-            long temp = first + next;
+            final long temp = first + next;
             first = next;
             next = temp;
         }
         return next;
     }
 
-    public static long fibSum(int n) {
+    public static long fibSum(final int n) {
         if (n <= 0) {
             return 0;
         }
-        long[] fib = new long[n + 1];
+        final long[] fib = new long[n + 1];
         fib[0] = 0;
         fib[1] = 1;
 
@@ -89,7 +89,7 @@ public final class Generator {
         return sum;
     }
 
-    public static BigDecimal fibSumBd(int n) {
+    public static BigDecimal fibSumBd(final int n) {
         if (n <= 0) {
             return BigDecimal.ZERO;
         }
@@ -101,7 +101,7 @@ public final class Generator {
 
         // Add remaining terms
         for (int i = 2; i <= n; i++) {
-            BigDecimal next = last.add(forLast);
+            final BigDecimal next = last.add(forLast);
             sum = sum.add(next);
             forLast = last;
             last = next;

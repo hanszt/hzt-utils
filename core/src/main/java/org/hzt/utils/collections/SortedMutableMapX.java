@@ -8,27 +8,27 @@ import java.util.function.Function;
 
 public interface SortedMutableMapX<K, V> extends NavigableMap<K, V>, MutableMapX<K, V> {
 
-    static <K, V, R extends Comparable<? super R>> SortedMutableMapX<K, V> comparingByKey(Function<K, R> selector) {
+    static <K, V, R extends Comparable<? super R>> SortedMutableMapX<K, V> comparingByKey(final Function<K, R> selector) {
         return new TreeMapX<>(selector);
     }
 
     static <K, V, R extends Comparable<? super R>> SortedMutableMapX<K, V> of(
-            Iterable<Entry<K, V>> iterable, Function<? super K, ? extends R> selector) {
+            final Iterable<Entry<K, V>> iterable, final Function<? super K, ? extends R> selector) {
         return new TreeMapX<>(iterable, selector);
     }
 
     static <K, V, R extends Comparable<? super R>> SortedMutableMapX<K, V> ofMap(
-            Map<K, V> map, Function<? super K, ? extends R> selector) {
+            final Map<K, V> map, final Function<? super K, ? extends R> selector) {
         return new TreeMapX<>(map, selector);
     }
 
-    static <K, V> SortedMutableMapX<K, V> ofSortedMap(SortedMap<K, V> sortedMap) {
+    static <K, V> SortedMutableMapX<K, V> ofSortedMap(final SortedMap<K, V> sortedMap) {
         return new TreeMapX<>(sortedMap);
     }
 
     @SafeVarargs
     static <K, V, R extends Comparable<? super R>> SortedMutableMapX<K, V> ofEntries(
-            Function<K, R> selector, Map.Entry<K, V> first, Map.Entry<K, V>... others) {
+            final Function<K, R> selector, final Map.Entry<K, V> first, final Map.Entry<K, V>... others) {
         return new TreeMapX<>(selector, first, others);
     }
 

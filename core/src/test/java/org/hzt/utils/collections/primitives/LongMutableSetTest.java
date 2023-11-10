@@ -14,7 +14,7 @@ class LongMutableSetTest {
 
     @Test
     void testLongSetSize() {
-        LongMutableSet set = LongMutableSet.empty();
+        final LongMutableSet set = LongMutableSet.empty();
         set.addAll(LongList.of(-1, -2231, 0, 3, 3, 4, 5, 6, 5));
 
         assertEquals(7, set.size());
@@ -22,7 +22,7 @@ class LongMutableSetTest {
 
     @Test
     void testCountElementsInLongSetThroughSequence() {
-        LongMutableSet set = LongMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
+        final LongMutableSet set = LongMutableSet.of(1, 2, 3, 3, 4, 5, 6, 5);
 
         final long count = set.asSequence().count();
 
@@ -31,7 +31,7 @@ class LongMutableSetTest {
 
     @Test
     void testSequenceToLongSet() {
-        LongMutableSet longs = LongMutableSet.empty();
+        final LongMutableSet longs = LongMutableSet.empty();
         longs.addAll(LongRange.of(-10_000, 9_000));
         longs.addAll(LongRange.of(1_000, 90_000));
         longs.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);

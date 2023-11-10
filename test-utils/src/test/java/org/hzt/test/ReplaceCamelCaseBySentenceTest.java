@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.lang.reflect.Method;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class ReplaceCamelCaseBySentenceTest {
@@ -37,7 +37,7 @@ class ReplaceCamelCaseBySentenceTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"string 1", "string 2"})
-    void testReplaceCamelCaseMethodNameBySentence(@SuppressWarnings("unused") String s) {
+    void testReplaceCamelCaseMethodNameBySentence(@SuppressWarnings("unused") final String s) {
         final Object classInMethod = new Object() {
         };
         final Method methodName = classInMethod

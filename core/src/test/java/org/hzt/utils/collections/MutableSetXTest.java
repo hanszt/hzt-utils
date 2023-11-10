@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MutableSetXTest {
 
@@ -21,7 +21,7 @@ class MutableSetXTest {
 
     @Test
     void testUnion() {
-        MutableSetX<Integer> set = MutableSetX.of(1, 2, 10, 4, 5, 6, 3);
+        final MutableSetX<Integer> set = MutableSetX.of(1, 2, 10, 4, 5, 6, 3);
 
         final MutableSetX<Integer> union = set.union(Arrays.asList(2, 3, 4, 5, 7));
 

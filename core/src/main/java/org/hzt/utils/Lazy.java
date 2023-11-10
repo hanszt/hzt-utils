@@ -19,13 +19,13 @@ public final class Lazy<T> implements Transformable<T> {
 
     private T value;
 
-    private Lazy(Supplier<T> supplier) {
+    private Lazy(final Supplier<T> supplier) {
         Objects.requireNonNull(supplier, "Supplier must not be null");
         this.supplier = supplier;
     }
 
 
-    public static <T> Lazy<T> of(Supplier<T> supplier) {
+    public static <T> Lazy<T> of(final Supplier<T> supplier) {
         return new Lazy<>(supplier);
     }
 

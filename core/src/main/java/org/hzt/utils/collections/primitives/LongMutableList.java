@@ -12,30 +12,30 @@ public interface LongMutableList extends LongList, LongMutableCollection,
         return new LongArrayList();
     }
 
-    static LongMutableList of(Iterable<Long> iterable) {
+    static LongMutableList of(final Iterable<Long> iterable) {
         return new LongArrayList(iterable);
     }
 
-    static LongMutableList of(LongList longList) {
+    static LongMutableList of(final LongList longList) {
         return new LongArrayList(longList);
     }
 
-    static LongMutableList of(long... array) {
+    static LongMutableList of(final long... array) {
         return new LongArrayList(array);
     }
 
-    static LongMutableList withInitCapacity(int capacity) {
+    static LongMutableList withInitCapacity(final int capacity) {
         return new LongArrayList(capacity);
     }
 
     @Override
-    default LongMutableList plus(Iterable<Long> iterable) {
+    default LongMutableList plus(final Iterable<Long> iterable) {
         addAll(iterable);
         return this;
     }
 
     @Override
-    default LongMutableList plus(long... array) {
+    default LongMutableList plus(final long... array) {
         addAll(array);
         return this;
     }
@@ -52,7 +52,7 @@ public interface LongMutableList extends LongList, LongMutableCollection,
     boolean addAll(int index, PrimitiveIterable.OfLong iterable);
 
     @Override
-    default boolean remove(long l) {
+    default boolean remove(final long l) {
         final int index = indexOf(l);
         if (index >= 0) {
             removeAt(index);

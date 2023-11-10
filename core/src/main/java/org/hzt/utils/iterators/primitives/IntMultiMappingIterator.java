@@ -13,12 +13,12 @@ public final class IntMultiMappingIterator implements PrimitiveIterator.OfInt {
 
     private OfInt itemIterator = null;
 
-    private IntMultiMappingIterator(OfInt iterator, IntSequence.IntMapMultiConsumer mapper) {
+    private IntMultiMappingIterator(final OfInt iterator, final IntSequence.IntMapMultiConsumer mapper) {
         this.iterator = iterator;
         this.mapper = mapper;
     }
 
-    public static IntMultiMappingIterator of(OfInt iterator, IntSequence.IntMapMultiConsumer mapper) {
+    public static IntMultiMappingIterator of(final OfInt iterator, final IntSequence.IntMapMultiConsumer mapper) {
         return new IntMultiMappingIterator(iterator, mapper);
     }
 
@@ -43,7 +43,7 @@ public final class IntMultiMappingIterator implements PrimitiveIterator.OfInt {
             if (!iterator.hasNext()) {
                 return false;
             }
-            SpinedBuffer.OfInt intBuffer = new SpinedBuffer.OfInt();
+            final SpinedBuffer.OfInt intBuffer = new SpinedBuffer.OfInt();
             mapper.accept(iterator.nextInt(), intBuffer);
             final OfInt nextItemIterator = intBuffer.iterator();
             if (nextItemIterator.hasNext()) {

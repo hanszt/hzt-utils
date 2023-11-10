@@ -12,24 +12,24 @@ public interface MutableSetX<E> extends Set<E>, SetX<E>, MutableCollectionX<E> {
         return new HashSetX<>();
     }
 
-    static <E> MutableSetX<E> withInitCapacity(int capacity) {
+    static <E> MutableSetX<E> withInitCapacity(final int capacity) {
         return new HashSetX<>(capacity);
     }
 
-    static <E> MutableSetX<E> of(Set<E> set) {
+    static <E> MutableSetX<E> of(final Set<E> set) {
         return new HashSetX<>(set);
     }
 
-    static <E> MutableSetX<E> of(Iterable<E> set) {
+    static <E> MutableSetX<E> of(final Iterable<E> set) {
         return new HashSetX<>(set);
     }
 
-    static <E> MutableSetX<E> of(Collection<E> collection) {
+    static <E> MutableSetX<E> of(final Collection<E> collection) {
         return new HashSetX<>(collection);
     }
 
     @SafeVarargs
-    static <E> MutableSetX<E> of(E... values) {
+    static <E> MutableSetX<E> of(final E... values) {
         return new HashSetX<>(values);
     }
 
@@ -41,14 +41,14 @@ public interface MutableSetX<E> extends Set<E>, SetX<E>, MutableCollectionX<E> {
     }
 
     @Override
-    default MutableSetX<E> intersect(Iterable<E> other) {
+    default MutableSetX<E> intersect(final Iterable<E> other) {
         final Collection<E> otherCollection = other instanceof Collectable<?> ? (Collection<E>) other : MutableSetX.of(other);
         retainAll(otherCollection);
         return this;
     }
 
     @Override
-    default MutableSetX<E> union(Iterable<E> other) {
+    default MutableSetX<E> union(final Iterable<E> other) {
         addAll(other);
         return this;
     }

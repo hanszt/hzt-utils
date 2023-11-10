@@ -36,19 +36,19 @@ public interface LongCollection extends
     }
 
     @Override
-    default boolean containsAll(Iterable<Long> iterable) {
+    default boolean containsAll(final Iterable<Long> iterable) {
         return LongSequence.of(iterable).all(this::contains);
     }
 
     @Override
-    default boolean containsAll(long... array) {
+    default boolean containsAll(final long... array) {
         return LongSequence.of(array).all(this::contains);
     }
 
     boolean contains(long l);
 
-    default LongList filter(LongPredicate predicate) {
-        LongMutableList longs = LongMutableList.withInitCapacity(size());
+    default LongList filter(final LongPredicate predicate) {
+        final LongMutableList longs = LongMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             final long value = iterator.nextLong();
@@ -59,8 +59,8 @@ public interface LongCollection extends
         return LongList.copyOf(longs);
     }
 
-    default LongList map(LongUnaryOperator mapper) {
-        LongMutableList list = LongMutableList.withInitCapacity(size());
+    default LongList map(final LongUnaryOperator mapper) {
+        final LongMutableList list = LongMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             list.add(mapper.applyAsLong(iterator.nextLong()));
@@ -68,8 +68,8 @@ public interface LongCollection extends
         return LongList.copyOf(list);
     }
 
-    default IntList mapToInt(LongToIntFunction mapper) {
-        IntMutableList ints = IntMutableList.withInitCapacity(size());
+    default IntList mapToInt(final LongToIntFunction mapper) {
+        final IntMutableList ints = IntMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             ints.add(mapper.applyAsInt(iterator.nextLong()));
@@ -77,8 +77,8 @@ public interface LongCollection extends
         return IntList.copyOf(ints);
     }
 
-    default DoubleList mapToDouble(LongToDoubleFunction mapper) {
-        DoubleMutableList doubles = DoubleMutableList.withInitCapacity(size());
+    default DoubleList mapToDouble(final LongToDoubleFunction mapper) {
+        final DoubleMutableList doubles = DoubleMutableList.withInitCapacity(size());
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             doubles.add(mapper.applyAsDouble(iterator.nextLong()));
@@ -86,8 +86,8 @@ public interface LongCollection extends
         return DoubleList.copyOf(doubles);
     }
 
-    default <R> ListX<R> mapToObj(LongFunction<R> mapper) {
-        MutableListX<R> mutableListX = MutableListX.withInitCapacity(size());
+    default <R> ListX<R> mapToObj(final LongFunction<R> mapper) {
+        final MutableListX<R> mutableListX = MutableListX.withInitCapacity(size());
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             mutableListX.add(mapper.apply(iterator.nextLong()));
@@ -96,15 +96,15 @@ public interface LongCollection extends
     }
 
     @Override
-    default LongList plus(Iterable<Long> values) {
-        LongMutableList listX = toMutableList();
+    default LongList plus(final Iterable<Long> values) {
+        final LongMutableList listX = toMutableList();
         listX.addAll(values);
         return LongList.copyOf(listX);
     }
 
     @Override
-    default LongList plus(long... array) {
-        LongMutableList list = toMutableList();
+    default LongList plus(final long... array) {
+        final LongMutableList list = toMutableList();
         list.addAll(array);
         return LongList.copyOf(list);
     }
@@ -119,11 +119,11 @@ public interface LongCollection extends
     }
 
     @Override
-    default LongList take(long n) {
+    default LongList take(final long n) {
         return LongList.copyOf(takeTo(() -> LongMutableList.withInitCapacity((int) n), n));
     }
 
-    default LongList skip(long n) {
+    default LongList skip(final long n) {
         PreConditions.require(n <= Integer.MAX_VALUE);
         return LongList.copyOf(skipTo(() -> LongMutableList.withInitCapacity((int) (size() - n)), (int) n));
     }

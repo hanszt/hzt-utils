@@ -10,19 +10,19 @@ final class TakeSequence<T> implements SkipTakeSequence<T> {
     private final Sequence<T> upstream;
     private final long count;
 
-    TakeSequence(Sequence<T> upstream, long count) {
+    TakeSequence(final Sequence<T> upstream, final long count) {
         PreConditions.require(count >= 0);
         this.upstream = upstream;
         this.count = count;
     }
 
     @Override
-    public Sequence<T> skip(long n) {
+    public Sequence<T> skip(final long n) {
         return n >= count ? new EmptySequence<>() : new SubSequence<>(upstream, n, count);
     }
 
     @Override
-    public Sequence<T> take(long n) {
+    public Sequence<T> take(final long n) {
         return n >= count ? this : new TakeSequence<>(upstream, n);
     }
 

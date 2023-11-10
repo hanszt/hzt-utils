@@ -8,21 +8,21 @@ final class GridPoint3DImpl implements GridPoint3D {
     private final int y;
     private final int z;
 
-    GridPoint3DImpl(int x, int y, int z) {
+    GridPoint3DImpl(final int x, final int y, final int z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        GridPoint3DImpl that = (GridPoint3DImpl) o;
+        final GridPoint3DImpl that = (GridPoint3DImpl) o;
         return x == that.x && y == that.y && z == that.z;
     }
 

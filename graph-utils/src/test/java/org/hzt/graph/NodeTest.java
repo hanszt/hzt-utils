@@ -19,7 +19,7 @@ class NodeTest {
 
     @Test
     void testBreadthFirstSequence() {
-        Map<String, RailWayStation> graph = buildGraph();
+        final Map<String, RailWayStation> graph = buildGraph();
 
         final List<String> stationNames = graph.get("Leiden").breadthFirstSequence()
                 .onEach(It::println)
@@ -31,12 +31,12 @@ class NodeTest {
 
     @Test
     void testFindRouteWithLeastStops() {
-        Map<String, RailWayStation> graph = buildGraph();
+        final Map<String, RailWayStation> graph = buildGraph();
 
         final RailWayStation source = graph.get("Leiden");
         final RailWayStation target = graph.get("Vlissingen");
 
-        List<String> leastStopsPath = source.breadthFirstSequence()
+        final List<String> leastStopsPath = source.breadthFirstSequence()
                 .first(target::equals)
                 .predecessorSequence()
                 .onEach(n -> System.out.println(n.predecessorSequence().count()))
@@ -47,20 +47,20 @@ class NodeTest {
 
     @Test
     void testFindTouristicRoute() {
-        Map<String, RailWayStation> graph = buildGraph();
+        final Map<String, RailWayStation> graph = buildGraph();
 
         final RailWayStation source = graph.get("Leiden");
 
         final RailWayStation vlissingen = source.depthFirstSequence().onEach(System.out::println).first(graph.get("Vlissingen")::equals);
 
-        List<String> leastStopsPath = vlissingen.predecessorSequence().take(100).toListOf(station -> station.name);
+        final List<String> leastStopsPath = vlissingen.predecessorSequence().take(100).toListOf(station -> station.name);
 
         assertEquals(Collections.singletonList("Vlissingen"), leastStopsPath);
     }
 
     @Test
     void testFindRouteWithLeastStopsNoRoute() {
-        Map<String, RailWayStation> graph = buildGraph();
+        final Map<String, RailWayStation> graph = buildGraph();
 
         final RailWayStation source = graph.get("Leiden");
 
@@ -72,7 +72,7 @@ class NodeTest {
 
     @Test
     void testDepthFirstSequence() {
-        Map<String, RailWayStation> graph = buildGraph();
+        final Map<String, RailWayStation> graph = buildGraph();
 
         final List<String> stationNames = graph.get("Leiden").depthFirstSequence()
                 .map(railWayStation -> railWayStation.name)
@@ -122,12 +122,12 @@ class NodeTest {
         private final Set<RailWayStation> neighbors = new LinkedHashSet<>();
         private RailWayStation predecessor;
 
-        public RailWayStation(String name) {
+        public RailWayStation(final String name) {
             this.name = name;
         }
 
         @Override
-        public RailWayStation withPredecessor(RailWayStation predecessor) {
+        public RailWayStation withPredecessor(final RailWayStation predecessor) {
             this.predecessor = predecessor;
             return this;
         }

@@ -1,11 +1,11 @@
 package org.hzt.utils.sequences.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -17,7 +17,7 @@ class DoubleWindowedSequenceTest {
 
     @Test
     void testPartialWindowedDoubleSequence() {
-        double[] array = {1 * Math.PI, 2, 3, 4, 5, 6, 7};
+        final double[] array = {1 * Math.PI, 2, 3, 4, 5, 6, 7};
 
         final double[][] windows = DoubleSequence.of(array)
                 .windowed(3, 2, true)
@@ -55,7 +55,7 @@ class DoubleWindowedSequenceTest {
 
     @Test
     void testApproximateGoldenRatioUsingDoubleSequence() {
-        double goldenRatio = (1 + Math.sqrt(5)) / 2;
+        final double goldenRatio = (1 + Math.sqrt(5)) / 2;
         final int scale = 20;
 
         final DoubleList approximations = IntSequence.iterate(1, i -> ++i)

@@ -7,7 +7,7 @@ public interface DoubleComparator extends PrimitiveComparator {
 
     int compare(double d1, double d2);
 
-    static DoubleComparator comparing(DoubleUnaryOperator selector) {
+    static DoubleComparator comparing(final DoubleUnaryOperator selector) {
         return (d1, d2) -> Double.compare(selector.applyAsDouble(d1), selector.applyAsDouble(d2));
     }
 
@@ -19,7 +19,7 @@ public interface DoubleComparator extends PrimitiveComparator {
         return (d1, d2) -> Double.compare(d2, d1);
     }
 
-    default DoubleComparator thenComparing(DoubleComparator comparator) {
+    default DoubleComparator thenComparing(final DoubleComparator comparator) {
         return comparator;
     }
 

@@ -14,7 +14,7 @@ final class IntSubSequence implements IntSkipTakeSequence {
     private final long endIndex;
     private final long count;
 
-    IntSubSequence(IntSequence upstream, long startIndex, long endIndex) {
+    IntSubSequence(final IntSequence upstream, final long startIndex, final long endIndex) {
         require(startIndex >= 0, () -> "startIndex should be non-negative, but is " + startIndex);
         require(endIndex >= 0, () -> "endIndex should be non-negative, but is " + endIndex);
         require(endIndex >= startIndex, () -> "endIndex should be not less than startIndex, but was " + endIndex + " < " + startIndex);
@@ -30,12 +30,12 @@ final class IntSubSequence implements IntSkipTakeSequence {
     }
 
     @Override
-    public IntSequence skip(long n) {
+    public IntSequence skip(final long n) {
         return n >= count ? PrimitiveIterators::emptyIntIterator : new IntSubSequence(upstream, startIndex + n, endIndex);
     }
 
     @Override
-    public IntSubSequence take(long n) {
+    public IntSubSequence take(final long n) {
         return n >= count ? this : new IntSubSequence(upstream, startIndex, startIndex + 1);
     }
 

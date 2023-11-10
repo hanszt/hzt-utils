@@ -32,7 +32,7 @@ public interface Mappable<T> extends IndexedIterable<T> {
 
     <R> Mappable<R> mapMulti(BiConsumer<? super T, ? super Consumer<R>> mapper);
 
-    default PrimitiveIterable.OfInt mapMultiToInt(BiConsumer<? super T, IntConsumer> mapper) {
+    default PrimitiveIterable.OfInt mapMultiToInt(final BiConsumer<? super T, IntConsumer> mapper) {
         return flatMapToInt(e -> {
             final SpinedBuffer.OfInt spinedBuffer = new SpinedBuffer.OfInt();
             mapper.accept(e, spinedBuffer);
@@ -40,7 +40,7 @@ public interface Mappable<T> extends IndexedIterable<T> {
         });
     }
 
-    default PrimitiveIterable.OfLong mapMultiToLong(BiConsumer<? super T, LongConsumer> mapper) {
+    default PrimitiveIterable.OfLong mapMultiToLong(final BiConsumer<? super T, LongConsumer> mapper) {
         return flatMapToLong(e -> {
             final SpinedBuffer.OfLong spinedBuffer = new SpinedBuffer.OfLong();
             mapper.accept(e, spinedBuffer);
@@ -48,7 +48,7 @@ public interface Mappable<T> extends IndexedIterable<T> {
         });
     }
 
-    default PrimitiveIterable.OfDouble mapMultiToDouble(BiConsumer<? super T, DoubleConsumer> mapper) {
+    default PrimitiveIterable.OfDouble mapMultiToDouble(final BiConsumer<? super T, DoubleConsumer> mapper) {
         return flatMapToDouble(e -> {
             final SpinedBuffer.OfDouble spinedBuffer = new SpinedBuffer.OfDouble();
             mapper.accept(e, spinedBuffer);

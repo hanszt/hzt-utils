@@ -26,16 +26,16 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
             return PrimitiveAtomicIterator.of(iterator());
         }
 
-        default void forEachInt(IntConsumer action) {
-            PrimitiveIterator.OfInt intIterator = iterator();
+        default void forEachInt(final IntConsumer action) {
+            final PrimitiveIterator.OfInt intIterator = iterator();
             while (intIterator.hasNext()) {
                 action.accept(intIterator.nextInt());
             }
         }
 
         @Override
-        default void forEach(Consumer<? super Integer> action) {
-            PrimitiveIterator.OfInt intIterator = iterator();
+        default void forEach(final Consumer<? super Integer> action) {
+            final PrimitiveIterator.OfInt intIterator = iterator();
             if (intIterator.hasNext()) {
                 throw new UnsupportedOperationException("Use forEachInt instead");
             }
@@ -56,16 +56,16 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
             return PrimitiveAtomicIterator.of(iterator());
         }
 
-        default void forEachLong(LongConsumer action) {
-            PrimitiveIterator.OfLong intIterator = iterator();
+        default void forEachLong(final LongConsumer action) {
+            final PrimitiveIterator.OfLong intIterator = iterator();
             while (intIterator.hasNext()) {
                 action.accept(intIterator.nextLong());
             }
         }
 
         @Override
-        default void forEach(Consumer<? super Long> action) {
-            PrimitiveIterator.OfLong intIterator = iterator();
+        default void forEach(final Consumer<? super Long> action) {
+            final PrimitiveIterator.OfLong intIterator = iterator();
             if (intIterator.hasNext()) {
                 throw new UnsupportedOperationException("Use forEachLong instead");
             }
@@ -86,16 +86,16 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
             return PrimitiveAtomicIterator.of(iterator());
         }
 
-        default void forEachDouble(DoubleConsumer action) {
-            PrimitiveIterator.OfDouble intIterator = iterator();
+        default void forEachDouble(final DoubleConsumer action) {
+            final PrimitiveIterator.OfDouble intIterator = iterator();
             while (intIterator.hasNext()) {
                 action.accept(intIterator.nextDouble());
             }
         }
 
         @Override
-        default void forEach(Consumer<? super Double> action) {
-            PrimitiveIterator.OfDouble intIterator = iterator();
+        default void forEach(final Consumer<? super Double> action) {
+            final PrimitiveIterator.OfDouble intIterator = iterator();
             if (intIterator.hasNext()) {
                 throw new UnsupportedOperationException("Use forEachDouble instead");
             }

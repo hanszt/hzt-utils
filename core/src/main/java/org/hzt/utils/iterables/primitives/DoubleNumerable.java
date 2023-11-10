@@ -16,9 +16,9 @@ public interface DoubleNumerable extends PrimitiveIterable.OfDouble, PrimitiveNu
     }
 
     @Override
-    default long count(DoublePredicate predicate) {
+    default long count(final DoublePredicate predicate) {
         long count = 0;
-        PrimitiveIterator.OfDouble iterator = this.iterator();
+        final PrimitiveIterator.OfDouble iterator = this.iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextDouble())) {
                 count++;
@@ -31,7 +31,7 @@ public interface DoubleNumerable extends PrimitiveIterable.OfDouble, PrimitiveNu
         return stats().getMin();
     }
 
-    default double min(DoublePredicate predicate) {
+    default double min(final DoublePredicate predicate) {
         return DoubleSequence.of(this).filter(predicate).min();
     }
 
@@ -39,7 +39,7 @@ public interface DoubleNumerable extends PrimitiveIterable.OfDouble, PrimitiveNu
         return stats().getMax();
     }
 
-    default double max(DoublePredicate predicate) {
+    default double max(final DoublePredicate predicate) {
         return DoubleSequence.of(this).filter(predicate).max();
     }
 
@@ -47,20 +47,20 @@ public interface DoubleNumerable extends PrimitiveIterable.OfDouble, PrimitiveNu
         return stats().getAverage();
     }
 
-    default double average(DoublePredicate predicate) {
+    default double average(final DoublePredicate predicate) {
         return DoubleSequence.of(this).filter(predicate).average();
     }
 
     default double sum() {
         double sum = 0;
-        PrimitiveIterator.OfDouble iterator = iterator();
+        final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
             sum += iterator.nextDouble();
         }
         return sum;
     }
 
-    default double sum(DoublePredicate predicate) {
+    default double sum(final DoublePredicate predicate) {
         return DoubleSequence.of(this).filter(predicate).sum();
     }
 
@@ -68,20 +68,20 @@ public interface DoubleNumerable extends PrimitiveIterable.OfDouble, PrimitiveNu
         return stats().getStandardDeviation();
     }
 
-    default double stdDev(DoublePredicate predicate) {
+    default double stdDev(final DoublePredicate predicate) {
         return DoubleSequence.of(this).filter(predicate).stdDev();
     }
 
     default DoubleStatistics stats() {
-        DoubleStatistics doubleStatistics = new DoubleStatistics();
-        PrimitiveIterator.OfDouble iterator = this.iterator();
+        final DoubleStatistics doubleStatistics = new DoubleStatistics();
+        final PrimitiveIterator.OfDouble iterator = this.iterator();
         while (iterator.hasNext()) {
             doubleStatistics.accept(iterator.nextDouble());
         }
         return doubleStatistics;
     }
 
-    default DoubleStatistics stats(DoublePredicate predicate) {
+    default DoubleStatistics stats(final DoublePredicate predicate) {
         return DoubleSequence.of(this).filter(predicate).stats();
     }
 

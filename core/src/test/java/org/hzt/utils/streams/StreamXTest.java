@@ -35,7 +35,7 @@ class StreamXTest {
 
     @Test
     void mapFilterReduce() {
-        List<String> strings = Arrays.asList("This", "is", "a", "StreamX", "test");
+        final List<String> strings = Arrays.asList("This", "is", "a", "StreamX", "test");
 
         final Integer lengthSum = StreamX.of(strings)
                 .filter("This is a test"::contains)
@@ -47,7 +47,7 @@ class StreamXTest {
 
     @Test
     void testStreamXIsLazyAndSequential() {
-        List<String> strings = Arrays.asList("This", "is", "a", "StreamX", "test");
+        final List<String> strings = Arrays.asList("This", "is", "a", "StreamX", "test");
 
         final StreamX<Integer> streamX = StreamX.of(strings)
                 .filter(this::contained)
@@ -60,7 +60,7 @@ class StreamXTest {
 
     @Test
     void testStreamXIsLazyAndParallel() {
-        List<String> strings = Arrays.asList("This", "is", "a", "StreamX", "test");
+        final List<String> strings = Arrays.asList("This", "is", "a", "StreamX", "test");
 
         final StreamX<Integer> streamX = StreamX.parallel(strings)
                 .filter(this::contained)
@@ -73,7 +73,7 @@ class StreamXTest {
 
     @Test
     void testStreamXCanBeConsumedOnlyOnce() {
-        List<String> strings = Arrays.asList("This", "is", "a", "StreamX", "test");
+        final List<String> strings = Arrays.asList("This", "is", "a", "StreamX", "test");
 
         final StreamX<String> stream = StreamX.of(strings);
 
@@ -89,7 +89,7 @@ class StreamXTest {
         );
     }
 
-    private boolean contained(String s) {
+    private boolean contained(final String s) {
         fail();
         return "This is a test".contains(s);
     }
@@ -115,9 +115,9 @@ class StreamXTest {
 
     @Test
     void testHasCharacteristics() {
-        Spliterator<String> spliterator = new Spliterator<String>() {
+        final Spliterator<String> spliterator = new Spliterator<String>() {
             @Override
-            public boolean tryAdvance(Consumer<? super String> action) {
+            public boolean tryAdvance(final Consumer<? super String> action) {
                 return false;
             }
 
@@ -166,7 +166,7 @@ class StreamXTest {
 
         int counter = 0;
         //noinspection unused
-        for (String s : strings) {
+        for (final String s : strings) {
             counter++;
         }
 
@@ -191,13 +191,13 @@ class StreamXTest {
 
     }
 
-    private boolean dateInLeapYear(LocalDate localDate) {
+    private boolean dateInLeapYear(final LocalDate localDate) {
         System.out.println("dateInLeapYear:");
         System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
         return localDate.isLeapYear();
     }
 
-    private Month dateToMonth(LocalDate localDate) {
+    private Month dateToMonth(final LocalDate localDate) {
         System.out.println("dateToMonth");
         System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
         return localDate.getMonth();

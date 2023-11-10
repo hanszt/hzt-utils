@@ -24,14 +24,14 @@ public final class IterableXHelper {
     private IterableXHelper() {
     }
 
-    static <T, R extends Comparable<? super R>> ListX<T> toSortedListX(Iterable<T> iterable,
-                                                                       Function<? super T, ? extends R> selector) {
+    static <T, R extends Comparable<? super R>> ListX<T> toSortedListX(final Iterable<T> iterable,
+                                                                       final Function<? super T, ? extends R> selector) {
         return toMutableListXSortedBy(selector, iterable);
     }
 
-    static <T> long count(Iterable<T> iterable, Predicate<T> predicate) {
+    static <T> long count(final Iterable<T> iterable, final Predicate<T> predicate) {
         long counter = 0;
-        for (T t : iterable) {
+        for (final T t : iterable) {
             if (predicate.test(t)) {
                 counter++;
             }
@@ -40,13 +40,13 @@ public final class IterableXHelper {
     }
 
     static <T, R, C extends Collection<R>> C mapFilteringTo(
-            Iterable<T> iterable,
-            Supplier<C> collectionFactory,
-            Predicate<? super T> predicate,
-            Function<? super T, ? extends R> mapper,
-            Predicate<R> resultFilter) {
-        C collection = collectionFactory.get();
-        for (T t : iterable) {
+            final Iterable<T> iterable,
+            final Supplier<C> collectionFactory,
+            final Predicate<? super T> predicate,
+            final Function<? super T, ? extends R> mapper,
+            final Predicate<R> resultFilter) {
+        final C collection = collectionFactory.get();
+        for (final T t : iterable) {
             if (t != null && predicate.test(t)) {
                 final R r = mapper.apply(t);
                 if (resultFilter.test(r)) {
@@ -58,7 +58,7 @@ public final class IterableXHelper {
     }
 
     static <T, R extends Comparable<? super R>> Optional<T> compareBy(final Iterator<T> iterator,
-                                                                      Function<? super T, ? extends R> selector, IntPredicate predicate) {
+                                                                      final Function<? super T, ? extends R> selector, final IntPredicate predicate) {
         if (!iterator.hasNext()) {
             return Optional.empty();
         }
@@ -78,9 +78,9 @@ public final class IterableXHelper {
         return Optional.ofNullable(result);
     }
 
-    public static <R, K extends Comparable<? super K>> K asComparableOrThrow(R key) {
+    public static <R, K extends Comparable<? super K>> K asComparableOrThrow(final R key) {
         if (key instanceof Comparable) {
-            Comparable<?> c = (Comparable<?>) key;
+            final Comparable<?> c = (Comparable<?>) key;
             //noinspection unchecked
             return (K) c;
         }
@@ -88,9 +88,9 @@ public final class IterableXHelper {
     }
 
     static  <T, R extends Comparable<? super R>> R comparisonOf(
-            Iterator<T> iterator,
-            Function<? super T, ? extends R> selector,
-            IntPredicate biPredicate) {
+            final Iterator<T> iterator,
+            final Function<? super T, ? extends R> selector,
+            final IntPredicate biPredicate) {
         if (!iterator.hasNext()) {
             throw noValuePresentException();
         }
@@ -111,13 +111,13 @@ public final class IterableXHelper {
         throw noValuePresentException();
     }
 
-    static <T> Optional<T> findLastIfUnknownIterable(Predicate<? super T> predicate, Iterator<T> iterator) {
+    static <T> Optional<T> findLastIfUnknownIterable(final Predicate<? super T> predicate, final Iterator<T> iterator) {
         T result = iterator.next();
         if (!predicate.test(result) && !iterator.hasNext()) {
             return Optional.empty();
         }
         while (iterator.hasNext()) {
-            T next = iterator.next();
+            final T next = iterator.next();
             if (predicate.test(next)) {
                 result = next;
             }
@@ -125,7 +125,7 @@ public final class IterableXHelper {
         return Optional.ofNullable(result);
     }
 
-    static <T> Optional<T> findLastIfInstanceOfList(Predicate<? super T> predicate, List<T> list) {
+    static <T> Optional<T> findLastIfInstanceOfList(final Predicate<? super T> predicate, final List<T> list) {
         final T last = list.get(list.size() - 1);
         if (last != null && predicate.test(last)) {
             return Optional.of(last);
@@ -145,9 +145,9 @@ public final class IterableXHelper {
         return new NoSuchElementException("No value present");
     }
 
-    static <T> void exposeIndexedNonNullVal(Iterable<T> iterable, BiConsumer<Integer, T> consumer) {
+    static <T> void exposeIndexedNonNullVal(final Iterable<T> iterable, final BiConsumer<Integer, T> consumer) {
         int counter = 0;
-        for (T value : iterable) {
+        for (final T value : iterable) {
             if (value != null) {
                 consumer.accept(counter, value);
                 counter++;
@@ -155,13 +155,13 @@ public final class IterableXHelper {
         }
     }
 
-    static <T> void exposeNonNullVal(Iterable<T> iterable, Consumer<T> consumer) {
+    static <T> void exposeNonNullVal(final Iterable<T> iterable, final Consumer<T> consumer) {
         exposeIndexedNonNullVal(iterable, (i, v) -> consumer.accept(v));
     }
 
     static <T, R extends Comparable<? super R>> MutableListX<T> toMutableListXSortedBy(
-            Function<? super T, ? extends R> selector, Iterable<T> iterable) {
-        MutableListX<T> list = MutableListX.of(iterable);
+            final Function<? super T, ? extends R> selector, final Iterable<T> iterable) {
+        final MutableListX<T> list = MutableListX.of(iterable);
         list.sort(Comparator.comparing(selector));
         return list;
     }

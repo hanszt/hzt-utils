@@ -7,7 +7,7 @@ public interface IntMutableSet extends IntMutableCollection {
         return new IntHashSet();
     }
 
-    static IntMutableSet of(int... values) {
+    static IntMutableSet of(final int... values) {
         return new IntHashSet(values);
     }
 }

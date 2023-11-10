@@ -8,7 +8,7 @@ final class IntStreamXImpl implements IntStreamX {
 
     private final IntStream stream;
 
-    IntStreamXImpl(IntStream stream) {
+    IntStreamXImpl(final IntStream stream) {
         this.stream = stream;
     }
 

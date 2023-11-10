@@ -15,23 +15,23 @@ final class HashSetX<E> implements MutableSetX<E> {
         this.set = new HashSet<>();
     }
 
-    HashSetX(int n) {
+    HashSetX(final int n) {
         this.set = new HashSet<>(n);
     }
 
-    HashSetX(Collection<E> collection) {
+    HashSetX(final Collection<E> collection) {
         this.set = new HashSet<>(collection);
     }
 
-    HashSetX(Iterable<E> iterable) {
+    HashSetX(final Iterable<E> iterable) {
         set = new HashSet<>();
         iterable.forEach(set::add);
     }
 
     @SafeVarargs
-    HashSetX(E... values) {
+    HashSetX(final E... values) {
         set = new HashSet<>();
-        for (E item : values) {
+        for (final E item : values) {
             if (!set.add(item)) {
                 throw new IllegalStateException("Duplicate elements in set. This is not allowed");
             }
@@ -49,7 +49,7 @@ final class HashSetX<E> implements MutableSetX<E> {
     }
 
     @Override
-    public boolean contains(Object value) {
+    public boolean contains(final Object value) {
         return set.contains(value);
     }
 
@@ -64,38 +64,38 @@ final class HashSetX<E> implements MutableSetX<E> {
     }
 
     @Override
-    public <T> T[] toArray(T[] a) {
+    public <T> T[] toArray(final T[] a) {
         //noinspection SuspiciousToArrayCall
         return set.toArray(a);
     }
 
     @Override
-    public boolean add(E e) {
+    public boolean add(final E e) {
         return set.add(e);
     }
 
     @Override
-    public boolean remove(Object o) {
+    public boolean remove(final Object o) {
         return set.remove(o);
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(final Collection<?> c) {
         return set.containsAll(c);
     }
 
     @Override
-    public boolean addAll(Collection<? extends E> c) {
+    public boolean addAll(final Collection<? extends E> c) {
         return set.addAll(c);
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(final Collection<?> c) {
         return set.retainAll(c);
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(final Collection<?> c) {
         return set.removeAll(c);
     }
 
@@ -105,14 +105,14 @@ final class HashSetX<E> implements MutableSetX<E> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        HashSetX<?> hashSetX = (HashSetX<?>) o;
+        final HashSetX<?> hashSetX = (HashSetX<?>) o;
         return set.equals(hashSetX.set);
     }
 
@@ -127,7 +127,7 @@ final class HashSetX<E> implements MutableSetX<E> {
     }
 
     @Override
-    public boolean containsNot(E e) {
+    public boolean containsNot(final E e) {
         return !contains(e);
     }
 

@@ -84,7 +84,7 @@ class IterableXTest {
 
     @Test
     void testFlatMapToSet() {
-        MutableListX<Museum> museumList = MutableListX.of(TestSampleGenerator.getMuseumListContainingNulls());
+        final MutableListX<Museum> museumList = MutableListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final Set<Painting> expected = museumList.stream()
                 .map(Museum::getPaintings)
@@ -171,20 +171,20 @@ class IterableXTest {
 
     @Test
     void testSortedIfOfComparableType() {
-        MutableListX<Integer> list = MutableListX.of(1, 3, 5, 4, 2, 7, 214, 5, 8, 3, 4, 123);
+        final MutableListX<Integer> list = MutableListX.of(1, 3, 5, 4, 2, 7, 214, 5, 8, 3, 4, 123);
         final IterableX<Integer> sorted = list.sorted();
         assertIterableEquals(ListX.of(1, 2, 3, 3, 4, 4, 5, 5, 7, 8, 123, 214), sorted);
     }
 
     @Test
     void testSortedThrowsExceptionWhenNotOfComparableType() {
-        ListX<BankAccount> bankAccountList = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final ListX<BankAccount> bankAccountList = ListX.of(TestSampleGenerator.createSampleBankAccountList());
         assertThrows(IllegalStateException.class, bankAccountList::sorted);
     }
 
     @Test
     void testMaxOf() {
-        ListX<BankAccount> bankAccountList = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final ListX<BankAccount> bankAccountList = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         final BigDecimal expected = bankAccountList.stream()
                 .max(Comparator.comparing(BankAccount::getBalance))
@@ -200,7 +200,7 @@ class IterableXTest {
 
     @Test
     void testMinOf() {
-        ListX<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final ListX<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         final BigDecimal expected = list.stream()
                 .min(Comparator.comparing(BankAccount::getBalance))
@@ -216,7 +216,7 @@ class IterableXTest {
 
     @Test
     void testAuctionImplementingIterableX() {
-        MutableListX<PaintingAuction> auctions = Generator.createAuctions();
+        final MutableListX<PaintingAuction> auctions = Generator.createAuctions();
 
         final PaintingAuction auction = auctions.first();
 
@@ -232,7 +232,7 @@ class IterableXTest {
 
     @Test
     void testMinBy() {
-        Set<BankAccount> bankAccounts = new HashSet<>(TestSampleGenerator.createSampleBankAccountList());
+        final Set<BankAccount> bankAccounts = new HashSet<>(TestSampleGenerator.createSampleBankAccountList());
 
         final Optional<BankAccount> expected = bankAccounts.stream().min(Comparator.comparing(BankAccount::getBalance));
 
@@ -243,7 +243,7 @@ class IterableXTest {
 
     @Test
     void testMaxBy() {
-        ListX<BankAccount> set = ListX.of(new HashSet<>(TestSampleGenerator.createSampleBankAccountList()));
+        final ListX<BankAccount> set = ListX.of(new HashSet<>(TestSampleGenerator.createSampleBankAccountList()));
 
         final Optional<BankAccount> expected = set.stream().max(Comparator.comparing(BankAccount::getBalance));
 
@@ -368,7 +368,7 @@ class IterableXTest {
     void testMapToExistingCollection() {
         final ListX<Museum> museumList = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        Deque<LocalDate> deque = new ArrayDeque<>();
+        final Deque<LocalDate> deque = new ArrayDeque<>();
         deque.add(LocalDate.MAX);
 
         final Deque<LocalDate> expectedLocalDates = museumList.stream()
@@ -387,7 +387,7 @@ class IterableXTest {
 
     @Test
     void testUnion() {
-        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        final ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         final SetX<Integer> union = list.union(Arrays.asList(2, 3, 4, 5, 7));
 
@@ -443,7 +443,7 @@ class IterableXTest {
     void testIntersectMuseumPaintings() {
         final ListX<Museum> museums = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
-        Set<Period> expected = museums.stream()
+        final Set<Period> expected = museums.stream()
                 .map(Museum::getPaintings)
                 .collect(intersectingBy(Painting::getMillenniumOfCreation));
 
@@ -456,7 +456,7 @@ class IterableXTest {
 
     @Test
     void testSumBigDecimals() {
-        ListX<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final ListX<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         final BigDecimal expected = list.stream()
                 .map(BankAccount::getBalance)
@@ -502,7 +502,7 @@ class IterableXTest {
 
     @Test
     void testFoldRight() {
-        ListX<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final ListX<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         list.forEach(It::println);
 
@@ -513,7 +513,7 @@ class IterableXTest {
 
     @Test
     void testDropLastWhile() {
-        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        final ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         list.forEach(It::println);
 
@@ -526,7 +526,7 @@ class IterableXTest {
 
     @Test
     void testSkipWhile() {
-        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        final ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         list.forEach(It::println);
 
@@ -539,7 +539,7 @@ class IterableXTest {
 
     @Test
     void testSkipWhileInclusive() {
-        ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
+        final ListX<Integer> list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
         list.forEach(It::println);
 
@@ -552,8 +552,8 @@ class IterableXTest {
 
     @Test
     void testListIteratorGetPreviousOnlyWorksBeforeWhenIsAtEnd() {
-        List<Integer> list = Arrays.asList(22, 44, 88, 11, 33);
-        ListIterator<Integer> listIterator = list.listIterator();
+        final List<Integer> list = Arrays.asList(22, 44, 88, 11, 33);
+        final ListIterator<Integer> listIterator = list.listIterator();
 
         assertFalse(listIterator.hasPrevious());
 
@@ -572,7 +572,7 @@ class IterableXTest {
 
     @Test
     void testCountBy() {
-        ListX<BankAccount> bankAccounts = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final ListX<BankAccount> bankAccounts = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         final long expected = bankAccounts.stream().filter(BankAccount::isDutchAccount).count();
 
@@ -585,7 +585,7 @@ class IterableXTest {
 
     @Test
     void testSumOf() {
-        ListX<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final ListX<BankAccount> list = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         final BigDecimal expected = list.stream()
                 .map(BankAccount::getBalance)
@@ -600,7 +600,7 @@ class IterableXTest {
 
     @Test
     void testSumOfInt() {
-        ListX<Painting> list = ListX.of(TestSampleGenerator.createPaintingList());
+        final ListX<Painting> list = ListX.of(TestSampleGenerator.createPaintingList());
 
         final int expected = list.stream().mapToInt(Painting::ageInYears).sum();
 
@@ -613,7 +613,7 @@ class IterableXTest {
 
     @Test
     void testAverageOf() {
-        ListX<Painting> list = ListX.of(TestSampleGenerator.createPaintingList());
+        final ListX<Painting> list = ListX.of(TestSampleGenerator.createPaintingList());
 
         final double expected = list.stream().mapToInt(Painting::ageInYears).average().orElseThrow(NoSuchElementException::new);
 
@@ -626,7 +626,7 @@ class IterableXTest {
 
     @Test
     void testIterXOfIterable() {
-        ListX<BankAccount> listX = ListX.of(TestSampleGenerator.createSampleBankAccountList());
+        final ListX<BankAccount> listX = ListX.of(TestSampleGenerator.createSampleBankAccountList());
 
         final BigDecimal expected = listX.stream()
                 .map(BankAccount::getBalance)
@@ -782,7 +782,7 @@ class IterableXTest {
 
     @Test
     void testMapNotNullMaxOf() {
-        ListX<Painting> paintingList = ListX.of(TestSampleGenerator.createPaintingList());
+        final ListX<Painting> paintingList = ListX.of(TestSampleGenerator.createPaintingList());
 
         final LocalDate expected = paintingList.stream()
                 .map(Painting::painter)
@@ -807,7 +807,7 @@ class IterableXTest {
 
     @Test
     void testCollectingToMap() {
-        List<Painting> paintingList = TestSampleGenerator.createPaintingList();
+        final List<Painting> paintingList = TestSampleGenerator.createPaintingList();
 
         final Map<LocalDate, String> expected = paintingList.stream()
                 .map(Painting::painter)
@@ -822,7 +822,7 @@ class IterableXTest {
 
     @Test
     void testMapNotNull() {
-        MutableListX<BankAccount> bankAccounts = MutableListX
+        final MutableListX<BankAccount> bankAccounts = MutableListX
                 .of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
 
         final String expected = bankAccounts.stream()
@@ -843,7 +843,7 @@ class IterableXTest {
 
     @Test
     void testMapIfPresent() {
-        ListX<Museum> list = ListX.of(TestSampleGenerator.createMuseumList());
+        final ListX<Museum> list = ListX.of(TestSampleGenerator.createMuseumList());
 
         final ListX<LocalDate> dates = list.mapIfPresent(Museum::dateOfOpening);
 
@@ -858,7 +858,7 @@ class IterableXTest {
 
     @Test
     void testZipWithNext() {
-        ListX<Painting> museumList = ListX.of(TestSampleGenerator.createPaintingList());
+        final ListX<Painting> museumList = ListX.of(TestSampleGenerator.createPaintingList());
 
         final ListX<Integer> integers = museumList
                 .mapNotNull(Painting::name)
@@ -869,8 +869,8 @@ class IterableXTest {
 
     @Test
     void testZipTwoCollections() {
-        ListX<Integer> values = ListX.of(0, 1, 2, 3, 4, 5, 6, 7);
-        List<Integer> others = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
+        final ListX<Integer> values = ListX.of(0, 1, 2, 3, 4, 5, 6, 7);
+        final List<Integer> others = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
 
         final ListX<Integer> integers = values.zip(others, Integer::compareTo);
 
@@ -879,8 +879,8 @@ class IterableXTest {
 
     @Test
     void testToUnion() {
-        ListX<Integer> values = ListX.of(0, 1, 2, 1, 3, 4, 5, 6, 7);
-        List<Integer> other = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
+        final ListX<Integer> values = ListX.of(0, 1, 2, 1, 3, 4, 5, 6, 7);
+        final List<Integer> other = Arrays.asList(6, 5, 4, 3, 2, 1, 0);
 
         final SetX<String> union = values.union(other, String::valueOf);
 
@@ -908,11 +908,11 @@ class IterableXTest {
         assertIterableEquals(expected, actual);
     }
 
-    private static IntStream chars(String s) {
+    private static IntStream chars(final String s) {
         return s.chars();
     }
 
-    private void printEvery10_000stElement(int i) {
+    private void printEvery10_000stElement(final int i) {
         if (IntX.of(i).isMultipleOf(10_000)) {
             It.println(i);
         }

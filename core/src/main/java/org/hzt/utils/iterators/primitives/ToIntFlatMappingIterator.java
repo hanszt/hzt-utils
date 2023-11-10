@@ -12,8 +12,8 @@ final class ToIntFlatMappingIterator<T> implements PrimitiveIterator.OfInt {
 
     private PrimitiveIterator.OfInt itemIterator = null;
 
-    ToIntFlatMappingIterator(Iterator<T> iterator,
-                             Function<? super T, ? extends PrimitiveIterator.OfInt> toIteratorFunction) {
+    ToIntFlatMappingIterator(final Iterator<T> iterator,
+                             final Function<? super T, ? extends PrimitiveIterator.OfInt> toIteratorFunction) {
         this.iterator = iterator;
         this.toIteratorFunction = toIteratorFunction;
     }

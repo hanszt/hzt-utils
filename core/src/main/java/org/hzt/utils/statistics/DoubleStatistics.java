@@ -17,14 +17,14 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
     }
 
     @Override
-    public void accept(double value) {
+    public void accept(final double value) {
         super.accept(value);
-        double squareValue = value * value;
+        final double squareValue = value * value;
         simpleSumOfSquare += squareValue;
         sumOfSquareWithCompensation(squareValue);
     }
 
-    public DoubleStatistics combine(DoubleStatistics other) {
+    public DoubleStatistics combine(final DoubleStatistics other) {
         super.combine(other);
         simpleSumOfSquare += other.simpleSumOfSquare;
         sumOfSquareWithCompensation(other.sumOfSquare);
@@ -32,15 +32,15 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
         return this;
     }
 
-    private void sumOfSquareWithCompensation(double value) {
-        double tmp = value - sumOfSquareCompensation;
-        double velvel = sumOfSquare + tmp; // Little wolf of rounding error
+    private void sumOfSquareWithCompensation(final double value) {
+        final double tmp = value - sumOfSquareCompensation;
+        final double velvel = sumOfSquare + tmp; // Little wolf of rounding error
         sumOfSquareCompensation = (velvel - sumOfSquare) - tmp;
         sumOfSquare = velvel;
     }
 
     public double getSumOfSquare() {
-        double correctedSumOfSquare =  sumOfSquare + sumOfSquareCompensation;
+        final double correctedSumOfSquare = sumOfSquare + sumOfSquareCompensation;
         if (Double.isNaN(correctedSumOfSquare) && Double.isInfinite(simpleSumOfSquare)) {
             return simpleSumOfSquare;
         }
@@ -53,14 +53,14 @@ public final class DoubleStatistics extends DoubleSummaryStatistics
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DoubleStatistics that = (DoubleStatistics) o;
+        final DoubleStatistics that = (DoubleStatistics) o;
         return getCount() == that.getCount() &&
                 Double.compare(getAverage(), that.getAverage()) == 0 &&
                 Double.compare(that.getSumOfSquare(), getSumOfSquare()) == 0 &&

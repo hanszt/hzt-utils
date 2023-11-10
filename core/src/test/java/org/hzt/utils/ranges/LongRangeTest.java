@@ -41,7 +41,7 @@ class LongRangeTest {
 
     @Test
     void longRangeFromLongArray() {
-        long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
+        final long[] array = {1, 2, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
         final long[] expected = LongStream.of(array)
                 .filter(l -> l > 3)

@@ -27,14 +27,14 @@ See the [tests](src/test/java/org/hzt) in this project to see how the swing util
 
 ## Examples
 
-````java
+```java
 class WindowListenersTest {
     
     @Test
     void testFunctionalStyleWindowListenerDeclarationInSwing() {
         AtomicBoolean isCalled = new AtomicBoolean(false);
-        Window frame = new Frame();
+        final Window frame = new Frame();
         frame.addWindowListener((WindowActivatedListener) e -> isCalled.set(true));
     }
 }
-````
+```

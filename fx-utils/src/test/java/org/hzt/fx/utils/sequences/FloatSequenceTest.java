@@ -21,7 +21,7 @@ class FloatSequenceTest {
 
         println(Arrays.toString(floats));
 
-        float[] expected = {.5F, 1.0F, 1.5F, 2F, 2.5F};
+        final float[] expected = {.5F, 1.0F, 1.5F, 2F, 2.5F};
 
         assertArrayEquals(expected, floats);
     }

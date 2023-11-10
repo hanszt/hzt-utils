@@ -63,8 +63,8 @@ class MapXTest {
 
     @Test
     void testForEachIndexed() {
-        List<IndexedValue<Map.Entry<String, Museum>>> list = new ArrayList<>();
-        IndexedConsumer<Map.Entry<String, Museum>> biConsumer = (index, value) -> list.add(new IndexedValue<>(index, value));
+        final List<IndexedValue<Map.Entry<String, Museum>>> list = new ArrayList<>();
+        final IndexedConsumer<Map.Entry<String, Museum>> biConsumer = (index, value) -> list.add(new IndexedValue<>(index, value));
 
         final List<Museum> museumListContainingNulls = TestSampleGenerator.getMuseumListContainingNulls();
 
@@ -92,7 +92,7 @@ class MapXTest {
 
     @Test
     void entrySequenceOfMap() {
-        Map<String, Integer> map = new HashMap<>();
+        final Map<String, Integer> map = new HashMap<>();
         map.put("1", 1);
         map.put("2", 2);
         map.put("3", 3);
@@ -120,7 +120,7 @@ class MapXTest {
         final MapX<String, Museum> museumMap = ListX.of(TestSampleGenerator.createMuseumList())
                 .associateBy(Museum::getName);
 
-        Museum expected = museumMap.get("Van Gogh Museum");
+        final Museum expected = museumMap.get("Van Gogh Museum");
 
         final MutableMapX<String, Museum> map = MutableMapX.of(museumMap);
 

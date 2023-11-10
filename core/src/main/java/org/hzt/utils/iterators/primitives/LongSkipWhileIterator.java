@@ -13,13 +13,13 @@ public final class LongSkipWhileIterator implements OfLong {
     private boolean firstIteration = true;
     private SkipState state = SkipState.SKIPPING;
 
-    LongSkipWhileIterator(OfLong iterator, LongPredicate predicate, boolean inclusive) {
+    LongSkipWhileIterator(final OfLong iterator, final LongPredicate predicate, final boolean inclusive) {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
     }
 
-    public static OfLong of(OfLong iterator, LongPredicate predicate, boolean inclusive) {
+    public static OfLong of(final OfLong iterator, final LongPredicate predicate, final boolean inclusive) {
         return new LongSkipWhileIterator(iterator, predicate, inclusive);
     }
 
@@ -53,7 +53,7 @@ public final class LongSkipWhileIterator implements OfLong {
             skip();
         }
         if (state == SkipState.NEXT_ITEM) {
-            long result = nextItem;
+            final long result = nextItem;
             state = SkipState.NORMAL_ITERATION;
             return result;
         }

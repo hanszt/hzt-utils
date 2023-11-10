@@ -260,7 +260,7 @@ class TreeNodeTest {
         private final String name;
         private final List<Person> children;
 
-        public Person(String name) {
+        public Person(final String name) {
             this.name = name;
             this.children = new ArrayList<>();
         }
@@ -278,11 +278,11 @@ class TreeNodeTest {
 
     private static final class FileX extends File implements TreeNode<FileX, FileX> {
 
-        public FileX(String pathname) {
+        public FileX(final String pathname) {
             super(pathname);
         }
 
-        public FileX(File file) {
+        public FileX(final File file) {
             this(file.getAbsolutePath());
         }
 

@@ -7,7 +7,7 @@ public interface LongMutableSet extends LongMutableCollection {
         return new LongHashSet();
     }
 
-    static LongMutableSet of(long... values) {
+    static LongMutableSet of(final long... values) {
         return new LongHashSet(values);
     }
 }

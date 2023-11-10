@@ -14,7 +14,7 @@ final class DoubleSubSequence implements DoubleSkipTakeSequence {
     private final long endIndex;
     private final long count;
 
-    DoubleSubSequence(DoubleSequence upstream, long startIndex, long endIndex) {
+    DoubleSubSequence(final DoubleSequence upstream, final long startIndex, final long endIndex) {
         require(startIndex >= 0, () -> "startIndex should be non-negative, but is " + startIndex);
         require(endIndex >= 0, () -> "endIndex should be non-negative, but is " + endIndex);
         require(endIndex >= startIndex, () -> "endIndex should be not less than startIndex, but was " + endIndex + " < " + startIndex);
@@ -30,12 +30,12 @@ final class DoubleSubSequence implements DoubleSkipTakeSequence {
     }
 
     @Override
-    public DoubleSequence skip(long n) {
+    public DoubleSequence skip(final long n) {
         return n >= count ? PrimitiveIterators::emptyDoubleIterator : new DoubleSubSequence(upstream, startIndex + n, endIndex);
     }
 
     @Override
-    public DoubleSubSequence take(long n) {
+    public DoubleSubSequence take(final long n) {
         return n >= count ? this : new DoubleSubSequence(upstream, startIndex, startIndex + 1);
     }
 

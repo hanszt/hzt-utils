@@ -13,11 +13,11 @@ public class Book implements Serializable {
     private final transient String category;
     private transient String language = "Java";
 
-    public Book(String category) {
+    public Book(final String category) {
         this("", category);
     }
 
-    public Book(String title, String category) {
+    public Book(final String title, final String category) {
         this.title = title;
         this.category = category;
     }
@@ -26,7 +26,7 @@ public class Book implements Serializable {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
@@ -34,7 +34,7 @@ public class Book implements Serializable {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -42,7 +42,7 @@ public class Book implements Serializable {
         return copies;
     }
 
-    public void setCopies(int copies) {
+    public void setCopies(final int copies) {
         this.copies = copies;
     }
 
@@ -54,7 +54,7 @@ public class Book implements Serializable {
         return language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(final String language) {
         this.language = language;
     }
 
@@ -67,7 +67,7 @@ public class Book implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         return this == o || (o != null && getClass() == o.getClass() &&
                 Objects.equals(title, ((Book) o).title) &&
                 Objects.equals(category, ((Book) o).category));

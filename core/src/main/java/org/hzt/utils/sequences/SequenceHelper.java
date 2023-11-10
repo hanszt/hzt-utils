@@ -9,20 +9,20 @@ public final class SequenceHelper {
     private SequenceHelper() {
     }
 
-    private static String getErrorMessage(int size, int step) {
+    private static String getErrorMessage(final int size, final int step) {
         if (size != step) {
             return "Both size " + size + " and step " + step + " must be greater than zero.";
         }
         return "size " + size + " must be greater than zero.";
     }
 
-    public static void checkInitWindowSizeAndStep(int size, int step) {
+    public static void checkInitWindowSizeAndStep(final int size, final int step) {
         PreConditions.require(size > 0 && step > 0, () -> getErrorMessage(size, step));
     }
 
-    static <K, V> V keyAsValueTypeOrThrow(Map.Entry<K, V> entry) {
-        K k = entry.getKey();
-        V v = entry.getValue();
+    static <K, V> V keyAsValueTypeOrThrow(final Map.Entry<K, V> entry) {
+        final K k = entry.getKey();
+        final V v = entry.getValue();
         if (k.getClass() == v.getClass()) {
             //noinspection unchecked
             return (V) k;

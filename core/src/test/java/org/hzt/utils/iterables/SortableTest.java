@@ -120,7 +120,7 @@ class SortableTest {
             "Charlotte Hans Joop Marjolein  Matthijs Thom",
             "Adi Hans Judith Koen Pauline  Ted"
     })
-    void isSortedInNaturalOrder(String string) {
+    void isSortedInNaturalOrder(final String string) {
         final ListX<Person> people = blankStringPattern.splitAsStream(string)
                 .map(Person::new)
                 .collect(CollectorsX.toListX());
@@ -135,7 +135,7 @@ class SortableTest {
             "Charlotte Hans Marjolein Joop  Matthijs Thom",
             "Adi Judith Hans Koen Pauline  Ted"
     })
-    void isNotSortedInNaturalOrder(String string) {
+    void isNotSortedInNaturalOrder(final String string) {
         final Sequence<Person> people = Patterns
                 .splitToSequence(blankStringPattern, string)
                 .map(Person::new);

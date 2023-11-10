@@ -49,9 +49,9 @@ class IntMutableListTest {
 
     @Test
     void testAddAtIndex() {
-        IntMutableList list = IntMutableList.of(1, 2, 5);
+        final IntMutableList list = IntMutableList.of(1, 2, 5);
         list.add(list.size(), 3);
-        List<Integer> refList = new ArrayList<>(Arrays.asList(1, 2, 5));
+        final List<Integer> refList = new ArrayList<>(Arrays.asList(1, 2, 5));
         refList.add(refList.size(), 3);
 
         System.out.println("list = " + list);

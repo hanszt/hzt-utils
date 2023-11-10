@@ -12,15 +12,15 @@ public interface BinarySearchable<COMPARISON_FUNCTION> {
 
     int size();
 
-    default int binarySearchTo(int toIndex, COMPARISON_FUNCTION comparison) {
+    default int binarySearchTo(final int toIndex, final COMPARISON_FUNCTION comparison) {
         return binarySearch(0, toIndex, comparison);
     }
 
-    default int binarySearchFrom(int fromIndex, COMPARISON_FUNCTION comparison) {
+    default int binarySearchFrom(final int fromIndex, final COMPARISON_FUNCTION comparison) {
         return binarySearch(fromIndex, size(), comparison);
     }
 
-    default int binarySearch(COMPARISON_FUNCTION comparison) {
+    default int binarySearch(final COMPARISON_FUNCTION comparison) {
         return binarySearch(0, size(), comparison);
     }
 

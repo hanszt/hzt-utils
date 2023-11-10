@@ -48,7 +48,7 @@ public abstract class AbstractIterator<T> implements Iterator<T> {
 
     protected abstract void computeNext();
 
-    protected void setNext(T value) {
+    protected void setNext(final T value) {
         nextValue = value;
         state = State.CONTINUE;
     }

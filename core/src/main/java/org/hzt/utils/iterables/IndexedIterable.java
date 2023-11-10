@@ -25,7 +25,7 @@ public interface IndexedIterable<T> extends Iterable<T> {
             }
             @Override
             public IndexedValue<T> next() {
-                int prevIndex = index;
+                final int prevIndex = index;
                 if (prevIndex < 0) {
                     throw new IllegalStateException("indexed iterator index overflow");
                 }
@@ -46,19 +46,19 @@ public interface IndexedIterable<T> extends Iterable<T> {
         return Spliterators.spliteratorUnknownSize(indexIterator(), Spliterator.ORDERED);
     }
 
-    default void forEachIndex(IntConsumer action) {
+    default void forEachIndex(final IntConsumer action) {
         final PrimitiveIterator.OfInt indexIterator = indexIterator();
         while(indexIterator.hasNext()) {
             action.accept(indexIterator.nextInt());
         }
     }
 
-    default void forEachIndexed(IndexedConsumer<T> action) {
+    default void forEachIndexed(final IndexedConsumer<T> action) {
         forEachIndexedValue(indexedValue -> action.accept(indexedValue.index(), indexedValue.value()));
     }
 
-    default void forEachIndexedValue(Consumer<IndexedValue<T>> action) {
-        Iterator<IndexedValue<T>> iterator = indexedIterator();
+    default void forEachIndexedValue(final Consumer<IndexedValue<T>> action) {
+        final Iterator<IndexedValue<T>> iterator = indexedIterator();
         while (iterator.hasNext()) {
             final IndexedValue<T> next = iterator.next();
             action.accept(next);

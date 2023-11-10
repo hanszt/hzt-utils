@@ -6,7 +6,7 @@ import org.hzt.utils.sequences.primitives.IntSequence;
 
 public final class IntRange extends IntProgression implements ClosedRange<Integer> {
 
-    private IntRange(int start, int endInclusive, int step) {
+    private IntRange(final int start, final int endInclusive, final int step) {
         super(start, endInclusive, step);
     }
 
@@ -14,22 +14,22 @@ public final class IntRange extends IntProgression implements ClosedRange<Intege
         return new IntRange(0, -1, 1);
     }
 
-    public static IntRange of(int start, int endExclusive, int step) {
+    public static IntRange of(final int start, final int endExclusive, final int step) {
         return IntRange.closed(start, endExclusive - step, step);
     }
 
-    public static IntRange of(int start, int endExclusive) {
+    public static IntRange of(final int start, final int endExclusive) {
         if (start >= endExclusive) {
             return IntRange.empty();
         }
         return IntRange.of(start, endExclusive, 1);
     }
 
-    public static IntRange closed(int start, int endInclusive) {
+    public static IntRange closed(final int start, final int endInclusive) {
         return IntRange.closed(start, endInclusive, 1);
     }
 
-    public static IntRange closed(int start, int endInclusive, int step) {
+    public static IntRange closed(final int start, final int endInclusive, final int step) {
         PreConditions.require(step > 0, () -> "Step must be greater than zero");
         if (start > endInclusive) {
             return IntRange.empty();
@@ -37,11 +37,11 @@ public final class IntRange extends IntProgression implements ClosedRange<Intege
         return new IntRange(start, endInclusive, step);
     }
 
-    public boolean containsAll(int... array) {
+    public boolean containsAll(final int... array) {
         return IntSequence.of(array).all(this::contains);
     }
 
-    public boolean contains(int value) {
+    public boolean contains(final int value) {
         return start() <= value && value <= endInclusive();
     }
     @Override

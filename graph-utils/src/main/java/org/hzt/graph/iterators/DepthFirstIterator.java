@@ -20,7 +20,7 @@ final class DepthFirstIterator<T, S extends Node<T, S>> implements Iterator<S> {
     private final Deque<Iterator<S>> stack = new ArrayDeque<>();
     private S next;
 
-    DepthFirstIterator(S source) {
+    DepthFirstIterator(final S source) {
         this.stack.push(source.getNeighbors().iterator());
         this.next = source;
     }

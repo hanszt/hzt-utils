@@ -11,7 +11,7 @@ public interface LongStringable extends PrimitiveIterable.OfLong {
         return joinToString(", ");
     }
 
-    default String joinToString(CharSequence delimiter) {
+    default String joinToString(final CharSequence delimiter) {
         final StringBuilder sb = new StringBuilder();
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
@@ -20,11 +20,11 @@ public interface LongStringable extends PrimitiveIterable.OfLong {
         return sb.toString().trim();
     }
 
-    default <R> String joinToStringBy(LongFunction<? extends R> selector) {
+    default <R> String joinToStringBy(final LongFunction<? extends R> selector) {
         return joinToStringBy(selector, ", ");
     }
 
-    default <R> String joinToStringBy(LongFunction<? extends R> selector, CharSequence delimiter) {
+    default <R> String joinToStringBy(final LongFunction<? extends R> selector, final CharSequence delimiter) {
         final StringBuilder sb = new StringBuilder();
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {

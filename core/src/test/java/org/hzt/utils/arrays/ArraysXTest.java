@@ -19,14 +19,17 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import static org.hzt.utils.It.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hzt.utils.It.println;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ArraysXTest {
 
     @Test
     void testReverseArray() {
-        String[] strings = {"this", "is", "a", "test"};
+        final String[] strings = {"this", "is", "a", "test"};
         final String[] strings2 = ArraysX.copyOf(strings);
 
         Arrays.sort(strings, Comparator.reverseOrder());
@@ -179,7 +182,7 @@ class ArraysXTest {
 
         @Test
         void testIntArrayToBooleanArray() {
-            int[] input = {1, 4, 5, 3, 6, 7, 2, 7};
+            final int[] input = {1, 4, 5, 3, 6, 7, 2, 7};
 
             final boolean[] booleans = ArraysX.toBooleanArray(i -> i < 4, input);
 
@@ -190,7 +193,7 @@ class ArraysXTest {
 
         @Test
         void testLongArrayToBooleanArray() {
-            long[] input = {1, 4, 5, 3, 6, 7, 2, Long.MAX_VALUE};
+            final long[] input = {1, 4, 5, 3, 6, 7, 2, Long.MAX_VALUE};
 
             final boolean[] booleans = ArraysX.toBooleanArray(l -> l < 4, input);
 
@@ -201,7 +204,7 @@ class ArraysXTest {
 
         @Test
         void testDoubleArrayToBooleanArray() {
-            double[] input = {Double.NEGATIVE_INFINITY, 1, 4, 5, Math.PI, 6, 7, Math.E, 7e1, Double.POSITIVE_INFINITY};
+            final double[] input = {Double.NEGATIVE_INFINITY, 1, 4, 5, Math.PI, 6, 7, Math.E, 7e1, Double.POSITIVE_INFINITY};
 
             final boolean[] booleans = ArraysX.toBooleanArray(d -> d < 4, input);
 
@@ -226,9 +229,9 @@ class ArraysXTest {
 
         @Test
         void testToBooleanArray() {
-            String[] strings = {"This", "is", "a", "test"};
+            final String[] strings = {"This", "is", "a", "test"};
 
-            boolean[] array = ArraysX.toBooleanArray(s -> s.contains("i"), strings);
+            final boolean[] array = ArraysX.toBooleanArray(s -> s.contains("i"), strings);
 
             assertArrayEquals(new boolean[] {true, true, false, false}, array);
         }
@@ -244,7 +247,7 @@ class ArraysXTest {
 
             @Test
             void testSortAndReverseInts() {
-                int[] array = {1, 3, 4, 2, 5, 6, 7};
+                final int[] array = {1, 3, 4, 2, 5, 6, 7};
                 Arrays.sort(array);
                 ArraysX.reverse(array);
                 assertArrayEquals(new int[]{7, 6, 5, 4, 3, 2, 1}, array);
@@ -252,7 +255,7 @@ class ArraysXTest {
 
             @Test
             void testSortAndReverseLongs() {
-                long[] array = {1, 3, Long.MAX_VALUE, 4, 2, 5, 6, 7};
+                final long[] array = {1, 3, Long.MAX_VALUE, 4, 2, 5, 6, 7};
                 Arrays.sort(array);
                 ArraysX.reverse(array);
                 assertArrayEquals(new long[]{Long.MAX_VALUE, 7, 6, 5, 4, 3, 2, 1}, array);
@@ -260,7 +263,7 @@ class ArraysXTest {
 
             @Test
             void testSortAndReverseDoubles() {
-                double[] array = {1, 3, 4, Math.PI, 2, 5, DoubleX.GOLDEN_RATIO};
+                final double[] array = {1, 3, 4, Math.PI, 2, 5, DoubleX.GOLDEN_RATIO};
                 Arrays.sort(array);
                 ArraysX.reverse(array);
                 assertArrayEquals(new double[]{5, 4, Math.PI, 3, 2, DoubleX.GOLDEN_RATIO, 1}, array);

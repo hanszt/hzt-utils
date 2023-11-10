@@ -2,7 +2,6 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
@@ -28,7 +27,6 @@ final class LongTakeSequence implements LongSkipTakeSequence {
         return n >= count ? this : new LongTakeSequence(upstream, n);
     }
 
-    @NotNull
     @Override
     public PrimitiveIterator.OfLong iterator() {
         return new PrimitiveIterator.OfLong() {

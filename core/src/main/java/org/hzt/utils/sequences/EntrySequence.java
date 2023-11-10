@@ -5,7 +5,6 @@ import org.hzt.utils.collections.MapX;
 import org.hzt.utils.iterables.EntryIterable;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.tuples.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -44,13 +43,13 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return map.entrySet()::iterator;
     }
 
-    default <R> Sequence<R> asSequence(@NotNull BiFunction<? super K, ? super V, ? extends R> biFunction) {
+    default <R> Sequence<R> asSequence(BiFunction<? super K, ? super V, ? extends R> biFunction) {
         return map(e -> biFunction.apply(e.getKey(), e.getValue()));
     }
 
     @Override
-    default <K1, V1> EntrySequence<K1, V1> inverted(@NotNull Function<? super V, ? extends K1> toKeyMapper,
-                                                    @NotNull Function<? super K, ? extends V1> toValueMapper) {
+    default <K1, V1> EntrySequence<K1, V1> inverted(Function<? super V, ? extends K1> toKeyMapper,
+                                                    Function<? super K, ? extends V1> toValueMapper) {
         return EntrySequence.of(map(e -> MapX.entry(toKeyMapper.apply(e.getValue()), toValueMapper.apply(e.getKey()))));
     }
 
@@ -59,47 +58,47 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return inverted(It::self, It::self);
     }
 
-    default <R> Sequence<R> map(@NotNull BiFunction<? super K, ? super V, ? extends R> biFunction) {
+    default <R> Sequence<R> map(BiFunction<? super K, ? super V, ? extends R> biFunction) {
         return map(e -> biFunction.apply(e.getKey(), e.getValue()));
     }
 
-    default <K1, V1> EntrySequence<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper,
-                                               @NotNull Function<? super V, ? extends V1> valueMapper) {
+    default <K1, V1> EntrySequence<K1, V1> map(Function<? super K, ? extends K1> keyMapper,
+                                               Function<? super V, ? extends V1> valueMapper) {
         return EntrySequence.of(map(e -> MapX.entry(keyMapper.apply(e.getKey()), valueMapper.apply(e.getValue()))));
     }
 
-    default <K1> EntrySequence<K1, V> mapByKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
+    default <K1> EntrySequence<K1, V> mapByKeys(Function<? super K, ? extends K1> keyMapper) {
         return EntrySequence.of(map(e -> MapX.entry(keyMapper.apply(e.getKey()), e.getValue())));
     }
 
     @Override
-    default <K1> EntrySequence<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, ? extends K1> toKeyMapper) {
+    default <K1> EntrySequence<K1, V> mapKeys(BiFunction<? super K, ? super V, ? extends K1> toKeyMapper) {
         return EntrySequence.of(map(e -> MapX.entry(toKeyMapper.apply(e.getKey(), e.getValue()), e.getValue())));
     }
 
-    default <V1> EntrySequence<K, V1> mapByValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
+    default <V1> EntrySequence<K, V1> mapByValues(Function<? super V, ? extends V1> valueMapper) {
         return EntrySequence.of(map(e -> MapX.entry(e.getKey(), valueMapper.apply(e.getValue()))));
     }
 
     @Override
-    default <V1> EntrySequence<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, ? extends V1> toValueMapper) {
+    default <V1> EntrySequence<K, V1> mapValues(BiFunction<? super K, ? super V, ? extends V1> toValueMapper) {
         return EntrySequence.of(map(e -> MapX.entry(e.getKey(), toValueMapper.apply(e.getKey(), e.getValue()))));
     }
 
-    default EntrySequence<K, V> filter(@NotNull BiPredicate<? super K, ? super V> biPredicate) {
+    default EntrySequence<K, V> filter(BiPredicate<? super K, ? super V> biPredicate) {
         return EntrySequence.of(Sequence.super.filter(e -> biPredicate.test(e.getKey(), e.getValue())));
     }
 
-    default EntrySequence<K, V> filterKeys(@NotNull Predicate<? super K> predicate) {
+    default EntrySequence<K, V> filterKeys(Predicate<? super K> predicate) {
         return EntrySequence.of(Sequence.super.filter(e -> predicate.test(e.getKey())));
     }
 
-    default EntrySequence<K, V> filterValues(@NotNull Predicate<? super V> predicate) {
+    default EntrySequence<K, V> filterValues(Predicate<? super V> predicate) {
         return EntrySequence.of(Sequence.super.filter(e -> predicate.test(e.getValue())));
     }
 
     @Override
-    default EntrySequence<K, V> onEachKey(@NotNull Consumer<? super K> consumer) {
+    default EntrySequence<K, V> onEachKey(Consumer<? super K> consumer) {
         return mapByKeys(key -> {
             consumer.accept(key);
             return key;
@@ -107,7 +106,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     @Override
-    default EntrySequence<K, V> onEachValue(@NotNull Consumer<? super V> consumer) {
+    default EntrySequence<K, V> onEachValue(Consumer<? super V> consumer) {
         return EntrySequence.of(mapByValues(value -> {
             consumer.accept(value);
             return value;
@@ -115,20 +114,19 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
     }
 
     @Override
-    default EntrySequence<K, V> onEach(@NotNull BiConsumer<? super K, ? super V> biConsumer) {
+    default EntrySequence<K, V> onEach(BiConsumer<? super K, ? super V> biConsumer) {
         return EntrySequence.of(map(e -> {
             biConsumer.accept(e.getKey(), e.getValue());
             return e;
         }));
     }
 
-    @NotNull
     @Override
-    default EntrySequence<K, V> onEach(@NotNull Consumer<? super Map.Entry<K, V>> consumer) {
+    default EntrySequence<K, V> onEach(Consumer<? super Map.Entry<K, V>> consumer) {
         return EntrySequence.of(Sequence.super.onEach(consumer));
     }
 
-    default void forEach(@NotNull BiConsumer<? super K, ? super V> biConsumer) {
+    default void forEach(BiConsumer<? super K, ? super V> biConsumer) {
         for (Map.Entry<K, V> e : this) {
             biConsumer.accept(e.getKey(), e.getValue());
         }
@@ -142,11 +140,11 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return EntrySequence.of(Sequence.super.skipWhile(e -> predicate.test(e.getValue())));
     }
 
-    default EntrySequence<K, V> skipWhile(@NotNull BiPredicate<? super K, ? super V> predicate) {
+    default EntrySequence<K, V> skipWhile(BiPredicate<? super K, ? super V> predicate) {
         return () -> Iterators.skipWhileIterator(iterator(), e -> predicate.test(e.getKey(), e.getValue()), false);
     }
 
-    default EntrySequence<K, V> skipWhileInclusive(@NotNull BiPredicate<? super K, ? super V> predicate) {
+    default EntrySequence<K, V> skipWhileInclusive(BiPredicate<? super K, ? super V> predicate) {
         return () -> Iterators.skipWhileIterator(iterator(), e -> predicate.test(e.getKey(), e.getValue()), true);
     }
 
@@ -158,11 +156,11 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
         return () -> takeWhile(e -> predicate.test(e.getValue())).iterator();
     }
 
-    default EntrySequence<K, V> takeWhile(@NotNull BiPredicate<? super K, ? super V> predicate) {
+    default EntrySequence<K, V> takeWhile(BiPredicate<? super K, ? super V> predicate) {
         return () -> Iterators.takeWhileIterator(iterator(), e -> predicate.test(e.getKey(), e.getValue()), false);
     }
 
-    default EntrySequence<K, V> takeWhileInclusive(@NotNull BiPredicate<? super K, ? super V> predicate) {
+    default EntrySequence<K, V> takeWhileInclusive(BiPredicate<? super K, ? super V> predicate) {
         return () -> Iterators.takeWhileIterator(iterator(), e -> predicate.test(e.getKey(), e.getValue()), true);
     }
 
@@ -173,12 +171,12 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
 
     @Override
     default <R extends Comparable<? super R>> EntrySequence<K, V> sortedBy(
-            @NotNull Function<? super Map.Entry<K, V>, ? extends R> selector) {
+            Function<? super Map.Entry<K, V>, ? extends R> selector) {
         return () -> Sequence.super.sortedBy(selector).iterator();
     }
 
     @Override
-    default <R> @NotNull EntrySequence<K, V> distinctBy(@NotNull Function<? super Map.Entry<K, V>, ? extends R> selector) {
+    default <R> EntrySequence<K, V> distinctBy(Function<? super Map.Entry<K, V>, ? extends R> selector) {
         return () -> Iterators.distinctIterator(iterator(), selector);
     }
 

@@ -7,7 +7,6 @@ import org.hzt.fx.utils.iterators.FloatIterator;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.PrimitiveAbstractArrayList;
 import org.hzt.utils.collections.primitives.PrimitiveMutableCollection;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -47,17 +46,17 @@ public final class FloatArrayList extends PrimitiveAbstractArrayList<Float, Floa
     }
 
     @Override
-    public boolean containsAll(@NotNull Iterable<Float> iterable) {
+    public boolean containsAll(Iterable<Float> iterable) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean containsAll(float @NotNull [] array) {
+    public boolean containsAll(float[] array) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean addAll(@NotNull Iterable<Float> iterable) {
+    public boolean addAll(Iterable<Float> iterable) {
         boolean allAdded = true;
         if (iterable instanceof FloatArrayList) {
             final FloatIterator iterator = ((FloatArrayList) iterable).iterator();
@@ -78,7 +77,7 @@ public final class FloatArrayList extends PrimitiveAbstractArrayList<Float, Floa
     }
 
     @Override
-    public boolean addAll(float @NotNull ... array) {
+    public boolean addAll(float... array) {
         boolean allAdded = true;
         for (float f : array) {
             if (!add(f)) {
@@ -89,29 +88,29 @@ public final class FloatArrayList extends PrimitiveAbstractArrayList<Float, Floa
     }
 
     @Override
-    public boolean removeAll(@NotNull Iterable<Float> iterable) {
+    public boolean removeAll(Iterable<Float> iterable) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean removeAll(float @NotNull [] array) {
+    public boolean removeAll(float[] array) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean removeIf(@NotNull FloatPredicate predicate) {
+    public boolean removeIf(FloatPredicate predicate) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public FloatArrayList plus(@NotNull Iterable<Float> iterable) {
+    public FloatArrayList plus(Iterable<Float> iterable) {
         FloatArrayList list = new FloatArrayList();
         list.addAll(iterable);
         return list;
     }
 
     @Override
-    public FloatArrayList plus(float @NotNull [] array) {
+    public FloatArrayList plus(float[] array) {
         throw new UnsupportedOperationException();
     }
 
@@ -153,7 +152,7 @@ public final class FloatArrayList extends PrimitiveAbstractArrayList<Float, Floa
     }
 
     @Override
-    public @NotNull FloatIterator iterator() {
+    public FloatIterator iterator() {
         return new FloatIterator() {
 
             private int index = 0;

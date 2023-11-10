@@ -3,7 +3,6 @@ package org.hzt.utils.iterators.primitives;
 import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.iterators.AbstractIterator;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.IntUnaryOperator;
@@ -22,11 +21,11 @@ public final class LongWindowedIterator extends AbstractIterator<LongList> {
     private LongMutableList nextWindow = LongMutableList.empty();
 
     private LongWindowedIterator(
-            @NotNull PrimitiveIterator.OfLong iterator,
+            PrimitiveIterator.OfLong iterator,
             int initSize,
-            @NotNull IntUnaryOperator nextSizeSupplier,
+            IntUnaryOperator nextSizeSupplier,
             int initStep,
-            @NotNull IntUnaryOperator nextStepSupplier,
+            IntUnaryOperator nextStepSupplier,
             boolean partialWindows) {
         this.iterator = iterator;
         this.initSize = initSize;
@@ -36,11 +35,11 @@ public final class LongWindowedIterator extends AbstractIterator<LongList> {
         this.partialWindows = partialWindows;
     }
 
-    public static LongWindowedIterator of(@NotNull PrimitiveIterator.OfLong iterator,
+    public static LongWindowedIterator of(PrimitiveIterator.OfLong iterator,
                                           int initSize,
-                                          @NotNull IntUnaryOperator nextSizeSupplier,
+                                          IntUnaryOperator nextSizeSupplier,
                                           int initStep,
-                                          @NotNull IntUnaryOperator nextStepSupplier,
+                                          IntUnaryOperator nextStepSupplier,
                                           boolean partialWindows) {
         return new LongWindowedIterator(iterator, initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
     }

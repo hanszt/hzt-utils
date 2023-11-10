@@ -1,7 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.MutableSetX;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.LongConsumer;
@@ -148,7 +147,7 @@ final class LongHashSet extends PrimitiveAbstractSet<Long, LongConsumer, long[],
     }
 
     @Override
-    public PrimitiveIterator.@NotNull OfLong iterator() {
+    public PrimitiveIterator.OfLong iterator() {
         return new LongHashIterator();
     }
 

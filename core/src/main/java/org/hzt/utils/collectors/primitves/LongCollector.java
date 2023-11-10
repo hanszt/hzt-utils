@@ -1,6 +1,5 @@
 package org.hzt.utils.collectors.primitves;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -23,16 +22,16 @@ public interface LongCollector<A, R> {
 
     Set<Collector.Characteristics> characteristics();
 
-    static <A, R> LongCollector<A, R> of(@NotNull Supplier<A> supplier,
-                                         @NotNull ObjLongConsumer<A> accumulator,
-                                         @NotNull Function<A, R> finisher) {
+    static <A, R> LongCollector<A, R> of(Supplier<A> supplier,
+                                         ObjLongConsumer<A> accumulator,
+                                         Function<A, R> finisher) {
         return new LongCollectorImpl<>(supplier, accumulator, finisher);
     }
 
-    static <A, R> LongCollector<A, R> of(@NotNull Supplier<A> supplier,
-                                         @NotNull ObjLongConsumer<A> accumulator,
-                                         @NotNull BinaryOperator<A> combiner,
-                                         @NotNull Collector.Characteristics... characteristics) {
+    static <A, R> LongCollector<A, R> of(Supplier<A> supplier,
+                                         ObjLongConsumer<A> accumulator,
+                                         BinaryOperator<A> combiner,
+                                         Collector.Characteristics... characteristics) {
         final Collector.Characteristics identityFinish = Collector.Characteristics.IDENTITY_FINISH;
         Set<Collector.Characteristics> cs = (characteristics.length == 0)
                 ? Collections.singleton(identityFinish)
@@ -40,11 +39,11 @@ public interface LongCollector<A, R> {
         return new LongCollectorImpl<>(supplier, accumulator, combiner, cs);
     }
 
-    static <A, R> LongCollector<A, R> of(@NotNull Supplier<A> supplier,
-                                         @NotNull ObjLongConsumer<A> accumulator,
-                                         @NotNull BinaryOperator<A> combiner,
-                                         @NotNull Function<A, R> finisher,
-                                         @NotNull Collector.Characteristics... characteristics) {
+    static <A, R> LongCollector<A, R> of(Supplier<A> supplier,
+                                         ObjLongConsumer<A> accumulator,
+                                         BinaryOperator<A> combiner,
+                                         Function<A, R> finisher,
+                                         Collector.Characteristics... characteristics) {
         Set<Collector.Characteristics> cs = Collections.emptySet();
         if (characteristics.length > 0) {
             cs = EnumSet.noneOf(Collector.Characteristics.class);

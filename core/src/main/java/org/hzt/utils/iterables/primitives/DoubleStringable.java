@@ -1,6 +1,5 @@
 package org.hzt.utils.iterables.primitives;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.DoubleFunction;
@@ -20,12 +19,12 @@ public interface DoubleStringable extends PrimitiveIterable.OfDouble {
         }
         return sb.toString().trim();
     }
-    
-    default <R> String joinToStringBy(@NotNull DoubleFunction<? extends R> selector) {
+
+    default <R> String joinToStringBy(DoubleFunction<? extends R> selector) {
         return joinToStringBy(selector, ", ");
     }
 
-    default <R> String joinToStringBy(@NotNull DoubleFunction<? extends R> selector, CharSequence delimiter) {
+    default <R> String joinToStringBy(DoubleFunction<? extends R> selector, CharSequence delimiter) {
         final StringBuilder sb = new StringBuilder();
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {

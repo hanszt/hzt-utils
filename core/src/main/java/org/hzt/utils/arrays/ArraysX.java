@@ -7,7 +7,6 @@ import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.sequences.primitives.LongSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -66,7 +65,7 @@ public final class ArraysX {
     }
 
     @SafeVarargs
-    public static <T> boolean[] toBooleanArray(@NotNull Predicate<? super T> predicate, T @NotNull ... array) {
+    public static <T> boolean[] toBooleanArray(Predicate<? super T> predicate, T... array) {
         boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
@@ -74,7 +73,7 @@ public final class ArraysX {
         return result;
     }
 
-    public static boolean[] toBooleanArray(@NotNull IntPredicate predicate, int @NotNull ... array) {
+    public static boolean[] toBooleanArray(IntPredicate predicate, int... array) {
         boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
@@ -82,7 +81,7 @@ public final class ArraysX {
         return result;
     }
 
-    public static boolean[] toBooleanArray(@NotNull LongPredicate predicate, long @NotNull ... array) {
+    public static boolean[] toBooleanArray(LongPredicate predicate, long... array) {
         boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
@@ -90,7 +89,7 @@ public final class ArraysX {
         return result;
     }
 
-    public static boolean[] toBooleanArray(@NotNull DoublePredicate predicate, double @NotNull ... array) {
+    public static boolean[] toBooleanArray(DoublePredicate predicate, double... array) {
         boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = predicate.test(array[i]);
@@ -146,64 +145,64 @@ public final class ArraysX {
         array[index2] = temp;
     }
 
-    public static void sort(@NotNull IntComparator comparator, int @NotNull ... array) {
+    public static void sort(IntComparator comparator, int... array) {
         sort(0, array.length, comparator, array);
     }
 
-    public static void sort(int fromIndex, int toIndex, @NotNull IntComparator comparator, int @NotNull ... array) {
+    public static void sort(int fromIndex, int toIndex, IntComparator comparator, int... array) {
         checkBounds(array.length, fromIndex, toIndex);
         IntTimSort.sort(array, fromIndex, toIndex, comparator);
     }
 
-    public static void sort(@NotNull LongComparator comparator, long @NotNull ... array) {
+    public static void sort(LongComparator comparator, long... array) {
         sort(0, array.length, comparator, array);
     }
 
-    public static void sort(int fromIndex, int toIndex, @NotNull LongComparator comparator, long @NotNull ... array) {
+    public static void sort(int fromIndex, int toIndex, LongComparator comparator, long... array) {
         checkBounds(array.length, fromIndex, toIndex);
         LongTimSort.sort(array, fromIndex, toIndex, comparator);
     }
 
-    public static void sort(@NotNull DoubleComparator comparator, double @NotNull ... array) {
+    public static void sort(DoubleComparator comparator, double... array) {
         sort(0, array.length, comparator, array);
     }
 
-    public static void sort(int fromIndex, int toIndex, @NotNull DoubleComparator comparator, double @NotNull ... array) {
+    public static void sort(int fromIndex, int toIndex, DoubleComparator comparator, double... array) {
         checkBounds(array.length, fromIndex, toIndex);
         DoubleTimSort.sort(array, fromIndex, toIndex, comparator);
     }
 
     @SafeVarargs
-    public static <T extends Comparable<? super T>> boolean isSorted(T @NotNull ... array) {
+    public static <T extends Comparable<? super T>> boolean isSorted(T... array) {
         return Sequence.of(array).zipWithNext().map(Comparable::compareTo).all((comparison -> comparison <= 0));
     }
 
     @SafeVarargs
-    public static <T> boolean isSorted(@NotNull Comparator<T> comparator, T @NotNull ... array) {
+    public static <T> boolean isSorted(Comparator<T> comparator, T... array) {
         return Sequence.of(array).zipWithNext().map(comparator::compare).all((comparison -> comparison <= 0));
     }
 
-    public static boolean isSorted(int @NotNull ... array) {
+    public static boolean isSorted(int... array) {
         return IntSequence.of(array).zipWithNext(Integer::compare).all(comparison -> comparison <= 0);
     }
 
-    public static boolean isSorted(@NotNull IntComparator intComparator, int @NotNull ... array) {
+    public static boolean isSorted(IntComparator intComparator, int... array) {
         return IntSequence.of(array).zipWithNext(intComparator::compare).all(comparison -> comparison <= 0);
     }
 
-    public static boolean isSorted(long @NotNull ... array) {
+    public static boolean isSorted(long... array) {
         return LongSequence.of(array).zipWithNext(Long::compare).all(comparison -> comparison <= 0);
     }
 
-    public static boolean isSorted(@NotNull LongComparator longComparator, long @NotNull ... array) {
+    public static boolean isSorted(LongComparator longComparator, long... array) {
         return LongSequence.of(array).zipWithNext(longComparator::compare).all(comparison -> comparison <= 0);
     }
 
-    public static boolean isSorted(double @NotNull ... array) {
+    public static boolean isSorted(double... array) {
         return DoubleSequence.of(array).zipWithNext(Double::compare).all(comparison -> comparison <= 0);
     }
 
-    public static boolean isSorted(@NotNull DoubleComparator doubleComparator, double @NotNull ... array) {
+    public static boolean isSorted(DoubleComparator doubleComparator, double... array) {
         return DoubleSequence.of(array).zipWithNext(doubleComparator::compare).all(comparison -> comparison <= 0);
     }
 

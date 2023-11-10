@@ -3,7 +3,6 @@ package org.hzt.utils.iterables;
 import org.hzt.utils.function.IndexedConsumer;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.tuples.IndexedValue;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.PrimitiveIterator;
@@ -15,7 +14,7 @@ import java.util.function.IntConsumer;
 @FunctionalInterface
 public interface IndexedIterable<T> extends Iterable<T> {
 
-    default @NotNull Iterator<IndexedValue<T>> indexedIterator() {
+    default Iterator<IndexedValue<T>> indexedIterator() {
         final Iterator<T> iterator = iterator();
         return new Iterator<IndexedValue<T>>() {
 
@@ -35,7 +34,7 @@ public interface IndexedIterable<T> extends Iterable<T> {
         };
     }
 
-    default @NotNull PrimitiveIterator.OfInt indexIterator() {
+    default PrimitiveIterator.OfInt indexIterator() {
         return Iterators.indexIterator(iterator());
     }
 
@@ -47,18 +46,18 @@ public interface IndexedIterable<T> extends Iterable<T> {
         return Spliterators.spliteratorUnknownSize(indexIterator(), Spliterator.ORDERED);
     }
 
-    default void forEachIndex(@NotNull IntConsumer action) {
+    default void forEachIndex(IntConsumer action) {
         final PrimitiveIterator.OfInt indexIterator = indexIterator();
         while(indexIterator.hasNext()) {
             action.accept(indexIterator.nextInt());
         }
     }
 
-    default void forEachIndexed(@NotNull IndexedConsumer<T> action) {
+    default void forEachIndexed(IndexedConsumer<T> action) {
         forEachIndexedValue(indexedValue -> action.accept(indexedValue.index(), indexedValue.value()));
     }
 
-    default void forEachIndexedValue(@NotNull Consumer<IndexedValue<T>> action) {
+    default void forEachIndexedValue(Consumer<IndexedValue<T>> action) {
         Iterator<IndexedValue<T>> iterator = indexedIterator();
         while (iterator.hasNext()) {
             final IndexedValue<T> next = iterator.next();

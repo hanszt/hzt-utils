@@ -1,6 +1,5 @@
 package org.hzt.utils.streams;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Spliterator;
 import java.util.stream.LongStream;
@@ -14,7 +13,6 @@ final class LongStreamXImpl implements LongStreamX {
     }
 
 
-    @NotNull
     @Override
     public Spliterator.OfLong spliterator() {
         return stream.spliterator();

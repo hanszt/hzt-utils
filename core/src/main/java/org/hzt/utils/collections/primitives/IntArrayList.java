@@ -7,7 +7,6 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.sequences.primitives.IntSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -26,15 +25,15 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
         super(0, new int[initCapacity]);
     }
 
-    IntArrayList(@NotNull IntList intList) {
+    IntArrayList(IntList intList) {
         super(intList.size(), intList.toArray());
     }
 
-    IntArrayList(int @NotNull ... array) {
+    IntArrayList(int... array) {
         super(array.length, Arrays.copyOf(array, array.length));
     }
 
-    IntArrayList(@NotNull Iterable<Integer> iterable) {
+    IntArrayList(Iterable<Integer> iterable) {
         this();
         if (iterable instanceof PrimitiveIterable.OfInt) {
             final PrimitiveIterator.OfInt iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
@@ -180,7 +179,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     @Override
-    public PrimitiveIterator.@NotNull OfInt iterator() {
+    public PrimitiveIterator.OfInt iterator() {
         return listIterator();
     }
 

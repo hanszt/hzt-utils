@@ -4,7 +4,6 @@ import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -22,7 +21,7 @@ final class IntImmutableList extends
         elementData = new int[0];
     }
 
-    IntImmutableList(int @NotNull... array) {
+    IntImmutableList(int... array) {
         super(array.length);
         elementData = ArraysX.copyOf(array);
     }
@@ -102,7 +101,7 @@ final class IntImmutableList extends
     @Override
     public int hashCode() {
         final int result = Objects.hash(elementData.length);
-        return  31 * result + Arrays.hashCode(elementData);
+        return 31 * result + Arrays.hashCode(elementData);
     }
 
     @Override
@@ -111,7 +110,7 @@ final class IntImmutableList extends
     }
 
     @Override
-    public @NotNull PrimitiveIterator.OfInt iterator() {
+    public PrimitiveIterator.OfInt iterator() {
         return listIterator();
     }
 
@@ -132,13 +131,13 @@ final class IntImmutableList extends
     }
 
     @Override
-    public @NotNull PrimitiveListIterator.OfInt listIterator() {
+    public PrimitiveListIterator.OfInt listIterator() {
         return listIterator(0);
     }
 
     @Override
     @SuppressWarnings("squid:S1188")
-    public @NotNull PrimitiveListIterator.OfInt listIterator(int startIndex) {
+    public PrimitiveListIterator.OfInt listIterator(int startIndex) {
         return new PrimitiveListIterator.OfInt() {
             private int index = startIndex;
 

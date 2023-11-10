@@ -24,7 +24,6 @@ import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
 import org.hzt.utils.test.model.PaintingAuction;
 import org.hzt.utils.tuples.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -909,7 +908,6 @@ class IterableXTest {
         assertIterableEquals(expected, actual);
     }
 
-    @NotNull
     private static IntStream chars(String s) {
         return s.chars();
     }

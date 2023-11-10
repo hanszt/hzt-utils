@@ -2,7 +2,6 @@ package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.iterables.Indexable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
@@ -20,19 +19,19 @@ public interface PrimitiveCollection<T, C, A> extends Indexable<T> {
 
     boolean isNotEmpty();
 
-    boolean containsAll(@NotNull Iterable<T> iterable);
+    boolean containsAll(Iterable<T> iterable);
 
-    boolean containsAll(@NotNull A array);
+    boolean containsAll(A array);
 
     PrimitiveCollection<T, C, A> plus(Iterable<T> iterable);
 
-    PrimitiveCollection<T, C, A> plus(@NotNull A array);
+    PrimitiveCollection<T, C, A> plus(A array);
 
     PrimitiveCollection<T, C, A> take(long n);
 
     PrimitiveCollection<T, C, A> skip(long n);
 
-    @NotNull PrimitiveIterator<T, C> iterator();
+    PrimitiveIterator<T, C> iterator();
 
     @Override
     Spliterator<T> spliterator();

@@ -1,7 +1,6 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.iterables.IterableXHelper;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,21 +75,18 @@ final class ArrayListX<E> implements MutableListX<E> {
         return list.contains(value);
     }
 
-    @NotNull
     @Override
     public Iterator<E> iterator() {
         return list.iterator();
     }
 
-    @NotNull
     @Override
-    public Object @NotNull [] toArray() {
+    public Object[] toArray() {
         return list.toArray();
     }
 
-    @NotNull
     @Override
-    public <T1> T1 @NotNull [] toArray(@NotNull T1 @NotNull [] a) {
+    public <T1> T1[] toArray(T1[] a) {
         return list.toArray(a);
     }
 
@@ -106,27 +102,27 @@ final class ArrayListX<E> implements MutableListX<E> {
     }
 
     @Override
-    public boolean containsAll(@NotNull Collection<?> c) {
+    public boolean containsAll(Collection<?> c) {
         return new HashSet<>(list).containsAll(c);
     }
 
     @Override
-    public boolean addAll(@NotNull Collection<? extends E> c) {
+    public boolean addAll(Collection<? extends E> c) {
         return list.addAll(c);
     }
 
     @Override
-    public boolean addAll(int index, @NotNull Collection<? extends E> c) {
+    public boolean addAll(int index, Collection<? extends E> c) {
         return list.addAll(index, c);
     }
 
     @Override
-    public boolean removeAll(@NotNull Collection<?> c) {
+    public boolean removeAll(Collection<?> c) {
         return list.removeAll(c);
     }
 
     @Override
-    public boolean retainAll(@NotNull Collection<?> c) {
+    public boolean retainAll(Collection<?> c) {
         return list.retainAll(c);
     }
 
@@ -165,31 +161,26 @@ final class ArrayListX<E> implements MutableListX<E> {
         return list.lastIndexOf(o);
     }
 
-    @NotNull
     @Override
     public ListIterator<E> listIterator() {
         return list.listIterator();
     }
 
-    @NotNull
     @Override
     public ListIterator<E> listIterator(int index) {
         return list.listIterator(index);
     }
 
-    @NotNull
     @Override
     public MutableListX<E> headTo(int toIndex) {
         return subList(0, toIndex);
     }
 
-    @NotNull
     @Override
     public MutableListX<E> tailFrom(int fromIndex) {
         return subList(fromIndex, size());
     }
 
-    @NotNull
     @Override
     public MutableListX<E> subList(int fromIndex, int toIndex) {
         return MutableListX.of(list.subList(fromIndex, toIndex));

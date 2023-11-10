@@ -2,7 +2,6 @@ package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.function.primitives.IntBiFunction;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,9 +24,9 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
     }
 
     default <R> R reduceToTwo(
-            int initial1, @NotNull IntBinaryOperator operator1,
-            int initial2, @NotNull IntBinaryOperator operator2,
-            @NotNull IntBiFunction<R> finisher) {
+            int initial1, IntBinaryOperator operator1,
+            int initial2, IntBinaryOperator operator2,
+            IntBiFunction<R> finisher) {
         PrimitiveIterator.OfInt iterator = iterator();
         int accumulator1 = initial1;
         int accumulator2 = initial2;
@@ -39,10 +38,10 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return finisher.apply(accumulator1, accumulator2);
     }
 
-    default <R> @NotNull Optional<R> reduceToTwo(
-            @NotNull IntBinaryOperator operator1,
-            @NotNull IntBinaryOperator operator2,
-            @NotNull IntBiFunction<R> finisher) {
+    default <R> Optional<R> reduceToTwo(
+            IntBinaryOperator operator1,
+            IntBinaryOperator operator2,
+            IntBiFunction<R> finisher) {
         PrimitiveIterator.OfInt iterator = iterator();
         if (iterator.hasNext()) {
             final int first = iterator.nextInt();
@@ -58,7 +57,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return Optional.empty();
     }
 
-    default @NotNull OptionalInt reduce(@NotNull IntBinaryOperator operator) {
+    default OptionalInt reduce(IntBinaryOperator operator) {
         PrimitiveIterator.OfInt iterator = iterator();
         if (iterator.hasNext()) {
             int accumulator = iterator.nextInt();
@@ -70,9 +69,9 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return OptionalInt.empty();
     }
 
-    default <R> @NotNull R reduce(int initial,
-                                  @NotNull IntFunction<R> mapper,
-                                  @NotNull IntBinaryOperator operation) {
+    default <R> R reduce(int initial,
+                         IntFunction<R> mapper,
+                         IntBinaryOperator operation) {
         return mapper.apply(reduce(initial, operation));
     }
 
@@ -80,7 +79,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return findFirst().orElseThrow(NoSuchElementException::new);
     }
 
-    default int first(@NotNull IntPredicate predicate) {
+    default int first(IntPredicate predicate) {
         PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {
             int next = iterator.nextInt();
@@ -91,16 +90,16 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         throw new NoSuchElementException();
     }
 
-    default int firstNot(@NotNull IntPredicate predicate) {
+    default int firstNot(IntPredicate predicate) {
         return first(predicate.negate());
     }
 
-    default @NotNull OptionalInt findFirst() {
+    default OptionalInt findFirst() {
         final PrimitiveIterator.OfInt iterator = iterator();
         return iterator.hasNext() ? OptionalInt.of(iterator.nextInt()) : OptionalInt.empty();
     }
 
-    default @NotNull OptionalInt findFirst(@NotNull IntPredicate predicate) {
+    default OptionalInt findFirst(IntPredicate predicate) {
         PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {
             int next = iterator.nextInt();
@@ -115,15 +114,15 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return findLast().orElseThrow(NoSuchElementException::new);
     }
 
-    default int last(@NotNull IntPredicate predicate) {
+    default int last(IntPredicate predicate) {
         return findLast(predicate).orElseThrow(NoSuchElementException::new);
     }
 
-    default @NotNull OptionalInt findLast() {
+    default OptionalInt findLast() {
         return findLast(It::noIntFilter);
     }
 
-    default @NotNull OptionalInt findLast(@NotNull IntPredicate predicate) {
+    default OptionalInt findLast(IntPredicate predicate) {
         PrimitiveIterator.OfInt iterator = iterator();
         int result = iterator.nextInt();
         if (!predicate.test(result) && !iterator.hasNext()) {
@@ -151,7 +150,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return single;
     }
 
-    default boolean any(@NotNull IntPredicate predicate) {
+    default boolean any(IntPredicate predicate) {
         PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextInt())) {
@@ -161,7 +160,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return false;
     }
 
-    default boolean all(@NotNull IntPredicate predicate) {
+    default boolean all(IntPredicate predicate) {
         PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
             if (!predicate.test(iterator.nextInt())) {
@@ -171,7 +170,7 @@ public interface IntReducable extends PrimitiveIterable.OfInt, PrimitiveReducabl
         return true;
     }
 
-    default boolean none(@NotNull IntPredicate predicate) {
+    default boolean none(IntPredicate predicate) {
         PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextInt())) {

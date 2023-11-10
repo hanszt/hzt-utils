@@ -4,7 +4,6 @@ import org.hzt.utils.It;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.statistics.IntStatistics;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -40,15 +39,15 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
         return of(IntStream.iterate(initial, operator));
     }
 
-    static IntStreamX of(int @NotNull ... values) {
+    static IntStreamX of(int... values) {
         return new IntStreamXImpl(stream(Spliterators.spliterator(values, 0), false));
     }
 
-    static IntStreamX of(@NotNull PrimitiveIterable.OfInt iterable) {
+    static IntStreamX of(PrimitiveIterable.OfInt iterable) {
         return new IntStreamXImpl(stream(iterable.spliterator(), false));
     }
 
-    static IntStreamX parallel(@NotNull PrimitiveIterable.OfInt iterable) {
+    static IntStreamX parallel(PrimitiveIterable.OfInt iterable) {
         return new IntStreamXImpl(stream(iterable.spliterator(), true));
     }
 
@@ -56,7 +55,6 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
         return new IntStreamXImpl(stream);
     }
 
-    @NotNull
     @Override
     Spliterator.OfInt spliterator();
 
@@ -132,7 +130,7 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
     }
 
     @Override
-    default int @NotNull [] toArray() {
+    default int[] toArray() {
         throw new UnsupportedOperationException();
     }
 
@@ -141,7 +139,6 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
         return stream(this).reduce(identity, accumulator);
     }
 
-    @NotNull
     @Override
     default OptionalInt reduce(IntBinaryOperator accumulator) {
         return stream(this).reduce(accumulator);
@@ -154,11 +151,9 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
         return stream(this).collect(supplier, accumulator, combiner);
     }
 
-    @NotNull
     default OptionalInt max() {
         return stream(this).max();
     }
-
 
     @Override
     default long count() {
@@ -215,7 +210,6 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
         return stream(this).noneMatch(predicate);
     }
 
-    @NotNull
     @Override
     default OptionalInt findFirst() {
         return stream(this).findFirst();
@@ -226,7 +220,6 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
         return stream(this).findAny();
     }
 
-    @NotNull
     @Override
     default PrimitiveIterator.OfInt iterator() {
         return Spliterators.iterator(spliterator());
@@ -237,25 +230,21 @@ public interface IntStreamX extends IntStream, Spliterable.OfInt {
         throw new UnsupportedOperationException("isParallel() not supported in IntStreamX interface");
     }
 
-    @NotNull
     @Override
     default IntStreamX sequential() {
         return IntStreamX.of(stream(spliterator(), false));
     }
 
-    @NotNull
     @Override
     default IntStreamX parallel() {
         return IntStreamX.of(stream(spliterator(), true));
     }
 
-    @NotNull
     @Override
     default IntStreamX unordered() {
         return IntStreamX.of(stream(this).unordered());
     }
 
-    @NotNull
     @Override
     default IntStreamX onClose(Runnable closeHandler) {
         return this;

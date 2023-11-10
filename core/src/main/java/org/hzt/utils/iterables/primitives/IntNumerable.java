@@ -1,9 +1,8 @@
 package org.hzt.utils.iterables.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.statistics.IntStatistics;
-import org.hzt.utils.It;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.IntPredicate;
@@ -16,7 +15,7 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return count(It::noIntFilter);
     }
 
-    default long count(@NotNull IntPredicate predicate) {
+    default long count(IntPredicate predicate) {
         long count = 0;
         PrimitiveIterator.OfInt iterator = this.iterator();
         while (iterator.hasNext()) {
@@ -72,7 +71,7 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return IntSequence.of(this).filter(predicate).stdDev();
     }
 
-    default @NotNull IntStatistics stats() {
+    default IntStatistics stats() {
         IntStatistics intStatistics = new IntStatistics();
         PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
@@ -81,7 +80,7 @@ public interface IntNumerable extends PrimitiveIterable.OfInt, PrimitiveNumerabl
         return intStatistics;
     }
 
-    default @NotNull IntStatistics stats(@NotNull IntPredicate predicate) {
+    default IntStatistics stats(IntPredicate predicate) {
         return IntSequence.of(this).filter(predicate).stats();
     }
 

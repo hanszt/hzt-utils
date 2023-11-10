@@ -4,7 +4,6 @@ import org.hzt.utils.It;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -17,7 +16,7 @@ import java.util.function.Predicate;
 @FunctionalInterface
 public interface Reducable<T> extends Iterable<T> {
 
-    default <R> @NotNull R fold(@NotNull R initial, @NotNull BiFunction<? super R, ? super T, ? extends R> operation) {
+    default <R> R fold(R initial, BiFunction<? super R, ? super T, ? extends R> operation) {
         R accumulator = initial;
         for (T t : this) {
             if (t != null) {
@@ -28,15 +27,15 @@ public interface Reducable<T> extends Iterable<T> {
     }
 
     default <R1, R2> Pair<R1, R2> foldTwo(
-            @NotNull R1 initial1, @NotNull BiFunction<? super R1, ? super T, ? extends R1> operator1,
-            @NotNull R2 initial2, @NotNull BiFunction<? super R2, ? super T, ? extends R2> operator2) {
+            R1 initial1, BiFunction<? super R1, ? super T, ? extends R1> operator1,
+            R2 initial2, BiFunction<? super R2, ? super T, ? extends R2> operator2) {
         return foldTwo(initial1, operator1, initial2, operator2, Pair::of);
     }
 
     default <R1, R2, R> R foldTwo(
-            @NotNull R1 initial1, @NotNull BiFunction<? super R1, ? super T, ? extends R1> operator1,
-            @NotNull R2 initial2, @NotNull BiFunction<? super R2, ? super T, ? extends R2> operator2,
-            @NotNull BiFunction<? super R1, ? super R2, ? extends R> finisher) {
+            R1 initial1, BiFunction<? super R1, ? super T, ? extends R1> operator1,
+            R2 initial2, BiFunction<? super R2, ? super T, ? extends R2> operator2,
+            BiFunction<? super R1, ? super R2, ? extends R> finisher) {
         R1 accumulator1 = initial1;
         R2 accumulator2 = initial2;
         for (T next : this) {
@@ -47,18 +46,18 @@ public interface Reducable<T> extends Iterable<T> {
     }
 
     default <R1, R2, R3> Triple<R1, R2, R3> foldToThree(
-            @NotNull R1 initial1, @NotNull BiFunction<? super R1, ? super T, ? extends R1> operator1,
-            @NotNull R2 initial2, @NotNull BiFunction<? super R2, ? super T, ? extends R2> operator2,
-            @NotNull R3 initial3, @NotNull BiFunction<? super R3, ? super T, ? extends R3> operator3
+            R1 initial1, BiFunction<? super R1, ? super T, ? extends R1> operator1,
+            R2 initial2, BiFunction<? super R2, ? super T, ? extends R2> operator2,
+            R3 initial3, BiFunction<? super R3, ? super T, ? extends R3> operator3
     ) {
         return foldToThree(initial1, operator1, initial2, operator2, initial3, operator3, Triple::of);
     }
 
     default <R1, R2, R3, R> R foldToThree(
-            @NotNull R1 initial1, @NotNull BiFunction<? super R1, ? super T, ? extends R1> operator1,
-            @NotNull R2 initial2, @NotNull BiFunction<? super R2, ? super T, ? extends R2> operator2,
-            @NotNull R3 initial3, @NotNull BiFunction<? super R3, ? super T, ? extends R3> operator3,
-            @NotNull TriFunction<? super R1, ? super R2, ? super R3, ? extends R> finisher
+            R1 initial1, BiFunction<? super R1, ? super T, ? extends R1> operator1,
+            R2 initial2, BiFunction<? super R2, ? super T, ? extends R2> operator2,
+            R3 initial3, BiFunction<? super R3, ? super T, ? extends R3> operator3,
+            TriFunction<? super R1, ? super R2, ? super R3, ? extends R> finisher
     ) {
         R1 accumulator1 = initial1;
         R2 accumulator2 = initial2;
@@ -71,30 +70,30 @@ public interface Reducable<T> extends Iterable<T> {
         return finisher.apply(accumulator1, accumulator2, accumulator3);
     }
 
-    default @NotNull Optional<T> reduce(@NotNull BinaryOperator<T> operation) {
+    default Optional<T> reduce(BinaryOperator<T> operation) {
         return IterableReductions.reduce(iterator(), operation);
     }
 
-    default @NotNull T reduce(@NotNull T initial, @NotNull BinaryOperator<T> operation) {
+    default T reduce(T initial, BinaryOperator<T> operation) {
         return IterableReductions.reduce(this, initial, operation);
     }
 
-    default <R> @NotNull R reduce(@NotNull T initial,
-                                  @NotNull Function<? super T, ? extends R> mapper,
-                                  @NotNull BinaryOperator<T> operation) {
+    default <R> R reduce(T initial,
+                         Function<? super T, ? extends R> mapper,
+                         BinaryOperator<T> operation) {
         return mapper.apply(reduce(initial, operation));
     }
 
     default Optional<Pair<T, T>> reduceToTwo(
-            @NotNull BinaryOperator<T> operator1,
-            @NotNull BinaryOperator<T> operator2) {
+            BinaryOperator<T> operator1,
+            BinaryOperator<T> operator2) {
         return reduceToTwo(operator1, operator2, Pair::of);
     }
 
     default <R> Optional<R> reduceToTwo(
-            @NotNull BinaryOperator<T> operator1,
-            @NotNull BinaryOperator<T> operator2,
-            @NotNull BiFunction<? super T, ? super T, ? extends R> finisher) {
+            BinaryOperator<T> operator1,
+            BinaryOperator<T> operator2,
+            BiFunction<? super T, ? super T, ? extends R> finisher) {
         Iterator<T> iterator = iterator();
         if (iterator.hasNext()) {
             final T first = iterator.next();
@@ -110,7 +109,7 @@ public interface Reducable<T> extends Iterable<T> {
         return Optional.empty();
     }
 
-    default @NotNull T single() {
+    default T single() {
         final Iterator<T> iterator = iterator();
         if (!iterator.hasNext()) {
             throw new NoSuchElementException("Sequence is empty");
@@ -123,7 +122,7 @@ public interface Reducable<T> extends Iterable<T> {
         return single;
     }
 
-    default @NotNull T single(@NotNull Predicate<T> predicate) {
+    default T single(Predicate<T> predicate) {
         T single = null;
         for (T item : this) {
             if (predicate.test(item)) {
@@ -139,11 +138,11 @@ public interface Reducable<T> extends Iterable<T> {
         return single;
     }
 
-    default @NotNull T first() {
+    default T first() {
         return firstOf(It::self);
     }
 
-    default @NotNull T first(@NotNull Predicate<T> predicate) {
+    default T first(Predicate<T> predicate) {
         for (T next : this) {
             if (next != null && predicate.test(next)) {
                 return next;
@@ -152,11 +151,11 @@ public interface Reducable<T> extends Iterable<T> {
         throw IterableXHelper.noValuePresentException();
     }
 
-    default @NotNull T firstNot(@NotNull Predicate<T> predicate) {
+    default T firstNot(Predicate<T> predicate) {
         return first(predicate.negate());
     }
 
-    default <R> @NotNull R firstOf(@NotNull Function<? super T, ? extends R> mapper) {
+    default <R> R firstOf(Function<? super T, ? extends R> mapper) {
         for (T next : this) {
             if (next != null) {
                 final R result = mapper.apply(next);
@@ -168,11 +167,11 @@ public interface Reducable<T> extends Iterable<T> {
         throw IterableXHelper.noValuePresentException();
     }
 
-    default @NotNull Optional<T> findFirst() {
+    default Optional<T> findFirst() {
         return findFirstOf(It::self);
     }
 
-    default @NotNull Optional<T> findFirst(@NotNull Predicate<T> predicate) {
+    default Optional<T> findFirst(Predicate<T> predicate) {
         for (T next : this) {
             if (next != null && predicate.test(next)) {
                 return Optional.of(next);
@@ -181,7 +180,7 @@ public interface Reducable<T> extends Iterable<T> {
         return Optional.empty();
     }
 
-    default <R> @NotNull Optional<R> findFirstOf(@NotNull Function<? super T, ? extends R> mapper) {
+    default <R> Optional<R> findFirstOf(Function<? super T, ? extends R> mapper) {
         for (T next : this) {
             if (next != null) {
                 return Optional.of(next).map(mapper);
@@ -190,15 +189,15 @@ public interface Reducable<T> extends Iterable<T> {
         return Optional.empty();
     }
 
-    default @NotNull T last() {
+    default T last() {
         return lastOf(It::self);
     }
 
-    default @NotNull T last(Predicate<T> predicate) {
+    default T last(Predicate<T> predicate) {
         return findLast(predicate).orElseThrow(NoSuchElementException::new);
     }
 
-    default <R> @NotNull R lastOf(@NotNull Function<? super T, ? extends R> mapper) {
+    default <R> R lastOf(Function<? super T, ? extends R> mapper) {
         return findLastOf(mapper).orElseThrow(NoSuchElementException::new);
     }
 
@@ -206,15 +205,15 @@ public interface Reducable<T> extends Iterable<T> {
         return findLastOf(It::self);
     }
 
-    default @NotNull Optional<T> findLast(@NotNull Predicate<T> predicate) {
+    default Optional<T> findLast(Predicate<T> predicate) {
         return IterableReductions.findLast(this, predicate);
     }
 
-    default <R> @NotNull Optional<R> findLastOf(@NotNull Function<? super T, ? extends R> mapper) {
+    default <R> Optional<R> findLastOf(Function<? super T, ? extends R> mapper) {
         return IterableReductions.findLastOf(this).map(mapper);
     }
 
-    default boolean any(@NotNull Predicate<T> predicate) {
+    default boolean any(Predicate<T> predicate) {
         return IterableReductions.any(this, predicate);
     }
 
@@ -222,11 +221,11 @@ public interface Reducable<T> extends Iterable<T> {
         return iterator().hasNext();
     }
 
-    default boolean all(@NotNull Predicate<T> predicate) {
+    default boolean all(Predicate<T> predicate) {
         return IterableReductions.all(this, predicate);
     }
 
-    default boolean none(@NotNull Predicate<T> predicate) {
+    default boolean none(Predicate<T> predicate) {
         return IterableReductions.none(this, predicate);
     }
 

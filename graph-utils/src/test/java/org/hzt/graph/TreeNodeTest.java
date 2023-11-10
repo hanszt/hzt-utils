@@ -1,7 +1,6 @@
 package org.hzt.graph;
 
 import org.hzt.utils.It;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TreeNodeTest {
 
@@ -163,7 +165,6 @@ class TreeNodeTest {
         Assertions.assertArrayEquals(expected, node.depthFirstSequence().toArrayOf(n -> n.name, String[]::new));
     }
 
-    @NotNull
     private static TreeNodeTest.Person buildTree() {
         final Person c1 = new Person("c1").addChildren(Arrays.asList(
                 new Person("c4").addChild(new Person("c10")),
@@ -277,7 +278,7 @@ class TreeNodeTest {
 
     private static final class FileX extends File implements TreeNode<FileX, FileX> {
 
-        public FileX(@NotNull String pathname) {
+        public FileX(String pathname) {
             super(pathname);
         }
 

@@ -1,7 +1,6 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.PreConditions;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -27,7 +26,6 @@ final class TakeSequence<T> implements SkipTakeSequence<T> {
         return n >= count ? this : new TakeSequence<>(upstream, n);
     }
 
-    @NotNull
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {

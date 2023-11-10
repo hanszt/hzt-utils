@@ -7,7 +7,6 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -30,11 +29,11 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
         super(doubleList.size(), doubleList.toArray());
     }
 
-    DoubleArrayList(double @NotNull... array) {
+    DoubleArrayList(double... array) {
         super(array.length, Arrays.copyOf(array, array.length));
     }
 
-    DoubleArrayList(@NotNull Iterable<Double> iterable) {
+    DoubleArrayList(Iterable<Double> iterable) {
         this();
         if (iterable instanceof PrimitiveIterable.OfDouble) {
             final PrimitiveIterator.OfDouble iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
@@ -180,7 +179,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
-    public @NotNull PrimitiveIterator.OfDouble iterator() {
+    public PrimitiveIterator.OfDouble iterator() {
         return listIterator();
     }
 
@@ -207,13 +206,13 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
-    public @NotNull PrimitiveListIterator.OfDouble listIterator() {
+    public PrimitiveListIterator.OfDouble listIterator() {
         return listIterator(0);
     }
 
     @Override
     @SuppressWarnings("squid:S1188")
-    public @NotNull PrimitiveListIterator.OfDouble listIterator(int startIndex) {
+    public PrimitiveListIterator.OfDouble listIterator(int startIndex) {
         return new PrimitiveListIterator.OfDouble() {
             private int index = startIndex;
 

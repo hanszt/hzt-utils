@@ -1,6 +1,5 @@
 package org.hzt.test.model;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -89,7 +88,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
     }
 
     @Override
-    public int compareTo(@NotNull Museum o) {
+    public int compareTo(Museum o) {
         if (name == null) {
             return -1;
         }
@@ -100,7 +99,7 @@ public final class Museum implements Comparable<Museum>, Iterable<Painting> {
     }
 
     @Override
-    public @NotNull Iterator<Painting> iterator() {
+    public Iterator<Painting> iterator() {
         return paintingList.iterator();
     }
 

@@ -5,7 +5,6 @@ import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.iterators.Iterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,7 +39,6 @@ public interface Grouping<T, K> extends Iterable<T> {
                 return Grouping.this.keyOf(element);
             }
 
-            @NotNull
             @Override
             public Iterator<T> iterator() {
                 return Iterators.filteringIterator(Grouping.this.iterator(), predicate, true);

@@ -1,6 +1,5 @@
 package org.hzt.utils.collections;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,31 +15,31 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
         return new ArrayListX<>(capacity);
     }
 
-    static <E> MutableListX<E> of(@NotNull Iterable<E> iterable) {
+    static <E> MutableListX<E> of(Iterable<E> iterable) {
         return new ArrayListX<>(iterable);
     }
 
-    static <E> MutableListX<E> of(@NotNull Collection<E> collection) {
+    static <E> MutableListX<E> of(Collection<E> collection) {
         return new ArrayListX<>(collection);
     }
 
     @SafeVarargs
-    static <E> MutableListX<E> of(@NotNull E... values) {
+    static <E> MutableListX<E> of(E... values) {
         return new ArrayListX<>(values);
     }
 
-    static <E> MutableListX<E> of(@NotNull E value) {
+    static <E> MutableListX<E> of(E value) {
         return new ArrayListX<>(value);
     }
 
     @Override
-    default MutableListX<E> plus(@NotNull E value) {
+    default MutableListX<E> plus(E value) {
         add(value);
         return this;
     }
 
     @Override
-    default MutableListX<E> plus(@NotNull Iterable<? extends E> iterable) {
+    default MutableListX<E> plus(Iterable<? extends E> iterable) {
        addAll(iterable);
        return this;
     }
@@ -52,7 +51,7 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
     MutableListX<E> subList(int fromIndex, int toIndex);
 
     @Override
-    default boolean containsAll(@NotNull Iterable<E> iterable) {
+    default boolean containsAll(Iterable<E> iterable) {
         return ListX.super.containsAll(iterable);
     }
 
@@ -73,7 +72,7 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
     }
 
     @Override
-    default @NotNull MutableListX<E> get() {
+    default MutableListX<E> get() {
         return this;
     }
 

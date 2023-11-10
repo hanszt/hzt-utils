@@ -8,7 +8,6 @@ import org.hzt.utils.collections.primitives.LongMutableCollection;
 import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.collections.primitives.LongMutableSet;
 import org.hzt.utils.collectors.primitves.LongCollector;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
@@ -19,14 +18,14 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface LongCollectable extends PrimitiveCollectable<LongCollection>, PrimitiveIterable.OfLong {
 
-    default <R> R collect(@NotNull Supplier<R> supplier,
-                          @NotNull ObjLongConsumer<R> accumulator) {
+    default <R> R collect(Supplier<R> supplier,
+                          ObjLongConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
     }
 
-    default <A, R> R collect(@NotNull Supplier<A> supplier,
-                             @NotNull ObjLongConsumer<A> accumulator,
-                             @NotNull Function<? super A, ? extends R> finisher) {
+    default <A, R> R collect(Supplier<A> supplier,
+                             ObjLongConsumer<A> accumulator,
+                             Function<? super A, ? extends R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
         final A result = supplier.get();
         while (iterator.hasNext()) {
@@ -35,14 +34,14 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         return finisher.apply(result);
     }
 
-    default <A, R> R collect(@NotNull LongCollector<A, R> collector) {
+    default <A, R> R collect(LongCollector<A, R> collector) {
         return collect(collector.supplier(), collector.accumulator(), collector.finisher());
     }
 
     default <A1, R1, A2, R2, R> R teeing(
-            @NotNull LongCollector<A1, R1> downStream1,
-            @NotNull LongCollector<A2, R2> downStream2,
-            @NotNull BiFunction<? super R1, ? super R2, ? extends R> combiner) {
+            LongCollector<A1, R1> downStream1,
+            LongCollector<A2, R2> downStream2,
+            BiFunction<? super R1, ? super R2, ? extends R> combiner) {
         final A1 result1 = downStream1.supplier().get();
         final A2 result2 = downStream2.supplier().get();
         final ObjLongConsumer<A1> accumulator1 = downStream1.accumulator();
@@ -60,7 +59,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         return LongList.copyOf(toMutableList());
     }
 
-    default <C extends LongMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {
+    default <C extends LongMutableCollection> C to(Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
@@ -78,7 +77,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         return to(LongMutableSet::empty);
     }
 
-    default <C extends LongMutableCollection> C takeTo(@NotNull Supplier<C> collectionFactory, long n) {
+    default <C extends LongMutableCollection> C takeTo(Supplier<C> collectionFactory, long n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         C collection = collectionFactory.get();
         if (n == 0) {

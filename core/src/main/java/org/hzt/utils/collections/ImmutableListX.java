@@ -2,7 +2,6 @@ package org.hzt.utils.collections;
 
 import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.iterables.IterableXHelper;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +39,7 @@ final class ImmutableListX<T> implements ListX<T> {
     }
 
     @Override
-    public @NotNull ListX<T> get() {
+    public ListX<T> get() {
         return this;
     }
 
@@ -114,7 +113,6 @@ final class ImmutableListX<T> implements ListX<T> {
         return ListX.copyOf(immutableList.subList(fromIndex, toIndex));
     }
 
-    @NotNull
     @Override
     public Iterator<T> iterator() {
         return immutableList.iterator();

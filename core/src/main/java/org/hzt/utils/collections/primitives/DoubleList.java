@@ -1,14 +1,13 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.ArraysX;
+import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
-import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -69,15 +68,13 @@ public interface DoubleList extends DoubleCollection,
     }
 
     @Override
-    @NotNull
     default OptionalDouble findLast() {
         final int lastIndex = lastIndex();
         return lastIndex < 0 ? OptionalDouble.empty() : OptionalDouble.of(get(lastIndex));
     }
 
     @Override
-    @NotNull
-    default OptionalDouble findLast(@NotNull DoublePredicate predicate) {
+    default OptionalDouble findLast(DoublePredicate predicate) {
         PrimitiveListIterator.OfDouble iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
             final double previousDouble = iterator.previousDouble();

@@ -2,7 +2,6 @@ package org.hzt.utils.arrays;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.primitive_comparators.LongComparator;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A Tim sort implementation for sorting long arrays where a LongComparator is used for the comparisons
@@ -14,7 +13,7 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
         super(longArray.length, longArray, new long[getInitTempLength(longArray.length)], longComparator);
     }
 
-    static void sort(long @NotNull [] array, int fromIndex, int toIndex, @NotNull LongComparator comparator) {
+    static void sort(long[] array, int fromIndex, int toIndex, LongComparator comparator) {
         PreConditions.require(fromIndex >= 0 && fromIndex <= toIndex && toIndex <= array.length);
         final int nRemaining = toIndex - fromIndex;
         if (nRemaining >= 2) {

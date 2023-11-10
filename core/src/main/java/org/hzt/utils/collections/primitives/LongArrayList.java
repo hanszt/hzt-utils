@@ -7,7 +7,6 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.sequences.primitives.LongSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -30,11 +29,11 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
         super(longList.size(), longList.toArray());
     }
 
-    LongArrayList(long @NotNull... array) {
+    LongArrayList(long... array) {
         super(array.length, Arrays.copyOf(array, array.length));
     }
 
-    LongArrayList(@NotNull Iterable<Long> iterable) {
+    LongArrayList(Iterable<Long> iterable) {
         this();
         if (iterable instanceof PrimitiveIterable.OfLong) {
             final PrimitiveIterator.OfLong iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
@@ -180,7 +179,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
-    public PrimitiveIterator.@NotNull OfLong iterator() {
+    public PrimitiveIterator.OfLong iterator() {
         return listIterator();
     }
 

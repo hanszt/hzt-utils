@@ -1,6 +1,5 @@
 package org.hzt.utils.collectors.primitves;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -23,16 +22,16 @@ public interface DoubleCollector<A, R> {
     
     Set<Collector.Characteristics> characteristics();
 
-    static <A, R> DoubleCollector<A, R> of(@NotNull Supplier<A> supplier,
-                                           @NotNull ObjDoubleConsumer<A> accumulator,
-                                           @NotNull Function<A, R> finisher) {
+    static <A, R> DoubleCollector<A, R> of(Supplier<A> supplier,
+                                           ObjDoubleConsumer<A> accumulator,
+                                           Function<A, R> finisher) {
         return new DoubleCollectorImpl<>(supplier, accumulator, finisher);
     }
 
-    static<A, R> DoubleCollector<A, R> of(@NotNull Supplier<A> supplier,
-                                          @NotNull ObjDoubleConsumer<A> accumulator,
-                                          @NotNull BinaryOperator<A> combiner,
-                                          @NotNull Collector.Characteristics... characteristics) {
+    static <A, R> DoubleCollector<A, R> of(Supplier<A> supplier,
+                                           ObjDoubleConsumer<A> accumulator,
+                                           BinaryOperator<A> combiner,
+                                           Collector.Characteristics... characteristics) {
         final Collector.Characteristics identityFinish = Collector.Characteristics.IDENTITY_FINISH;
         Set<Collector.Characteristics> cs = (characteristics.length == 0)
                 ? Collections.singleton(identityFinish)
@@ -40,11 +39,11 @@ public interface DoubleCollector<A, R> {
         return new DoubleCollectorImpl<>(supplier, accumulator, combiner, cs);
     }
 
-    static <A, R> DoubleCollector<A, R> of(@NotNull Supplier<A> supplier,
-                                           @NotNull ObjDoubleConsumer<A> accumulator,
-                                           @NotNull BinaryOperator<A> combiner,
-                                           @NotNull Function<A, R> finisher,
-                                           @NotNull Collector.Characteristics... characteristics) {
+    static <A, R> DoubleCollector<A, R> of(Supplier<A> supplier,
+                                           ObjDoubleConsumer<A> accumulator,
+                                           BinaryOperator<A> combiner,
+                                           Function<A, R> finisher,
+                                           Collector.Characteristics... characteristics) {
         Set<Collector.Characteristics> cs = Collections.emptySet();
         if (characteristics.length > 0) {
             cs = EnumSet.noneOf(Collector.Characteristics.class);

@@ -4,7 +4,6 @@ import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.Collectable;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.strings.StringX;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +18,7 @@ public final class FileX extends File {
 
     private static final long serialVersionUID = 123L;
 
-    private FileX(@NotNull String pathname) {
+    private FileX(String pathname) {
         super(pathname);
     }
 

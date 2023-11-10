@@ -7,7 +7,6 @@ import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.tuples.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
@@ -41,9 +40,9 @@ public final class IterableReductions {
     }
 
     public static <T, R, K> MapX<K, MutableListX<R>> groupMapping(
-            @NotNull Iterable<T> iterable,
-            @NotNull Function<? super T, ? extends K> classifier,
-            @NotNull Function<? super T, ? extends R> valueMapper) {
+            Iterable<T> iterable,
+            Function<? super T, ? extends K> classifier,
+            Function<? super T, ? extends R> valueMapper) {
         MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
         for (T t : iterable) {
             groupedMap.computeIfAbsent(classifier.apply(t), key -> MutableListX.empty()).add(valueMapper.apply(t));
@@ -52,9 +51,9 @@ public final class IterableReductions {
     }
 
     public static <T, R> Pair<ListX<R>, ListX<R>> partitionMapping(
-            @NotNull Iterable<T> iterable,
-            @NotNull Predicate<T> predicate,
-            @NotNull Function<? super T, ? extends R> resultMapper) {
+            Iterable<T> iterable,
+            Predicate<T> predicate,
+            Function<? super T, ? extends R> resultMapper) {
         MutableListX<R> matchingList = MutableListX.empty();
         MutableListX<R> nonMatchingList = MutableListX.empty();
         for (T t : iterable) {
@@ -71,9 +70,9 @@ public final class IterableReductions {
     }
 
     public static <T, S, I extends Iterable<S>, R> SetX<R> intersectionOf(
-            @NotNull Iterable<T> iterable,
-            @NotNull Function<? super T, ? extends I> toCollectionMapper,
-            @NotNull Function<? super S, ? extends R> selector) {
+            Iterable<T> iterable,
+            Function<? super T, ? extends I> toCollectionMapper,
+            Function<? super S, ? extends R> selector) {
         MutableSetX<R> common = MutableSetX.empty();
         for (T t : iterable) {
             final I otherIterable = toCollectionMapper.apply(t);
@@ -91,7 +90,7 @@ public final class IterableReductions {
         return common;
     }
 
-    public static <T> boolean any(@NotNull Iterable<T> iterable, @NotNull Predicate<T> predicate) {
+    public static <T> boolean any(Iterable<T> iterable, Predicate<T> predicate) {
         for (T element : iterable) {
             if (predicate.test(element)) {
                 return true;
@@ -100,7 +99,7 @@ public final class IterableReductions {
         return false;
     }
 
-    public static <T> boolean all(@NotNull Iterable<T> iterable, @NotNull Predicate<T> predicate) {
+    public static <T> boolean all(Iterable<T> iterable, Predicate<T> predicate) {
         for (T t : iterable) {
             if (!predicate.test(t)) {
                 return false;
@@ -109,7 +108,7 @@ public final class IterableReductions {
         return true;
     }
 
-    public static <T> boolean none(@NotNull Iterable<T> iterable, @NotNull Predicate<T> predicate) {
+    public static <T> boolean none(Iterable<T> iterable, Predicate<T> predicate) {
         for (T t : iterable) {
             if (predicate.test(t)) {
                 return false;
@@ -134,7 +133,7 @@ public final class IterableReductions {
         }
     }
 
-    public static <T> Optional<T> findLast(Iterable<T> iterable, @NotNull Predicate<T> predicate) {
+    public static <T> Optional<T> findLast(Iterable<T> iterable, Predicate<T> predicate) {
         final Iterator<T> iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             throw IterableXHelper.noValuePresentException();

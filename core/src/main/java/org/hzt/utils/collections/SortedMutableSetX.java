@@ -1,6 +1,5 @@
 package org.hzt.utils.collections;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.NavigableSet;
@@ -10,23 +9,23 @@ import java.util.function.Function;
 public interface SortedMutableSetX<E> extends NavigableSet<E>, MutableSetX<E> {
 
     static <E, R extends Comparable<? super R>> SortedMutableSetX<E> comparingBy(
-            @NotNull Function<? super E, ? extends R> selector) {
+            Function<? super E, ? extends R> selector) {
         return new TreeSetX<>(selector);
     }
 
-    static <E> SortedMutableSetX<E> of(@NotNull NavigableSet<E> set) {
+    static <E> SortedMutableSetX<E> of(NavigableSet<E> set) {
         return new TreeSetX<>(set);
     }
 
     static <E, R extends Comparable<? super R>> SortedMutableSetX<E> of(
-            @NotNull Iterable<E> iterable,
-            @NotNull Function<? super E, ? extends R> selector) {
+            Iterable<E> iterable,
+            Function<? super E, ? extends R> selector) {
         return new TreeSetX<>(iterable, selector);
     }
 
     static <E, R extends Comparable<? super R>> SortedMutableSetX<E> of(
-            @NotNull Collection<E> collection,
-            @NotNull Function<? super E, ? extends R> selector) {
+            Collection<E> collection,
+            Function<? super E, ? extends R> selector) {
         return new TreeSetX<>(collection, selector);
     }
 
@@ -36,10 +35,10 @@ public interface SortedMutableSetX<E> extends NavigableSet<E>, MutableSetX<E> {
     }
 
     @Override
-    @NotNull E first();
+    E first();
 
     @Override
-    @NotNull E last();
+    E last();
 
     default SortedMutableSetX<E> toNavigableSet() {
         return this;

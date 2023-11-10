@@ -3,7 +3,6 @@ package org.hzt.utils.iterators.primitives;
 import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.iterators.AbstractIterator;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.IntUnaryOperator;
@@ -22,11 +21,11 @@ public final class DoubleWindowedIterator extends AbstractIterator<DoubleList> {
     private DoubleMutableList nextWindow = DoubleMutableList.empty();
 
     private DoubleWindowedIterator(
-            @NotNull PrimitiveIterator.OfDouble iterator,
+            PrimitiveIterator.OfDouble iterator,
             int initSize,
-            @NotNull IntUnaryOperator nextSizeSupplier,
+            IntUnaryOperator nextSizeSupplier,
             int initStep,
-            @NotNull IntUnaryOperator nextStepSupplier,
+            IntUnaryOperator nextStepSupplier,
             boolean partialWindows) {
         this.iterator = iterator;
         this.initSize = initSize;
@@ -36,11 +35,11 @@ public final class DoubleWindowedIterator extends AbstractIterator<DoubleList> {
         this.partialWindows = partialWindows;
     }
 
-    public static DoubleWindowedIterator of(@NotNull PrimitiveIterator.OfDouble iterator,
+    public static DoubleWindowedIterator of(PrimitiveIterator.OfDouble iterator,
                                             int initSize,
-                                            @NotNull IntUnaryOperator nextSizeSupplier,
+                                            IntUnaryOperator nextSizeSupplier,
                                             int initStep,
-                                            @NotNull IntUnaryOperator nextStepSupplier,
+                                            IntUnaryOperator nextStepSupplier,
                                             boolean partialWindows) {
         return new DoubleWindowedIterator(iterator, initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
     }

@@ -2,7 +2,6 @@ package org.hzt.utils.iterators.functional_iterator;
 
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.numbers.IntX;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +17,12 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AtomicIteratorTest {
 
@@ -69,7 +73,6 @@ class AtomicIteratorTest {
         assertEquals(bound, atomicInteger.get());
     }
 
-    @NotNull
     private AtomicIterator<String> getBoundedStringIteratorX(int upperBound) {
         return new BoundedIterator<>(upperBound, String::valueOf)::supplyNext;
     }

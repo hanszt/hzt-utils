@@ -1,6 +1,5 @@
 package org.hzt.utils.iterables.primitives;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.LongFunction;
@@ -21,11 +20,11 @@ public interface LongStringable extends PrimitiveIterable.OfLong {
         return sb.toString().trim();
     }
 
-    default <R> String joinToStringBy(@NotNull LongFunction<? extends R> selector) {
+    default <R> String joinToStringBy(LongFunction<? extends R> selector) {
         return joinToStringBy(selector, ", ");
     }
 
-    default <R> String joinToStringBy(@NotNull LongFunction<? extends R> selector, CharSequence delimiter) {
+    default <R> String joinToStringBy(LongFunction<? extends R> selector, CharSequence delimiter) {
         final StringBuilder sb = new StringBuilder();
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {

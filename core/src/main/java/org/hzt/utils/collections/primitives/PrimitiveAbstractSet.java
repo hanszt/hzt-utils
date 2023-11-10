@@ -1,6 +1,5 @@
 package org.hzt.utils.collections.primitives;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
@@ -75,7 +74,7 @@ public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIte
             }
         }
 
-        @NotNull PrimitiveNode nextNode() {
+        PrimitiveNode nextNode() {
             final PrimitiveNode current = next;
             if (current == null) {
                 throw new NoSuchElementException();

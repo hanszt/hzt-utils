@@ -1,10 +1,9 @@
 package org.hzt.utils.numbers;
 
+import org.hzt.utils.Transformable;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.Transformable;
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -58,69 +57,68 @@ public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>
         return BigDecimalX.of(BigDecimal.valueOf(s));
     }
 
-    @NotNull
     @Override
     public BigDecimalX add(BigDecimal augend) {
         return BigDecimalX.of(super.add(augend));
     }
 
     @Override
-    public @NotNull BigDecimalX add(BigDecimal augend, MathContext mc) {
+    public BigDecimalX add(BigDecimal augend, MathContext mc) {
         return of(super.add(augend, mc));
     }
 
     @Override
-    public @NotNull BigDecimalX subtract(BigDecimal subtrahend) {
+    public BigDecimalX subtract(BigDecimal subtrahend) {
         return of(super.subtract(subtrahend));
     }
 
     @Override
-    public @NotNull BigDecimalX subtract(BigDecimal subtrahend, MathContext mc) {
+    public BigDecimalX subtract(BigDecimal subtrahend, MathContext mc) {
         return of(super.subtract(subtrahend, mc));
     }
 
     @Override
-    public @NotNull BigDecimalX multiply(BigDecimal multiplicand) {
+    public BigDecimalX multiply(BigDecimal multiplicand) {
         return of(super.multiply(multiplicand));
     }
 
     @Override
-    public @NotNull BigDecimalX multiply(BigDecimal multiplicand, MathContext mc) {
+    public BigDecimalX multiply(BigDecimal multiplicand, MathContext mc) {
         return of(super.multiply(multiplicand, mc));
     }
 
     @Override
-    public @NotNull BigDecimalX divide(BigDecimal divisor, int scale, RoundingMode roundingMode) {
+    public BigDecimalX divide(BigDecimal divisor, int scale, RoundingMode roundingMode) {
         return of(super.divide(divisor, scale, roundingMode));
     }
 
     @Override
-    public @NotNull BigDecimalX divide(BigDecimal divisor, RoundingMode roundingMode) {
+    public BigDecimalX divide(BigDecimal divisor, RoundingMode roundingMode) {
         return of(super.divide(divisor, roundingMode));
     }
 
     @Override
-    public @NotNull BigDecimalX divide(BigDecimal divisor, MathContext mc) {
+    public BigDecimalX divide(BigDecimal divisor, MathContext mc) {
         return of(super.divide(divisor, mc));
     }
 
     @Override
-    public @NotNull BigDecimalX divideToIntegralValue(BigDecimal divisor) {
+    public BigDecimalX divideToIntegralValue(BigDecimal divisor) {
         return of(super.divideToIntegralValue(divisor));
     }
 
     @Override
-    public @NotNull BigDecimalX divideToIntegralValue(BigDecimal divisor, MathContext mc) {
+    public BigDecimalX divideToIntegralValue(BigDecimal divisor, MathContext mc) {
         return of(super.divideToIntegralValue(divisor, mc));
     }
 
     @Override
-    public @NotNull BigDecimalX remainder(BigDecimal divisor) {
+    public BigDecimalX remainder(BigDecimal divisor) {
         return of(super.remainder(divisor));
     }
 
     @Override
-    public @NotNull BigDecimalX remainder(BigDecimal divisor, MathContext mc) {
+    public BigDecimalX remainder(BigDecimal divisor, MathContext mc) {
         return of(super.remainder(divisor, mc));
     }
 
@@ -138,92 +136,92 @@ public final class BigDecimalX extends BigDecimal implements NumberX<BigDecimal>
     }
 
     @Override
-    public @NotNull BigDecimalX pow(int n, MathContext mc) {
+    public BigDecimalX pow(int n, MathContext mc) {
         return of(super.pow(n, mc));
     }
 
     @Override
-    public @NotNull BigDecimalX abs() {
+    public BigDecimalX abs() {
         return of(super.abs());
     }
 
     @Override
-    public @NotNull BigDecimalX abs(MathContext mc) {
+    public BigDecimalX abs(MathContext mc) {
         return of(super.abs(mc));
     }
 
     @Override
-    public @NotNull BigDecimalX negate() {
+    public BigDecimalX negate() {
         return of(super.negate());
     }
 
     @Override
-    public @NotNull BigDecimalX negate(MathContext mc) {
+    public BigDecimalX negate(MathContext mc) {
         return of(super.negate(mc));
     }
 
     @Override
-    public @NotNull BigDecimalX plus() {
+    public BigDecimalX plus() {
         return of(super.plus());
     }
 
     @Override
-    public @NotNull BigDecimalX plus(MathContext mc) {
+    public BigDecimalX plus(MathContext mc) {
         return of(super.plus(mc));
     }
 
     @Override
-    public @NotNull BigDecimalX round(MathContext mc) {
+    public BigDecimalX round(MathContext mc) {
         return of(super.round(mc));
     }
 
     @Override
-    public @NotNull BigDecimalX setScale(int newScale, RoundingMode roundingMode) {
+    public BigDecimalX setScale(int newScale, RoundingMode roundingMode) {
         return of(super.setScale(newScale, roundingMode));
     }
 
     @Override
-    public @NotNull BigDecimalX movePointLeft(int n) {
+    public BigDecimalX movePointLeft(int n) {
         return of(super.movePointLeft(n));
     }
 
     @Override
-    public @NotNull BigDecimalX movePointRight(int n) {
+    public BigDecimalX movePointRight(int n) {
         return of(super.movePointRight(n));
     }
 
     @Override
-    public @NotNull BigDecimalX scaleByPowerOfTen(int n) {
+    public BigDecimalX scaleByPowerOfTen(int n) {
         return of(super.scaleByPowerOfTen(n));
     }
 
     @Override
-    public @NotNull BigDecimalX stripTrailingZeros() {
+    public BigDecimalX stripTrailingZeros() {
         return of(super.stripTrailingZeros());
     }
 
     @Override
-    public @NotNull BigDecimalX min(BigDecimal val) {
+    public BigDecimalX min(BigDecimal val) {
         return of(super.min(val));
     }
 
     @Override
-    public @NotNull BigDecimalX max(BigDecimal val) {
+    public BigDecimalX max(BigDecimal val) {
         return of(super.max(val));
     }
 
     @Override
-    public @NotNull BigDecimalX ulp() {
+    public BigDecimalX ulp() {
         return of(super.ulp());
     }
 
     @Override
-    public @NotNull BigDecimalX get() {
+    public BigDecimalX get() {
         return this;
     }
 
     @Override
-    public @NotNull BigDecimal getValue() {
+    public BigDecimal getValue() {
         return this;
     }
 }

@@ -5,7 +5,6 @@ import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.IntPair;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -28,7 +27,7 @@ final class DelimitedRangesSequence implements Sequence<IntRange> {
     }
 
     @Override
-    public @NotNull Iterator<IntRange> iterator() {
+    public Iterator<IntRange> iterator() {
         return new DelimitedRangesIterator();
     }
 

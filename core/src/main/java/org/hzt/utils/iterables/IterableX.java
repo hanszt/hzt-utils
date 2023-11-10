@@ -7,7 +7,6 @@ import org.hzt.utils.collections.SetX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.sequences.Sequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.PrimitiveIterator;
@@ -38,15 +37,15 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         return AtomicIterator.of(iterator());
     }
 
-    IterableX<T> plus(@NotNull T value);
+    IterableX<T> plus(T value);
 
-    IterableX<T> plus(@NotNull Iterable<? extends T> values);
+    IterableX<T> plus(Iterable<? extends T> values);
 
-    IterableX<T> minus(@NotNull T value);
+    IterableX<T> minus(T value);
 
-    IterableX<T> minus(@NotNull Iterable<T> values);
+    IterableX<T> minus(Iterable<T> values);
 
-    <R> IterableX<R> castIfInstanceOf(@NotNull Class<R> aClass);
+    <R> IterableX<R> castIfInstanceOf(Class<R> aClass);
 
     default Stream<T> stream() {
         return StreamSupport.stream(spliterator(), false);
@@ -56,78 +55,76 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         return Sequence.of(this);
     }
 
-    PrimitiveIterable.OfInt mapToInt(@NotNull ToIntFunction<? super T> mapper);
+    PrimitiveIterable.OfInt mapToInt(ToIntFunction<? super T> mapper);
 
-    PrimitiveIterable.OfLong mapToLong(@NotNull ToLongFunction<? super T> toLongMapper);
+    PrimitiveIterable.OfLong mapToLong(ToLongFunction<? super T> toLongMapper);
 
-    PrimitiveIterable.OfDouble mapToDouble(@NotNull ToDoubleFunction<? super T> mapper);
+    PrimitiveIterable.OfDouble mapToDouble(ToDoubleFunction<? super T> mapper);
 
-    <K> EntryIterable<K, T> associateBy(@NotNull Function<? super T, ? extends K> keyMapper);
+    <K> EntryIterable<K, T> associateBy(Function<? super T, ? extends K> keyMapper);
 
-    <V> EntryIterable<T, V> associateWith(@NotNull Function<? super T, ? extends V> valueMapper);
+    <V> EntryIterable<T, V> associateWith(Function<? super T, ? extends V> valueMapper);
 
-    default <R> void forEach(@NotNull Function<? super T, ? extends R> selector,
-                             @NotNull Consumer<? super R> consumer) {
+    default <R> void forEach(Function<? super T, ? extends R> selector,
+                             Consumer<? super R> consumer) {
         onEach(selector, consumer);
     }
 
-    @NotNull
-    default IterableX<T> onEach(@NotNull Consumer<? super T> consumer) {
+    default IterableX<T> onEach(Consumer<? super T> consumer) {
         return onEach(It::self, consumer);
     }
 
-    @NotNull
-    default <R> IterableX<T> onEach(@NotNull Function<? super T, ? extends R> selector,
-                                @NotNull Consumer<? super R> consumer) {
+    default <R> IterableX<T> onEach(Function<? super T, ? extends R> selector,
+                                    Consumer<? super R> consumer) {
         for (T t : this) {
             consumer.accept(t != null ? selector.apply(t) : null);
         }
         return this;
     }
 
-    default SetX<T> intersect(@NotNull Iterable<T> other) {
+    default SetX<T> intersect(Iterable<T> other) {
         final MutableSetX<T> intersection = toMutableSet();
         final Collection<T> otherCollection = other instanceof Collectable<?> ? (Collection<T>) other : MutableSetX.of(other);
         intersection.retainAll(otherCollection);
         return SetX.of(intersection);
     }
 
-    default <S, I extends Iterable<S>, R> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper,
-                                                                 @NotNull Function<? super S, ? extends R> selector) {
+    default <S, I extends Iterable<S>, R> SetX<R> intersectionOf(Function<? super T, ? extends I> toIterableMapper,
+                                                                 Function<? super S, ? extends R> selector) {
         return IterableReductions.intersectionOf(this, toIterableMapper, selector);
     }
 
-    default <R, I extends Iterable<R>> SetX<R> intersectionOf(@NotNull Function<? super T, ? extends I> toIterableMapper) {
+    default <R, I extends Iterable<R>> SetX<R> intersectionOf(Function<? super T, ? extends I> toIterableMapper) {
         return intersectionOf(toIterableMapper, It::self);
     }
 
-    default SetX<T> union(@NotNull Iterable<T> other) {
+    default SetX<T> union(Iterable<T> other) {
         final MutableSetX<T> union = toMutableSet();
         return SetX.copyOf(union.plus(other));
     }
 
-    default <R> SetX<R> union(@NotNull Iterable<T> other, @NotNull Function<? super T, ? extends R> mapper) {
+    default <R> SetX<R> union(Iterable<T> other, Function<? super T, ? extends R> mapper) {
         MutableSetX<R> union = mapTo(MutableSetX::empty, mapper);
         final SetX<R> setX = ListX.of(other).toSetXOf(mapper);
         setX.forEach(union::add);
         return union;
     }
 
-    default int[] toIntArray(@NotNull ToIntFunction<? super T> mapper) {
+    default int[] toIntArray(ToIntFunction<? super T> mapper) {
         return asSequence().mapToInt(mapper).toArray();
     }
 
-    default long[] toLongArray(@NotNull ToLongFunction<? super T> mapper) {
+    default long[] toLongArray(ToLongFunction<? super T> mapper) {
         return asSequence().mapToLong(mapper).toArray();
     }
 
-    default double[] toDoubleArray(@NotNull ToDoubleFunction<? super T> mapper) {
+    default double[] toDoubleArray(ToDoubleFunction<? super T> mapper) {
         return asSequence().mapToDouble(mapper).toArray();
     }
 
     <R> IterableX<R> scan(R initial, BiFunction<? super R, ? super T, ? extends R> operation);
 
-    default boolean[] toBooleanArray(@NotNull Predicate<? super T> mapper) {
+    default boolean[] toBooleanArray(Predicate<? super T> mapper) {
         int size = (int) count();
         boolean[] result = new boolean[size];
         int counter = 0;
@@ -139,7 +136,7 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
     }
 
     @Override
-    default PrimitiveIterator.@NotNull OfInt indexIterator() {
+    default PrimitiveIterator.OfInt indexIterator() {
         return Mappable.super.indexIterator();
     }
 }

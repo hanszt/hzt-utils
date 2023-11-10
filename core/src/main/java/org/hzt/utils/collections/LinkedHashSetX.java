@@ -1,7 +1,5 @@
 package org.hzt.utils.collections;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -33,7 +31,7 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
     }
 
     @SafeVarargs
-    LinkedHashSetX(E first, E @NotNull ... others) {
+    LinkedHashSetX(E first, E... others) {
         set = new LinkedHashSet<>();
         set.add(first);
         Collections.addAll(set, others);
@@ -71,22 +69,18 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
         return set.contains(value);
     }
 
-    @NotNull
     @Override
     public Iterator<E> iterator() {
         return set.iterator();
     }
 
-    @NotNull
     @Override
-    public Object @NotNull [] toArray() {
+    public Object[] toArray() {
         return set.toArray();
     }
 
-    @NotNull
     @Override
-    public <T> T @NotNull [] toArray(@NotNull T @NotNull [] a) {
-        //noinspection SuspiciousToArrayCall
+    public <T> T[] toArray(T[] a) {
         return set.toArray(a);
     }
 
@@ -101,22 +95,22 @@ final class LinkedHashSetX<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
     }
 
     @Override
-    public boolean containsAll(@NotNull Collection<?> c) {
+    public boolean containsAll(Collection<?> c) {
         return set.containsAll(c);
     }
 
     @Override
-    public boolean addAll(@NotNull Collection<? extends E> c) {
+    public boolean addAll(Collection<? extends E> c) {
         return set.addAll(c);
     }
 
     @Override
-    public boolean retainAll(@NotNull Collection<?> c) {
+    public boolean retainAll(Collection<?> c) {
         return set.retainAll(c);
     }
 
     @Override
-    public boolean removeAll(@NotNull Collection<?> c) {
+    public boolean removeAll(Collection<?> c) {
         return set.removeAll(c);
     }
 

@@ -2,7 +2,6 @@ package org.hzt.utils.progressions;
 
 import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.PrimitiveIterator;
@@ -64,11 +63,11 @@ public class DoubleProgression implements DoubleSequence {
         };
     }
 
-    public @NotNull Double start() {
+    public Double start() {
         return start;
     }
 
-    public @NotNull Double endInclusive() {
+    public Double endInclusive() {
         return endInclusive;
     }
 

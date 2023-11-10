@@ -8,7 +8,6 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.IntSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -69,15 +68,13 @@ public interface IntList extends IntCollection,
     }
 
     @Override
-    @NotNull
     default OptionalInt findLast() {
         final int lastIndex = lastIndex();
         return lastIndex < 0 ? OptionalInt.empty() : OptionalInt.of(get(lastIndex));
     }
 
     @Override
-    @NotNull
-    default OptionalInt findLast(@NotNull IntPredicate predicate) {
+    default OptionalInt findLast(IntPredicate predicate) {
         PrimitiveListIterator.OfInt iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
             final int previousInt = iterator.previousInt();

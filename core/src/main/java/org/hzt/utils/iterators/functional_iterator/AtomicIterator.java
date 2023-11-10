@@ -1,6 +1,5 @@
 package org.hzt.utils.iterators.functional_iterator;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -41,7 +40,7 @@ public interface AtomicIterator<T> {
      *
      * @return an iterator object from a iteratorX object
      */
-    default @NotNull Iterator<T> asIterator() {
+    default Iterator<T> asIterator() {
         return new Iterator<T>() {
 
             private final AtomicReference<T> sink = new AtomicReference<>();

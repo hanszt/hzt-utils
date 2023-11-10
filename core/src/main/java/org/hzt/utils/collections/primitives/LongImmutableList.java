@@ -4,7 +4,6 @@ import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -22,7 +21,7 @@ final class LongImmutableList extends
         elementData = new long[0];
     }
 
-    LongImmutableList(long @NotNull... array) {
+    LongImmutableList(long... array) {
         super(array.length);
         elementData = ArraysX.copyOf(array);
     }
@@ -111,7 +110,7 @@ final class LongImmutableList extends
     }
 
     @Override
-    public @NotNull PrimitiveIterator.OfLong iterator() {
+    public PrimitiveIterator.OfLong iterator() {
         return listIterator();
     }
 
@@ -132,13 +131,13 @@ final class LongImmutableList extends
     }
 
     @Override
-    public @NotNull PrimitiveListIterator.OfLong listIterator() {
+    public PrimitiveListIterator.OfLong listIterator() {
         return listIterator(0);
     }
 
     @Override
     @SuppressWarnings("squid:S1188")
-    public @NotNull PrimitiveListIterator.OfLong listIterator(int startIndex) {
+    public PrimitiveListIterator.OfLong listIterator(int startIndex) {
         return new PrimitiveListIterator.OfLong() {
             private int index = startIndex;
 

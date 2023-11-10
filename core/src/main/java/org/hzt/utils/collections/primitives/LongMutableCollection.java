@@ -3,7 +3,6 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.collections.MutableCollectionX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.LongConsumer;
@@ -15,7 +14,7 @@ public interface LongMutableCollection extends LongCollection,
     boolean add(long l);
 
     @Override
-    default boolean addAll(@NotNull Iterable<Long> iterable) {
+    default boolean addAll(Iterable<Long> iterable) {
         boolean allAdded= true;
         if (iterable instanceof PrimitiveIterable.OfLong) {
             final PrimitiveIterator.OfLong iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
@@ -36,7 +35,7 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default boolean addAll(long @NotNull ... array) {
+    default boolean addAll(long... array) {
         final PrimitiveIterator.OfLong iterator = PrimitiveIterators.longArrayIterator(array);
         boolean allAdded = true;
         while (iterator.hasNext()) {
@@ -50,7 +49,7 @@ public interface LongMutableCollection extends LongCollection,
     boolean remove(long l);
 
     @Override
-    default boolean removeAll(@NotNull Iterable<Long> iterable) {
+    default boolean removeAll(Iterable<Long> iterable) {
         boolean allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfLong) {
             final PrimitiveIterator.OfLong iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
@@ -70,7 +69,7 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default boolean removeAll(long @NotNull ... array) {
+    default boolean removeAll(long... array) {
         boolean allRemoved = true;
         final PrimitiveIterator.OfLong iterator = PrimitiveIterators.longArrayIterator(array);
         while (iterator.hasNext()) {
@@ -83,7 +82,7 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default boolean removeIf(@NotNull LongPredicate predicate) {
+    default boolean removeIf(LongPredicate predicate) {
         boolean removed = false;
         final PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
@@ -96,12 +95,12 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default LongMutableList plus(@NotNull Iterable<Long> iterable) {
+    default LongMutableList plus(Iterable<Long> iterable) {
         return (LongMutableList) LongCollection.super.plus(iterable);
     }
 
     @Override
-    default LongMutableList plus(long @NotNull ... array) {
+    default LongMutableList plus(long... array) {
         return (LongMutableList) LongCollection.super.plus(array);
     }
 

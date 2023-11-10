@@ -10,7 +10,6 @@ import org.hzt.utils.iterables.primitives.IntReducable;
 import org.hzt.utils.iterables.primitives.IntStreamable;
 import org.hzt.utils.iterables.primitives.IntStringable;
 import org.hzt.utils.sequences.primitives.IntSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
@@ -37,12 +36,12 @@ public interface IntCollection extends
     }
 
     @Override
-    default boolean containsAll(@NotNull Iterable<Integer> iterable) {
+    default boolean containsAll(Iterable<Integer> iterable) {
         return IntSequence.of(iterable).all(this::contains);
     }
 
     @Override
-    default boolean containsAll(int @NotNull ... array) {
+    default boolean containsAll(int... array) {
         return IntSequence.of(array).all(this::contains);
     }
 
@@ -97,14 +96,14 @@ public interface IntCollection extends
     }
 
     @Override
-    default IntList plus(@NotNull Iterable<Integer> values) {
+    default IntList plus(Iterable<Integer> values) {
         IntMutableList list = toMutableList();
         list.addAll(values);
         return IntList.copyOf(list);
     }
 
     @Override
-    default IntList plus(int @NotNull ... array) {
+    default IntList plus(int... array) {
         IntMutableList list = toMutableList();
         list.addAll(array);
         return IntList.copyOf(list);

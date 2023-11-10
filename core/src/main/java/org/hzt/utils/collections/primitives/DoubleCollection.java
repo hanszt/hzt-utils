@@ -10,7 +10,6 @@ import org.hzt.utils.iterables.primitives.DoubleReducable;
 import org.hzt.utils.iterables.primitives.DoubleStreamable;
 import org.hzt.utils.iterables.primitives.DoubleStringable;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
@@ -37,12 +36,12 @@ public interface DoubleCollection extends
     }
 
     @Override
-    default boolean containsAll(@NotNull Iterable<Double> iterable) {
+    default boolean containsAll(Iterable<Double> iterable) {
         return DoubleSequence.of(iterable).all(this::contains);
     }
 
     @Override
-    default boolean containsAll(double @NotNull ... array) {
+    default boolean containsAll(double... array) {
         return DoubleSequence.of(array).all(this::contains);
     }
 
@@ -97,14 +96,14 @@ public interface DoubleCollection extends
     }
 
     @Override
-    default DoubleList plus(@NotNull Iterable<Double> values) {
+    default DoubleList plus(Iterable<Double> values) {
         DoubleMutableList list = toMutableList();
         list.addAll(values);
         return DoubleList.copyOf(list);
     }
 
     @Override
-    default DoubleList plus(double @NotNull ... array) {
+    default DoubleList plus(double... array) {
         DoubleMutableList list = toMutableList();
         list.addAll(array);
         return DoubleList.copyOf(list);

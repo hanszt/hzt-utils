@@ -3,7 +3,6 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.collections.MutableCollectionX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.IntConsumer;
@@ -15,7 +14,7 @@ public interface IntMutableCollection extends IntCollection,
     boolean add(int i);
 
     @Override
-    default boolean addAll(@NotNull Iterable<Integer> iterable) {
+    default boolean addAll(Iterable<Integer> iterable) {
         boolean allAdded = true;
         if (iterable instanceof PrimitiveIterable.OfInt) {
             final PrimitiveIterator.OfInt iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
@@ -36,7 +35,7 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default boolean addAll(int @NotNull ... array) {
+    default boolean addAll(int... array) {
         final PrimitiveIterator.OfInt iterator = PrimitiveIterators.intArrayIterator(array);
         boolean allAdded = true;
         while (iterator.hasNext()) {
@@ -50,7 +49,7 @@ public interface IntMutableCollection extends IntCollection,
     boolean remove(int i);
 
     @Override
-    default boolean removeAll(@NotNull Iterable<Integer> iterable) {
+    default boolean removeAll(Iterable<Integer> iterable) {
         boolean allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfInt) {
             final PrimitiveIterator.OfInt iterator = ((PrimitiveIterable.OfInt) iterable).iterator();
@@ -70,7 +69,7 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default boolean removeAll(int @NotNull ... array) {
+    default boolean removeAll(int... array) {
         boolean allRemoved = true;
         final PrimitiveIterator.OfInt iterator = PrimitiveIterators.intArrayIterator(array);
         while (iterator.hasNext()) {
@@ -83,7 +82,7 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default boolean removeIf(@NotNull IntPredicate predicate) {
+    default boolean removeIf(IntPredicate predicate) {
         boolean removed = false;
         final PrimitiveIterator.OfInt iterator = iterator();
         while (iterator.hasNext()) {
@@ -96,12 +95,12 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default IntMutableList plus(@NotNull Iterable<Integer> iterable) {
+    default IntMutableList plus(Iterable<Integer> iterable) {
         return (IntMutableList) IntCollection.super.plus(iterable);
     }
 
     @Override
-    default IntMutableList plus(int @NotNull ... array) {
+    default IntMutableList plus(int... array) {
         return (IntMutableList) IntCollection.super.plus(array);
     }
 

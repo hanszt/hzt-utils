@@ -1,7 +1,6 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.iterators.Iterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
@@ -24,7 +23,6 @@ final class SubSequence<T> implements SkipTakeSequence<T> {
         this.count = endIndex - startIndex;
     }
 
-    @NotNull
     @Override
     public Iterator<T> iterator() {
         return Iterators.subIterator(upstream.iterator(), startIndex, endIndex);

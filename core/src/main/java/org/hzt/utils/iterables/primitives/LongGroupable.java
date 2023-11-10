@@ -4,7 +4,6 @@ import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.tuples.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.LongFunction;
@@ -24,7 +23,7 @@ public interface LongGroupable extends PrimitiveGroupable<Long, LongMutableList,
         return map;
     }
 
-    default <K> MapX<K, LongMutableList> groupBy(@NotNull LongFunction<? extends K> classifier) {
+    default <K> MapX<K, LongMutableList> groupBy(LongFunction<? extends K> classifier) {
         final PrimitiveIterator.OfLong iterator = iterator();
         final MutableMapX<K, LongMutableList> map = MutableMapX.empty();
         while (iterator.hasNext()) {
@@ -35,7 +34,7 @@ public interface LongGroupable extends PrimitiveGroupable<Long, LongMutableList,
     }
 
     @Override
-    default Pair<LongMutableList, LongMutableList> partition(@NotNull LongPredicate predicate) {
+    default Pair<LongMutableList, LongMutableList> partition(LongPredicate predicate) {
         final LongMutableList matchingList = LongMutableList.empty();
         final LongMutableList nonMatchingList = LongMutableList.empty();
         final PrimitiveIterator.OfLong iterator = iterator();

@@ -1,7 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.MutableSetX;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.IntConsumer;
@@ -154,7 +153,7 @@ final class IntHashSet extends PrimitiveAbstractSet<Integer, IntConsumer, int[],
     }
 
     @Override
-    public PrimitiveIterator.@NotNull OfInt iterator() {
+    public PrimitiveIterator.OfInt iterator() {
         return new IntHashIterator();
     }
 

@@ -1,7 +1,6 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.collectors.CollectorsX;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,7 +35,7 @@ final class ImmutableSetX<T> implements SetX<T> {
     }
 
     @Override
-    public @NotNull SetX<T> get() {
+    public SetX<T> get() {
         return this;
     }
 
@@ -56,7 +55,6 @@ final class ImmutableSetX<T> implements SetX<T> {
         return immutableSet.contains(value);
     }
 
-    @NotNull
     @Override
     public Iterator<T> iterator() {
         return immutableSet.iterator();

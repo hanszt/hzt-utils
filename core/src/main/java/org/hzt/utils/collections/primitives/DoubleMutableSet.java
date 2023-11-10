@@ -1,6 +1,5 @@
 package org.hzt.utils.collections.primitives;
 
-import org.jetbrains.annotations.NotNull;
 
 public interface DoubleMutableSet extends DoubleMutableCollection {
 
@@ -8,7 +7,7 @@ public interface DoubleMutableSet extends DoubleMutableCollection {
         return new DoubleHashSet();
     }
 
-    static DoubleMutableSet of(double @NotNull ... values) {
+    static DoubleMutableSet of(double... values) {
         return new DoubleHashSet(values);
     }
 }

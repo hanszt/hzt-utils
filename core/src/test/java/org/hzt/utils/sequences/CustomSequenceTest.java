@@ -6,7 +6,6 @@ import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.tuples.IndexedValue;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,11 +15,11 @@ import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static org.hzt.utils.It.*;
+import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.DynamicTest.*;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 class CustomSequenceTest {
 
@@ -62,16 +61,16 @@ class CustomSequenceTest {
         }
 
         @Override
-        default <R> CustomSequence<R> map(@NotNull Function<? super T, ? extends R> mapper) {
+        default <R> CustomSequence<R> map(Function<? super T, ? extends R> mapper) {
             return CustomSequence.of(Sequence.super.map(mapper));
         }
 
         @Override
-        default CustomSequence<T> filter(@NotNull Predicate<? super T> predicate) {
+        default CustomSequence<T> filter(Predicate<? super T> predicate) {
             return () -> Iterators.filteringIterator(iterator(), predicate, true);
         }
 
-        default float floatSumOf(@NotNull ToFloatFunction<? super T> selector) {
+        default float floatSumOf(ToFloatFunction<? super T> selector) {
             float sum = 0;
             for (T t : this) {
                 if (t != null) {
@@ -164,12 +163,10 @@ class CustomSequenceTest {
         }
     }
 
-    @NotNull
     private static String next(int index, String current, int modulo,  String string) {
         return next(index, current, modulo, 0, string);
     }
 
-    @NotNull
     private static String next(int index, String current, int modulo, int offSet, String string) {
         int value = index + 1;
         final boolean isNaturalNr = isNaturalNr(current);

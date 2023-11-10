@@ -1,7 +1,6 @@
 package org.hzt.utils.statistics;
 
 import org.hzt.utils.Transformable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.IntSummaryStatistics;
 import java.util.Objects;
@@ -67,7 +66,7 @@ public final class IntStatistics extends IntSummaryStatistics
     }
 
     @Override
-    public @NotNull IntStatistics get() {
+    public IntStatistics get() {
         return this;
     }
 }

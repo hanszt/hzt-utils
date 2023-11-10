@@ -2,7 +2,6 @@ package org.hzt.utils.iterables;
 
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -25,12 +24,12 @@ public final class IterableXHelper {
     private IterableXHelper() {
     }
 
-    static <T, R extends Comparable<? super R>> ListX<T> toSortedListX(@NotNull Iterable<T> iterable,
-                                                                       @NotNull Function<? super T, ? extends R> selector) {
+    static <T, R extends Comparable<? super R>> ListX<T> toSortedListX(Iterable<T> iterable,
+                                                                       Function<? super T, ? extends R> selector) {
         return toMutableListXSortedBy(selector, iterable);
     }
 
-    static <T> long count(Iterable<T> iterable, @NotNull Predicate<T> predicate) {
+    static <T> long count(Iterable<T> iterable, Predicate<T> predicate) {
         long counter = 0;
         for (T t : iterable) {
             if (predicate.test(t)) {
@@ -41,11 +40,11 @@ public final class IterableXHelper {
     }
 
     static <T, R, C extends Collection<R>> C mapFilteringTo(
-            @NotNull Iterable<T> iterable,
-            @NotNull Supplier<C> collectionFactory,
-            @NotNull Predicate<? super T> predicate,
-            @NotNull Function<? super T, ? extends R> mapper,
-            @NotNull Predicate<R> resultFilter) {
+            Iterable<T> iterable,
+            Supplier<C> collectionFactory,
+            Predicate<? super T> predicate,
+            Function<? super T, ? extends R> mapper,
+            Predicate<R> resultFilter) {
         C collection = collectionFactory.get();
         for (T t : iterable) {
             if (t != null && predicate.test(t)) {
@@ -58,9 +57,8 @@ public final class IterableXHelper {
         return collection;
     }
 
-    @NotNull
     static <T, R extends Comparable<? super R>> Optional<T> compareBy(final Iterator<T> iterator,
-            @NotNull Function<? super T, ? extends R> selector, @NotNull IntPredicate predicate) {
+                                                                      Function<? super T, ? extends R> selector, IntPredicate predicate) {
         if (!iterator.hasNext()) {
             return Optional.empty();
         }
@@ -89,11 +87,10 @@ public final class IterableXHelper {
         throw new IllegalStateException(key.getClass().getSimpleName() + " is not of a comparable type");
     }
 
-    @NotNull
     static  <T, R extends Comparable<? super R>> R comparisonOf(
-            @NotNull Iterator<T> iterator,
-            @NotNull Function<? super T, ? extends R> selector,
-            @NotNull IntPredicate biPredicate) {
+            Iterator<T> iterator,
+            Function<? super T, ? extends R> selector,
+            IntPredicate biPredicate) {
         if (!iterator.hasNext()) {
             throw noValuePresentException();
         }
@@ -144,12 +141,11 @@ public final class IterableXHelper {
         return Optional.empty();
     }
 
-    @NotNull
     static NoSuchElementException noValuePresentException() {
         return new NoSuchElementException("No value present");
     }
 
-    static <T> void exposeIndexedNonNullVal(@NotNull Iterable<T> iterable, @NotNull BiConsumer<Integer, T> consumer) {
+    static <T> void exposeIndexedNonNullVal(Iterable<T> iterable, BiConsumer<Integer, T> consumer) {
         int counter = 0;
         for (T value : iterable) {
             if (value != null) {
@@ -159,12 +155,12 @@ public final class IterableXHelper {
         }
     }
 
-    static <T> void exposeNonNullVal(@NotNull Iterable<T> iterable, @NotNull Consumer<T> consumer) {
+    static <T> void exposeNonNullVal(Iterable<T> iterable, Consumer<T> consumer) {
         exposeIndexedNonNullVal(iterable, (i, v) -> consumer.accept(v));
     }
 
     static <T, R extends Comparable<? super R>> MutableListX<T> toMutableListXSortedBy(
-            @NotNull Function<? super T, ? extends R> selector, Iterable<T> iterable) {
+            Function<? super T, ? extends R> selector, Iterable<T> iterable) {
         MutableListX<T> list = MutableListX.of(iterable);
         list.sort(Comparator.comparing(selector));
         return list;

@@ -3,7 +3,6 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.collections.MutableCollectionX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.DoubleConsumer;
@@ -15,7 +14,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
     boolean add(double d);
 
     @Override
-    default boolean addAll(@NotNull Iterable<Double> iterable) {
+    default boolean addAll(Iterable<Double> iterable) {
         boolean allAdded = true;
         if (iterable instanceof PrimitiveIterable.OfDouble) {
             final PrimitiveIterator.OfDouble iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
@@ -36,7 +35,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default boolean addAll(double @NotNull ... array) {
+    default boolean addAll(double... array) {
         final PrimitiveIterator.OfDouble iterator = PrimitiveIterators.doubleArrayIterator(array);
         boolean allAdded = true;
         while (iterator.hasNext()) {
@@ -51,7 +50,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
     boolean remove(double d);
 
     @Override
-    default boolean removeAll(@NotNull Iterable<Double> iterable) {
+    default boolean removeAll(Iterable<Double> iterable) {
         boolean allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfDouble) {
             final PrimitiveIterator.OfDouble iterator = ((PrimitiveIterable.OfDouble) iterable).iterator();
@@ -71,7 +70,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default boolean removeAll(double @NotNull ... array) {
+    default boolean removeAll(double... array) {
         boolean allRemoved = true;
         final PrimitiveIterator.OfDouble iterator = PrimitiveIterators.doubleArrayIterator(array);
         while (iterator.hasNext()) {
@@ -84,7 +83,7 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default boolean removeIf(@NotNull DoublePredicate predicate) {
+    default boolean removeIf(DoublePredicate predicate) {
         boolean removed = false;
         final PrimitiveIterator.OfDouble iterator = iterator();
         while (iterator.hasNext()) {
@@ -97,12 +96,12 @@ public interface DoubleMutableCollection extends DoubleCollection,
     }
 
     @Override
-    default DoubleMutableList plus(@NotNull Iterable<Double> iterable) {
+    default DoubleMutableList plus(Iterable<Double> iterable) {
         return (DoubleMutableList) DoubleCollection.super.plus(iterable);
     }
 
     @Override
-    default DoubleMutableList plus(double @NotNull ... array) {
+    default DoubleMutableList plus(double... array) {
         return (DoubleMutableList) DoubleCollection.super.plus(array);
     }
 

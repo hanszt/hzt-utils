@@ -6,7 +6,6 @@ import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.sequences.Sequence;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +24,12 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.groupingBy;
 import static org.hzt.utils.collectors.CollectorsX.toUnmodifiableList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class StreamXTest {
 
@@ -104,7 +108,7 @@ class StreamXTest {
         private final List<Painting> paintings = TestSampleGenerator.createPaintingList();
 
         @Override
-        public @NotNull Spliterator<Painting> spliterator() {
+        public Spliterator<Painting> spliterator() {
             return paintings.spliterator();
         }
     }

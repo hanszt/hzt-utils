@@ -1,10 +1,9 @@
 package org.hzt.utils.sequences;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.Windowable;
-import org.hzt.utils.It;
 import org.hzt.utils.iterators.Iterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -38,7 +37,7 @@ public interface WindowedSequence<T> extends Windowable<T> {
         return windowed(size, 1);
     }
 
-    default <R> Sequence<R> windowed(int size, @NotNull Function<? super ListX<T>, ? extends R> transform) {
+    default <R> Sequence<R> windowed(int size, Function<? super ListX<T>, ? extends R> transform) {
         return windowed(size, 1).map(transform);
     }
 
@@ -46,7 +45,7 @@ public interface WindowedSequence<T> extends Windowable<T> {
         return windowed(size, step, false);
     }
 
-    default <R> Sequence<R> windowed(int size, int step, @NotNull Function<? super ListX<T>, ? extends R> transform) {
+    default <R> Sequence<R> windowed(int size, int step, Function<? super ListX<T>, ? extends R> transform) {
         return windowed(size, step, false).map(transform);
     }
 
@@ -59,22 +58,22 @@ public interface WindowedSequence<T> extends Windowable<T> {
     }
 
     default <R> Sequence<R> windowed(int size, int step, boolean partialWindows,
-                                     @NotNull Function<? super ListX<T>, R> transform) {
+                                     Function<? super ListX<T>, R> transform) {
         return windowed(size, It::asInt, step, partialWindows, transform);
     }
 
     default <R> Sequence<R> windowed(int initSize,
-                                     @NotNull IntUnaryOperator nextSizeSupplier,
+                                     IntUnaryOperator nextSizeSupplier,
                                      int step,
                                      boolean partialWindows,
-                                     @NotNull Function<? super ListX<T>, R> transform) {
+                                     Function<? super ListX<T>, R> transform) {
         return windowed(initSize, nextSizeSupplier, step, It::asInt, partialWindows).map(transform);
     }
 
     default Sequence<ListX<T>> windowed(int initSize,
-                                        @NotNull IntUnaryOperator nextSizeSupplier,
+                                        IntUnaryOperator nextSizeSupplier,
                                         int initStep,
-                                        @NotNull IntUnaryOperator nextStepSupplier,
+                                        IntUnaryOperator nextStepSupplier,
                                         boolean partialWindows) {
         SequenceHelper.checkInitWindowSizeAndStep(initSize, initStep);
         return () -> Iterators.windowedIterator(iterator(),
@@ -82,17 +81,17 @@ public interface WindowedSequence<T> extends Windowable<T> {
     }
 
     default Sequence<ListX<T>> windowed(int initSize,
-                                        @NotNull IntUnaryOperator nextSizeSupplier,
+                                        IntUnaryOperator nextSizeSupplier,
                                         int initStep,
-                                        @NotNull IntUnaryOperator nextStepSupplier) {
+                                        IntUnaryOperator nextStepSupplier) {
         return windowed(initSize, nextSizeSupplier, initStep, nextStepSupplier, false);
     }
 
-    default Sequence<ListX<T>> windowed(int initSize, @NotNull IntUnaryOperator nextSizeSupplier, int step) {
+    default Sequence<ListX<T>> windowed(int initSize, IntUnaryOperator nextSizeSupplier, int step) {
         return windowed(initSize, nextSizeSupplier, step, It::asInt, false);
     }
 
-    default Sequence<ListX<T>> windowed(int size, int initStep, @NotNull IntUnaryOperator nextStepSupplier, boolean partialWindows) {
+    default Sequence<ListX<T>> windowed(int size, int initStep, IntUnaryOperator nextStepSupplier, boolean partialWindows) {
         return windowed(size, It::self, initStep, nextStepSupplier, partialWindows);
     }
 }

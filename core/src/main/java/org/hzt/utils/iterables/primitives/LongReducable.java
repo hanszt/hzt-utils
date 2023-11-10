@@ -2,7 +2,6 @@ package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.function.primitives.LongBiFunction;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return accumulator;
     }
 
-    default @NotNull OptionalLong reduce(@NotNull LongBinaryOperator operator) {
+    default OptionalLong reduce(LongBinaryOperator operator) {
         PrimitiveIterator.OfLong iterator = iterator();
         if (iterator.hasNext()) {
             long accumulator = iterator.nextLong();
@@ -37,9 +36,9 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
     }
 
     default <R> R reduceToTwo(
-            long initial1, @NotNull LongBinaryOperator operator1,
-            long initial2, @NotNull LongBinaryOperator operator2,
-            @NotNull LongBiFunction<R> finisher) {
+            long initial1, LongBinaryOperator operator1,
+            long initial2, LongBinaryOperator operator2,
+            LongBiFunction<R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
         long accumulator1 = initial1;
         long accumulator2 = initial2;
@@ -51,9 +50,9 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return finisher.apply(accumulator1, accumulator2);
     }
 
-    default @NotNull <R> Optional<R> reduceToTwo(@NotNull LongBinaryOperator operator1,
-                                                 @NotNull LongBinaryOperator operator2,
-                                                 @NotNull LongBiFunction<R> finisher) {
+    default <R> Optional<R> reduceToTwo(LongBinaryOperator operator1,
+                                        LongBinaryOperator operator2,
+                                        LongBiFunction<R> finisher) {
         PrimitiveIterator.OfLong iterator = iterator();
         if (iterator.hasNext()) {
             final long first = iterator.nextLong();
@@ -69,9 +68,9 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return Optional.empty();
     }
 
-    default <R> @NotNull R reduce(long initial,
-                                  @NotNull LongFunction<R> mapper,
-                                  @NotNull LongBinaryOperator operation) {
+    default <R> R reduce(long initial,
+                         LongFunction<R> mapper,
+                         LongBinaryOperator operation) {
         return mapper.apply(reduce(initial, operation));
     }
 
@@ -79,20 +78,20 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return findFirst().orElseThrow(NoSuchElementException::new);
     }
 
-    default long first(@NotNull LongPredicate predicate) {
+    default long first(LongPredicate predicate) {
         return findFirst(predicate).orElseThrow(NoSuchElementException::new);
     }
 
-    default long firstNot(@NotNull LongPredicate predicate) {
+    default long firstNot(LongPredicate predicate) {
         return first(predicate.negate());
     }
 
-    default @NotNull OptionalLong findFirst() {
+    default OptionalLong findFirst() {
         final PrimitiveIterator.OfLong iterator = iterator();
         return iterator.hasNext() ? OptionalLong.of(iterator.nextLong()) : OptionalLong.empty();
     }
 
-    default @NotNull OptionalLong findFirst(@NotNull LongPredicate predicate) {
+    default OptionalLong findFirst(LongPredicate predicate) {
         PrimitiveIterator.OfLong iterator = this.iterator();
         while (iterator.hasNext()) {
             long next = iterator.nextLong();
@@ -107,15 +106,15 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return findLast().orElseThrow(NoSuchElementException::new);
     }
 
-    default long last(@NotNull LongPredicate predicate) {
+    default long last(LongPredicate predicate) {
         return findLast(predicate).orElseThrow(NoSuchElementException::new);
     }
 
-    default @NotNull OptionalLong findLast() {
+    default OptionalLong findLast() {
         return findLast(It::noLongFilter);
     }
 
-    default @NotNull OptionalLong findLast(@NotNull LongPredicate predicate) {
+    default OptionalLong findLast(LongPredicate predicate) {
         PrimitiveIterator.OfLong iterator = iterator();
         long result = iterator.nextLong();
         if (!predicate.test(result) && !iterator.hasNext()) {
@@ -143,7 +142,7 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return single;
     }
 
-    default boolean any(@NotNull LongPredicate predicate) {
+    default boolean any(LongPredicate predicate) {
         PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextLong())) {
@@ -153,7 +152,7 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return false;
     }
 
-    default boolean all(@NotNull LongPredicate predicate) {
+    default boolean all(LongPredicate predicate) {
         PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             if (!predicate.test(iterator.nextLong())) {
@@ -163,7 +162,7 @@ public interface LongReducable extends PrimitiveIterable.OfLong, PrimitiveReduca
         return true;
     }
 
-    default boolean none(@NotNull LongPredicate predicate) {
+    default boolean none(LongPredicate predicate) {
         PrimitiveIterator.OfLong iterator = iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextLong())) {

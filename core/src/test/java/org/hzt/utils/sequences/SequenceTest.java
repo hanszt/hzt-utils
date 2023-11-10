@@ -27,7 +27,6 @@ import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Nested;
@@ -907,7 +906,7 @@ class SequenceTest {
         assertEquals(12, timeZonesAntarctica.count());
     }
 
-    private Sequence<String> getTimeZoneSummaries(Instant now, @NotNull Predicate<ZoneId> predicate) {
+    private Sequence<String> getTimeZoneSummaries(Instant now, Predicate<ZoneId> predicate) {
         return Sequence.of(ZoneId.getAvailableZoneIds())
                 .map(ZoneId::of)
                 .filter(predicate)

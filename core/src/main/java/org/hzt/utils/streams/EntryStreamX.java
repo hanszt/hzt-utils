@@ -4,7 +4,6 @@ import org.hzt.utils.It;
 import org.hzt.utils.collections.MapX;
 import org.hzt.utils.iterables.EntryIterable;
 import org.hzt.utils.sequences.EntrySequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -32,7 +31,7 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     }
     
     @Override
-    default <R> StreamX<R> map(@NotNull BiFunction<? super K, ? super V, ? extends R> biFunction) {
+    default <R> StreamX<R> map(BiFunction<? super K, ? super V, ? extends R> biFunction) {
         return map(e -> biFunction.apply(e.getKey(), e.getValue()));
     }
 
@@ -42,14 +41,14 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     }
 
     @Override
-    default <K1, V1> EntryStreamX<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper, 
-                                              @NotNull Function<? super V, ? extends V1> valueMapper) {
+    default <K1, V1> EntryStreamX<K1, V1> map(Function<? super K, ? extends K1> keyMapper,
+                                              Function<? super V, ? extends V1> valueMapper) {
         return ofStream(map(e -> MapX.entry(keyMapper.apply(e.getKey()), valueMapper.apply(e.getValue()))));
     }
 
     @Override
-    default <K1, V1> EntryStreamX<K1, V1> inverted(@NotNull Function<? super V, ? extends K1> toKeyMapper,
-                                                   @NotNull Function<? super K, ? extends V1> toValueMapper) {
+    default <K1, V1> EntryStreamX<K1, V1> inverted(Function<? super V, ? extends K1> toKeyMapper,
+                                                   Function<? super K, ? extends V1> toValueMapper) {
         return ofStream(map((k, v) -> MapX.entry(toKeyMapper.apply(v), toValueMapper.apply(k))));
     }
 
@@ -59,7 +58,6 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     }
 
     @Override
-    @NotNull
     default EntryStreamX<K, V> parallel() {
         return EntryStreamX.ofStream(StreamX.super.parallel());
     }
@@ -70,58 +68,57 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     }
 
     @Override
-    @NotNull
     default EntryStreamX<K, V> sequential() {
         return EntryStreamX.ofStream(StreamX.super.sequential());
     }
 
     @Override
-    default <K1> EntryStreamX<K1, V> mapByKeys(@NotNull Function<? super K, ? extends K1> keyMapper) {
+    default <K1> EntryStreamX<K1, V> mapByKeys(Function<? super K, ? extends K1> keyMapper) {
         return ofStream(map((k , v) -> MapX.entry(keyMapper.apply(k), v)));
     }
 
     @Override
-    default <K1> EntryStreamX<K1, V> mapKeys(@NotNull BiFunction<? super K, ? super V, ? extends K1> toKeyMapper) {
+    default <K1> EntryStreamX<K1, V> mapKeys(BiFunction<? super K, ? super V, ? extends K1> toKeyMapper) {
         return ofStream(map((k, v) -> MapX.entry(toKeyMapper.apply(k, v), v)));
     }
 
     @Override
-    default <V1> EntryStreamX<K, V1> mapByValues(@NotNull Function<? super V, ? extends V1> valueMapper) {
+    default <V1> EntryStreamX<K, V1> mapByValues(Function<? super V, ? extends V1> valueMapper) {
         return ofStream(map((k, v) -> MapX.entry(k, valueMapper.apply(v))));
     }
 
     @Override
-    default <V1> EntryStreamX<K, V1> mapValues(@NotNull BiFunction<? super K, ? super V, ? extends V1> toValueMapper) {
+    default <V1> EntryStreamX<K, V1> mapValues(BiFunction<? super K, ? super V, ? extends V1> toValueMapper) {
         return ofStream(map((k, v) -> MapX.entry(k, toValueMapper.apply(k, v))));
     }
 
     @Override
-    default EntryStreamX<K, V> filter(@NotNull BiPredicate<? super K, ? super V> biPredicate) {
+    default EntryStreamX<K, V> filter(BiPredicate<? super K, ? super V> biPredicate) {
         return ofStream(filter(e -> biPredicate.test(e.getKey(), e.getValue())));
     }
 
     @Override
-    default EntryStreamX<K, V> filterKeys(@NotNull Predicate<? super K> predicate) {
+    default EntryStreamX<K, V> filterKeys(Predicate<? super K> predicate) {
         return ofStream(filter(e -> predicate.test(e.getKey())));
     }
 
     @Override
-    default EntryStreamX<K, V> filterValues(@NotNull Predicate<? super V> predicate) {
+    default EntryStreamX<K, V> filterValues(Predicate<? super V> predicate) {
         return ofStream(filter(e -> predicate.test(e.getValue())));
     }
 
     @Override
-    default EntryStreamX<K, V> onEachKey(@NotNull Consumer<? super K> consumer) {
+    default EntryStreamX<K, V> onEachKey(Consumer<? super K> consumer) {
         return ofStream(peek(e -> consumer.accept(e.getKey())));
     }
 
     @Override
-    default EntryStreamX<K, V> onEachValue(@NotNull Consumer<? super V> consumer) {
+    default EntryStreamX<K, V> onEachValue(Consumer<? super V> consumer) {
         return ofStream(peek(e -> consumer.accept(e.getValue())));
     }
 
     @Override
-    default EntryStreamX<K, V> onEach(@NotNull BiConsumer<? super K, ? super V> biConsumer) {
+    default EntryStreamX<K, V> onEach(BiConsumer<? super K, ? super V> biConsumer) {
         return ofStream(peek(e -> biConsumer.accept(e.getKey(), e.getValue())));
     }
 
@@ -132,7 +129,7 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     }
 
     @Override
-    default void forEach(@NotNull BiConsumer<? super K, ? super V> biConsumer) {
+    default void forEach(BiConsumer<? super K, ? super V> biConsumer) {
         forEach(e -> biConsumer.accept(e.getKey(), e.getValue()));
     }
     

@@ -2,7 +2,6 @@ package org.hzt.utils.ranges;
 
 import org.hzt.utils.progressions.LongProgression;
 import org.hzt.utils.sequences.primitives.LongSequence;
-import org.jetbrains.annotations.NotNull;
 
 public final class LongRange extends LongProgression implements ClosedRange<Long> {
 
@@ -41,7 +40,7 @@ public final class LongRange extends LongProgression implements ClosedRange<Long
         return new LongRange(start, endInclusive, step);
     }
 
-    public boolean containsAll(long @NotNull ... array) {
+    public boolean containsAll(long... array) {
         return LongSequence.of(array).all(this::contains);
     }
 }

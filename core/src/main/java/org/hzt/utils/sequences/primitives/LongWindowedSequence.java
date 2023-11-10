@@ -6,7 +6,6 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.LongWindowedIterator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.SequenceHelper;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntSupplier;
@@ -40,9 +39,9 @@ public interface LongWindowedSequence extends PrimitiveIterable.OfLong {
     }
 
     default Sequence<LongList> windowed(int initSize,
-                                        @NotNull IntUnaryOperator nextSizeSupplier,
+                                        IntUnaryOperator nextSizeSupplier,
                                         int initStep,
-                                        @NotNull IntUnaryOperator nextStepSupplier,
+                                        IntUnaryOperator nextStepSupplier,
                                         boolean partialWindows) {
         SequenceHelper.checkInitWindowSizeAndStep(initSize, initStep);
         return () -> LongWindowedIterator.of(iterator(), initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
@@ -61,19 +60,19 @@ public interface LongWindowedSequence extends PrimitiveIterable.OfLong {
     }
 
     default LongSequence windowed(int size, int step, boolean partialWindows,
-                                  @NotNull ToLongFunction<LongList> reducer) {
+                                  ToLongFunction<LongList> reducer) {
         return windowed(size, step, partialWindows).mapToLong(reducer);
     }
 
-    default LongSequence windowed(int size, int step, @NotNull ToLongFunction<LongList> reducer) {
+    default LongSequence windowed(int size, int step, ToLongFunction<LongList> reducer) {
         return windowed(size, step, false, reducer);
     }
 
-    default LongSequence windowed(int size, @NotNull ToLongFunction<LongList> reducer) {
+    default LongSequence windowed(int size, ToLongFunction<LongList> reducer) {
         return windowed(size, 1, reducer);
     }
 
-    default LongSequence windowed(int size, boolean partialWindows, @NotNull ToLongFunction<LongList> reducer) {
+    default LongSequence windowed(int size, boolean partialWindows, ToLongFunction<LongList> reducer) {
         return windowed(size, 1, partialWindows, reducer);
     }
 }

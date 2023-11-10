@@ -1,14 +1,13 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.ArraysX;
+import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
-import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.LongSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -69,15 +68,13 @@ public interface LongList extends LongCollection,
     }
 
     @Override
-    @NotNull
     default OptionalLong findLast() {
         final int lastIndex = lastIndex();
         return lastIndex < 0 ? OptionalLong.empty() : OptionalLong.of(get(lastIndex));
     }
 
     @Override
-    @NotNull
-    default OptionalLong findLast(@NotNull LongPredicate predicate) {
+    default OptionalLong findLast(LongPredicate predicate) {
         PrimitiveListIterator.OfLong iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
             final long previousLong = iterator.previousLong();

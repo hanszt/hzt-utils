@@ -10,7 +10,6 @@ import org.hzt.utils.iterables.primitives.LongReducable;
 import org.hzt.utils.iterables.primitives.LongStreamable;
 import org.hzt.utils.iterables.primitives.LongStringable;
 import org.hzt.utils.sequences.primitives.LongSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
@@ -37,12 +36,12 @@ public interface LongCollection extends
     }
 
     @Override
-    default boolean containsAll(@NotNull Iterable<Long> iterable) {
+    default boolean containsAll(Iterable<Long> iterable) {
         return LongSequence.of(iterable).all(this::contains);
     }
 
     @Override
-    default boolean containsAll(long @NotNull ... array) {
+    default boolean containsAll(long... array) {
         return LongSequence.of(array).all(this::contains);
     }
 
@@ -97,14 +96,14 @@ public interface LongCollection extends
     }
 
     @Override
-    default LongList plus(@NotNull Iterable<Long> values) {
+    default LongList plus(Iterable<Long> values) {
         LongMutableList listX = toMutableList();
         listX.addAll(values);
         return LongList.copyOf(listX);
     }
 
     @Override
-    default LongList plus(long @NotNull ... array) {
+    default LongList plus(long... array) {
         LongMutableList list = toMutableList();
         list.addAll(array);
         return LongList.copyOf(list);

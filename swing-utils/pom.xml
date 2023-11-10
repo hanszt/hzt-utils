@@ -8,16 +8,12 @@
     <parent>
         <artifactId>hzt-utils</artifactId>
         <groupId>org.hzt.utils</groupId>
-        <version>0.7.5.1.8</version>
+        <version>1.0.0.1.8</version>
     </parent>
 
     <artifactId>swing-utils</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>

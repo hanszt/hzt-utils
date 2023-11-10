@@ -1,7 +1,6 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.PreConditions;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.function.IntUnaryOperator;
@@ -59,7 +58,7 @@ public interface BinarySearchable<COMPARISON_FUNCTION> {
     static int binarySearch(final int size,
                             final int fromIndex,
                             final int toIndex,
-                            @NotNull final IntUnaryOperator comparisonFunction) {
+                            final IntUnaryOperator comparisonFunction) {
         PreConditions.rangeCheck(size, fromIndex, toIndex);
 
         int low = fromIndex;

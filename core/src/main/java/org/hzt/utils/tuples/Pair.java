@@ -1,7 +1,6 @@
 package org.hzt.utils.tuples;
 
 import org.hzt.utils.Transformable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Objects;
@@ -53,7 +52,7 @@ public final class Pair<A, B> implements Transformable<Pair<A, B>> {
         return new Pair<>(entry.getKey(), entry.getValue());
     }
 
-    public <R> R to(@NotNull BiFunction<? super A, ? super B, ? extends R> mapper) {
+    public <R> R to(BiFunction<? super A, ? super B, ? extends R> mapper) {
         return mapper.apply(first, second);
     }
 
@@ -61,16 +60,16 @@ public final class Pair<A, B> implements Transformable<Pair<A, B>> {
         return Triple.of(first, second, third);
     }
 
-    public <A1, B1> Pair<A1, B1> mapBoth(@NotNull Function<? super A, ? extends A1> firstValueMapper,
-                                         @NotNull Function<? super B, ? extends B1> secondValueMapper) {
+    public <A1, B1> Pair<A1, B1> mapBoth(Function<? super A, ? extends A1> firstValueMapper,
+                                         Function<? super B, ? extends B1> secondValueMapper) {
         return Pair.of(firstValueMapper.apply(first), secondValueMapper.apply(second));
     }
 
-    public <A1> Pair<A1, B> mapFirst(@NotNull Function<? super A, ? extends A1> firstValueMapper) {
+    public <A1> Pair<A1, B> mapFirst(Function<? super A, ? extends A1> firstValueMapper) {
         return Pair.of(firstValueMapper.apply(first), second);
     }
 
-    public <B1> Pair<A, B1> mapSecond(@NotNull Function<? super B, ? extends B1> secondValueMapper) {
+    public <B1> Pair<A, B1> mapSecond(Function<? super B, ? extends B1> secondValueMapper) {
         return Pair.of(first, secondValueMapper.apply(second));
     }
 
@@ -82,7 +81,7 @@ public final class Pair<A, B> implements Transformable<Pair<A, B>> {
     }
 
     @Override
-    public @NotNull Pair<A, B> get() {
+    public Pair<A, B> get() {
         return this;
     }
 }

@@ -14,7 +14,6 @@ import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.hzt.utils.statistics.DoubleStatistics;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -82,7 +81,6 @@ public final class CollectorsX {
         }, downstream);
     }
 
-    @NotNull
     static <T, A, R> Collector<T, A, R> collectorOf(
             Supplier<A> supplier,
             BiConsumer<A, T> accumulator,

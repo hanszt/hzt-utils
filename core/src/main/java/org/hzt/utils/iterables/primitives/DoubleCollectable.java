@@ -8,7 +8,6 @@ import org.hzt.utils.collections.primitives.DoubleMutableCollection;
 import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.collections.primitives.DoubleMutableSet;
 import org.hzt.utils.collectors.primitves.DoubleCollector;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.BiFunction;
@@ -19,14 +18,14 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection>, PrimitiveIterable.OfDouble {
 
-    default <R> R collect(@NotNull Supplier<R> supplier,
-                          @NotNull ObjDoubleConsumer<R> accumulator) {
+    default <R> R collect(Supplier<R> supplier,
+                          ObjDoubleConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
     }
 
-    default <A, R> R collect(@NotNull Supplier<? extends A> supplier,
-                             @NotNull ObjDoubleConsumer<? super A> accumulator,
-                             @NotNull Function<? super A, ? extends R> finisher) {
+    default <A, R> R collect(Supplier<? extends A> supplier,
+                             ObjDoubleConsumer<? super A> accumulator,
+                             Function<? super A, ? extends R> finisher) {
         PrimitiveIterator.OfDouble iterator = iterator();
         final A result = supplier.get();
         while (iterator.hasNext()) {
@@ -35,14 +34,14 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return finisher.apply(result);
     }
 
-    default <A, R> R collect(@NotNull DoubleCollector<A, R> collector) {
+    default <A, R> R collect(DoubleCollector<A, R> collector) {
         return collect(collector.supplier(), collector.accumulator(), collector.finisher());
     }
 
     default <A1, R1, A2, R2, R> R teeing(
-            @NotNull DoubleCollector<A1, R1> downStream1,
-            @NotNull DoubleCollector<A2, R2> downStream2,
-            @NotNull BiFunction<R1, R2, R> combiner) {
+            DoubleCollector<A1, R1> downStream1,
+            DoubleCollector<A2, R2> downStream2,
+            BiFunction<R1, R2, R> combiner) {
         final A1 result1 = downStream1.supplier().get();
         final A2 result2 = downStream2.supplier().get();
         final ObjDoubleConsumer<A1> accumulator1 = downStream1.accumulator();
@@ -60,7 +59,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return DoubleList.copyOf(toMutableList());
     }
 
-    default <C extends DoubleMutableCollection> C to(@NotNull Supplier<C> collectionFactory) {
+    default <C extends DoubleMutableCollection> C to(Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
         final PrimitiveIterator.OfDouble iterator = iterator();
         while(iterator.hasNext()) {
@@ -78,7 +77,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return to(DoubleMutableSet::empty);
     }
 
-    default <C extends DoubleMutableCollection> C takeTo(@NotNull Supplier<C> collectionFactory, int n) {
+    default <C extends DoubleMutableCollection> C takeTo(Supplier<C> collectionFactory, int n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         C collection = collectionFactory.get();
         if (n == 0) {

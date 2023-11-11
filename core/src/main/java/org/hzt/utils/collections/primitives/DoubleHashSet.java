@@ -1,7 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.collections.MutableSetX;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.DoubleConsumer;
@@ -148,7 +147,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
     }
 
     @Override
-    public PrimitiveIterator.@NotNull OfDouble iterator() {
+    public PrimitiveIterator.OfDouble iterator() {
         return new DoubleHashIterator();
     }
 

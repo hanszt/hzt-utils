@@ -4,7 +4,6 @@ import org.hzt.utils.It;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.sequences.primitives.LongSequence;
 import org.hzt.utils.statistics.LongStatistics;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.LongSummaryStatistics;
 import java.util.OptionalDouble;
@@ -39,15 +38,15 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
         return of(LongStream.iterate(initial, operator));
     }
 
-    static LongStreamX of(final long @NotNull ... values) {
+    static LongStreamX of(final long... values) {
         return new LongStreamXImpl(stream(Spliterators.spliterator(values, 0), false));
     }
 
-    static LongStreamX of(@NotNull final PrimitiveIterable.OfLong iterable) {
+    static LongStreamX of(final PrimitiveIterable.OfLong iterable) {
         return new LongStreamXImpl(stream(iterable.spliterator(), false));
     }
 
-    static LongStreamX parallel(@NotNull final PrimitiveIterable.OfLong iterable) {
+    static LongStreamX parallel(final PrimitiveIterable.OfLong iterable) {
         return new LongStreamXImpl(stream(iterable.spliterator(), true));
     }
 
@@ -55,7 +54,6 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
         return new LongStreamXImpl(stream);
     }
 
-    @NotNull
     @Override
     Spliterator.OfLong spliterator();
 
@@ -145,7 +143,7 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
     }
 
     @Override
-    default long @NotNull [] toArray() {
+    default long[] toArray() {
         throw new UnsupportedOperationException();
     }
 
@@ -154,7 +152,6 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
         return stream().reduce(identity, accumulator);
     }
 
-    @NotNull
     @Override
     default OptionalLong reduce(final LongBinaryOperator accumulator) {
         return stream().reduce(accumulator);
@@ -167,11 +164,9 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
         return stream().collect(supplier, accumulator, combiner);
     }
 
-    @NotNull
     default OptionalLong max() {
         return stream().max();
     }
-
 
     @Override
     default long count() {
@@ -227,7 +222,6 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
         return stream().noneMatch(predicate);
     }
 
-    @NotNull
     @Override
     default OptionalLong findFirst() {
         return stream().findFirst();
@@ -238,7 +232,6 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
         return stream().findAny();
     }
 
-    @NotNull
     @Override
     default PrimitiveIterator.OfLong iterator() {
         return Spliterators.iterator(spliterator());
@@ -249,25 +242,21 @@ public interface LongStreamX extends LongStream, Spliterable.OfLong {
         throw new UnsupportedOperationException("isParallel() not supported in LongStreamX interface");
     }
 
-    @NotNull
     @Override
     default LongStreamX sequential() {
         return LongStreamX.of(stream(spliterator(), false));
     }
 
-    @NotNull
     @Override
     default LongStreamX parallel() {
         return LongStreamX.of(stream(spliterator(), true));
     }
 
-    @NotNull
     @Override
     default LongStreamX unordered() {
         return LongStreamX.of(stream().unordered());
     }
 
-    @NotNull
     @Override
     default LongStreamX onClose(final Runnable closeHandler) {
         return this;

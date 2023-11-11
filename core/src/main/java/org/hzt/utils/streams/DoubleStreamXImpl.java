@@ -1,6 +1,5 @@
 package org.hzt.utils.streams;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Spliterator;
 import java.util.stream.DoubleStream;
@@ -14,7 +13,6 @@ final class DoubleStreamXImpl implements DoubleStreamX {
     }
 
 
-    @NotNull
     @Override
     public Spliterator.OfDouble spliterator() {
         return stream.spliterator();

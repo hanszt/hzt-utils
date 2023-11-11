@@ -2,7 +2,6 @@ package org.hzt.utils.iterators;
 
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.function.IntUnaryOperator;
@@ -21,11 +20,11 @@ final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
     private MutableListX<T> nextWindow = MutableListX.empty();
 
     WindowedIterator(
-            @NotNull final Iterator<T> iterator,
+            final Iterator<T> iterator,
             final int initSize,
-            @NotNull final IntUnaryOperator nextSizeSupplier,
+            final IntUnaryOperator nextSizeSupplier,
             final int initStep,
-            @NotNull final IntUnaryOperator nextStepSupplier,
+            final IntUnaryOperator nextStepSupplier,
             final boolean partialWindows) {
         this.iterator = iterator;
         this.initSize = initSize;

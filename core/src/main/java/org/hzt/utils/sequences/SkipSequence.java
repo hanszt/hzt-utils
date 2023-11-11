@@ -1,7 +1,6 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.PreConditions;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
@@ -33,7 +32,6 @@ final class SkipSequence<T> implements SkipTakeSequence<T> {
         return count;
     }
 
-    @NotNull
     @Override
     public Iterator<T> iterator() {
         return new Iterator<>() {

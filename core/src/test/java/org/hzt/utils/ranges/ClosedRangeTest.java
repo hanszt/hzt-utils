@@ -1,6 +1,5 @@
 package org.hzt.utils.ranges;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -42,12 +41,12 @@ class ClosedRangeTest {
         }
 
         @Override
-        public @NotNull LocalDate start() {
+        public LocalDate start() {
             return start;
         }
 
         @Override
-        public @NotNull LocalDate endInclusive() {
+        public LocalDate endInclusive() {
             return endInclusive;
         }
     }

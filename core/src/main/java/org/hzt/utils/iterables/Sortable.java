@@ -5,7 +5,6 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SortedMutableSetX;
 import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.sequences.Sequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.function.Function;
@@ -23,7 +22,7 @@ public interface Sortable<T> extends Iterable<T> {
         return list;
     }
 
-    default <R extends Comparable<? super R>> Sortable<T> sortedBy(@NotNull final Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Sortable<T> sortedBy(final Function<? super T, ? extends R> selector) {
         return toMutableListSortedBy(selector);
     }
 
@@ -31,19 +30,19 @@ public interface Sortable<T> extends Iterable<T> {
         return sortedByDescending(IterableXHelper::asComparableOrThrow);
     }
 
-    default <R extends Comparable<? super R>> Sortable<T> sortedByDescending(@NotNull final Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Sortable<T> sortedByDescending(final Function<? super T, ? extends R> selector) {
         final var list = MutableListX.of(this);
         list.sort(Comparator.comparing(selector).reversed());
         return list;
     }
 
-    private <R extends Comparable<? super R>> MutableListX<T> toMutableListSortedBy(@NotNull final Function<? super T, ? extends R> selector) {
+    private <R extends Comparable<? super R>> MutableListX<T> toMutableListSortedBy(final Function<? super T, ? extends R> selector) {
         final var list = MutableListX.of(this);
         list.sort(Comparator.comparing(selector));
         return list;
     }
 
-    default <R extends Comparable<? super R>> SortedMutableSetX<T> toSortedSet(@NotNull final Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> SortedMutableSetX<T> toSortedSet(final Function<? super T, ? extends R> selector) {
         final SortedMutableSetX<T> sortedMutableSet = SortedMutableSetX.comparingBy(selector);
         for (final var t : this) {
             if (t != null && selector.apply(t) != null) {
@@ -53,7 +52,7 @@ public interface Sortable<T> extends Iterable<T> {
         return sortedMutableSet;
     }
 
-    default <R extends Comparable<? super R>> SortedMutableSetX<R> toSortedSetOf(@NotNull final Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> SortedMutableSetX<R> toSortedSetOf(final Function<? super T, ? extends R> selector) {
         final MutableListX<R> list = MutableListX.empty();
         for (final var t : this) {
             if (t != null) {

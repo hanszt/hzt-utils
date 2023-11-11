@@ -6,7 +6,6 @@ import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.ranges.LongRange;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.LongSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -287,17 +286,17 @@ public final class LongX extends Number implements NumberX<Long>, Transformable<
     }
 
     @Override
-    public @NotNull LongX get() {
+    public LongX get() {
         return this;
     }
 
     @Override
-    public @NotNull Long getValue() {
+    public Long getValue() {
         return thisLong;
     }
 
     @Override
-    public int compareTo(@NotNull final LongX o) {
+    public int compareTo(final LongX o) {
         return thisLong.compareTo(o.thisLong);
     }
 }

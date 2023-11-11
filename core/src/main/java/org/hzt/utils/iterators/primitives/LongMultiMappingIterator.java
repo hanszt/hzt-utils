@@ -2,7 +2,6 @@ package org.hzt.utils.iterators.primitives;
 
 import org.hzt.utils.sequences.primitives.LongSequence;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
@@ -14,12 +13,12 @@ public final class LongMultiMappingIterator implements PrimitiveIterator.OfLong 
 
     private PrimitiveIterator.OfLong itemIterator = null;
 
-    private LongMultiMappingIterator(@NotNull final OfLong iterator, @NotNull final LongSequence.LongMapMultiConsumer mapper) {
+    private LongMultiMappingIterator(final OfLong iterator, final LongSequence.LongMapMultiConsumer mapper) {
         this.iterator = iterator;
         this.mapper = mapper;
     }
 
-    public static LongMultiMappingIterator of(@NotNull final OfLong iterator, @NotNull final LongSequence.LongMapMultiConsumer mapper) {
+    public static LongMultiMappingIterator of(final OfLong iterator, final LongSequence.LongMapMultiConsumer mapper) {
         return new LongMultiMappingIterator(iterator, mapper);
     }
 

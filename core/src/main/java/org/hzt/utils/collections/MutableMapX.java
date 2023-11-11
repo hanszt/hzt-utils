@@ -1,7 +1,6 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.Transformable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,8 +79,8 @@ public interface MutableMapX<K, V> extends Map<K, V>, MapX<K, V>, Transformable<
     }
 
     @Override
-    default <K1, V1> MutableMapX<K1, V1> map(@NotNull final Function<? super K, ? extends K1> keyMapper,
-                                             @NotNull final Function<? super V, ? extends V1> valueMapper) {
+    default <K1, V1> MutableMapX<K1, V1> map(final Function<? super K, ? extends K1> keyMapper,
+                                             final Function<? super V, ? extends V1> valueMapper) {
         final MutableMapX<K1, V1> resultMap = MutableMapX.empty();
         for (final var entry : this) {
             final var key = entry.getKey();
@@ -104,12 +103,12 @@ public interface MutableMapX<K, V> extends Map<K, V>, MapX<K, V>, Transformable<
     }
 
     @Override
-    default void forEach(@NotNull final BiConsumer<? super K, ? super V> action) {
+    default void forEach(final BiConsumer<? super K, ? super V> action) {
         Map.super.forEach(action);
     }
 
     @Override
-    default @NotNull MutableMapX<K, V> get() {
+    default MutableMapX<K, V> get() {
         return this;
     }
 

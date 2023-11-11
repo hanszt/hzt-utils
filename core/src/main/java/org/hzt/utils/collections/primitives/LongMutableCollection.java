@@ -3,7 +3,6 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.collections.MutableCollectionX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.LongConsumer;
 import java.util.function.LongPredicate;
@@ -14,8 +13,8 @@ public interface LongMutableCollection extends LongCollection,
     boolean add(long l);
 
     @Override
-    default boolean addAll(@NotNull final Iterable<Long> iterable) {
-        var allAdded= true;
+    default boolean addAll(final Iterable<Long> iterable) {
+        var allAdded = true;
         if (iterable instanceof PrimitiveIterable.OfLong) {
             final var iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
             while (iterator.hasNext()) {
@@ -35,7 +34,7 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default boolean addAll(final long @NotNull ... array) {
+    default boolean addAll(final long... array) {
         final var iterator = PrimitiveIterators.longArrayIterator(array);
         var allAdded = true;
         while (iterator.hasNext()) {
@@ -49,7 +48,7 @@ public interface LongMutableCollection extends LongCollection,
     boolean remove(long l);
 
     @Override
-    default boolean removeAll(@NotNull final Iterable<Long> iterable) {
+    default boolean removeAll(final Iterable<Long> iterable) {
         var allRemoved = true;
         if (iterable instanceof PrimitiveIterable.OfLong) {
             final var iterator = ((PrimitiveIterable.OfLong) iterable).iterator();
@@ -69,7 +68,7 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default boolean removeAll(final long @NotNull ... array) {
+    default boolean removeAll(final long... array) {
         var allRemoved = true;
         final var iterator = PrimitiveIterators.longArrayIterator(array);
         while (iterator.hasNext()) {
@@ -82,7 +81,7 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default boolean removeIf(@NotNull final LongPredicate predicate) {
+    default boolean removeIf(final LongPredicate predicate) {
         var removed = false;
         final var iterator = iterator();
         while (iterator.hasNext()) {
@@ -95,12 +94,12 @@ public interface LongMutableCollection extends LongCollection,
     }
 
     @Override
-    default LongMutableList plus(@NotNull final Iterable<Long> iterable) {
+    default LongMutableList plus(final Iterable<Long> iterable) {
         return (LongMutableList) LongCollection.super.plus(iterable);
     }
 
     @Override
-    default LongMutableList plus(final long @NotNull ... array) {
+    default LongMutableList plus(final long... array) {
         return (LongMutableList) LongCollection.super.plus(array);
     }
 

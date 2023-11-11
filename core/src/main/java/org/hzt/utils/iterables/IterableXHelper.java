@@ -1,6 +1,5 @@
 package org.hzt.utils.iterables;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -21,7 +20,7 @@ public final class IterableXHelper {
     private IterableXHelper() {
     }
 
-    static <T> long count(final Iterable<T> iterable, @NotNull final Predicate<T> predicate) {
+    static <T> long count(final Iterable<T> iterable, final Predicate<T> predicate) {
         long counter = 0;
         for (final var t : iterable) {
             if (predicate.test(t)) {
@@ -32,11 +31,11 @@ public final class IterableXHelper {
     }
 
     static <T, R, C extends Collection<R>> C mapFilteringTo(
-            @NotNull final Iterable<T> iterable,
-            @NotNull final Supplier<C> collectionFactory,
-            @NotNull final Predicate<? super T> predicate,
-            @NotNull final Function<? super T, ? extends R> mapper,
-            @NotNull final Predicate<R> resultFilter) {
+            final Iterable<T> iterable,
+            final Supplier<C> collectionFactory,
+            final Predicate<? super T> predicate,
+            final Function<? super T, ? extends R> mapper,
+            final Predicate<R> resultFilter) {
         final var collection = collectionFactory.get();
         for (final var t : iterable) {
             if (t != null && predicate.test(t)) {
@@ -49,9 +48,8 @@ public final class IterableXHelper {
         return collection;
     }
 
-    @NotNull
     static <T, R extends Comparable<? super R>> Optional<T> compareBy(final Iterator<T> iterator,
-                                                                      @NotNull final Function<? super T, ? extends R> selector, @NotNull final IntPredicate predicate) {
+                                                                      final Function<? super T, ? extends R> selector, final IntPredicate predicate) {
         if (!iterator.hasNext()) {
             return Optional.empty();
         }
@@ -80,11 +78,10 @@ public final class IterableXHelper {
         throw new IllegalStateException(key.getClass().getSimpleName() + " is not of a comparable type");
     }
 
-    @NotNull
     static  <T, R extends Comparable<? super R>> R comparisonOf(
-            @NotNull final Iterator<T> iterator,
-            @NotNull final Function<? super T, ? extends R> selector,
-            @NotNull final IntPredicate biPredicate) {
+            final Iterator<T> iterator,
+            final Function<? super T, ? extends R> selector,
+            final IntPredicate biPredicate) {
         if (!iterator.hasNext()) {
             throw noValuePresentException();
         }
@@ -135,12 +132,11 @@ public final class IterableXHelper {
         return Optional.empty();
     }
 
-    @NotNull
     static NoSuchElementException noValuePresentException() {
         return new NoSuchElementException("No value present");
     }
 
-    static <T> void exposeNonNullVal(@NotNull final Iterable<T> iterable, @NotNull final Consumer<T> consumer) {
+    static <T> void exposeNonNullVal(final Iterable<T> iterable, final Consumer<T> consumer) {
         for (final var value : iterable) {
             if (value != null) {
                 consumer.accept(value);

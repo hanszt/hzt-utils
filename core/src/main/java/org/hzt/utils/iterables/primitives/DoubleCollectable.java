@@ -8,7 +8,6 @@ import org.hzt.utils.collections.primitives.DoubleMutableCollection;
 import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.collections.primitives.DoubleMutableSet;
 import org.hzt.utils.collectors.primitves.DoubleCollector;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -18,14 +17,14 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection>, PrimitiveIterable.OfDouble {
 
-    default <R> R collect(@NotNull final Supplier<R> supplier,
-                          @NotNull final ObjDoubleConsumer<R> accumulator) {
+    default <R> R collect(final Supplier<R> supplier,
+                          final ObjDoubleConsumer<R> accumulator) {
         return collect(supplier, accumulator, It::self);
     }
 
-    default <A, R> R collect(@NotNull final Supplier<? extends A> supplier,
-                             @NotNull final ObjDoubleConsumer<? super A> accumulator,
-                             @NotNull final Function<? super A, ? extends R> finisher) {
+    default <A, R> R collect(final Supplier<? extends A> supplier,
+                             final ObjDoubleConsumer<? super A> accumulator,
+                             final Function<? super A, ? extends R> finisher) {
         final var iterator = iterator();
         final var result = supplier.get();
         while (iterator.hasNext()) {
@@ -34,14 +33,14 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return finisher.apply(result);
     }
 
-    default <A, R> R collect(@NotNull final DoubleCollector<A, R> collector) {
+    default <A, R> R collect(final DoubleCollector<A, R> collector) {
         return collect(collector.supplier(), collector.accumulator(), collector.finisher());
     }
 
     default <A1, R1, A2, R2, R> R teeing(
-            @NotNull final DoubleCollector<A1, R1> downStream1,
-            @NotNull final DoubleCollector<A2, R2> downStream2,
-            @NotNull final BiFunction<R1, R2, R> combiner) {
+            final DoubleCollector<A1, R1> downStream1,
+            final DoubleCollector<A2, R2> downStream2,
+            final BiFunction<R1, R2, R> combiner) {
         final var result1 = downStream1.supplier().get();
         final var result2 = downStream2.supplier().get();
         final var accumulator1 = downStream1.accumulator();
@@ -59,7 +58,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return DoubleList.copyOf(toMutableList());
     }
 
-    default <C extends DoubleMutableCollection> C to(@NotNull final Supplier<C> collectionFactory) {
+    default <C extends DoubleMutableCollection> C to(final Supplier<C> collectionFactory) {
         final var collection = collectionFactory.get();
         final var iterator = iterator();
         while(iterator.hasNext()) {
@@ -77,7 +76,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         return to(DoubleMutableSet::empty);
     }
 
-    default <C extends DoubleMutableCollection> C takeTo(@NotNull final Supplier<C> collectionFactory, final int n) {
+    default <C extends DoubleMutableCollection> C takeTo(final Supplier<C> collectionFactory, final int n) {
         PreConditions.requireGreaterThanOrEqualToZero(n);
         final var collection = collectionFactory.get();
         if (n == 0) {

@@ -2,7 +2,6 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.iterators.primitives.IntSubIterator;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 
@@ -25,7 +24,6 @@ final class IntSubSequence implements IntSkipTakeSequence {
         this.count = endIndex - startIndex;
     }
 
-    @NotNull
     @Override
     public PrimitiveIterator.OfInt iterator() {
         return IntSubIterator.of(upstream.iterator(), startIndex, endIndex);

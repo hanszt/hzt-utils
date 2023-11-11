@@ -2,9 +2,9 @@ package org.hzt.utils.iterators;
 
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.function.IndexedFunction;
+import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,7 +29,7 @@ public final class Iterators {
     }
 
     @SafeVarargs
-    public static <T>Iterator<T> arrayIterator(final T... array) {
+    public static <T> Iterator<T> arrayIterator(final T... array) {
         return new ArrayIterator<>(array, false);
     }
 
@@ -46,7 +46,6 @@ public final class Iterators {
         return reverseIterator(list.listIterator(list.size()));
     }
 
-    @NotNull
     private static <T> Iterator<T> reverseIterator(final ListIterator<T> listIterator) {
         return new Iterator<>() {
             @Override
@@ -66,7 +65,7 @@ public final class Iterators {
         return new GeneratorIterator<>(initValueSupplier, nextValueSupplier);
     }
 
-    public static <T, R> @NotNull Iterator<R> transformingIterator(final Iterator<T> iterator, final Function<? super T, ? extends R> mapper) {
+    public static <T, R> Iterator<R> transformingIterator(final Iterator<T> iterator, final Function<? super T, ? extends R> mapper) {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -101,9 +100,8 @@ public final class Iterators {
     }
 
 
-
-    public static <T, R> Iterator<R> multiMappingIterator(@NotNull final Iterator<T> iterator,
-                                                          @NotNull final BiConsumer<? super T, ? super Consumer<R>> mapper) {
+    public static <T, R> Iterator<R> multiMappingIterator(final Iterator<T> iterator,
+                                                          final BiConsumer<? super T, ? super Consumer<R>> mapper) {
         return flatMappingIterator(iterator, e -> {
             final var spinedBuffer = new SpinedBuffer<R>();
             mapper.accept(e, spinedBuffer);
@@ -111,8 +109,13 @@ public final class Iterators {
         });
     }
 
-    public static <T, R> Iterator<R> flatMappingIterator(@NotNull final Iterator<T> iterator,
-                                                         @NotNull final Function<? super T, ? extends Iterator<? extends R>> toIteratorFunction) {
+    public static <T, A, R> Iterator<R> gatheringIterator(final Iterator<T> iterator,
+                                                          final Gatherer<? super T, A, R> gatherer) {
+        return new GatheringIterator<>(iterator, gatherer);
+    }
+
+    public static <T, R> Iterator<R> flatMappingIterator(final Iterator<T> iterator,
+                                                         final Function<? super T, ? extends Iterator<? extends R>> toIteratorFunction) {
         return new FlatMappingIterator<>(iterator, toIteratorFunction);
     }
 
@@ -132,16 +135,15 @@ public final class Iterators {
         return new SubIterator<>(iterator, startIndex, endIndex);
     }
 
-    public static <T> Iterator<ListX<T>> windowedIterator(@NotNull final Iterator<T> iterator,
+    public static <T> Iterator<ListX<T>> windowedIterator(final Iterator<T> iterator,
                                                           final int initSize,
-                                                          @NotNull final IntUnaryOperator nextSizeSupplier,
+                                                          final IntUnaryOperator nextSizeSupplier,
                                                           final int initStep,
-                                                          @NotNull final IntUnaryOperator nextStepSupplier,
+                                                          final IntUnaryOperator nextStepSupplier,
                                                           final boolean partialWindows) {
         return new WindowedIterator<>(iterator, initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
     }
 
-    @NotNull
     public static <T, K> Iterator<T> distinctIterator(final Iterator<T> inputIterator, final Function<? super T, ? extends K> selector) {
         final var iterator = AtomicIterator.of(inputIterator);
         final Set<K> observed = new HashSet<>();
@@ -164,10 +166,10 @@ public final class Iterators {
         return false;
     }
 
-    public static <T, A, R> Iterator<R> mergingIterator(@NotNull final Iterator<T> thisIterator,
-                                                 @NotNull final Iterator<A> otherIterator,
-                                                 @NotNull final BiFunction<? super T, ? super A, ? extends R> transform) {
-        return new Iterator<>() {
+    public static <T, A, R> Iterator<R> mergingIterator(final Iterator<T> thisIterator,
+                                                        final Iterator<A> otherIterator,
+                                                        final BiFunction<? super T, ? super A, ? extends R> transform) {
+        return new Iterator<R>() {
             @Override
             public boolean hasNext() {
                 return thisIterator.hasNext() && otherIterator.hasNext();
@@ -229,8 +231,7 @@ public final class Iterators {
         };
     }
 
-    @NotNull
-    public static <T> Iterator<T> removingIterator(final Iterable<T> iterable, @NotNull final T value) {
+    public static <T> Iterator<T> removingIterator(final Iterable<T> iterable, final T value) {
         final var removed = new AtomicBoolean();
         return filteringIterator(iterable.iterator(), e -> {
             if (!removed.get() && e == value) {
@@ -242,7 +243,6 @@ public final class Iterators {
         }, true);
     }
 
-    @NotNull
     public static <T, I extends Iterator<T>> I constrainOnceIterator(final I iterator, final AtomicBoolean consumed) {
         if (consumed.get()) {
             throw new IllegalStateException("Sequence is already consumed");

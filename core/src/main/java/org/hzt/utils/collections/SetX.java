@@ -1,7 +1,6 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.Transformable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Spliterator;
@@ -38,18 +37,17 @@ public interface SetX<E> extends CollectionX<E>, Transformable<SetX<E>> {
     @Override
     boolean contains(Object value);
 
-    default @NotNull SetX<E> get() {
+    default SetX<E> get() {
         return this;
     }
 
     @Override
-    default @NotNull SetX<E> onEach(@NotNull final Consumer<? super E> consumer) {
+    default SetX<E> onEach(final Consumer<? super E> consumer) {
         return SetX.of(CollectionX.super.onEach(consumer));
     }
 
     @Override
-    @NotNull
-    default <R> SetX<E> onEach(@NotNull final Function<? super E, ? extends R> selector, @NotNull final Consumer<? super R> consumer) {
+    default <R> SetX<E> onEach(final Function<? super E, ? extends R> selector, final Consumer<? super R> consumer) {
         return SetX.of(CollectionX.super.onEach(selector, consumer));
     }
 

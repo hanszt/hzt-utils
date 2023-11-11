@@ -3,7 +3,6 @@ package org.hzt.utils.iterators.primitives;
 import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.iterators.AbstractIterator;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.function.IntUnaryOperator;
@@ -22,11 +21,11 @@ public final class LongWindowedIterator extends AbstractIterator<LongList> {
     private LongMutableList nextWindow = LongMutableList.empty();
 
     private LongWindowedIterator(
-            @NotNull final PrimitiveIterator.OfLong iterator,
+            final PrimitiveIterator.OfLong iterator,
             final int initSize,
-            @NotNull final IntUnaryOperator nextSizeSupplier,
+            final IntUnaryOperator nextSizeSupplier,
             final int initStep,
-            @NotNull final IntUnaryOperator nextStepSupplier,
+            final IntUnaryOperator nextStepSupplier,
             final boolean partialWindows) {
         this.iterator = iterator;
         this.initSize = initSize;
@@ -36,11 +35,11 @@ public final class LongWindowedIterator extends AbstractIterator<LongList> {
         this.partialWindows = partialWindows;
     }
 
-    public static LongWindowedIterator of(@NotNull final PrimitiveIterator.OfLong iterator,
+    public static LongWindowedIterator of(final PrimitiveIterator.OfLong iterator,
                                           final int initSize,
-                                          @NotNull final IntUnaryOperator nextSizeSupplier,
+                                          final IntUnaryOperator nextSizeSupplier,
                                           final int initStep,
-                                          @NotNull final IntUnaryOperator nextStepSupplier,
+                                          final IntUnaryOperator nextStepSupplier,
                                           final boolean partialWindows) {
         return new LongWindowedIterator(iterator, initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
     }

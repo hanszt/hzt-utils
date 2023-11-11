@@ -13,6 +13,7 @@ public class Customer extends Person {
     public Customer(final String id, final String name) {
         this(id, name, new ArrayList<>());
     }
+
     public Customer(final String id, final String name, final List<BankAccount> bankAccounts) {
         super(name);
         this.customerId = id;

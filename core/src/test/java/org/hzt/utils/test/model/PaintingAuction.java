@@ -4,7 +4,6 @@ import org.hzt.test.model.Painting;
 import org.hzt.utils.Transformable;
 import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.sequences.Sequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -87,7 +86,7 @@ public final class PaintingAuction implements
     }
 
     @Override
-    public @NotNull Iterator<Painting> iterator() {
+    public Iterator<Painting> iterator() {
         return paintingList.iterator();
     }
 
@@ -101,7 +100,7 @@ public final class PaintingAuction implements
     }
 
     @Override
-    public @NotNull PaintingAuction get() {
+    public PaintingAuction get() {
         return this;
     }
 }

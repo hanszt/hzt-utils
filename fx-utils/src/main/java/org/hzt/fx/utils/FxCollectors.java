@@ -70,6 +70,7 @@ public final class FxCollectors {
                 (floatMutableList, value) -> floatMutableList.add(mapper.applyAsFloat(value)),
                 floatMutableList -> FXCollections.observableFloatArray(floatMutableList.toArray()));
     }
+
     public static DoubleCollector<?, ObservableFloatArray> toObservableFloatArray(final DoubleToFloatFunction mapper) {
         return DoubleCollector.of(FloatArrayList::new,
                 (floatMutableList, value) -> floatMutableList.add(mapper.applyAsFloat(value)),

@@ -1,6 +1,5 @@
 package org.hzt.utils.collections.primitives;
 
-import org.jetbrains.annotations.NotNull;
 
 public interface IntMutableSet extends IntMutableCollection {
 
@@ -8,7 +7,7 @@ public interface IntMutableSet extends IntMutableCollection {
         return new IntHashSet();
     }
 
-    static IntMutableSet of(final int @NotNull ... values) {
+    static IntMutableSet of(final int... values) {
         return new IntHashSet(values);
     }
 }

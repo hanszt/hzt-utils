@@ -1,6 +1,5 @@
 package org.hzt.utils.collections;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Spliterator;
@@ -21,12 +20,12 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E> {
     }
 
     @Override
-    default MutableListX<E> plus(@NotNull final E value) {
+    default MutableListX<E> plus(final E value) {
         return (MutableListX<E>) CollectionX.super.plus(value);
     }
 
     @Override
-    default MutableListX<E> plus(@NotNull final Iterable<? extends E> iterable) {
+    default MutableListX<E> plus(final Iterable<? extends E> iterable) {
         return MutableListX.of(this).plus(iterable);
     }
 
@@ -50,7 +49,7 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E> {
 
     boolean contains(Object value);
 
-    boolean containsAll(@NotNull Collection<?> c);
+    boolean containsAll(Collection<?> c);
 
     default boolean removeFirst() {
         return remove(first());

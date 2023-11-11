@@ -4,7 +4,6 @@ import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.Windowable;
 import org.hzt.utils.iterators.Iterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -38,7 +37,7 @@ public interface WindowedSequence<T> extends Windowable<T> {
         return windowed(size, 1);
     }
 
-    default <R> Sequence<R> windowed(final int size, @NotNull final Function<? super ListX<T>, ? extends R> transform) {
+    default <R> Sequence<R> windowed(final int size, final Function<? super ListX<T>, ? extends R> transform) {
         return windowed(size, 1).map(transform);
     }
 
@@ -46,7 +45,7 @@ public interface WindowedSequence<T> extends Windowable<T> {
         return windowed(size, step, false);
     }
 
-    default <R> Sequence<R> windowed(final int size, final int step, @NotNull final Function<? super ListX<T>, ? extends R> transform) {
+    default <R> Sequence<R> windowed(final int size, final int step, final Function<? super ListX<T>, ? extends R> transform) {
         return windowed(size, step, false).map(transform);
     }
 
@@ -59,22 +58,22 @@ public interface WindowedSequence<T> extends Windowable<T> {
     }
 
     default <R> Sequence<R> windowed(final int size, final int step, final boolean partialWindows,
-                                     @NotNull final Function<? super ListX<T>, R> transform) {
+                                     final Function<? super ListX<T>, R> transform) {
         return windowed(size, It::asInt, step, partialWindows, transform);
     }
 
     default <R> Sequence<R> windowed(final int initSize,
-                                     @NotNull final IntUnaryOperator nextSizeSupplier,
+                                     final IntUnaryOperator nextSizeSupplier,
                                      final int step,
                                      final boolean partialWindows,
-                                     @NotNull final Function<? super ListX<T>, R> transform) {
+                                     final Function<? super ListX<T>, R> transform) {
         return windowed(initSize, nextSizeSupplier, step, It::asInt, partialWindows).map(transform);
     }
 
     default Sequence<ListX<T>> windowed(final int initSize,
-                                        @NotNull final IntUnaryOperator nextSizeSupplier,
+                                        final IntUnaryOperator nextSizeSupplier,
                                         final int initStep,
-                                        @NotNull final IntUnaryOperator nextStepSupplier,
+                                        final IntUnaryOperator nextStepSupplier,
                                         final boolean partialWindows) {
         SequenceHelper.checkInitWindowSizeAndStep(initSize, initStep);
         return () -> Iterators.windowedIterator(iterator(),
@@ -82,17 +81,17 @@ public interface WindowedSequence<T> extends Windowable<T> {
     }
 
     default Sequence<ListX<T>> windowed(final int initSize,
-                                        @NotNull final IntUnaryOperator nextSizeSupplier,
+                                        final IntUnaryOperator nextSizeSupplier,
                                         final int initStep,
-                                        @NotNull final IntUnaryOperator nextStepSupplier) {
+                                        final IntUnaryOperator nextStepSupplier) {
         return windowed(initSize, nextSizeSupplier, initStep, nextStepSupplier, false);
     }
 
-    default Sequence<ListX<T>> windowed(final int initSize, @NotNull final IntUnaryOperator nextSizeSupplier, final int step) {
+    default Sequence<ListX<T>> windowed(final int initSize, final IntUnaryOperator nextSizeSupplier, final int step) {
         return windowed(initSize, nextSizeSupplier, step, It::asInt, false);
     }
 
-    default Sequence<ListX<T>> windowed(final int size, final int initStep, @NotNull final IntUnaryOperator nextStepSupplier, final boolean partialWindows) {
+    default Sequence<ListX<T>> windowed(final int size, final int initStep, final IntUnaryOperator nextStepSupplier, final boolean partialWindows) {
         return windowed(size, It::self, initStep, nextStepSupplier, partialWindows);
     }
 }

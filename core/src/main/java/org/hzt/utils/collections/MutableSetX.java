@@ -1,7 +1,6 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.iterables.Collectable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Set;
@@ -42,14 +41,14 @@ public interface MutableSetX<E> extends Set<E>, SetX<E>, MutableCollectionX<E> {
     }
 
     @Override
-    default MutableSetX<E> intersect(@NotNull final Iterable<E> other) {
+    default MutableSetX<E> intersect(final Iterable<E> other) {
         final var otherCollection = other instanceof Collectable<?> ? (Collection<E>) other : MutableSetX.of(other);
         retainAll(otherCollection);
         return this;
     }
 
     @Override
-    default MutableSetX<E> union(@NotNull final Iterable<E> other) {
+    default MutableSetX<E> union(final Iterable<E> other) {
         addAll(other);
         return this;
     }

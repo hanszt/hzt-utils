@@ -7,7 +7,6 @@ import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.tuples.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
@@ -41,9 +40,9 @@ public final class IterableReductions {
     }
 
     public static <T, R, K> MapX<K, MutableListX<R>> groupMapping(
-            @NotNull final Iterable<T> iterable,
-            @NotNull final Function<? super T, ? extends K> classifier,
-            @NotNull final Function<? super T, ? extends R> valueMapper) {
+            final Iterable<T> iterable,
+            final Function<? super T, ? extends K> classifier,
+            final Function<? super T, ? extends R> valueMapper) {
         final MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
         for (final var t : iterable) {
             groupedMap.computeIfAbsent(classifier.apply(t), key -> MutableListX.empty()).add(valueMapper.apply(t));
@@ -52,9 +51,9 @@ public final class IterableReductions {
     }
 
     public static <T, R> Pair<ListX<R>, ListX<R>> partitionMapping(
-            @NotNull final Iterable<T> iterable,
-            @NotNull final Predicate<T> predicate,
-            @NotNull final Function<? super T, ? extends R> resultMapper) {
+            final Iterable<T> iterable,
+            final Predicate<T> predicate,
+            final Function<? super T, ? extends R> resultMapper) {
         final MutableListX<R> matchingList = MutableListX.empty();
         final MutableListX<R> nonMatchingList = MutableListX.empty();
         for (final var t : iterable) {
@@ -71,9 +70,9 @@ public final class IterableReductions {
     }
 
     public static <T, S, I extends Iterable<S>, R> SetX<R> intersectionOf(
-            @NotNull final Iterable<T> iterable,
-            @NotNull final Function<? super T, ? extends I> toCollectionMapper,
-            @NotNull final Function<? super S, ? extends R> selector) {
+            final Iterable<T> iterable,
+            final Function<? super T, ? extends I> toCollectionMapper,
+            final Function<? super S, ? extends R> selector) {
         final MutableSetX<R> common = MutableSetX.empty();
         for (final var t : iterable) {
             final var otherIterable = toCollectionMapper.apply(t);
@@ -91,7 +90,7 @@ public final class IterableReductions {
         return common;
     }
 
-    public static <T> boolean any(@NotNull final Iterable<T> iterable, @NotNull final Predicate<T> predicate) {
+    public static <T> boolean any(final Iterable<T> iterable, final Predicate<T> predicate) {
         for (final var element : iterable) {
             if (predicate.test(element)) {
                 return true;
@@ -100,7 +99,7 @@ public final class IterableReductions {
         return false;
     }
 
-    public static <T> boolean all(@NotNull final Iterable<T> iterable, @NotNull final Predicate<T> predicate) {
+    public static <T> boolean all(final Iterable<T> iterable, final Predicate<T> predicate) {
         for (final var t : iterable) {
             if (!predicate.test(t)) {
                 return false;
@@ -109,7 +108,7 @@ public final class IterableReductions {
         return true;
     }
 
-    public static <T> boolean none(@NotNull final Iterable<T> iterable, @NotNull final Predicate<T> predicate) {
+    public static <T> boolean none(final Iterable<T> iterable, final Predicate<T> predicate) {
         for (final var t : iterable) {
             if (predicate.test(t)) {
                 return false;
@@ -134,7 +133,7 @@ public final class IterableReductions {
         }
     }
 
-    public static <T> Optional<T> findLast(final Iterable<T> iterable, @NotNull final Predicate<T> predicate) {
+    public static <T> Optional<T> findLast(final Iterable<T> iterable, final Predicate<T> predicate) {
         final var iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             throw IterableXHelper.noValuePresentException();

@@ -7,6 +7,7 @@ import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
+import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterables.EntryIterable;
 import org.hzt.utils.iterables.IterableX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
@@ -18,8 +19,6 @@ import org.hzt.utils.sequences.primitives.LongSequence;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.List;
@@ -65,12 +64,16 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return new EmptySequence<>();
     }
 
+    static <T> Sequence.Builder<T> builder() {
+        return new SequenceBuilder<>();
+    }
+
     @SafeVarargs
     static <T> Sequence<T> of(final T... values) {
         return () -> Iterators.arrayIterator(values);
     }
 
-    static <T> Sequence<T> of(@NotNull final Iterable<T> iterable) {
+    static <T> Sequence<T> of(final Iterable<T> iterable) {
         return iterable::iterator;
     }
 
@@ -95,35 +98,35 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return map.entrySet()::iterator;
     }
 
-    static <T> Sequence<T> ofNullable(@Nullable final T value) {
+    static <T> Sequence<T> ofNullable(final T value) {
         return value != null ? Sequence.of(value) : new EmptySequence<>();
     }
 
-    static <T> Sequence<T> iterate(@Nullable final T seedValue, @NotNull final UnaryOperator<T> nextFunction) {
+    static <T> Sequence<T> iterate(final T seedValue, final UnaryOperator<T> nextFunction) {
         return seedValue == null ? new EmptySequence<>() : (() -> Iterators.generatorIterator(() -> seedValue, nextFunction));
     }
 
-    static <T> Sequence<T> generate(@NotNull final Supplier<? extends T> nextFunction) {
+    static <T> Sequence<T> generate(final Supplier<? extends T> nextFunction) {
         return generate(nextFunction, t -> nextFunction.get());
     }
 
-    static <T> Sequence<T> generate(@NotNull final Supplier<? extends T> seedFunction, @NotNull final UnaryOperator<T> nextFunction) {
+    static <T> Sequence<T> generate(final Supplier<? extends T> seedFunction, final UnaryOperator<T> nextFunction) {
         return () -> Iterators.generatorIterator(seedFunction, nextFunction);
     }
 
-    default Sequence<T> plus(@NotNull final T value) {
-        return Sequence.of(this, Sequence.of(value)).flatMap(It::self);
+    default Sequence<T> plus(final T value) {
+        return Sequence.of(this, Sequence.of(value)).mapMulti(Iterable::forEach);
     }
 
-    default Sequence<T> plus(@NotNull final Iterable<? extends T> values) {
-        return Sequence.of(this, Sequence.of(values)).flatMap(It::self);
+    default Sequence<T> plus(final Iterable<? extends T> values) {
+        return Sequence.of(this, Sequence.of(values)).mapMulti(Iterable::forEach);
     }
 
-    default Sequence<T> minus(@NotNull final T value) {
+    default Sequence<T> minus(final T value) {
         return () -> Iterators.removingIterator(this, value);
     }
 
-    default Sequence<T> minus(@NotNull final Iterable<T> values) {
+    default Sequence<T> minus(final Iterable<T> values) {
         final var others = values instanceof Set<?> ? (Set<T>) values : Sequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
@@ -148,11 +151,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> Iterators.interspersingIterator(iterator(), initSupplier, operator);
     }
 
-    default <R> Sequence<R> map(@NotNull final Function<? super T, ? extends R> mapper) {
+    default <R> Sequence<R> map(final Function<? super T, ? extends R> mapper) {
         return () -> Iterators.transformingIterator(iterator(), mapper);
     }
 
-    default <R> Sequence<R> mapNotNull(@NotNull final Function<? super T, ? extends R> mapper) {
+    default <R> Sequence<R> mapNotNull(final Function<? super T, ? extends R> mapper) {
         return () -> Iterators.filteringIterator(
                 Iterators.transformingIterator(
                         Iterators.filteringIterator(iterator(),
@@ -161,73 +164,77 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
                 Objects::nonNull, true);
     }
 
-    default <R> Sequence<R> mapIfPresent(@NotNull final Function<? super T, Optional<R>> mapper) {
+    default <A, R> Sequence<R> gather(final Gatherer<? super T, A, R> gatherer) {
+        return () -> Iterators.gatheringIterator(iterator(), gatherer);
+    }
+
+    default <R> Sequence<R> mapIfPresent(final Function<? super T, Optional<R>> mapper) {
         return () -> Iterators.multiMappingIterator(iterator(), (t, consumer) -> mapper.apply(t).ifPresent(consumer));
     }
 
     @Override
-    default <R> Sequence<R> mapIndexed(@NotNull final IndexedFunction<? super T, ? extends R> mapper) {
+    default <R> Sequence<R> mapIndexed(final IndexedFunction<? super T, ? extends R> mapper) {
         return () -> Iterators.transformingIndexedIterator(iterator(), mapper);
     }
 
-    default <R> Sequence<R> flatMap(@NotNull final Function<? super T, ? extends Iterable<? extends R>> transform) {
+    default <R> Sequence<R> flatMap(final Function<? super T, ? extends Iterable<? extends R>> transform) {
         return () -> Iterators.flatMappingIterator(iterator(), t -> transform.apply(t).iterator());
     }
 
     @Override
-    default IntSequence flatMapToInt(@NotNull final Function<? super T, ? extends PrimitiveIterable.OfInt> mapper) {
+    default IntSequence flatMapToInt(final Function<? super T, ? extends PrimitiveIterable.OfInt> mapper) {
         return () -> PrimitiveIterators.toIntFlatMappingIterator(iterator(), t -> mapper.apply(t).iterator());
     }
 
     @Override
-    default LongSequence flatMapToLong(@NotNull final Function<? super T, ? extends PrimitiveIterable.OfLong> mapper) {
+    default LongSequence flatMapToLong(final Function<? super T, ? extends PrimitiveIterable.OfLong> mapper) {
         return () -> PrimitiveIterators.toLongFlatMappingIterator(iterator(), t -> mapper.apply(t).iterator());
     }
 
     @Override
-    default DoubleSequence flatMapToDouble(@NotNull final Function<? super T, ? extends PrimitiveIterable.OfDouble> mapper) {
+    default DoubleSequence flatMapToDouble(final Function<? super T, ? extends PrimitiveIterable.OfDouble> mapper) {
         return () -> PrimitiveIterators.toDoubleFlatMappingIterator(iterator(), t -> mapper.apply(t).iterator());
     }
 
-    default <R> Sequence<R> mapMulti(@NotNull final BiConsumer<? super T, ? super Consumer<R>> mapper) {
+    default <R> Sequence<R> mapMulti(final BiConsumer<? super T, ? super Consumer<R>> mapper) {
         return () -> Iterators.multiMappingIterator(iterator(), mapper);
     }
 
     @Override
-    default IntSequence mapMultiToInt(@NotNull final BiConsumer<? super T, IntConsumer> mapper) {
+    default IntSequence mapMultiToInt(final BiConsumer<? super T, IntConsumer> mapper) {
         return (IntSequence) IterableX.super.mapMultiToInt(mapper);
     }
 
     @Override
-    default LongSequence mapMultiToLong(@NotNull final BiConsumer<? super T, LongConsumer> mapper) {
+    default LongSequence mapMultiToLong(final BiConsumer<? super T, LongConsumer> mapper) {
         return (LongSequence) IterableX.super.mapMultiToLong(mapper);
     }
 
     @Override
-    default DoubleSequence mapMultiToDouble(@NotNull final BiConsumer<? super T, DoubleConsumer> mapper) {
+    default DoubleSequence mapMultiToDouble(final BiConsumer<? super T, DoubleConsumer> mapper) {
         return (DoubleSequence) IterableX.super.mapMultiToDouble(mapper);
     }
 
     @Override
-    default <R> Sequence<R> castIfInstanceOf(@NotNull final Class<R> aClass) {
+    default <R> Sequence<R> castIfInstanceOf(final Class<R> aClass) {
         return filter(aClass::isInstance).map(aClass::cast);
     }
 
-    default Sequence<T> filter(@NotNull final Predicate<? super T> predicate) {
-        return () ->Iterators.filteringIterator(iterator(), predicate, true);
+    default Sequence<T> filter(final Predicate<? super T> predicate) {
+        return () -> Iterators.filteringIterator(iterator(), predicate, true);
     }
 
-    default Sequence<T> filterNot(@NotNull final Predicate<? super T> predicate) {
-        return () ->Iterators.filteringIterator(iterator(), predicate, false);
+    default Sequence<T> filterNot(final Predicate<? super T> predicate) {
+        return () -> Iterators.filteringIterator(iterator(), predicate, false);
     }
 
-    default <R> Sequence<T> filterBy(@NotNull final Function<? super T, ? extends R> selector,
-                                     @NotNull final Predicate<? super R> predicate) {
+    default <R> Sequence<T> filterBy(final Function<? super T, ? extends R> selector,
+                                     final Predicate<? super R> predicate) {
         return filter(Objects::nonNull).filter(t -> predicate.test(selector.apply(t)));
     }
 
     @Override
-    default Sequence<T> filterIndexed(@NotNull final IndexedPredicate<? super T> predicate) {
+    default Sequence<T> filterIndexed(final IndexedPredicate<? super T> predicate) {
         return withIndex()
                 .filter(indexedValue -> predicate.test(indexedValue.index(), indexedValue.value()))
                 .map(IndexedValue::value);
@@ -241,15 +248,13 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return this::indexedIterator;
     }
 
-    @NotNull
     @Override
-    default Sequence<T> onEach(@NotNull final Consumer<? super T> consumer) {
+    default Sequence<T> onEach(final Consumer<? super T> consumer) {
         return onEach(It::self, consumer);
     }
 
-    @NotNull
     @Override
-    default <R> Sequence<T> onEach(@NotNull final Function<? super T, ? extends R> selector, @NotNull final Consumer<? super R> consumer) {
+    default <R> Sequence<T> onEach(final Function<? super T, ? extends R> selector, final Consumer<? super R> consumer) {
         return map(item -> {
             consumer.accept(selector.apply(item));
             return item;
@@ -262,12 +267,12 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default @NotNull Sequence<T> distinct() {
+    default Sequence<T> distinct() {
         return distinctBy(It::self);
     }
 
     @Override
-    default <R> @NotNull Sequence<T> distinctBy(@NotNull final Function<? super T, ? extends R> selector) {
+    default <R> Sequence<T> distinctBy(final Function<? super T, ? extends R> selector) {
         return () -> Iterators.distinctIterator(iterator(), selector);
     }
 
@@ -276,11 +281,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> Iterators.constrainOnceIterator(iterator(), consumed);
     }
 
-    default <R> Sequence<R> zipWithNext(@NotNull final BiFunction<? super T, ? super T, ? extends R> function) {
+    default <R> Sequence<R> zipWithNext(final BiFunction<? super T, ? super T, ? extends R> function) {
         return windowed(2, list -> function.apply(list.first(), list.last()));
     }
 
-    default <A, R> Sequence<R> zip(@NotNull final Iterable<A> other, @NotNull final BiFunction<? super T, ? super A, ? extends R> function) {
+    default <A, R> Sequence<R> zip(final Iterable<A> other, final BiFunction<? super T, ? super A, ? extends R> function) {
         return () -> Iterators.mergingIterator(iterator(), other.iterator(), function);
     }
 
@@ -297,11 +302,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         }
     }
 
-    default Sequence<T> takeWhile(@NotNull final Predicate<? super T> predicate) {
+    default Sequence<T> takeWhile(final Predicate<? super T> predicate) {
         return () -> Iterators.takeWhileIterator(iterator(), predicate, false);
     }
 
-    default Sequence<T> takeWhileInclusive(@NotNull final Predicate<? super T> predicate) {
+    default Sequence<T> takeWhileInclusive(final Predicate<? super T> predicate) {
         return () -> Iterators.takeWhileIterator(iterator(), predicate, true);
     }
 
@@ -318,12 +323,12 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default Sequence<T> skipWhile(@NotNull final Predicate<? super T> predicate) {
+    default Sequence<T> skipWhile(final Predicate<? super T> predicate) {
         return () -> Iterators.skipWhileIterator(iterator(), predicate, false);
     }
 
     @Override
-    default Sequence<T> skipWhileInclusive(@NotNull final Predicate<? super T> predicate) {
+    default Sequence<T> skipWhileInclusive(final Predicate<? super T> predicate) {
         return () -> Iterators.skipWhileIterator(iterator(), predicate, true);
     }
 
@@ -338,7 +343,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default <R extends Comparable<? super R>> Sequence<T> sortedBy(@NotNull final Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Sequence<T> sortedBy(final Function<? super T, ? extends R> selector) {
         return () -> IterableX.super.sortedBy(selector).iterator();
     }
 
@@ -352,12 +357,12 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default <R extends Comparable<? super R>> Sequence<T> sortedByDescending(@NotNull final Function<? super T, ? extends R> selector) {
+    default <R extends Comparable<? super R>> Sequence<T> sortedByDescending(final Function<? super T, ? extends R> selector) {
         return () -> IterableX.super.sortedByDescending(selector).iterator();
     }
 
-    default <K, V> EntrySequence<K, V> asEntrySequence(@NotNull final Function<? super T, ? extends K> keyMapper,
-                                                       @NotNull final Function<? super T, ? extends V> valueMapper) {
+    default <K, V> EntrySequence<K, V> asEntrySequence(final Function<? super T, ? extends K> keyMapper,
+                                                       final Function<? super T, ? extends V> valueMapper) {
         return EntrySequence.of(map(value -> Map.entry(keyMapper.apply(value), valueMapper.apply(value))));
     }
 
@@ -366,30 +371,30 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default <K> EntrySequence<K, T> associateBy(@NotNull final Function<? super T, ? extends K> keyMapper) {
+    default <K> EntrySequence<K, T> associateBy(final Function<? super T, ? extends K> keyMapper) {
         return EntrySequence.ofPairs(map(e -> Pair.of(keyMapper.apply(e), e)));
     }
 
-    default <V> EntrySequence<T, V> associateWith(@NotNull final Function<? super T, ? extends V> valueMapper) {
+    default <V> EntrySequence<T, V> associateWith(final Function<? super T, ? extends V> valueMapper) {
         return EntrySequence.ofPairs(map(e -> Pair.of(e, valueMapper.apply(e))));
     }
 
     @Override
-    default IntSequence mapToInt(@NotNull final ToIntFunction<? super T> toIntMapper) {
+    default IntSequence mapToInt(final ToIntFunction<? super T> toIntMapper) {
         return () -> PrimitiveIterators.intIteratorOf(iterator(), toIntMapper);
     }
 
     @Override
-    default LongSequence mapToLong(@NotNull final ToLongFunction<? super T> toLongMapper) {
+    default LongSequence mapToLong(final ToLongFunction<? super T> toLongMapper) {
         return () -> PrimitiveIterators.longIteratorOf(iterator(), toLongMapper);
     }
 
     @Override
-    default DoubleSequence mapToDouble(@NotNull final ToDoubleFunction<? super T> toDoubleMapper) {
+    default DoubleSequence mapToDouble(final ToDoubleFunction<? super T> toDoubleMapper) {
         return () -> PrimitiveIterators.doubleIteratorOf(iterator(), toDoubleMapper);
     }
 
-    default <R> R transform(@NotNull final Function<? super Sequence<T>, ? extends R> resultMapper) {
+    default <R> R transform(final Function<? super Sequence<T>, ? extends R> resultMapper) {
         return resultMapper.apply(this);
     }
 
@@ -403,39 +408,79 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return this;
     }
 
-    default <R1, R2, R> R toTwo(@NotNull final Function<? super Sequence<T>, ? extends R1> resultMapper1,
-                                @NotNull final Function<? super Sequence<T>, ? extends R2> resultMapper2,
-                                @NotNull final BiFunction<? super R1, ? super R2, ? extends R> merger) {
+    default <R1, R2, R> R toTwo(final Function<? super Sequence<T>, ? extends R1> resultMapper1,
+                                final Function<? super Sequence<T>, ? extends R2> resultMapper2,
+                                final BiFunction<? super R1, ? super R2, ? extends R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
     }
 
-    default <R1, R2> Pair<R1, R2> toTwo(@NotNull final Function<? super Sequence<T>, ? extends R1> resultMapper1,
-                                        @NotNull final Function<? super Sequence<T>, ? extends R2> resultMapper2) {
+    default <R1, R2> Pair<R1, R2> toTwo(final Function<? super Sequence<T>, ? extends R1> resultMapper1,
+                                        final Function<? super Sequence<T>, ? extends R2> resultMapper2) {
         return toTwo(resultMapper1, resultMapper2, Pair::of);
     }
 
-    default <R1, R2, R3, R> R toThree(@NotNull final Function<? super Sequence<T>, ? extends R1> resultMapper1,
-                                      @NotNull final Function<? super Sequence<T>, ? extends R2> resultMapper2,
-                                      @NotNull final Function<? super Sequence<T>, ? extends R3> resultMapper3,
-                                      @NotNull final TriFunction<R1, R2, R3, R> merger) {
+    default <R1, R2, R3, R> R toThree(final Function<? super Sequence<T>, ? extends R1> resultMapper1,
+                                      final Function<? super Sequence<T>, ? extends R2> resultMapper2,
+                                      final Function<? super Sequence<T>, ? extends R3> resultMapper3,
+                                      final TriFunction<R1, R2, R3, R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this), resultMapper3.apply(this));
     }
 
-    default <R1, R2, R3> Triple<R1, R2, R3> toThree(@NotNull final Function<? super Sequence<T>, ? extends R1> resultMapper1,
-                                                    @NotNull final Function<? super Sequence<T>, ? extends R2> resultMapper2,
-                                                    @NotNull final Function<? super Sequence<T>, ? extends R3> resultMapper3) {
+    default <R1, R2, R3> Triple<R1, R2, R3> toThree(final Function<? super Sequence<T>, ? extends R1> resultMapper1,
+                                                    final Function<? super Sequence<T>, ? extends R2> resultMapper2,
+                                                    final Function<? super Sequence<T>, ? extends R3> resultMapper3) {
         return toThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
     }
 
-    default <R1, R2, R3, R4, R> R toFour(@NotNull final Function<? super Sequence<T>, ? extends R1> resultMapper1,
-                                         @NotNull final Function<? super Sequence<T>, ? extends R2> resultMapper2,
-                                         @NotNull final Function<? super Sequence<T>, ? extends R3> resultMapper3,
-                                         @NotNull final Function<? super Sequence<T>, ? extends R4> resultMapper4,
-                                         @NotNull final QuadFunction<R1, R2, R3, R4, R> merger) {
+    default <R1, R2, R3, R4, R> R toFour(final Function<? super Sequence<T>, ? extends R1> resultMapper1,
+                                         final Function<? super Sequence<T>, ? extends R2> resultMapper2,
+                                         final Function<? super Sequence<T>, ? extends R3> resultMapper3,
+                                         final Function<? super Sequence<T>, ? extends R4> resultMapper4,
+                                         final QuadFunction<R1, R2, R3, R4, R> merger) {
         final var r1 = resultMapper1.apply(this);
         final var r2 = resultMapper2.apply(this);
         final var r3 = resultMapper3.apply(this);
         final var r4 = resultMapper4.apply(this);
         return merger.apply(r1, r2, r3, r4);
+    }
+
+    interface Builder<T> extends Consumer<T> {
+
+        /**
+         * Adds an element to the sequence being built.
+         *
+         * @throws IllegalStateException if the builder has already transitioned to the built state
+         */
+        @Override
+        void accept(T t);
+
+        /**
+         * Adds an element to the sequence being built.
+         *
+         * @param t the element to add
+         * @return {@code this} builder
+         * @throws IllegalStateException if the builder has already transitioned to
+         *                               the built state
+         * @implSpec The default implementation behaves as if:
+         * <pre>{@code
+         *     accept(t)
+         *     return this;
+         * }</pre>
+         */
+        default Sequence.Builder<T> add(final T t) {
+            accept(t);
+            return this;
+        }
+
+        /**
+         * Builds the sequence, transitioning this builder to the built state.
+         * An {@code IllegalStateException} is thrown if there are further attempts
+         * to operate on the builder after it has entered the built state.
+         *
+         * @return the built sequence
+         * @throws IllegalStateException if the builder has already transitioned to the built state
+         */
+        Sequence<T> build();
+
     }
 }

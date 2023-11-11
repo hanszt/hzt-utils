@@ -2,7 +2,6 @@ package org.hzt.utils.tuples;
 
 import org.hzt.utils.Transformable;
 import org.hzt.utils.function.primitives.IntBiFunction;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.IntFunction;
@@ -63,7 +62,7 @@ public final class IntPair implements Transformable<IntPair> {
     }
 
     @Override
-    public @NotNull IntPair get() {
+    public IntPair get() {
         return this;
     }
 }

@@ -30,7 +30,7 @@ public final class GraphIterators {
         return new BreadthFirstIterator<>(s, setPredecessor);
     }
 
-    public static <T, S extends Node<T, S>>Iterator<S> depthFirstIterator(final S s, final boolean setPredecessor) {
+    public static <T, S extends Node<T, S>> Iterator<S> depthFirstIterator(final S s, final boolean setPredecessor) {
         return new DepthFirstIterator<>(s, setPredecessor);
     }
 }

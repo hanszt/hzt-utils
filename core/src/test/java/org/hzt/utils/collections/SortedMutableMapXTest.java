@@ -3,6 +3,7 @@ package org.hzt.utils.collections;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.utils.It;
+import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.NavigableMap;

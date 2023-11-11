@@ -2,7 +2,6 @@ package org.hzt.utils.arrays;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.primitive_comparators.IntComparator;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A Tim sort implementation for sorting int arrays where an IntComparator is used for the comparisons
@@ -14,7 +13,7 @@ public final class IntTimSort extends PrimitiveTimSort<int[], IntComparator> {
         super(intArray.length, intArray, new int[getInitTempLength(intArray.length)], intComparator);
     }
 
-    static void sort(final int @NotNull [] array, final int fromIndex, final int toIndex, @NotNull final IntComparator comparator) {
+    static void sort(final int[] array, final int fromIndex, final int toIndex, final IntComparator comparator) {
         PreConditions.require(fromIndex >= 0 && fromIndex <= toIndex && toIndex <= array.length);
         final var nRemaining = toIndex - fromIndex;
         if (nRemaining >= 2) {

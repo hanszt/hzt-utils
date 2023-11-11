@@ -1,7 +1,6 @@
 package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.iterators.primitives.PrimitiveAtomicIterator;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
@@ -27,7 +26,7 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
             return PrimitiveAtomicIterator.of(iterator());
         }
 
-        default void forEachInt(@NotNull final IntConsumer action) {
+        default void forEachInt(final IntConsumer action) {
             final var intIterator = iterator();
             while (intIterator.hasNext()) {
                 action.accept(intIterator.nextInt());
@@ -57,7 +56,7 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
             return PrimitiveAtomicIterator.of(iterator());
         }
 
-        default void forEachLong(@NotNull final LongConsumer action) {
+        default void forEachLong(final LongConsumer action) {
             final var intIterator = iterator();
             while (intIterator.hasNext()) {
                 action.accept(intIterator.nextLong());
@@ -87,7 +86,7 @@ public interface PrimitiveIterable<T, C> extends Iterable<T> {
             return PrimitiveAtomicIterator.of(iterator());
         }
 
-        default void forEachDouble(@NotNull final DoubleConsumer action) {
+        default void forEachDouble(final DoubleConsumer action) {
             final var intIterator = iterator();
             while (intIterator.hasNext()) {
                 action.accept(intIterator.nextDouble());

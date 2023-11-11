@@ -99,6 +99,7 @@ public final class StringPredicates {
     public static Predicate<String> endsWithNoneOf(final String... strings) {
         return string -> string != null && Sequence.of(strings).none(string::endsWith);
     }
+
     public static Predicate<String> startsWithAnyOf(final String... strings) {
         return string -> string != null && Sequence.of(strings).any(string::startsWith);
     }

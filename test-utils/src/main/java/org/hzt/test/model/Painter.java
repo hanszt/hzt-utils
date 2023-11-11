@@ -1,6 +1,5 @@
 package org.hzt.test.model;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -83,7 +82,7 @@ public final class Painter extends Person implements Comparable<Painter>, Iterab
     }
 
     @Override
-    public @NotNull Iterator<Painting> iterator() {
+    public Iterator<Painting> iterator() {
         return paintingList.iterator();
     }
 

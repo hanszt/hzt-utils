@@ -5,7 +5,6 @@ import org.hzt.utils.Transformable;
 import org.hzt.utils.iterables.Reversable;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -62,7 +61,7 @@ public interface ListX<E> extends CollectionX<E>,
         return new ImmutableListX<>(list);
     }
 
-    default <R> R foldRight(@NotNull final R initial, @NotNull final BiFunction<E, R, R> operation) {
+    default <R> R foldRight(final R initial, final BiFunction<E, R, R> operation) {
         final var list = this;
         var accumulator = initial;
         if (list.isNotEmpty()) {
@@ -166,13 +165,11 @@ public interface ListX<E> extends CollectionX<E>,
     int lastIndexOf(Object o);
 
     @Override
-    @NotNull
     default E first() {
         return get(0);
     }
 
     @Override
-    @NotNull
     default E last() {
         return get(lastIndex());
     }
@@ -197,7 +194,7 @@ public interface ListX<E> extends CollectionX<E>,
         return ListX.copyOf(skipLastTo(MutableListX::withInitCapacity, n));
     }
 
-    default ListX<E> skipLastWhile(@NotNull final Predicate<? super E> predicate) {
+    default ListX<E> skipLastWhile(final Predicate<? super E> predicate) {
         return ListX.copyOf(skipLastWhileTo(MutableListX::withInitCapacity, predicate));
     }
 
@@ -219,12 +216,12 @@ public interface ListX<E> extends CollectionX<E>,
         return empty;
     }
 
-    default ListX<E> takeLastWhile(@NotNull final Predicate<? super E> predicate) {
+    default ListX<E> takeLastWhile(final Predicate<? super E> predicate) {
         return ListX.copyOf(takeLastWhileTo(MutableListX::withInitCapacity, predicate));
     }
 
-    default <C extends Collection<E>> C takeLastWhileTo(@NotNull final IntFunction<C> collectionFactory,
-                                                        @NotNull final Predicate<? super E> predicate) {
+    default <C extends Collection<E>> C takeLastWhileTo(final IntFunction<C> collectionFactory,
+                                                        final Predicate<? super E> predicate) {
         final var collection = collectionFactory.apply(0);
         if (isEmpty()) {
             return collection;
@@ -249,13 +246,12 @@ public interface ListX<E> extends CollectionX<E>,
     }
 
     @Override
-    default @NotNull ListX<E> onEach(@NotNull final Consumer<? super E> consumer) {
+    default ListX<E> onEach(final Consumer<? super E> consumer) {
         return ListX.of(CollectionX.super.onEach(consumer));
     }
 
     @Override
-    @NotNull
-    default <R> ListX<E> onEach(@NotNull final Function<? super E, ? extends R> selector, @NotNull final Consumer<? super R> consumer) {
+    default <R> ListX<E> onEach(final Function<? super E, ? extends R> selector, final Consumer<? super R> consumer) {
         return ListX.of(CollectionX.super.onEach(selector, consumer));
     }
 

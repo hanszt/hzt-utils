@@ -102,7 +102,7 @@ public final class Grid2DUtils {
     }
 
     public static <T> boolean allInGrid(final Iterable<? extends Iterable<T>> grid, final Predicate<T> predicate) {
-        for (final Iterable<T> row : grid) {
+        for (final var row : grid) {
             for (final var item : row) {
                 if (!predicate.test(item)) {
                     return false;
@@ -145,13 +145,17 @@ public final class Grid2DUtils {
         return true;
     }
 
-    public static <T, R> List<List<R>> mapGrid(final Iterable<? extends Iterable<T>> grid, final Function<? super T, R> mapper) {
-        final Function<Iterable<T>, List<R>> rowMapper = row -> StreamSupport.stream(row.spliterator(), false)
-                .map(mapper)
-                .toList();
-
+    public static <T, R> List<List<R>> mapGrid(final Iterable<? extends Iterable<T>> grid, final Function<? super T, ? extends R> mapper) {
+        final Function<Iterable<T>, List<R>> roMapper = row -> {
+            List<R> list = new ArrayList<>();
+            for (T t : row) {
+                R r = mapper.apply(t);
+                list.add(r);
+            }
+            return List.copyOf(list);
+        };
         return StreamSupport.stream(grid.spliterator(), false)
-                .map(rowMapper)
+                .map(roMapper)
                 .toList();
     }
 

@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.hzt.utils</groupId>
         <artifactId>hzt-utils</artifactId>
-        <version>0.7.5.21</version>
+        <version>1.0.0.21</version>
     </parent>
 
     <artifactId>test-utils</artifactId>
@@ -19,12 +19,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
+            <artifactId>junit-jupiter-api</artifactId>
             <version>${junit.jupiter.version}</version>
         </dependency>
         <dependency>
@@ -49,7 +45,8 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <!-- required due to https://github.com/apache/maven-surefire/pull/263 -->
-                    <argLine>--add-exports org.junit.platform.commons/org.junit.platform.commons.util=ALL-UNNAMED
+                    <argLine>
+                        --add-exports org.junit.platform.commons/org.junit.platform.commons.util=ALL-UNNAMED
                     </argLine>
                 </configuration>
             </plugin>

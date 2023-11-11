@@ -2,7 +2,6 @@ package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.function.primitives.DoubleBiFunction;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,8 +24,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
     }
 
     @Override
-    @NotNull
-    default OptionalDouble reduce(@NotNull final DoubleBinaryOperator operator) {
+    default OptionalDouble reduce(final DoubleBinaryOperator operator) {
         final var iterator = iterator();
         if (iterator.hasNext()) {
             var accumulator = iterator.nextDouble();
@@ -39,9 +37,9 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
     }
 
     default <R> R reduceToTwo(
-            final double initial1, @NotNull final DoubleBinaryOperator operator1,
-            final double initial2, @NotNull final DoubleBinaryOperator operator2,
-            @NotNull final DoubleBiFunction<R> finisher) {
+            final double initial1, final DoubleBinaryOperator operator1,
+            final double initial2, final DoubleBinaryOperator operator2,
+            final DoubleBiFunction<R> finisher) {
         final var iterator = iterator();
         var accumulator1 = initial1;
         var accumulator2 = initial2;
@@ -53,9 +51,9 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
         return finisher.apply(accumulator1, accumulator2);
     }
 
-    default @NotNull <R> Optional<R> reduceToTwo(@NotNull final DoubleBinaryOperator operator1,
-                                                 @NotNull final DoubleBinaryOperator operator2,
-                                                 @NotNull final DoubleBiFunction<R> finisher) {
+    default <R> Optional<R> reduceToTwo(final DoubleBinaryOperator operator1,
+                                        final DoubleBinaryOperator operator2,
+                                        final DoubleBiFunction<R> finisher) {
         final var iterator = iterator();
         if (iterator.hasNext()) {
             final var first = iterator.nextDouble();
@@ -71,9 +69,9 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
         return Optional.empty();
     }
 
-    default <R> @NotNull R reduce(final double initial,
-                                  @NotNull final DoubleFunction<R> mapper,
-                                  @NotNull final DoubleBinaryOperator operation) {
+    default <R> R reduce(final double initial,
+                         final DoubleFunction<R> mapper,
+                         final DoubleBinaryOperator operation) {
         return mapper.apply(reduce(initial, operation));
     }
 
@@ -81,7 +79,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
         return findFirst().orElseThrow();
     }
 
-    default double first(@NotNull final DoublePredicate predicate) {
+    default double first(final DoublePredicate predicate) {
         return findFirst(predicate).orElseThrow();
     }
 
@@ -107,7 +105,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
         return findLast().orElseThrow();
     }
 
-    default double last(@NotNull final DoublePredicate predicate) {
+    default double last(final DoublePredicate predicate) {
         return findLast(predicate).orElseThrow();
     }
 
@@ -145,7 +143,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
     }
 
     @Override
-    default boolean any(@NotNull final DoublePredicate predicate) {
+    default boolean any(final DoublePredicate predicate) {
         final var iterator = iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextDouble())) {
@@ -156,7 +154,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
     }
 
     @Override
-    default boolean all(@NotNull final DoublePredicate predicate) {
+    default boolean all(final DoublePredicate predicate) {
         final var iterator = iterator();
         while (iterator.hasNext()) {
             if (!predicate.test(iterator.nextDouble())) {
@@ -167,7 +165,7 @@ public interface DoubleReducable extends PrimitiveIterable.OfDouble,
     }
 
     @Override
-    default boolean none(@NotNull final DoublePredicate predicate) {
+    default boolean none(final DoublePredicate predicate) {
         final var iterator = this.iterator();
         while (iterator.hasNext()) {
             if (predicate.test(iterator.nextDouble())) {

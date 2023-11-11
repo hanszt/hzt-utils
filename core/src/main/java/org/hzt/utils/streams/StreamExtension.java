@@ -1,10 +1,9 @@
 package org.hzt.utils.streams;
 
+import org.hzt.utils.iterables.Iterables;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
@@ -26,11 +25,11 @@ public interface StreamExtension<T, R> {
         return vStream -> extend(before.extend(vStream));
     }
 
-    default <A, V> Collector<T, ?, V> collect(@NotNull Collector<? super R, A, V> collector) {
-        return Collector.<T, SpinedBuffer<T>, V>of(
-                SpinedBuffer::new,
+    default <A, V> Collector<T, ?, V> collect(Collector<? super R, A, V> collector) {
+        return Collector.of(
+                SpinedBuffer<T>::new,
                 SpinedBuffer::accept,
-                this::combine,
+                Iterables::combine,
                 buffer -> {
                     final var spliterator = buffer.spliterator();
                     return extend(stream(() -> spliterator, spliterator.characteristics(), false)).collect(collector);
@@ -40,10 +39,5 @@ public interface StreamExtension<T, R> {
 
     default <V> Function<Stream<T>, V> finish(Function<Stream<R>, V> finisher) {
         return s -> finisher.apply(extend(s));
-    }
-
-    private <CI extends Consumer<? super T> & Iterable<? extends T>> CI combine(CI ci1, CI ci2) {
-        ci2.forEach(ci1);
-        return ci1;
     }
 }

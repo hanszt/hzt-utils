@@ -1,7 +1,6 @@
 package org.hzt.fx.utils.iterators;
 
 import org.hzt.fx.utils.function.FloatFunction;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 
@@ -12,7 +11,7 @@ final class FloatFlatMappingIterator implements FloatIterator {
 
     private FloatIterator itemIterator = null;
 
-    FloatFlatMappingIterator(@NotNull final FloatIterator iterator, @NotNull final FloatFunction<? extends FloatIterator> mapper) {
+    FloatFlatMappingIterator(final FloatIterator iterator, final FloatFunction<? extends FloatIterator> mapper) {
         this.iterator = iterator;
         this.mapper = mapper;
     }

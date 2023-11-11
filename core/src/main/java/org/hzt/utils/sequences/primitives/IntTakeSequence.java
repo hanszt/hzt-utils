@@ -2,7 +2,6 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
@@ -28,7 +27,6 @@ final class IntTakeSequence implements IntSkipTakeSequence {
         return n >= count ? this : new IntTakeSequence(upstream, n);
     }
 
-    @NotNull
     @Override
     public PrimitiveIterator.OfInt iterator() {
         return new PrimitiveIterator.OfInt() {

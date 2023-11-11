@@ -2,7 +2,6 @@ package org.hzt.utils.arrays;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A Tim sort implementation for sorting double arrays where a DoubleComparator is used for the comparisons
@@ -14,7 +13,7 @@ public final class DoubleTimSort extends PrimitiveTimSort<double[], DoubleCompar
         super(doubleArray.length, doubleArray, new double[getInitTempLength(doubleArray.length)], doubleComparator);
     }
 
-    static void sort(final double @NotNull [] array, final int fromIndex, final int toIndex, @NotNull final DoubleComparator comparator) {
+    static void sort(final double[] array, final int fromIndex, final int toIndex, final DoubleComparator comparator) {
         PreConditions.require(fromIndex >= 0 && fromIndex <= toIndex && toIndex <= array.length);
         final var nRemaining = toIndex - fromIndex;
         if (nRemaining >= 2) {

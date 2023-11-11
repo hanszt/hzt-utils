@@ -12,6 +12,7 @@ final class FloatGeneratorIterator implements FloatIterator {
 
     private float nextFloat;
     private State nextState = State.INIT_UNKNOWN;
+
     FloatGeneratorIterator(final FloatSupplier initSupplier, final FloatUnaryOperator nextValueSupplier) {
         this.initSupplier = initSupplier;
         this.nextValueSupplier = nextValueSupplier;

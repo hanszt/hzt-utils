@@ -5,7 +5,6 @@ import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.IntSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
 import java.util.Objects;
@@ -177,7 +176,7 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
         return new IntX(i);
     }
 
-    public @NotNull IntX get() {
+    public IntX get() {
         return this;
     }
 
@@ -321,12 +320,12 @@ public final class IntX extends Number implements NumberX<Integer>, Transformabl
     }
 
     @Override
-    public @NotNull Integer getValue() {
+    public Integer getValue() {
         return integer;
     }
 
     @Override
-    public int compareTo(@NotNull final IntX o) {
+    public int compareTo(final IntX o) {
         return integer.compareTo(o.integer);
     }
 }

@@ -1,7 +1,6 @@
 package org.hzt.utils.iterators.primitives;
 
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
@@ -64,7 +63,7 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
         }
 
         @Override
-        default @NotNull PrimitiveIterator.OfInt asIterator() {
+        default PrimitiveIterator.OfInt asIterator() {
             return  new PrimitiveIterator.OfInt() {
 
                 private final AtomicInteger sink = new AtomicInteger();
@@ -117,7 +116,7 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
         }
 
         @Override
-        default @NotNull PrimitiveIterator.OfLong asIterator() {
+        default PrimitiveIterator.OfLong asIterator() {
             return  new PrimitiveIterator.OfLong() {
 
                 private final AtomicLong sink = new AtomicLong();
@@ -169,7 +168,7 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
         }
 
         @Override
-        default @NotNull PrimitiveIterator.OfDouble asIterator() {
+        default PrimitiveIterator.OfDouble asIterator() {
             return  new PrimitiveIterator.OfDouble() {
 
                 private final DoubleHoldingConsumer sink = new DoubleHoldingConsumer();

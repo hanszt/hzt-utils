@@ -8,7 +8,6 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.LongSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -74,15 +73,13 @@ public interface LongList extends LongCollection,
     }
 
     @Override
-    @NotNull
     default OptionalLong findLast() {
         final var lastIndex = lastIndex();
         return lastIndex < 0 ? OptionalLong.empty() : OptionalLong.of(get(lastIndex));
     }
 
     @Override
-    @NotNull
-    default OptionalLong findLast(@NotNull final LongPredicate predicate) {
+    default OptionalLong findLast(final LongPredicate predicate) {
         final var iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
             final var previousLong = iterator.previousLong();

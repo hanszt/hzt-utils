@@ -1,7 +1,6 @@
 package org.hzt.utils.numbers;
 
 import org.hzt.utils.strings.StringX;
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -10,9 +9,9 @@ import java.math.RoundingMode;
 @FunctionalInterface
 public interface NumberX<T extends Number> {
 
-    @NotNull T getValue();
+    T getValue();
 
-    default @NotNull IntX toIntX() {
+    default IntX toIntX() {
         return IntX.of(getValue());
     }
 
@@ -20,7 +19,7 @@ public interface NumberX<T extends Number> {
         return getValue().intValue();
     }
 
-    default @NotNull LongX toLongX() {
+    default LongX toLongX() {
         return LongX.of(getValue());
     }
 
@@ -28,7 +27,7 @@ public interface NumberX<T extends Number> {
         return getValue().longValue();
     }
 
-    default @NotNull DoubleX toDoubleX() {
+    default DoubleX toDoubleX() {
         return DoubleX.of(getValue());
     }
 
@@ -36,27 +35,27 @@ public interface NumberX<T extends Number> {
         return getValue().doubleValue();
     }
 
-    default @NotNull BigDecimalX toBigDecimalX() {
+    default BigDecimalX toBigDecimalX() {
         return BigDecimalX.of(getValue());
     }
 
-    default @NotNull BigDecimal toBigDecimal() {
+    default BigDecimal toBigDecimal() {
         return BigDecimal.valueOf(getValue().longValue());
     }
 
-    default @NotNull BigDecimalX toBigDecimalX(final int scale, final RoundingMode roundingMode) {
+    default BigDecimalX toBigDecimalX(final int scale, final RoundingMode roundingMode) {
         return BigDecimalX.of(getValue()).setScale(scale, roundingMode);
     }
 
-    default @NotNull BigDecimal toBigDecimal(final int scale, final RoundingMode roundingMode) {
+    default BigDecimal toBigDecimal(final int scale, final RoundingMode roundingMode) {
         return BigDecimal.valueOf(getValue().longValue()).setScale(scale, roundingMode);
     }
 
-    default @NotNull BigInteger toBigInteger() {
+    default BigInteger toBigInteger() {
         return BigDecimalX.of(getValue()).toBigInteger();
     }
 
-    default @NotNull StringX toStringX() {
+    default StringX toStringX() {
         return StringX.of(getValue());
     }
 }

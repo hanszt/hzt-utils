@@ -1,6 +1,5 @@
 package org.hzt.utils.iterables.primitives;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @param <T> The numberType
@@ -10,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  */
 interface PrimitiveReducable<T, B, P, O> extends Iterable<T> {
 
-    @NotNull O reduce(@NotNull B operator);
+    O reduce(B operator);
 
     O findFirst();
 
@@ -20,15 +19,15 @@ interface PrimitiveReducable<T, B, P, O> extends Iterable<T> {
 
     O findLast(P predicate);
 
-    boolean any(@NotNull P predicate);
+    boolean any(P predicate);
 
     default boolean any() {
         return iterator().hasNext();
     }
 
-    boolean all(@NotNull P predicate);
+    boolean all(P predicate);
 
-    boolean none(@NotNull P predicate);
+    boolean none(P predicate);
 
     default boolean none() {
         return !iterator().hasNext();

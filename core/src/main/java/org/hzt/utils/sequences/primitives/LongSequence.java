@@ -26,7 +26,6 @@ import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -82,11 +81,11 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return generate(() -> seedValue, nextFunction);
     }
 
-    static LongSequence generate(@NotNull final LongSupplier nextFunction) {
+    static LongSequence generate(final LongSupplier nextFunction) {
         return generate(nextFunction, t -> nextFunction.getAsLong());
     }
 
-    static LongSequence generate(@NotNull final LongSupplier seedFunction, @NotNull final LongUnaryOperator nextFunction) {
+    static LongSequence generate(final LongSupplier seedFunction, final LongUnaryOperator nextFunction) {
         return () -> LongGeneratorIterator.of(seedFunction, nextFunction);
     }
 
@@ -94,21 +93,21 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return filter(l -> l % step == 0);
     }
 
-    default LongSequence plus(final long @NotNull ... values) {
+    default LongSequence plus(final long... values) {
         return Sequence.of(this, LongSequence.of(values)).mapMultiToLong(OfLong::forEachLong);
     }
 
-    default LongSequence plus(@NotNull final Iterable<Long> values) {
+    default LongSequence plus(final Iterable<Long> values) {
         return Sequence.of(this, LongSequence.of(values)).mapMultiToLong(OfLong::forEachLong);
     }
 
-    default LongSequence minus(final long @NotNull... values) {
+    default LongSequence minus(final long... values) {
         final var others = LongSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
 
     }
 
-    default LongSequence minus(@NotNull final Iterable<Long> values) {
+    default LongSequence minus(final Iterable<Long> values) {
         final var others = values instanceof LongMutableSet ? (LongMutableSet) values : LongSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
@@ -118,11 +117,11 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     @Override
-    default LongSequence map(@NotNull final LongUnaryOperator unaryOperator) {
+    default LongSequence map(final LongUnaryOperator unaryOperator) {
         return () -> PrimitiveIterators.longTransformingIterator(iterator(), unaryOperator);
     }
 
-    default LongSequence mapIndexed(@NotNull final LongIndexedFunction longIndexedFunction) {
+    default LongSequence mapIndexed(final LongIndexedFunction longIndexedFunction) {
         return () -> PrimitiveIterators.longIndexedTransformingIterator(iterator(), longIndexedFunction);
     }
 
@@ -164,7 +163,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return mapToDouble(l -> l);
     }
 
-    default <R> Sequence<R> mapToObj(@NotNull final LongFunction<R> mapper) {
+    default <R> Sequence<R> mapToObj(final LongFunction<R> mapper) {
         return () -> PrimitiveIterators.longToObjIterator(iterator(), mapper);
     }
 
@@ -183,12 +182,12 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         }
     }
 
-    default LongSequence takeWhile(@NotNull final LongPredicate predicate) {
+    default LongSequence takeWhile(final LongPredicate predicate) {
         return () -> LongTakeWhileIterator.of(iterator(), predicate);
     }
 
     @Override
-    default LongSequence takeWhileInclusive(@NotNull final LongPredicate predicate) {
+    default LongSequence takeWhileInclusive(final LongPredicate predicate) {
         return () -> LongTakeWhileIterator.of(iterator(), predicate, true);
     }
 
@@ -204,12 +203,12 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     @Override
-    default LongSequence skipWhile(@NotNull final LongPredicate longPredicate) {
+    default LongSequence skipWhile(final LongPredicate longPredicate) {
         return () -> LongSkipWhileIterator.of(iterator(), longPredicate, false);
     }
 
     @Override
-    default LongSequence skipWhileInclusive(@NotNull final LongPredicate longPredicate) {
+    default LongSequence skipWhileInclusive(final LongPredicate longPredicate) {
         return () -> LongSkipWhileIterator.of(iterator(), longPredicate, true);
     }
 
@@ -227,34 +226,34 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return sorted(LongX::compareReversed);
     }
 
-    default LongSequence filter(@NotNull final LongPredicate predicate) {
+    default LongSequence filter(final LongPredicate predicate) {
         return () -> LongFilteringIterator.of(iterator(), predicate, true);
     }
 
-    default @NotNull LongSequence filterNot(@NotNull final LongPredicate predicate) {
+    default LongSequence filterNot(final LongPredicate predicate) {
         return () -> LongFilteringIterator.of(iterator(), predicate, false);
     }
 
-    default @NotNull LongSequence onEach(@NotNull final LongConsumer consumer) {
+    default LongSequence onEach(final LongConsumer consumer) {
         return map(l -> {
             consumer.accept(l);
             return l;
         });
     }
 
-    default LongSequence zip(@NotNull final LongBinaryOperator merger, final long... array) {
+    default LongSequence zip(final LongBinaryOperator merger, final long... array) {
         final var iterator = PrimitiveIterators.longArrayIterator(array);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
-    default LongSequence zip(@NotNull final LongBinaryOperator merger, @NotNull final Iterable<Long> other) {
+    default LongSequence zip(final LongBinaryOperator merger, final Iterable<Long> other) {
         final var iterator = PrimitiveIterators.longIteratorOf(other.iterator(), It::asLong);
         return () -> PrimitiveIterators.mergingIterator(iterator(), iterator, merger);
     }
 
     @Override
-    default LongSequence zipWithNext(@NotNull final LongBinaryOperator merger) {
+    default LongSequence zipWithNext(final LongBinaryOperator merger) {
         return windowed(2, w -> merger.applyAsLong(w.first(), w.last()));
     }
 
@@ -262,7 +261,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return toList().toArray();
     }
 
-    default <R> R transform(@NotNull final Function<? super LongSequence, ? extends R> resultMapper) {
+    default <R> R transform(final Function<? super LongSequence, ? extends R> resultMapper) {
         return resultMapper.apply(this);
     }
 
@@ -282,27 +281,27 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         return this;
     }
 
-    default <R1, R2, R> R longsToTwo(@NotNull final Function<? super LongSequence, ? extends R1> resultMapper1,
-                                     @NotNull final Function<? super LongSequence, ? extends R2> resultMapper2,
-                                     @NotNull final BiFunction<R1, R2, R> merger) {
+    default <R1, R2, R> R longsToTwo(final Function<? super LongSequence, ? extends R1> resultMapper1,
+                                     final Function<? super LongSequence, ? extends R2> resultMapper2,
+                                     final BiFunction<R1, R2, R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
     }
 
-    default <R1, R2> Pair<R1, R2> longsToTwo(@NotNull final Function<? super LongSequence, ? extends R1> resultMapper1,
-                                             @NotNull final Function<? super LongSequence, ? extends R2> resultMapper2) {
+    default <R1, R2> Pair<R1, R2> longsToTwo(final Function<? super LongSequence, ? extends R1> resultMapper1,
+                                             final Function<? super LongSequence, ? extends R2> resultMapper2) {
         return longsToTwo(resultMapper1, resultMapper2, Pair::of);
     }
 
-    default <R1, R2, R3, R> R longsToThree(@NotNull final Function<? super LongSequence, ? extends R1> resultMapper1,
-                                           @NotNull final Function<? super LongSequence, ? extends R2> resultMapper2,
-                                           @NotNull final Function<? super LongSequence, ? extends R3> resultMapper3,
-                                           @NotNull final TriFunction<R1, R2, R3, R> merger) {
+    default <R1, R2, R3, R> R longsToThree(final Function<? super LongSequence, ? extends R1> resultMapper1,
+                                           final Function<? super LongSequence, ? extends R2> resultMapper2,
+                                           final Function<? super LongSequence, ? extends R3> resultMapper3,
+                                           final TriFunction<R1, R2, R3, R> merger) {
         return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this), resultMapper3.apply(this));
     }
 
-    default <R1, R2, R3> Triple<R1, R2, R3> longsToThree(@NotNull final Function<? super LongSequence, ? extends R1> resultMapper1,
-                                                         @NotNull final Function<? super LongSequence, ? extends R2> resultMapper2,
-                                                         @NotNull final Function<? super LongSequence, ? extends R3> resultMapper3) {
+    default <R1, R2, R3> Triple<R1, R2, R3> longsToThree(final Function<? super LongSequence, ? extends R1> resultMapper1,
+                                                         final Function<? super LongSequence, ? extends R2> resultMapper2,
+                                                         final Function<? super LongSequence, ? extends R3> resultMapper3) {
         return longsToThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
     }
 }

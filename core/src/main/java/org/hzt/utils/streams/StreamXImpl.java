@@ -1,6 +1,5 @@
 package org.hzt.utils.streams;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Spliterator;
 import java.util.stream.Stream;
@@ -14,7 +13,6 @@ class StreamXImpl<T> implements StreamX<T> {
     }
 
 
-    @NotNull
     @Override
     public Spliterator<T> spliterator() {
         return stream.spliterator();

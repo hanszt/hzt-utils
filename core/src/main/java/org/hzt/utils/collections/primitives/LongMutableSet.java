@@ -1,6 +1,5 @@
 package org.hzt.utils.collections.primitives;
 
-import org.jetbrains.annotations.NotNull;
 
 public interface LongMutableSet extends LongMutableCollection {
 
@@ -8,7 +7,7 @@ public interface LongMutableSet extends LongMutableCollection {
         return new LongHashSet();
     }
 
-    static LongMutableSet of(final long @NotNull ... values) {
+    static LongMutableSet of(final long... values) {
         return new LongHashSet(values);
     }
 }

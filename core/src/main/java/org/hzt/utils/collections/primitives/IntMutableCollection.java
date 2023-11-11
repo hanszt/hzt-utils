@@ -3,7 +3,6 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.collections.MutableCollectionX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.IntConsumer;
 import java.util.function.IntPredicate;
@@ -14,7 +13,7 @@ public interface IntMutableCollection extends IntCollection,
     boolean add(int i);
 
     @Override
-    default boolean addAll(@NotNull final Iterable<Integer> iterable) {
+    default boolean addAll(final Iterable<Integer> iterable) {
         var allAdded = true;
         if (iterable instanceof final PrimitiveIterable.OfInt intIterable) {
             final var iterator = intIterable.iterator();
@@ -35,7 +34,7 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default boolean addAll(final int @NotNull ... array) {
+    default boolean addAll(final int... array) {
         final var iterator = PrimitiveIterators.intArrayIterator(array);
         var allAdded = true;
         while (iterator.hasNext()) {
@@ -49,7 +48,7 @@ public interface IntMutableCollection extends IntCollection,
     boolean remove(int i);
 
     @Override
-    default boolean removeAll(@NotNull final Iterable<Integer> iterable) {
+    default boolean removeAll(final Iterable<Integer> iterable) {
         var allRemoved = true;
         if (iterable instanceof final PrimitiveIterable.OfInt intIterable) {
             final var iterator = intIterable.iterator();
@@ -69,7 +68,7 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default boolean removeAll(final int @NotNull ... array) {
+    default boolean removeAll(final int... array) {
         var allRemoved = true;
         final var iterator = PrimitiveIterators.intArrayIterator(array);
         while (iterator.hasNext()) {
@@ -82,7 +81,7 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default boolean removeIf(@NotNull final IntPredicate predicate) {
+    default boolean removeIf(final IntPredicate predicate) {
         var removed = false;
         final var iterator = iterator();
         while (iterator.hasNext()) {
@@ -95,12 +94,12 @@ public interface IntMutableCollection extends IntCollection,
     }
 
     @Override
-    default IntMutableList plus(@NotNull final Iterable<Integer> iterable) {
+    default IntMutableList plus(final Iterable<Integer> iterable) {
         return (IntMutableList) IntCollection.super.plus(iterable);
     }
 
     @Override
-    default IntMutableList plus(final int @NotNull ... array) {
+    default IntMutableList plus(final int... array) {
         return (IntMutableList) IntCollection.super.plus(array);
     }
 

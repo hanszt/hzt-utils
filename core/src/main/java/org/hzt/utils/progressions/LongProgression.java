@@ -2,7 +2,6 @@ package org.hzt.utils.progressions;
 
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.sequences.primitives.LongSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.PrimitiveIterator;
@@ -71,11 +70,11 @@ public class LongProgression implements LongSequence {
         };
     }
 
-    public @NotNull Long start() {
+    public Long start() {
         return start;
     }
 
-    public @NotNull Long endInclusive() {
+    public Long endInclusive() {
         return endInclusive;
     }
 

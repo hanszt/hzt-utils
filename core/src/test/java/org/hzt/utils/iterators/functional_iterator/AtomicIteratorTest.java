@@ -2,7 +2,6 @@ package org.hzt.utils.iterators.functional_iterator;
 
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.numbers.IntX;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -72,7 +71,6 @@ class AtomicIteratorTest {
         assertEquals(bound, atomicInteger.get());
     }
 
-    @NotNull
     private AtomicIterator<String> getBoundedAtomicIteratorIteratorX(final int upperBound, final IntFunction<String> intFunction) {
         return new BoundedIterator<>(upperBound, intFunction)::supplyNext;
     }

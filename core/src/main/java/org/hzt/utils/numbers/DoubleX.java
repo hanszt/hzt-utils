@@ -2,7 +2,6 @@ package org.hzt.utils.numbers;
 
 import org.hzt.utils.Transformable;
 import org.hzt.utils.comparables.ComparableX;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serial;
 import java.util.Locale;
@@ -214,17 +213,17 @@ public final class DoubleX extends Number implements NumberX<Double>, Transforma
     }
 
     @Override
-    public @NotNull DoubleX get() {
+    public DoubleX get() {
         return this;
     }
 
     @Override
-    public @NotNull Double getValue() {
+    public Double getValue() {
         return thisDouble;
     }
 
     @Override
-    public int compareTo(@NotNull final DoubleX o) {
+    public int compareTo(final DoubleX o) {
         return thisDouble.compareTo(o.thisDouble);
     }
 }

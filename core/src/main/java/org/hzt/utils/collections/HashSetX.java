@@ -1,6 +1,5 @@
 package org.hzt.utils.collections;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,7 +29,7 @@ final class HashSetX<E> implements MutableSetX<E> {
     }
 
     @SafeVarargs
-    HashSetX(final E @NotNull ... values) {
+    HashSetX(final E... values) {
         set = new HashSet<>();
         for (final var item : values) {
             if (!set.add(item)) {
@@ -54,21 +53,18 @@ final class HashSetX<E> implements MutableSetX<E> {
         return set.contains(value);
     }
 
-    @NotNull
     @Override
     public Iterator<E> iterator() {
         return set.iterator();
     }
 
-    @NotNull
     @Override
-    public Object @NotNull [] toArray() {
+    public Object[] toArray() {
         return set.toArray();
     }
 
-    @NotNull
     @Override
-    public <T> T @NotNull [] toArray(@NotNull final T @NotNull [] a) {
+    public <T> T[] toArray(final T[] a) {
         //noinspection SuspiciousToArrayCall
         return set.toArray(a);
     }
@@ -84,22 +80,22 @@ final class HashSetX<E> implements MutableSetX<E> {
     }
 
     @Override
-    public boolean containsAll(@NotNull final Collection<?> c) {
+    public boolean containsAll(final Collection<?> c) {
         return set.containsAll(c);
     }
 
     @Override
-    public boolean addAll(@NotNull final Collection<? extends E> c) {
+    public boolean addAll(final Collection<? extends E> c) {
         return set.addAll(c);
     }
 
     @Override
-    public boolean retainAll(@NotNull final Collection<?> c) {
+    public boolean retainAll(final Collection<?> c) {
         return set.retainAll(c);
     }
 
     @Override
-    public boolean removeAll(@NotNull final Collection<?> c) {
+    public boolean removeAll(final Collection<?> c) {
         return set.removeAll(c);
     }
 

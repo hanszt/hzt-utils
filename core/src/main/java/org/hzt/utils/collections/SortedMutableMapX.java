@@ -1,6 +1,5 @@
 package org.hzt.utils.collections;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.NavigableMap;
@@ -33,15 +32,12 @@ public interface SortedMutableMapX<K, V> extends NavigableMap<K, V>, MutableMapX
         return new TreeMapX<>(selector, first, others);
     }
 
-    @NotNull
     @Override
     SortedMutableMapX<K, V> subMap(K fromKey, K toKey);
 
-    @NotNull
     @Override
     SortedMutableMapX<K, V> headMap(K toKey);
 
-    @NotNull
     @Override
     SortedMutableMapX<K, V> tailMap(K fromKey);
 
@@ -73,10 +69,8 @@ public interface SortedMutableMapX<K, V> extends NavigableMap<K, V>, MutableMapX
     SortedMutableMapX<K, V> tailMap(K fromKey, boolean inclusive);
 
     @Override
-    @NotNull
     Entry<K, V> first();
 
     @Override
-    @NotNull
     Entry<K, V> last();
 }

@@ -2,7 +2,6 @@ package org.hzt.utils.iterators.primitives;
 
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
@@ -14,12 +13,12 @@ public final class IntMultiMappingIterator implements PrimitiveIterator.OfInt {
 
     private OfInt itemIterator = null;
 
-    private IntMultiMappingIterator(@NotNull final OfInt iterator, @NotNull final IntSequence.IntMapMultiConsumer mapper) {
+    private IntMultiMappingIterator(final OfInt iterator, final IntSequence.IntMapMultiConsumer mapper) {
         this.iterator = iterator;
         this.mapper = mapper;
     }
 
-    public static IntMultiMappingIterator of(@NotNull final OfInt iterator, @NotNull final IntSequence.IntMapMultiConsumer mapper) {
+    public static IntMultiMappingIterator of(final OfInt iterator, final IntSequence.IntMapMultiConsumer mapper) {
         return new IntMultiMappingIterator(iterator, mapper);
     }
 

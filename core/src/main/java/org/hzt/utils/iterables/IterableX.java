@@ -4,6 +4,7 @@ import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
+import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.sequences.Sequence;
@@ -82,9 +83,9 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         return this;
     }
 
-    default <R> Sequence<R> then(IterableExtension<T, R> extension) {
-        return () -> extension.extend(this).iterator();
-    }
+    <A, R> IterableX<R> gather(final Gatherer<? super T, A, R> gatherer);
+
+    <R> IterableX<R> then(IterableExtension<T, R> extension);
 
     default SetX<T> intersect(final Iterable<T> other) {
         final MutableSetX<T> intersection = toMutableSet();

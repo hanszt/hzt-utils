@@ -6,7 +6,6 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.IntWindowedIterator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.SequenceHelper;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntSupplier;
@@ -41,9 +40,9 @@ public interface IntWindowedSequence extends PrimitiveIterable.OfInt {
     }
 
     default Sequence<IntList> windowed(final int initSize,
-                                       @NotNull final IntUnaryOperator nextSizeSupplier,
+                                       final IntUnaryOperator nextSizeSupplier,
                                        final int initStep,
-                                       @NotNull final IntUnaryOperator nextStepSupplier,
+                                       final IntUnaryOperator nextStepSupplier,
                                        final boolean partialWindows) {
         SequenceHelper.checkInitWindowSizeAndStep(initSize, initStep);
         return () -> IntWindowedIterator.of(iterator(), initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows);
@@ -62,19 +61,19 @@ public interface IntWindowedSequence extends PrimitiveIterable.OfInt {
     }
 
     default IntSequence windowed(final int size, final int step, final boolean partialWindows,
-                                 @NotNull final ToIntFunction<IntList> reducer) {
+                                 final ToIntFunction<IntList> reducer) {
         return windowed(size, step, partialWindows).mapToInt(reducer);
     }
 
-    default IntSequence windowed(final int size, final int step, @NotNull final ToIntFunction<IntList> reducer) {
+    default IntSequence windowed(final int size, final int step, final ToIntFunction<IntList> reducer) {
         return windowed(size, step, false, reducer);
     }
 
-    default IntSequence windowed(final int size, @NotNull final ToIntFunction<IntList> reducer) {
+    default IntSequence windowed(final int size, final ToIntFunction<IntList> reducer) {
         return windowed(size, 1, reducer);
     }
 
-    default IntSequence windowed(final int size, final boolean partialWindows, @NotNull final ToIntFunction<IntList> reducer) {
+    default IntSequence windowed(final int size, final boolean partialWindows, final ToIntFunction<IntList> reducer) {
         return windowed(size, 1, partialWindows, reducer);
     }
 }

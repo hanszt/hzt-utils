@@ -1,7 +1,6 @@
 package org.hzt.utils.iterables;
 
 import org.hzt.utils.strings.StringX;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
@@ -12,15 +11,15 @@ public interface Stringable<T> extends Iterable<T> {
         return joinToStringBy(Object::toString);
     }
 
-    default String joinToString(@NotNull final CharSequence delimiter) {
+    default String joinToString(final CharSequence delimiter) {
         return joinToStringBy(Object::toString, delimiter);
     }
 
-    default <R> String joinToStringBy(@NotNull final Function<? super T, ? extends R> selector) {
+    default <R> String joinToStringBy(final Function<? super T, ? extends R> selector) {
         return joinToStringBy(selector, ", ");
     }
 
-    default <R> String joinToStringBy(@NotNull final Function<? super T, ? extends R> selector, final CharSequence delimiter) {
+    default <R> String joinToStringBy(final Function<? super T, ? extends R> selector, final CharSequence delimiter) {
         final var sb = new StringBuilder();
         final var iterator = iterator();
         while (iterator.hasNext()) {
@@ -38,11 +37,11 @@ public interface Stringable<T> extends Iterable<T> {
         return joinToStringXBy(Object::toString, delimiter);
     }
 
-    default <R> StringX joinToStringXBy(@NotNull final Function<? super T, ? extends R> selector) {
+    default <R> StringX joinToStringXBy(final Function<? super T, ? extends R> selector) {
         return joinToStringXBy(selector, ", ");
     }
 
-    default <R> StringX joinToStringXBy(@NotNull final Function<? super T, ? extends R> selector, final CharSequence delimiter) {
+    default <R> StringX joinToStringXBy(final Function<? super T, ? extends R> selector, final CharSequence delimiter) {
         return StringX.of(joinToStringBy(selector, delimiter));
     }
 }

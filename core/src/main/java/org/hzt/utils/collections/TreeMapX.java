@@ -1,8 +1,5 @@
 package org.hzt.utils.collections;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,6 +25,7 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
         this.map = new TreeMap<>(Comparator.comparing(selector));
         this.map.putAll(map);
     }
+
     TreeMapX(final Iterable<Entry<K, V>> iterable, final Function<? super K, ? extends R> selector) {
         map = new TreeMap<>(Comparator.comparing(selector));
         for (final var entry : iterable) {
@@ -69,7 +67,6 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
         return map.get(key);
     }
 
-    @Nullable
     @Override
     public V put(final K key, final V value) {
         return map.put(key, value);
@@ -81,7 +78,7 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
     }
 
     @Override
-    public void putAll(@NotNull final Map<? extends K, ? extends V> m) {
+    public void putAll(final Map<? extends K, ? extends V> m) {
         map.putAll(m);
     }
 
@@ -95,31 +92,28 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
         return map.comparator();
     }
 
-    @NotNull
     @Override
     public SortedMutableMapX<K, V> subMap(final K fromKey, final K toKey) {
         return SortedMutableMapX.ofSortedMap(map.subMap(fromKey, toKey));
     }
 
-    @NotNull
     @Override
     public SortedMutableMapX<K, V> headMap(final K toKey) {
         return SortedMutableMapX.ofSortedMap(map.headMap(toKey));
     }
 
-    @NotNull
     @Override
     public SortedMutableMapX<K, V> tailMap(final K fromKey) {
         return SortedMutableMapX.ofSortedMap(map.tailMap(fromKey));
     }
 
     @Override
-    public @NotNull Entry<K, V> first() {
+    public Entry<K, V> first() {
         return firstEntry();
     }
 
     @Override
-    public @NotNull Entry<K, V> last() {
+    public Entry<K, V> last() {
         return lastEntry();
     }
 
@@ -134,17 +128,17 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
     }
 
     @Override
-    public @NotNull MutableSetX<K> keySet() {
+    public MutableSetX<K> keySet() {
         return MutableLinkedSetX.of(map.keySet());
     }
 
     @Override
-    public @NotNull MutableListX<V> values() {
+    public MutableListX<V> values() {
         return MutableListX.of(map.values());
     }
 
     @Override
-    public @NotNull MutableSetX<Entry<K, V>> entrySet() {
+    public MutableSetX<Entry<K, V>> entrySet() {
         return MutableSetX.of(map.entrySet());
     }
     
@@ -260,7 +254,6 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMut
         return map.toString();
     }
 
-    @NotNull
     @Override
     public Iterator<Entry<K, V>> iterator() {
         return map.entrySet().iterator();

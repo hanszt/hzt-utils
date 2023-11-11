@@ -5,7 +5,6 @@ import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.tuples.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -62,7 +61,6 @@ class WindowedSequenceTest {
         assertArrayEquals(new long[] {1, 3, 5, 8, 10, 12, 14, 15, 15, 15, 14, 13, 11, 9, 6, 4, 2, 1, 1, 1}, chunkSizes);
     }
 
-    @NotNull
     private IntSupplier sineWaveGenerator() {
         return new IntSupplier() {
             int x = -3;

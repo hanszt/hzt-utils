@@ -4,7 +4,6 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.IntComparator;
-import org.jetbrains.annotations.NotNull;
 
 public interface IntMutableList extends IntList, IntMutableCollection,
         PrimitiveMutableList<PrimitiveListIterator.OfInt, IntComparator> {
@@ -30,13 +29,13 @@ public interface IntMutableList extends IntList, IntMutableCollection,
     }
 
     @Override
-    default IntMutableList plus(@NotNull final Iterable<Integer> iterable) {
+    default IntMutableList plus(final Iterable<Integer> iterable) {
         addAll(iterable);
         return this;
     }
 
     @Override
-    default IntMutableList plus(final int @NotNull ... array) {
+    default IntMutableList plus(final int... array) {
         addAll(array);
         return this;
     }

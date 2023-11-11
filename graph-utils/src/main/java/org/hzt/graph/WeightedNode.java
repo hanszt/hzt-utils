@@ -1,6 +1,5 @@
 package org.hzt.graph;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
@@ -45,7 +44,6 @@ public interface WeightedNode<T> extends Node<WeightedNode<T>, WeightedNode<T>> 
         return getEdges().stream().map(e -> e.getOpposite(this)).toList();
     }
 
-    @NotNull
     default Iterator<WeightedEdge<T>> edgeIterator() {
         return getEdges().iterator();
     }

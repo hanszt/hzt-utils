@@ -3,7 +3,6 @@ package org.hzt.graph;
 import org.hzt.graph.tuples.DepthToTreeNode;
 import org.hzt.utils.It;
 import org.hzt.utils.sequences.Sequence;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -189,7 +188,6 @@ class TreeNodeTest {
         assertArrayEquals(expected, node.depthFirstSequence().toArrayOf(n -> n.name, String[]::new));
     }
 
-    @NotNull
     private static TreeNodeTest.Person buildPersonTree() {
         final var c1 = new Person("c1")
                 .addChildrenWithThisAsParent(List.of(
@@ -216,7 +214,7 @@ class TreeNodeTest {
         }
 
         @Override
-        public @NotNull Iterator<Person> childrenIterator() {
+        public Iterator<Person> childrenIterator() {
             return children.iterator();
         }
 
@@ -394,7 +392,7 @@ class TreeNodeTest {
         private record Node(String name, SimpleNodeTests.Node... children) implements TreeNode<Node, Node> {
 
             @Override
-                    public @NotNull Iterator<Node> childrenIterator() {
+                    public Iterator<Node> childrenIterator() {
                         return Sequence.of(children).iterator();
                     }
                 }
@@ -402,7 +400,7 @@ class TreeNodeTest {
 
     private static final class FileX extends File implements TreeNode<FileX, FileX> {
 
-        public FileX(@NotNull final String pathname) {
+        public FileX(final String pathname) {
             super(pathname);
         }
 
@@ -411,7 +409,7 @@ class TreeNodeTest {
         }
 
         @Override
-        public @NotNull Iterator<FileX> childrenIterator() {
+        public Iterator<FileX> childrenIterator() {
             return Stream.ofNullable(listFiles())
                     .flatMap(values -> Stream.of(values).map(FileX::new))
                     .iterator();

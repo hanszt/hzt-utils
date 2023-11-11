@@ -4,7 +4,6 @@ import org.hzt.graph.iterators.GraphIterators;
 import org.hzt.graph.tuples.DepthToTreeNode;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.strings.StringX;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -27,7 +26,6 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
     /**
      * @return Returns an iterator that iterates over the children of this tree node
      */
-    @NotNull
     Iterator<S> childrenIterator();
 
     default Sequence<S> childrenSequence() {

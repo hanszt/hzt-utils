@@ -1,8 +1,5 @@
 package org.hzt.utils.collections;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,7 +35,7 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
     }
 
     @SafeVarargs
-    TreeSetX(final Function<E, R> selector, final E first, final E @NotNull ... others) {
+    TreeSetX(final Function<E, R> selector, final E first, final E... others) {
         navigableSet = new TreeSet<>(comparing(selector));
         navigableSet.add(first);
         Collections.addAll(navigableSet, others);
@@ -59,16 +56,13 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
         return navigableSet.contains(value);
     }
 
-    @NotNull
     @Override
-    public Object @NotNull [] toArray() {
+    public Object[] toArray() {
         return navigableSet.toArray();
     }
 
-    @NotNull
     @Override
-    public <T> T @NotNull [] toArray(@NotNull final T @NotNull [] a) {
-        //noinspection SuspiciousToArrayCall
+    public <T> T[] toArray(final T[] a) {
         return navigableSet.toArray(a);
     }
 
@@ -83,22 +77,22 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
     }
 
     @Override
-    public boolean containsAll(@NotNull final Collection<?> c) {
+    public boolean containsAll(final Collection<?> c) {
         return navigableSet.containsAll(c);
     }
 
     @Override
-    public boolean addAll(@NotNull final Collection<? extends E> c) {
+    public boolean addAll(final Collection<? extends E> c) {
         return navigableSet.addAll(c);
     }
 
     @Override
-    public boolean retainAll(@NotNull final Collection<?> c) {
+    public boolean retainAll(final Collection<?> c) {
         return navigableSet.retainAll(c);
     }
 
     @Override
-    public boolean removeAll(@NotNull final Collection<?> c) {
+    public boolean removeAll(final Collection<?> c) {
         return navigableSet.removeAll(c);
     }
 
@@ -107,107 +101,91 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
         navigableSet.clear();
     }
 
-    @Nullable
     @Override
     public Comparator<? super E> comparator() {
         return navigableSet.comparator();
     }
 
-    @Nullable
     @Override
     public E lower(final E e) {
         return navigableSet.lower(e);
     }
 
-    @Nullable
     @Override
     public E floor(final E e) {
         return navigableSet.floor(e);
     }
 
-    @Nullable
     @Override
     public E ceiling(final E e) {
         return navigableSet.ceiling(e);
     }
 
-    @Nullable
     @Override
     public E higher(final E e) {
         return navigableSet.higher(e);
     }
 
-    @Nullable
     @Override
     public E pollFirst() {
         return navigableSet.pollFirst();
     }
 
-    @Nullable
     @Override
     public E pollLast() {
         return navigableSet.pollLast();
     }
 
-    @NotNull
     @Override
     public Iterator<E> iterator() {
         return navigableSet.iterator();
     }
 
-    @NotNull
     @Override
     public NavigableSet<E> descendingSet() {
         return navigableSet.descendingSet();
     }
 
-    @NotNull
     @Override
     public Iterator<E> descendingIterator() {
         return navigableSet.descendingIterator();
     }
 
-    @NotNull
     @Override
     public NavigableSet<E> subSet(final E fromElement, final boolean fromInclusive, final E toElement, final boolean toInclusive) {
         return navigableSet.subSet(fromElement, fromInclusive, toElement, toInclusive);
     }
 
-    @NotNull
     @Override
     public NavigableSet<E> headSet(final E toElement, final boolean inclusive) {
         return navigableSet.headSet(toElement, inclusive);
     }
 
-    @NotNull
     @Override
     public NavigableSet<E> tailSet(final E fromElement, final boolean inclusive) {
         return navigableSet.tailSet(fromElement, inclusive);
     }
 
     @Override
-    public @NotNull E first() {
+    public E first() {
         return navigableSet.first();
     }
 
     @Override
-    public @NotNull E last() {
+    public E last() {
         return navigableSet.last();
     }
 
-    @NotNull
     @Override
     public SortedSet<E> subSet(final E fromElement, final E toElement) {
         return navigableSet.subSet(fromElement, toElement);
     }
 
-    @NotNull
     @Override
     public SortedSet<E> headSet(final E toElement) {
         return navigableSet.headSet(toElement);
     }
 
-    @NotNull
     @Override
     public SortedSet<E> tailSet(final E fromElement) {
         return navigableSet.tailSet(fromElement);

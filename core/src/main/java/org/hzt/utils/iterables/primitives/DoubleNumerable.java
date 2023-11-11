@@ -3,7 +3,6 @@ package org.hzt.utils.iterables.primitives;
 import org.hzt.utils.It;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.statistics.DoubleStatistics;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.DoublePredicate;
 
@@ -16,7 +15,7 @@ public interface DoubleNumerable extends PrimitiveIterable.OfDouble, PrimitiveNu
     }
 
     @Override
-    default long count(@NotNull final DoublePredicate predicate) {
+    default long count(final DoublePredicate predicate) {
         long count = 0;
         final var iterator = this.iterator();
         while (iterator.hasNext()) {
@@ -72,7 +71,7 @@ public interface DoubleNumerable extends PrimitiveIterable.OfDouble, PrimitiveNu
         return DoubleSequence.of(this).filter(predicate).stdDev();
     }
 
-    default @NotNull DoubleStatistics stats() {
+    default DoubleStatistics stats() {
         final var doubleStatistics = new DoubleStatistics();
         final var iterator = this.iterator();
         while (iterator.hasNext()) {
@@ -81,7 +80,7 @@ public interface DoubleNumerable extends PrimitiveIterable.OfDouble, PrimitiveNu
         return doubleStatistics;
     }
 
-    default @NotNull DoubleStatistics stats(@NotNull final DoublePredicate predicate) {
+    default DoubleStatistics stats(final DoublePredicate predicate) {
         return DoubleSequence.of(this).filter(predicate).stats();
     }
 

@@ -1,7 +1,6 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.sequences.Sequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,33 +16,33 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
         return new ArrayListX<>(capacity);
     }
 
-    static <E> MutableListX<E> of(@NotNull final Iterable<E> iterable) {
+    static <E> MutableListX<E> of(final Iterable<E> iterable) {
         return new ArrayListX<>(iterable);
     }
 
-    static <E> MutableListX<E> of(@NotNull final Collection<E> collection) {
+    static <E> MutableListX<E> of(final Collection<E> collection) {
         return new ArrayListX<>(collection);
     }
 
     @SafeVarargs
-    static <E> MutableListX<E> of(@NotNull final E... values) {
+    static <E> MutableListX<E> of(final E... values) {
         return new ArrayListX<>(values);
     }
 
-    static <E> MutableListX<E> of(@NotNull final E value) {
+    static <E> MutableListX<E> of(final E value) {
         return new ArrayListX<>(value);
     }
 
     @Override
-    default MutableListX<E> plus(@NotNull final E value) {
+    default MutableListX<E> plus(final E value) {
         add(value);
         return this;
     }
 
     @Override
-    default MutableListX<E> plus(@NotNull final Iterable<? extends E> iterable) {
-       addAll(iterable);
-       return this;
+    default MutableListX<E> plus(final Iterable<? extends E> iterable) {
+        addAll(iterable);
+        return this;
     }
 
     MutableListX<E> headTo(int toIndex);
@@ -53,7 +52,7 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
     MutableListX<E> subList(int fromIndex, int toIndex);
 
     @Override
-    default boolean containsAll(@NotNull final Iterable<E> iterable) {
+    default boolean containsAll(final Iterable<E> iterable) {
         return ListX.super.containsAll(iterable);
     }
 
@@ -83,7 +82,7 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
     }
 
     @Override
-    default @NotNull MutableListX<E> get() {
+    default MutableListX<E> get() {
         return this;
     }
 

@@ -8,7 +8,6 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -74,15 +73,13 @@ public interface DoubleList extends DoubleCollection,
     }
 
     @Override
-    @NotNull
     default OptionalDouble findLast() {
         final var lastIndex = lastIndex();
         return lastIndex < 0 ? OptionalDouble.empty() : OptionalDouble.of(get(lastIndex));
     }
 
     @Override
-    @NotNull
-    default OptionalDouble findLast(@NotNull final DoublePredicate predicate) {
+    default OptionalDouble findLast(final DoublePredicate predicate) {
         final var iterator = listIterator(lastIndex());
         while (iterator.hasPrevious()) {
             final var previousDouble = iterator.previousDouble();

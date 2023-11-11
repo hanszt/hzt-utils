@@ -6,7 +6,6 @@ import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.tuples.IndexedValue;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -62,16 +61,16 @@ class CustomSequenceTest {
         }
 
         @Override
-        default <R> CustomSequence<R> map(@NotNull final Function<? super T, ? extends R> mapper) {
+        default <R> CustomSequence<R> map(final Function<? super T, ? extends R> mapper) {
             return CustomSequence.of(Sequence.super.map(mapper));
         }
 
         @Override
-        default CustomSequence<T> filter(@NotNull final Predicate<? super T> predicate) {
+        default CustomSequence<T> filter(final Predicate<? super T> predicate) {
             return () -> Iterators.filteringIterator(iterator(), predicate, true);
         }
 
-        default float floatSumOf(@NotNull final ToFloatFunction<? super T> selector) {
+        default float floatSumOf(final ToFloatFunction<? super T> selector) {
             float sum = 0;
             for (final var t : this) {
                 if (t != null) {
@@ -191,12 +190,10 @@ class CustomSequenceTest {
             return mapIndexed((index, value) -> next(index, value, 2, 1, "odd"))::iterator;
         }
 
-        @NotNull
         private static String next(final int index, final String current, final int modulo, final String string) {
             return next(index, current, modulo, 0, string);
         }
 
-        @NotNull
         private static String next(final int index, final String current, final int modulo, final int offSet, final String string) {
             final var value = index + 1;
             final var isNaturalNr = isNaturalNr(current);

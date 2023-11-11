@@ -4,7 +4,6 @@ import org.hzt.utils.It;
 import org.hzt.utils.iterables.EntryIterable;
 import org.hzt.utils.sequences.EntrySequence;
 import org.hzt.utils.tuples.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -95,48 +94,48 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
         return MapX.copyOf(map);
     }
 
-    <K1, V1> MapX<K1, V1> map(@NotNull Function<? super K, ? extends K1> keyMapper,
-                              @NotNull Function<? super V, ? extends V1> valueMapper);
+    <K1, V1> MapX<K1, V1> map(Function<? super K, ? extends K1> keyMapper,
+                              Function<? super V, ? extends V1> valueMapper);
 
-    default <R> ListX<R> map(@NotNull final BiFunction<? super K, ? super V, ? extends R> mapper) {
+    default <R> ListX<R> map(final BiFunction<? super K, ? super V, ? extends R> mapper) {
         return MutableListX.of(this).mapNotNull(e -> mapper.apply(e.getKey(), e.getValue()));
     }
 
     @Override
-    default <K1> MapX<K1, V> mapByKeys(@NotNull final Function<? super K, ? extends K1> keyMapper) {
+    default <K1> MapX<K1, V> mapByKeys(final Function<? super K, ? extends K1> keyMapper) {
         return map(keyMapper, It::self);
     }
 
     @Override
-    default <K1> MapX<K1, V> mapKeys(@NotNull final BiFunction<? super K, ? super V, ? extends K1> toKeyMapper) {
+    default <K1> MapX<K1, V> mapKeys(final BiFunction<? super K, ? super V, ? extends K1> toKeyMapper) {
         return MapX.of(asSequence().mapKeys(toKeyMapper));
     }
 
     @Override
-    default <V1> MapX<K, V1> mapByValues(@NotNull final Function<? super V, ? extends V1> valueMapper) {
+    default <V1> MapX<K, V1> mapByValues(final Function<? super V, ? extends V1> valueMapper) {
         return map(It::self, valueMapper);
     }
 
     @Override
-    default <V1> MapX<K, V1> mapValues(@NotNull final BiFunction<? super K, ? super V, ? extends V1> toValueMapper) {
+    default <V1> MapX<K, V1> mapValues(final BiFunction<? super K, ? super V, ? extends V1> toValueMapper) {
         return MapX.of(asSequence().mapValues(toValueMapper));
     }
 
     @Override
-    default MapX<K, V> filter(@NotNull final BiPredicate<? super K, ? super V> biPredicate) {
+    default MapX<K, V> filter(final BiPredicate<? super K, ? super V> biPredicate) {
         return asSequence().filter(biPredicate).toMapX();
     }
 
-    default MapX<K, V> filterKeys(@NotNull final Predicate<? super K> predicate) {
+    default MapX<K, V> filterKeys(final Predicate<? super K> predicate) {
         return asSequence().filterKeys(predicate).toMapX();
     }
 
-    default MapX<K, V> filterValues(@NotNull final Predicate<? super V> predicate) {
+    default MapX<K, V> filterValues(final Predicate<? super V> predicate) {
         return asSequence().filterValues(predicate).toMapX();
     }
 
     @Override
-    default MapX<K, V> onEachKey(@NotNull final Consumer<? super K> consumer) {
+    default MapX<K, V> onEachKey(final Consumer<? super K> consumer) {
         return mapByKeys(k -> {
             consumer.accept(k);
             return k;
@@ -144,7 +143,7 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     }
 
     @Override
-    default MapX<K, V> onEachValue(@NotNull final Consumer<? super V> consumer) {
+    default MapX<K, V> onEachValue(final Consumer<? super V> consumer) {
         return mapByValues(v -> {
             consumer.accept(v);
             return v;
@@ -152,18 +151,17 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     }
 
     @Override
-    @NotNull
-    default MapX<K, V> onEach(@NotNull final Consumer<? super Map.Entry<K, V>> consumer) {
+    default MapX<K, V> onEach(final Consumer<? super Map.Entry<K, V>> consumer) {
         return MapX.of(CollectionX.super.onEach(consumer));
     }
 
     @Override
-    default MapX<K, V> onEach(@NotNull final BiConsumer<? super K, ? super V> biConsumer) {
+    default MapX<K, V> onEach(final BiConsumer<? super K, ? super V> biConsumer) {
         return MapX.of(CollectionX.super.onEach(c -> biConsumer.accept(c.getKey(), c.getValue())));
     }
 
-    default <K1, V1> MapX<K1, V1> inverted(@NotNull final Function<? super V, ? extends K1> toKeyMapper,
-                                           @NotNull final Function<? super K, ? extends V1> toValueMapper) {
+    default <K1, V1> MapX<K1, V1> inverted(final Function<? super V, ? extends K1> toKeyMapper,
+                                           final Function<? super K, ? extends V1> toValueMapper) {
         final Map<K1, V1> resultMap = new HashMap<>();
         for (final var entry : this) {
             final var value = entry.getValue();
@@ -195,7 +193,7 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
         return (value != null || containsKey(key)) ? value : defaultValue;
     }
 
-    default void forEach(@NotNull final BiConsumer<? super K, ? super V> action) {
+    default void forEach(final BiConsumer<? super K, ? super V> action) {
         Objects.requireNonNull(action);
         for (final var entry : entrySet()) {
             try {

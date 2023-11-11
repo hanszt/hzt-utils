@@ -2,7 +2,6 @@ package org.hzt.utils.iterators.primitives;
 
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
@@ -14,12 +13,12 @@ public final class DoubleMultiMappingIterator implements PrimitiveIterator.OfDou
 
     private OfDouble itemIterator = null;
 
-    private DoubleMultiMappingIterator(@NotNull final OfDouble iterator, @NotNull final DoubleSequence.DoubleMapMultiConsumer mapper) {
+    private DoubleMultiMappingIterator(final OfDouble iterator, final DoubleSequence.DoubleMapMultiConsumer mapper) {
         this.iterator = iterator;
         this.mapper = mapper;
     }
 
-    public static DoubleMultiMappingIterator of(@NotNull final OfDouble iterator, @NotNull final DoubleSequence.DoubleMapMultiConsumer mapper) {
+    public static DoubleMultiMappingIterator of(final OfDouble iterator, final DoubleSequence.DoubleMapMultiConsumer mapper) {
         return new DoubleMultiMappingIterator(iterator, mapper);
     }
 

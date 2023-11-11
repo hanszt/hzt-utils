@@ -1,6 +1,5 @@
 package org.hzt.utils;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -41,7 +40,6 @@ public final class PreConditions {
         require(n >= 0, () -> errorMessage(n));
     }
 
-    @NotNull
     private static String errorMessage(final long n) {
         return "Requested element count " + n + " is less than zero.";
     }

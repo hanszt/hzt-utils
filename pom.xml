@@ -7,7 +7,7 @@
 
     <groupId>org.hzt.utils</groupId>
     <artifactId>hzt-utils</artifactId>
-    <version>0.7.5.17</version>
+    <version>1.0.0.17</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -34,22 +34,14 @@
         <awaitility.version>4.2.0</awaitility.version>
         <!--        dependency management-->
         <javafx.version>19</javafx.version>
-        <!--        other-->
-        <annotations.version>23.0.0</annotations.version>
         <!--plugins-->
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
-        <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+        <maven-dependency-plugin.version>3.6.0</maven-dependency-plugin.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.jetbrains</groupId>
-                <artifactId>annotations</artifactId>
-                <version>${annotations.version}</version>
-                <scope>compile</scope>
-            </dependency>
             <dependency>
                 <groupId>org.hzt.utils</groupId>
                 <artifactId>test-utils</artifactId>
@@ -74,6 +66,12 @@
                 <artifactId>javafx-base</artifactId>
                 <version>${javafx.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj-core.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -81,21 +79,68 @@
         <!-- TEST SCOPE DEPENDENCIES -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
+            <artifactId>junit-jupiter-api</artifactId>
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj-core.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven-dependency-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>analyze</id>
+                        <goals>
+                            <goal>analyze-only</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <!-- The build will fail if there are any dependency issues -->
+                            <failOnWarning>true</failOnWarning>
 
+                            <ignoredUsedUndeclaredDependencies>
+                                <ignoredUsedUndeclaredDependency>
+                                    org.openjfx:javafx-base:jar <!--os specific-->
+                                </ignoredUsedUndeclaredDependency>
+                            </ignoredUsedUndeclaredDependencies>
+
+                            <ignoredUnusedDeclaredDependencies>
+                                <ignoredUnusedDeclaredDependency>
+                                    org.junit.jupiter:junit-jupiter-engine:jar
+                                </ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>
+                                    org.junit.jupiter:junit-jupiter-params:jar
+                                </ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>
+                                    org.junit.platform:junit-platform-launcher:jar <!--needed for test-utils module-->
+                                </ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>
+                                    org.openjfx:javafx-base:jar <!--resolved to os specific-->
+                                </ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>
+                                    org.openjdk.jmh:jmh-generator-annprocess:jar <!--needed for benchmark module-->
+                                </ignoredUnusedDeclaredDependency>
+                            </ignoredUnusedDeclaredDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

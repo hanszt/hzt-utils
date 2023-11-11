@@ -4,7 +4,6 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
-import org.jetbrains.annotations.NotNull;
 
 public interface LongMutableList extends LongList, LongMutableCollection,
         PrimitiveMutableList<PrimitiveListIterator.OfLong, LongComparator> {
@@ -30,13 +29,13 @@ public interface LongMutableList extends LongList, LongMutableCollection,
     }
 
     @Override
-    default LongMutableList plus(@NotNull final Iterable<Long> iterable) {
+    default LongMutableList plus(final Iterable<Long> iterable) {
         addAll(iterable);
         return this;
     }
 
     @Override
-    default LongMutableList plus(final long @NotNull ... array) {
+    default LongMutableList plus(final long... array) {
         addAll(array);
         return this;
     }

@@ -3,7 +3,6 @@ package org.hzt.utils.iterables.primitives;
 import org.hzt.utils.It;
 import org.hzt.utils.sequences.primitives.LongSequence;
 import org.hzt.utils.statistics.LongStatistics;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.LongPredicate;
 
@@ -15,7 +14,7 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
         return count(It::noLongFilter);
     }
 
-    default long count(@NotNull final LongPredicate predicate) {
+    default long count(final LongPredicate predicate) {
         long count = 0;
         final var iterator = iterator();
         while (iterator.hasNext()) {
@@ -71,7 +70,7 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
         return LongSequence.of(this).filter(predicate).stdDev();
     }
 
-    default @NotNull LongStatistics stats() {
+    default LongStatistics stats() {
         final var longStatistics = new LongStatistics();
         final var iterator = iterator();
         while (iterator.hasNext()) {
@@ -80,7 +79,7 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
         return longStatistics;
     }
 
-    default @NotNull LongStatistics stats(@NotNull final LongPredicate predicate) {
+    default LongStatistics stats(final LongPredicate predicate) {
         return LongSequence.of(this).filter(predicate).stats();
     }
 

@@ -3,7 +3,6 @@ package org.hzt.utils.streams;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.statistics.DoubleStatistics;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
@@ -36,11 +35,11 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
         return of(DoubleStream.iterate(initial, operator));
     }
 
-    static DoubleStreamX of(@NotNull final PrimitiveIterable.OfDouble iterable) {
+    static DoubleStreamX of(final PrimitiveIterable.OfDouble iterable) {
         return new DoubleStreamXImpl(stream(iterable.spliterator(), false));
     }
 
-    static DoubleStreamX parallel(@NotNull final PrimitiveIterable.OfDouble iterable) {
+    static DoubleStreamX parallel(final PrimitiveIterable.OfDouble iterable) {
         return new DoubleStreamXImpl(stream(iterable.spliterator(), true));
     }
 
@@ -48,7 +47,6 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
         return new DoubleStreamXImpl(stream);
     }
 
-    @NotNull
     @Override
     Spliterator.OfDouble spliterator();
 
@@ -138,7 +136,7 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
     }
 
     @Override
-    default double @NotNull [] toArray() {
+    default double[] toArray() {
         throw new UnsupportedOperationException();
     }
 
@@ -147,7 +145,6 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
         return stream().reduce(identity, accumulator);
     }
 
-    @NotNull
     @Override
     default OptionalDouble reduce(final DoubleBinaryOperator accumulator) {
         return stream().reduce(accumulator);
@@ -160,11 +157,9 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
         return stream().collect(supplier, accumulator, combiner);
     }
 
-    @NotNull
     default OptionalDouble max() {
         return stream().max();
     }
-
 
     @Override
     default long count() {
@@ -211,7 +206,6 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
         return stream().noneMatch(predicate);
     }
 
-    @NotNull
     @Override
     default OptionalDouble findFirst() {
         return stream().findFirst();
@@ -222,7 +216,6 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
         return stream().findAny();
     }
 
-    @NotNull
     @Override
     default PrimitiveIterator.OfDouble iterator() {
         return Spliterators.iterator(spliterator());
@@ -233,25 +226,21 @@ public interface DoubleStreamX extends DoubleStream, Spliterable.OfDouble {
         throw new UnsupportedOperationException("isParallel() not supported in DoubleStreamX interface");
     }
 
-    @NotNull
     @Override
     default DoubleStreamX sequential() {
         return DoubleStreamX.of(stream(spliterator(), false));
     }
 
-    @NotNull
     @Override
     default DoubleStreamX parallel() {
         return DoubleStreamX.of(stream(spliterator(), true));
     }
 
-    @NotNull
     @Override
     default DoubleStreamX unordered() {
         return DoubleStreamX.of(stream().unordered());
     }
 
-    @NotNull
     @Override
     default DoubleStreamX onClose(final Runnable closeHandler) {
         return this;

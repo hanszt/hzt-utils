@@ -2,7 +2,6 @@ package org.hzt.utils.streams;
 
 import org.hzt.utils.collectors.primitves.IntCollector;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.stream.Collector;
@@ -21,7 +20,7 @@ public interface IntToObjStreamExtension<R> {
         return tStream -> after.extend(extend(tStream));
     }
 
-    default <A, V> IntCollector<?, V> collect(@NotNull Collector<? super R, A, V> collector) {
+    default <A, V> IntCollector<?, V> collect(Collector<? super R, A, V> collector) {
         return IntCollector.of(
                 SpinedBuffer.OfInt::new,
                 SpinedBuffer.OfInt::accept,

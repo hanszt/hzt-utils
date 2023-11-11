@@ -2,7 +2,6 @@ package org.hzt.utils.io;
 
 import org.hzt.utils.function.ThrowingConsumer;
 import org.hzt.utils.function.ThrowingFunction;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
@@ -16,8 +15,8 @@ public final class Closer<T> implements AutoCloseable {
         this.closeable = consumingAutoClosable;
     }
 
-    public static <T> Closer<T> forResource(@NotNull final T resource,
-                                            @NotNull final ThrowingConsumer<? super T> consumingAutoClosable) {
+    public static <T> Closer<T> forResource(final T resource,
+                                            final ThrowingConsumer<? super T> consumingAutoClosable) {
         return new Closer<>(resource, consumingAutoClosable);
     }
 
@@ -30,7 +29,7 @@ public final class Closer<T> implements AutoCloseable {
         }
     }
 
-    public <R> R apply(@NotNull final ThrowingFunction<? super T, ? extends R> function) {
+    public <R> R apply(final ThrowingFunction<? super T, ? extends R> function) {
         try {
             return function.apply(resource);
         } catch (final Exception e) {
@@ -38,13 +37,13 @@ public final class Closer<T> implements AutoCloseable {
         }
     }
 
-    public <R> R applyAndClose(@NotNull final ThrowingFunction<? super T, ? extends R> function) {
+    public <R> R applyAndClose(final ThrowingFunction<? super T, ? extends R> function) {
         try (this) {
             return apply(function);
         }
     }
 
-    public void execute(@NotNull final ThrowingConsumer<? super T> consumer) {
+    public void execute(final ThrowingConsumer<? super T> consumer) {
         try {
             consumer.accept(resource);
         } catch (final Exception e) {
@@ -52,17 +51,17 @@ public final class Closer<T> implements AutoCloseable {
         }
     }
 
-    public void executeAndClose(@NotNull final ThrowingConsumer<? super T> consumer) {
+    public void executeAndClose(final ThrowingConsumer<? super T> consumer) {
         try (this) {
             execute(consumer);
         }
     }
 
-    public boolean test(@NotNull final Predicate<? super T> predicate) {
+    public boolean test(final Predicate<? super T> predicate) {
         return predicate.test(resource);
     }
 
-    public boolean testAndClose(@NotNull final Predicate<? super T> predicate) {
+    public boolean testAndClose(final Predicate<? super T> predicate) {
         try (this) {
             return predicate.test(resource);
         }

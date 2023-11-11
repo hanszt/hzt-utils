@@ -10,7 +10,6 @@ import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableSet;
 import org.hzt.utils.function.primitives.DoubleIndexedFunction;
 import org.hzt.utils.function.primitives.LongIndexedFunction;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -49,8 +48,7 @@ public final class PrimitiveIterators {
     private PrimitiveIterators() {
     }
 
-    @NotNull
-    public static OfInt intArrayIterator(final int @NotNull ... array) {
+    public static OfInt intArrayIterator(final int... array) {
         return new OfInt() {
             int index = 0;
 
@@ -70,9 +68,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
-    public static <T> OfInt intIteratorOf(@NotNull final Iterator<T> iterator,
-                                                            @NotNull final ToIntFunction<? super T> mapper) {
+    public static <T> OfInt intIteratorOf(final Iterator<T> iterator,
+                                                            final ToIntFunction<? super T> mapper) {
         return new OfInt() {
             @Override
             public int nextInt() {
@@ -89,27 +86,26 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static <T> OfInt toIntFlatMappingIterator(@NotNull final Iterator<T> iterator,
-                                                                       @NotNull final Function<? super T,
+    public static <T> OfInt toIntFlatMappingIterator(final Iterator<T> iterator,
+                                                                       final Function<? super T,
                                                                                ? extends OfInt> mapper) {
         return new ToIntFlatMappingIterator<>(iterator, mapper);
     }
 
-    public static <T> OfLong toLongFlatMappingIterator(@NotNull final Iterator<T> iterator,
-                                                                         @NotNull final Function<? super T,
+    public static <T> OfLong toLongFlatMappingIterator(final Iterator<T> iterator,
+                                                                         final Function<? super T,
                                                                                  ? extends OfLong> mapper) {
         return new ToLongFlatMappingIterator<>(iterator, mapper);
     }
 
-    public static <T> OfDouble toDoubleFlatMappingIterator(@NotNull final Iterator<T> iterator,
-                                                                             @NotNull final Function<? super T,
+    public static <T> OfDouble toDoubleFlatMappingIterator(final Iterator<T> iterator,
+                                                                             final Function<? super T,
                                                                                      ? extends OfDouble> mapper) {
         return new ToDoubleFlatMappingIterator<>(iterator, mapper);
     }
 
-    @NotNull
-    public static OfInt intTransformingIterator(@NotNull final OfInt iterator,
-                                                                  @NotNull final IntUnaryOperator mapper) {
+    public static OfInt intTransformingIterator(final OfInt iterator,
+                                                                  final IntUnaryOperator mapper) {
         return new OfInt() {
             @Override
             public int nextInt() {
@@ -123,7 +119,6 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
     public static OfInt intIndexedTransformingIterator(final OfInt iterator, final IntBinaryOperator mapper) {
         return new OfInt() {
 
@@ -144,9 +139,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
-    public static OfLong intToLongIterator(@NotNull final OfInt iterator,
-                                                             @NotNull final IntToLongFunction mapper) {
+    public static OfLong intToLongIterator(final OfInt iterator,
+                                                             final IntToLongFunction mapper) {
         return new OfLong() {
             @Override
             public long nextLong() {
@@ -160,9 +154,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
-    public static OfDouble intToDoubleIterator(@NotNull final OfInt iterator,
-                                                                 @NotNull final IntToDoubleFunction mapper) {
+    public static OfDouble intToDoubleIterator(final OfInt iterator,
+                                                                 final IntToDoubleFunction mapper) {
         return new OfDouble() {
             @Override
             public double nextDouble() {
@@ -176,8 +169,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static <R> Iterator<R> intToObjIterator(@NotNull final OfInt iterator,
-                                                   @NotNull final IntFunction<? extends R> mapper) {
+    public static <R> Iterator<R> intToObjIterator(final OfInt iterator,
+                                                   final IntFunction<? extends R> mapper) {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -192,8 +185,7 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
-    public static OfLong longArrayIterator(final long @NotNull ... array) {
+    public static OfLong longArrayIterator(final long... array) {
         return new OfLong() {
             int index = 0;
 
@@ -213,7 +205,6 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
     public static <T> OfLong longIteratorOf(final Iterator<T> iterator, final ToLongFunction<? super T> mapper) {
         return new OfLong() {
             @Override
@@ -231,7 +222,6 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
     public static OfLong longTransformingIterator(final OfLong iterator, final LongUnaryOperator mapper) {
         return new OfLong() {
             @Override
@@ -246,7 +236,6 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
     public static OfLong longIndexedTransformingIterator(final OfLong iterator, final LongIndexedFunction mapper) {
         return new OfLong() {
 
@@ -267,9 +256,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
-    public static OfInt longToIntIterator(@NotNull final OfLong iterator,
-                                                            @NotNull final LongToIntFunction mapper) {
+    public static OfInt longToIntIterator(final OfLong iterator,
+                                                            final LongToIntFunction mapper) {
         return new OfInt() {
             @Override
             public int nextInt() {
@@ -283,9 +271,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
-    public static OfDouble longToDoubleIterator(@NotNull final OfLong iterator,
-                                                                  @NotNull final LongToDoubleFunction mapper) {
+    public static OfDouble longToDoubleIterator(final OfLong iterator,
+                                                                  final LongToDoubleFunction mapper) {
         return new OfDouble() {
             @Override
             public double nextDouble() {
@@ -299,8 +286,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static <R> Iterator<R> longToObjIterator(@NotNull final OfLong iterator,
-                                                    @NotNull final LongFunction<? extends R> mapper) {
+    public static <R> Iterator<R> longToObjIterator(final OfLong iterator,
+                                                    final LongFunction<? extends R> mapper) {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -315,8 +302,7 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
-    public static OfDouble doubleArrayIterator(final double @NotNull ... array) {
+    public static OfDouble doubleArrayIterator(final double... array) {
         return new OfDouble() {
             int index = 0;
 
@@ -336,9 +322,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
-    public static <T> OfDouble doubleIteratorOf(@NotNull final Iterator<T> iterator,
-                                                                  @NotNull final ToDoubleFunction<? super T> mapper) {
+    public static <T> OfDouble doubleIteratorOf(final Iterator<T> iterator,
+                                                                  final ToDoubleFunction<? super T> mapper) {
         return new OfDouble() {
             @Override
             public double nextDouble() {
@@ -360,9 +345,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
-    public static OfDouble doubleTransformingIterator(@NotNull final OfDouble iterator,
-                                                                        @NotNull final DoubleUnaryOperator mapper) {
+    public static OfDouble doubleTransformingIterator(final OfDouble iterator,
+                                                                        final DoubleUnaryOperator mapper) {
         return new OfDouble() {
             @Override
             public double nextDouble() {
@@ -376,9 +360,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
-    public static OfDouble doubleIndexedTransformingIterator(@NotNull final OfDouble iterator,
-                                                                               @NotNull final DoubleIndexedFunction mapper) {
+    public static OfDouble doubleIndexedTransformingIterator(final OfDouble iterator,
+                                                                               final DoubleIndexedFunction mapper) {
         return new OfDouble() {
 
             int index = 0;
@@ -398,8 +381,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static OfInt doubleToIntIterator(@NotNull final OfDouble doubleIterator,
-                                                              @NotNull final DoubleToIntFunction mapper) {
+    public static OfInt doubleToIntIterator(final OfDouble doubleIterator,
+                                                              final DoubleToIntFunction mapper) {
         return new OfInt() {
             @Override
             public int nextInt() {
@@ -413,8 +396,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static OfLong doubleToLongIterator(@NotNull final OfDouble doubleIterator,
-                                                                @NotNull final DoubleToLongFunction mapper) {
+    public static OfLong doubleToLongIterator(final OfDouble doubleIterator,
+                                                                final DoubleToLongFunction mapper) {
         return new OfLong() {
             @Override
             public long nextLong() {
@@ -428,8 +411,8 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static <R> Iterator<R> doubleToObjIterator(@NotNull final OfDouble iterator,
-                                                      @NotNull final DoubleFunction<? extends R> mapper) {
+    public static <R> Iterator<R> doubleToObjIterator(final OfDouble iterator,
+                                                      final DoubleFunction<? extends R> mapper) {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -445,9 +428,9 @@ public final class PrimitiveIterators {
     }
 
     public static OfInt mergingIterator(
-            @NotNull final OfInt iterator,
-            @NotNull final OfInt otherIterator,
-            @NotNull final IntBinaryOperator merger) {
+            final OfInt iterator,
+            final OfInt otherIterator,
+            final IntBinaryOperator merger) {
         return new OfInt() {
             @Override
             public boolean hasNext() {
@@ -462,9 +445,9 @@ public final class PrimitiveIterators {
     }
 
     public static OfLong mergingIterator(
-            @NotNull final OfLong iterator,
-            @NotNull final OfLong otherIterator,
-            @NotNull final LongBinaryOperator merger) {
+            final OfLong iterator,
+            final OfLong otherIterator,
+            final LongBinaryOperator merger) {
         return new OfLong() {
             @Override
             public boolean hasNext() {
@@ -479,9 +462,9 @@ public final class PrimitiveIterators {
     }
 
     public static OfDouble mergingIterator(
-            @NotNull final OfDouble iterator,
-            @NotNull final OfDouble otherIterator,
-            @NotNull final DoubleBinaryOperator merger) {
+            final OfDouble iterator,
+            final OfDouble otherIterator,
+            final DoubleBinaryOperator merger) {
         return new OfDouble() {
             @Override
             public boolean hasNext() {
@@ -495,7 +478,7 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static @NotNull OfInt emptyIntIterator() {
+    public static OfInt emptyIntIterator() {
         return new OfInt() {
             @Override
             public int nextInt() {
@@ -509,7 +492,7 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static @NotNull OfLong emptyLongIterator() {
+    public static OfLong emptyLongIterator() {
         return new OfLong() {
             @Override
             public long nextLong() {
@@ -523,7 +506,7 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static @NotNull OfDouble emptyDoubleIterator() {
+    public static OfDouble emptyDoubleIterator() {
         return new OfDouble() {
             @Override
             public double nextDouble() {
@@ -537,16 +520,15 @@ public final class PrimitiveIterators {
         };
     }
 
-    @NotNull
-    public static OfInt distinctIterator(@NotNull final OfInt iterator) {
+    public static OfInt distinctIterator(final OfInt iterator) {
         final var observed = IntMutableSet.empty();
         final PrimitiveAtomicIterator.OfInt iteratorX = action -> nextDistinctInt(iterator, observed, action);
         return iteratorX.asIterator();
     }
 
-    private static boolean nextDistinctInt(@NotNull final OfInt iterator,
-                                           @NotNull final IntMutableCollection observed,
-                                           @NotNull final IntConsumer action) {
+    private static boolean nextDistinctInt(final OfInt iterator,
+                                           final IntMutableCollection observed,
+                                           final IntConsumer action) {
         while (iterator.hasNext()) {
             final var next = iterator.nextInt();
             if (observed.add(next)) {
@@ -557,16 +539,15 @@ public final class PrimitiveIterators {
         return false;
     }
 
-    @NotNull
-    public static OfLong distinctIterator(@NotNull final OfLong iterator) {
+    public static OfLong distinctIterator(final OfLong iterator) {
         final var observed = LongMutableSet.empty();
         final PrimitiveAtomicIterator.OfLong iteratorX = action -> nextDistinctLong(iterator, observed, action);
         return iteratorX.asIterator();
     }
 
-    private static boolean nextDistinctLong(@NotNull final OfLong iterator,
-                                            @NotNull final LongMutableSet observed,
-                                            @NotNull final LongConsumer action) {
+    private static boolean nextDistinctLong(final OfLong iterator,
+                                            final LongMutableSet observed,
+                                            final LongConsumer action) {
         while (iterator.hasNext()) {
             final var next = iterator.nextLong();
             if (observed.add(next)) {
@@ -577,16 +558,15 @@ public final class PrimitiveIterators {
         return false;
     }
 
-    @NotNull
-    public static OfDouble distinctIterator(@NotNull final OfDouble iterator) {
+    public static OfDouble distinctIterator(final OfDouble iterator) {
         final var observed = DoubleMutableSet.empty();
         final PrimitiveAtomicIterator.OfDouble iteratorX = action -> nextDistinctDouble(iterator, observed, action);
         return iteratorX.asIterator();
     }
 
-    private static boolean nextDistinctDouble(@NotNull final OfDouble iterator,
-                                              @NotNull final DoubleMutableSet observed,
-                                              @NotNull final DoubleConsumer action) {
+    private static boolean nextDistinctDouble(final OfDouble iterator,
+                                              final DoubleMutableSet observed,
+                                              final DoubleConsumer action) {
         while (iterator.hasNext()) {
             final var next = iterator.nextDouble();
             if (observed.add(next)) {
@@ -612,7 +592,6 @@ public final class PrimitiveIterators {
         return new DoubleScanningIterator(iterator, initial, operation);
     }
 
-    @NotNull
     private static String getMessage(final int index) {
         return "index out of bounds. (Index value: " + index + ")";
     }

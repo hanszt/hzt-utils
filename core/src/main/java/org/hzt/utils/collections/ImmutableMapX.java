@@ -1,7 +1,6 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.tuples.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,7 +13,7 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
 
     private final Map<K, V> map;
 
-    ImmutableMapX(@NotNull final Map<? extends K, ? extends V> map) {
+    ImmutableMapX(final Map<? extends K, ? extends V> map) {
         this.map = Map.copyOf(map);
     }
 
@@ -59,8 +58,8 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
     }
 
     @Override
-    public <K1, V1> MapX<K1, V1> map(@NotNull final Function<? super K, ? extends K1> keyMapper,
-                                     @NotNull final Function<? super V, ? extends V1> valueMapper) {
+    public <K1, V1> MapX<K1, V1> map(final Function<? super K, ? extends K1> keyMapper,
+                                     final Function<? super V, ? extends V1> valueMapper) {
         final Map<K1, V1> resultMap = new HashMap<>();
         for (final var entry : this) {
             final var key = entry.getKey();
@@ -90,21 +89,20 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
     }
 
     @Override
-    public @NotNull MutableSetX<K> keySet() {
+    public MutableSetX<K> keySet() {
         return MutableLinkedSetX.of(map.keySet());
     }
 
     @Override
-    public @NotNull MutableListX<V> values() {
+    public MutableListX<V> values() {
         return MutableListX.of(map.values());
     }
 
     @Override
-    public @NotNull MutableSetX<Entry<K, V>> entrySet() {
+    public MutableSetX<Entry<K, V>> entrySet() {
         return MutableSetX.of(map.entrySet());
     }
 
-    @NotNull
     @Override
     public Iterator<Entry<K, V>> iterator() {
         return map.entrySet().iterator();

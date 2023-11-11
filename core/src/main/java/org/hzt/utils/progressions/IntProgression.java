@@ -2,7 +2,6 @@ package org.hzt.utils.progressions;
 
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.sequences.primitives.IntSequence;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.PrimitiveIterator;
@@ -94,11 +93,11 @@ public class IntProgression implements IntSequence {
         };
     }
 
-    public @NotNull Integer start() {
+    public Integer start() {
         return start;
     }
 
-    public @NotNull Integer endInclusive() {
+    public Integer endInclusive() {
         return endInclusive;
     }
 

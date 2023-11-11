@@ -2,7 +2,6 @@ package org.hzt.utils.streams;
 
 import org.hzt.utils.iterables.Iterables;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -26,7 +25,7 @@ public interface StreamExtension<T, R> {
         return vStream -> extend(before.extend(vStream));
     }
 
-    default <A, V> Collector<T, ?, V> collect(@NotNull Collector<? super R, A, V> collector) {
+    default <A, V> Collector<T, ?, V> collect(Collector<? super R, A, V> collector) {
         return Collector.of(
                 SpinedBuffer<T>::new,
                 SpinedBuffer::accept,

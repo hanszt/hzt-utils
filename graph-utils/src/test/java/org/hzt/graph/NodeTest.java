@@ -169,8 +169,8 @@ class NodeTest {
         @Override
         public String toString() {
             return "RailWayStation{" +
-                    "name='" + name + '\'' +
-                    '}';
+                   "name='" + name + '\'' +
+                   '}';
         }
     }
 }

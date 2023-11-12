@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.hzt.utils</groupId>
         <artifactId>hzt-utils</artifactId>
-        <version>1.0.0.17</version>
+        <version>1.0.1.17</version>
     </parent>
 
     <artifactId>kotlin-utils</artifactId>
@@ -83,7 +83,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <jvmTarget>${java.target.version}</jvmTarget>
+                    <jvmTarget>${kotlin-maven-plugin.jvmTarget}</jvmTarget>
                 </configuration>
             </plugin>
         </plugins>

@@ -11,6 +11,7 @@ class EnumsKtTest {
     fun `should return an empty enumSet`() {
         emptyEnumSet<Month>().shouldBeEmpty()
     }
+
     @Test
     fun `should return an enumSet with all months`() {
         enumSetAllOf<Month>() shouldHaveSize 12

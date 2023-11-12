@@ -10,8 +10,11 @@ import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
+import org.hzt.utils.gatherers.Gatherer;
+import org.hzt.utils.iterables.IterableExtension;
 import org.hzt.utils.iterables.IterableX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
+import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.IndexedValue;
 
@@ -164,6 +167,14 @@ public interface CollectionX<E> extends IterableX<E> {
 
     default <R> ListX<R> mapMulti(final BiConsumer<? super E, ? super Consumer<R>> mapper) {
         return ListX.copyOf(mapMultiTo(() -> MutableListX.withInitCapacity(size()), mapper));
+    }
+
+    default <A, R> ListX<R> gather(final Gatherer<? super E, A, R> gatherer) {
+        return ListX.of(() -> Iterators.gatheringIterator(iterator(), gatherer));
+    }
+
+    default <R> ListX<R> then(IterableExtension<E, R> extension) {
+        return ListX.of(() -> extension.extend(this).iterator());
     }
 
     @Override

@@ -28,7 +28,6 @@ class CustomSequenceTest {
         final var probableFibNrPrimeCount = fibonacciSequence()
                 .filter(fibNr -> fibNr.isProbablePrime(100))
                 .map(BigInteger::toString)
-                .onEach(It::println)
                 .takeWhile(fibNr -> fibNr.length() <= 100)
                 .count();
 

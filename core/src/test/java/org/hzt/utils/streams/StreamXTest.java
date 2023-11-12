@@ -23,9 +23,18 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
+import static org.hzt.utils.streams.StreamExtensions.chunked;
+import static org.hzt.utils.streams.StreamExtensions.filter;
+import static org.hzt.utils.streams.StreamExtensions.map;
+import static org.hzt.utils.streams.StreamExtensions.peek;
+import static org.hzt.utils.streams.StreamExtensions.scan;
+import static org.hzt.utils.streams.StreamExtensions.windowed;
+import static org.hzt.utils.streams.StreamFinishers.fold;
+import static org.hzt.utils.streams.StreamFinishers.toSet;
 import static org.hzt.utils.streams.StreamExtensions.*;
 import static org.hzt.utils.streams.StreamFinishers.fold;
 import static org.hzt.utils.streams.StreamFinishers.toSet;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StreamXTest {

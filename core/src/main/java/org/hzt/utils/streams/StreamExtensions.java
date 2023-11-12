@@ -77,19 +77,6 @@ public final class StreamExtensions {
                 .map(s -> mapper.apply(s.toList())).iterator(), ORDERED), ORDERED, false);
     }
 
-    public static IntToObjStreamExtension<IntList> intWindowed(int size) {
-        return intWindowed(size, 1, false, w -> w);
-    }
-
-    public static <R> IntToObjStreamExtension<R> intWindowed(int size,
-                                                        int step,
-                                                        boolean partialWindows,
-                                                        Function<IntList, ? extends R> mapper) {
-        return stream -> stream(() -> Spliterators.spliteratorUnknownSize(IntSequence.of(stream::iterator)
-                .windowed(size, step, partialWindows)
-                .map(mapper).iterator(), ORDERED), ORDERED, false);
-    }
-
     public static <T, R> StreamExtension<T, R> zipWithNext(BiFunction<? super T, ? super T, ? extends R> mapper) {
         return stream -> stream(() -> Spliterators.spliteratorUnknownSize(Sequence.of(stream::iterator)
                 .zipWithNext(mapper)

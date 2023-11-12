@@ -9,6 +9,7 @@ import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterables.EntryIterable;
+import org.hzt.utils.iterables.IterableExtension;
 import org.hzt.utils.iterables.IterableX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.Iterators;
@@ -166,6 +167,10 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     default <A, R> Sequence<R> gather(final Gatherer<? super T, A, R> gatherer) {
         return () -> Iterators.gatheringIterator(iterator(), gatherer);
+    }
+
+    default <R> Sequence<R> then(IterableExtension<T, R> extension) {
+        return () -> extension.extend(this).iterator();
     }
 
     default <R> Sequence<R> mapIfPresent(final Function<? super T, Optional<R>> mapper) {

@@ -54,16 +54,16 @@ class TreeNodeTest {
             final var s = root.toBFSTreeString(2);
 
             final var expected = """
-                     root
-                       c1
-                       c2
-                       c3
-                         c4
-                         c5
-                         c6
-                         c7
-                         c8
-                           c10""";
+                    root
+                      c1
+                      c2
+                      c3
+                        c4
+                        c5
+                        c6
+                        c7
+                        c8
+                          c10""";
 
             assertEquals(expected, s);
         }
@@ -392,10 +392,10 @@ class TreeNodeTest {
         private record Node(String name, SimpleNodeTests.Node... children) implements TreeNode<Node, Node> {
 
             @Override
-                    public Iterator<Node> childrenIterator() {
-                        return Sequence.of(children).iterator();
-                    }
-                }
+            public Iterator<Node> childrenIterator() {
+                return Sequence.of(children).iterator();
+            }
+        }
     }
 
     private static final class FileX extends File implements TreeNode<FileX, FileX> {

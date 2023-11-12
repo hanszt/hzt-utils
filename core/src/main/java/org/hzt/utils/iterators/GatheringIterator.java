@@ -34,6 +34,9 @@ final class GatheringIterator<T, A, R> implements Iterator<R> {
 
     @Override
     public boolean hasNext() {
+        if (!buffer.isEmpty()) {
+            return true;
+        }
         //noinspection StatementWithEmptyBody
         while (buffer.isEmpty() && source.hasNext() && integrator.integrate(state, source.next(), buffer::add)) ;
         if (!source.hasNext() && !finisherCalled.getAndSet(true)) {

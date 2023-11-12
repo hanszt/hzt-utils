@@ -9,7 +9,9 @@ import org.hzt.utils.gatherers.Gatherers;
 import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.Numerable;
 import org.hzt.utils.iterables.Sortable;
+import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.sequences.SequenceHelper;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -24,6 +26,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
@@ -118,6 +121,14 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
         return DoubleStreamX.of(stream().mapToDouble(mapper));
     }
 
+    default <R> StreamX<R> then(StreamExtension<T, R> extension) {
+        return new StreamXImpl<>(extension.extend(this));
+    }
+
+    default <R> R finish(Function<Stream<T>, ? extends R> finisher) {
+        return finisher.apply(this);
+    }
+
     @Override
     default <R> StreamX<R> flatMap(final Function<? super T, ? extends Stream<? extends R>> mapper) {
         return StreamX.of(stream().flatMap(mapper));
@@ -196,6 +207,16 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     @Override
     default StreamX<T> skip(final long n) {
         return StreamX.of(stream().skip(n));
+    }
+
+    default StreamX<ListX<T>> windowed(final int initSize,
+                                       final IntUnaryOperator nextSizeSupplier,
+                                       final int initStep,
+                                       final IntUnaryOperator nextStepSupplier,
+                                       final boolean partialWindows) {
+        SequenceHelper.checkInitWindowSizeAndStep(initSize, initStep);
+        return new StreamXImpl<>(stream(Spliterators.spliteratorUnknownSize(Iterators.windowedIterator(iterator(),
+                initSize, nextSizeSupplier, initStep, nextStepSupplier, partialWindows), Spliterator.ORDERED), isParallel()));
     }
 
     @Override

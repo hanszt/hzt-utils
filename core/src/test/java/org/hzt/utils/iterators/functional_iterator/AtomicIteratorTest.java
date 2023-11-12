@@ -172,6 +172,7 @@ class AtomicIteratorTest {
         final var result = new ArrayList<Integer>();
         //noinspection StatementWithEmptyBody
         while (atomicIterator.tryAdvance(result::add));
+
         assertEquals(listContainingNulls, result);
     }
 }

@@ -4,8 +4,10 @@ import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
+import org.hzt.utils.iterables.Collectable;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -13,15 +15,27 @@ import java.time.Month;
 import java.util.Collection;
 import java.util.List;
 import java.util.Spliterator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toUnmodifiableList;
+import static org.hzt.utils.streams.StreamExtensions.chunked;
+import static org.hzt.utils.streams.StreamExtensions.filter;
+import static org.hzt.utils.streams.StreamExtensions.map;
+import static org.hzt.utils.streams.StreamExtensions.peek;
+import static org.hzt.utils.streams.StreamExtensions.scan;
+import static org.hzt.utils.streams.StreamExtensions.windowed;
+import static org.hzt.utils.streams.StreamFinishers.fold;
+import static org.hzt.utils.streams.StreamFinishers.toSet;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -227,4 +241,145 @@ class StreamXTest {
         assertEquals(expected, paintings);
     }
 
+    @Nested
+    class ExtensionsTests {
+
+        @Test
+        void testWindowedExtension() {
+            final var windows = StreamX.iterate(0, i -> i + 1)
+                    .then(chunked(4))
+                    .limit(10)
+                    .toList();
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .chunked(4)
+                    .take(10)
+                    .map(Collectable::toList)
+                    .toList();
+
+            assertIterableEquals(expected, windows);
+        }
+
+        @Test
+        void extendedExtension() {
+            final var windows = StreamX.iterate(0, i -> i + 1)
+                    .then(StreamExtensions.<Integer>windowed(4)
+                            .andThen(scan(1, (acc, t) -> acc + t.size()))
+                            .andThen(map(String::valueOf)))
+                    .limit(10)
+                    .toList();
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .windowed(4)
+                    .scan(1, (acc, t) -> acc + t.size())
+                    .map(String::valueOf)
+                    .take(10)
+                    .toList();
+
+            System.out.println(expected);
+
+            assertIterableEquals(expected, windows);
+        }
+
+        @Test
+        void collectFromExtensionChain() {
+
+            final var windows = Stream.iterate(0, i -> i + 1)
+                    .limit(10)
+                    .collect(StreamExtensions.<Integer>chunked(4)
+                            .andThen(scan(1, (acc1, t1) -> acc1 + t1.size()))
+                            .collect(Collectors.groupingBy(i1 -> i1 % 4)));
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .take(10)
+                    .chunked(4)
+                    .scan(1, (acc, t) -> acc + t.size())
+                    .collect(Collectors.groupingBy(i -> i % 4));
+
+            assertEquals(expected, windows);
+        }
+
+        @Test
+        void shortCircuitExtension() {
+            final var actualIterations = new AtomicInteger();
+            final var expectedIterations = new AtomicInteger();
+
+            final var windows = StreamX.iterate(0, i -> i + 1)
+                    .peek(e -> actualIterations.incrementAndGet())
+                    .then(windowed(4, (List<Integer> window) -> window)
+                            .andThen(peek(System.out::println))
+                            .andThen(scan(1, (acc, t) -> acc + t.size()))
+                            .andThen(map(String::valueOf))
+                            .andThen(filter(s -> s.length() == 3)))
+                    .findFirst();
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .onEach(e -> expectedIterations.incrementAndGet())
+                    .windowed(4)
+                    .scan(1, (acc, t) -> acc + t.size())
+                    .map(String::valueOf)
+                    .filter(s -> s.length() == 3)
+                    .findFirst();
+
+            System.out.println(expected);
+
+            assertAll(
+                    () -> assertEquals(29, actualIterations.get()),
+                    () -> assertEquals(expectedIterations.get(), actualIterations.get() - 1),
+                    () -> assertEquals(expected, windows)
+            );
+        }
+
+
+        @Test
+        void composedExtension() {
+            final var windows = StreamX.iterate(0, i -> i + 1)
+                    .then(StreamExtensions.<List<Integer>, Integer>scan(1, (acc, t) -> acc + t.size())
+                            .compose(chunked(4)))
+                    .limit(10)
+                    .toList();
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .chunked(4)
+                    .scan(1, (acc, t) -> acc + t.size())
+                    .take(10)
+                    .toList();
+
+            assertIterableEquals(expected, windows);
+        }
+
+    }
+
+    @Nested
+    class StreamFinisherTests {
+
+        @Test
+        void finishByFold() {
+            final var windows = StreamX.iterate(0, i -> i + 1)
+                    .limit(10)
+                    .finish(fold(new StringBuilder(), StringBuilder::append))
+                    .toString();
+
+            final var expected = Sequence.iterate(0, i -> i + 1).take(10).joinToString("");
+
+            assertEquals(expected, windows);
+        }
+
+        @Test
+        void finishByExtendedFinisher() {
+            final var set = StreamX.iterate(0, i -> i + 1)
+                    .limit(10)
+                    .finish(StreamExtensions.<Integer>windowed(2)
+                            .andThen(scan(0, (sum, window) -> sum + window.size()))
+                            .finish(toSet()));
+
+            final var expected = Sequence.iterate(0, i -> i + 1)
+                    .take(10)
+                    .windowed(2)
+                    .scan(0, (sum, window) -> sum + window.size())
+                    .toSet();
+
+            assertIterableEquals(expected, set);
+        }
+    }
 }

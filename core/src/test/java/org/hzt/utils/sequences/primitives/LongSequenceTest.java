@@ -274,8 +274,6 @@ class LongSequenceTest {
                 .takeWhileInclusive(l -> l < 55)
                 .toList();
 
-        longs.forEachLong(It::println);
-
         assertAll(
                 () -> assertEquals(expected, longs),
                 () -> assertEquals(LongList.of(3, 5, 8, 13, 21, 34, 55), longs)
@@ -295,8 +293,6 @@ class LongSequenceTest {
                 .skipWhileInclusive(l -> l < 3)
                 .takeWhileInclusive(l -> l < 55)
                 .toList();
-
-        longs.forEachLong(It::println);
 
         assertAll(
                 () -> assertEquals(expected, longs),

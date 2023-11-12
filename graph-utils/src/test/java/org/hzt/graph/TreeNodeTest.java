@@ -72,14 +72,14 @@ class TreeNodeTest {
             final var s = root.toTreeString(1, "-", n -> (n.isLeaf() ? "leaf: " : "") + n);
 
             final var expected = "root\n" +
-                    "-c1\n" +
-                    "--c4\n" +
-                    "---leaf: c10\n" +
-                    "--leaf: c5\n" +
-                    "-c2\n" +
-                    "--leaf: c6\n" +
-                    "--leaf: c7\n" +
-                    "--leaf: c8\n" +
+                                    "-c1\n" +
+                                    "--c4\n" +
+                                    "---leaf: c10\n" +
+                                    "--leaf: c5\n" +
+                                    "-c2\n" +
+                                    "--leaf: c6\n" +
+                                    "--leaf: c7\n" +
+                                    "--leaf: c8\n" +
                     "-leaf: c3";
 
             assertEquals(expected, s);
@@ -386,9 +386,7 @@ class TreeNodeTest {
                     new Node("leaf 10"));
         }
 
-        private class Node implements TreeNode<Node, Node> {
-
-            private final String name;
+        private final class Node implements TreeNode<Node, Node> {private final String name;
             private final Node[] children;
 
             public Node(final String name, final Node... children) {

@@ -4,8 +4,10 @@ import org.hzt.graph.iterators.GraphIterators;
 import org.hzt.utils.sequences.Sequence;
 
 import java.util.Collection;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.Iterator;
+import java.util.Optional;
+
+import static org.hzt.graph.NodeHelper.predecessorIterator;
 
 /**
  * @param <T> The type of the node itself
@@ -13,19 +15,24 @@ import java.util.function.Supplier;
  *
  * T and S must be of same type for this interface to work properly
  */
+@FunctionalInterface
 public interface Node<T, S extends Node<T, S>> {
 
-    Collection<S> getNeighbors();
+    Iterator<S> neighborIterator();
+
+    default Collection<S> getMutableNeighbors() {
+        throw new UnsupportedOperationException("getMutableNeighbors() not supported by default. Implement it to use it");
+    }
 
     default S addNeighbor(final S toAdd) {
-        final Collection<S> children = getNeighbors();
+        final Collection<S> children = getMutableNeighbors();
         children.add(toAdd);
         //noinspection unchecked
         return (S) this;
     }
 
     default S addNeighbors(final Iterable<S> toAdd) {
-        final Collection<S> children = getNeighbors();
+        final Collection<S> children = getMutableNeighbors();
         for (final S child : toAdd) {
             children.add(child);
         }
@@ -34,33 +41,45 @@ public interface Node<T, S extends Node<T, S>> {
     }
 
     default S bidiAddNeighbor(final S toAdd) {
-        final Collection<S> neighbors = getNeighbors();
+        final Collection<S> neighbors = getMutableNeighbors();
         neighbors.add(toAdd);
         //noinspection unchecked
-        toAdd.getNeighbors().add((S) this);
+        toAdd.getMutableNeighbors().add((S) this);
         //noinspection unchecked
         return (S) this;
     }
 
     default S bidiAddNeighbors(final Iterable<S> toAdd) {
-        final Collection<S> neighbors = getNeighbors();
+        final Collection<S> neighbors = getMutableNeighbors();
         for (final S neighbor : toAdd) {
             neighbors.add(neighbor);
             //noinspection unchecked
-            neighbor.getNeighbors().add((S) this);
+            neighbor.getMutableNeighbors().add((S) this);
         }
         //noinspection unchecked
         return (S) this;
     }
 
-    default Sequence<S> breadthFirstSequence() {
+    default Sequence<S> breadthFirstSequence(final Mode mode) {
         //noinspection unchecked
-        return Sequence.of(() -> GraphIterators.breadthFirstIterator((S) this));
+        return Sequence.of(() -> GraphIterators.breadthFirstIterator((S) this, mode == Mode.SET_PREDECESSORS));
+    }
+
+    default Sequence<S> breadthFirstSequence() {
+        return breadthFirstSequence(Mode.NO_PREDECESSOR);
+    }
+
+    default Sequence<S> depthFirstSequence(final Mode mode) {
+        //noinspection unchecked
+        return Sequence.of(() -> GraphIterators.depthFirstIterator((S) this, mode == Mode.SET_PREDECESSORS));
     }
 
     default Sequence<S> depthFirstSequence() {
-        //noinspection unchecked
-        return Sequence.of(() -> GraphIterators.depthFirstIterator((S) this));
+        return depthFirstSequence(Mode.NO_PREDECESSOR);
+    }
+
+    enum Mode {
+        SET_PREDECESSORS, NO_PREDECESSOR
     }
 
     /**
@@ -71,23 +90,18 @@ public interface Node<T, S extends Node<T, S>> {
      *
      * @param predecessor node
      */
-    S withPredecessor(S predecessor);
+    default S withPredecessor(final S predecessor) {
+        throw new IllegalStateException("withPredecessor(Node) not supported by default. Override it if you want to use it. " +
+                                        "Tried to set " + predecessor + " as predecessor");
+    }
 
     default Sequence<S> predecessorSequence() {
         //noinspection unchecked
-        return () -> NodeHelper.predecessorIterator((S) this);
+        return () -> predecessorIterator((S) this);
     }
 
-    /**
-     * @return the predecessor of the node
-     */
-    S getPredecessor();
-
-    default <R, C extends Collection<R>> C mapTo(final Supplier<C> collectionFactory, final Function<? super S, ? extends R> function) {
-        final C collection = collectionFactory.get();
-        //noinspection unchecked
-        NodeHelper.map((S) this, function, collection);
-        return collection;
+    default Optional<S> optionalPredecessor() {
+        throw new IllegalStateException("optionalPredecessor() is not implemented by default. Override it if you want to use it");
     }
 }
 

@@ -1,25 +1,30 @@
 package org.hzt.graph;
 
 import org.hzt.utils.It;
+import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.MapX;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class NodeTest {
 
     @Test
     void testBreadthFirstSequence() {
-        final Map<String, RailWayStation> graph = buildGraph();
+        final MapX<String, RailWayStation> graph = buildTrainNet();
 
         final List<String> stationNames = graph.get("Leiden").breadthFirstSequence()
                 .onEach(It::println)
@@ -31,36 +36,52 @@ class NodeTest {
 
     @Test
     void testFindRouteWithLeastStops() {
-        final Map<String, RailWayStation> graph = buildGraph();
+        final MapX<String, RailWayStation> graph = buildTrainNet();
 
-        final RailWayStation source = graph.get("Leiden");
-        final RailWayStation target = graph.get("Vlissingen");
+        final RailWayStation leiden = graph.get("Leiden");
+        final RailWayStation vlissingen = graph.get("Vlissingen");
 
-        final List<String> leastStopsPath = source.breadthFirstSequence()
-                .first(target::equals)
+        final List<String> visitedStation = new ArrayList<>();
+
+        final List<String> leastStopsPath = leiden.breadthFirstSequence(Node.Mode.SET_PREDECESSORS)
+                .first(vlissingen::equals)
                 .predecessorSequence()
                 .onEach(n -> System.out.println(n.predecessorSequence().count()))
-                .toListOf(station -> station.name);
+                .map(station -> station.name)
+                .onEach(visitedStation::add)
+                .toList();
 
-        assertEquals(Arrays.asList("Vlissingen", "Middelburg", "Bergen op zoom", "Utrecht", "Leiden"), leastStopsPath);
+        assertAll(
+                () -> assertIterableEquals(Arrays.asList("Vlissingen", "Middelburg", "Bergen op zoom", "Utrecht", "Leiden"), leastStopsPath),
+                () -> assertIterableEquals(leastStopsPath, visitedStation)
+        );
     }
 
     @Test
     void testFindTouristicRoute() {
-        final Map<String, RailWayStation> graph = buildGraph();
+        final MapX<String, RailWayStation> trainNet = buildTrainNet();
 
-        final RailWayStation source = graph.get("Leiden");
+        final RailWayStation leiden = trainNet.get("Leiden");
 
-        final RailWayStation vlissingen = source.depthFirstSequence().onEach(System.out::println).first(graph.get("Vlissingen")::equals);
+        final List<String> visitedStation = new ArrayList<>();
 
-        final List<String> leastStopsPath = vlissingen.predecessorSequence().take(100).toListOf(station -> station.name);
+        final RailWayStation vlissingen = leiden.depthFirstSequence(Node.Mode.SET_PREDECESSORS)
+                .onEach(It::println)
+                .onEach(s -> visitedStation.add(0, s.name))
+                .first(trainNet.get("Vlissingen")::equals);
 
-        assertEquals(Collections.singletonList("Vlissingen"), leastStopsPath);
+        final List<String> leastStopsPath = vlissingen.predecessorSequence().toListOf(station -> station.name);
+        final List<String> expected = Arrays.asList("Vlissingen", "Middelburg", "Bergen op zoom", "Tilburg", "Utrecht", "Amsterdam", "Leiden");
+
+        assertAll(
+                () -> assertEquals(expected, leastStopsPath),
+                () -> assertEquals(expected, visitedStation)
+        );
     }
 
     @Test
     void testFindRouteWithLeastStopsNoRoute() {
-        final Map<String, RailWayStation> graph = buildGraph();
+        final MapX<String, RailWayStation> graph = buildTrainNet();
 
         final RailWayStation source = graph.get("Leiden");
 
@@ -72,7 +93,7 @@ class NodeTest {
 
     @Test
     void testDepthFirstSequence() {
-        final Map<String, RailWayStation> graph = buildGraph();
+        final MapX<String, RailWayStation> graph = buildTrainNet();
 
         final List<String> stationNames = graph.get("Leiden").depthFirstSequence()
                 .map(railWayStation -> railWayStation.name)
@@ -81,9 +102,9 @@ class NodeTest {
         assertEquals(Arrays.asList("Leiden", "Amsterdam", "Utrecht", "Tilburg", "Bergen op zoom", "Middelburg", "Vlissingen", "Rotterdam", "Den Haag"), stationNames);
     }
 
-    private Map<String, RailWayStation> buildGraph() {
-        final Map<String, RailWayStation> map = Sequence.of(
-                "Leiden",
+    private MapX<String, RailWayStation> buildTrainNet() {
+        final MapX<String, RailWayStation> map = ListX.of(
+                        "Leiden",
                         "Amsterdam",
                         "Den Haag",
                         "Rotterdam",
@@ -93,19 +114,18 @@ class NodeTest {
                         "Tilburg",
                         "Bergen op zoom",
                         "Timbuktu")
-                .associateWith(RailWayStation::new)
-                .toMap();
+                .associateWith(RailWayStation::new);
 
         map.get("Leiden").bidiAddNeighbors(Sequence.of(
                 "Amsterdam",
                 "Den Haag",
                 "Utrecht").toListOf(map::get));
-        map.get("Utrecht").bidiAddNeighbors(Sequence.of(
+        map.get("Utrecht").bidiAddNeighbors(ListX.of(
                 "Tilburg",
                 "Bergen op zoom",
                 "Den Haag",
                 "Amsterdam",
-                "Rotterdam").toListOf(map::get));
+                "Rotterdam").map(map::get));
         map.get("Bergen op zoom").bidiAddNeighbors(Arrays.asList(
                 map.get("Middelburg").bidiAddNeighbor(map.get("Vlissingen")),
                 map.get("Tilburg"),
@@ -133,20 +153,26 @@ class NodeTest {
         }
 
         @Override
-        public Set<RailWayStation> getNeighbors() {
-            return neighbors;
+        public Iterator<RailWayStation> neighborIterator() {
+            return neighbors.iterator();
         }
 
         @Override
-        public RailWayStation getPredecessor() {
-            return predecessor;
+        public Set<RailWayStation> getMutableNeighbors() {
+            return neighbors;
+        }
+
+
+        @Override
+        public Optional<RailWayStation> optionalPredecessor() {
+            return Optional.ofNullable(predecessor);
         }
 
         @Override
         public String toString() {
             return "RailWayStation{" +
-                    "name='" + name + '\'' +
-                    '}';
+                   "name='" + name + '\'' +
+                   '}';
         }
     }
 }

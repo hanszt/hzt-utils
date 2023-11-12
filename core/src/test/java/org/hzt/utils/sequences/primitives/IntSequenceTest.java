@@ -126,6 +126,7 @@ class IntSequenceTest {
         IntRange.from(100).downTo(20).step(5)
                 .onEach(System.out::println)
                 .forEachInt(list::add);
+
         assertAll(
                 () -> assertEquals(17, list.size()),
                 () -> assertEquals(100, list.first())

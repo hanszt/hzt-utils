@@ -7,10 +7,13 @@ import org.hzt.utils.strings.StringX;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -22,8 +25,30 @@ public final class FileX extends File {
         super(pathname);
     }
 
+    public static FileX fromResource(final String name) {
+        return Optional.ofNullable(getCallerClass().getResource(name))
+                .map(URL::getFile)
+                .map(FileX::new)
+                .orElseThrow(() -> new IllegalStateException("Could not find resource at '" + name + "'"));
+    }
+
+    private static Class<?> getCallerClass() {
+        StackTraceElement[] stElements = Thread.currentThread().getStackTrace();
+        for (int i = 1; i < stElements.length; i++) {
+            StackTraceElement ste = stElements[i];
+            if (!ste.getClassName().equals(FileX.class.getName()) && ste.getClassName().indexOf("java.lang.Thread") != 0) {
+                return ste.getClass();
+            }
+        }
+        throw new IllegalStateException("No caller class found...");
+    }
+
     public static FileX of(final String pathName) {
         return new FileX(pathName);
+    }
+
+    public static FileX of(final Path path) {
+        return new FileX(path.toString());
     }
 
     public ListX<String> readLines() {

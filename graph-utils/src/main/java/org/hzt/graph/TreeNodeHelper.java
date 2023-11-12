@@ -1,8 +1,8 @@
 package org.hzt.graph;
 
+import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.strings.StringX;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.function.Function;
 
@@ -22,8 +22,8 @@ public final class TreeNodeHelper {
                 .append(toStringFunction.apply((S) treeNode))
                 .append("\n");
 
-        final Collection<S> children = treeNode.getChildren();
-        if (children.isEmpty()) {
+        final Sequence<S> children = treeNode.childrenSequence();
+        if (children.none()) {
             return;
         }
         for (final S child : children) {
@@ -39,8 +39,8 @@ public final class TreeNodeHelper {
                                                            final Function<? super S, String> toStringFunction) {
         //noinspection unchecked
         sb.append(toStringFunction.apply((S) treeNode));
-        final Collection<S> children = treeNode.getChildren();
-        if (children.isEmpty()) {
+        final Sequence<S> children = treeNode.childrenSequence();
+        if (children.none()) {
             return;
         }
         sb.append(opening);
@@ -52,31 +52,5 @@ public final class TreeNodeHelper {
             }
         }
         sb.append(closing);
-    }
-
-    static <T, S extends TreeNode<T, S>, R> void map(final S treeNode,
-                                                     final Function<? super S, ? extends R> function,
-                                                     final Collection<R> collection) {
-        final Collection<S> children = treeNode.getChildren();
-        collection.add(function.apply(treeNode));
-        if (children.isEmpty()) {
-            return;
-        }
-        for (final S child : children) {
-            map(child, function, collection);
-        }
-    }
-
-    static <T, S extends TreeNode<T, S>, R> void mapLeafs(final S treeNode,
-                                                          final Function<? super S, ? extends R> function,
-                                                          final Collection<R> collection) {
-        final Collection<S> children = treeNode.getChildren();
-        if (children.isEmpty()) {
-            collection.add(function.apply(treeNode));
-            return;
-        }
-        for (final S child : children) {
-            mapLeafs(child, function, collection);
-        }
     }
 }

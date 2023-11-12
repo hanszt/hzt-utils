@@ -3,9 +3,10 @@ package org.hzt.graph;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Function;
 
-public final class NodeHelper {
+final class NodeHelper {
 
     private NodeHelper() {
     }
@@ -13,7 +14,7 @@ public final class NodeHelper {
     static <T, S extends Node<T, S>, R> void map(final S node,
                                                  final Function<? super S, ? extends R> function,
                                                  final Collection<R> collection) {
-        final Collection<S> children = node.getNeighbors();
+        final Collection<S> children = node.getMutableNeighbors();
         collection.add(function.apply(node));
         if (children.isEmpty()) {
             return;
@@ -23,13 +24,24 @@ public final class NodeHelper {
         }
     }
 
-    public static <S extends Node<T, S>, T> Iterator<S> predecessorIterator(final S node) {
+    static <S extends Node<T, S>, T> Iterator<S> predecessorIterator(final S initial) {
         return new Iterator<S>() {
 
-            private S next = node;
+            private boolean isThis = true;
+            private S next = initial;
+
             @Override
             public boolean hasNext() {
-                return next != null;
+                if (isThis) {
+                    isThis = false;
+                    return true;
+                }
+                final Optional<S> predecessor = next.optionalPredecessor();
+                final boolean present = predecessor.isPresent();
+                if (present) {
+                    next = predecessor.orElseThrow(NoSuchElementException::new);
+                }
+                return next != null && present;
             }
 
             @Override
@@ -37,9 +49,7 @@ public final class NodeHelper {
                 if (next == null) {
                     throw new NoSuchElementException();
                 }
-                final S current = next;
-                next = next.getPredecessor();
-                return current;
+                return next;
             }
         };
     }

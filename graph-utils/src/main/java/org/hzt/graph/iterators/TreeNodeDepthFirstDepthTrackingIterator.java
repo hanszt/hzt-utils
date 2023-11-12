@@ -1,6 +1,8 @@
 package org.hzt.graph.iterators;
 
 import org.hzt.graph.TreeNode;
+import org.hzt.graph.tuples.DepthToTreeNode;
+import org.hzt.utils.sequences.Sequence;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -12,14 +14,14 @@ import java.util.NoSuchElementException;
  * @param <S> the type of the child
  * @see <a href="https://gist.github.com/Xrayez/e67858723beca83f972f5790aae3a26f">BFS and DFS Iterator for Graph</a>
  */
-final class TreeNodeDepthFirstIterator<T, S extends TreeNode<T, S>> implements Iterator<S> {
+final class TreeNodeDepthFirstDepthTrackingIterator<T, S extends TreeNode<T, S>> implements Iterator<DepthToTreeNode<S>> {
 
-    private final Deque<Iterator<S>> stack = new ArrayDeque<>();
-    private S next;
+    private final Deque<Iterator<DepthToTreeNode<S>>> stack = new ArrayDeque<>();
+    private DepthToTreeNode<S> next;
 
-    TreeNodeDepthFirstIterator(final S source) {
-        stack.push(source.childrenIterator());
-        next = source;
+    TreeNodeDepthFirstDepthTrackingIterator(final S source) {
+        stack.push(source.childrenSequence().map(c -> new DepthToTreeNode<>(1, c)).iterator());
+        next = new DepthToTreeNode<>(0, source);
     }
 
     @Override
@@ -28,7 +30,7 @@ final class TreeNodeDepthFirstIterator<T, S extends TreeNode<T, S>> implements I
     }
 
     @Override
-    public S next() {
+    public DepthToTreeNode<S> next() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
@@ -40,7 +42,7 @@ final class TreeNodeDepthFirstIterator<T, S extends TreeNode<T, S>> implements I
     }
 
     private void advance() {
-        Iterator<S> children = stack.getFirst();
+        Iterator<DepthToTreeNode<S>> children = stack.getFirst();
         while (!children.hasNext()) {  // No more nodes -> back out a level
             stack.pop();
             if (stack.isEmpty()) { // All done!
@@ -50,6 +52,8 @@ final class TreeNodeDepthFirstIterator<T, S extends TreeNode<T, S>> implements I
             children = stack.peek();
         }
         next = children.next();
-        stack.push(next.childrenIterator());
+        final Sequence<S> newChildren = next.node().childrenSequence();
+        final int newTreeDepth = next.treeDepth() + 1;
+        stack.push(newChildren.map(c -> new DepthToTreeNode<>(newTreeDepth, c)).iterator());
     }
 }

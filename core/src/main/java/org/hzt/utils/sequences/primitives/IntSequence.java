@@ -5,7 +5,9 @@ import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableSet;
 import org.hzt.utils.function.TriFunction;
-import org.hzt.utils.iterables.primitives.IntCollectable;
+import org.hzt.utils.gatherers.Gatherer;
+import org.hzt.utils.gatherers.primitives.IntGatherer;
+import org.hzt.utils.iterables.primitives.IntGatherable;
 import org.hzt.utils.iterables.primitives.IntGroupable;
 import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.iterables.primitives.IntReducable;
@@ -15,7 +17,6 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.IntFilteringIterator;
-import org.hzt.utils.iterators.primitives.IntGeneratorIterator;
 import org.hzt.utils.iterators.primitives.IntMultiMappingIterator;
 import org.hzt.utils.iterators.primitives.IntSkipWhileIterator;
 import org.hzt.utils.iterators.primitives.IntTakeWhileIterator;
@@ -46,8 +47,8 @@ import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 @FunctionalInterface
-public interface IntSequence extends IntWindowedSequence, IntReducable, IntCollectable, IntNumerable, IntStreamable,
-        IntGroupable, IntStringable, PrimitiveSortable<IntComparator>,
+public interface IntSequence extends IntWindowedSequence, IntReducable, IntGatherable, IntNumerable,
+        IntStreamable, IntGroupable, IntStringable, PrimitiveSortable<IntComparator>,
         PrimitiveSequence<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator> {
 
     static IntSequence empty() {
@@ -87,7 +88,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
     }
 
     static IntSequence generate(final IntSupplier seedFunction, final IntUnaryOperator nextFunction) {
-        return () -> IntGeneratorIterator.of(seedFunction, nextFunction);
+        return () -> PrimitiveIterators.generatorIterator(seedFunction, nextFunction);
     }
 
     default IntSequence step(final int step) {
@@ -144,6 +145,13 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntColle
 
     default IntSequence mapMulti(final IntMapMultiConsumer intMapMultiConsumer) {
         return () -> IntMultiMappingIterator.of(iterator(), intMapMultiConsumer);
+    }
+
+    @Override
+    default <A, R> Sequence<R> gather(Gatherer<Integer, A, R> gatherer) {
+        return gatherer instanceof IntGatherer<?, ?> ?
+                (() -> PrimitiveIterators.intGatheringIterator(iterator(), (IntGatherer<A, R>) gatherer)) :
+                (() -> Iterators.gatheringIterator(iterator(), gatherer));
     }
 
     @FunctionalInterface

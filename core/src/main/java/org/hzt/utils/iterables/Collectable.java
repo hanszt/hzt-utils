@@ -388,7 +388,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
         return collection;
     }
 
-    default  <C extends Collection<T>> C skipWhileTo(
+    default <C extends Collection<T>> C skipWhileTo(
             final Supplier<C> collectionFactory,
             final Predicate<? super T> predicate,
             final boolean inclusive) {

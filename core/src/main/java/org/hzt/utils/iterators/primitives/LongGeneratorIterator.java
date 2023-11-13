@@ -7,7 +7,7 @@ import java.util.PrimitiveIterator;
 import java.util.function.LongSupplier;
 import java.util.function.LongUnaryOperator;
 
-public final class LongGeneratorIterator implements PrimitiveIterator.OfLong {
+final class LongGeneratorIterator implements PrimitiveIterator.OfLong {
 
     private final LongSupplier initSupplier;
     private final LongUnaryOperator nextValueSupplier;
@@ -15,14 +15,10 @@ public final class LongGeneratorIterator implements PrimitiveIterator.OfLong {
     private long nextLong;
     private State nextState = State.INIT_UNKNOWN;
 
-    private LongGeneratorIterator(final LongSupplier initSupplier, final LongUnaryOperator nextValueSupplier) {
+    LongGeneratorIterator(final LongSupplier initSupplier, final LongUnaryOperator nextValueSupplier) {
         this.initSupplier = initSupplier;
         this.nextValueSupplier = nextValueSupplier;
         this.nextLong = initSupplier.getAsLong();
-    }
-
-    public static OfLong of(final LongSupplier initSupplier, final LongUnaryOperator nextValueSupplier) {
-        return new LongGeneratorIterator(initSupplier, nextValueSupplier);
     }
 
     @Override

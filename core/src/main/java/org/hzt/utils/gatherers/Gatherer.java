@@ -1,14 +1,11 @@
 package org.hzt.utils.gatherers;
 
 
-import java.util.Collections;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
 
 
 /**
@@ -223,88 +220,6 @@ public interface Gatherer<T, A, R> {
     default <AA, RR> Gatherer<T, ?, RR> andThen(final Gatherer<? super R, AA, ? extends RR> that) {
         Objects.requireNonNull(that);
         return Gatherers.Composite.of(this, that);
-    }
-
-    /**
-     * A Custom method to end a gatherer chain with a collector
-     *
-     * @param collector The collector used as terminal operation
-     * @param <A1>      the type of the Collector container
-     * @param <V>       The result type of the Collector
-     * @return A collector
-     */
-    default <A1, V> Collector<T, ?, V> collect(final Collector<R, A1, V> collector) {
-        class Initializers<A1, A2> {
-            final A1 current;
-            final A2 after;
-
-            public Initializers(A1 current, A2 after) {
-                this.current = current;
-                this.after = after;
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                if (this == o) return true;
-                if (o == null || getClass() != o.getClass()) return false;
-                final Initializers<?, ?> that = (Initializers<?, ?>) o;
-                return Objects.equals(current, that.current) && Objects.equals(after, that.after);
-            }
-
-            @Override
-            public int hashCode() {
-                return Objects.hash(current, after);
-            }
-
-            @Override
-            public String toString() {
-                return "Initializers{" +
-                        "current=" + current +
-                        ", after=" + after +
-                        '}';
-            }
-        }
-        return new Collector<T, Initializers<A, A1>, V>() {
-
-            @Override
-            public Supplier<Initializers<A, A1>> supplier() {
-                return () -> new Initializers<>(Gatherer.this.initializer().get(), collector.supplier().get());
-            }
-
-            @Override
-            public BiConsumer<Initializers<A, A1>, T> accumulator() {
-                return (initializers, t) ->
-                        integrator().integrate(initializers.current, t, r -> {
-                            collector.accumulator().accept(initializers.after, r);
-                            return true;
-                        });
-
-            }
-
-            @Override
-            public BinaryOperator<Initializers<A, A1>> combiner() {
-                return (initializers, other) -> new Initializers<>(
-                        Gatherer.this.combiner().apply(initializers.current, other.current),
-                        collector.combiner().apply(initializers.after, other.after)
-                );
-            }
-
-            @Override
-            public Function<Initializers<A, A1>, V> finisher() {
-                return initializers -> {
-                    Gatherer.this.finisher().accept(initializers.current, r -> {
-                        collector.accumulator().accept(initializers.after, r);
-                        return true;
-                    });
-                    return collector.finisher().apply(initializers.after);
-                };
-            }
-
-            @Override
-            public Set<Characteristics> characteristics() {
-                return Collections.emptySet();
-            }
-        };
     }
 
     /**

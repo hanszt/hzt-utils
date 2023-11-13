@@ -37,10 +37,10 @@ class IteratorsTests {
     @Test
     void testIteratorChainIteratorObjectCanOnlyBeTraversedOnce() {
         final Iterator<String> iterator =
-                TakeWhileIterator.of(
+                Iterators.takeWhileIterator(
                         Iterators.filteringIterator(
                                 Iterators.generatorIterator(() -> "|", s -> s + "\\"),
-                                s -> IntX.of(s.length()).isEven(), true), s -> s.length() < 100);
+                                s -> IntX.of(s.length()).isEven(), true), s -> s.length() < 100, false);
 
         final Iterable<String> strings = () -> iterator;
 

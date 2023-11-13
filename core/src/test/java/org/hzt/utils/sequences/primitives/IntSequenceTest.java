@@ -2,13 +2,19 @@ package org.hzt.utils.sequences.primitives;
 
 import org.hzt.test.ReplaceCamelCaseBySentence;
 import org.hzt.utils.It;
+import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.IntList;
+import org.hzt.utils.collections.primitives.LongList;
+import org.hzt.utils.gatherers.Gatherers;
+import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.progressions.IntProgression;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.statistics.IntStatistics;
+import org.hzt.utils.tuples.Pair;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Nested;
@@ -21,6 +27,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static org.hzt.utils.It.println;
+import static org.hzt.utils.collectors.CollectorsX.intArrayOf;
+import static org.hzt.utils.collectors.CollectorsX.longArrayOf;
+import static org.hzt.utils.gatherers.primitives.IntGatherers.mapToObjNotNull;
+import static org.hzt.utils.gatherers.primitives.IntGatherers.runningStatistics;
+import static org.hzt.utils.gatherers.primitives.IntGatherers.windowSliding;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -244,7 +255,6 @@ class IntSequenceTest {
     }
 
     private double multiplyByPi(final int i) {
-//        It.println(Thread.currentThread().getName());
         return i * Math.E;
     }
 
@@ -345,5 +355,64 @@ class IntSequenceTest {
         println(Arrays.toString(ints));
 
         assertEquals(80, ints.length);
+    }
+
+    @Nested
+    class GathererTests {
+
+        @Test
+        void testNormalGathererInIntSequenceGatherer() {
+            final LongList longs = IntSequence.iterate(0, i -> i + 1)
+                    .gather(Gatherers.windowSliding(3))
+                    .take(3)
+                    .mapToLong(s -> IntSequence.of(s).sum())
+                    .toList();
+
+            assertEquals(LongList.of(3, 6, 9), longs);
+        }
+
+        @Test
+        void testIntGathererInIntSequenceGatherer() {
+            final LongList longs = IntSequence.iterate(0, i -> i + 1)
+                    .gather(windowSliding(3))
+                    .take(3)
+                    .mapToLong(IntNumerable::sum)
+                    .toList();
+
+            assertEquals(LongList.of(3, 6, 9), longs);
+        }
+    }
+
+    @Test
+    void testRunningIntStatistics() {
+        final Pair<int[], long[]> result = IntSequence.of(5, 6, 8, 4, 12, 15, 16, 4)
+                .gather(runningStatistics())
+                .teeing(intArrayOf(IntStatistics::getMax), longArrayOf(IntStatistics::getSum));
+
+        final int[] expectedMaxes = {5, 6, 8, 8, 12, 15, 16, 16};
+        final long[] expectedSums = {5, 11, 19, 23, 35, 50, 66, 70};
+
+        assertAll(
+                () -> assertArrayEquals(expectedMaxes, result.first()),
+                () -> assertArrayEquals(expectedSums, result.second())
+        );
+    }
+
+    @Test
+    void testMapToObjNotNull() {
+        final MapX<Integer, String> courseRepo = MapX.of(
+                13423, "Math",
+                3, "Science",
+                5, "History",
+                6, "Politics"
+        );
+
+        final int[] courseIds = {13423, 2, 3, 5, 3432, 32};
+
+        final ListX<String> result = IntSequence.of(courseIds)
+                .gather(mapToObjNotNull(courseRepo::get))
+                .toListX();
+
+        assertEquals(ListX.of("Math", "Science", "History"), result);
     }
 }

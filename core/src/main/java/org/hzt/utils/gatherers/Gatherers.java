@@ -514,7 +514,7 @@ public final class Gatherers {
     }
 
     @SuppressWarnings("unchecked")
-    private static <TR> List<TR> unmodifiableListCopyOf(final Object[] oldWindow) {
+    public static <TR> List<TR> unmodifiableListCopyOf(final Object[] oldWindow) {
         return (List<TR>) Collections.unmodifiableList(new ArrayList<>(Arrays.asList(oldWindow)));
     }
 

@@ -7,6 +7,9 @@ import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableCollectionX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
+import org.hzt.utils.collections.primitives.DoubleMutableList;
+import org.hzt.utils.collections.primitives.IntMutableList;
+import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.QuintFunction;
 import org.hzt.utils.function.TriFunction;
@@ -31,6 +34,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -693,4 +698,27 @@ public final class CollectorsX {
                 .collect(toIntersection());
     }
 
+    public static <T> Collector<T, ?, int[]> intArrayOf(ToIntFunction<? super T> toIntMapper) {
+        return Collector.of(
+                IntMutableList::empty,
+                (list, t) -> list.add(toIntMapper.applyAsInt(t)),
+                IntMutableList::plus,
+                IntMutableList::toArray);
+    }
+
+    public static <T> Collector<T, ?, long[]> longArrayOf(ToLongFunction<? super T> toLongMapper) {
+        return Collector.of(
+                LongMutableList::empty,
+                (list, t) -> list.add(toLongMapper.applyAsLong(t)),
+                LongMutableList::plus,
+                LongMutableList::toArray);
+    }
+
+    public static <T> Collector<T, ?, double[]> doubleArrayOf(ToDoubleFunction<? super T> toDoubleArrayMapper) {
+        return Collector.of(
+                DoubleMutableList::empty,
+                (list, t) -> list.add(toDoubleArrayMapper.applyAsDouble(t)),
+                DoubleMutableList::plus,
+                DoubleMutableList::toArray);
+    }
 }

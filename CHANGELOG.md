@@ -2,6 +2,16 @@
 
 ---
 
+### 1.0.2.1.8
+
+- Added IntGatherer
+- Made scanning primitive iterators final and package private
+- Added GatherableTest
+- Added Bag and Test
+- Other improvements
+
+---
+
 ### 1.0.1.1.8
 
 - Back ported FileX.fromResource

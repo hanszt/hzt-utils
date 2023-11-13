@@ -7,7 +7,6 @@ import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Queue;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
 /**
@@ -23,7 +22,8 @@ final class GatheringIterator<T, A, R> implements Iterator<R> {
     private final Integrator<A, ? super T, R> integrator;
     private final BiConsumer<A, Gatherer.Downstream<? super R>> finisher;
     private final Queue<R> buffer = new ArrayDeque<>();
-    private final AtomicBoolean finisherCalled = new AtomicBoolean();
+    private boolean finisherCalled = false;
+    private boolean emitNoMoreItems = false;
 
     GatheringIterator(Iterator<T> iterator, Gatherer<? super T, A, R> gatherer) {
         source = iterator;
@@ -37,9 +37,17 @@ final class GatheringIterator<T, A, R> implements Iterator<R> {
         if (!buffer.isEmpty()) {
             return true;
         }
-        //noinspection StatementWithEmptyBody
-        while (buffer.isEmpty() && source.hasNext() && integrator.integrate(state, source.next(), buffer::add)) ;
-        if (!source.hasNext() && !finisherCalled.getAndSet(true)) {
+        if (emitNoMoreItems) {
+            return false;
+        }
+        while (buffer.isEmpty() && source.hasNext()) {
+            if (!integrator.integrate(state, source.next(), buffer::add)) {
+                emitNoMoreItems = true;
+                break;
+            }
+        }
+        if (!source.hasNext() && !finisherCalled) {
+            finisherCalled = true;
             finisher.accept(state, buffer::add);
         }
         return !buffer.isEmpty();

@@ -2,7 +2,17 @@
 
 ---
 
-### 1.0.1.1.8
+### 1.0.2.11
+
+- Added IntGatherer
+- Made scanning primitive iterators final and package private
+- Added GatherableTest
+- Added Bag and Test
+- Other improvements
+
+---
+
+### 1.0.1.11
 
 - Back ported FileX.fromResource
 - Back ported MutableIterable
@@ -13,7 +23,7 @@
 
 ---
 
-### 1.0.0.1.8
+### 1.0.0.11
 
 - Removed jetbrains annotations dependency
 - Added dependency plugin

@@ -3,7 +3,6 @@ package org.hzt.utils.collections;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.utils.It;
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.NavigableMap;
@@ -37,15 +36,13 @@ class SortedMutableMapXTest {
         final var museumListContainingNulls = ListX.of(TestSampleGenerator.getMuseumListContainingNulls())
                 .sortedBy(e -> Math.random());
 
-        final NavigableMap<String, Museum> expected = new TreeMap<>(museumListContainingNulls.stream()
+        final var expected = new TreeMap<>(museumListContainingNulls.stream()
                 .filter(m -> m != null && m.getName() != null)
                 .collect(Collectors.toMap(Museum::getName, It::self)));
 
         final var actual = museumListContainingNulls
                 .associateBy(Museum::getName)
                 .toSortedMap(It::self);
-
-        actual.keySet().forEach(It::println);
 
         assertAll(
                 () -> assertIterableEquals(actual.keySet(), expected.keySet()),

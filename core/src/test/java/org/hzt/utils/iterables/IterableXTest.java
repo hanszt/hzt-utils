@@ -148,7 +148,7 @@ class IterableXTest {
 
         println("sumsOfThree = " + sumsOfThree);
 
-        assertIterableEquals(List.of(3L, 6L, 9L, 12L, 15L, 18L, 21L), sumsOfThree);
+        assertEquals(ListX.of(3L, 6L, 9L, 12L, 15L, 18L, 21L), sumsOfThree);
     }
 
     @Test
@@ -162,14 +162,14 @@ class IterableXTest {
 
         println("sumsOfThree = " + sumsOfThree);
 
-        assertIterableEquals(List.of(3L, 6L), sumsOfThree);
+        assertEquals(ListX.of(3L, 6L), sumsOfThree);
     }
 
     @Test
     void testSortedIfOfComparableType() {
         final var list = MutableListX.of(1, 3, 5, 4, 2, 7, 214, 5, 8, 3, 4, 123);
         final var sorted = list.sorted();
-        assertIterableEquals(ListX.of(1, 2, 3, 3, 4, 4, 5, 5, 7, 8, 123, 214), sorted);
+        assertEquals(ListX.of(1, 2, 3, 3, 4, 4, 5, 5, 7, 8, 123, 214), sorted);
     }
 
     @Test
@@ -350,14 +350,14 @@ class IterableXTest {
                 .filter(Objects::nonNull)
                 .filter(Painting::isInMuseum)
                 .map(Painting::painter)
-                .collect(toList());
+                .collect(toListX());
 
         final var actualPainters = museumList
                 .flatMap(Museum::getPaintings)
                 .filter(Painting::isInMuseum)
                 .map(Painting::painter);
 
-        assertIterableEquals(actualPainters, expectedPainters);
+        assertEquals(actualPainters, expectedPainters);
     }
 
     @Test
@@ -378,7 +378,7 @@ class IterableXTest {
 
         println("actualLocalDates = " + actualLocalDates);
 
-        assertIterableEquals(expectedLocalDates, actualLocalDates);
+        assertEquals(expectedLocalDates, actualLocalDates);
     }
 
     @Test
@@ -398,7 +398,7 @@ class IterableXTest {
 
         final var actual = IntSequence.of(numbers).boxed().toListOf(BigDecimal::valueOf);
 
-        assertIterableEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -414,7 +414,7 @@ class IterableXTest {
 
     @Test
     void testIntersectionOf() {
-        final ListX<Collection<Integer>> collections = ListX.of(
+        final var collections = ListX.of(
                 List.of(1, 2, 3, 4, 5, 7),
                 List.of(2, 4, 5),
                 List.of(4, 5, 6)
@@ -422,7 +422,7 @@ class IterableXTest {
 
         final var intersect = collections.intersectionOf(It::self);
 
-        assertIterableEquals(List.of(4, 5), intersect);
+        assertEquals(SetX.of(4, 5), intersect);
     }
 
     @Test
@@ -511,39 +511,27 @@ class IterableXTest {
     void testDropLastWhile() {
         final var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
-        list.forEach(It::println);
-
         final var integers = list.skipLastWhile(i -> i != 10);
 
-        println("integers = " + integers);
-
-        assertIterableEquals(List.of(1, 2, 10, 4, 5, 10), integers);
+        assertEquals(ListX.of(1, 2, 10, 4, 5, 10), integers);
     }
 
     @Test
     void testSkipWhile() {
         final var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
-        list.forEach(It::println);
+        final var integers = list.skipWhile(i -> i != 5);
 
-        final IterableX<Integer> integers = list.skipWhile(i -> i != 5);
-
-        println("integers = " + integers);
-
-        assertIterableEquals(List.of(5, 10, 6, 5, 3, 5, 6), integers);
+        assertEquals(ListX.of(5, 10, 6, 5, 3, 5, 6), integers);
     }
 
     @Test
     void testSkipWhileInclusive() {
         final var list = ListX.of(1, 2, 10, 4, 5, 10, 6, 5, 3, 5, 6);
 
-        list.forEach(It::println);
+        final var integers = list.skipWhileInclusive(i -> i != 5);
 
-        final IterableX<Integer> integers = list.skipWhileInclusive(i -> i != 5);
-
-        println("integers = " + integers);
-
-        assertIterableEquals(List.of(10, 6, 5, 3, 5, 6), integers);
+        assertEquals(ListX.of(10, 6, 5, 3, 5, 6), integers);
     }
 
     @Test
@@ -867,7 +855,7 @@ class IterableXTest {
                 .mapNotNull(Painting::name)
                 .zipWithNext(String::compareTo);
 
-        assertIterableEquals(List.of(-5, 83, -1, 5, -5, 1, 8), integers);
+        assertEquals(ListX.of(-5, 83, -1, 5, -5, 1, 8), integers);
     }
 
     @Test
@@ -877,7 +865,7 @@ class IterableXTest {
 
         final var integers = values.zip(others, Integer::compareTo);
 
-        assertIterableEquals(List.of(-1, -1, -1, 0, 1, 1, 1), integers);
+        assertEquals(ListX.of(-1, -1, -1, 0, 1, 1, 1), integers);
     }
 
     @Test
@@ -887,7 +875,7 @@ class IterableXTest {
 
         final var union = values.union(other, String::valueOf);
 
-        assertIterableEquals(List.of("0", "1", "2", "3", "4", "5", "6", "7"), union);
+        assertEquals(SetX.of("0", "1", "2", "3", "4", "5", "6", "7"), union);
     }
 
     @Test
@@ -898,17 +886,14 @@ class IterableXTest {
                 .map(Book::getCategory)
                 .flatMapToInt(String::chars)
                 .mapToObj(c -> (char) c)
-                .collect(toList());
-
+                .collect(toListX());
 
         final var actual = bookList
                 .map(Book::getCategory)
                 .map(StringX::of)
                 .flatMap(StringX::toListX);
 
-        println("stringXES = " + actual);
-
-        assertIterableEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     private void printEvery10_000stElement(final int i) {

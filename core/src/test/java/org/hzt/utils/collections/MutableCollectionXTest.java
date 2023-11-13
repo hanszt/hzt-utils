@@ -10,6 +10,7 @@ import java.util.Deque;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toCollection;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class MutableCollectionXTest {
@@ -41,10 +42,7 @@ class MutableCollectionXTest {
         final ListX<LocalDate> actualLocalDates = museumList
                 .mapTo(MutableListX::empty, Museum::getDateOfOpening);
 
-        System.out.println("actualLocalDates = " + actualLocalDates);
-        System.out.println("expectedLocalDates = " + expectedLocalDates);
-
-        assertIterableEquals(expectedLocalDates, actualLocalDates);
+        assertEquals(expectedLocalDates, actualLocalDates);
     }
 
 }

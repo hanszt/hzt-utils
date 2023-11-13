@@ -15,7 +15,6 @@ import org.hzt.utils.iterables.primitives.DoubleStringable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.DoubleFilteringIterator;
-import org.hzt.utils.iterators.primitives.DoubleGeneratorIterator;
 import org.hzt.utils.iterators.primitives.DoubleMultiMappingIterator;
 import org.hzt.utils.iterators.primitives.DoubleSkipWhileIterator;
 import org.hzt.utils.iterators.primitives.DoubleTakeWhileIterator;
@@ -87,7 +86,7 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
     }
 
     static DoubleSequence generate(final DoubleSupplier seedFunction, final DoubleUnaryOperator nextFunction) {
-        return () -> DoubleGeneratorIterator.of(seedFunction, nextFunction);
+        return () -> PrimitiveIterators.generatorIterator(seedFunction, nextFunction);
     }
 
     default DoubleSequence plus(final double... values) {

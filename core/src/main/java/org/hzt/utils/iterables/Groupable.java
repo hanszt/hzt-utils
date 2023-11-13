@@ -27,7 +27,7 @@ public interface Groupable<T> extends Iterable<T> {
     }
 
     default <K> Grouping<T, K> groupingBy(final Function<? super T, ? extends K> classifier) {
-        return new Grouping<T, K>() {
+        return new Grouping<>() {
             @Override
             public K keyOf(final T element) {
                 return classifier.apply(element);

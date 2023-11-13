@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public interface WeightedNode<T> extends Node<WeightedNode<T>, WeightedNode<T>> {
 
     static <T> WeightedNode<T> of(final T payload) {
-        return new WeightedNode<T>() {
+        return new WeightedNode<>() {
             @Override
             public Iterator<WeightedNode<T>> neighborIterator() {
                 return null;

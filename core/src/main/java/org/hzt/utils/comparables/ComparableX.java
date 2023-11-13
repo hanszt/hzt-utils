@@ -1,5 +1,6 @@
 package org.hzt.utils.comparables;
 
+@FunctionalInterface
 public interface ComparableX<T> extends Comparable<T> {
 
     static <T extends Comparable<? super T>> boolean greaterThan(final T one, final T other) {

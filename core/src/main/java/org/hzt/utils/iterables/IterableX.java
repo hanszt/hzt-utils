@@ -4,10 +4,10 @@ import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
-import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.streams.StreamX;
 
 import java.util.Collection;
 import java.util.PrimitiveIterator;
@@ -31,7 +31,7 @@ import java.util.stream.StreamSupport;
  * @author Hans Zuidervaart
  */
 public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, Takeable<T>, Zippable<T>, Windowable<T>,
-        Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>,
+        Gatherable<T>, Sortable<T>, Distinctable<T>, Stringable<T>, Numerable<T>, Reducable<T>,
         Collectable<T>, Groupable<T>, Streamable<T, Stream<T>>, Indexable<T> {
 
     default AtomicIterator<T> atomicIterator() {
@@ -48,8 +48,8 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
 
     <R> IterableX<R> castIfInstanceOf(Class<R> aClass);
 
-    default Stream<T> stream() {
-        return StreamSupport.stream(spliterator(), false);
+    default StreamX<T> stream() {
+        return StreamX.of(StreamSupport.stream(spliterator(), false));
     }
 
     default Sequence<T> asSequence() {
@@ -82,8 +82,6 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         }
         return this;
     }
-
-    <A, R> IterableX<R> gather(final Gatherer<? super T, A, R> gatherer);
 
     <R> IterableX<R> then(IterableExtension<T, R> extension);
 

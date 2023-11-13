@@ -108,7 +108,7 @@ class GroupingTest {
 
         final NavigableMap<Character, List<String>> expected =
                 SortedMutableMapX.of(MapX.of('a', Collections.emptyList(),
-               'b', Collections.singletonList("banana"),
+                        'b', List.of("banana"),
                 'c', List.of("cherry", "citrus")), It::self);
 
         assertEquals(expected, sorted);

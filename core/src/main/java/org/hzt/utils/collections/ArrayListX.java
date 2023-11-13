@@ -39,7 +39,7 @@ final class ArrayListX<E> implements MutableListX<E> {
     @SafeVarargs
     ArrayListX(final E... values) {
         list = new ArrayList<>(values.length + 1);
-        list.addAll(List.of(values));
+        Collections.addAll(list, values);
     }
 
     ArrayListX(final E value) {

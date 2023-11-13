@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.hzt.utils.It.println;
+import static org.hzt.utils.collectors.CollectorsX.toListX;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -37,16 +38,14 @@ class StringXTest {
         final var expected = groupByChars(hallo)
                 .values().stream()
                 .map(List::size)
-                .collect(Collectors.toList());
+                .collect(toListX());
 
         final var characterCounts = StringX.of(hallo)
                 .group()
                 .values()
                 .map(ListX::size);
 
-        println("hallo = " + characterCounts);
-
-        assertIterableEquals(expected, characterCounts);
+        assertEquals(expected, characterCounts);
     }
 
     @Test

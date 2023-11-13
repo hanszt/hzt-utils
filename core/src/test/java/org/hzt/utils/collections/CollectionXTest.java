@@ -2,10 +2,14 @@ package org.hzt.utils.collections;
 
 import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.IntList;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.function.Predicate;
 
+import static org.hzt.utils.gatherers.Gatherers.windowFixed;
+import static org.hzt.utils.gatherers.GatherersX.takeWhileIncluding;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -86,7 +90,7 @@ class CollectionXTest {
 
         assertAll(
                 () -> assertSame(set2, list.ifEmpty(() -> set2)),
-                () -> assertIterableEquals(ListX.of(1, 2, 3, 4, 5, 6), set2.ifEmpty(list::toMutableList))
+                () -> assertEquals(ListX.of(1, 2, 3, 4, 5, 6), set2.ifEmpty(list::toMutableList))
         );
     }
 
@@ -108,4 +112,31 @@ class CollectionXTest {
         assertEquals(IntList.of(104, 97, 108, 108, 111, 116, 101, 115, 116), charInts);
     }
 
+    @Nested
+    class GathererTests {
+
+        @Test
+        void testGatherChunked() {
+            final var input = ListX.of(1, 2, 3, 4);
+
+            final var windows = input.gather(windowFixed(4));
+            final var expected = input.chunked(4);
+
+            assertIterableEquals(expected, windows);
+        }
+    }
+
+    @Test
+    void testTakeWhileInclusive() {
+        final Predicate<Integer> isOdd = i -> i % 2 != 0;
+        final var integers = ListX.of(1, 3, 5, 6, 7, 8, 10, 12);
+
+        final var result = integers.gather(takeWhileIncluding(isOdd));
+        final var takeWhileResult = integers.takeWhile(isOdd);
+
+        assertAll(
+                () -> assertEquals(ListX.of(1, 3, 5, 6), result),
+                () -> assertEquals(ListX.of(1, 3, 5), takeWhileResult)
+        );
+    }
 }

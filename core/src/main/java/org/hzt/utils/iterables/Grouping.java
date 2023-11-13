@@ -33,7 +33,7 @@ public interface Grouping<T, K> extends Iterable<T> {
 
 
     default Grouping<T, K> filtering(final Predicate<? super T> predicate) {
-        return new Grouping<T, K>() {
+        return new Grouping<>() {
             @Override
             public K keyOf(final T element) {
                 return Grouping.this.keyOf(element);

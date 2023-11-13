@@ -35,7 +35,6 @@ import static org.hzt.utils.streams.StreamFinishers.toSet;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -257,7 +256,7 @@ class StreamXTest {
                     .map(Collectable::toList)
                     .toList();
 
-            assertIterableEquals(expected, windows);
+            assertEquals(expected, windows);
         }
 
         @Test
@@ -278,7 +277,7 @@ class StreamXTest {
 
             System.out.println(expected);
 
-            assertIterableEquals(expected, windows);
+            assertEquals(expected, windows);
         }
 
         @Test
@@ -345,7 +344,7 @@ class StreamXTest {
                     .take(10)
                     .toList();
 
-            assertIterableEquals(expected, windows);
+            assertEquals(expected, windows);
         }
 
     }
@@ -379,7 +378,7 @@ class StreamXTest {
                     .scan(0, (sum, window) -> sum + window.size())
                     .toSet();
 
-            assertIterableEquals(expected, set);
+            assertEquals(expected, set);
         }
     }
 }

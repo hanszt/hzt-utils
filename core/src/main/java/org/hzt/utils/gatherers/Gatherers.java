@@ -27,7 +27,6 @@ package org.hzt.utils.gatherers;
 import org.hzt.utils.gatherers.Gatherer.Downstream;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -514,8 +513,8 @@ public final class Gatherers {
     }
 
     @SuppressWarnings("unchecked")
-    private static <TR> List<TR> unmodifiableListCopyOf(final Object[] oldWindow) {
-        return (List<TR>) Collections.unmodifiableList(new ArrayList<>(Arrays.asList(oldWindow)));
+    public static <TR> List<TR> unmodifiableListCopyOf(final Object[] oldWindow) {
+        return (List<TR>) Collections.unmodifiableList(new ArrayList<>(List.of(oldWindow)));
     }
 
     /**

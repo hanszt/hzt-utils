@@ -3,9 +3,9 @@ package org.hzt.utils.streams;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.SortedMutableSetX;
-import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.gatherers.Gatherers;
+import org.hzt.utils.iterables.Gatherable;
 import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.Numerable;
 import org.hzt.utils.iterables.Sortable;
@@ -43,7 +43,7 @@ import java.util.stream.StreamSupport;
 
 @FunctionalInterface
 @SuppressWarnings("squid:S1448")
-public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Spliterable<T> {
+public interface StreamX<T> extends Stream<T>, Gatherable<T>, Sortable<T>, Numerable<T>, Spliterable<T> {
 
     static <T> StreamX<T> generate(final Supplier<? extends T> operator) {
         return StreamX.of(Stream.generate(operator));
@@ -77,12 +77,6 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     @Override
     Spliterator<T> spliterator();
 
-    private Stream<T> stream() {
-        final var spliterator = spliterator();
-        final var parallel = this instanceof StreamXImpl && isParallel();
-        return stream(spliterator, parallel);
-    }
-
     private static <T> Stream<T> stream(final Spliterator<T> spliterator, final boolean parallel) {
         if (spliterator.hasCharacteristics(Spliterator.IMMUTABLE) ||
                 spliterator.hasCharacteristics(Spliterator.CONCURRENT)) {
@@ -92,8 +86,13 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     }
 
     default Sequence<T> asSequence() {
-        //noinspection FunctionalExpressionCanBeFolded
-        return Sequence.of(this::iterator);
+        return Sequence.of(this);
+    }
+
+    default Stream<T> stream() {
+        final var spliterator = spliterator();
+        final var parallel = this instanceof StreamXImpl && isParallel();
+        return stream(spliterator, parallel);
     }
 
     @Override
@@ -405,7 +404,7 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
      * <p>
      * * @implSpec
      * * The default implementation obtains the {@link #spliterator() spliterator}
-     * * of this stream, wraps that spliterator so as to support the semantics
+     * * of this stream, wraps that spliterator to support the semantics
      * * of this operation on traversal, and returns a new stream associated with
      * * the wrapped spliterator.  The returned stream preserves the execution
      * * characteristics of this stream (namely parallel or sequential execution
@@ -417,7 +416,8 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
      * @see Gatherer
      * @see Gatherers
      */
-    default <R> StreamX<R> gather(final Gatherer<? super T, ?, R> gatherer) {
+    @Override
+    default <A, R> StreamX<R> gather(final Gatherer<? super T, A, R> gatherer) {
         final var sequence = Sequence.of(this).gather(gatherer);
         return new StreamXImpl<>(isParallel() ? sequence.parallelStream() : sequence.stream());
     }
@@ -430,14 +430,6 @@ public interface StreamX<T> extends Stream<T>, Sortable<T>, Numerable<T>, Splite
     @Override
     default StreamX<T> dropWhile(final Predicate<? super T> predicate) {
         return StreamX.of(Stream.super.dropWhile(predicate));
-    }
-
-    default List<T> toList() {
-        return collect(Collectors.toUnmodifiableList());
-    }
-
-    default ListX<T> toListX() {
-        return collect(CollectorsX.toListX());
     }
 
     default <V> Map<T, V> associateWith(final Function<? super T, ? extends V> valueMapper) {

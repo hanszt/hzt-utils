@@ -110,7 +110,7 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
         final MutableSetX<R> union = mapTo(MutableSetX::empty, mapper);
         final SetX<R> setX = ListX.of(other).toSetXOf(mapper);
         setX.forEach(union::add);
-        return union;
+        return union.toSetX();
     }
 
     default int[] toIntArray(final ToIntFunction<? super T> mapper) {

@@ -19,6 +19,11 @@ final class ImmutableListX<T> implements ListX<T> {
 
     @SafeVarargs
     ImmutableListX(final T... values) {
+        for (final var item : values) {
+            if (item == null) {
+                throw new IllegalStateException("No null values allowed!");
+            }
+        }
         this.immutableList = List.of(values);
     }
 

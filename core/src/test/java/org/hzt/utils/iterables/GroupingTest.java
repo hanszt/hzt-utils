@@ -7,6 +7,7 @@ import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.SortedMutableMapX;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.strings.StringX;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class GroupingTest {
 
     @Test
-    void testGroupingAggregateFromListX() {
+    void testGroupingByAggregateFromListX() {
         final var numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
 
         final var aggregated = numbers
@@ -42,6 +43,17 @@ class GroupingTest {
         final var expected = MutableMapX.of(0, "0:3-6-9", 1, "1:4-7", 2, "2:5-8");
 
         assertEquals(expected, aggregated);
+    }
+
+    @Test
+    void testGroupingAggregateFromListX() {
+        final var eachCount = StringX.of("hallo daar")
+                .grouping()
+                .eachCount();
+
+        final var expected = MapX.of('h', 1L, 'a', 3L, 'l', 2L, 'o', 1L, ' ', 1L, 'd', 1L, 'r', 1L);
+
+        assertEquals(expected, eachCount);
     }
 
     private static StringBuilder toStringBuilder(final int key, final StringBuilder stringBuilder, final int element, final boolean firstElement) {

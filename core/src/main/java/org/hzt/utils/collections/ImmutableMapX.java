@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 final class ImmutableMapX<K, V> implements MapX<K, V> {
@@ -108,21 +108,82 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
         return map.entrySet().iterator();
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
+    /**
+     * Compares the specified object with this map for equality.  Returns
+     * {@code true} if the given object is also a map and the two maps
+     * represent the same mappings.  More formally, two maps {@code m1} and
+     * {@code m2} represent the same mappings if
+     * {@code m1.entrySet().equals(m2.entrySet())}.  This ensures that the
+     * {@code equals} method works properly across different implementations
+     * of the {@code Map} interface.
+     *
+     * @param o object to be compared for equality with this map
+     * @return {@code true} if the specified object is equal to this map
+     * @implSpec This implementation first checks if the specified object is this map;
+     * if so it returns {@code true}.  Then, it checks if the specified
+     * object is a map whose size is identical to the size of this map; if
+     * not, it returns {@code false}.  If so, it iterates over this map's
+     * {@code entrySet} collection, and checks that the specified map
+     * contains each mapping that this map contains.  If the specified map
+     * fails to contain such a mapping, {@code false} is returned.  If the
+     * iteration completes, {@code true} is returned.
+     */
+    public boolean equals(Object o) {
+        if (o == this) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+
+        if (!(o instanceof MapX)) {
             return false;
         }
-        final var mapX = (ImmutableMapX<?, ?>) o;
-        return map.equals(mapX.map);
+        MapX<?, ?> m = (MapX<?, ?>) o;
+        if (m.size() != size()) {
+            return false;
+        }
+
+        try {
+            for (Entry<K, V> e : entrySet()) {
+                K key = e.getKey();
+                V value = e.getValue();
+                if (value == null) {
+                    if (!(m.get(key) == null && m.containsKey(key))) {
+                        return false;
+                    }
+                } else {
+                    if (!value.equals(m.get(key))) {
+                        return false;
+                    }
+                }
+            }
+        } catch (ClassCastException | NullPointerException unused) {
+            return false;
+        }
+
+        return true;
     }
 
-    @Override
+    /**
+     * Returns the hash code value for this map.  The hash code of a map is
+     * defined to be the sum of the hash codes of each entry in the map's
+     * {@code entrySet()} view.  This ensures that {@code m1.equals(m2)}
+     * implies that {@code m1.hashCode()==m2.hashCode()} for any two maps
+     * {@code m1} and {@code m2}, as required by the general contract of
+     * {@link Object#hashCode}.
+     *
+     * @return the hash code value for this map
+     * @implSpec This implementation iterates over {@code entrySet()}, calling
+     * {@link Map.Entry#hashCode hashCode()} on each element (entry) in the
+     * set, and adding up the results.
+     * @see Map.Entry#hashCode()
+     * @see Object#equals(Object)
+     * @see Set#equals(Object)
+     */
     public int hashCode() {
-        return Objects.hash(map);
+        int h = 0;
+        for (Entry<K, V> entry : entrySet()) {
+            h += entry.hashCode();
+        }
+        return h;
     }
 
     @Override

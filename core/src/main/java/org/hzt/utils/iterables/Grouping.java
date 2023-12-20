@@ -113,7 +113,7 @@ public interface Grouping<T, K> extends Iterable<T> {
         return foldTo(mapSupplier, 0L, (acc, i) -> acc + 1);
     }
 
-    default MutableMapX<K, Long> eachCount() {
+    default MapX<K, Long> eachCount() {
         return eachCountTo(MutableMapX::empty);
     }
 }

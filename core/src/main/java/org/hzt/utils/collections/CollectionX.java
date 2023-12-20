@@ -11,11 +11,12 @@ import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.gatherers.Gatherer;
+import org.hzt.utils.gatherers.Gatherer.Downstream;
 import org.hzt.utils.iterables.IterableExtension;
 import org.hzt.utils.iterables.IterableX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
-import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.hzt.utils.tuples.IndexedValue;
 
 import java.util.Collection;
@@ -169,8 +170,21 @@ public interface CollectionX<E> extends IterableX<E> {
         return ListX.copyOf(mapMultiTo(() -> MutableListX.withInitCapacity(size()), mapper));
     }
 
+    @Override
     default <A, R> ListX<R> gather(final Gatherer<? super E, A, R> gatherer) {
-        return ListX.of(() -> Iterators.gatheringIterator(iterator(), gatherer));
+        final var state = gatherer.initializer().get();
+        final var integrator = gatherer.integrator();
+
+        final var iterator = iterator();
+        final var buffer = new SpinedBuffer<R>();
+        final Downstream<? super R> downstream = r -> {
+            buffer.accept(r);
+            return true;
+        };
+        //noinspection StatementWithEmptyBody
+        while (iterator.hasNext() && integrator.integrate(state, iterator.next(), downstream)) ;
+        gatherer.finisher().accept(state, downstream);
+        return ListX.of(buffer);
     }
 
     default <R> ListX<R> then(IterableExtension<E, R> extension) {

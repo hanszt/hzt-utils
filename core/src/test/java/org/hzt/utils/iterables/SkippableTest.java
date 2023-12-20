@@ -4,10 +4,9 @@ import org.hzt.test.TestSampleGenerator;
 import org.hzt.utils.collections.ListX;
 import org.junit.jupiter.api.Test;
 
-import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SkipableTest {
+class SkippableTest {
 
     @Test
     void testSkip() {
@@ -15,13 +14,11 @@ class SkipableTest {
 
         final var expected = museumList.stream()
                 .skip(3)
-                .toList();
+                .toListX();
 
         final var actual = museumList.skip(3);
 
-        println("actual = " + actual);
-
-        assertIterableEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
 }

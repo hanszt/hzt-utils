@@ -1,13 +1,13 @@
 package org.hzt.utils.iterators.functional_iterator;
 
 import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.numbers.IntX;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -167,9 +167,9 @@ class AtomicIteratorTest {
 
     @Test
     void testListContainingNullsCanBeTraversedByAtomicIterator() {
-        final var listContainingNulls = Arrays.asList(null, 2, 3, 4, null, 7);
+        final var listContainingNulls = MutableListX.of(null, 2, 3, 4, null, 7);
         final var atomicIterator = AtomicIterator.of(listContainingNulls.iterator());
-        final var result = new ArrayList<Integer>();
+        final var result = MutableListX.empty();
         //noinspection StatementWithEmptyBody
         while (atomicIterator.tryAdvance(result::add));
 

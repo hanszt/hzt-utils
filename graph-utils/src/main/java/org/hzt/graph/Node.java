@@ -11,8 +11,8 @@ import java.util.Optional;
 /**
  * @param <T> The type of the node itself
  * @param <S> The type of the neighbors
- *
- * T and S must be of same type for this interface to work properly
+ *            <p>
+ *            T and S must be of same type for this interface to work properly
  */
 @FunctionalInterface
 public interface Node<T, S extends Node<T, S>> {
@@ -40,10 +40,15 @@ public interface Node<T, S extends Node<T, S>> {
     }
 
     default S bidiAddNeighbor(final S toAdd) {
-        final var neighbors = getMutableNeighbors();
-        neighbors.add(toAdd);
-        //noinspection unchecked
-        toAdd.getMutableNeighbors().add((S) this);
+        if (shouldThrowOnNullNeighborAdd() && toAdd == null) {
+            throw new IllegalStateException("Neighbor was null!");
+        }
+        if (toAdd != null) {
+            final var neighbors = getMutableNeighbors();
+            neighbors.add(toAdd);
+            //noinspection unchecked
+            toAdd.getMutableNeighbors().add((S) this);
+        }
         //noinspection unchecked
         return (S) this;
     }
@@ -51,12 +56,21 @@ public interface Node<T, S extends Node<T, S>> {
     default S bidiAddNeighbors(final Iterable<S> toAdd) {
         final var neighbors = getMutableNeighbors();
         for (final var neighbor : toAdd) {
-            neighbors.add(neighbor);
-            //noinspection unchecked
-            neighbor.getMutableNeighbors().add((S) this);
+            if (shouldThrowOnNullNeighborAdd() && neighbor == null) {
+                throw new IllegalStateException("One of the neighbors in [" + Sequence.of(toAdd).joinToString() + "] was null!");
+            }
+            if (neighbor != null) {
+                neighbors.add(neighbor);
+                //noinspection unchecked
+                neighbor.getMutableNeighbors().add((S) this);
+            }
         }
         //noinspection unchecked
         return (S) this;
+    }
+
+    default boolean shouldThrowOnNullNeighborAdd() {
+        return true;
     }
 
     default Sequence<S> breadthFirstSequence(final Mode mode) {
@@ -91,7 +105,7 @@ public interface Node<T, S extends Node<T, S>> {
      */
     default S withPredecessor(final S predecessor) {
         throw new IllegalStateException("withPredecessor(Node) not supported by default. Override it if you want to use it. " +
-                "Tried to set " + predecessor + " as predecessor");
+                                        "Tried to set " + predecessor + " as predecessor");
     }
 
     default Sequence<S> predecessorSequence() {

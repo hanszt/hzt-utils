@@ -7,22 +7,17 @@ import java.util.PrimitiveIterator;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 
-public final class DoubleGeneratorIterator implements PrimitiveIterator.OfDouble {
+final class DoubleGeneratorIterator implements PrimitiveIterator.OfDouble {
 
     private final DoubleSupplier initSupplier;
     private final DoubleUnaryOperator nextValueSupplier;
-
     private double nextDouble;
     private State nextState = State.INIT_UNKNOWN;
 
-    private DoubleGeneratorIterator(final DoubleSupplier initSupplier, final DoubleUnaryOperator nextValueSupplier) {
+    DoubleGeneratorIterator(final DoubleSupplier initSupplier, final DoubleUnaryOperator nextValueSupplier) {
         this.initSupplier = initSupplier;
         this.nextValueSupplier = nextValueSupplier;
         this.nextDouble = initSupplier.getAsDouble();
-    }
-
-    public static OfDouble of(final DoubleSupplier initSupplier, final DoubleUnaryOperator nextValueSupplier) {
-        return new DoubleGeneratorIterator(initSupplier, nextValueSupplier);
     }
 
     @Override

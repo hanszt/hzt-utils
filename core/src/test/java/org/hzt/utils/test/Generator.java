@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,7 +33,7 @@ public final class Generator {
                 new PaintingAuction("Van Gogh Auction", LocalDate.of(1992, Month.APRIL, 2), vanGoghPaintings),
                 new PaintingAuction("Vermeer Auction", LocalDate.of(1940, Month.JANUARY, 23), vermeerPaintings),
                 new PaintingAuction("Picasso Auction", LocalDate.of(1965, Month.AUGUST, 4), picassoPaintings),
-                new PaintingAuction(null, null, Collections.singletonList(new Painting("Test", painter, Year.of(2000), false))));
+                new PaintingAuction(null, null, List.of(new Painting("Test", painter, Year.of(2000), false))));
     }
 
     private static Map<String, List<Painting>> paintingsByName() {

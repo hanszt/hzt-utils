@@ -17,6 +17,7 @@ import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.sequences.primitives.LongSequence;
+import org.hzt.utils.streams.StreamX;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
@@ -42,7 +43,6 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static java.util.Spliterator.ORDERED;
@@ -165,6 +165,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
                 Objects::nonNull, true);
     }
 
+    @Override
     default <A, R> Sequence<R> gather(final Gatherer<? super T, A, R> gatherer) {
         return () -> Iterators.gatheringIterator(iterator(), gatherer);
     }
@@ -402,8 +403,8 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default Stream<T> stream() {
-        return StreamSupport.stream(() -> Spliterators.spliteratorUnknownSize(iterator(), ORDERED), ORDERED, false);
+    default StreamX<T> stream() {
+        return StreamX.of(StreamSupport.stream(() -> Spliterators.spliteratorUnknownSize(iterator(), ORDERED), ORDERED, false));
     }
 
     default Sequence<T> onSequence(final Consumer<? super Sequence<T>> sequenceConsumer) {

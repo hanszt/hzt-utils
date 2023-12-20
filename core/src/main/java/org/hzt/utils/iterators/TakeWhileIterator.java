@@ -9,7 +9,6 @@ final class TakeWhileIterator<T> implements Iterator<T> {
     private final Iterator<T> iterator;
     private final Predicate<? super T> predicate;
     private final boolean inclusive;
-
     private boolean inclusiveConsumed = false;
     private T nextItem;
     private State nextState = State.INIT_UNKNOWN;
@@ -18,10 +17,6 @@ final class TakeWhileIterator<T> implements Iterator<T> {
         this.iterator = iterator;
         this.predicate = predicate;
         this.inclusive = inclusive;
-    }
-
-    public static <T> TakeWhileIterator<T> of(final Iterator<T> iterator, final Predicate<T> predicate) {
-        return new TakeWhileIterator<>(iterator, predicate, false);
     }
 
     private void calculateNext() {

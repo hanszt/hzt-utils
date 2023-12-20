@@ -5,7 +5,7 @@ import org.hzt.utils.iterators.State;
 import java.util.PrimitiveIterator;
 import java.util.function.LongBinaryOperator;
 
-public class LongScanningIterator implements PrimitiveIterator.OfLong {
+final class LongScanningIterator implements PrimitiveIterator.OfLong {
     private final PrimitiveIterator.OfLong iterator;
     private final LongBinaryOperator operation;
 
@@ -13,7 +13,7 @@ public class LongScanningIterator implements PrimitiveIterator.OfLong {
 
     private State state = State.INIT_UNKNOWN;
 
-    public LongScanningIterator(final PrimitiveIterator.OfLong iterator, final long initial, final LongBinaryOperator operation) {
+    LongScanningIterator(final PrimitiveIterator.OfLong iterator, final long initial, final LongBinaryOperator operation) {
         this.iterator = iterator;
         this.operation = operation;
         accumulation = initial;

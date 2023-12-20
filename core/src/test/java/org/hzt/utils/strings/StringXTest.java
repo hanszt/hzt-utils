@@ -42,11 +42,9 @@ class StringXTest {
         final var characterCounts = StringX.of(hallo)
                 .group()
                 .values()
-                .map(ListX::size);
+                .toListOf(ListX::size);
 
-        println("hallo = " + characterCounts);
-
-        assertIterableEquals(expected, characterCounts);
+        assertEquals(expected, characterCounts);
     }
 
     @Test

@@ -34,7 +34,6 @@ import static org.hzt.utils.streams.StreamFinishers.toSet;
 import static org.hzt.utils.streams.StreamExtensions.*;
 import static org.hzt.utils.streams.StreamFinishers.fold;
 import static org.hzt.utils.streams.StreamFinishers.toSet;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StreamXTest {

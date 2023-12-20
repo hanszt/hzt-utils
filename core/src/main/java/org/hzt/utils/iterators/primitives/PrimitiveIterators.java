@@ -10,12 +10,17 @@ import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableSet;
 import org.hzt.utils.function.primitives.DoubleIndexedFunction;
 import org.hzt.utils.function.primitives.LongIndexedFunction;
+import org.hzt.utils.gatherers.primitives.IntGatherer;
 
+import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
+import java.util.Queue;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
+import java.util.function.DoubleSupplier;
 import java.util.function.DoubleToIntFunction;
 import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
@@ -23,12 +28,14 @@ import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
+import java.util.function.IntSupplier;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongConsumer;
 import java.util.function.LongFunction;
+import java.util.function.LongSupplier;
 import java.util.function.LongToDoubleFunction;
 import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
@@ -46,6 +53,18 @@ public final class PrimitiveIterators {
     private static final String ITERATOR_INDEX_OVERFLOW = "Iterator index overflow";
 
     private PrimitiveIterators() {
+    }
+
+    public static PrimitiveIterator.OfInt generatorIterator(IntSupplier initSupplier, IntUnaryOperator nextSupplier) {
+        return new IntGeneratorIterator(initSupplier, nextSupplier);
+    }
+
+    public static PrimitiveIterator.OfLong generatorIterator(LongSupplier initSupplier, LongUnaryOperator nextSupplier) {
+        return new LongGeneratorIterator(initSupplier, nextSupplier);
+    }
+
+    public static PrimitiveIterator.OfDouble generatorIterator(DoubleSupplier initSupplier, DoubleUnaryOperator nextSupplier) {
+        return new DoubleGeneratorIterator(initSupplier, nextSupplier);
     }
 
     public static OfInt intArrayIterator(final int... array) {
@@ -639,6 +658,46 @@ public final class PrimitiveIterators {
             @Override
             public double nextDouble() {
                 return listIterator.previousDouble();
+            }
+        };
+    }
+
+    public static <A, R> Iterator<R> intGatheringIterator(final PrimitiveIterator.OfInt source, final IntGatherer<A, R> gatherer) {
+        final var state = gatherer.initializer().get();
+        final var integrator = gatherer.intIntegrator();
+        final var finisher = gatherer.finisher();
+        final Queue<R> buffer = new ArrayDeque<>();
+        return new Iterator<>() {
+            boolean finisherCalled = false;
+            boolean emitNoMoreItems = false;
+
+            @Override
+            public boolean hasNext() {
+                if (!buffer.isEmpty()) {
+                    return true;
+                }
+                if (emitNoMoreItems) {
+                    return false;
+                }
+                while (buffer.isEmpty() && source.hasNext()) {
+                    if (!integrator.integrate(state, source.nextInt(), buffer::add)) {
+                        emitNoMoreItems = true;
+                        break;
+                    }
+                }
+                if (!finisherCalled && !source.hasNext()) {
+                    finisherCalled = true;
+                    finisher.accept(state, buffer::add);
+                }
+                return !buffer.isEmpty();
+            }
+
+            @Override
+            public R next() {
+                if (hasNext()) {
+                    return buffer.remove();
+                }
+                throw new NoSuchElementException();
             }
         };
     }

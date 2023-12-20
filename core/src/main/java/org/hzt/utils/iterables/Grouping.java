@@ -33,7 +33,7 @@ public interface Grouping<T, K> extends Iterable<T> {
 
 
     default Grouping<T, K> filtering(final Predicate<? super T> predicate) {
-        return new Grouping<T, K>() {
+        return new Grouping<>() {
             @Override
             public K keyOf(final T element) {
                 return Grouping.this.keyOf(element);
@@ -113,7 +113,7 @@ public interface Grouping<T, K> extends Iterable<T> {
         return foldTo(mapSupplier, 0L, (acc, i) -> acc + 1);
     }
 
-    default MutableMapX<K, Long> eachCount() {
+    default MapX<K, Long> eachCount() {
         return eachCountTo(MutableMapX::empty);
     }
 }

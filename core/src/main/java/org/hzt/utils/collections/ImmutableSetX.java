@@ -1,9 +1,6 @@
 package org.hzt.utils.collections;
 
-import org.hzt.utils.collectors.CollectorsX;
-
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
@@ -29,15 +26,6 @@ final class ImmutableSetX<T> implements SetX<T> {
         immutableSet = Set.copyOf(collection);
     }
 
-    ImmutableSetX(final Set<T> set) {
-        immutableSet = Collections.unmodifiableSet(set);
-    }
-
-    @Override
-    public SetX<T> get() {
-        return this;
-    }
-
     @Override
     public int size() {
         return immutableSet.size();
@@ -61,19 +49,28 @@ final class ImmutableSetX<T> implements SetX<T> {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) {
+        if (o == this) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof SetX)) {
             return false;
         }
-        final var that = (ImmutableSetX<?>) o;
-        return Objects.equals(immutableSet, that.immutableSet);
+
+        CollectionX<?> c = (CollectionX<?>) o;
+        if (c.size() != size()) {
+            return false;
+        }
+        for (Object e : c) {
+            if (e == null || !contains(e)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(immutableSet);
+        return immutableSet.hashCode();
     }
 
     @Override

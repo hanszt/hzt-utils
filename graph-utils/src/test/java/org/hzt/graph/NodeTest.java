@@ -25,11 +25,10 @@ class NodeTest {
         final var graph = buildTrainNet();
 
         final var stationNames = graph.get("Leiden").breadthFirstSequence()
-                .onEach(It::println)
                 .map(railWayStation -> railWayStation.name)
                 .toList();
 
-        assertEquals(List.of("Leiden", "Amsterdam", "Den Haag", "Utrecht", "Tilburg", "Bergen op zoom", "Rotterdam", "Middelburg", "Vlissingen"), stationNames);
+        assertEquals(List.of("Leiden", "Schiphol", "Voorschoten", "Alphen aan de Rijn", "Amsterdam", "Den Haag", "Bodegraven", "Utrecht", "Bergen op zoom", "Rotterdam", "Tilburg", "Middelburg", "Eindhoven", "Vlissingen"), stationNames);
     }
 
     @Test
@@ -39,20 +38,14 @@ class NodeTest {
         final var leiden = graph.get("Leiden");
         final var vlissingen = graph.get("Vlissingen");
 
-        final List<String> visitedStation = new ArrayList<>();
-
         final var leastStopsPath = leiden.breadthFirstSequence(Node.Mode.SET_PREDECESSORS)
                 .first(vlissingen::equals)
                 .predecessorSequence()
                 .onEach(n -> System.out.println(n.predecessorSequence().count()))
                 .map(station -> station.name)
-                .onEach(visitedStation::add)
                 .toList();
 
-        assertAll(
-                () -> assertEquals(List.of("Vlissingen", "Middelburg", "Bergen op zoom", "Utrecht", "Leiden"), leastStopsPath),
-                () -> assertEquals(leastStopsPath, visitedStation)
-        );
+        assertEquals(List.of("Vlissingen", "Middelburg", "Bergen op zoom", "Den Haag", "Voorschoten", "Leiden"), leastStopsPath);
     }
 
     @Test
@@ -69,7 +62,7 @@ class NodeTest {
                 .first(trainNet.get("Vlissingen")::equals);
 
         final var leastStopsPath = vlissingen.predecessorSequence().toListOf(station -> station.name);
-        final var expected = List.of("Vlissingen", "Middelburg", "Bergen op zoom", "Tilburg", "Utrecht", "Amsterdam", "Leiden");
+        final var expected = List.of("Vlissingen", "Middelburg", "Bergen op zoom", "Rotterdam", "Utrecht", "Amsterdam", "Schiphol", "Leiden");
 
         assertAll(
                 () -> assertEquals(expected, leastStopsPath),
@@ -97,37 +90,48 @@ class NodeTest {
                 .map(railWayStation -> railWayStation.name)
                 .toList();
 
-        assertEquals(List.of("Leiden", "Amsterdam", "Utrecht", "Tilburg", "Bergen op zoom", "Middelburg", "Vlissingen", "Rotterdam", "Den Haag"), stationNames);
+        assertEquals(List.of("Leiden", "Schiphol", "Amsterdam", "Utrecht", "Rotterdam", "Bergen op zoom", "Middelburg", "Vlissingen", "Eindhoven", "Den Haag", "Voorschoten", "Bodegraven", "Alphen aan de Rijn", "Tilburg"), stationNames);
     }
 
     private MapX<String, RailWayStation> buildTrainNet() {
         final var map = ListX.of(
-                        "Leiden",
+                        "Alphen aan de Rijn",
                         "Amsterdam",
-                        "Den Haag",
-                        "Rotterdam",
-                        "Utrecht",
-                        "Middelburg",
-                        "Vlissingen",
-                        "Tilburg",
                         "Bergen op zoom",
-                        "Timbuktu")
+                        "Bodegraven",
+                        "Den Haag",
+                        "Eindhoven",
+                        "Leiden",
+                        "Middelburg",
+                        "Rotterdam",
+                        "Schiphol",
+                        "Tilburg",
+                        "Timbuktu",
+                        "Utrecht",
+                        "Vlissingen",
+                        "Voorschoten")
                 .associateWith(RailWayStation::new);
 
+        map.get("Amsterdam").bidiAddNeighbor(map.get("Schiphol"));
+        map.get("Bergen op zoom").bidiAddNeighbors(List.of(
+                map.get("Middelburg").bidiAddNeighbor(map.get("Vlissingen")),
+                map.get("Eindhoven"),
+                map.get("Rotterdam"),
+                map.get("Den Haag")));
         map.get("Leiden").bidiAddNeighbors(Sequence.of(
-                "Amsterdam",
-                "Den Haag",
-                "Utrecht").toListOf(map::get));
+                "Schiphol",
+                "Voorschoten",
+                "Alphen aan de Rijn").toListOf(map::get));
+        map.get("Rotterdam").bidiAddNeighbors(ListX.of("Den Haag", "Bergen op zoom", "Utrecht").map(map::get));
         map.get("Utrecht").bidiAddNeighbors(ListX.of(
+                "Bodegraven",
                 "Tilburg",
                 "Bergen op zoom",
                 "Den Haag",
                 "Amsterdam",
                 "Rotterdam").map(map::get));
-        map.get("Bergen op zoom").bidiAddNeighbors(List.of(
-                map.get("Middelburg").bidiAddNeighbor(map.get("Vlissingen")),
-                map.get("Tilburg"),
-                map.get("Rotterdam")));
+        map.get("Voorschoten").bidiAddNeighbor(map.get("Den Haag"));
+        map.get("Bodegraven").bidiAddNeighbor(map.get("Alphen aan de Rijn"));
         return map;
     }
 

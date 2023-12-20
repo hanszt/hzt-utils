@@ -50,6 +50,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -220,7 +221,7 @@ class SequenceTest {
     @Test
     void testFlatMapToList() {
         final var list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
-                new ArrayDeque<>(Collections.singleton("test")));
+                new ArrayDeque<>(Set.of("test")));
 
         final var result = list.asSequence()
                 .flatMap(It::self)
@@ -230,13 +231,13 @@ class SequenceTest {
 
         println("result = " + result);
 
-        assertIterableEquals(ListX.of("Hallo", "test"), result);
+        assertEquals(ListX.of("Hallo", "test"), result);
     }
 
     @Test
     void testMapMultiToList() {
         final var list = ListX.of(ListX.of("Hallo", "dit"), SetX.of("is", "een"),
-                new ArrayDeque<>(Collections.singleton("test")));
+                new ArrayDeque<>(Set.of("test")));
 
         final var result = list.asSequence()
                 .<String>mapMulti(Iterable::forEach)

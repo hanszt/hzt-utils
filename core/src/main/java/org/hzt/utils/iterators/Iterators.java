@@ -169,7 +169,7 @@ public final class Iterators {
     public static <T, A, R> Iterator<R> mergingIterator(final Iterator<T> thisIterator,
                                                         final Iterator<A> otherIterator,
                                                         final BiFunction<? super T, ? super A, ? extends R> transform) {
-        return new Iterator<R>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return thisIterator.hasNext() && otherIterator.hasNext();

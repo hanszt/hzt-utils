@@ -5,14 +5,14 @@ import org.hzt.utils.iterators.State;
 import java.util.PrimitiveIterator;
 import java.util.function.DoubleBinaryOperator;
 
-public class DoubleScanningIterator implements PrimitiveIterator.OfDouble {
+final class DoubleScanningIterator implements PrimitiveIterator.OfDouble {
     private final PrimitiveIterator.OfDouble iterator;
     private final DoubleBinaryOperator operation;
     private double accumulation;
 
     private State state = State.INIT_UNKNOWN;
 
-    public DoubleScanningIterator(final PrimitiveIterator.OfDouble iterator, final double initial,
+    DoubleScanningIterator(final PrimitiveIterator.OfDouble iterator, final double initial,
                                   final DoubleBinaryOperator operation) {
         this.iterator = iterator;
         this.operation = operation;

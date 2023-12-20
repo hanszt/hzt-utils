@@ -10,9 +10,11 @@ open module hzt.utils.core {
     exports org.hzt.utils.function.predicates;
     exports org.hzt.utils.function.primitives;
     exports org.hzt.utils.gatherers;
+    exports org.hzt.utils.gatherers.primitives;
     exports org.hzt.utils.io;
     exports org.hzt.utils.iterables;
     exports org.hzt.utils.iterables.primitives;
+    exports org.hzt.utils.iterators;
     exports org.hzt.utils.iterators.functional_iterator;
     exports org.hzt.utils.iterators.primitives;
     exports org.hzt.utils.numbers;

@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
 final class ArrayIterator<E> implements Iterator<E> {
 
     private final E[] array;
-
     private final boolean reverse;
     private int index;
 

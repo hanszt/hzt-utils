@@ -2,6 +2,8 @@ package org.hzt.utils.collections;
 
 import org.hzt.utils.iterables.MutableIterable;
 
+import org.hzt.utils.streams.StreamX;
+
 import java.util.Collection;
 import java.util.Spliterator;
 import java.util.function.Predicate;
@@ -12,8 +14,8 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E>, Mu
     int size();
 
     @Override
-    default Stream<E> stream() {
-        return Collection.super.stream();
+    default StreamX<E> stream() {
+        return StreamX.of(Collection.super.stream());
     }
 
     @Override
@@ -33,7 +35,6 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E>, Mu
 
     default boolean addAll(final Iterable<? extends E> iterable) {
         if (iterable instanceof final Collection<?> c) {
-            //noinspection unchecked
             return addAll((Collection<? extends E>) c);
         }
         var allAdded = true;

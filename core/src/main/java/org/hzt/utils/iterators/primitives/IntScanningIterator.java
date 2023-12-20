@@ -5,7 +5,7 @@ import org.hzt.utils.iterators.State;
 import java.util.PrimitiveIterator;
 import java.util.function.IntBinaryOperator;
 
-public class IntScanningIterator implements PrimitiveIterator.OfInt {
+final class IntScanningIterator implements PrimitiveIterator.OfInt {
     private final PrimitiveIterator.OfInt iterator;
     private final IntBinaryOperator operation;
 
@@ -13,7 +13,7 @@ public class IntScanningIterator implements PrimitiveIterator.OfInt {
 
     private State state = State.INIT_UNKNOWN;
 
-    public IntScanningIterator(final PrimitiveIterator.OfInt iterator, final int initial, final IntBinaryOperator operation) {
+    IntScanningIterator(final PrimitiveIterator.OfInt iterator, final int initial, final IntBinaryOperator operation) {
         this.iterator = iterator;
         this.operation = operation;
         accumulation = initial;

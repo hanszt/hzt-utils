@@ -16,7 +16,6 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.LongFilteringIterator;
-import org.hzt.utils.iterators.primitives.LongGeneratorIterator;
 import org.hzt.utils.iterators.primitives.LongMultiMappingIterator;
 import org.hzt.utils.iterators.primitives.LongSkipWhileIterator;
 import org.hzt.utils.iterators.primitives.LongTakeWhileIterator;
@@ -86,7 +85,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     static LongSequence generate(final LongSupplier seedFunction, final LongUnaryOperator nextFunction) {
-        return () -> LongGeneratorIterator.of(seedFunction, nextFunction);
+        return () -> PrimitiveIterators.generatorIterator(seedFunction, nextFunction);
     }
 
     default LongSequence step(final long step) {

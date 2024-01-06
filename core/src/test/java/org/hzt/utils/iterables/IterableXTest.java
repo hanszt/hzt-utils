@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.Period;
 import java.time.Year;
 import java.util.ArrayDeque;
@@ -279,13 +280,14 @@ class IterableXTest {
     @Test
     void testPartitionMapping() {
         final List<Painting> paintings = TestSampleGenerator.createPaintingList();
+        final LocalDate now = LocalDate.of(2024, Month.JANUARY, 4);
 
         final Map<Boolean, List<Period>> expectedMap = paintings.stream()
                 .collect(partitioningBy(Painting::isInMuseum,
-                        mapping(Painting::age, toList())));
+                        mapping(painting -> painting.age(now), toList())));
 
         final Pair<ListX<Period>, ListX<Period>> actualMap = ListX.of(paintings)
-                .partitionMapping(Painting::isInMuseum, Painting::age);
+                .partitionMapping(Painting::isInMuseum, painting -> painting.age(now));
 
         assertAll(
                 () -> assertEquals(expectedMap.get(true), actualMap.first()),
@@ -311,10 +313,11 @@ class IterableXTest {
     @Test
     void testToSummaryStatistics() {
         final ListX<Painting> paintings = ListX.of(TestSampleGenerator.createPaintingList());
+        final int currentYear = 2024;
 
-        final IntSummaryStatistics expected = paintings.stream().mapToInt(Painting::ageInYears).summaryStatistics();
+        final IntSummaryStatistics expected = paintings.stream().mapToInt(painting -> painting.ageInYears(currentYear)).summaryStatistics();
 
-        final IntSummaryStatistics actual = paintings.intStatsOf(Painting::ageInYears);
+        final IntSummaryStatistics actual = paintings.intStatsOf(painting -> painting.ageInYears(currentYear));
 
         assertAll(
                 () -> assertEquals(expected.getMin(), actual.getMin()),
@@ -601,10 +604,11 @@ class IterableXTest {
     @Test
     void testSumOfInt() {
         final ListX<Painting> list = ListX.of(TestSampleGenerator.createPaintingList());
+        final int currentYear = 2024;
 
-        final int expected = list.stream().mapToInt(Painting::ageInYears).sum();
+        final int expected = list.stream().mapToInt(painting -> painting.ageInYears(currentYear)).sum();
 
-        final long actual = list.intSumOf(Painting::ageInYears);
+        final long actual = list.intSumOf(painting -> painting.ageInYears(currentYear));
 
         It.println("actual = " + actual);
 
@@ -614,10 +618,14 @@ class IterableXTest {
     @Test
     void testAverageOf() {
         final ListX<Painting> list = ListX.of(TestSampleGenerator.createPaintingList());
+        final int currentYear = 2024;
 
-        final double expected = list.stream().mapToInt(Painting::ageInYears).average().orElseThrow(NoSuchElementException::new);
+        final double expected = list.stream()
+                .mapToInt(painting -> painting.ageInYears(currentYear))
+                .average()
+                .orElseThrow(NoSuchElementException::new);
 
-        final double actual = list.averageOf(Painting::ageInYears);
+        final double actual = list.averageOf(painting -> painting.ageInYears(currentYear));
 
         It.println("actual = " + actual);
 
@@ -700,13 +708,14 @@ class IterableXTest {
     @Test
     void testJoinToString() {
         final ListX<Painting> paintings = ListX.of(TestSampleGenerator.createPaintingList());
+        final LocalDate now = LocalDate.of(2024, Month.JANUARY, 2);
 
         final String expected = paintings.stream()
-                .map(Painting::age)
+                .map(painting -> painting.age(now))
                 .map(Period::toString)
                 .collect(Collectors.joining(", "));
 
-        final String actual = paintings.joinToStringBy(Painting::age, ", ");
+        final String actual = paintings.joinToStringBy(painting -> painting.age(now), ", ");
 
         It.println("actual = " + actual);
 

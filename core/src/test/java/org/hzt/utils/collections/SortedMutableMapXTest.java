@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.NavigableMap;
 import java.util.Objects;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -34,8 +35,9 @@ class SortedMutableMapXTest {
 
     @Test
     void testGetNavigableMap() {
+        final Random random = new Random(0);
         final IterableX<Museum> museumListContainingNulls = ListX.of(TestSampleGenerator.getMuseumListContainingNulls())
-                .sortedBy(e -> Math.random());
+                .sortedBy(e -> random.nextDouble());
 
         final NavigableMap<String, Museum> expected = new TreeMap<>(museumListContainingNulls.stream()
                 .filter(m -> m != null && m.getName() != null)

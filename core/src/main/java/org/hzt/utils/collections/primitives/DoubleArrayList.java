@@ -2,7 +2,6 @@ package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.ArraysX;
-import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
@@ -12,6 +11,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
+import java.util.Random;
 import java.util.function.DoubleConsumer;
 
 final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleConsumer, double[], PrimitiveIterator.OfDouble>
@@ -115,14 +115,14 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
-    public OptionalDouble findRandom() {
-        return isNotEmpty() ? OptionalDouble.of(get(IterableXHelper.RANDOM.nextInt(size()))) : OptionalDouble.empty();
+    public OptionalDouble findRandom(final Random random) {
+        return isNotEmpty() ? OptionalDouble.of(get(random.nextInt(size()))) : OptionalDouble.empty();
     }
 
     @Override
-    public DoubleList shuffled() {
+    public DoubleList shuffled(final Random random) {
         final DoubleMutableList mutableList = DoubleMutableList.of(this);
-        PrimitiveListHelper.shuffle(mutableList);
+        PrimitiveListHelper.shuffle(mutableList, random);
         return mutableList;
     }
 

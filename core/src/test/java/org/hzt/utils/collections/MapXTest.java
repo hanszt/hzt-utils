@@ -10,6 +10,7 @@ import org.hzt.utils.sequences.EntrySequence;
 import org.hzt.utils.strings.StringX;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MapXTest {
@@ -176,5 +178,31 @@ class MapXTest {
         It.println("map = " + map);
 
         assertEquals(32, map.size());
+    }
+
+    @Nested
+    class EqualsTests {
+
+        @Test
+        void testMapXEquals() {
+            final MapX<String, String> map1 = MapX.of("This", "is", "a", "test");
+            final MapX<String, String> map2 = MapX.of("This", "is", "a", "test");
+
+            assertAll(
+                    () -> assertEquals(map2, map1),
+                    () -> assertEquals(map1, map2)
+            );
+        }
+
+        @Test
+        void testMapXAndJavaMapDoNotEqual() {
+            final MapX<String, String> mapX = MapX.of("This", "is", "a", "test");
+            final Map<String, String> map = MapX.of("This", "is", "a", "test").toMap();
+
+            assertAll(
+                    () -> assertNotEquals(map, mapX),
+                    () -> assertNotEquals(mapX, map)
+            );
+        }
     }
 }

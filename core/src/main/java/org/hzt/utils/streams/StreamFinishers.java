@@ -13,7 +13,7 @@ public final class StreamFinishers {
     private StreamFinishers() {
     }
 
-    public static <T, R> Function<Stream<T>, R> fold(R initial, BiFunction<? super R, ? super T, ? extends R> mapper) {
+    public static <T, R> Function<Stream<T>, R> fold(final R initial, final BiFunction<? super R, ? super T, ? extends R> mapper) {
         return s -> Sequence.of(s::iterator).fold(initial, mapper);
     }
 

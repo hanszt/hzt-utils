@@ -17,7 +17,7 @@ class ClosedRangeTest {
 
         assertAll(
                 () -> assertTrue(dateRange.contains(LocalDate.ofEpochDay(100))),
-                () -> assertFalse(dateRange.contains(LocalDate.now()))
+                () -> assertFalse(dateRange.contains(LocalDate.parse("2022-10-23")))
         );
     }
 

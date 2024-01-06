@@ -27,8 +27,8 @@ public final class Painter extends Person implements Comparable<Painter>, Iterab
         this.dateOfBirth = dateOfBirth;
     }
 
-    public Period age() {
-        return Period.between(dateOfBirth, dateOfDeath != null ? dateOfDeath : LocalDate.now());
+    public Period age(final LocalDate now) {
+        return Period.between(dateOfBirth, dateOfDeath != null ? dateOfDeath : now);
     }
 
     public String getFirstName() {

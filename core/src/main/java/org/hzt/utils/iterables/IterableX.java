@@ -66,11 +66,6 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
 
     <V> EntryIterable<T, V> associateWith(Function<? super T, ? extends V> valueMapper);
 
-    default <R> void forEach(final Function<? super T, ? extends R> selector,
-                             final Consumer<? super R> consumer) {
-        onEach(selector, consumer);
-    }
-
     default IterableX<T> onEach(final Consumer<? super T> consumer) {
         return onEach(It::self, consumer);
     }

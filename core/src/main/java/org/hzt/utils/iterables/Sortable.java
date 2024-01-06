@@ -7,13 +7,14 @@ import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.sequences.Sequence;
 
 import java.util.Comparator;
+import java.util.Random;
 import java.util.function.Function;
 
 @FunctionalInterface
 public interface Sortable<T> extends Iterable<T> {
 
-    default Sortable<T> shuffled() {
-        return IterableXHelper.toSortedListX(this, s -> IterableXHelper.RANDOM.nextDouble());
+    default Sortable<T> shuffled(final Random random) {
+        return IterableXHelper.toSortedListX(this, s -> random.nextInt());
     }
 
     default <R extends Comparable<R>> Sortable<T> sorted() {

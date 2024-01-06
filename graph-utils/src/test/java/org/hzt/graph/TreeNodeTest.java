@@ -401,7 +401,7 @@ class TreeNodeTest {
             private final String name;
             private final Node[] children;
 
-            private Node(String name, Node... children) {
+            private Node(final String name, final Node... children) {
                 this.name = name;
                 this.children = children;
             }
@@ -412,10 +412,10 @@ class TreeNodeTest {
             }
 
             @Override
-            public boolean equals(Object obj) {
+            public boolean equals(final Object obj) {
                 if (obj == this) return true;
                 if (obj == null || obj.getClass() != this.getClass()) return false;
-                Node that = (Node) obj;
+                final Node that = (Node) obj;
                 return Objects.equals(this.name, that.name) &&
                        Arrays.equals(this.children, that.children);
             }

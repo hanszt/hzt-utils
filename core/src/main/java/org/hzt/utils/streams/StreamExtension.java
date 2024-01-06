@@ -16,17 +16,17 @@ public interface StreamExtension<T, R> {
 
     Stream<R> extend(Stream<T> stream);
 
-    default <V> StreamExtension<T, V> andThen(StreamExtension<R, V> after) {
+    default <V> StreamExtension<T, V> andThen(final StreamExtension<R, V> after) {
         Objects.requireNonNull(after);
         return tStream -> after.extend(extend(tStream));
     }
 
-    default <V> StreamExtension<V, R> compose(StreamExtension<V, T> before) {
+    default <V> StreamExtension<V, R> compose(final StreamExtension<V, T> before) {
         Objects.requireNonNull(before);
         return vStream -> extend(before.extend(vStream));
     }
 
-    default <A, V> Collector<T, ?, V> collect(Collector<? super R, A, V> collector) {
+    default <A, V> Collector<T, ?, V> collect(final Collector<? super R, A, V> collector) {
         return Collector.of(
                 SpinedBuffer<T>::new,
                 SpinedBuffer::accept,
@@ -38,7 +38,7 @@ public interface StreamExtension<T, R> {
         );
     }
 
-    default <V> Function<Stream<T>, V> finish(Function<Stream<R>, V> finisher) {
+    default <V> Function<Stream<T>, V> finish(final Function<Stream<R>, V> finisher) {
         return s -> finisher.apply(extend(s));
     }
 }

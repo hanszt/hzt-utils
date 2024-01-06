@@ -32,7 +32,7 @@ class WindowListenersTest {
     
     @Test
     void testFunctionalStyleWindowListenerDeclarationInSwing() {
-        AtomicBoolean isCalled = new AtomicBoolean(false);
+        final AtomicBoolean isCalled = new AtomicBoolean(false);
         final Window frame = new Frame();
         frame.addWindowListener((WindowActivatedListener) e -> isCalled.set(true));
     }

@@ -12,6 +12,7 @@ import org.hzt.utils.sequences.primitives.DoubleSequence;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.OptionalDouble;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
@@ -85,11 +86,11 @@ public interface DoubleList extends DoubleCollection,
         return OptionalDouble.empty();
     }
 
-    default double random() {
-        return findRandom().orElseThrow(NoSuchElementException::new);
+    default double random(final Random random) {
+        return findRandom(random).orElseThrow(NoSuchElementException::new);
     }
 
-    OptionalDouble findRandom();
+    OptionalDouble findRandom(Random random);
 
     @Override
     default ListX<Double> boxed() {
@@ -118,7 +119,7 @@ public interface DoubleList extends DoubleCollection,
         return DoubleList.of(array);
     }
 
-    DoubleList shuffled();
+    DoubleList shuffled(Random random);
 
     /**
      * @see BinarySearchable#binarySearch(int, int, Object)

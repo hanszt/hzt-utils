@@ -33,9 +33,9 @@ public final class FileX extends File {
     }
 
     private static Class<?> getCallerClass() {
-        StackTraceElement[] stElements = Thread.currentThread().getStackTrace();
+        final StackTraceElement[] stElements = Thread.currentThread().getStackTrace();
         for (int i = 1; i < stElements.length; i++) {
-            StackTraceElement ste = stElements[i];
+            final StackTraceElement ste = stElements[i];
             if (!ste.getClassName().equals(FileX.class.getName()) && ste.getClassName().indexOf("java.lang.Thread") != 0) {
                 return ste.getClass();
             }

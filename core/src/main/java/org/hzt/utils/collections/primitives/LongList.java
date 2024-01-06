@@ -12,6 +12,7 @@ import org.hzt.utils.sequences.primitives.LongSequence;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.OptionalLong;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.LongPredicate;
 import java.util.function.LongToIntFunction;
@@ -85,11 +86,11 @@ public interface LongList extends LongCollection,
         return OptionalLong.empty();
     }
 
-    default long random() {
-        return findRandom().orElseThrow(NoSuchElementException::new);
+    default long random(final Random random) {
+        return findRandom(random).orElseThrow(NoSuchElementException::new);
     }
 
-    OptionalLong findRandom();
+    OptionalLong findRandom(Random random);
 
     @Override
     default ListX<Long> boxed() {
@@ -118,7 +119,7 @@ public interface LongList extends LongCollection,
         return LongList.of(array);
     }
 
-    LongList shuffled();
+    LongList shuffled(Random random);
 
     /**
      * @see BinarySearchable#binarySearch(int, int, Object)

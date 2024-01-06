@@ -104,10 +104,10 @@ public final class Gatherers {
         private final BiConsumer<A, Downstream<? super R>> finisher;
 
         GathererImpl(
-                Supplier<A> initializer,
-                Integrator<A, T, R> integrator,
-                BinaryOperator<A> combiner,
-                BiConsumer<A, Downstream<? super R>> finisher) {
+                final Supplier<A> initializer,
+                final Integrator<A, T, R> integrator,
+                final BinaryOperator<A> combiner,
+                final BiConsumer<A, Downstream<? super R>> finisher) {
             this.initializer = initializer;
             this.integrator = integrator;
             this.combiner = combiner;
@@ -115,10 +115,10 @@ public final class Gatherers {
         }
 
         static <T, A, R> GathererImpl<T, A, R> of(
-                Supplier<A> initializer,
-                Integrator<A, T, R> integrator,
-                BinaryOperator<A> combiner,
-                BiConsumer<A, Downstream<? super R>> finisher) {
+                final Supplier<A> initializer,
+                final Integrator<A, T, R> integrator,
+                final BinaryOperator<A> combiner,
+                final BiConsumer<A, Downstream<? super R>> finisher) {
             return new GathererImpl<>(
                     Objects.requireNonNull(initializer, "initializer"),
                     Objects.requireNonNull(integrator, "integrator"),
@@ -148,7 +148,7 @@ public final class Gatherers {
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (obj == this) return true;
             if (obj == null || obj.getClass() != this.getClass()) return false;
             final GathererImpl<?, ?, ?> that = (GathererImpl<?, ?, ?>) obj;

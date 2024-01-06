@@ -8,9 +8,9 @@ public interface Bag<E> extends CollectionX<E> {
 
     boolean add(E item);
 
-    default boolean addAll(Iterable<E> items) {
+    default boolean addAll(final Iterable<E> items) {
         boolean allAdded = true;
-        for (E item : items) {
+        for (final E item : items) {
             if (!add(item)) {
                 allAdded = false;
             }

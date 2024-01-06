@@ -33,9 +33,9 @@ public final class Timer<R> {
     }
 
     public String formattedDurationInSeconds() {
-        long seconds = getDuration().getSeconds();
-        long absSeconds = Math.abs(seconds);
-        String positive = String.format(
+        final long seconds = getDuration().getSeconds();
+        final long absSeconds = Math.abs(seconds);
+        final String positive = String.format(
                 "%d:%02d:%02d",
                 absSeconds / 3600,
                 (absSeconds % 3600) / 60,

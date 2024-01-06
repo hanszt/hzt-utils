@@ -112,11 +112,11 @@ public interface StreamX<T> extends Stream<T>, Gatherable<T>, Sortable<T>, Numer
         return DoubleStreamX.of(StreamXHelper.stream(this).mapToDouble(mapper));
     }
 
-    default <R> StreamX<R> then(StreamExtension<T, R> extension) {
+    default <R> StreamX<R> then(final StreamExtension<T, R> extension) {
         return new StreamXImpl<>(extension.extend(this));
     }
 
-    default <R> R finish(Function<Stream<T>, ? extends R> finisher) {
+    default <R> R finish(final Function<Stream<T>, ? extends R> finisher) {
         return finisher.apply(this);
     }
 

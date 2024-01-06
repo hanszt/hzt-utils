@@ -18,21 +18,21 @@ public class GathererVsIntGathererBenchmark {
     public static final int WINDOW_SIZE = 16;
 
     @Benchmark
-    public void intSequenceNormalGathererWindowSliding(Blackhole blackhole) {
+    public void intSequenceNormalGathererWindowSliding(final Blackhole blackhole) {
         IntSequence.of(input)
                 .gather(Gatherers.windowSliding(WINDOW_SIZE))
                 .forEach(blackhole::consume);
     }
 
     @Benchmark
-    public void intSequenceIntGathererWindowSliding(Blackhole blackhole) {
+    public void intSequenceIntGathererWindowSliding(final Blackhole blackhole) {
         IntSequence.of(input)
                 .gather(IntGatherers.windowSliding(WINDOW_SIZE))
                 .forEach(blackhole::consume);
     }
 
     @Benchmark
-    public void boxedSequenceIntGathererWindowSliding(Blackhole blackhole) {
+    public void boxedSequenceIntGathererWindowSliding(final Blackhole blackhole) {
         IntSequence.of(input)
                 .boxed()
                 .gather(IntGatherers.windowSliding(WINDOW_SIZE))

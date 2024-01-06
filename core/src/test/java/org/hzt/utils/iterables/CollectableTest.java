@@ -120,16 +120,17 @@ class CollectableTest {
     void testBranchingPaintingDataToThreeValues() {
         //arrange
         final ListX<Painting> paintingList = ListX.of(TestSampleGenerator.createPaintingList());
+        final int currentYear = 2024;
 
         final Triple<Map<Boolean, List<Painter>>, IntSummaryStatistics, Long> expected = paintingList.stream()
                 .collect(branching(
                         partitioningBy(Painting::isInMuseum, mapping(Painting::painter, toList())),
-                        summarizingInt(Painting::ageInYears),
+                        summarizingInt(painting -> painting.ageInYears(currentYear)),
                         counting()));
 
         final Triple<Pair<ListX<Painter>,ListX<Painter>>, IntStatistics, Long> actual = paintingList.asSequence()
                 .toThree(s -> s.partitionMapping(Painting::isInMuseum, Painting::painter),
-                        s -> s.intStatsOf(Painting::ageInYears),
+                        s -> s.intStatsOf(painting -> painting.ageInYears(currentYear)),
                         Sequence::count);
 
         final IntSummaryStatistics expectedStats = expected.second();

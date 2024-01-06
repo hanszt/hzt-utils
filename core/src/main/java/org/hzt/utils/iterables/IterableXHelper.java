@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -18,8 +17,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public final class IterableXHelper {
-
-    public static final Random RANDOM = new Random();
 
     private IterableXHelper() {
     }

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Predicate;
 
 import static org.hzt.utils.gatherers.Gatherers.windowFixed;
@@ -78,11 +79,12 @@ class CollectionXTest {
     @Test
     void testShuffled() {
         final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        final ListX<Integer> shuffled = integers.shuffled();
+        final ListX<Integer> shuffled = integers.shuffled(new Random(0));
 
-        shuffled.forEach(It::println);
-
-        assertTrue(shuffled.containsAll(integers));
+        assertAll(
+                () -> assertEquals(ListX.of(5, 9, 10, 7, 4, 6, 3, 2, 8, 1), shuffled),
+                () -> assertTrue(shuffled.containsAll(integers))
+        );
     }
 
     @Test

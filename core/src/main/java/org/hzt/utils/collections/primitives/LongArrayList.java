@@ -2,7 +2,6 @@ package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.arrays.ArraysX;
-import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
@@ -12,6 +11,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.OptionalLong;
 import java.util.PrimitiveIterator;
+import java.util.Random;
 import java.util.function.LongConsumer;
 
 public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongConsumer, long[], PrimitiveIterator.OfLong>
@@ -115,14 +115,14 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
-    public OptionalLong findRandom() {
-        return isNotEmpty() ? OptionalLong.of(get(IterableXHelper.RANDOM.nextInt(size()))) : OptionalLong.empty();
+    public OptionalLong findRandom(final Random random) {
+        return isNotEmpty() ? OptionalLong.of(get(random.nextInt(size()))) : OptionalLong.empty();
     }
 
     @Override
-    public LongList shuffled() {
+    public LongList shuffled(final Random random) {
         final LongMutableList mutableList = LongMutableList.of(this);
-        PrimitiveListHelper.shuffle(mutableList);
+        PrimitiveListHelper.shuffle(mutableList, random);
         return mutableList;
     }
 

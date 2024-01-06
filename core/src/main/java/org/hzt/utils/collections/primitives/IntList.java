@@ -12,6 +12,7 @@ import org.hzt.utils.sequences.primitives.IntSequence;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.OptionalInt;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
@@ -85,11 +86,11 @@ public interface IntList extends IntCollection,
         return OptionalInt.empty();
     }
 
-    default int random() {
-        return findRandom().orElseThrow(NoSuchElementException::new);
+    default int random(final Random random) {
+        return findRandom(random).orElseThrow(NoSuchElementException::new);
     }
 
-    OptionalInt findRandom();
+    OptionalInt findRandom(Random random);
 
     @Override
     default ListX<Integer> boxed() {
@@ -118,7 +119,7 @@ public interface IntList extends IntCollection,
         return IntList.of(array);
     }
 
-    IntList shuffled();
+    IntList shuffled(Random random);
 
     /**
      * @see BinarySearchable#binarySearch(int, int, Object)

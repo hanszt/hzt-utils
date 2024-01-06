@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IntMutableListTest {
+
+    private static final Random random = new Random();
 
     @Test
     void testDifferentMethods() {
@@ -83,7 +86,7 @@ class IntMutableListTest {
     void testSortIntList() {
         final IntMutableList ints = IntSequence.iterate(10_000, i -> --i)
                 .take(10_000)
-                .shuffled()
+                .shuffled(new Random(0))
                 .toMutableList();
 
         ints.sort();
@@ -95,7 +98,7 @@ class IntMutableListTest {
     void testSortReversedIntList() {
         final IntMutableList ints = IntSequence.iterate(-10_000, i -> ++i)
                 .take(10_000)
-                .shuffled()
+                .shuffled(random)
                 .toMutableList();
 
         ints.sort(IntComparator.reverseOrder());

@@ -54,15 +54,15 @@ public final class PrimitiveIterators {
     private PrimitiveIterators() {
     }
 
-    public static PrimitiveIterator.OfInt generatorIterator(IntSupplier initSupplier, IntUnaryOperator nextSupplier) {
+    public static PrimitiveIterator.OfInt generatorIterator(final IntSupplier initSupplier, final IntUnaryOperator nextSupplier) {
         return new IntGeneratorIterator(initSupplier, nextSupplier);
     }
 
-    public static PrimitiveIterator.OfLong generatorIterator(LongSupplier initSupplier, LongUnaryOperator nextSupplier) {
+    public static PrimitiveIterator.OfLong generatorIterator(final LongSupplier initSupplier, final LongUnaryOperator nextSupplier) {
         return new LongGeneratorIterator(initSupplier, nextSupplier);
     }
 
-    public static PrimitiveIterator.OfDouble generatorIterator(DoubleSupplier initSupplier, DoubleUnaryOperator nextSupplier) {
+    public static PrimitiveIterator.OfDouble generatorIterator(final DoubleSupplier initSupplier, final DoubleUnaryOperator nextSupplier) {
         return new DoubleGeneratorIterator(initSupplier, nextSupplier);
     }
 
@@ -661,7 +661,7 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static <A, R> Iterator<R> intGatheringIterator(PrimitiveIterator.OfInt source, IntGatherer<A, R> gatherer) {
+    public static <A, R> Iterator<R> intGatheringIterator(final PrimitiveIterator.OfInt source, final IntGatherer<A, R> gatherer) {
         final A state = gatherer.initializer().get();
         final IntIntegrator<A, R> integrator = gatherer.intIntegrator();
         final BiConsumer<A, Gatherer.Downstream<? super R>> finisher = gatherer.finisher();

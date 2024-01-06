@@ -28,7 +28,6 @@ import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -410,18 +409,19 @@ class SequenceTest {
 
     @Test
     void testIterateRandomWithinBound() {
+        final Random random = new Random(0);
         final IntList integers = IntList.of(1, 2, 3, 4, 5);
 
         final MapX<Integer, IntMutableList> group = IntSequence
-                .generate(integers::random)
-                .take(10_000_000)
+                .generate(() -> integers.random(random))
+                .take(1_000_000)
                 .group();
 
-        group.values().forEach(IntList::size, It::println);
+        final IntList actual = group.values().mapToInt(IntList::size);
 
         assertAll(
                 () -> assertEquals(integers.size(), group.size()),
-                () -> group.values().forEach(IntList::isNotEmpty, Assertions::assertTrue)
+                () -> assertEquals(IntList.of(200084, 200023, 200084, 199562, 200247), actual)
         );
     }
 
@@ -590,13 +590,14 @@ class SequenceTest {
 
     @Test
     void testZipWithNext() {
+        final Random random = new Random(0);
         final ListX<Integer> sums = IntRange.of(0, 1_000)
                 .filter(IntX.multipleOf(10))
                 .onEach(i -> print(i + ", "))
                 .boxed()
                 .zipWithNext(Integer::sum)
                 .toListX()
-                .shuffled();
+                .shuffled(random);
 
         println("\nsums = " + sums);
 
@@ -915,9 +916,8 @@ class SequenceTest {
 
     @Test
     void testTimeZonesAntarctica() {
-        final Instant now = Instant.now();
-        final ZonedDateTime current = now.atZone(ZoneId.systemDefault());
-        printf("Current time is %s%n%n", current);
+        final Instant now = Instant.parse("2024-01-04T14:32:23Z");
+        final ZonedDateTime current = now.atZone(ZoneId.of("Europe/Amsterdam"));
 
         final Sequence<String> timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.getId().contains("Antarctica"));
 
@@ -1310,7 +1310,7 @@ class SequenceTest {
 
         @Test
         void testBuildSequence() {
-            final Sequence.Builder<String> builder = Sequence.<String>builder();
+            final Sequence.Builder<String> builder = Sequence.builder();
 
             builder.accept("This");
             final Sequence<String> strings = builder.add("is").add("a").add("test").build();

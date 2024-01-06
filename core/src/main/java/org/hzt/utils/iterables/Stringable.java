@@ -9,7 +9,7 @@ import java.util.function.Function;
 public interface Stringable<T> extends Iterable<T> {
 
     default String joinToString() {
-        return joinToStringBy(Object::toString);
+        return joinToStringBy(t -> t != null ? t.toString() : null);
     }
 
     default String joinToString(final CharSequence delimiter) {

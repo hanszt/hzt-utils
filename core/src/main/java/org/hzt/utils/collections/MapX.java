@@ -33,46 +33,46 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     }
 
     static <K, V> MapX<K, V> of(final K k1, final V v1) {
-        return MutableMapX.of(k1, v1);
+        return MutableMapX.of(k1, v1).toMapX();
     }
 
     static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2) {
-        return MutableMapX.of(k1, v1, k2, v2);
+        return MutableMapX.of(k1, v1, k2, v2).toMapX();
     }
 
     static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3);
+        return MutableMapX.of(k1, v1, k2, v2, k3, v3).toMapX();
     }
 
     static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4);
+        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4).toMapX();
     }
 
     static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4, final K k5, final V v5) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
+        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5).toMapX();
     }
 
     static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4, final K k5, final V v5, final K k6, final V v6) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6);
+        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6).toMapX();
     }
 
     static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4, final K k5, final V v5, final K k6, final V v6, final K k7, final V v7) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7);
+        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7).toMapX();
     }
 
     static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4, final K k5, final V v5,
                                 final K k6, final V v6, final K k7, final V v7, final K k8, final V v8) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8);
+        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8).toMapX();
     }
 
     static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4, final K k5, final V v5,
                                 final K k6, final V v6, final K k7, final V v7, final K k8, final V v8, final K k9, final V v9) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9);
+        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9).toMapX();
     }
 
     static <K, V> MapX<K, V> of(final K k1, final V v1, final K k2, final V v2, final K k3, final V v3, final K k4, final V v4, final K k5, final V v5,
                                 final K k6, final V v6, final K k7, final V v7, final K k8, final V v8, final K k9, final V v9, final K k10, final V v10) {
-        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9, k10, v10);
+        return MutableMapX.of(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9, k10, v10).toMapX();
     }
 
     @SafeVarargs

@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -171,7 +172,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> Iterators.gatheringIterator(iterator(), gatherer);
     }
 
-    default <R> Sequence<R> then(IterableExtension<T, R> extension) {
+    default <R> Sequence<R> then(final IterableExtension<T, R> extension) {
         return () -> extension.extend(this).iterator();
     }
 
@@ -360,8 +361,8 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default Sequence<T> shuffled() {
-        return () -> toListX().shuffled().iterator();
+    default Sequence<T> shuffled(final Random random) {
+        return () -> toListX().shuffled(random).iterator();
     }
 
     @Override

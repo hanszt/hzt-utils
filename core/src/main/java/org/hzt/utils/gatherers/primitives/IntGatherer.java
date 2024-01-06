@@ -10,13 +10,13 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface IntGatherer<A, R> extends Gatherer<Integer, A, R> {
 
-    static <A, R> IntGatherer<A, R> ofSequential(Supplier<A> initializer, IntIntegrator<A, R> integrator) {
+    static <A, R> IntGatherer<A, R> ofSequential(final Supplier<A> initializer, final IntIntegrator<A, R> integrator) {
         return ofSequential(initializer, integrator, (s, downstream) -> {
             // No finisher
         });
     }
 
-    static <A, R> IntGatherer<A, R> ofSequential(Supplier<A> initializer, IntIntegrator<A, R> integrator, BiConsumer<A, Gatherer.Downstream<? super R>> finisher) {
+    static <A, R> IntGatherer<A, R> ofSequential(final Supplier<A> initializer, final IntIntegrator<A, R> integrator, final BiConsumer<A, Gatherer.Downstream<? super R>> finisher) {
         return new IntGatherer<A, R>() {
 
             @Override
@@ -36,7 +36,7 @@ public interface IntGatherer<A, R> extends Gatherer<Integer, A, R> {
         };
     }
 
-    static <A, R> IntGatherer<A, R> of(IntIntegrator<A, R> integrator) {
+    static <A, R> IntGatherer<A, R> of(final IntIntegrator<A, R> integrator) {
         return new IntGatherer<A, R>() {
             @Override
             public IntIntegrator<A, R> intIntegrator() {

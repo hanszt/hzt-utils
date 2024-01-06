@@ -1,18 +1,18 @@
 package org.hzt.utils.collections;
 
+import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NavigableSet;
-import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Function;
 
 import static java.util.Comparator.comparing;
 
-final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutableSetX<E> {
+final class TreeSetX<E, R extends Comparable<? super R>> extends AbstractSet<E> implements SortedMutableSetX<E> {
 
     private final NavigableSet<E> navigableSet;
 
@@ -47,23 +47,8 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
     }
 
     @Override
-    public boolean isEmpty() {
-        return navigableSet.isEmpty();
-    }
-
-    @Override
     public boolean contains(final Object value) {
         return navigableSet.contains(value);
-    }
-
-    @Override
-    public Object[] toArray() {
-        return navigableSet.toArray();
-    }
-
-    @Override
-    public <T> T[] toArray(final T[] a) {
-        return navigableSet.toArray(a);
     }
 
     @Override
@@ -82,11 +67,6 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
     }
 
     @Override
-    public boolean addAll(final Collection<? extends E> c) {
-        return navigableSet.addAll(c);
-    }
-
-    @Override
     public boolean retainAll(final Collection<?> c) {
         return navigableSet.retainAll(c);
     }
@@ -94,11 +74,6 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
     @Override
     public boolean removeAll(final Collection<?> c) {
         return navigableSet.removeAll(c);
-    }
-
-    @Override
-    public void clear() {
-        navigableSet.clear();
     }
 
     @Override
@@ -189,37 +164,5 @@ final class TreeSetX<E, R extends Comparable<? super R>> implements SortedMutabl
     @Override
     public SortedSet<E> tailSet(final E fromElement) {
         return navigableSet.tailSet(fromElement);
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final TreeSetX<?, ?> treeSetX = (TreeSetX<?, ?>) o;
-        return navigableSet.equals(treeSetX.navigableSet);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(navigableSet);
-    }
-
-    @Override
-    public String toString() {
-        return navigableSet.toString();
-    }
-
-    @Override
-    public boolean isNotEmpty() {
-        return !isEmpty();
-    }
-
-    @Override
-    public boolean containsNot(final E e) {
-        return !contains(e);
     }
 }

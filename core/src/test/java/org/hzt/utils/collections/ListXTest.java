@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
@@ -266,11 +267,10 @@ class ListXTest {
     void testShuffledInts() {
         final ListX<Integer> integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        final ListX<Integer> shuffled = integers.shuffled();
-
-        It.println("shuffled = " + shuffled);
+        final ListX<Integer> shuffled = integers.shuffled(new Random(0));
 
         assertAll(
+                () -> assertEquals(ListX.of(5, 9, 10, 7, 4, 6, 3, 2, 8, 1), shuffled),
                 () -> assertNotEquals(integers, shuffled),
                 () -> assertTrue(shuffled.containsAll(integers)),
                 () -> assertTrue(integers.containsAll(shuffled))
@@ -281,7 +281,7 @@ class ListXTest {
     void testShuffledObjects() {
         final ListX<String> input = ListX.of(TestSampleGenerator.createPaintingList()).map(Painting::name);
 
-        final ListX<String> shuffled = input.shuffled();
+        final ListX<String> shuffled = input.shuffled(new Random(0));
 
         It.println("shuffled = " + shuffled);
 

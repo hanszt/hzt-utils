@@ -1,20 +1,15 @@
 package org.hzt.utils.collections;
 
-import org.hzt.utils.iterables.IterableXHelper;
-
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.ConcurrentModificationException;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.Random;
 
-final class ArrayListX<E> implements MutableListX<E> {
+final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E> {
 
     private final List<E> list;
 
@@ -49,61 +44,15 @@ final class ArrayListX<E> implements MutableListX<E> {
     }
 
     @Override
-    public Optional<E> findRandom() {
-        return isNotEmpty() ? Optional.of(get(IterableXHelper.RANDOM.nextInt(size()))) : Optional.empty();
-    }
-
-    @Override
-    public ListX<E> shuffled() {
+    public ListX<E> shuffled(final Random random) {
         final MutableListX<E> listX = new ArrayListX<>(this);
-        Collections.shuffle(listX);
+        Collections.shuffle(listX, random);
         return listX;
     }
 
     @Override
     public int size() {
         return list.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return list.isEmpty();
-    }
-
-    @Override
-    public boolean contains(final Object value) {
-        return list.contains(value);
-    }
-
-    @Override
-    public Iterator<E> iterator() {
-        return list.iterator();
-    }
-
-    @Override
-    public Object[] toArray() {
-        return list.toArray();
-    }
-
-    @Override
-    public <T1> T1[] toArray(final T1[] a) {
-        return list.toArray(a);
-    }
-
-    @Override
-    public boolean add(final E e) {
-        return list.add(e);
-    }
-
-    @Override
-    @SuppressWarnings("squid:S2250")
-    public boolean remove(final Object o) {
-        return list.remove(o);
-    }
-
-    @Override
-    public boolean containsAll(final Collection<?> c) {
-        return new HashSet<>(list).containsAll(c);
     }
 
     @Override
@@ -185,40 +134,4 @@ final class ArrayListX<E> implements MutableListX<E> {
     public MutableListX<E> subList(final int fromIndex, final int toIndex) {
         return MutableListX.of(list.subList(fromIndex, toIndex));
     }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        return equalsRange((Iterable<?>) o, size());
-    }
-
-    private boolean equalsRange(final Iterable<?> other, final int to) {
-        final Object[] es = list.toArray();
-        if (to > es.length) {
-            throw new ConcurrentModificationException();
-        }
-        final Iterator<?> oit = other.iterator();
-        for (int from = 0; from < to; from++) {
-            if (!oit.hasNext() || !Objects.equals(es[from], oit.next())) {
-                return false;
-            }
-        }
-        return !oit.hasNext();
-    }
-
-    @Override
-    public int hashCode() {
-        return list.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return list.toString();
-    }
-
 }

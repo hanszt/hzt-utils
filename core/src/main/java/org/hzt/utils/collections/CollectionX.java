@@ -189,7 +189,7 @@ public interface CollectionX<E> extends IterableX<E> {
         return ListX.of(buffer);
     }
 
-    default <R> ListX<R> then(IterableExtension<E, R> extension) {
+    default <R> ListX<R> then(final IterableExtension<E, R> extension) {
         return ListX.of(() -> extension.extend(this).iterator());
     }
 

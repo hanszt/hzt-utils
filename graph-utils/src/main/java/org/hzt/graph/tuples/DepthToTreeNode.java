@@ -21,8 +21,12 @@ public final class DepthToTreeNode<T> {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
         final DepthToTreeNode<?> that = (DepthToTreeNode<?>) obj;
         return this.treeDepth == that.treeDepth &&
                Objects.equals(this.node, that.node);

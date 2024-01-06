@@ -40,6 +40,10 @@ public interface Groupable<T> extends Iterable<T> {
         };
     }
 
+    default Grouping<T, T> grouping() {
+        return groupingBy(It::self);
+    }
+
     default Pair<ListX<T>, ListX<T>> partition(final Predicate<T> predicate) {
         return partitionMapping(predicate, It::self);
     }

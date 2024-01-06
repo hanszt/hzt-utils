@@ -8,6 +8,7 @@ import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.MutableMapX;
 import org.hzt.utils.collections.SortedMutableMapX;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.strings.StringX;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,7 @@ import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
-class GroupingTest {
+class GroupableTest {
 
     @Test
     void testGroupingAggregateFromListX() {
@@ -35,7 +36,7 @@ class GroupingTest {
 
         final MapX<Integer, String> aggregated = numbers
                 .groupingBy(nr -> nr % 3)
-                .aggregate(GroupingTest::toStringBuilder)
+                .aggregate(GroupableTest::toStringBuilder)
                 .mapByValues(StringBuilder::toString);
 
         println(aggregated);
@@ -101,7 +102,7 @@ class GroupingTest {
                 .groupingBy(fruit -> fruit.charAt(0))
                 .foldTo(HashMap::new,
                         (firstChar, fruit) -> new ArrayList<>(),
-                        GroupingTest::addEvenFruits);
+                        GroupableTest::addEvenFruits);
 
         final NavigableMap<Character, List<String>> sorted = Sequence.ofMap(evenFruits).toSortedMap(It::self);
 
@@ -109,8 +110,8 @@ class GroupingTest {
 
         final NavigableMap<Character, List<String>> expected =
                 SortedMutableMapX.of(MapX.of('a', Collections.emptyList(),
-               'b', Collections.singletonList("banana"),
-                'c', Arrays.asList("cherry", "citrus")), It::self);
+                        'b', Collections.singletonList("banana"),
+                        'c', Arrays.asList("cherry", "citrus")), It::self);
 
         assertEquals(expected, sorted);
     }
@@ -157,11 +158,18 @@ class GroupingTest {
         final MapX<Integer, Double> aggregated = numbers
                 .groupingBy(nr -> nr % 3)
                 .collect(mapping(Integer::doubleValue,
-                                reducing(0.0, Double::sum)));
+                        reducing(0.0, Double::sum)));
 
         final MapX<Integer, Double> expected = MapX.of(0, 18.0, 1, 11.0, 2, 13.0);
 
         assertEquals(expected, aggregated);
+    }
+
+    @Test
+    void testGrouping() {
+        final MapX<Character, Long> charsToCounts = StringX.of("this is a string").grouping().eachCount();
+
+        assertEquals(MapX.of('t', 2L, 'h', 1L, 'i', 3L, 's', 3L, 'a', 1L, 'r', 1L, 'n', 1L, 'g', 1L, ' ', 3L), charsToCounts);
     }
 
     @Test
@@ -177,10 +185,7 @@ class GroupingTest {
                 .filter(nr -> nr % 2 == 0)
                 .groupBy(nr -> nr % 3);
 
-        println("aggregated = " + aggregated);
-        println("expected = " + expected);
-
-        assertEquals(expected.entrySet(), aggregated.entrySet());
+        assertEquals(expected, aggregated);
     }
 
 }

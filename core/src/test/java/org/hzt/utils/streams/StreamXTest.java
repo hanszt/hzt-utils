@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Set;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -36,8 +35,6 @@ import static org.hzt.utils.streams.StreamExtensions.map;
 import static org.hzt.utils.streams.StreamExtensions.peek;
 import static org.hzt.utils.streams.StreamExtensions.scan;
 import static org.hzt.utils.streams.StreamExtensions.windowed;
-import static org.hzt.utils.streams.StreamFinishers.fold;
-import static org.hzt.utils.streams.StreamFinishers.toSet;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -354,40 +351,6 @@ class StreamXTest {
                     .toList();
 
             assertIterableEquals(expected, windows);
-        }
-
-    }
-
-    @Nested
-    class StreamFinisherTests {
-
-        @Test
-        void finishByFold() {
-            final String windows = StreamX.iterate(0, i -> i + 1)
-                    .limit(10)
-                    .finish(fold(new StringBuilder(), StringBuilder::append))
-                    .toString();
-
-            final String expected = Sequence.iterate(0, i -> i + 1).take(10).joinToString("");
-
-            assertEquals(expected, windows);
-        }
-
-        @Test
-        void finishByExtendedFinisher() {
-            final Set<Integer> set = StreamX.iterate(0, i -> i + 1)
-                    .limit(10)
-                    .finish(StreamExtensions.<Integer>windowed(2)
-                            .andThen(scan(0, (sum, window) -> sum + window.size()))
-                            .finish(toSet()));
-
-            final Set<Integer> expected = Sequence.iterate(0, i -> i + 1)
-                    .take(10)
-                    .windowed(2)
-                    .scan(0, (sum, window) -> sum + window.size())
-                    .toSet();
-
-            assertIterableEquals(expected, set);
         }
     }
 }

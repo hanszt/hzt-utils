@@ -4,6 +4,7 @@ import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
+import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
@@ -271,6 +272,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     @Override
     default <R> Sequence<R> scan(final R initial, final BiFunction<? super R, ? super T, ? extends R> operation) {
+        return () -> Iterators.scanningIterator(iterator(), initial, (i, acc, t) -> operation.apply(acc, t));
+    }
+
+    @Override
+    default <R> Sequence<R> scanIndexed(final R initial, final IndexedBiFunction<? super R, ? super T, ? extends R> operation) {
         return () -> Iterators.scanningIterator(iterator(), initial, operation);
     }
 

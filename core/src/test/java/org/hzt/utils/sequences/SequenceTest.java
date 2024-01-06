@@ -51,6 +51,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -62,6 +63,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.lang.System.setProperty;
+import static org.hzt.test.Locales.testWithFixedLocale;
 import static org.hzt.utils.It.print;
 import static org.hzt.utils.It.printf;
 import static org.hzt.utils.It.println;
@@ -434,8 +436,6 @@ class SequenceTest {
                 .map(StringX::of)
                 .map(StringX::reversed)
                 .toListOf(StringX::toString);
-
-        println("strings = " + strings);
 
         assertEquals(Arrays.asList("ollah", "eoh", "si"), strings);
     }
@@ -903,7 +903,7 @@ class SequenceTest {
         final ZonedDateTime current = now.atZone(ZoneId.of("Europe/Amsterdam"));
         printf("Current time is %s%n%n", current);
 
-        final Sequence<String> noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
+        final Sequence<String> noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, ZoneId.of(id)));
 
         noneWholeHourZoneOffsetSummaries.forEach(It::println);
 
@@ -916,20 +916,33 @@ class SequenceTest {
 
     @Test
     void testTimeZonesAntarctica() {
-        final Instant now = Instant.parse("2024-01-04T14:32:23Z");
-        final ZonedDateTime current = now.atZone(ZoneId.of("Europe/Amsterdam"));
+        testWithFixedLocale(Locale.US, l -> {
+            final Instant now = Instant.parse("2024-01-04T14:32:23Z");
 
-        final Sequence<String> timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.getId().contains("Antarctica"));
+            final ListX<String> timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.contains("Antarctica")).toListX();
 
-        timeZonesAntarctica.forEach(It::println);
-
-        assertEquals(12, timeZonesAntarctica.count());
+            final ListX<String> expected = ListX.of(
+                    "    -03:00 Antarctica/Palmer           11:32 AM",
+                    "    -03:00 Antarctica/Rothera          11:32 AM",
+                    "         Z Antarctica/Troll             2:32 PM",
+                    "    +03:00 Antarctica/Syowa             5:32 PM",
+                    "    +05:00 Antarctica/Mawson            7:32 PM",
+                    "    +06:00 Antarctica/Vostok            8:32 PM",
+                    "    +07:00 Antarctica/Davis             9:32 PM",
+                    "    +10:00 Antarctica/DumontDUrville   12:32 AM",
+                    "    +11:00 Antarctica/Casey             1:32 AM",
+                    "    +11:00 Antarctica/Macquarie         1:32 AM",
+                    "    +13:00 Antarctica/McMurdo           3:32 AM",
+                    "    +13:00 Antarctica/South_Pole        3:32 AM"
+            );
+            assertEquals(expected, timeZonesAntarctica);
+        });
     }
 
-    private Sequence<String> getTimeZoneSummaries(final Instant now, final Predicate<ZoneId> predicate) {
+    private Sequence<String> getTimeZoneSummaries(final Instant now, final Predicate<String> predicate) {
         return Sequence.of(ZoneId.getAvailableZoneIds())
-                .map(ZoneId::of)
                 .filter(predicate)
+                .map(ZoneId::of)
                 .map(now::atZone)
                 .sorted()
                 .map(this::toZoneSummary);
@@ -1210,6 +1223,16 @@ class SequenceTest {
 
             final List<Integer> expected = Arrays.asList(10, 11, 13, 17, 25, 41, 73, 137, 265, 521, 1033, 2057, 4105, 8201, 16393, 32777, 65545, 131081, 262153, 524297);
             assertEquals(expected, integers);
+        }
+
+        @Test
+        void testScanIndexed() {
+            final List<Integer> integers = Sequence.iterate(1, i -> i * 2)
+                    .scanIndexed(10, ((index, acc, value) -> acc + index + value))
+                    .take(6)
+                    .toList();
+
+            assertEquals(Arrays.asList(10, 11, 14, 20, 31, 51), integers);
         }
 
         /**

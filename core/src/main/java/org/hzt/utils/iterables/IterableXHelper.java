@@ -84,7 +84,7 @@ public final class IterableXHelper {
         throw new IllegalStateException(key.getClass().getSimpleName() + " is not of a comparable type");
     }
 
-    static  <T, R extends Comparable<? super R>> R comparisonOf(
+    static <T, R extends Comparable<? super R>> R comparisonOf(
             final Iterator<T> iterator,
             final Function<? super T, ? extends R> selector,
             final IntPredicate biPredicate) {

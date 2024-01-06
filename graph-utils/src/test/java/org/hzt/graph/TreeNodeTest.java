@@ -283,7 +283,9 @@ class TreeNodeTest {
 
         @Test
         void testDepthTrackingTraversal() {
-            final FileX fileX = new FileX(".");
+            final FileX fileX = new FileX("../TreeNodeTest.java")
+                    .parentSequence()
+                    .first(f -> "graph-utils".equals(f.getName()));
 
             final List<DepthToTreeNode<FileX>> nodeToTreeDept1 = fileX.breadthFirstDepthTrackingSequence()
                     .onEach(System.out::println)
@@ -296,7 +298,7 @@ class TreeNodeTest {
                     .sorted(comparingInt(DepthToTreeNode::treeDepth))
                     .toList();
 
-            assertIterableEquals(nodeToTreeDept1, nodeToTreeDepth2);
+            assertEquals(nodeToTreeDept1, nodeToTreeDepth2);
         }
 
         @Test
@@ -413,8 +415,12 @@ class TreeNodeTest {
 
             @Override
             public boolean equals(final Object obj) {
-                if (obj == this) return true;
-                if (obj == null || obj.getClass() != this.getClass()) return false;
+                if (obj == this) {
+                    return true;
+                }
+                if (obj == null || obj.getClass() != this.getClass()) {
+                    return false;
+                }
                 final Node that = (Node) obj;
                 return Objects.equals(this.name, that.name) &&
                        Arrays.equals(this.children, that.children);

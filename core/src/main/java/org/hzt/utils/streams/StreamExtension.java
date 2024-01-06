@@ -5,7 +5,6 @@ import org.hzt.utils.spined_buffers.SpinedBuffer;
 
 import java.util.Objects;
 import java.util.Spliterator;
-import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -36,9 +35,5 @@ public interface StreamExtension<T, R> {
                     return extend(stream(() -> spliterator, spliterator.characteristics(), false)).collect(collector);
                 }
         );
-    }
-
-    default <V> Function<Stream<T>, V> finish(final Function<Stream<R>, V> finisher) {
-        return s -> finisher.apply(extend(s));
     }
 }

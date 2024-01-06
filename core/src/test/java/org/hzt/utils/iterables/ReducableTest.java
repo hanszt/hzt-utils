@@ -5,6 +5,7 @@ import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 import org.junit.jupiter.api.Test;
@@ -67,10 +68,18 @@ class ReducableTest {
 
     @Test
     void testFoldToMutableList() {
-        final MutableListX<Object> listX = Sequence.of(1, 2, 3, 4, 5)
+        final MutableListX<Integer> listX = Sequence.of(1, 2, 3, 4, 5)
                 .fold(MutableListX.empty(), MutableListX::plus);
 
         assertEquals(MutableListX.of(1, 2, 3 ,4, 5), listX);
+    }
+
+    @Test
+    void testFoldIndexed() {
+        final MutableListX<IndexedValue<String>> listX = Sequence.of(1, 2, 3, 4, 5)
+                .foldIndexed(MutableListX.empty(), (index, acc, val) -> acc.plus(new IndexedValue<>(index, val.toString())));
+
+        assertEquals(ListX.of(1, 2, 3, 4, 5).map(Object::toString).withIndex().toMutableList(), listX);
     }
 
     @Test
@@ -112,7 +121,7 @@ class ReducableTest {
 
         final Triple<MutableListX<Object>, Long, LocalDate> actual = dateSequence
                 .onEach(d -> iterations2.incrementAndGet())
-                .foldToThree(MutableListX.empty(), MutableListX::plus,
+                .foldThree(MutableListX.empty(), MutableListX::plus,
                         0L, (a, b) -> ++a,
                         LocalDate.ofEpochDay(0), (first, second) -> second);
 
@@ -138,7 +147,7 @@ class ReducableTest {
 
         final Optional<Pair<LocalDate, LocalDate>> actual = dateSequence
                 .onEach(d -> iterations2.incrementAndGet())
-                .reduceToTwo((a, last) -> last, (first, b) -> first);
+                .reduceTwo((a, last) -> last, (first, b) -> first);
 
         final Pair<LocalDate, LocalDate> pair = actual.orElseThrow(NoSuchElementException::new);
         It.println("pair = " + pair);

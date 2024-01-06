@@ -4,6 +4,7 @@ import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
+import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.sequences.Sequence;
@@ -121,6 +122,8 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skipable<T>, T
     }
 
     <R> IterableX<R> scan(R initial, BiFunction<? super R, ? super T, ? extends R> operation);
+
+    <R> IterableX<R> scanIndexed(R initial, IndexedBiFunction<? super R, ? super T, ? extends R> operation);
 
     default boolean[] toBooleanArray(final Predicate<? super T> mapper) {
         final int size = (int) count();

@@ -149,8 +149,12 @@ public final class Gatherers {
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj == this) return true;
-            if (obj == null || obj.getClass() != this.getClass()) return false;
+            if (obj == this) {
+                return true;
+            }
+            if (obj == null || obj.getClass() != this.getClass()) {
+                return false;
+            }
             final GathererImpl<?, ?, ?> that = (GathererImpl<?, ?, ?>) obj;
             return Objects.equals(this.initializer, that.initializer) &&
                     Objects.equals(this.integrator, that.integrator) &&
@@ -275,12 +279,14 @@ public final class Gatherers {
                                 && rightFinisher == Gatherer.<AA, RR>defaultFinisher())
                                 ? Gatherer.defaultFinisher()
                                 : (unused, downstream) -> {
-                            if (leftFinisher != Gatherer.<A, R>defaultFinisher())
+                            if (leftFinisher != Gatherer.<A, R>defaultFinisher()) {
                                 leftFinisher.accept(
                                         null,
                                         r -> rightIntegrator.integrate(null, r, downstream));
-                            if (rightFinisher != Gatherer.<AA, RR>defaultFinisher())
+                            }
+                            if (rightFinisher != Gatherer.<AA, RR>defaultFinisher()) {
                                 rightFinisher.accept(null, downstream);
+                            }
                         }
                 );
             } else {
@@ -327,10 +333,12 @@ public final class Gatherers {
                     }
 
                     void finish(final Downstream<? super RR> c) {
-                        if (leftFinisher != Gatherer.<A, R>defaultFinisher())
+                        if (leftFinisher != Gatherer.<A, R>defaultFinisher()) {
                             leftFinisher.accept(leftState, r -> rightIntegrate(r, c));
-                        if (rightFinisher != Gatherer.<AA, RR>defaultFinisher())
+                        }
+                        if (rightFinisher != Gatherer.<AA, RR>defaultFinisher()) {
                             rightFinisher.accept(rightState, c);
+                        }
                     }
 
                     /*
@@ -397,8 +405,9 @@ public final class Gatherers {
      * @throws IllegalArgumentException when groupSize is less than 1
      */
     public static <TR> Gatherer<TR, ?, List<TR>> windowFixed(final int windowSize) {
-        if (windowSize < 1)
+        if (windowSize < 1) {
             throw new IllegalArgumentException("'windowSize' must be greater than zero");
+        }
 
         class FixedWindow {
             Object[] window;
@@ -464,8 +473,9 @@ public final class Gatherers {
      * @throws IllegalArgumentException when windowSize is less than 1
      */
     public static <TR> Gatherer<TR, ?, List<TR>> windowSliding(final int windowSize) {
-        if (windowSize < 1)
+        if (windowSize < 1) {
             throw new IllegalArgumentException("'windowSize' must be greater than zero");
+        }
 
         class SlidingWindow {
             Object[] window;

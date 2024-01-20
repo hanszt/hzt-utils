@@ -55,15 +55,15 @@ public final class PrimitiveIterators {
     private PrimitiveIterators() {
     }
 
-    public static PrimitiveIterator.OfInt generatorIterator(IntSupplier initSupplier, IntUnaryOperator nextSupplier) {
+    public static PrimitiveIterator.OfInt generatorIterator(final IntSupplier initSupplier, final IntUnaryOperator nextSupplier) {
         return new IntGeneratorIterator(initSupplier, nextSupplier);
     }
 
-    public static PrimitiveIterator.OfLong generatorIterator(LongSupplier initSupplier, LongUnaryOperator nextSupplier) {
+    public static PrimitiveIterator.OfLong generatorIterator(final LongSupplier initSupplier, final LongUnaryOperator nextSupplier) {
         return new LongGeneratorIterator(initSupplier, nextSupplier);
     }
 
-    public static PrimitiveIterator.OfDouble generatorIterator(DoubleSupplier initSupplier, DoubleUnaryOperator nextSupplier) {
+    public static PrimitiveIterator.OfDouble generatorIterator(final DoubleSupplier initSupplier, final DoubleUnaryOperator nextSupplier) {
         return new DoubleGeneratorIterator(initSupplier, nextSupplier);
     }
 

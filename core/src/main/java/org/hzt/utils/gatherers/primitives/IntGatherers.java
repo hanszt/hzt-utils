@@ -14,7 +14,7 @@ public final class IntGatherers {
     private IntGatherers() {
     }
 
-    public static <R> IntGatherer<Void, R> mapToObjNotNull(IntFunction<? extends R> toObjMapper) {
+    public static <R> IntGatherer<Void, R> mapToObjNotNull(final IntFunction<? extends R> toObjMapper) {
         return IntGatherer.of((unused, value, downstream) -> {
             final var element = toObjMapper.apply(value);
             if (element != null) {

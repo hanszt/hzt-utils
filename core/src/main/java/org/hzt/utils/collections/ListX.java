@@ -98,16 +98,11 @@ public interface ListX<E> extends CollectionX<E>,
         return ListX.copyOfNullsAllowed(takeLastTo(MutableListX::withInitCapacity, n));
     }
 
-    Optional<E> findRandom();
-
-    ListX<E> shuffled();
+    @Override
+    ListX<E> shuffled(Random random);
 
     default ListX<E> reversed() {
         return Sequence.reverseOf(this).toListX();
-    }
-
-    default E random() {
-        return findRandom().orElseThrow();
     }
 
     default Optional<E> findRandom(final Random random) {
@@ -152,11 +147,6 @@ public interface ListX<E> extends CollectionX<E>,
 
     @Override
     boolean contains(Object value);
-
-    @Override
-    default boolean containsNot(final E e) {
-        return !contains(e);
-    }
 
     E get(int index);
 

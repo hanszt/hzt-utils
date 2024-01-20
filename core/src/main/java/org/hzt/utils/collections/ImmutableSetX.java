@@ -56,11 +56,11 @@ final class ImmutableSetX<T> implements SetX<T> {
             return false;
         }
 
-        CollectionX<?> c = (CollectionX<?>) o;
+        final var c = (CollectionX<?>) o;
         if (c.size() != size()) {
             return false;
         }
-        for (Object e : c) {
+        for (var e : c) {
             if (e == null || !contains(e)) {
                 return false;
             }

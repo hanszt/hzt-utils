@@ -1,5 +1,6 @@
 package org.hzt.utils.collections;
 
+import java.util.AbstractMap;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
 
-final class TreeMapX<K, V, R extends Comparable<? super R>> implements SortedMutableMapX<K, V> {
+final class TreeMapX<K, V, R extends Comparable<? super R>> extends AbstractMap<K, V> implements SortedMutableMapX<K, V> {
 
     private final NavigableMap<K, V> map;
 

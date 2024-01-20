@@ -19,34 +19,34 @@ public final class IterableExtensions {
     private IterableExtensions() {
     }
 
-    public static <T> IterableExtension<T, List<T>> windowed(int size,
-                                                             int step) {
+    public static <T> IterableExtension<T, List<T>> windowed(final int size,
+                                                             final int step) {
         return iterable -> Sequence.of(iterable).windowed(size, step, true).map(Collectable::toList);
     }
 
-    public static <T> IterableExtension<T, List<T>> windowed(int size) {
+    public static <T> IterableExtension<T, List<T>> windowed(final int size) {
         return iterable -> Sequence.of(iterable).windowed(size, 1, false).map(Collectable::toList);
     }
 
-    public static <T> IterableExtension<T, List<T>> windowed(int size,
-                                                             int step,
-                                                             boolean partialWindows) {
+    public static <T> IterableExtension<T, List<T>> windowed(final int size,
+                                                             final int step,
+                                                             final boolean partialWindows) {
         return iterable -> Sequence.of(iterable).windowed(size, step, partialWindows).map(Collectable::toList);
     }
 
-    public static <T> IterableExtension<T, List<T>> windowSliding(int size) {
+    public static <T> IterableExtension<T, List<T>> windowSliding(final int size) {
         return s -> () -> iterator(windowSlidingSpliterator(spliteratorUnknownSize(s.iterator(), Spliterator.ORDERED), size));
     }
 
-    public static <T> IterableExtension<T, List<T>> chunked(int size) {
+    public static <T> IterableExtension<T, List<T>> chunked(final int size) {
         return windowed(size, size, true);
     }
 
-    public static <T, R> IterableExtension<T, R> runningFold(R initial, BiFunction<R, T, R> function) {
+    public static <T, R> IterableExtension<T, R> runningFold(final R initial, final BiFunction<R, T, R> function) {
         return iterable -> Sequence.of(iterable).scan(initial, function);
     }
 
-    public static <T> IterableExtension<T, T> take(long count) {
+    public static <T> IterableExtension<T, T> take(final long count) {
         return iterable -> Sequence.of(iterable).take(count);
     }
 
@@ -57,7 +57,7 @@ public final class IterableExtensions {
             boolean firstWindow = true;
 
             @Override
-            public boolean tryAdvance(Consumer<? super List<T>> action) {
+            public boolean tryAdvance(final Consumer<? super List<T>> action) {
                 //noinspection StatementWithEmptyBody
                 while (spliterator.tryAdvance(container::add) && container.size() < size) ;
                 if (container.size() == size || firstWindow) {

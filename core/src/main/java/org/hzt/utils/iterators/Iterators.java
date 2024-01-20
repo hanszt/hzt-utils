@@ -1,6 +1,7 @@
 package org.hzt.utils.iterators;
 
 import org.hzt.utils.collections.ListX;
+import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
@@ -257,7 +258,7 @@ public final class Iterators {
 
     public static <R, T> Iterator<R> scanningIterator(final Iterator<T> iterator,
                                                       final R initial,
-                                                      final BiFunction<? super R, ? super T, ? extends R> operation) {
+                                                      final IndexedBiFunction<? super R, ? super T, ? extends R> operation) {
         return new ScanningIterator<>(iterator, initial, operation);
     }
 }

@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
-class GroupingTest {
+class GroupableTest {
 
     @Test
     void testGroupingByAggregateFromListX() {
@@ -35,7 +35,7 @@ class GroupingTest {
 
         final var aggregated = numbers
                 .groupingBy(nr -> nr % 3)
-                .aggregate(GroupingTest::toStringBuilder)
+                .aggregate(GroupableTest::toStringBuilder)
                 .mapByValues(StringBuilder::toString);
 
         println(aggregated);
@@ -67,7 +67,7 @@ class GroupingTest {
     void testGroupingByEachCount() {
         final var numbers = ListX.of(3, 4, 5, 6, 7, 8, 9);
 
-        final MapX<Integer, Long> aggregated = numbers
+        final var aggregated = numbers
                 .groupingBy(nr -> nr % 3)
                 .eachCount();
 
@@ -112,7 +112,7 @@ class GroupingTest {
                 .groupingBy(fruit -> fruit.charAt(0))
                 .foldTo(HashMap::new,
                         (firstChar, fruit) -> new ArrayList<>(),
-                        GroupingTest::addEvenFruits);
+                        GroupableTest::addEvenFruits);
 
         final NavigableMap<Character, List<String>> sorted = Sequence.ofMap(evenFruits).toSortedMap(It::self);
 
@@ -121,7 +121,7 @@ class GroupingTest {
         final NavigableMap<Character, List<String>> expected =
                 SortedMutableMapX.of(MapX.of('a', Collections.emptyList(),
                         'b', List.of("banana"),
-                'c', List.of("cherry", "citrus")), It::self);
+                        'c', List.of("cherry", "citrus")), It::self);
 
         assertEquals(expected, sorted);
     }
@@ -168,11 +168,18 @@ class GroupingTest {
         final var aggregated = numbers
                 .groupingBy(nr -> nr % 3)
                 .collect(mapping(Integer::doubleValue,
-                                reducing(0.0, Double::sum)));
+                        reducing(0.0, Double::sum)));
 
         final var expected = MapX.of(0, 18.0, 1, 11.0, 2, 13.0);
 
         assertTrue(expected.containsAll(aggregated));
+    }
+
+    @Test
+    void testGrouping() {
+        final var charsToCounts = StringX.of("this is a string").grouping().eachCount();
+
+        assertEquals(MapX.of('t', 2L, 'h', 1L, 'i', 3L, 's', 3L, 'a', 1L, 'r', 1L, 'n', 1L, 'g', 1L, ' ', 3L), charsToCounts);
     }
 
     @Test
@@ -188,10 +195,7 @@ class GroupingTest {
                 .filter(nr -> nr % 2 == 0)
                 .groupBy(nr -> nr % 3);
 
-        println("aggregated = " + aggregated);
-        println("expected = " + expected);
-
-        assertEquals(expected.entrySet(), aggregated.entrySet());
+        assertEquals(expected, aggregated);
     }
 
 }

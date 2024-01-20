@@ -25,7 +25,7 @@ final class GatheringIterator<T, A, R> implements Iterator<R> {
     private boolean finisherCalled = false;
     private boolean emitNoMoreItems = false;
 
-    GatheringIterator(Iterator<T> iterator, Gatherer<? super T, A, R> gatherer) {
+    GatheringIterator(final Iterator<T> iterator, final Gatherer<? super T, A, R> gatherer) {
         source = iterator;
         state = gatherer.initializer().get();
         integrator = gatherer.integrator();

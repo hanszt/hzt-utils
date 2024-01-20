@@ -1,13 +1,13 @@
 package org.hzt.utils.collections;
 
 
+import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Set;
 
-final class HashSetX<E> implements MutableSetX<E> {
+final class HashSetX<E> extends AbstractSet<E> implements MutableSetX<E> {
 
     private final Set<E> set;
 
@@ -44,11 +44,6 @@ final class HashSetX<E> implements MutableSetX<E> {
     }
 
     @Override
-    public boolean isEmpty() {
-        return set.isEmpty();
-    }
-
-    @Override
     public boolean contains(final Object value) {
         return set.contains(value);
     }
@@ -59,17 +54,6 @@ final class HashSetX<E> implements MutableSetX<E> {
     }
 
     @Override
-    public Object[] toArray() {
-        return set.toArray();
-    }
-
-    @Override
-    public <T> T[] toArray(final T[] a) {
-        //noinspection SuspiciousToArrayCall
-        return set.toArray(a);
-    }
-
-    @Override
     public boolean add(final E e) {
         return set.add(e);
     }
@@ -77,62 +61,5 @@ final class HashSetX<E> implements MutableSetX<E> {
     @Override
     public boolean remove(final Object o) {
         return set.remove(o);
-    }
-
-    @Override
-    public boolean containsAll(final Collection<?> c) {
-        return set.containsAll(c);
-    }
-
-    @Override
-    public boolean addAll(final Collection<? extends E> c) {
-        return set.addAll(c);
-    }
-
-    @Override
-    public boolean retainAll(final Collection<?> c) {
-        return set.retainAll(c);
-    }
-
-    @Override
-    public boolean removeAll(final Collection<?> c) {
-        return set.removeAll(c);
-    }
-
-    @Override
-    public void clear() {
-        set.clear();
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final var hashSetX = (HashSetX<?>) o;
-        return set.equals(hashSetX.set);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(set);
-    }
-
-    @Override
-    public boolean isNotEmpty() {
-        return !set.isEmpty();
-    }
-
-    @Override
-    public boolean containsNot(final E e) {
-        return !contains(e);
-    }
-
-    @Override
-    public String toString() {
-        return set.toString();
     }
 }

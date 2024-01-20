@@ -7,30 +7,7 @@ final class PrimitiveListHelper {
 
     private static final int SHUFFLE_THRESHOLD = 5;
 
-    private static Random random = null;
-
     private PrimitiveListHelper() {
-    }
-
-    public static void shuffle(final IntMutableList list) {
-        if (random == null) {
-            random = new Random(); // harmless race.
-        }
-        shuffle(list, random);
-    }
-
-    public static void shuffle(final LongMutableList list) {
-        if (random == null) {
-            random = new Random(); // harmless race.
-        }
-        shuffle(list, random);
-    }
-
-    public static void shuffle(final DoubleMutableList list) {
-        if (random == null) {
-            random = new Random(); // harmless race.
-        }
-        shuffle(list, random);
     }
 
     public static void shuffle(final IntMutableList list, final Random random) {

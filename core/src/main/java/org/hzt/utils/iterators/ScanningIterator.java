@@ -1,17 +1,19 @@
 package org.hzt.utils.iterators;
 
+import org.hzt.utils.function.IndexedBiFunction;
+
 import java.util.Iterator;
-import java.util.function.BiFunction;
 
 final class ScanningIterator<T, R> implements Iterator<R> {
     private final Iterator<T> iterator;
-    private final BiFunction<? super R, ? super T, ? extends R> operation;
+    private final IndexedBiFunction<? super R, ? super T, ? extends R> operation;
 
     private R accumulation;
+    private int index = 0;
 
     private State state = State.INIT_UNKNOWN;
 
-    ScanningIterator(final Iterator<T> iterator, final R initial, final BiFunction<? super R, ? super T, ? extends R> operation) {
+    ScanningIterator(final Iterator<T> iterator, final R initial, final IndexedBiFunction<? super R, ? super T, ? extends R> operation) {
         this.iterator = iterator;
         this.operation = operation;
         accumulation = initial;
@@ -28,7 +30,7 @@ final class ScanningIterator<T, R> implements Iterator<R> {
             state = State.CONTINUE;
             return accumulation;
         }
-        accumulation = operation.apply(accumulation, iterator.next());
+        accumulation = operation.apply(index++, accumulation, iterator.next());
         return accumulation;
     }
 }

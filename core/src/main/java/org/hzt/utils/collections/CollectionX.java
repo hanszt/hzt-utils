@@ -8,6 +8,7 @@ import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableList;
+import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.gatherers.Gatherer;
@@ -187,7 +188,7 @@ public interface CollectionX<E> extends IterableX<E> {
         return ListX.of(buffer);
     }
 
-    default <R> ListX<R> then(IterableExtension<E, R> extension) {
+    default <R> ListX<R> then(final IterableExtension<E, R> extension) {
         return ListX.of(() -> extension.extend(this).iterator());
     }
 
@@ -319,6 +320,19 @@ public interface CollectionX<E> extends IterableX<E> {
         for (final var value : this) {
             accumulation = operation.apply(accumulation, value);
             mutableListX.add(accumulation);
+        }
+        return ListX.copyOf(mutableListX);
+    }
+
+    @Override
+    default <R> ListX<R> scanIndexed(final R initial, final IndexedBiFunction<? super R, ? super E, ? extends R> operation) {
+        var index = 0;
+        var accumulation = initial;
+        final var mutableListX = MutableListX.of(initial);
+        for (final var value : this) {
+            accumulation = operation.apply(index, accumulation, value);
+            mutableListX.add(accumulation);
+            index++;
         }
         return ListX.copyOf(mutableListX);
     }

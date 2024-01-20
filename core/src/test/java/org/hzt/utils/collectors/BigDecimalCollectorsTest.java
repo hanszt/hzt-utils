@@ -101,8 +101,6 @@ class BigDecimalCollectorsTest {
                 .mapToObj(BigDecimal::valueOf)
                 .collect(BigDecimalCollectors.toBigDecimalStatistics());
 
-        It.println("statistics = " + statistics);
-
         final BigDecimal standardDeviation = statistics.getStandardDeviation()
                 .setScale(1, RoundingMode.HALF_UP);
         final BigDecimal average = statistics.getAverage()

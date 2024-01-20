@@ -23,7 +23,6 @@ import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -48,15 +47,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.lang.System.setProperty;
+import static org.hzt.test.Locales.testWithFixedLocale;
 import static org.hzt.utils.It.print;
 import static org.hzt.utils.It.printf;
 import static org.hzt.utils.It.println;
@@ -403,18 +405,19 @@ class SequenceTest {
 
     @Test
     void testIterateRandomWithinBound() {
+        final var random = new Random(0);
         final var integers = IntList.of(1, 2, 3, 4, 5);
 
         final var group = IntSequence
-                .generate(integers::random)
-                .take(10_000_000)
+                .generate(() -> integers.random(random))
+                .take(1_000_000)
                 .group();
 
-        group.values().forEach(IntList::size, It::println);
+        final var actual = group.values().mapToInt(IntList::size);
 
         assertAll(
                 () -> assertEquals(integers.size(), group.size()),
-                () -> group.values().forEach(IntList::isNotEmpty, Assertions::assertTrue)
+                () -> assertEquals(IntList.of(200084, 200023, 200084, 199562, 200247), actual)
         );
     }
 
@@ -427,8 +430,6 @@ class SequenceTest {
                 .map(StringX::of)
                 .map(StringX::reversed)
                 .toListOf(StringX::toString);
-
-        println("strings = " + strings);
 
         assertEquals(List.of("ollah", "eoh", "si"), strings);
     }
@@ -583,13 +584,14 @@ class SequenceTest {
 
     @Test
     void testZipWithNext() {
+        final var random = new Random(0);
         final var sums = IntRange.of(0, 1_000)
                 .filter(IntX.multipleOf(10))
                 .onEach(i -> print(i + ", "))
                 .boxed()
                 .zipWithNext(Integer::sum)
                 .toListX()
-                .shuffled();
+                .shuffled(random);
 
         println("\nsums = " + sums);
 
@@ -894,7 +896,7 @@ class SequenceTest {
         final var current = now.atZone(ZoneId.of("Europe/Amsterdam"));
         printf("Current time is %s%n%n", current);
 
-        final var noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, id));
+        final var noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, ZoneId.of(id)));
 
         noneWholeHourZoneOffsetSummaries.forEach(It::println);
 
@@ -907,21 +909,33 @@ class SequenceTest {
 
     @Test
     void testTimeZonesAntarctica() {
-        final var now = Instant.parse("2022-10-23T13:34:43Z");
-        final var current = now.atZone(ZoneId.of("Europe/Amsterdam"));
-        printf("Current time is %s%n%n", current);
+        testWithFixedLocale(Locale.US, l -> {
+            final var now = Instant.parse("2024-01-04T14:32:23Z");
 
-        final var timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.getId().contains("Antarctica"));
+            final var timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.contains("Antarctica")).toListX();
 
-        timeZonesAntarctica.forEach(It::println);
-
-        assertEquals(12, timeZonesAntarctica.count());
+            final var expected = ListX.of(
+                    "    -03:00 Antarctica/Palmer           11:32 AM",
+                    "    -03:00 Antarctica/Rothera          11:32 AM",
+                    "         Z Antarctica/Troll             2:32 PM",
+                    "    +03:00 Antarctica/Syowa             5:32 PM",
+                    "    +05:00 Antarctica/Mawson            7:32 PM",
+                    "    +06:00 Antarctica/Vostok            8:32 PM",
+                    "    +07:00 Antarctica/Davis             9:32 PM",
+                    "    +10:00 Antarctica/DumontDUrville   12:32 AM",
+                    "    +11:00 Antarctica/Casey             1:32 AM",
+                    "    +11:00 Antarctica/Macquarie         1:32 AM",
+                    "    +13:00 Antarctica/McMurdo           3:32 AM",
+                    "    +13:00 Antarctica/South_Pole        3:32 AM"
+            );
+            assertEquals(expected, timeZonesAntarctica);
+        });
     }
 
-    private Sequence<String> getTimeZoneSummaries(final Instant now, final Predicate<ZoneId> predicate) {
+    private Sequence<String> getTimeZoneSummaries(final Instant now, final Predicate<String> predicate) {
         return Sequence.of(ZoneId.getAvailableZoneIds())
-                .map(ZoneId::of)
                 .filter(predicate)
+                .map(ZoneId::of)
                 .map(now::atZone)
                 .sorted()
                 .map(this::toZoneSummary);
@@ -1203,6 +1217,16 @@ class SequenceTest {
             final var expected = List.of(10, 11, 13, 17, 25, 41, 73, 137, 265, 521, 1033, 2057, 4105, 8201, 16393, 32777, 65545, 131081, 262153, 524297);
 
             assertEquals(expected, integers);
+        }
+
+        @Test
+        void testScanIndexed() {
+            final var integers = Sequence.iterate(1, i -> i * 2)
+                    .scanIndexed(10, ((index, acc, value) -> acc + index + value))
+                    .take(6)
+                    .toList();
+
+            assertEquals(List.of(10, 11, 14, 20, 31, 51), integers);
         }
 
         /**

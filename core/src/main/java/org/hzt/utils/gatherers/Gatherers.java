@@ -103,10 +103,10 @@ public final class Gatherers {
         private final BiConsumer<A, Downstream<? super R>> finisher;
 
         GathererImpl(
-                Supplier<A> initializer,
-                Integrator<A, T, R> integrator,
-                BinaryOperator<A> combiner,
-                BiConsumer<A, Downstream<? super R>> finisher) {
+                final Supplier<A> initializer,
+                final Integrator<A, T, R> integrator,
+                final BinaryOperator<A> combiner,
+                final BiConsumer<A, Downstream<? super R>> finisher) {
             this.initializer = initializer;
             this.integrator = integrator;
             this.combiner = combiner;
@@ -114,10 +114,10 @@ public final class Gatherers {
         }
 
         static <T, A, R> GathererImpl<T, A, R> of(
-                Supplier<A> initializer,
-                Integrator<A, T, R> integrator,
-                BinaryOperator<A> combiner,
-                BiConsumer<A, Downstream<? super R>> finisher) {
+                final Supplier<A> initializer,
+                final Integrator<A, T, R> integrator,
+                final BinaryOperator<A> combiner,
+                final BiConsumer<A, Downstream<? super R>> finisher) {
             return new GathererImpl<>(
                     Objects.requireNonNull(initializer, "initializer"),
                     Objects.requireNonNull(integrator, "integrator"),
@@ -147,9 +147,13 @@ public final class Gatherers {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (obj == this) return true;
-            if (obj == null || obj.getClass() != this.getClass()) return false;
+        public boolean equals(final Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (obj == null || obj.getClass() != this.getClass()) {
+                return false;
+            }
             final var that = (GathererImpl<?, ?, ?>) obj;
             return Objects.equals(this.initializer, that.initializer) &&
                     Objects.equals(this.integrator, that.integrator) &&
@@ -274,12 +278,14 @@ public final class Gatherers {
                                 && rightFinisher == Gatherer.<AA, RR>defaultFinisher())
                                 ? Gatherer.defaultFinisher()
                                 : (unused, downstream) -> {
-                            if (leftFinisher != Gatherer.<A, R>defaultFinisher())
+                            if (leftFinisher != Gatherer.<A, R>defaultFinisher()) {
                                 leftFinisher.accept(
                                         null,
                                         r -> rightIntegrator.integrate(null, r, downstream));
-                            if (rightFinisher != Gatherer.<AA, RR>defaultFinisher())
+                            }
+                            if (rightFinisher != Gatherer.<AA, RR>defaultFinisher()) {
                                 rightFinisher.accept(null, downstream);
+                            }
                         }
                 );
             } else {
@@ -326,10 +332,12 @@ public final class Gatherers {
                     }
 
                     void finish(final Downstream<? super RR> c) {
-                        if (leftFinisher != Gatherer.<A, R>defaultFinisher())
+                        if (leftFinisher != Gatherer.<A, R>defaultFinisher()) {
                             leftFinisher.accept(leftState, r -> rightIntegrate(r, c));
-                        if (rightFinisher != Gatherer.<AA, RR>defaultFinisher())
+                        }
+                        if (rightFinisher != Gatherer.<AA, RR>defaultFinisher()) {
                             rightFinisher.accept(rightState, c);
+                        }
                     }
 
                     /*
@@ -396,8 +404,9 @@ public final class Gatherers {
      * @throws IllegalArgumentException when groupSize is less than 1
      */
     public static <TR> Gatherer<TR, ?, List<TR>> windowFixed(final int windowSize) {
-        if (windowSize < 1)
+        if (windowSize < 1) {
             throw new IllegalArgumentException("'windowSize' must be greater than zero");
+        }
 
         class FixedWindow {
             Object[] window;
@@ -463,8 +472,9 @@ public final class Gatherers {
      * @throws IllegalArgumentException when windowSize is less than 1
      */
     public static <TR> Gatherer<TR, ?, List<TR>> windowSliding(final int windowSize) {
-        if (windowSize < 1)
+        if (windowSize < 1) {
             throw new IllegalArgumentException("'windowSize' must be greater than zero");
+        }
 
         class SlidingWindow {
             Object[] window;

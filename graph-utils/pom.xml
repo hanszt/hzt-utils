@@ -8,7 +8,7 @@
     <parent>
         <artifactId>hzt-utils</artifactId>
         <groupId>org.hzt.utils</groupId>
-        <version>1.0.2.17</version>
+        <version>1.0.3.17</version>
     </parent>
 
     <artifactId>graph-utils</artifactId>

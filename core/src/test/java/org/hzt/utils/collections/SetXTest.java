@@ -3,6 +3,7 @@ package org.hzt.utils.collections;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.test.Generator;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.Year;

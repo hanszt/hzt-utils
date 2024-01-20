@@ -113,16 +113,17 @@ class CollectableTest {
     void testBranchingPaintingDataToThreeValues() {
         //arrange
         final var paintingList = ListX.of(TestSampleGenerator.createPaintingList());
+        final var currentYear = 2024;
 
         final var expected = paintingList.stream()
                 .collect(branching(
                         partitioningBy(Painting::isInMuseum, mapping(Painting::painter, toList())),
-                        summarizingInt(Painting::ageInYears),
+                        summarizingInt(painting -> painting.ageInYears(currentYear)),
                         counting()));
 
         final var actual = paintingList.asSequence()
                 .toThree(s -> s.partitionMapping(Painting::isInMuseum, Painting::painter),
-                        s -> s.intStatsOf(Painting::ageInYears),
+                        s -> s.intStatsOf(painting -> painting.ageInYears(currentYear)),
                         Sequence::count);
 
         final var expectedStats = expected.second();

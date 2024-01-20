@@ -655,7 +655,7 @@ public final class CollectorsX {
                 .collect(toIntersection());
     }
 
-    public static <T> Collector<T, ?, int[]> intArrayOf(ToIntFunction<? super T> toIntMapper) {
+    public static <T> Collector<T, ?, int[]> intArrayOf(final ToIntFunction<? super T> toIntMapper) {
         return Collector.of(
                 IntMutableList::empty,
                 (list, t) -> list.add(toIntMapper.applyAsInt(t)),
@@ -663,7 +663,7 @@ public final class CollectorsX {
                 IntMutableList::toArray);
     }
 
-    public static <T> Collector<T, ?, long[]> longArrayOf(ToLongFunction<? super T> toLongMapper) {
+    public static <T> Collector<T, ?, long[]> longArrayOf(final ToLongFunction<? super T> toLongMapper) {
         return Collector.of(
                 LongMutableList::empty,
                 (list, t) -> list.add(toLongMapper.applyAsLong(t)),
@@ -671,7 +671,7 @@ public final class CollectorsX {
                 LongMutableList::toArray);
     }
 
-    public static <T> Collector<T, ?, double[]> doubleArrayOf(ToDoubleFunction<? super T> toDoubleArrayMapper) {
+    public static <T> Collector<T, ?, double[]> doubleArrayOf(final ToDoubleFunction<? super T> toDoubleArrayMapper) {
         return Collector.of(
                 DoubleMutableList::empty,
                 (list, t) -> list.add(toDoubleArrayMapper.applyAsDouble(t)),

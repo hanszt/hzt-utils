@@ -1,6 +1,7 @@
 package org.hzt.utils.iterables;
 
 import org.hzt.utils.It;
+import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.TriFunction;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
@@ -25,6 +26,17 @@ public interface Reducable<T> extends Iterable<T> {
         return accumulator;
     }
 
+    default <R> R foldIndexed(final R initial, final IndexedBiFunction<? super R, ? super T, ? extends R> operation) {
+        var accumulator = initial;
+        var index = 0;
+        for (final var t : this) {
+            if (t != null) {
+                accumulator = operation.apply(index++, accumulator, t);
+            }
+        }
+        return accumulator;
+    }
+
     default <R1, R2> Pair<R1, R2> foldTwo(
             final R1 initial1, final BiFunction<? super R1, ? super T, ? extends R1> operator1,
             final R2 initial2, final BiFunction<? super R2, ? super T, ? extends R2> operator2) {
@@ -44,15 +56,15 @@ public interface Reducable<T> extends Iterable<T> {
         return finisher.apply(accumulator1, accumulator2);
     }
 
-    default <R1, R2, R3> Triple<R1, R2, R3> foldToThree(
+    default <R1, R2, R3> Triple<R1, R2, R3> foldThree(
             final R1 initial1, final BiFunction<? super R1, ? super T, ? extends R1> operator1,
             final R2 initial2, final BiFunction<? super R2, ? super T, ? extends R2> operator2,
             final R3 initial3, final BiFunction<? super R3, ? super T, ? extends R3> operator3
     ) {
-        return foldToThree(initial1, operator1, initial2, operator2, initial3, operator3, Triple::of);
+        return foldThree(initial1, operator1, initial2, operator2, initial3, operator3, Triple::of);
     }
 
-    default <R1, R2, R3, R> R foldToThree(
+    default <R1, R2, R3, R> R foldThree(
             final R1 initial1, final BiFunction<? super R1, ? super T, ? extends R1> operator1,
             final R2 initial2, final BiFunction<? super R2, ? super T, ? extends R2> operator2,
             final R3 initial3, final BiFunction<? super R3, ? super T, ? extends R3> operator3,
@@ -83,13 +95,13 @@ public interface Reducable<T> extends Iterable<T> {
         return mapper.apply(reduce(initial, operation));
     }
 
-    default Optional<Pair<T, T>> reduceToTwo(
+    default Optional<Pair<T, T>> reduceTwo(
             final BinaryOperator<T> operator1,
             final BinaryOperator<T> operator2) {
-        return reduceToTwo(operator1, operator2, Pair::of);
+        return reduceTwo(operator1, operator2, Pair::of);
     }
 
-    default <R> Optional<R> reduceToTwo(
+    default <R> Optional<R> reduceTwo(
             final BinaryOperator<T> operator1,
             final BinaryOperator<T> operator2,
             final BiFunction<? super T, ? super T, ? extends R> finisher) {

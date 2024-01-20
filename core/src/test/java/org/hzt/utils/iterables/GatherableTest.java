@@ -118,7 +118,7 @@ class GatherableTest {
 
         private final List<String> testNames;
 
-        public Tests(String... testNames) {
+        public Tests(final String... testNames) {
             this.testNames = List.of(testNames);
         }
 
@@ -168,7 +168,7 @@ class GatherableTest {
     static final class Texts {
         private final Iterable<String> strings;
 
-        Texts(Iterable<String> strings) {
+        Texts(final Iterable<String> strings) {
             this.strings = strings;
         }
 
@@ -426,25 +426,29 @@ class GatherableTest {
         /**
          *
          */
-        Reading(Instant obtainedAt, int kelvins) {
+        Reading(final Instant obtainedAt, final int kelvins) {
             this.obtainedAt = obtainedAt;
             this.kelvins = kelvins;
         }
 
-        Reading(String time, int kelvins) {
+        Reading(final String time, final int kelvins) {
             this(Instant.parse(time), kelvins);
         }
 
-        boolean isSuspicious(Reading next) {
+        boolean isSuspicious(final Reading next) {
             return next.obtainedAt.isBefore(obtainedAt.plusSeconds(5))
                    && (next.kelvins > kelvins + 30
                        || next.kelvins < kelvins - 30);
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        public boolean equals(final Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             final var reading = (Reading) o;
             return kelvins == reading.kelvins && Objects.equals(obtainedAt, reading.obtainedAt);
         }

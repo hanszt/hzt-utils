@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Random;
 
 import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -25,6 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ArraysXTest {
+
+    // unseeded because the test is about the sorted result
+    private static final Random random = new Random();
 
     @Test
     void testReverseArray() {
@@ -53,15 +57,11 @@ class ArraysXTest {
         void testIntTimSort() {
             final var array = Sequence.iterate(1_000, i -> --i)
                     .take(1_000)
-                    .shuffled()
+                    .shuffled(random)
                     .mapToInt(It::asInt)
                     .toArray();
 
-            println(Arrays.toString(array));
-
             ArraysX.sort(Integer::compare, array);
-
-            println(Arrays.toString(array));
 
             assertEquals(IntList.of(1, 2, 3, 4, 5, 6), IntSequence.of(array).take(6).toList());
         }
@@ -70,7 +70,7 @@ class ArraysXTest {
         void testIntTimSortReversed() {
             final var array = Sequence.iterate(0, i -> ++i)
                     .take(1_000)
-                    .shuffled()
+                    .shuffled(random)
                     .mapToInt(It::asInt)
                     .toArray();
 
@@ -87,7 +87,7 @@ class ArraysXTest {
         void testLongTimSort() {
             final var array = Sequence.iterate(1_000, i -> --i)
                     .take(1_000)
-                    .shuffled()
+                    .shuffled(random)
                     .mapToLong(It::asLong)
                     .toArray();
 
@@ -104,7 +104,7 @@ class ArraysXTest {
         void testLongTimSortReversed() {
             final var array = Sequence.iterate(0, i -> ++i)
                     .take(1_000)
-                    .shuffled()
+                    .shuffled(random)
                     .mapToLong(It::asLong)
                     .toArray();
 
@@ -121,7 +121,7 @@ class ArraysXTest {
         void testLongTimSortReversedSmall() {
             final var array = Sequence.iterate(0, i -> ++i)
                     .take(10)
-                    .shuffled()
+                    .shuffled(random)
                     .mapToLong(It::asLong)
                     .toArray();
 
@@ -138,7 +138,7 @@ class ArraysXTest {
         void testDoubleTimSort() {
             final var array = Sequence.iterate(100.0, i -> i - .1)
                     .take(1_000)
-                    .shuffled()
+                    .shuffled(random)
                     .mapToDouble(It::asDouble)
                     .toArray();
 
@@ -163,7 +163,7 @@ class ArraysXTest {
         void testDoubleTimSortReversed() {
             final var array = Sequence.iterate(0.0, i -> i + .1)
                     .take(1_000)
-                    .shuffled()
+                    .shuffled(random)
                     .mapToDouble(It::asDouble)
                     .toArray();
 

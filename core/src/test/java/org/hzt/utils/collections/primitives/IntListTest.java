@@ -3,6 +3,9 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.PrimitiveIterator;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -56,10 +59,11 @@ class IntListTest {
     void testShuffled() {
         final var intListX = IntList.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        final var shuffled = intListX.shuffled();
+        final var shuffled = intListX.shuffled(new Random(0));
 
         System.out.println("shuffled = " + shuffled);
 
+        assertEquals(IntList.of(5, 9, 10, 7, 4, 6, 3, 2, 8, 1), shuffled);
         assertNotEquals(intListX, shuffled);
     }
 

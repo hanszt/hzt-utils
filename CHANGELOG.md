@@ -2,6 +2,15 @@
 
 ---
 
+### 1.0.3.11
+
+- Added grouping method
+- Added foldIndexed method
+- Added scanIndexed method
+- Added Locales class in test module
+
+---
+
 ### 1.0.2.11
 
 - Added IntGatherer

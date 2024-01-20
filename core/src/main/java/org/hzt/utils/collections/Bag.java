@@ -8,7 +8,7 @@ public interface Bag<E> extends CollectionX<E> {
 
     boolean add(E item);
 
-    default boolean addAll(Iterable<E> items) {
+    default boolean addAll(final Iterable<E> items) {
         var allAdded = true;
         for (var item : items) {
             if (!add(item)) {

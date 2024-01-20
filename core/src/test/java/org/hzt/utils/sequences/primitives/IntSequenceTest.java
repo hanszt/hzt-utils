@@ -386,7 +386,7 @@ class IntSequenceTest {
                 .gather(runningStatistics())
                 .teeing(intArrayOf(IntStatistics::getMax), longArrayOf(IntStatistics::getSum));
 
-        final int[] expectedMaxes = {5, 6, 8, 8, 12, 15, 16, 16};
+        final var expectedMaxes = new int[]{5, 6, 8, 8, 12, 15, 16, 16};
         final long[] expectedSums = {5, 11, 19, 23, 35, 50, 66, 70};
 
         assertAll(
@@ -404,7 +404,7 @@ class IntSequenceTest {
                 6, "Politics"
         );
 
-        final int[] courseIds = {13423, 2, 3, 5, 3432, 32};
+        final var courseIds = new int[]{13423, 2, 3, 5, 3432, 32};
 
         final var result = IntSequence.of(courseIds)
                 .gather(mapToObjNotNull(courseRepo::get))

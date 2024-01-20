@@ -110,9 +110,9 @@ class Tests {
     @Test
     @DisplayName("An example of an immutable list on which the map method is called")
     void test1() {
-        ListX<String> list = ListX.of("This is a test");
+        final ListX<String> list = ListX.of("This is a test");
 
-        ListX<Integer> stringSizes = list.map(String::length);
+        final ListX<Integer> stringSizes = list.map(String::length);
 
         assertEquals(ListX.of(4, 2, 1, 4), stringSizes);
     }
@@ -120,7 +120,7 @@ class Tests {
     @Test
     @DisplayName("An example of an immutable list on which the filter method is called")
     void test2() {
-        ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
+        final ListX<Integer> list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
         final ListX<Integer> evenNrs = list.filter(IntX::isEven);
 

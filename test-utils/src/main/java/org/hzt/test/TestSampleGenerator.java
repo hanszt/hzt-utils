@@ -32,7 +32,6 @@ import java.util.stream.IntStream;
 
 public final class TestSampleGenerator {
 
-    private static final Random RANDOM = new Random();
     private static final String FICTION = "Fiction";
 
     private static final List<Function<Integer, Number>> TO_NUMBER_TYPE_FUNCTIONS = List.of(
@@ -131,14 +130,14 @@ public final class TestSampleGenerator {
         return bankAccounts;
     }
 
-    public static List<Number> createRandomNumberTypeList(final int amount) {
+    public static List<Number> createRandomNumberTypeList(final int amount, final Random random) {
         return IntStream.range(0, amount)
-                .mapToObj(TestSampleGenerator::toRandomNumberType)
+                .mapToObj(s -> toRandomNumberType(s, random))
                 .collect(Collectors.toList());
     }
 
-    private static Number toRandomNumberType(final int integer) {
-        return TO_NUMBER_TYPE_FUNCTIONS.get(RANDOM.nextInt(TO_NUMBER_TYPE_FUNCTIONS.size())).apply(integer);
+    private static Number toRandomNumberType(final int integer, final Random random) {
+        return TO_NUMBER_TYPE_FUNCTIONS.get(random.nextInt(TO_NUMBER_TYPE_FUNCTIONS.size())).apply(integer);
     }
 
     public static List<Number> createNumberTypeList(final int amount) {
@@ -147,9 +146,14 @@ public final class TestSampleGenerator {
                 .collect(Collectors.toList());
     }
 
-    public static DoubleStream gaussianDoubles(final int amount, final double targetMean, final double targetStdDev) {
+    public static DoubleStream gaussianDoubles(
+            final int amount,
+            final double targetMean,
+            final double targetStdDev,
+            final Random random
+    ) {
         return IntStream.range(0, amount)
-                .mapToDouble(i -> targetMean + targetStdDev * RANDOM.nextGaussian());
+                .mapToDouble(i -> targetMean + targetStdDev * random.nextGaussian());
     }
 
     private static Number toNumberType(final int integer) {

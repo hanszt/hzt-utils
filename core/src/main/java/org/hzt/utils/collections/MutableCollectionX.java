@@ -36,7 +36,7 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E> {
             return addAll((Collection<? extends E>) iterable);
         }
         var allAdded = true;
-        for (final E item : iterable) {
+        for (final var item : iterable) {
             if (!add(item)) {
                 allAdded = false;
             }

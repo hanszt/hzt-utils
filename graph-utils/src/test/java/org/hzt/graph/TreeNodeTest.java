@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -272,7 +273,9 @@ class TreeNodeTest {
 
         @Test
         void testDepthTrackingTraversal() {
-            final var fileX = new FileX(".");
+            final var fileX = new FileX("../TreeNodeTest.java")
+                    .parentSequence()
+                    .first(f -> "graph-utils".equals(f.getName()));
 
             final var nodeToTreeDept1 = fileX.breadthFirstDepthTrackingSequence()
                     .onEach(System.out::println)
@@ -398,6 +401,30 @@ class TreeNodeTest {
             public Iterator<Node> childrenIterator() {
                 return Sequence.of(children).iterator();
             }
+
+            @Override
+            public boolean equals(final Object obj) {
+                if (obj == this) {
+                    return true;
+                }
+                if (obj == null || obj.getClass() != this.getClass()) {
+                    return false;
+                }
+                final var that = (Node) obj;
+                return Objects.equals(this.name, that.name) &&
+                       Arrays.equals(this.children, that.children);
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(name, Arrays.hashCode(children));
+            }
+
+            @Override
+            public String toString() {
+                return "Node[" + "name=" + name + ", " + ']';
+            }
+
         }
     }
 

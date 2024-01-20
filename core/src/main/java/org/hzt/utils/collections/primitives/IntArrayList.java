@@ -1,7 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.ArraysX;
-import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.IntComparator;
@@ -11,6 +10,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
+import java.util.Random;
 import java.util.function.IntConsumer;
 
 import static java.util.Objects.checkIndex;
@@ -116,14 +116,14 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     @Override
-    public OptionalInt findRandom() {
-        return isNotEmpty() ? OptionalInt.of(get(IterableXHelper.RANDOM.nextInt(size()))) : OptionalInt.empty();
+    public OptionalInt findRandom(final Random random) {
+        return isNotEmpty() ? OptionalInt.of(get(random.nextInt(size()))) : OptionalInt.empty();
     }
 
     @Override
-    public IntList shuffled() {
+    public IntList shuffled(final Random random) {
         final var mutableListX = IntMutableList.of(this);
-        PrimitiveListHelper.shuffle(mutableListX);
+        PrimitiveListHelper.shuffle(mutableListX, random);
         return mutableListX;
     }
 

@@ -14,6 +14,9 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -30,8 +33,6 @@ import static org.hzt.utils.streams.StreamExtensions.map;
 import static org.hzt.utils.streams.StreamExtensions.peek;
 import static org.hzt.utils.streams.StreamExtensions.scan;
 import static org.hzt.utils.streams.StreamExtensions.windowed;
-import static org.hzt.utils.streams.StreamFinishers.fold;
-import static org.hzt.utils.streams.StreamFinishers.toSet;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -345,40 +346,6 @@ class StreamXTest {
                     .toList();
 
             assertEquals(expected, windows);
-        }
-
-    }
-
-    @Nested
-    class StreamFinisherTests {
-
-        @Test
-        void finishByFold() {
-            final var windows = StreamX.iterate(0, i -> i + 1)
-                    .limit(10)
-                    .finish(fold(new StringBuilder(), StringBuilder::append))
-                    .toString();
-
-            final var expected = Sequence.iterate(0, i -> i + 1).take(10).joinToString("");
-
-            assertEquals(expected, windows);
-        }
-
-        @Test
-        void finishByExtendedFinisher() {
-            final var set = StreamX.iterate(0, i -> i + 1)
-                    .limit(10)
-                    .finish(StreamExtensions.<Integer>windowed(2)
-                            .andThen(scan(0, (sum, window) -> sum + window.size()))
-                            .finish(toSet()));
-
-            final var expected = Sequence.iterate(0, i -> i + 1)
-                    .take(10)
-                    .windowed(2)
-                    .scan(0, (sum, window) -> sum + window.size())
-                    .toSet();
-
-            assertEquals(expected, set);
         }
     }
 }

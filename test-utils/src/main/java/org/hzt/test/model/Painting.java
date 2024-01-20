@@ -25,12 +25,12 @@ public final class Painting
         return new Painting(name, null, null, false);
     }
 
-    public Period age() {
-        return Period.between(yearOfCreation.atMonthDay(MonthDay.now()), LocalDate.now());
+    public Period age(final LocalDate now) {
+        return Period.between(yearOfCreation.atMonthDay(MonthDay.of(now.getMonth(), now.getDayOfMonth())), now);
     }
 
-    public int ageInYears() {
-        return age().getYears();
+    public int ageInYears(final int currentYear) {
+        return currentYear - yearOfCreation.getValue();
     }
 
     public Year getYearOfCreation() {

@@ -18,7 +18,7 @@ public final class SimpleBag<E> implements Bag<E> {
     }
 
     @Override
-    public boolean add(E item) {
+    public boolean add(final E item) {
         first = new Node<>(item, first);
         size++;
         return true;
@@ -50,7 +50,7 @@ public final class SimpleBag<E> implements Bag<E> {
         private final T item;
         private final Node<T> next;
 
-        public Node(T item, Node<T> next) {
+        public Node(final T item, final Node<T> next) {
             this.item = item;
             this.next = next;
         }

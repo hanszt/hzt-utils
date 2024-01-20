@@ -3,6 +3,8 @@ package org.hzt.utils.sequences;
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.MapX;
+import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -170,7 +173,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> Iterators.gatheringIterator(iterator(), gatherer);
     }
 
-    default <R> Sequence<R> then(IterableExtension<T, R> extension) {
+    default <R> Sequence<R> then(final IterableExtension<T, R> extension) {
         return () -> extension.extend(this).iterator();
     }
 
@@ -269,6 +272,11 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     @Override
     default <R> Sequence<R> scan(final R initial, final BiFunction<? super R, ? super T, ? extends R> operation) {
+        return () -> Iterators.scanningIterator(iterator(), initial, (i, acc, t) -> operation.apply(acc, t));
+    }
+
+    @Override
+    default <R> Sequence<R> scanIndexed(final R initial, final IndexedBiFunction<? super R, ? super T, ? extends R> operation) {
         return () -> Iterators.scanningIterator(iterator(), initial, operation);
     }
 
@@ -358,8 +366,8 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> IterableX.super.sortedDescending().iterator();
     }
 
-    default Sequence<T> shuffled() {
-        return () -> toListX().shuffled().iterator();
+    default Sequence<T> shuffled(final Random random) {
+        return () -> toListX().shuffled(random).iterator();
     }
 
     @Override

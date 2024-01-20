@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
@@ -274,11 +275,10 @@ class ListXTest {
     void testShuffledInts() {
         final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        final var shuffled = integers.shuffled();
-
-        It.println("shuffled = " + shuffled);
+        final var shuffled = integers.shuffled(new Random(0));
 
         assertAll(
+                () -> assertEquals(ListX.of(5, 9, 10, 7, 4, 6, 3, 2, 8, 1), shuffled),
                 () -> assertNotEquals(integers, shuffled),
                 () -> assertTrue(shuffled.containsAll(integers)),
                 () -> assertTrue(integers.containsAll(shuffled))
@@ -289,7 +289,7 @@ class ListXTest {
     void testShuffledObjects() {
         final var input = ListX.of(TestSampleGenerator.createPaintingList()).map(Painting::name);
 
-        final var shuffled = input.shuffled();
+        final var shuffled = input.shuffled(new Random(0));
 
         It.println("shuffled = " + shuffled);
 

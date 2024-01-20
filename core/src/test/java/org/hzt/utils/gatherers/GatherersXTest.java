@@ -60,14 +60,18 @@ class GatherersXTest {
 
         private final String name;
 
-        public Organization(String name) {
+        public Organization(final String name) {
             this.name = name;
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        public boolean equals(final Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             final var that = (Organization) o;
             return Objects.equals(name, that.name);
         }
@@ -162,7 +166,7 @@ class GatherersXTest {
         );
     }
 
-    private static <T, R> BiConsumer<? super T, Consumer<R>> notNull(Function<? super T, ? extends R> mapper) {
+    private static <T, R> BiConsumer<? super T, Consumer<R>> notNull(final Function<? super T, ? extends R> mapper) {
         return (item, consumer) -> GatherersX.acceptIfResultNotNull(mapper, item, consumer);
     }
 
@@ -190,7 +194,7 @@ class GatherersXTest {
         private final class Person {
             private final int age;
 
-            Person(int age) {
+            Person(final int age) {
                 this.age = age;
             }
 
@@ -199,9 +203,13 @@ class GatherersXTest {
             }
 
             @Override
-            public boolean equals(Object o) {
-                if (this == o) return true;
-                if (o == null || getClass() != o.getClass()) return false;
+            public boolean equals(final Object o) {
+                if (this == o) {
+                    return true;
+                }
+                if (o == null || getClass() != o.getClass()) {
+                    return false;
+                }
                 final var person = (Person) o;
                 return age == person.age;
             }
@@ -313,7 +321,7 @@ class GatherersXTest {
         private final class Person {
             private final int age;
 
-            Person(int age) {
+            Person(final int age) {
                 this.age = age;
             }
 
@@ -342,7 +350,7 @@ class GatherersXTest {
         final class ChemicalSubstance {
             private final long mol;
 
-            ChemicalSubstance(long mol) {
+            ChemicalSubstance(final long mol) {
                 this.mol = mol;
             }
 
@@ -369,7 +377,7 @@ class GatherersXTest {
         final class ElectricDevice {
             private final double current;
 
-            ElectricDevice(double current) {
+            ElectricDevice(final double current) {
                 this.current = current;
             }
 

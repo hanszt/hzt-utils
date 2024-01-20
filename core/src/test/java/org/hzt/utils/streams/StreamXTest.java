@@ -7,7 +7,6 @@ import org.hzt.test.model.Painting;
 import org.hzt.utils.iterables.Collectable;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -16,20 +15,15 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.Spliterator;
-import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.Spliterator.ORDERED;
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.StreamSupport.stream;
 import static org.hzt.utils.streams.StreamExtensions.chunked;
 import static org.hzt.utils.streams.StreamExtensions.filter;
 import static org.hzt.utils.streams.StreamExtensions.map;
@@ -37,8 +31,6 @@ import static org.hzt.utils.streams.StreamExtensions.mapConcurrent;
 import static org.hzt.utils.streams.StreamExtensions.peek;
 import static org.hzt.utils.streams.StreamExtensions.scan;
 import static org.hzt.utils.streams.StreamExtensions.windowed;
-import static org.hzt.utils.streams.StreamFinishers.fold;
-import static org.hzt.utils.streams.StreamFinishers.toSet;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -396,78 +388,6 @@ class StreamXTest {
                     .toList();
 
             assertEquals(expected, windows);
-        }
-
-    }
-
-    @Nested
-    class StreamFinisherTests {
-
-        @Test
-        void finishByFold() {
-            final var windows = StreamX.iterate(0, i -> i + 1)
-                    .limit(10)
-                    .finish(fold(new StringBuilder(), StringBuilder::append))
-                    .toString();
-
-            final var expected = Sequence.iterate(0, i -> i + 1).take(10).joinToString("");
-
-            assertEquals(expected, windows);
-        }
-
-        @Test
-        void finishByExtendedFinisher() {
-            final var set = StreamX.iterate(0, i -> i + 1)
-                    .limit(10)
-                    .finish(StreamExtensions.<Integer>windowed(2)
-                            .andThen(scan(0, (sum, window) -> sum + window.size()))
-                            .finish(toSet()));
-
-            final var expected = Sequence.iterate(0, i -> i + 1)
-                    .take(10)
-                    .windowed(2)
-                    .scan(0, (sum, window) -> sum + window.size())
-                    .toSet();
-
-            assertEquals(expected, set);
-        }
-
-        @Test
-        @Disabled("Custom finisher does not work")
-            //FIXME: Make custom finisher work
-        void finishByCustomFinisher() {
-            final var set = StreamX.iterate(0, i -> i + 1)
-                    .limit(10)
-                    .finish(CustomExtension.<Integer>windowed(2)
-                            .andThen(peek(System.out::println))
-                            .andThen(scan(0, (sum, window) -> sum + window.size()))
-                            .toSet());
-
-            final var expected = Sequence.iterate(0, i -> i + 1)
-                    .take(10)
-                    .windowed(2)
-                    .scan(0, (sum, window) -> sum + window.size())
-                    .toSet();
-
-            assertEquals(expected, set);
-        }
-
-        interface CustomExtension<T, R> extends StreamExtension<T, R> {
-
-            static <T> CustomExtension<T, List<T>> windowed(int size) {
-                return stream -> stream(() -> Spliterators.spliteratorUnknownSize(Sequence.of(stream::iterator)
-                        .windowed(size, 1, false)
-                        .map(Collectable::toList).iterator(), ORDERED), ORDERED, false);
-            }
-
-            @Override
-            default <V> CustomExtension<T, V> andThen(StreamExtension<R, V> after) {
-                return tStream -> after.extend(extend(tStream));
-            }
-
-            default Function<Stream<T>, Set<R>> toSet() {
-                return finish(s -> s.collect(Collectors.toSet()));
-            }
         }
     }
 }

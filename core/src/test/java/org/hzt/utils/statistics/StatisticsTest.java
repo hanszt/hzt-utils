@@ -1,12 +1,12 @@
 package org.hzt.utils.statistics;
 
-import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.It;
+import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.hzt.utils.It.*;
+import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

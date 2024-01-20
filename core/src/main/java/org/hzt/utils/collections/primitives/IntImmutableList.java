@@ -1,13 +1,13 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.ArraysX;
-import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
+import java.util.Random;
 import java.util.function.IntConsumer;
 
 final class IntImmutableList extends
@@ -55,14 +55,14 @@ final class IntImmutableList extends
     }
 
     @Override
-    public OptionalInt findRandom() {
-        return isNotEmpty() ? OptionalInt.of(get(IterableXHelper.RANDOM.nextInt(size()))) : OptionalInt.empty();
+    public OptionalInt findRandom(final Random random) {
+        return isNotEmpty() ? OptionalInt.of(get(random.nextInt(size()))) : OptionalInt.empty();
     }
 
     @Override
-    public IntList shuffled() {
+    public IntList shuffled(final Random random) {
         final var mutableList = IntMutableList.of(this);
-        PrimitiveListHelper.shuffle(mutableList);
+        PrimitiveListHelper.shuffle(mutableList, random);
         return mutableList;
     }
 

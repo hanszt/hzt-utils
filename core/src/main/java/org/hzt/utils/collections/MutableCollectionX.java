@@ -1,7 +1,6 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.iterables.MutableIterable;
-
 import org.hzt.utils.streams.StreamX;
 
 import java.util.Collection;
@@ -38,7 +37,7 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E>, Mu
             return addAll((Collection<? extends E>) c);
         }
         var allAdded = true;
-        for (final E item : iterable) {
+        for (final var item : iterable) {
             if (!add(item)) {
                 allAdded = false;
             }

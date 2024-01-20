@@ -16,7 +16,7 @@ public final class Iterables {
      * @param <T> the type of the iterable
      * @param <CI> the Consuming Iterable type
      */
-    public static <T, CI extends Consumer<? super T> & Iterable<? extends T>> CI combine(CI ci1, CI ci2) {
+    public static <T, CI extends Consumer<? super T> & Iterable<? extends T>> CI combine(final CI ci1, final CI ci2) {
         ci2.forEach(ci1);
         return ci1;
     }

@@ -80,7 +80,7 @@ public final class Grid2DUtils {
     }
 
     public static <T> boolean anyInGrid(final Iterable<? extends Iterable<T>> grid, final Predicate<T> predicate) {
-        for (final Iterable<T> row : grid) {
+        for (final var row : grid) {
             for (final var item : row) {
                 if (predicate.test(item)) {
                     return true;
@@ -124,7 +124,7 @@ public final class Grid2DUtils {
     }
 
     public static <T> boolean noneInGrid(final Iterable<? extends Iterable<T>> grid, final Predicate<T> predicate) {
-        for (final Iterable<T> row : grid) {
+        for (final var row : grid) {
             for (final var item : row) {
                 if (predicate.test(item)) {
                     return false;

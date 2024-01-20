@@ -1,7 +1,6 @@
 package org.hzt.utils.sequences.primitives;
 
 import org.hzt.utils.It;
-import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.ranges.IntRange;
 import org.junit.jupiter.api.Test;

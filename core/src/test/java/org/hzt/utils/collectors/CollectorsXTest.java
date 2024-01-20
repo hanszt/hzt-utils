@@ -51,20 +51,21 @@ class CollectorsXTest {
     @Test
     void testStandardDeviatingAgePainters() {
         final var paintingList = TestSampleGenerator.createPaintingList();
+        final var currentYear = 2024;
 
         final double standardDeviationAge = paintingList.stream()
-                .collect(CollectorsX.standardDeviatingDouble(Painting::ageInYears));
+                .collect(CollectorsX.standardDeviatingDouble(painting -> painting.ageInYears(currentYear)));
 
         final var summarizingAges = paintingList.stream()
-                .collect(CollectorsX.toDoubleStatisticsBy(Painting::ageInYears));
+                .collect(CollectorsX.toDoubleStatisticsBy(painting -> painting.ageInYears(currentYear)));
 
         final var optionalAverage = paintingList.stream()
-                .mapToDouble(Painting::ageInYears)
+                .mapToDouble(painting -> painting.ageInYears(currentYear))
                 .average();
 
-        It.println("summarizingAges = " + summarizingAges);
-
         assertAll(
+                () -> assertEquals(206.875, summarizingAges.getAverage(), 1e-3),
+                () -> assertEquals(120.875, summarizingAges.getStandardDeviation(), 1e-3),
                 () -> assertEquals(standardDeviationAge, summarizingAges.getStandardDeviation()),
                 () -> assertEquals(optionalAverage.orElseThrow(), summarizingAges.getAverage())
         );

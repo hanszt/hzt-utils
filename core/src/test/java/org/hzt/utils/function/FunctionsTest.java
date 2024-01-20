@@ -13,8 +13,14 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import static org.hzt.utils.function.Functions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hzt.utils.function.Functions.distinctBy;
+import static org.hzt.utils.function.Functions.not;
+import static org.hzt.utils.function.Functions.notDouble;
+import static org.hzt.utils.function.Functions.notInt;
+import static org.hzt.utils.function.Functions.notLong;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FunctionsTest {
 

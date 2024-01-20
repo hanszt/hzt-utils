@@ -136,15 +136,15 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
         if (!(o instanceof MapX)) {
             return false;
         }
-        MapX<?, ?> m = (MapX<?, ?>) o;
+        var m = (MapX<?, ?>) o;
         if (m.size() != size()) {
             return false;
         }
 
         try {
-            for (Entry<K, V> e : entrySet()) {
-                K key = e.getKey();
-                V value = e.getValue();
+            for (var e : entrySet()) {
+                var key = e.getKey();
+                var value = e.getValue();
                 if (value == null) {
                     if (!(m.get(key) == null && m.containsKey(key))) {
                         return false;
@@ -179,8 +179,8 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
      * @see Set#equals(Object)
      */
     public int hashCode() {
-        int h = 0;
-        for (Entry<K, V> entry : entrySet()) {
+        var h = 0;
+        for (var entry : entrySet()) {
             h += entry.hashCode();
         }
         return h;

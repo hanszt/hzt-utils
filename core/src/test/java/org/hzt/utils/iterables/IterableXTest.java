@@ -275,13 +275,14 @@ class IterableXTest {
     @Test
     void testPartitionMapping() {
         final var paintings = TestSampleGenerator.createPaintingList();
+        final var now = LocalDate.of(2024, Month.JANUARY, 4);
 
         final var expectedMap = paintings.stream()
                 .collect(partitioningBy(Painting::isInMuseum,
-                        mapping(Painting::age, toList())));
+                        mapping(painting -> painting.age(now), toList())));
 
         final var actualMap = ListX.of(paintings)
-                .partitionMapping(Painting::isInMuseum, Painting::age);
+                .partitionMapping(Painting::isInMuseum, painting -> painting.age(now));
 
         assertAll(
                 () -> assertEquals(expectedMap.get(true), actualMap.first()),
@@ -307,10 +308,11 @@ class IterableXTest {
     @Test
     void testToSummaryStatistics() {
         final var paintings = ListX.of(TestSampleGenerator.createPaintingList());
+        final var currentYear = 2024;
 
-        final var expected = paintings.stream().mapToInt(Painting::ageInYears).summaryStatistics();
+        final var expected = paintings.stream().mapToInt(painting -> painting.ageInYears(currentYear)).summaryStatistics();
 
-        final IntSummaryStatistics actual = paintings.intStatsOf(Painting::ageInYears);
+        final IntSummaryStatistics actual = paintings.intStatsOf(painting -> painting.ageInYears(currentYear));
 
         assertAll(
                 () -> assertEquals(expected.getMin(), actual.getMin()),
@@ -585,10 +587,11 @@ class IterableXTest {
     @Test
     void testSumOfInt() {
         final var list = ListX.of(TestSampleGenerator.createPaintingList());
+        final var currentYear = 2024;
 
-        final var expected = list.stream().mapToInt(Painting::ageInYears).sum();
+        final var expected = list.stream().mapToInt(painting -> painting.ageInYears(currentYear)).sum();
 
-        final var actual = list.intSumOf(Painting::ageInYears);
+        final var actual = list.intSumOf(painting -> painting.ageInYears(currentYear));
 
         println("actual = " + actual);
 
@@ -598,10 +601,14 @@ class IterableXTest {
     @Test
     void testAverageOf() {
         final var list = ListX.of(TestSampleGenerator.createPaintingList());
+        final var currentYear = 2024;
 
-        final var expected = list.stream().mapToInt(Painting::ageInYears).average().orElseThrow();
+        final var expected = list.stream()
+                .mapToInt(painting -> painting.ageInYears(currentYear))
+                .average()
+                .orElseThrow();
 
-        final var actual = list.averageOf(Painting::ageInYears);
+        final var actual = list.averageOf(painting -> painting.ageInYears(currentYear));
 
         println("actual = " + actual);
 
@@ -684,13 +691,14 @@ class IterableXTest {
     @Test
     void testJoinToString() {
         final var paintings = ListX.of(TestSampleGenerator.createPaintingList());
+        final var now = LocalDate.of(2024, Month.JANUARY, 2);
 
         final var expected = paintings.stream()
-                .map(Painting::age)
+                .map(painting -> painting.age(now))
                 .map(Period::toString)
                 .collect(Collectors.joining(", "));
 
-        final var actual = paintings.joinToStringBy(Painting::age, ", ");
+        final var actual = paintings.joinToStringBy(painting -> painting.age(now), ", ");
 
         println("actual = " + actual);
 

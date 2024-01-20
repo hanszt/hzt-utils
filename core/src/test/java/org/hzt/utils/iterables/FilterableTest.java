@@ -1,8 +1,8 @@
 package org.hzt.utils.iterables;
 
+import org.hzt.utils.It;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.LinkedBlockingDeque;

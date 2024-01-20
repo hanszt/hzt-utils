@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
@@ -14,8 +13,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public final class IterableXHelper {
-
-    public static final Random RANDOM = new Random();
 
     private IterableXHelper() {
     }
@@ -77,7 +74,7 @@ public final class IterableXHelper {
         throw new IllegalStateException(key.getClass().getSimpleName() + " is not of a comparable type");
     }
 
-    static  <T, R extends Comparable<? super R>> R comparisonOf(
+    static <T, R extends Comparable<? super R>> R comparisonOf(
             final Iterator<T> iterator,
             final Function<? super T, ? extends R> selector,
             final IntPredicate biPredicate) {

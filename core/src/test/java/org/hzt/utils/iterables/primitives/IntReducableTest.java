@@ -1,8 +1,8 @@
 package org.hzt.utils.iterables.primitives;
 
+import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.tuples.Pair;
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;

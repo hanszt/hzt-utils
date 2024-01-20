@@ -1,7 +1,5 @@
 package org.hzt.utils.collections;
 
-import org.hzt.utils.iterables.IterableXHelper;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
@@ -9,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.Random;
 import java.util.stream.StreamSupport;
 
 final class ImmutableListX<T> implements ListX<T> {
@@ -46,14 +44,9 @@ final class ImmutableListX<T> implements ListX<T> {
     }
 
     @Override
-    public Optional<T> findRandom() {
-        return isNotEmpty() ? Optional.of(get(IterableXHelper.RANDOM.nextInt(size()))) : Optional.empty();
-    }
-
-    @Override
-    public ListX<T> shuffled() {
+    public ListX<T> shuffled(final Random random) {
         final var listX = to(MutableListX::empty);
-        Collections.shuffle(listX);
+        Collections.shuffle(listX, random);
         return ListX.copyOf(listX);
     }
 

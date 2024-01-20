@@ -27,6 +27,7 @@ import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 
+import java.util.Random;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -147,7 +148,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntGathe
     }
 
     @Override
-    default <A, R> Sequence<R> gather(Gatherer<Integer, A, R> gatherer) {
+    default <A, R> Sequence<R> gather(final Gatherer<Integer, A, R> gatherer) {
         return gatherer instanceof IntGatherer<A, R> intGatherer ?
                 (() -> PrimitiveIterators.intGatheringIterator(iterator(), intGatherer)) :
                 (() -> Iterators.gatheringIterator(iterator(), gatherer));
@@ -240,8 +241,8 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntGathe
         return sorted((IntX::compareReversed));
     }
 
-    default IntSequence shuffled() {
-        return () -> toList().shuffled().iterator();
+    default IntSequence shuffled(final Random random) {
+        return () -> toList().shuffled(random).iterator();
     }
 
     @Override

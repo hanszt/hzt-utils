@@ -47,3 +47,15 @@ fun <T, A1, A2, A3, R1, R2, R3> Sequence<T>.teeing(
     val r3 = collector3.finisher().apply(container3)
     return Triple(r1, r2, r3)
 }
+
+fun <T> Sequence<T>.toUnmodifiableList(): List<T> = buildList { this@toUnmodifiableList.forEach(::add) }
+fun <T> Sequence<T>.toUnmodifiableSet(): Set<T> = buildSet { this@toUnmodifiableSet.forEach(::add) }
+fun <T, K, V> Sequence<T>.associateUnmodifiable(transform: (T) -> Pair<K, V>): Map<K, V> = buildMap {
+    this@associateUnmodifiable.forEach {
+        val (key, value) = transform(it)
+        put(key, value)
+    }
+}
+
+
+

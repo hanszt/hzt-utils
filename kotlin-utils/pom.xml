@@ -14,8 +14,8 @@
     <artifactId>kotlin-utils</artifactId>
 
     <properties>
-        <kotlin.version>1.9.0</kotlin.version>
-        <kotest.version>5.7.0</kotest.version>
+        <kotlin.version>2.0.0</kotlin.version>
+        <kotest.version>5.8.1</kotest.version>
         <kotlin-maven-plugin.jvmTarget>17</kotlin-maven-plugin.jvmTarget>
     </properties>
 

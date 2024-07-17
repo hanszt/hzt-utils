@@ -16,6 +16,7 @@ import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
+import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
@@ -121,8 +122,8 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <R1, A1, R2, A2, R> R teeing(final Collector<? super T, A1, R1> downstream1,
-                                 final Collector<? super T, A2, R2> downstream2,
-                                 final BiFunction<? super R1, ? super R2, R> merger) {
+                                         final Collector<? super T, A2, R2> downstream2,
+                                         final BiFunction<? super R1, ? super R2, R> merger) {
         final var result1 = downstream1.supplier().get();
         final var result2 = downstream2.supplier().get();
         final var accumulator1 = downstream1.accumulator();
@@ -144,9 +145,9 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <R1, A1, R2, A2, R3, A3, R> R branching(final Collector<? super T, A1, R1> downstream1,
-                                        final Collector<? super T, A2, R2> downstream2,
-                                        final Collector<? super T, A3, R3> downstream3,
-                                        final TriFunction<? super R1, ? super R2, ? super R3, R> merger) {
+                                                    final Collector<? super T, A2, R2> downstream2,
+                                                    final Collector<? super T, A3, R3> downstream3,
+                                                    final TriFunction<? super R1, ? super R2, ? super R3, R> merger) {
         final var result1 = downstream1.supplier().get();
         final var result2 = downstream2.supplier().get();
         final var result3 = downstream3.supplier().get();
@@ -173,10 +174,10 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <A1, R1, A2, R2, A3, R3, A4, R4, R> R branching(final Collector<? super T, A1, R1> downstream1,
-                                        final Collector<? super T, A2, R2> downstream2,
-                                        final Collector<? super T, A3, R3> downstream3,
-                                        final Collector<? super T, A4, R4> downstream4,
-                                        final QuadFunction<? super R1, ? super R2, ? super R3, ? super R4, R> merger) {
+                                                            final Collector<? super T, A2, R2> downstream2,
+                                                            final Collector<? super T, A3, R3> downstream3,
+                                                            final Collector<? super T, A4, R4> downstream4,
+                                                            final QuadFunction<? super R1, ? super R2, ? super R3, ? super R4, R> merger) {
         final var result1 = downstream1.supplier().get();
         final var result2 = downstream2.supplier().get();
         final var result3 = downstream3.supplier().get();
@@ -486,6 +487,18 @@ public interface Collectable<T> extends IndexedIterable<T> {
             collection.add(function.apply(current, next));
             current = next;
         }
+        return collection;
+    }
+
+    default <A, R, C extends Collection<R>> C gatherTo(final Supplier<C> collectionFactory, final Gatherer<? super T, A, R> gatherer) {
+        final var state = gatherer.initializer().get();
+        final var integrator = gatherer.integrator();
+
+        final var iterator = iterator();
+        final var collection = collectionFactory.get();
+        //noinspection StatementWithEmptyBody
+        while (iterator.hasNext() && integrator.integrate(state, iterator.next(), collection::add)) ;
+        gatherer.finisher().accept(state, collection::add);
         return collection;
     }
 }

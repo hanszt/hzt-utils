@@ -19,18 +19,6 @@ final class FlatMappingIterator<T, R> implements Iterator<R> {
 
     @Override
     public boolean hasNext() {
-        return ensureItemIterator();
-    }
-
-    @Override
-    public R next() {
-        if (!ensureItemIterator()) {
-            throw new NoSuchElementException();
-        }
-        return itemIterator.next();
-    }
-
-    private boolean ensureItemIterator() {
         if (itemIterator != null && !itemIterator.hasNext()) {
             itemIterator = null;
         }
@@ -45,5 +33,13 @@ final class FlatMappingIterator<T, R> implements Iterator<R> {
             }
         }
         return true;
+    }
+
+    @Override
+    public R next() {
+        if (hasNext()) {
+            return itemIterator.next();
+        }
+        throw new NoSuchElementException();
     }
 }

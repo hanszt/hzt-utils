@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 @FunctionalInterface
-@SuppressWarnings("squid:S1711")
 public interface AtomicIterator<T> {
 
     static <T> AtomicIterator<T> of(final Iterator<T> iterator) {
@@ -48,6 +47,7 @@ public interface AtomicIterator<T> {
 
             @Override
             public boolean hasNext() {
+                if (hasNext.get()) return true;
                 final var hasNextVal = tryAdvance(sink::set);
                 this.hasNext.set(hasNextVal);
                 return hasNextVal;
@@ -55,7 +55,8 @@ public interface AtomicIterator<T> {
 
             @Override
             public T next() {
-                if (hasNext.getAndSet(false)) {
+                if (hasNext()) {
+                    hasNext.set(false);
                     return sink.getAndSet(null);
                 }
                 throw new NoSuchElementException();

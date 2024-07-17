@@ -3,6 +3,7 @@ package org.hzt.utils.iterators.functional_iterator;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.numbers.IntX;
+import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -174,5 +175,15 @@ class AtomicIteratorTest {
         while (atomicIterator.tryAdvance(result::add));
 
         assertEquals(listContainingNulls, result);
+    }
+
+    @Test
+    void testOnlyCallingNextWillTraverseTheIterator() {
+        final var iterator = AtomicIterator.of(Sequence.of(1, 2, 3).iterator()).asIterator();
+        assertTrue(iterator.hasNext());
+        assertEquals(1, iterator.next());
+        assertEquals(2, iterator.next());
+        assertEquals(3, iterator.next());
+        assertThrows(NoSuchElementException.class, iterator::next);
     }
 }

@@ -165,16 +165,7 @@ class GatherableTest {
         );
     }
 
-    static final class Texts {
-        private final Iterable<String> strings;
-
-        Texts(final Iterable<String> strings) {
-            this.strings = strings;
-        }
-
-        public Iterable<String> strings() {
-            return strings;
-        }
+    record Texts(Iterable<String> strings) {
     }
 
     @Test
@@ -253,11 +244,11 @@ class GatherableTest {
     void limitAfterGatherInInfiniteStreamTerminating() {
         final var count = 10;
         final var list = Sequence.iterate(1, i -> i * 2)
-                .gather(mapIndexed((index, i) -> String.valueOf(i)))
+                .gather(mapIndexed((index, power) -> index + ", " + power))
                 .take(count)
                 .toList();
 
-        assertEquals(List.of("1", "2", "4", "8", "16", "32", "64", "128", "256", "512"), list);
+        assertEquals(List.of("0, 1", "1, 2", "2, 4", "3, 8", "4, 16", "5, 32", "6, 64", "7, 128", "8, 256", "9, 512"), list);
     }
 
     @Test

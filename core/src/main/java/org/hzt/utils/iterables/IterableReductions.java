@@ -122,7 +122,7 @@ public final class IterableReductions {
         if (!iterator.hasNext()) {
             return Optional.empty();
         } else if (iterable instanceof final List<T> list) {
-            return Optional.ofNullable(list.get(list.size() - 1));
+            return Optional.ofNullable(list.getLast());
         } else {
             var result = iterator.next();
             while (iterator.hasNext()) {

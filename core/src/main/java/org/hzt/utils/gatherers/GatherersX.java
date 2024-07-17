@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -67,8 +66,10 @@ public final class GatherersX {
 
     public static <T, R> Gatherer<T, ?, R> mapIndexed(final BiFunction<Integer, ? super T, ? extends R> mapper) {
         return Gatherer.ofSequential(
-                AtomicInteger::new,
-                (index, item, downstream) -> downstream.push(mapper.apply(index.getAndIncrement(), item))
+                () -> new Object() {
+                    int index = 0;
+                },
+                (state, item, downstream) -> downstream.push(mapper.apply(state.index++, item))
         );
     }
 
@@ -208,7 +209,7 @@ public final class GatherersX {
 
     public static <T, R> Gatherer<T, ?, R> zipWithNext(final BiFunction<? super T, ? super T, ? extends R> mapper) {
         return Gatherers.<T>windowSliding(2)
-                .andThen(Gatherer.ofSequential((unused, w, downstream) -> downstream.push(mapper.apply(w.get(0), w.get(1)))));
+                .andThen(Gatherer.ofSequential((unused, w, downstream) -> downstream.push(mapper.apply(w.getFirst(), w.get(1)))));
     }
 
     public static <T> Gatherer<T, ?, List<T>> zipWithNext() {
@@ -217,6 +218,6 @@ public final class GatherersX {
 
     public static <T> Gatherer<T, ?, List<T>> filterZippedWithNext(final BiPredicate<? super T, ? super T> predicate) {
         return Gatherers.<T>windowSliding(2)
-                .andThen(filter(s -> predicate.test(s.get(0), s.get(1))));
+                .andThen(filter(s -> predicate.test(s.getFirst(), s.get(1))));
     }
 }

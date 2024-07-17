@@ -12,12 +12,10 @@ import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.gatherers.Gatherer;
-import org.hzt.utils.gatherers.Gatherer.Downstream;
 import org.hzt.utils.iterables.IterableExtension;
 import org.hzt.utils.iterables.IterableX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.hzt.utils.tuples.IndexedValue;
 
 import java.util.Collection;
@@ -173,19 +171,7 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default <A, R> ListX<R> gather(final Gatherer<? super E, A, R> gatherer) {
-        final var state = gatherer.initializer().get();
-        final var integrator = gatherer.integrator();
-
-        final var iterator = iterator();
-        final var buffer = new SpinedBuffer<R>();
-        final Downstream<? super R> downstream = r -> {
-            buffer.accept(r);
-            return true;
-        };
-        //noinspection StatementWithEmptyBody
-        while (iterator.hasNext() && integrator.integrate(state, iterator.next(), downstream)) ;
-        gatherer.finisher().accept(state, downstream);
-        return ListX.of(buffer);
+        return gatherTo(MutableListX::empty, gatherer);
     }
 
     default <R> ListX<R> then(final IterableExtension<E, R> extension) {

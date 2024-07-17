@@ -46,6 +46,19 @@
         </dependency>
         <dependency>
             <groupId>io.kotest</groupId>
+            <artifactId>kotest-common-jvm</artifactId>
+            <version>${kotest.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains</groupId>
+                    <artifactId>annotations</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>io.kotest</groupId>
             <artifactId>kotest-assertions-shared-jvm</artifactId>
             <version>${kotest.version}</version>
             <scope>test</scope>

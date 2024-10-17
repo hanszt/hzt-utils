@@ -16,7 +16,6 @@ import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
-import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
@@ -37,6 +36,7 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.Gatherer;
 
 @FunctionalInterface
 public interface Collectable<T> extends IndexedIterable<T> {

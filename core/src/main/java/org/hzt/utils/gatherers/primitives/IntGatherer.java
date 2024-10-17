@@ -1,11 +1,9 @@
 package org.hzt.utils.gatherers.primitives;
 
-import org.hzt.utils.gatherers.Gatherer;
-import org.hzt.utils.gatherers.Integrator;
-
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
+import java.util.stream.Gatherer;
 
 @FunctionalInterface
 public interface IntGatherer<A, R> extends Gatherer<Integer, A, R> {

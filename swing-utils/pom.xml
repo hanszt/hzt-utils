@@ -8,7 +8,7 @@
     <parent>
         <artifactId>hzt-utils</artifactId>
         <groupId>org.hzt.utils</groupId>
-        <version>1.0.3.21</version>
+        <version>1.0.3.22</version>
     </parent>
 
     <artifactId>swing-utils</artifactId>

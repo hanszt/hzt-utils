@@ -1,7 +1,8 @@
 package org.hzt.utils.iterables;
 
-import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterators.Iterators;
+
+import java.util.stream.Gatherer;
 
 /**
  * An interface to unify gatherer functionality
@@ -11,7 +12,7 @@ import org.hzt.utils.iterators.Iterators;
 @FunctionalInterface
 public interface Gatherable<T> extends Collectable<T> {
 
-    default <A, R> Gatherable<R> gather(final Gatherer<? super T, A, R> gatherer) {
+    default <R> Gatherable<R> gather(final Gatherer<? super T, ?, R> gatherer) {
         return () -> Iterators.gatheringIterator(iterator(), gatherer);
     }
 }

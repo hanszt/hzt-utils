@@ -20,6 +20,8 @@ import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
+import java.util.stream.Gatherer;
+import java.util.stream.Gatherers;
 
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.reverseOrder;

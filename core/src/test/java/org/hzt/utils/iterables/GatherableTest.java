@@ -2,7 +2,6 @@ package org.hzt.utils.iterables;
 
 import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.collections.ListX;
-import org.hzt.utils.gatherers.Gatherers;
 import org.hzt.utils.gatherers.GatherersX;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
@@ -18,14 +17,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Gatherers;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static org.hzt.utils.gatherers.Gatherers.fold;
-import static org.hzt.utils.gatherers.Gatherers.scan;
-import static org.hzt.utils.gatherers.Gatherers.unmodifiableListCopyOf;
-import static org.hzt.utils.gatherers.Gatherers.windowFixed;
-import static org.hzt.utils.gatherers.Gatherers.windowSliding;
+import static java.util.stream.Gatherers.fold;
+import static java.util.stream.Gatherers.scan;
+import static java.util.stream.Gatherers.windowFixed;
+import static java.util.stream.Gatherers.windowSliding;
 import static org.hzt.utils.gatherers.GatherersX.filterZippedWithNext;
 import static org.hzt.utils.gatherers.GatherersX.flatMap;
 import static org.hzt.utils.gatherers.GatherersX.flatten;
@@ -325,7 +324,8 @@ class GatherableTest {
                     System.arraycopy(oldWindow, 1, newWindow, 0, windowSize - 1);
                     window = newWindow;
                     at -= 1;
-                    downstream.accept(unmodifiableListCopyOf(oldWindow));
+                    //noinspection unchecked
+                    downstream.accept(List.of((TR[]) oldWindow));
                 }
             }
         }

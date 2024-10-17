@@ -1,7 +1,7 @@
 package org.hzt
 
 import java.util.stream.Collector
-import org.hzt.utils.gatherers.Gatherer
+import java.util.stream.Gatherer
 import org.hzt.utils.iterators.Iterators
 
 fun <T, A, R> Sequence<T>.gather(gatherer: Gatherer<T, A, R>): Sequence<R> =

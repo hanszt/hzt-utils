@@ -11,7 +11,6 @@ import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
-import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterables.IterableExtension;
 import org.hzt.utils.iterables.IterableX;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
@@ -36,6 +35,7 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
+import java.util.stream.Gatherer;
 
 @FunctionalInterface
 @SuppressWarnings("squid:S1448")
@@ -169,7 +169,7 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     @Override
-    default <A, R> ListX<R> gather(final Gatherer<? super E, A, R> gatherer) {
+    default <R> ListX<R> gather(final Gatherer<? super E, ?, R> gatherer) {
         return gatherTo(MutableListX::empty, gatherer);
     }
 

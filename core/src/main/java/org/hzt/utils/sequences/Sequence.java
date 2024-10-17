@@ -8,7 +8,6 @@ import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.TriFunction;
-import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterables.EntryIterable;
 import org.hzt.utils.iterables.IterableExtension;
 import org.hzt.utils.iterables.IterableX;
@@ -45,6 +44,7 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
+import java.util.stream.Gatherer;
 import java.util.stream.StreamSupport;
 
 import static java.util.Spliterator.ORDERED;
@@ -168,7 +168,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default <A, R> Sequence<R> gather(final Gatherer<? super T, A, R> gatherer) {
+    default <R> Sequence<R> gather(final Gatherer<? super T, ?, R> gatherer) {
         return () -> Iterators.gatheringIterator(iterator(), gatherer);
     }
 

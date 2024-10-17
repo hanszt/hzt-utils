@@ -5,7 +5,6 @@ import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableSet;
 import org.hzt.utils.function.TriFunction;
-import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.gatherers.primitives.IntGatherer;
 import org.hzt.utils.iterables.primitives.IntGatherable;
 import org.hzt.utils.iterables.primitives.IntGroupable;
@@ -43,6 +42,7 @@ import java.util.function.IntToDoubleFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ToIntFunction;
+import java.util.stream.Gatherer;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 

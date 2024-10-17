@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
-import static org.hzt.utils.gatherers.Gatherers.windowFixed;
+import static java.util.stream.Gatherers.windowFixed;
 import static org.hzt.utils.gatherers.GatherersX.takeWhileIncluding;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

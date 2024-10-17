@@ -1,13 +1,11 @@
 package org.hzt.utils.iterators;
 
-import org.hzt.utils.gatherers.Gatherer;
-import org.hzt.utils.gatherers.Integrator;
-
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.function.BiConsumer;
+import java.util.stream.Gatherer;
 
 /**
  * An iterator that converts the source iterator to a gathering iterator using a gatherer
@@ -19,7 +17,7 @@ import java.util.function.BiConsumer;
 final class GatheringIterator<T, A, R> implements Iterator<R> {
     private final Iterator<T> source;
     private final A state;
-    private final Integrator<A, ? super T, R> integrator;
+    private final Gatherer.Integrator<A, ? super T, R> integrator;
     private final BiConsumer<A, Gatherer.Downstream<? super R>> finisher;
     private final Queue<R> buffer = new ArrayDeque<>();
     private boolean finisherCalled = false;

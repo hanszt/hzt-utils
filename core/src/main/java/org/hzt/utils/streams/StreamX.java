@@ -4,8 +4,6 @@ import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.SortedMutableSetX;
 import org.hzt.utils.collectors.CollectorsX;
-import org.hzt.utils.gatherers.Gatherer;
-import org.hzt.utils.gatherers.Gatherers;
 import org.hzt.utils.iterables.Gatherable;
 import org.hzt.utils.iterables.IterableXHelper;
 import org.hzt.utils.iterables.Numerable;
@@ -37,6 +35,8 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
+import java.util.stream.Gatherer;
+import java.util.stream.Gatherers;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -419,7 +419,7 @@ public interface StreamX<T> extends Stream<T>, Gatherable<T>, Sortable<T>, Numer
      * @see Gatherers
      */
     @Override
-    default <A, R> StreamX<R> gather(final Gatherer<? super T, A, R> gatherer) {
+    default <R> StreamX<R> gather(final Gatherer<? super T, ?, R> gatherer) {
         final var sequence = Sequence.of(this).gather(gatherer);
         return new StreamXImpl<>(isParallel() ? sequence.parallelStream() : sequence.stream());
     }

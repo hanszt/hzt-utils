@@ -1,6 +1,6 @@
 package org.hzt.utils.gatherers.primitives;
 
-import org.hzt.utils.gatherers.Gatherer;
+import java.util.stream.Gatherer;
 
 @FunctionalInterface
 public interface IntIntegrator<A, R> {

@@ -1,10 +1,11 @@
 package org.hzt.utils.iterables.primitives;
 
-import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.gatherers.primitives.IntGatherer;
 import org.hzt.utils.iterables.Gatherable;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.PrimitiveIterators;
+
+import java.util.stream.Gatherer;
 
 @FunctionalInterface
 public interface IntGatherable extends IntCollectable {

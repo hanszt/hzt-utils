@@ -1,10 +1,10 @@
 package org.hzt.utils.gatherers.primitives;
 
 import org.hzt.utils.collections.primitives.IntList;
-import org.hzt.utils.gatherers.Gatherer.Downstream;
 import org.hzt.utils.statistics.IntStatistics;
 
 import java.util.function.IntFunction;
+import java.util.stream.Gatherer;
 
 /**
  * A concept for int specialized gatherers
@@ -15,7 +15,7 @@ public final class IntGatherers {
     }
 
     public static <R> IntGatherer<Void, R> mapToObjNotNull(final IntFunction<? extends R> toObjMapper) {
-        return IntGatherer.of((unused, value, downstream) -> {
+        return IntGatherer.of((_, value, downstream) -> {
             final var element = toObjMapper.apply(value);
             if (element != null) {
                 downstream.push(element);
@@ -40,7 +40,7 @@ public final class IntGatherers {
             int at = 0;
             boolean firstWindow = true;
 
-            boolean nextWindow(final int element, final Downstream<? super IntList> downstream) {
+            boolean nextWindow(final int element, final Gatherer.Downstream<? super IntList> downstream) {
                 window[at++] = element;
                 if (at < windowSize) {
                     return true;
@@ -55,7 +55,7 @@ public final class IntGatherers {
                 }
             }
 
-            void finish(final Downstream<? super IntList> downstream) {
+            void finish(final Gatherer.Downstream<? super IntList> downstream) {
                 if (firstWindow && at > 0 && !downstream.isRejecting()) {
                     final var lastWindow = window;
                     System.arraycopy(window, 0, lastWindow, 0, at);

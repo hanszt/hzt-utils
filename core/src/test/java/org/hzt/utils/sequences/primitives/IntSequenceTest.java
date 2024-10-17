@@ -5,7 +5,6 @@ import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.LongList;
-import org.hzt.utils.gatherers.Gatherers;
 import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.primitive_comparators.IntComparator;
@@ -21,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Gatherers;
 import java.util.stream.IntStream;
 
 import static org.hzt.utils.It.println;

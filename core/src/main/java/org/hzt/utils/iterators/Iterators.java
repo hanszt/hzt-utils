@@ -3,7 +3,6 @@ package org.hzt.utils.iterators;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.IndexedFunction;
-import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
 
@@ -23,6 +22,7 @@ import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.stream.Gatherer;
 
 public final class Iterators {
 

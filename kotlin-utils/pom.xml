@@ -8,15 +8,15 @@
     <parent>
         <groupId>org.hzt.utils</groupId>
         <artifactId>hzt-utils</artifactId>
-        <version>1.0.3.21</version>
+        <version>1.0.3.22</version>
     </parent>
 
     <artifactId>kotlin-utils</artifactId>
 
     <properties>
-        <kotlin.version>2.0.0</kotlin.version>
-        <kotest.version>5.8.1</kotest.version>
-        <kotlin-maven-plugin.jvmTarget>17</kotlin-maven-plugin.jvmTarget>
+        <kotlin.version>2.0.20</kotlin.version>
+        <kotest.version>5.9.1</kotest.version>
+        <kotlin-maven-plugin.jvmTarget>21</kotlin-maven-plugin.jvmTarget>
     </properties>
 
     <dependencies>
@@ -101,6 +101,20 @@
                 </executions>
                 <configuration>
                     <jvmTarget>${kotlin-maven-plugin.jvmTarget}</jvmTarget>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>--enable-preview</compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>--enable-preview</argLine>
                 </configuration>
             </plugin>
         </plugins>

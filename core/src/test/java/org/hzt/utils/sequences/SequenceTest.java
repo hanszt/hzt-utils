@@ -909,7 +909,7 @@ class SequenceTest {
 
     @Test
     void testTimeZonesAntarctica() {
-        testWithFixedLocale(Locale.US, l -> {
+        testWithFixedLocale(Locale.US, _ -> {
             final var now = Instant.parse("2024-01-04T14:32:23Z");
 
             final var timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.contains("Antarctica")).joinToString("\n");
@@ -920,10 +920,10 @@ class SequenceTest {
                              Z Antarctica/Troll             2:32 PM
                         +03:00 Antarctica/Syowa             5:32 PM
                         +05:00 Antarctica/Mawson            7:32 PM
-                        +06:00 Antarctica/Vostok            8:32 PM
+                        +05:00 Antarctica/Vostok            7:32 PM
                         +07:00 Antarctica/Davis             9:32 PM
+                        +08:00 Antarctica/Casey            10:32 PM
                         +10:00 Antarctica/DumontDUrville   12:32 AM
-                        +11:00 Antarctica/Casey             1:32 AM
                         +11:00 Antarctica/Macquarie         1:32 AM
                         +13:00 Antarctica/McMurdo           3:32 AM
                         +13:00 Antarctica/South_Pole        3:32 AM""".stripIndent();

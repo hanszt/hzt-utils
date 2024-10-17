@@ -1,6 +1,5 @@
 package benchmark.prefix;
 
-import org.hzt.utils.gatherers.Gatherers;
 import org.hzt.utils.gatherers.primitives.IntGatherers;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -9,6 +8,7 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.util.stream.Gatherers;
 import java.util.stream.IntStream;
 
 public class GathererVsIntGathererBenchmark {

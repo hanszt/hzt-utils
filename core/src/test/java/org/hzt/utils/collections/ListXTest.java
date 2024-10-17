@@ -21,9 +21,11 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.collectingAndThen;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hzt.utils.collectors.CollectorsX.toListX;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -130,7 +132,7 @@ class ListXTest {
     void testBinarySearchFrom() {
         final var sortedList = MutableListX.of("adi", "hans", "huib", "sophie", "ted");
 
-        final var indexInSortedList = sortedList.binarySearchFrom(2, value ->  value.compareTo("sophie"));
+        final var indexInSortedList = sortedList.binarySearchFrom(2, value -> value.compareTo("sophie"));
         final var invertedInsertionPoint = sortedList.binarySearchFrom(2, value -> value.compareTo("adi"));
         // the inverted insertion point (-insertion point - 1)
         final var insertionIndex = -invertedInsertionPoint - 1;
@@ -158,21 +160,43 @@ class ListXTest {
         assertThrows(UnsupportedOperationException.class, () -> years.add(yearToAdd));
     }
 
-    @Test
-    void buildList() {
-        final var strings = ListX.build(this::getStringList);
+    @Nested
+    class BuildListTests {
 
-        assertAll(
-                () -> assertEquals(101, strings.size()),
-                () -> assertTrue(strings.contains("Hallo"))
-        );
-    }
+        @Test
+        void testBuildList() {
+            final var strings = ListX.build(this::getStringList);
 
-    private void getStringList(final MutableListX<String> list) {
-        for (var i = 0; i < 100; i++) {
-            list.add(String.valueOf(i));
+            assertAll(
+                    () -> assertEquals(101, strings.size()),
+                    () -> assertThat(strings).contains("Hallo"),
+                    () -> assertThrows(UnsupportedOperationException.class, () -> ((MutableListX<String>) strings).add("add"))
+
+            );
         }
-        list.add(1, "Hallo");
+
+        @Test
+        void testBuildSizedList() {
+            final var reference = new AtomicReference<MutableListX<String>>();
+            final var strings = ListX.build(101, (MutableListX<String> list) -> {
+                getStringList(list);
+                reference.set(list);
+            });
+
+            assertAll(
+                    () -> assertEquals(101, strings.size()),
+                    () -> assertThat(strings).contains("Hallo"),
+                    () -> assertThrows(UnsupportedOperationException.class, () -> ((MutableListX<String>) strings).add("add")),
+                    () -> assertThrows(UnsupportedOperationException.class, () -> reference.get().add("add"))
+            );
+        }
+
+        private void getStringList(final MutableListX<String> list) {
+            for (var i = 0; i < 100; i++) {
+                list.add(String.valueOf(i));
+            }
+            list.add(1, "Hallo");
+        }
     }
 
     @Test
@@ -331,7 +355,7 @@ class ListXTest {
         It.println("product = " + product);
 
         assertEquals(expected, product, () -> "Something went wrong. Did you know, you can also crate dates from ints? " +
-                integers.toListOf(day -> LocalDate.of(2020, Month.JANUARY, day)));
+                                              integers.toListOf(day -> LocalDate.of(2020, Month.JANUARY, day)));
     }
 
     @Nested
@@ -350,7 +374,7 @@ class ListXTest {
 
         @Test
         void testListXAndListDoNotEqual() {
-            final var listX =ListX.of("This", "is", "a", "test");
+            final var listX = ListX.of("This", "is", "a", "test");
             final var list = List.of("This", "is", "a", "test");
 
             assertAll(

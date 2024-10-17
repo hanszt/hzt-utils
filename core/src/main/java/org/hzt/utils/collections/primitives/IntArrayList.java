@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
 import java.util.Random;
+import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
 import static java.util.Objects.checkIndex;
@@ -48,7 +49,20 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
         }
     }
 
+    IntArrayList(final Consumer<? super IntMutableList> factory) {
+        this();
+        factory.accept(this);
+        isUnmodifiable = true;
+    }
+
+    IntArrayList(final int size, final Consumer<? super IntMutableList> factory) {
+        this(size);
+        factory.accept(this);
+        isUnmodifiable = true;
+    }
+
     public boolean add(final int value) {
+        throwIfNotModifiable();
         if (size == elementData.length) {
             final var isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
@@ -60,6 +74,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
 
     @Override
     public boolean add(final int index, final int value) {
+        throwIfNotModifiable();
         Objects.checkIndex(index, size + 1);
         if (size == elementData.length) {
             elementData = growArray(size, elementData.length == 0);
@@ -72,6 +87,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
 
     @Override
     public boolean addAll(final int index, final PrimitiveIterable.OfInt iterable) {
+        throwIfNotModifiable();
         rangeCheckForAdd(index);
         final var a = iterable instanceof final IntCollection c ? c.toArray() : IntSequence.of(iterable).toArray();
         final var numNew = a.length;
@@ -137,6 +153,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     public int removeAt(final int index) {
+        throwIfNotModifiable();
         final var oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveInt(elementData, size, index);
         return oldValue;
@@ -196,6 +213,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
 
     @Override
     public int set(final int index, final int value) {
+        throwIfNotModifiable();
         checkIndex(index, size);
         elementData[index] = value;
         return value;
@@ -203,7 +221,7 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
 
     @Override
     public IntMutableList toMutableList() {
-        return this;
+        return new IntArrayList(this);
     }
 
     @Override
@@ -251,11 +269,13 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
 
     @Override
     public void sort(final IntComparator comparator) {
+        throwIfNotModifiable();
         ArraysX.sort(0, size, comparator, elementData);
     }
 
     @Override
     public void sort() {
+        throwIfNotModifiable();
         Arrays.sort(elementData, 0, size);
     }
 

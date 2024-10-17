@@ -38,9 +38,11 @@ public interface IntList extends IntCollection,
     }
 
     static IntList build(final Consumer<? super IntMutableList> factory) {
-        final var listX = IntMutableList.empty();
-        factory.accept(listX);
-        return listX;
+        return new IntArrayList(factory);
+    }
+
+    static IntList build(int size, final Consumer<? super IntMutableList> factory) {
+        return new IntArrayList(size, factory);
     }
 
     default boolean contains(final int value) {

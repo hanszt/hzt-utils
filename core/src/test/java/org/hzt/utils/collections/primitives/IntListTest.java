@@ -1,16 +1,19 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.sequences.primitives.IntSequence;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IntListTest {
@@ -125,5 +128,18 @@ class IntListTest {
         final IntList list2 = IntMutableList.of(1, 2, 5, 4, 5, 6, 8);
 
         assertEquals(list2.hashCode(), list1.hashCode());
+    }
+
+    @Nested
+    class IntListBuildTests {
+
+        @Test
+        void testBuildIntList() {
+            final var intList = IntList.build(5, b -> b.addAll(1, 2, 3, 4, 5));
+
+            assertThat(intList).hasSize(5);
+            assertThat(intList).containsExactly(1, 2, 3, 4, 5);
+            assertThrows(UnsupportedOperationException.class, () -> ((IntMutableList) intList).add(3));
+        }
     }
 }

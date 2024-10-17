@@ -2,6 +2,7 @@ package org.hzt.utils.sequences;
 
 import org.hzt.test.ReplaceCamelCaseBySentence;
 import org.hzt.test.TestSampleGenerator;
+import org.hzt.test.assertions.Assertions;
 import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
@@ -28,6 +29,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -57,24 +60,22 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.lang.System.setProperty;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hzt.test.Locales.testWithFixedLocale;
-import static org.hzt.utils.It.print;
-import static org.hzt.utils.It.printf;
-import static org.hzt.utils.It.println;
 import static org.hzt.utils.iterables.IterableExtensions.runningFold;
 import static org.hzt.utils.iterables.IterableExtensions.windowed;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class SequenceTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SequenceTest.class);
 
     @Test
     void testSimpleStreamWithMapYieldsIteratorWithNext() {
@@ -83,7 +84,7 @@ class SequenceTest {
         final var sequence = Sequence.of(list)
                 .map(SequenceTest::lengthMappingNotCalledWhenNotConsumed);
 
-        assertTrue(sequence.iterator()::hasNext);
+        assertThat(sequence.iterator()).hasNext();
     }
 
     private static int lengthMappingNotCalledWhenNotConsumed(final String s) {
@@ -112,7 +113,7 @@ class SequenceTest {
                 .withIndex()
                 .windowed(4);
 
-        println(sequence);
+        LOGGER.debug("Sequence: {}", sequence);
 
         assertNotNull(sequence);
     }
@@ -166,7 +167,7 @@ class SequenceTest {
                 .mapNotNull(BankAccount::getBalance)
                 .toMutableList();
 
-        assertFalse(balances.contains(null));
+        assertThat(balances).doesNotContainNull();
     }
 
     @Test
@@ -230,7 +231,7 @@ class SequenceTest {
                 .filterNot(String::isEmpty)
                 .toListX();
 
-        println("result = " + result);
+        LOGGER.debug("result = {}", result);
 
         assertEquals(ListX.of("Hallo", "test"), result);
     }
@@ -246,7 +247,7 @@ class SequenceTest {
                 .filterNot(String::isEmpty)
                 .toListX();
 
-        println("result = " + result);
+        LOGGER.debug("result = {}", result);
 
         assertEquals(ListX.of("Hallo", "test"), result);
     }
@@ -262,7 +263,7 @@ class SequenceTest {
                 .filter(length -> length > 3)
                 .toList();
 
-        println("result = " + result);
+        LOGGER.debug("result = {}", result);
 
         assertEquals(IntList.of(5, 4), result);
     }
@@ -322,7 +323,7 @@ class SequenceTest {
                 .filter(LongX::isOdd)
                 .take(12)
                 .map(Long::intValue)
-                .onEach(It::println)
+                .onEach(item -> LOGGER.trace("{}", item))
                 .toListX();
 
         assertEquals(12, strings.size());
@@ -356,7 +357,7 @@ class SequenceTest {
         final var strings = Sequence.iterate(0, i -> ++i)
                 .takeWhile(i -> i < 10)
                 .filter(LongX::isEven)
-                .onEach(It::println)
+                .onEach(item -> LOGGER.trace("{}", item))
                 .map(String::valueOf)
                 .map(String::trim)
                 .toListX();
@@ -369,7 +370,7 @@ class SequenceTest {
         final var strings = Sequence.iterate(1, i -> i + 2)
                 .map(String::valueOf)
                 .takeWhileInclusive(s -> !s.contains("0"))
-                .onEach(It::println)
+                .onEach(item -> LOGGER.trace("{}", item))
                 .map(String::trim)
                 .toListX();
 
@@ -384,7 +385,7 @@ class SequenceTest {
                 .skipWhile(i -> i != 5)
                 .toList();
 
-        println("integers = " + integers);
+        LOGGER.debug("integers = {}", integers);
 
         assertEquals(List.of(5, 10, 6, 5, 3, 5, 6), integers);
     }
@@ -397,7 +398,7 @@ class SequenceTest {
                 .skipWhileInclusive(i -> i != 5)
                 .toList();
 
-        println("integers = " + integers);
+        LOGGER.debug("integers = {}", integers);
 
         assertEquals(List.of(10, 6, 5, 3, 5, 6), integers);
     }
@@ -447,9 +448,9 @@ class SequenceTest {
                     .<Integer>mapMulti(Iterable::forEach)
                     .toListX();
 
-            windows.filterIndexed((i, v) -> IntX.multipleOf(10_000).test(i)).forEach(It::println);
+            windows.filterIndexed((i, v) -> IntX.multipleOf(10_000).test(i)).forEach(item -> LOGGER.trace("{}", item));
 
-            println("windows.last() = " + windows.last());
+            LOGGER.debug("windows.last() = {}", windows.last());
 
             assertEquals(333328, result.size());
         }
@@ -467,7 +468,7 @@ class SequenceTest {
                     .windowed(5, 6, true)
                     .toListX();
 
-            println("windows = " + windows);
+            LOGGER.debug("windows = {}", windows);
 
             new HashMap<>(0);
 
@@ -484,7 +485,7 @@ class SequenceTest {
                     .windowed(5, 6)
                     .toListX();
 
-            println("windows = " + windows);
+            LOGGER.debug("windows = {}", windows);
 
             assertAll(
                     () -> assertEquals(16, windows.size()),
@@ -500,7 +501,7 @@ class SequenceTest {
                     .windowed(5, 2, true)
                     .toListX();
 
-            println("windows = " + windows);
+            LOGGER.debug("windows = {}", windows);
 
             assertAll(
                     () -> assertEquals(6, windows.size()),
@@ -516,7 +517,7 @@ class SequenceTest {
                     .windowed(4, 2)
                     .toListX();
 
-            println("windows = " + windows);
+            LOGGER.debug("windows = {}", windows);
 
             assertAll(
                     () -> assertEquals(3, windows.size()),
@@ -532,7 +533,7 @@ class SequenceTest {
                     .windowed(1, n -> ++n, 4, true, It::self)
                     .toListX();
 
-            println("windows = " + windows);
+            LOGGER.debug("windows = {}", windows);
 
             assertAll(
                     () -> assertEquals(10, windows.size()),
@@ -548,9 +549,9 @@ class SequenceTest {
                     .windowed(10)
                     .toListX();
 
-            println("windows = " + windows);
+            LOGGER.debug("windows = {}", windows);
 
-            assertTrue(windows.isEmpty());
+            assertThat(windows).isEmpty();
         }
 
         @Test
@@ -562,10 +563,10 @@ class SequenceTest {
                     .map(ListX::size)
                     .toListX();
 
-            println("sizes = " + sizes);
+            LOGGER.debug("sizes = {}", sizes);
 
-            println("windows.current() = " + sizes.findFirst());
-            println("windows.last() = " + sizes.findLast());
+            LOGGER.debug("windows.current() = {}", sizes.findFirst());
+            LOGGER.debug("windows.last() = {}", sizes.findLast());
 
             assertEquals(22, sizes.size());
         }
@@ -586,16 +587,16 @@ class SequenceTest {
         final var random = new Random(0);
         final var sums = IntRange.of(0, 1_000)
                 .filter(IntX.multipleOf(10))
-                .onEach(i -> print(i + ", "))
+                .onEach(i -> LOGGER.trace("{}, ", i))
                 .boxed()
                 .zipWithNext(Integer::sum)
                 .toListX()
                 .shuffled(random);
 
-        println("\nsums = " + sums);
+        LOGGER.debug("\nsums = {}", sums);
 
-        println("sums.current() = " + sums.findFirst());
-        println("sums.last() = " + sums.findLast());
+        LOGGER.debug("sums.current() = {}", sums.findFirst());
+        LOGGER.debug("sums.last() = {}", sums.findLast());
 
         assertEquals(99, sums.size());
     }
@@ -632,10 +633,10 @@ class SequenceTest {
 
         final var map = list.asSequence()
                 .associateWith(String::valueOf)
-                .onEach(It::println)
+                .onEach(item -> LOGGER.trace("{}", item))
                 .mapByValues(s -> StringX.of(s).first())
                 .filterKeys(IntX::isEven)
-                .onEachKey(It::println)
+                .onEachKey(item -> LOGGER.trace("{}", item))
                 .toMapX();
 
         assertEquals(2, map.size());
@@ -644,12 +645,12 @@ class SequenceTest {
     @Test
     void testEmpty() {
         final var list = Sequence.empty().toList();
-        assertTrue(list.isEmpty());
+        assertThat(list).isEmpty();
     }
 
     @Test
     void testSequenceOfNullable() {
-        assertTrue(Sequence.ofNullable(null).toList().isEmpty());
+        assertThat(Sequence.ofNullable(null).toList()).isEmpty();
     }
 
     @Test
@@ -664,7 +665,7 @@ class SequenceTest {
                 .withIndex()
                 .toList();
 
-        println("list = " + list);
+        LOGGER.debug("list = {}", list);
 
         assertEquals(147, list.size());
     }
@@ -678,8 +679,8 @@ class SequenceTest {
         final var first = leapYears.first();
         final var last = leapYears.last();
 
-        println("current = " + first);
-        println("last = " + last);
+        LOGGER.debug("current = {}", first);
+        LOGGER.debug("last = {}", last);
         final var stats = leapYears.intStatsOf(Year::getValue);
 
         assertAll(
@@ -692,18 +693,18 @@ class SequenceTest {
     @Test
     void testSequenceCanBeConsumedMultipleTimes() {
         final var names = Sequence.of(List.of(1, 2, 3, 4, 5, 3, -1, 6, 12))
-                .onEach(It::println)
+                .onEach(item -> LOGGER.trace("{}", item))
                 .mapNotNull(Year::of)
                 .sorted();
 
         final var first = names.first();
-        println("current = " + first);
-        println("current = " + names.first());
+        LOGGER.debug("current = {}", first);
+        LOGGER.debug("current = {}", names.first());
         final var nameList = names.toList();
         final var last = names.last();
 
 
-        println("last = " + last);
+        LOGGER.debug("last = {}", last);
 
         assertAll(
                 () -> assertEquals(Year.of(-1), first),
@@ -719,14 +720,14 @@ class SequenceTest {
         @Test
         void testSequenceWithConstrainOnceMethodCanOnlyBeUsedOnce() {
             final var windowedSequence = Sequence.of(List.of(1, 2, 3, 4, 5, 3, -1, 6, 12))
-                    .onEach(It::println)
+                    .onEach(item -> LOGGER.trace("{}", item))
                     .filter(i -> i % 2 == 0)
                     .windowed(2)
                     .constrainOnce();
 
             final var windows = windowedSequence.toList();
 
-            System.out.println("nameList = " + windows);
+            LOGGER.debug("nameList = {}", windows);
 
             final var expected = List.of(ListX.of(2, 4), ListX.of(4, 6), ListX.of(6, 12));
 
@@ -744,7 +745,7 @@ class SequenceTest {
 
             final int first = integers.first();
 
-            System.out.println("current = " + first);
+            LOGGER.debug("current = {}", first);
 
             assertAll(
                     () -> assertEquals(2, first),
@@ -760,7 +761,7 @@ class SequenceTest {
 
             final var first = integers.firstOf(String::valueOf);
 
-            System.out.println("current = " + first);
+            LOGGER.debug("current = {}", first);
 
             assertAll(
                     () -> assertEquals("2", first),
@@ -781,15 +782,15 @@ class SequenceTest {
 
 
         setProperty("org.openjdk.java.util.stream.tripwire", "false");
-        println(daysOfYear.joinToString());
+        LOGGER.debug(daysOfYear.joinToString());
         setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
-        println("daysOfYear.min() = " + daysOfYear.min());
+        LOGGER.debug("daysOfYear.min() = {}", daysOfYear.min());
 
-        println("daysOfYear.max() = " + daysOfYear.max());
+        LOGGER.debug("daysOfYear.max() = {}", daysOfYear.max());
 
         assertAll(
-                () -> assertTrue(Year.of(year).isLeap()),
+                () -> Assertions.assertThat(LocalDate.of(year, 1, 1)).isLeapYear(),
                 () -> assertEquals(7, daysOfYear.filter(i -> i == 31).count()),
                 () -> assertEquals(12, daysOfYear.filter(i -> i == 29).count()),
                 () -> assertEquals(366, daysOfYear.count())
@@ -815,7 +816,7 @@ class SequenceTest {
                 .onEach(s -> orderCalledSequence.add("post-sort"))
                 .toArray();
 
-        orderCalledSequence.forEach(System.out::println);
+        orderCalledSequence.forEach(item -> LOGGER.trace("{}", item));
 
         assertAll(
                 () -> assertEquals(orderCalledSequence, orderCalledStream),
@@ -846,7 +847,7 @@ class SequenceTest {
                 .intersperse(i -> ++i)
                 .toList();
 
-        println("integers = " + integers);
+        LOGGER.debug("integers = {}", integers);
 
         assertEquals(List.of(0, 1, -1, 0, -2, -1, -3, -2, -4, -3, -5, -4, -6, -5, -7, -6, -8, -7, -9), integers);
     }
@@ -858,7 +859,7 @@ class SequenceTest {
                 .intersperse(5)
                 .toList();
 
-        println("integers = " + integers);
+        LOGGER.debug("integers = {}", integers);
 
         assertEquals(List.of(0, 5, -1, 5, -2, 5, -3, 5, -4, 5, -5, 5, -6, 5, -7, 5, -8, 5, -9), integers);
     }
@@ -870,7 +871,7 @@ class SequenceTest {
                 .intersperse(0, i -> i + 2)
                 .toList();
 
-        println("integers = " + integers);
+        LOGGER.debug("integers = {}", integers);
 
         assertEquals(List.of(0, 0, -1, 2, -2, 4, -3, 6, -4, 8, -5, 10, -6, 12, -7, 14, -8, 16, -9), integers);
     }
@@ -884,7 +885,7 @@ class SequenceTest {
                 .intersperse(() -> random.nextInt(20))
                 .toList();
 
-        println("integers = " + integers);
+        LOGGER.debug("integers = {}", integers);
 
         assertEquals(List.of(0, 0, -1, 8, -2, 9, -3, 7, -4, 15, -5, 13, -6, 11, -7, 1, -8, 19, -9), integers);
     }
@@ -893,11 +894,11 @@ class SequenceTest {
     void testSequenceOfZoneIds() {
         final var now = Instant.parse("2023-02-02T23:43:24Z");
         final var current = now.atZone(ZoneId.of("Europe/Amsterdam"));
-        printf("Current time is %s%n%n", current);
+        LOGGER.atDebug().setMessage(() -> "Current time is %s%n%n".formatted(current)).log();
 
         final var noneWholeHourZoneOffsetSummaries = getTimeZoneSummaries(now, id -> nonWholeHourOffsets(now, ZoneId.of(id)));
 
-        noneWholeHourZoneOffsetSummaries.forEach(It::println);
+        noneWholeHourZoneOffsetSummaries.forEach(item -> LOGGER.trace("{}", item));
 
         assertEquals(23, noneWholeHourZoneOffsetSummaries.count());
     }
@@ -950,7 +951,7 @@ class SequenceTest {
                 .skip(4)
                 .take(1_000)
                 .step(200)
-                .onEach(It::println)
+                .onEach(item -> LOGGER.trace("{}", item))
                 .mapToInt(It::asInt);
 
         final var integers = intSequence.toMutableList();
@@ -988,7 +989,7 @@ class SequenceTest {
         final var sqrtOf5 = BigDecimal.valueOf(5).sqrt(MathContext.DECIMAL128);
         final var goldenRatio = (BigDecimal.ONE.add(sqrtOf5)).divide(BigDecimal.valueOf(2), scale, RoundingMode.HALF_UP);
 
-        println("goldenRatio by sqrt = " + goldenRatio);
+        LOGGER.debug("goldenRatio by sqrt = {}", goldenRatio);
 
         final var MAX_ITERATIONS = 10_000;
 
@@ -1002,9 +1003,9 @@ class SequenceTest {
                 .toListX();
 
         final var actual = approximations.last();
-        println("golden ratio by seq = " + actual);
+        LOGGER.debug("golden ratio by seq = {}", actual);
 
-        approximations.forEach(It::println);
+        approximations.forEach(item -> LOGGER.trace("{}", item));
 
         assertAll(
                 () -> assertEquals(56, approximations.size()),
@@ -1022,7 +1023,7 @@ class SequenceTest {
                 .flatMapToInt(i -> () -> i)
                 .toList();
 
-        println("integers = " + integers);
+        LOGGER.debug("integers = {}", integers);
 
         setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
@@ -1147,7 +1148,7 @@ class SequenceTest {
 
             final var first = sequence.first();
 
-            System.out.println("current = " + first);
+            LOGGER.debug("current = {}", first);
 
             assertAll(
                     () -> assertArrayEquals(new int[]{2, 4}, ints),
@@ -1168,7 +1169,7 @@ class SequenceTest {
 
             final var first = sequence.first();
 
-            System.out.println("first = " + first);
+            LOGGER.debug("first = {}", first);
 
             assertAll(
                     () -> assertArrayEquals(new int[]{2, 4}, ints),
@@ -1189,7 +1190,7 @@ class SequenceTest {
 
             final var first = sequence.first();
 
-            System.out.println("current = " + first);
+            LOGGER.debug("current = {}", first);
 
             assertAll(
                     () -> assertArrayEquals(new int[]{2, 4}, ints),

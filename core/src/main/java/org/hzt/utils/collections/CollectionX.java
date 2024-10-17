@@ -94,8 +94,7 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> map(final Function<? super E, ? extends R> mapper) {
-        final MutableListX<R> listX = mapTo(() -> MutableListX.withInitCapacity(size()), mapper);
-        return ListX.copyOfNullsAllowed(listX);
+        return ListX.build(size(), ml -> mapTo(() -> ml, mapper));
     }
 
     default <R> ListX<R> mapIndexed(final IndexedFunction<? super E, ? extends R> mapper) {
@@ -103,7 +102,7 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default ListX<E> filter(final Predicate<? super E> predicate) {
-        return ListX.copyOf(filterTo(() -> MutableListX.withInitCapacity(size()), predicate));
+        return ListX.build(size(), ml -> filterTo(() -> ml, predicate));
     }
 
     default <R> ListX<E> filterBy(final Function<? super E, ? extends R> selector,
@@ -112,20 +111,20 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default ListX<E> filterIndexed(final IndexedPredicate<? super E> predicate) {
-        return ListX.copyOf(filterIndexedTo(() -> MutableListX.withInitCapacity(size()), predicate));
+        return ListX.build(size(), ml -> filterIndexedTo(() -> ml, predicate));
     }
 
     default ListX<E> filterNot(final Predicate<? super E> predicate) {
-        return ListX.copyOf(IterableX.super.filterNotTo(() -> MutableListX.withInitCapacity(size()), predicate));
+        return ListX.build(size(), ml -> IterableX.super.filterNotTo(() -> ml, predicate));
     }
 
     @Override
     default IntList mapToInt(final ToIntFunction<? super E> mapper) {
-        final var intList = IntMutableList.withInitCapacity(size());
-        for (final var e : this) {
-            intList.add(mapper.applyAsInt(e));
-        }
-        return IntList.copyOf(intList);
+        return IntList.build(size(), ml -> {
+            for (final var e : this) {
+                ml.add(mapper.applyAsInt(e));
+            }
+        });
     }
 
     @Override

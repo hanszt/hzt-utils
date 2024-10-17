@@ -4,15 +4,19 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E> {
 
     private final List<E> list;
+    private boolean isUnmodifiable = false;
 
     ArrayListX() {
         this.list = new ArrayList<>();
@@ -44,6 +48,18 @@ final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E> {
         list.add(value);
     }
 
+    ArrayListX(final Consumer<? super MutableListX<E>> factory) {
+        this();
+        factory.accept(this);
+        isUnmodifiable = true;
+    }
+
+    ArrayListX(int size, final Consumer<? super MutableListX<E>> factory) {
+        this(size);
+        factory.accept(this);
+        isUnmodifiable = true;
+    }
+
     @Override
     public ListX<E> shuffled(final Random random) {
         final var listX = new ArrayListX<>(this);
@@ -58,26 +74,31 @@ final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E> {
 
     @Override
     public boolean addAll(final Collection<? extends E> c) {
+        throwIfNotModifiable();
         return list.addAll(c);
     }
 
     @Override
     public boolean addAll(final int index, final Collection<? extends E> c) {
+        throwIfNotModifiable();
         return list.addAll(index, c);
     }
 
     @Override
     public boolean removeAll(final Collection<?> c) {
+        throwIfNotModifiable();
         return list.removeAll(c);
     }
 
     @Override
     public boolean retainAll(final Collection<?> c) {
+        throwIfNotModifiable();
         return list.retainAll(c);
     }
 
     @Override
     public void clear() {
+        throwIfNotModifiable();
         list.clear();
     }
 
@@ -88,17 +109,32 @@ final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E> {
 
     @Override
     public E set(final int index, final E element) {
+        throwIfNotModifiable();
         return list.set(index, element);
     }
 
     @Override
     public void add(final int index, final E element) {
+        throwIfNotModifiable();
         list.add(index, element);
     }
 
     @Override
     public E remove(final int index) {
+        throwIfNotModifiable();
         return list.remove(index);
+    }
+
+    @Override
+    public void sort(Comparator<? super E> c) {
+        throwIfNotModifiable();
+        super.sort(c);
+    }
+
+    @Override
+    public void replaceAll(UnaryOperator<E> operator) {
+        throwIfNotModifiable();
+        super.replaceAll(operator);
     }
 
     @Override
@@ -133,7 +169,10 @@ final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E> {
 
     @Override
     public MutableListX<E> subList(final int fromIndex, final int toIndex) {
-        return MutableListX.of(list.subList(fromIndex, toIndex));
+        final var subList = list.subList(fromIndex, toIndex);
+        return isUnmodifiable ?
+                new ArrayListX<>(subList.size(), l -> l.addAll(subList)) :
+                MutableListX.of(subList);
     }
 
     @Override
@@ -166,4 +205,9 @@ final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E> {
         return list.hashCode();
     }
 
+    private void throwIfNotModifiable() {
+        if (isUnmodifiable) {
+            throw new UnsupportedOperationException();
+        }
+    }
 }

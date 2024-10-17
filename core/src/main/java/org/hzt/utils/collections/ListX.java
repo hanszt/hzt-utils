@@ -48,9 +48,11 @@ public interface ListX<E> extends CollectionX<E>,
     }
 
     static <E> ListX<E> build(final Consumer<? super MutableListX<E>> mutableListConsumer) {
-        final MutableListX<E> list = MutableListX.empty();
-        mutableListConsumer.accept(list);
-        return copyOf(list);
+        return new ArrayListX<>(mutableListConsumer);
+    }
+
+    static <E> ListX<E> build(int size, final Consumer<? super MutableListX<E>> mutableListConsumer) {
+        return new ArrayListX<>(size, mutableListConsumer);
     }
 
     static <E> ListX<E> copyOf(final Collection<E> collection) {

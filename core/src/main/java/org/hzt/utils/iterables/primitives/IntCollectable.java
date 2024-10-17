@@ -55,7 +55,12 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
     }
 
     default IntList toList() {
-        return IntList.copyOf(toMutableList());
+        return IntList.build(ml -> {
+            final var iterator = iterator();
+            while (iterator.hasNext()) {
+                ml.add(iterator.nextInt());
+            }
+        });
     }
 
     default <C extends IntMutableCollection> C to(final Supplier<C> collectionFactory) {

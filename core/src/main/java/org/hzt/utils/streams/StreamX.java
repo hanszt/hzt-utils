@@ -361,7 +361,7 @@ public interface StreamX<T> extends Stream<T>, Gatherable<T>, Sortable<T>, Numer
 
     @Override
     default void close() {
-        throw new UnsupportedOperationException("Not supported in StreamX interface");
+        // Do nothing
     }
 
     @Override

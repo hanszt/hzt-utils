@@ -16,6 +16,7 @@ extends PrimitiveAbstractCollection<T, T_CONS, A, I> implements PrimitiveCollect
     private static final int SOFT_MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
     protected static final int DEFAULT_CAPACITY = 10;
     protected A elementData;
+    protected boolean isUnmodifiable = false;
 
     protected PrimitiveAbstractArrayList(final int initSize, final A elementData) {
         super(initSize);
@@ -29,6 +30,7 @@ extends PrimitiveAbstractCollection<T, T_CONS, A, I> implements PrimitiveCollect
     }
 
     public void clear() {
+        throwIfNotModifiable();
         size = 0;
         elementData = newArray(DEFAULT_CAPACITY);
     }
@@ -76,5 +78,11 @@ extends PrimitiveAbstractCollection<T, T_CONS, A, I> implements PrimitiveCollect
 
     private String outOfBoundsMsg(final int index) {
         return "Index: " + index + ", Size: " + size;
+    }
+
+    protected void throwIfNotModifiable() {
+        if (isUnmodifiable) {
+            throw new UnsupportedOperationException();
+        }
     }
 }

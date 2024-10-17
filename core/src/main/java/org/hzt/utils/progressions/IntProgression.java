@@ -64,12 +64,12 @@ public class IntProgression implements IntSequence {
             return false;
         }
         final var integers = (IntProgression) o;
-        return start == integers.start && endInclusive == integers.endInclusive && getStep() == integers.getStep();
+        return start == integers.start && endInclusive == integers.endInclusive && step() == integers.step();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(start, endInclusive, getStep());
+        return Objects.hash(start, endInclusive, step());
     }
 
     @Override
@@ -101,7 +101,7 @@ public class IntProgression implements IntSequence {
         return endInclusive;
     }
 
-    public int getStep() {
+    public int step() {
         return step;
     }
 

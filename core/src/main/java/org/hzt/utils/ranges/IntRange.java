@@ -44,6 +44,7 @@ public final class IntRange extends IntProgression implements ClosedRange<Intege
     public boolean contains(final int value) {
         return start() <= value && value <= endInclusive();
     }
+
     @Override
     public Integer start() {
         return super.start();
@@ -52,5 +53,14 @@ public final class IntRange extends IntProgression implements ClosedRange<Intege
     @Override
     public Integer endInclusive() {
         return super.endInclusive();
+    }
+
+    @Override
+    public String toString() {
+        return "IntRange{" +
+               "start=" + start() +
+               ", endInclusive=" + endInclusive() +
+               ", step=" + step() +
+               '}';
     }
 }

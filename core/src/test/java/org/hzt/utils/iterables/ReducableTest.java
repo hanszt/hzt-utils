@@ -66,9 +66,12 @@ class ReducableTest {
     @Test
     void testFoldToMutableList() {
         final var listX = Sequence.of(1, 2, 3, 4, 5)
-                .fold(MutableListX.empty(), MutableListX::plus);
+                .fold(MutableListX.<Integer>empty(), (ints, value) -> {
+                    ints.add(value);
+                    return ints;
+                });
 
-        assertEquals(MutableListX.of(1, 2, 3 ,4, 5), listX);
+        assertEquals(MutableListX.of(1, 2, 3, 4, 5), listX);
     }
 
     @Test

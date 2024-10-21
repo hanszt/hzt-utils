@@ -5,6 +5,7 @@ import org.hzt.utils.statistics.IntStatistics;
 import org.hzt.utils.statistics.LongStatistics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +33,7 @@ public final class GatherersX {
     }
 
     public static <T, R> Gatherer<T, Void, R> map(final Function<? super T, ? extends R> mapper) {
-        return Gatherer.of((unused, item, downstream) -> downstream.push(mapper.apply(item)));
+        return Gatherer.of((_, item, downstream) -> downstream.push(mapper.apply(item)));
     }
 
     public static <T> Gatherer<T, Void, T> filter(final Predicate<? super T> predicate) {
@@ -44,7 +45,7 @@ public final class GatherersX {
     }
 
     private static <T> Gatherer<T, Void, T> filter(final Predicate<? super T> predicate, final boolean push) {
-        return Gatherer.of((unused, item, downstream) -> {
+        return Gatherer.of((_, item, downstream) -> {
             if (predicate.test(item) == push) {
                 downstream.push(item);
             }
@@ -53,7 +54,7 @@ public final class GatherersX {
     }
 
     public static <T, R> Gatherer<T, Void, R> mapNotNull(final Function<? super T, ? extends R> mapper) {
-        return Gatherer.of((unused, t, downstream) -> acceptIfResultNotNull(mapper, t, downstream::push));
+        return Gatherer.of((_, t, downstream) -> acceptIfResultNotNull(mapper, t, downstream::push));
     }
 
     static <T, R> boolean acceptIfResultNotNull(final Function<? super T, ? extends R> mapper, final T t, final Consumer<R> consumer) {
@@ -76,21 +77,21 @@ public final class GatherersX {
     }
 
     public static <T, R> Gatherer<T, Void, R> flatMap(final Function<? super T, ? extends Iterable<R>> toIterableMapper) {
-        return Gatherer.of((unused, item, downstream) -> {
+        return Gatherer.of((_, item, downstream) -> {
             toIterableMapper.apply(item).forEach(downstream::push);
             return true;
         });
     }
 
     public static <T, I extends Iterable<? extends T>> Gatherer<I, Void, T> flatten() {
-        return Gatherer.of((unused, iterable, downstream) -> {
+        return Gatherer.of((_, iterable, downstream) -> {
             iterable.forEach(downstream::push);
             return true;
         });
     }
 
     public static <T, R> Gatherer<T, Void, R> mapMulti(final BiConsumer<? super T, Consumer<? super R>> mapper) {
-        return Gatherer.of((unused, item, downstream) -> {
+        return Gatherer.of((_, item, downstream) -> {
             mapper.accept(item, downstream::push);
             return true;
         });
@@ -129,7 +130,7 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, T> takeWhile(final Predicate<T> condition) {
-        return Gatherer.ofSequential((unused, item, downStream) -> {
+        return Gatherer.ofSequential((_, item, downStream) -> {
             final var test = condition.test(item);
             if (test) {
                 downStream.push(item);
@@ -139,7 +140,7 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, T> takeWhileIncluding(final Predicate<T> condition) {
-        return Gatherer.ofSequential((unused, item, downStream) -> {
+        return Gatherer.ofSequential((_, item, downStream) -> {
             downStream.push(item);
             return condition.test(item);
         });
@@ -156,7 +157,7 @@ public final class GatherersX {
 
     public static <T> Gatherer<T, ?, T> sorted(final Comparator<T> comparator) {
         return Gatherer.ofSequential(ArrayList<T>::new,
-                (list, item, unused) -> list.add(item),
+                (list, item, _) -> list.add(item),
                 (list, downstream) -> {
                     list.sort(comparator);
                     list.forEach(downstream::push);
@@ -165,7 +166,7 @@ public final class GatherersX {
 
     public static <T> Gatherer<T, ?, T> sortedDistinct(final Comparator<T> comparator) {
         return Gatherer.ofSequential(() -> new TreeSet<>(comparator),
-                (set, item, unused) -> {
+                (set, item, _) -> {
                     set.add(item);
                     return true;
                 },
@@ -211,11 +212,102 @@ public final class GatherersX {
 
     public static <T, R> Gatherer<T, ?, R> zipWithNext(final BiFunction<? super T, ? super T, ? extends R> mapper) {
         return Gatherers.<T>windowSliding(2)
-                .andThen(Gatherer.ofSequential((unused, w, downstream) -> downstream.push(mapper.apply(w.getFirst(), w.get(1)))));
+                .andThen(Gatherer.ofSequential((_, w, downstream) -> downstream.push(mapper.apply(w.getFirst(), w.get(1)))));
     }
 
     public static <T> Gatherer<T, ?, List<T>> zipWithNext() {
         return Gatherers.windowSliding(2);
+    }
+
+    public static <T> Gatherer<T, ?, List<T>> chunked(final int size) {
+        return windowed(size, size, true);
+    }
+
+    public static <T> Gatherer<T, ?, List<T>> windowed(final int size) {
+        return windowed(size, 1, false);
+    }
+
+    public static <T> Gatherer<T, ?, List<T>> windowed(final int size, final int step) {
+        return windowed(size, step, false);
+    }
+
+    public static <T> Gatherer<T, ?, List<T>> windowed(
+            final int size,
+            final int step,
+            final boolean partialWindows
+    ) {
+        if (size < 1) {
+            throw new IllegalArgumentException("'size' must be greater than zero");
+        }
+        if (step < 1) {
+            throw new IllegalArgumentException("'step' must be greater than zero");
+        }
+        class Window {
+            Object[] window = new Object[size];
+            int cursor = 0;
+            boolean firstWindow = true;
+
+            @SuppressWarnings("unchecked")
+            boolean integrate(T element, Gatherer.Downstream<? super List<T>> downstream) {
+                final var nextIndex = cursor++;
+                if (nextIndex < window.length) {
+                    window[nextIndex] = element;
+                }
+                if (cursor < size) {
+                    return true;
+                } else {
+                    final var nextWindow = window;
+                    if (step < size) {
+                        final var newWindow = new Object[size];
+                        System.arraycopy(nextWindow, step, newWindow, 0, size - step);
+                        window = newWindow;
+                        cursor -= step;
+                    } else {
+                        if (cursor < step) {
+                            return true;
+                        }
+                        cursor = 0;
+                    }
+                    firstWindow = false;
+                    return downstream.push(Arrays.asList((T[]) Arrays.copyOf(nextWindow, nextWindow.length)));
+                }
+            }
+
+            @SuppressWarnings("unchecked")
+            void finish(Gatherer.Downstream<? super List<T>> downstream) {
+                while ((partialWindows || firstWindow) && cursor != 0 && window.length != 0 && !downstream.isRejecting()) {
+                    final var nextWindow = window;
+                    final var thisCursor = cursor;
+                    if (step < size) {
+                        if (partialWindows) {
+                            downstream.push(Arrays.asList((T[]) Arrays.copyOf(nextWindow, thisCursor)));
+                        }
+                        firstWindow = false;
+                        final var newWindowLength = cursor - step;
+                        if (newWindowLength < 0) {
+                            break;
+                        }
+                        final var newWindow = new Object[cursor];
+                        System.arraycopy(nextWindow, step, newWindow, 0, newWindowLength);
+                        window = newWindow;
+                        cursor -= step;
+                    } else {
+                        if (thisCursor >= 0) {
+                            downstream.push(Arrays.asList((T[]) Arrays.copyOf(nextWindow, Math.min(window.length, thisCursor))));
+                            firstWindow = false;
+                            cursor -= step;
+                        } else {
+                            cursor = firstWindow ? window.length : 0;
+                        }
+                    }
+                }
+            }
+        }
+        return Gatherer.<T, Window, List<T>>ofSequential(
+                Window::new,
+                Gatherer.Integrator.<Window, T, List<T>>ofGreedy(Window::integrate),
+                Window::finish
+        );
     }
 
     public static <T> Gatherer<T, ?, List<T>> filterZippedWithNext(final BiPredicate<? super T, ? super T> predicate) {

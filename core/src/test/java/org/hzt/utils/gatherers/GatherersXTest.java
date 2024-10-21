@@ -12,6 +12,10 @@ import org.hzt.utils.statistics.LongStatistics;
 import org.hzt.utils.streams.StreamX;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,11 +23,15 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.joining;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hzt.utils.collectors.CollectorsX.doubleArrayOf;
 import static org.hzt.utils.collectors.CollectorsX.intArrayOf;
 import static org.hzt.utils.collectors.CollectorsX.longArrayOf;
+import static org.hzt.utils.gatherers.GatherersX.chunked;
 import static org.hzt.utils.gatherers.GatherersX.distinctBy;
 import static org.hzt.utils.gatherers.GatherersX.dropWhile;
 import static org.hzt.utils.gatherers.GatherersX.mapNotNull;
@@ -36,33 +44,30 @@ import static org.hzt.utils.gatherers.GatherersX.sortedDescendingBy;
 import static org.hzt.utils.gatherers.GatherersX.sortedDistinct;
 import static org.hzt.utils.gatherers.GatherersX.takeWhile;
 import static org.hzt.utils.gatherers.GatherersX.takeWhileIncluding;
+import static org.hzt.utils.gatherers.GatherersX.windowed;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GatherersXTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GatherersXTest.class);
+
     @Test
     void testDistinctBy() {
-        final var list = Sequence.of("KLM", "klm", "NS", "asml", "van gogh", "ASML", "ns")
+        final var organizations = Sequence.of("KLM", "klm", "NS", "asml", "van gogh", "ASML", "ns")
                 .map(Organization::new)
                 .gather(distinctBy(s -> s.name.toLowerCase()))
                 .toList();
 
-        final var expected = Sequence.of("KLM", "NS", "asml", "van gogh")
+        final var expectedOrgs = Sequence.of("KLM", "NS", "asml", "van gogh")
                 .map(Organization::new)
                 .toList();
 
-        assertEquals(expected, list);
+        assertEquals(expectedOrgs, organizations);
     }
 
-    private static final class Organization {
-
-        private final String name;
-
-        public Organization(final String name) {
-            this.name = name;
-        }
+    private record Organization(String name) {
 
         @Override
         public boolean equals(final Object o) {
@@ -76,10 +81,6 @@ class GatherersXTest {
             return Objects.equals(name, that.name);
         }
 
-        @Override
-        public int hashCode() {
-            return Objects.hash(name);
-        }
     }
 
     @Test
@@ -191,16 +192,7 @@ class GatherersXTest {
             assertEquals(expected, result);
         }
 
-        private final class Person {
-            private final int age;
-
-            Person(final int age) {
-                this.age = age;
-            }
-
-            public int age() {
-                return age;
-            }
+        private record Person(int age) {
 
             @Override
             public boolean equals(final Object o) {
@@ -214,10 +206,6 @@ class GatherersXTest {
                 return age == person.age;
             }
 
-            @Override
-            public int hashCode() {
-                return Objects.hash(age);
-            }
         }
 
         @Test
@@ -318,16 +306,7 @@ class GatherersXTest {
             };
         }
 
-        private final class Person {
-            private final int age;
-
-            Person(final int age) {
-                this.age = age;
-            }
-
-            public int age() {
-                return age;
-            }
+        private record Person(int age) {
         }
 
         @Test
@@ -347,16 +326,7 @@ class GatherersXTest {
             );
         }
 
-        final class ChemicalSubstance {
-            private final long mol;
-
-            ChemicalSubstance(final long mol) {
-                this.mol = mol;
-            }
-
-            public long mol() {
-                return mol;
-            }
+        record ChemicalSubstance(long mol) {
         }
 
         @Test
@@ -374,16 +344,112 @@ class GatherersXTest {
             );
         }
 
-        final class ElectricDevice {
-            private final double current;
+        record ElectricDevice(double current) {
+        }
+    }
 
-            ElectricDevice(final double current) {
-                this.current = current;
-            }
+    @Nested
+    class WindowedTests {
 
-            public double current() {
-                return current;
-            }
+        @ParameterizedTest(name = "Windows with size {0} an step {1} should be equal to the reference")
+        @CsvSource(value = {"100, 1", "4, 1", "4, 3", "5, 4", "6, 2", "4, 5", "4, 100"})
+        void testWindowedNoPartialWindows(final int size, final int step) {
+            final var list = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+            final var windows = list.stream()
+                    .gather(windowed(size, step))
+                    .map(w -> w.stream().map(String::valueOf).collect(joining()))
+                    .toList();
+
+            final var reference = Sequence.of(list)
+                    .windowed(size, step)
+                    .map(w -> w.joinToString(""))
+                    .toList();
+
+            LOGGER.debug("{}", windows);
+
+            assertEquals(reference, windows);
+        }
+
+        @ParameterizedTest(name = "Windows with size {0} an step {1} should be equal to the reference")
+        @CsvSource(value = {"100, 1", "4, 1", "4, 3", "5, 4", "6, 2", "4, 5", "4, 100"})
+        void testWindowedPartialWindows(final int size, final int step) {
+            final var list = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+            final var partialWindows = true;
+
+            final var windows = list.stream()
+                    .gather(windowed(size, step, partialWindows))
+                    .map(w -> w.stream().map(String::valueOf).collect(joining()))
+                    .toList();
+
+            final var reference = Sequence.of(list)
+                    .windowed(size, step, partialWindows)
+                    .map(w -> w.joinToString(""))
+                    .toList();
+
+            LOGGER.debug("{}", windows);
+
+            assertEquals(reference, windows);
+        }
+
+        @ParameterizedTest(name = "Windows with size {0} an step {1} should be equal to the reference")
+        @CsvSource(value = {
+                "100, 1, true",
+                "4, 1, false",
+                "4, 3, false",
+                "5, 4, true",
+                "6, 2, true",
+                "4, 5, true",
+                "4, 100, false"
+        })
+        void testWindowedEmptyInput(final int size, final int step, final boolean partialWindows) {
+            final var windows = Stream.empty()
+                    .gather(windowed(size, step, partialWindows))
+                    .map(w -> w.stream().map(String::valueOf).collect(joining()))
+                    .toList();
+
+            LOGGER.debug("{}", windows);
+
+            assertThat(windows).isEmpty();
+        }
+
+        @Test
+        void testChunked() {
+            final var size = 14;
+            final var list = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+            final var windows = list.stream()
+                    .gather(chunked(size))
+                    .map(w -> w.stream().map(String::valueOf).collect(joining()))
+                    .toList();
+
+            final var reference = Sequence.of(list)
+                    .chunked(size)
+                    .map(w -> w.joinToString(""))
+                    .toList();
+
+            LOGGER.debug("{}", windows);
+
+            assertEquals(reference, windows);
+        }
+
+        @Test
+        void testChunkedSingleElement() {
+            final var size = 14;
+            final var list = List.of(1.618);
+
+            final var windows = list.stream()
+                    .gather(chunked(size))
+                    .map(w -> w.stream().map(String::valueOf).collect(joining()))
+                    .toList();
+
+            final var reference = Sequence.of(list)
+                    .chunked(size)
+                    .map(w -> w.joinToString(""))
+                    .toList();
+
+            assertEquals(reference, windows);
         }
     }
 }

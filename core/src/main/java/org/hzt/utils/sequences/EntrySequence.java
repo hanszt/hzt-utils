@@ -7,7 +7,6 @@ import org.hzt.utils.tuples.Pair;
 
 import java.util.Comparator;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -194,7 +193,7 @@ public interface EntrySequence<K, V> extends Sequence<Map.Entry<K, V>>, EntryIte
 
     @Override
     default EntrySequence<K, V> constrainOnce() {
-        final var consumed = new AtomicBoolean();
+        final var consumed = new Iterators.BooleanHolder();
         return () -> Iterators.constrainOnceIterator(iterator(), consumed);
     }
 

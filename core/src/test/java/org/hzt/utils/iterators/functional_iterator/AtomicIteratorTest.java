@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.stream.StreamSupport;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -30,6 +31,7 @@ class AtomicIteratorTest {
     void testAtomicIteratorBehavesTheSameAsIterator() {
         final List<String> list1 = new ArrayList<>();
         final List<String> list2 = new ArrayList<>();
+        final List<String> list3 = new ArrayList<>();
 
         final var upperBound = 100;
 
@@ -40,8 +42,17 @@ class AtomicIteratorTest {
         final var boundedIteratorX = getBoundedAtomicIteratorIteratorX(upperBound, String::valueOf);
         final Iterable<String> stringIterable = boundedIteratorX::asIterator;
         stringIterable.forEach(list2::add);
+        final var iterator = getBoundedAtomicIteratorIteratorX(upperBound, String::valueOf);
+        for (int i = 0; i < upperBound; i++) {
+            list3.add(iterator.asIterator().next());
+        }
 
+        assertEquals(list1, list3);
         assertEquals(list1, list2);
+        assertThat(iterator.asIterator()).isExhausted();
+        assertThat(boundedIteratorX.asIterator()).isExhausted();
+        assertThrows(NoSuchElementException.class, iterator.asIterator()::next);
+        assertThrows(NoSuchElementException.class, boundedIteratorX.asIterator()::next);
     }
 
     @Test

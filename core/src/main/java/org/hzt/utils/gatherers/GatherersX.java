@@ -9,9 +9,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -96,8 +95,8 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, T> skip(final long n) {
-        return Gatherer.ofSequential(AtomicLong::new, (count, item, downStream) -> {
-            if (count.getAndIncrement() >= n) {
+        return Gatherer.ofSequential(Counter::new, (count, item, downStream) -> {
+            if (count.count++ >= n) {
                 return downStream.push(item);
             }
             return true;
@@ -105,8 +104,8 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, T> limit(final long max) {
-        return Gatherer.ofSequential(AtomicLong::new, (count, item, downStream) -> {
-            if (count.getAndIncrement() < max) {
+        return Gatherer.ofSequential(Counter::new, (count, item, downStream) -> {
+            if (count.count++ < max) {
                 return downStream.push(item);
             }
             return false;
@@ -114,13 +113,13 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, T> dropWhile(final Predicate<T> condition) {
-        return Gatherer.ofSequential(AtomicBoolean::new, (firstSeen, item, downStream) -> {
-            if (firstSeen.get()) {
+        return Gatherer.ofSequential(BooleanHolder::new, (firstSeen, item, downStream) -> {
+            if (firstSeen.value) {
                 downStream.push(item);
                 return true;
             }
             if (!condition.test(item)) {
-                firstSeen.set(true);
+                firstSeen.value = true;
                 downStream.push(item);
             }
             return true;
@@ -249,26 +248,25 @@ public final class GatherersX {
             boolean integrate(T element, Gatherer.Downstream<? super List<T>> downstream) {
                 final var nextIndex = cursor++;
                 if (nextIndex < window.length) {
-                    window[nextIndex] = element;
+                    window[nextIndex] = Objects.requireNonNull(element, "Element in window must not be null");
                 }
                 if (cursor < size) {
                     return true;
-                } else {
-                    final var nextWindow = window;
-                    if (step < size) {
-                        final var newWindow = new Object[size];
-                        System.arraycopy(nextWindow, step, newWindow, 0, size - step);
-                        window = newWindow;
-                        cursor -= step;
-                    } else {
-                        if (cursor < step) {
-                            return true;
-                        }
-                        cursor = 0;
-                    }
-                    firstWindow = false;
-                    return downstream.push(Arrays.asList((T[]) Arrays.copyOf(nextWindow, nextWindow.length)));
                 }
+                final var nextWindow = window;
+                if (step < size) {
+                    final var newWindow = new Object[size];
+                    System.arraycopy(nextWindow, step, newWindow, 0, size - step);
+                    window = newWindow;
+                    cursor -= step;
+                } else {
+                    if (cursor < step) {
+                        return true;
+                    }
+                    cursor = 0;
+                }
+                firstWindow = false;
+                return downstream.push(List.of((T[]) Arrays.copyOf(nextWindow, nextWindow.length)));
             }
 
             @SuppressWarnings("unchecked")
@@ -278,7 +276,7 @@ public final class GatherersX {
                     final var thisCursor = cursor;
                     if (step < size) {
                         if (partialWindows) {
-                            downstream.push(Arrays.asList((T[]) Arrays.copyOf(nextWindow, thisCursor)));
+                            downstream.push(List.of((T[]) Arrays.copyOf(nextWindow, thisCursor)));
                         }
                         firstWindow = false;
                         final var newWindowLength = cursor - step;
@@ -291,7 +289,7 @@ public final class GatherersX {
                         cursor -= step;
                     } else {
                         if (thisCursor >= 0) {
-                            downstream.push(Arrays.asList((T[]) Arrays.copyOf(nextWindow, Math.min(window.length, thisCursor))));
+                            downstream.push(List.of((T[]) Arrays.copyOf(nextWindow, Math.min(window.length, thisCursor))));
                             firstWindow = false;
                             cursor -= step;
                         } else {
@@ -311,5 +309,13 @@ public final class GatherersX {
     public static <T> Gatherer<T, ?, List<T>> filterZippedWithNext(final BiPredicate<? super T, ? super T> predicate) {
         return Gatherers.<T>windowSliding(2)
                 .andThen(filter(s -> predicate.test(s.getFirst(), s.get(1))));
+    }
+
+    private static class Counter {
+        long count = 0;
+    }
+
+    private static class BooleanHolder {
+        boolean value = false;
     }
 }

@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.PrimitiveIterator;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -156,9 +154,11 @@ public final class Iterators {
                                                     final Set<K> observed,
                                                     final Consumer<? super T> action,
                                                     final Function<? super T, ? extends K> selector) {
-        final var reference = new AtomicReference<T>();
-        while (iterator.tryAdvance(reference::set)) {
-            final var next = reference.get();
+        final var reference = new Object() {
+          T value = null;
+        };
+        while (iterator.tryAdvance(v -> reference.value = v)) {
+            final var next = reference.value;
             if (observed.add(selector.apply(next))) {
                 action.accept(next);
                 return true;
@@ -233,10 +233,12 @@ public final class Iterators {
     }
 
     public static <T> Iterator<T> removingIterator(final Iterable<T> iterable, final T value) {
-        final var removed = new AtomicBoolean();
+        final var holder = new Object() {
+          boolean isRemoved = false;
+        };
         return filteringIterator(iterable.iterator(), e -> {
-            if (!removed.get() && e == value) {
-                removed.set(true);
+            if (!holder.isRemoved && e == value) {
+                holder.isRemoved = true;
                 return false;
             } else {
                 return true;
@@ -244,11 +246,15 @@ public final class Iterators {
         }, true);
     }
 
-    public static <T, I extends Iterator<T>> I constrainOnceIterator(final I iterator, final AtomicBoolean consumed) {
-        if (consumed.get()) {
+    public static class BooleanHolder {
+        boolean value = false;
+    }
+
+    public static <T, I extends Iterator<T>> I constrainOnceIterator(final I iterator, final BooleanHolder consumed) {
+        if (consumed.value) {
             throw new IllegalStateException("Sequence is already consumed");
         }
-        consumed.set(true);
+        consumed.value = true;
         return iterator;
     }
 

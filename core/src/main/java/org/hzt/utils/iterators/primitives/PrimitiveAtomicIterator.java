@@ -2,11 +2,10 @@ package org.hzt.utils.iterators.primitives;
 
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 
+import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
@@ -16,6 +15,7 @@ import java.util.function.LongConsumer;
 public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
     void forEachRemaining(T_CONS consumer);
+
     final class IteratorLogger {
 
         private static final System.Logger LOGGER = System.getLogger(PrimitiveAtomicIterator.class.getSimpleName());
@@ -49,7 +49,7 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         default void forEachRemaining(final IntConsumer action) {
             //noinspection StatementWithEmptyBody
-            while (tryAdvanceInt(action));
+            while (tryAdvanceInt(action)) ;
         }
 
         @Override
@@ -64,18 +64,22 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         @Override
         default PrimitiveIterator.OfInt asIterator() {
-            return  new PrimitiveIterator.OfInt() {
-
-                private final AtomicInteger sink = new AtomicInteger();
+            return new PrimitiveIterator.OfInt() {
+                boolean hasNext = false;
+                int next = 0;
 
                 @Override
                 public boolean hasNext() {
-                    return tryAdvanceInt(sink::set);
+                    return hasNext || (hasNext = tryAdvanceInt(i -> next = i));
                 }
 
                 @Override
                 public int nextInt() {
-                    return sink.get();
+                    if (hasNext()) {
+                        hasNext = false;
+                        return next;
+                    }
+                    throw new NoSuchElementException();
                 }
             };
         }
@@ -102,7 +106,7 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         default void forEachRemaining(final LongConsumer action) {
             //noinspection StatementWithEmptyBody
-            while (tryAdvanceLong(action));
+            while (tryAdvanceLong(action)) ;
         }
 
         @Override
@@ -117,18 +121,22 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         @Override
         default PrimitiveIterator.OfLong asIterator() {
-            return  new PrimitiveIterator.OfLong() {
-
-                private final AtomicLong sink = new AtomicLong();
+            return new PrimitiveIterator.OfLong() {
+                boolean hasNext = false;
+                long next = 0L;
 
                 @Override
                 public boolean hasNext() {
-                    return tryAdvanceLong(sink::set);
+                    return hasNext || (hasNext = tryAdvanceLong(l -> next = l));
                 }
 
                 @Override
                 public long nextLong() {
-                    return sink.get();
+                    if (hasNext()) {
+                        hasNext = false;
+                        return next;
+                    }
+                    throw new NoSuchElementException();
                 }
             };
         }
@@ -154,7 +162,7 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         default void forEachRemaining(final DoubleConsumer action) {
             //noinspection StatementWithEmptyBody
-            while (tryAdvanceDouble(action));
+            while (tryAdvanceDouble(action)) ;
         }
 
         @Override
@@ -169,34 +177,24 @@ public interface PrimitiveAtomicIterator<T, T_CONS> extends AtomicIterator<T> {
 
         @Override
         default PrimitiveIterator.OfDouble asIterator() {
-            return  new PrimitiveIterator.OfDouble() {
-
-                private final DoubleHoldingConsumer sink = new DoubleHoldingConsumer();
+            return new PrimitiveIterator.OfDouble() {
+                boolean hasNext = false;
+                double next = 0.0;
 
                 @Override
                 public boolean hasNext() {
-                    return tryAdvanceDouble(sink::set);
+                    return hasNext || (hasNext = tryAdvanceDouble(d -> next = d));
                 }
 
                 @Override
                 public double nextDouble() {
-                    return sink.get();
+                    if (hasNext()) {
+                        hasNext = false;
+                        return next;
+                    }
+                    throw new NoSuchElementException();
                 }
             };
-        }
-    }
-
-    class DoubleHoldingConsumer {
-
-        private double value = 0;
-
-
-        public double get() {
-            return value;
-        }
-
-        public void set(final double value) {
-            this.value = value;
         }
     }
 

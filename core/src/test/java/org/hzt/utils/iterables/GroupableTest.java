@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.reducing;
@@ -96,12 +97,16 @@ class GroupableTest {
                 .eachCountTo(TreeMap::new)
                 .descendingMap();
 
+        final var reference = numbers.stream()
+                .collect(Collectors.groupingBy(nr -> nr % 3, TreeMap::new, Collectors.counting()));
+
         final NavigableMap<Integer, Long> expected = new TreeMap<>(MutableMapX.of(0, 3L, 1, 2L, 2, 2L));
 
         println("expected = " + expected);
         println("aggregated = " + aggregated);
 
         assertEquals(expected, aggregated);
+        assertEquals(reference, aggregated);
     }
 
     @Test
@@ -111,7 +116,7 @@ class GroupableTest {
         final Map<Character, List<String>> evenFruits = fruits
                 .groupingBy(fruit -> fruit.charAt(0))
                 .foldTo(HashMap::new,
-                        (firstChar, fruit) -> new ArrayList<>(),
+                        (_, _) -> new ArrayList<>(),
                         GroupableTest::addEvenFruits);
 
         final NavigableMap<Character, List<String>> sorted = Sequence.ofMap(evenFruits).toSortedMap(It::self);

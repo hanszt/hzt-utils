@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PrimitiveAtomicIteratorTest {
 
@@ -24,14 +23,8 @@ class PrimitiveAtomicIteratorTest {
     @Test
     void testConsumerInstanceOfIntConsumer() {
         final Consumer<Integer> consumer = new IntegerConsumer();
-        assertTrue(isIntConsumer(consumer));
-    }
 
-    /**
-     * @see java.util.Spliterator.OfInt#tryAdvance(Consumer)
-     */
-    private static boolean isIntConsumer(final Consumer<? super Integer> consumer) {
-        return consumer instanceof IntConsumer;
+        assertInstanceOf(IntConsumer.class, consumer);
     }
 
     private static class IntegerConsumer implements Consumer<Integer>, IntConsumer {

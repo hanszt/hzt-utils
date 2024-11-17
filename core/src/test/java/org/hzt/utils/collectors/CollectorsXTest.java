@@ -7,20 +7,22 @@ import org.hzt.test.model.Painting;
 import org.hzt.utils.It;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.statistics.BigDecimalStatistics;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.YearMonth;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
+import static java.util.stream.Gatherers.fold;
 import static org.hzt.utils.collectors.BigDecimalCollectors.summarizingBigDecimal;
-import static org.hzt.utils.collectors.CollectorsX.intersectingBy;
-import static org.hzt.utils.collectors.CollectorsX.toIntersection;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hzt.utils.collectors.CollectorsX.*;
+import static org.hzt.utils.gatherers.GatherersX.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CollectorsXTest {
 
@@ -54,10 +56,10 @@ class CollectorsXTest {
         final var currentYear = 2024;
 
         final double standardDeviationAge = paintingList.stream()
-                .collect(CollectorsX.standardDeviatingDouble(painting -> painting.ageInYears(currentYear)));
+                .collect(standardDeviatingDouble(painting -> painting.ageInYears(currentYear)));
 
         final var summarizingAges = paintingList.stream()
-                .collect(CollectorsX.toDoubleStatisticsBy(painting -> painting.ageInYears(currentYear)));
+                .collect(toDoubleStatisticsBy(painting -> painting.ageInYears(currentYear)));
 
         final var optionalAverage = paintingList.stream()
                 .mapToDouble(painting -> painting.ageInYears(currentYear))
@@ -105,5 +107,48 @@ class CollectorsXTest {
         It.println("paintingMadeInPreviousMilleniumPresentInAllMuseums = " + paintingNamesPresentInAllMuseums);
 
         assertFalse(paintingNamesPresentInAllMuseums.isEmpty());
+    }
+
+    @Nested
+    class GathererAsCollectorTests {
+
+        @Test
+        void testMapFilterReduce() {
+            final var mapFilterFold = map((LocalDate date) -> YearMonth.of(date.getYear(), date.getMonth()))
+                    .andThen(filter(YearMonth::isLeapYear))
+                    .andThen(fold(() -> 0, (acc, ym) -> acc + ym.getYear() + ym.getMonthValue()));
+
+            var dates = Stream.iterate(LocalDate.of(2023, 10, 1), date -> date.plus(Period.of(3, 2, 1)))
+                    .limit(100)
+                    .toList();
+
+            var list = dates.stream()
+                    .gather(mapFilterFold)
+                    .toList();
+
+            final var byCollector = dates.stream().collect(toList(mapFilterFold));
+
+            assertEquals(1, list.size());
+            assertEquals(54_870, list.getFirst());
+            assertEquals(list, byCollector);
+        }
+
+        @Test
+        void testShortCircuitingNotSupportedInCollectors() {
+            final var gatherer = map((LocalDate d) -> YearMonth.of(d.getYear(), d.getMonth()))
+                    .andThen(filter(YearMonth::isLeapYear))
+                    .andThen(limit(10));
+
+            var list = Stream.iterate(LocalDate.of(2023, 10, 1), date -> date.plus(Period.of(3, 2, 1)))
+                    .gather(gatherer)
+                    .toList();
+
+            final var collector = toList(gatherer);
+
+            var stream = Stream.iterate(LocalDate.of(2023, 10, 1), date -> date.plus(Period.of(3, 2, 1)));
+
+            assertThrows(IllegalStateException.class, () -> stream.collect(collector));
+            assertEquals(10, list.size());
+        }
     }
 }

@@ -28,7 +28,6 @@ import org.hzt.utils.tuples.Triple;
 
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -265,7 +264,7 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
     }
 
     default LongSequence constrainOnce() {
-        final var consumed = new AtomicBoolean();
+        final var consumed = new Iterators.BooleanHolder();
         return () -> Iterators.constrainOnceIterator(iterator(), consumed);
     }
 

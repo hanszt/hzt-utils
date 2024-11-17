@@ -31,7 +31,6 @@ import java.util.Random;
 import java.util.SequencedCollection;
 import java.util.Set;
 import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -290,7 +289,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     default Sequence<T> constrainOnce() {
-        final var consumed = new AtomicBoolean();
+        final var consumed = new Iterators.BooleanHolder();
         return () -> Iterators.constrainOnceIterator(iterator(), consumed);
     }
 

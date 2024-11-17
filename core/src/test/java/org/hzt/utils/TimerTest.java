@@ -26,7 +26,7 @@ class TimerTest {
         );
         LOGGER.debug("{}", timer);
 
-        final var result = timer.getResult();
+        final var result = timer.result();
 
         assertThat(result).isGreaterThan(BigInteger.valueOf(Long.MAX_VALUE));
         assertThat(result.toString().length()).isEqualTo(desiredSize);

@@ -2,6 +2,7 @@ package org.hzt.utils.gatherers;
 
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
+import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
@@ -48,6 +49,7 @@ import static org.hzt.utils.gatherers.GatherersX.windowed;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GatherersXTest {
 
@@ -356,9 +358,11 @@ class GatherersXTest {
         void testWindowedNoPartialWindows(final int size, final int step) {
             final var list = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
+            final Function<List<Integer>, String> joinToString = w -> w.stream().map(String::valueOf).collect(joining());
+
             final var windows = list.stream()
                     .gather(windowed(size, step))
-                    .map(w -> w.stream().map(String::valueOf).collect(joining()))
+                    .map(joinToString)
                     .toList();
 
             final var reference = Sequence.of(list)
@@ -366,9 +370,20 @@ class GatherersXTest {
                     .map(w -> w.joinToString(""))
                     .toList();
 
+            var byCollector = list.stream().collect(CollectorsX.windowed(size, step, false, joinToString));
+
             LOGGER.debug("{}", windows);
 
             assertEquals(reference, windows);
+            assertEquals(reference, byCollector);
+        }
+
+        @Test
+        void throwsIfContainsNullElement() {
+            final var windows = Stream.of(0, 1, null, 3, 4, 5, 6, 7, 8, 9).gather(windowed(3));
+
+            final var e = assertThrows(NullPointerException.class, windows::toList);
+            assertThat(e.getMessage()).contains("must not be null");
         }
 
         @ParameterizedTest(name = "Windows with size {0} an step {1} should be equal to the reference")
@@ -378,9 +393,11 @@ class GatherersXTest {
 
             final var partialWindows = true;
 
+            Function<List<Integer>, String> joinToString = w -> w.stream().map(String::valueOf).collect(joining());
+
             final var windows = list.stream()
                     .gather(windowed(size, step, partialWindows))
-                    .map(w -> w.stream().map(String::valueOf).collect(joining()))
+                    .map(joinToString)
                     .toList();
 
             final var reference = Sequence.of(list)
@@ -390,7 +407,10 @@ class GatherersXTest {
 
             LOGGER.debug("{}", windows);
 
+            var byCollector = list.stream().collect(CollectorsX.windowed(size, step, partialWindows, joinToString));
+
             assertEquals(reference, windows);
+            assertEquals(reference, byCollector);
         }
 
         @ParameterizedTest(name = "Windows with size {0} an step {1} should be equal to the reference")

@@ -2,49 +2,24 @@ package org.hzt.utils.collectors;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
-import org.hzt.utils.collections.ListX;
-import org.hzt.utils.collections.MapX;
-import org.hzt.utils.collections.MutableCollectionX;
-import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.SetX;
+import org.hzt.utils.collections.*;
 import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.function.QuadFunction;
 import org.hzt.utils.function.QuintFunction;
 import org.hzt.utils.function.TriFunction;
+import org.hzt.utils.gatherers.GatherersX;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
 import org.hzt.utils.statistics.DoubleStatistics;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
 
-import static java.util.stream.Collectors.filtering;
-import static java.util.stream.Collectors.toUnmodifiableList;
-import static java.util.stream.Collectors.toUnmodifiableMap;
-import static java.util.stream.Collectors.toUnmodifiableSet;
+import static java.util.stream.Collectors.*;
 
 @SuppressWarnings({"DuplicatedCode"})
 public final class CollectorsX {
@@ -605,6 +580,69 @@ public final class CollectorsX {
         }
         return Collector.of(Accumulator::new, Accumulator::accept, Accumulator::combine, Accumulator::getResult,
                 Collector.Characteristics.UNORDERED);
+    }
+
+    public static <T, R> Collector<T, ?, List<R>> windowed(
+            final int size,
+            final int step,
+            final boolean partialWindows,
+            Function<List<T>, R> transform
+    ) {
+        return Collectors.collectingAndThen(
+                to(ArrayList<R>::new, GatherersX.windowed(size, step, partialWindows), transform),
+                Collections::unmodifiableList
+        );
+    }
+
+    public static <T, A, R> Collector<T, ?, List<R>> toList(Gatherer<? super T, A, R> gatherer) {
+        return to(ArrayList::new, gatherer, Function.identity());
+    }
+
+    /**
+     * A function that allows a gatherer to be transformed to a collector.
+     *
+     * @param gatherer the gatherer to convert to a collector
+     * @param supplier the supplier of the collection, the results should be stored in
+     * @param transform a transformation function that transforms the intermediate result to the final result in the collection {@code C}
+     * @return the Collector from the supplied gatherer
+     * @param <T> The input type
+     * @param <A> The gatherer state type
+     * @param <R> The intermediate result type
+     * @param <RR> The final result type
+     * @param <C> The Type of the collections the results are stored in
+     */
+    public static <T, A, R, RR, C extends Collection<RR>> Collector<T, ?, C> to(
+            Supplier<C> supplier,
+            Gatherer<? super T, A, R> gatherer,
+            Function<R, RR> transform
+    ) {
+        final var initializer = gatherer.initializer();
+        final var integrator = gatherer.integrator();
+        final var combiner = gatherer.combiner();
+        final var finisher = gatherer.finisher();
+        class State {
+            A gathererState = initializer.get();
+            final C results = supplier.get();
+
+            void accumulate(T item) {
+                var shouldContinue = integrator.integrate(gathererState, item, r -> results.add(transform.apply(r)));
+                if (!shouldContinue) {
+                    throw new IllegalStateException("Short circuiting gatherers in collector is not supported!");
+                }
+            }
+
+            State combine(State other) {
+                gathererState = combiner.apply(gathererState, other.gathererState);
+                results.addAll(other.results);
+                return this;
+            }
+
+            C finish() {
+                finisher.accept(gathererState, r -> results.add(transform.apply(r)));
+                return results;
+            }
+        }
+        return Collector.of(State::new, State::accumulate, State::combine, State::finish);
     }
 
     public static <S extends Collection<T>, T, R>

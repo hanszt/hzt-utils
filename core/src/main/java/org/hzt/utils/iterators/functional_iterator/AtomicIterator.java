@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 @FunctionalInterface
@@ -40,24 +38,24 @@ public interface AtomicIterator<T> {
      * @return an iterator object from a iteratorX object
      */
     default Iterator<T> asIterator() {
+        final var sink = new Object() {
+            boolean hasNext = false;
+            T next = null;
+        };
         return new Iterator<>() {
-
-            private final AtomicReference<T> sink = new AtomicReference<>();
-            private final AtomicBoolean hasNext = new AtomicBoolean(false);
 
             @Override
             public boolean hasNext() {
-                if (hasNext.get()) return true;
-                final var hasNextVal = tryAdvance(sink::set);
-                this.hasNext.set(hasNextVal);
-                return hasNextVal;
+                return sink.hasNext || (sink.hasNext = tryAdvance(v -> sink.next = v));
             }
 
             @Override
             public T next() {
                 if (hasNext()) {
-                    hasNext.set(false);
-                    return sink.getAndSet(null);
+                    sink.hasNext = false;
+                    final var next = sink.next;
+                    sink.next = null;
+                    return next;
                 }
                 throw new NoSuchElementException();
             }

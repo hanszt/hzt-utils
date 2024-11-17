@@ -10,6 +10,8 @@ import org.hzt.utils.test.Generator;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleConsumer;
 import java.util.stream.DoubleStream;
 
-import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 class DoubleSequenceTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DoubleSequenceTest.class);
     public static final String REPEATED_TEST_DISPLAY_NAME = RepeatedTest.CURRENT_REPETITION_PLACEHOLDER + "/" + RepeatedTest.TOTAL_REPETITIONS_PLACEHOLDER;
 
     @Test
@@ -41,7 +43,7 @@ class DoubleSequenceTest {
                 .mapToLong(It::doubleAsLong)
                 .toArray();
 
-        println(Arrays.toString(actual));
+        LOGGER.debug(Arrays.toString(actual));
 
         assertAll(
                 () -> assertArrayEquals(new long[]{4, 5, 4, 6, 4, 4, 3}, actual),
@@ -58,7 +60,7 @@ class DoubleSequenceTest {
                 .plus(DoubleList.of(array))
                 .toArray();
 
-        println(Arrays.toString(result));
+        LOGGER.debug(Arrays.toString(result));
 
         final var expected = new double[]{1, 3, 2, 5, 4, 2, Math.E, 76, 5, 1, Math.PI, 3, 4, 5, 4, 6, 4, 3, 4, 2, 2};
 
@@ -76,7 +78,7 @@ class DoubleSequenceTest {
                 .take(5)
                 .toArray();
 
-        println("Arrays.toString(array) = " + Arrays.toString(sorted));
+        LOGGER.debug("Arrays.toString(array) = {}", Arrays.toString(sorted));
 
         final var expected = new double[]{9999.689416376881, 9996.547823723291, 9993.4062310697, 9990.26463841611, 9987.12304576252};
 
@@ -93,7 +95,7 @@ class DoubleSequenceTest {
                 .zip(Double::sum, 1, 2, 3, 4)
                 .toArray();
 
-        println("Arrays.toString(array) = " + Arrays.toString(zipped));
+        LOGGER.debug("Arrays.toString(array) = {}", Arrays.toString(zipped));
 
         assertArrayEquals(new double[]{2, 4, 6, 8}, zipped);
     }
@@ -107,7 +109,7 @@ class DoubleSequenceTest {
                 .zip(Double::sum, list)
                 .toArray();
 
-        println("Arrays.toString(array) = " + Arrays.toString(zipped));
+        LOGGER.debug("Arrays.toString(array) = {}", Arrays.toString(zipped));
 
         assertArrayEquals(new double[]{2, 4, 6, 8, 10, 12}, zipped);
     }
@@ -121,7 +123,7 @@ class DoubleSequenceTest {
                 .map(DoubleList::toArray)
                 .toTypedArray(double[][]::new);
 
-        Sequence.of(windowed).map(Arrays::toString).forEach(It::println);
+        Sequence.of(windowed).map(Arrays::toString).forEach(e -> LOGGER.trace("{}", e));
 
         assertEquals(3, windowed.length);
     }
@@ -134,7 +136,7 @@ class DoubleSequenceTest {
                 .windowed(3, DoubleList::sum)
                 .toArray();
 
-        DoubleSequence.of(sums).forEachDouble(It::println);
+        DoubleSequence.of(sums).forEachDouble(e -> LOGGER.trace("{}", e));
 
         assertArrayEquals(new double[] {6, 9, 12, 15, 18}, sums);
     }
@@ -233,7 +235,7 @@ class DoubleSequenceTest {
 
         final var roundedGoldenRatio = DoubleX.toRoundedString(goldenRatio, scale);
 
-        println("roundedGoldenRatio = " + roundedGoldenRatio);
+        LOGGER.debug("roundedGoldenRatio = {}", roundedGoldenRatio);
 
         final var approximations = IntSequence.iterate(1, i -> ++i)
                 .mapToLong(Generator::fibSum)
@@ -241,7 +243,7 @@ class DoubleSequenceTest {
                 .mapToDouble(w -> (double) w.last() / w.first())
                 .takeWhileInclusive(approximation -> !DoubleX.toRoundedString(approximation, scale)
                         .equals(roundedGoldenRatio))
-                .onEach(s -> println(DoubleX.toRoundedString(s, scale)))
+                .onEach(s -> LOGGER.debug(DoubleX.toRoundedString(s, scale)))
                 .toList();
 
         final var actual = DoubleX.toRoundedString(approximations.last(), scale);

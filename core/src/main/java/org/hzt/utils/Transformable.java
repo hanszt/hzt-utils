@@ -8,6 +8,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+/**
+ * An interface to expose convenient transforming and filtering functions.
+ *
+ * @param <T> The type of the transformable
+ */
 @FunctionalInterface
 public interface Transformable<T> extends Supplier<T> {
 

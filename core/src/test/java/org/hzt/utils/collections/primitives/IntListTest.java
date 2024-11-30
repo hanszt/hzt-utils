@@ -3,20 +3,18 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class IntListTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IntListTest.class);
 
     @Test
     void testIntListContains() {
@@ -61,7 +59,7 @@ class IntListTest {
 
         final var shuffled = intListX.shuffled(new Random(0));
 
-        System.out.println("shuffled = " + shuffled);
+        LOGGER.atDebug().setMessage(() -> "shuffled = " + shuffled).log();
 
         assertEquals(IntList.of(5, 9, 10, 7, 4, 6, 3, 2, 8, 1), shuffled);
         assertNotEquals(intListX, shuffled);

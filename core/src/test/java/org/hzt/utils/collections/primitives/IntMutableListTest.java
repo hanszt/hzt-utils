@@ -1,21 +1,21 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.It;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class IntMutableListTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IntMutableListTest.class);
 
     private static final Random random = new Random();
 
@@ -38,7 +38,7 @@ class IntMutableListTest {
                 () -> assertEquals(2L, l),
                 () -> assertEquals(2, ints.size())
         );
-        It.println("ints = " + ints);
+        LOGGER.atDebug().setMessage(() -> "ints = " + ints).log();
         final var l2 = ints.removeAt(0);
         assertAll(
                 () -> assertFalse(ints.isEmpty()),
@@ -46,7 +46,7 @@ class IntMutableListTest {
                 () -> assertEquals(1, ints.size())
         );
 
-        ints.forEachInt(It::println);
+        ints.forEachInt(it -> LOGGER.trace("{}", it));
     }
 
     @Test
@@ -56,7 +56,7 @@ class IntMutableListTest {
         final List<Integer> refList = new ArrayList<>(List.of(1, 2, 5));
         refList.add(refList.size(), 3);
 
-        System.out.println("list = " + list);
+        LOGGER.atDebug().setMessage(() -> "list = " + list).log();
         assertAll(
                 () -> assertEquals(IntMutableList.of(1, 2, 5, 3), list),
                 () -> assertEquals(List.of(1, 2, 5, 3), refList)

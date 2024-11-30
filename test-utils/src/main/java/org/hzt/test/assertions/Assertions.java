@@ -1,14 +1,16 @@
 package org.hzt.test.assertions;
 
+import org.assertj.core.api.AbstractComparableAssert;
+import org.assertj.core.api.AbstractIteratorAssert;
 import org.assertj.core.api.AbstractLocalDateAssert;
 import org.junit.jupiter.api.function.Executable;
 import org.opentest4j.AssertionFailedError;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.Year;
+import java.util.*;
+import java.util.function.IntPredicate;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,13 +24,25 @@ public final class Assertions {
         return new LocalDateAssert(actual);
     }
 
-    public static class LocalDateAssert extends AbstractLocalDateAssert<LocalDateAssert> {
+    public static YearAssert assertThat(Year actual) {
+        return new YearAssert(actual);
+    }
+
+    public static IntAssert assertThat(int actual) {
+        return new IntAssert(actual);
+    }
+
+    public static <T> ListIteratorAssert<T> assertThat(ListIterator<? extends T> actual) {
+        return new ListIteratorAssert<>(actual);
+    }
+
+    public static final class LocalDateAssert extends AbstractLocalDateAssert<LocalDateAssert> {
         /**
          * Creates a new <code>{@link AbstractLocalDateAssert}</code>.
          *
          * @param actual the actual value to verify
          */
-        protected LocalDateAssert(LocalDate actual) {
+        private LocalDateAssert(LocalDate actual) {
             super(actual, LocalDateAssert.class);
         }
 
@@ -39,6 +53,71 @@ public final class Assertions {
 
         public LocalDateAssert isNotLeapYear() {
             assertFalse(actual.isLeapYear(), () -> "Expected " + actual + " not to be a leap year but was!");
+            return this;
+        }
+    }
+
+    public static final class YearAssert extends AbstractComparableAssert<YearAssert, Year> {
+        /**
+         * Creates a new <code>{@link AbstractComparableAssert}</code>.
+         *
+         * @param actual the actual value to verify
+         */
+        private YearAssert(Year actual) {
+            super(actual, YearAssert.class);
+        }
+
+        public YearAssert isLeap() {
+            assertTrue(actual.isLeap(), () -> "Expected " + actual + " to be a leap year but was not!");
+            return this;
+        }
+
+        public YearAssert isNotLeap() {
+            assertFalse(actual.isLeap(), () -> "Expected " + actual + " not to be a leap year but was!");
+            return this;
+        }
+    }
+
+    public static final class ListIteratorAssert<T> extends AbstractIteratorAssert<ListIteratorAssert<T>, T> {
+
+        private final ListIterator<? extends T> actual;
+
+        /**
+         * Creates a new <code>{@link AbstractIteratorAssert}</code>.
+         *
+         * @param actual the actual value to verify
+         */
+        private ListIteratorAssert(ListIterator<? extends T> actual) {
+            super(actual, ListIteratorAssert.class);
+            this.actual = actual;
+        }
+
+        public ListIteratorAssert<T> hasPrevious() {
+            assertTrue(actual.hasPrevious(), () -> "Expected " + actual + " to have previous but did not");
+            return this;
+        }
+
+        public ListIteratorAssert<T> doesNotHavePrevious() {
+            assertFalse(actual.hasPrevious(), () -> "Expected " + actual + " to not have previous but did");
+            return this;
+        }
+    }
+
+    public static final class IntAssert {
+
+        private final int actual;
+
+        private IntAssert(int actual) {
+            this.actual = actual;
+        }
+
+        public IntAssert is(IntPredicate predicate, Supplier<String> onErrorMessage) {
+            assertTrue(predicate.test(actual), onErrorMessage);
+            return this;
+        }
+
+        public IntAssert is(IntPredicate predicate) {
+            assertTrue(predicate.test(actual), () -> "Expected " + actual + " to pass the given condition but did not");
             return this;
         }
     }
@@ -155,7 +234,7 @@ public final class Assertions {
 
     }
 
-    public static class SimpleErrorCollector implements Assertions.ErrorCollector {
+    static class SimpleErrorCollector implements ErrorCollector {
 
         private final List<Throwable> errors = new ArrayList<>();
         private ErrorCollectionMode errorCollectionMode = ErrorCollectionMode.HARD;

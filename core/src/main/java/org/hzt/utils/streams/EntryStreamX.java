@@ -5,12 +5,7 @@ import org.hzt.utils.iterables.EntryIterable;
 import org.hzt.utils.sequences.EntrySequence;
 
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 @FunctionalInterface
@@ -58,11 +53,6 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     @Override
     default EntryStreamX<K, V> parallel() {
         return EntryStreamX.ofStream(StreamX.super.parallel());
-    }
-
-    @Override
-    default EntryStreamX<K, V> isParallel(final Consumer<Boolean> resultSupplier) {
-        return peek(s -> resultSupplier.accept(isParallel()));
     }
 
     @Override

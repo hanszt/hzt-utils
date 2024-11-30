@@ -14,33 +14,9 @@ import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.SequenceHelper;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.IntUnaryOperator;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
 
 @FunctionalInterface
 @SuppressWarnings("squid:S1448")
@@ -333,10 +309,6 @@ public interface StreamX<T> extends Stream<T>, Gatherable<T>, Sortable<T>, Numer
     @Override
     default boolean isParallel() {
         throw new UnsupportedOperationException("isParallel() not supported in StreamX interface");
-    }
-
-    default StreamX<T> isParallel(final Consumer<Boolean> resultSupplier) {
-        return peek(s -> resultSupplier.accept(isParallel()));
     }
 
     @Override

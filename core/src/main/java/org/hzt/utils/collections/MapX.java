@@ -9,12 +9,7 @@ import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 @SuppressWarnings("squid:S107")
 public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<K, V> {
@@ -205,6 +200,13 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
                 throw new ConcurrentModificationException(ise);
             }
         }
+    }
+
+    default MapX<K, V> plus(K key, V value) {
+        return MapX.build(s -> {
+            forEach((k, v) -> s.put(k, v));
+            s.put(key, value);
+        });
     }
 
     @Override

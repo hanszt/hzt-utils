@@ -3,21 +3,21 @@ package org.hzt.utils.statistics;
 import org.hzt.utils.It;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 
-import static org.hzt.utils.It.println;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StatisticsTest {
 
-    @SuppressWarnings("squid:S5977")
-    private static final Random RANDOM = new Random();
+    private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsTest.class);
 
     @Test
     void testStatisticsStandardDeviation() {
-        final var list = Sequence.generate(RANDOM::nextGaussian)
+        final var list = Sequence.generate(new Random(0)::nextGaussian)
                 .take(1_000)
                 .map(d -> (int) (d * 100))
                 .toListX();
@@ -28,22 +28,22 @@ class StatisticsTest {
 
         final var stats = intRange.stats();
 
-        It.println("stats = " + stats);
+        LOGGER.atDebug().setMessage(() -> "stats = " + stats).log();
         final var standardDeviationIntRange = stats.getStandardDeviation();
 
-        println("longRange.count() = " + longRange.count());
-        println(longRange.sum());
+        LOGGER.atDebug().setMessage(() -> "longRange.count() = " + longRange.count()).log();
+        LOGGER.atDebug().setMessage(() -> "standard deviation: " + longRange.sum()).log();
 
         System.setProperty("org.openjdk.java.util.stream.tripwire", "false");
-        println(intRange.joinToString());
-        println(longRange.joinToString());
-        println(doubleRange.joinToString());
+        LOGGER.atDebug().setMessage(() -> intRange.joinToString()).log();
+        LOGGER.atDebug().setMessage(() -> longRange.joinToString()).log();
+        LOGGER.atDebug().setMessage(() -> doubleRange.joinToString()).log();
         System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
-        println(standardDeviationIntRange);
+        LOGGER.debug("standard deviation: {}", standardDeviationIntRange);
 
         assertAll(
-                () -> assertEquals(standardDeviationIntRange, longRange.stats().also(It::println).getStandardDeviation()),
+                () -> assertEquals(standardDeviationIntRange, longRange.stats().also(it -> LOGGER.trace("{}", it)).getStandardDeviation()),
                 () -> assertEquals(standardDeviationIntRange, doubleRange.stats().getStandardDeviation())
         );
 

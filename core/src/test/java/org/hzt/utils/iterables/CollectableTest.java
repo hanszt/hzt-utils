@@ -12,6 +12,8 @@ import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -20,51 +22,38 @@ import java.util.Arrays;
 import java.util.IntSummaryStatistics;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.averagingInt;
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.maxBy;
-import static java.util.stream.Collectors.minBy;
-import static java.util.stream.Collectors.partitioningBy;
-import static java.util.stream.Collectors.summarizingInt;
-import static java.util.stream.Collectors.summingInt;
-import static java.util.stream.Collectors.summingLong;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 import static org.hzt.utils.collectors.CollectorsX.branching;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CollectableTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CollectableTest.class);
 
     @Test
     void testTeeingYieldsTwoValuesWhileOnlyGoingThroughPipelineOnce() {
         final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
 
-        final var toTwoCounter = new AtomicInteger();
+        final var toTwoCounter = new Counter();
 
         final var pair = integers.asSequence()
-                .onEach(i -> toTwoCounter.incrementAndGet())
+                .onEach(_ -> toTwoCounter.value++)
                 .mapToInt(It::asInt)
                 .intsToTwo(IntSequence::sum, IntSequence::average);
 
-        final var collectorCounter = new AtomicInteger();
+        final var collectorCounter = new Counter();
 
         final var collectedPair = integers.asSequence()
-                .onEach(i -> collectorCounter.incrementAndGet())
+                .onEach(_ -> collectorCounter.value++)
                 .teeing(summingLong(It::asInt), averagingInt(It::asInt));
 
         assertAll(
                 () -> assertEquals(pair, collectedPair),
-                () -> assertEquals(integers.size(), collectorCounter.get()),
-                () -> assertEquals(toTwoCounter.get(), collectorCounter.get() * 2)
+                () -> assertEquals(integers.size(), collectorCounter.value),
+                () -> assertEquals(toTwoCounter.value, collectorCounter.value * 2)
         );
     }
 
@@ -72,17 +61,17 @@ class CollectableTest {
     void testBranchingYieldsThreeValuesWhileOnlyGoingThroughPipelineOnce() {
         final var integers = ListX.of(1, 2, 3, 4, 5, 6, 7, 8);
 
-        final var toThreeCounter = new AtomicInteger();
+        final var toThreeCounter = new Counter();
 
         final var triple = integers.asSequence()
-                .onEach(i -> toThreeCounter.incrementAndGet())
+                .onEach(_ -> toThreeCounter.value++)
                 .mapToInt(It::asInt)
                 .intsToThree(IntSequence::sum, IntSequence::average, IntSequence::stdDev);
 
-        final var branchingCounter = new AtomicInteger();
+        final var branchingCounter = new Counter();
 
         final var collectedTriple = integers.asSequence()
-                .onEach(i -> branchingCounter.incrementAndGet())
+                .onEach(_ -> branchingCounter.value++)
                 .branching(
                         summingLong(It::asInt),
                         averagingInt(It::asInt),
@@ -90,8 +79,8 @@ class CollectableTest {
 
         assertAll(
                 () -> assertEquals(triple, collectedTriple),
-                () -> assertEquals(integers.size(), branchingCounter.get()),
-                () -> assertEquals(toThreeCounter.get(), branchingCounter.get() * 3)
+                () -> assertEquals(integers.size(), branchingCounter.value),
+                () -> assertEquals(toThreeCounter.value, branchingCounter.value * 3)
         );
     }
 
@@ -210,7 +199,7 @@ class CollectableTest {
         final var actual = Sequence.of(grid).map(g -> Sequence.of(g).map(row -> Sequence.of(row)
                 .toIntArray(Integer::parseInt)).toTypedArray(int[][]::new)).toTypedArray(int[][][]::new);
 
-        Sequence.of(actual).map(g -> Sequence.of(g).map(Arrays::toString)).map(Stringable::joinToString).forEach(It::println);
+        Sequence.of(actual).map(g -> Sequence.of(g).map(Arrays::toString)).map(Stringable::joinToString).forEach(it -> LOGGER.trace("{}", it));
 
         assertArrayEquals(expected, actual);
     }
@@ -279,5 +268,9 @@ class CollectableTest {
                 () -> assertEquals(expected, result),
                 () -> assertEquals(expected2, result)
         );
+    }
+
+    private static final class Counter {
+        int value = 0;
     }
 }

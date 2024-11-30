@@ -19,10 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleConsumer;
 import java.util.stream.DoubleStream;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DoubleSequenceTest {
 
@@ -149,7 +146,7 @@ class DoubleSequenceTest {
                 .windowed(3, 2, true, DoubleList::sum)
                 .toArray();
 
-        DoubleSequence.of(sums).forEachDouble(It::println);
+        DoubleSequence.of(sums).forEachDouble(it -> LOGGER.trace("{}", it));
 
         assertArrayEquals(new double[] {6, 12, 18, 7}, sums);
     }
@@ -219,7 +216,7 @@ class DoubleSequenceTest {
                 .onSequence(sequence -> sequence.boxed()
                         .step(200)
                         .onEach(doubleMutableList::add)
-                        .forEach(It::println))
+                        .forEach(it -> LOGGER.trace("{}", it)))
                 .toArray();
 
         assertAll(

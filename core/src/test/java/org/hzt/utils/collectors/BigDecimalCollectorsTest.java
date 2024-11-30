@@ -3,37 +3,34 @@ package org.hzt.utils.collectors;
 import org.hzt.test.ReplaceCamelCaseBySentence;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
-import org.hzt.utils.It;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
 
-import static org.hzt.utils.collectors.BigDecimalCollectors.averagingBigDecimal;
-import static org.hzt.utils.collectors.BigDecimalCollectors.standardDeviatingBigDecimal;
-import static org.hzt.utils.collectors.BigDecimalCollectors.summarizingBigDecimal;
-import static org.hzt.utils.collectors.BigDecimalCollectors.summingBigDecimal;
-import static org.hzt.utils.collectors.BigDecimalCollectors.toBigDecimalStatisticsBy;
-import static org.hzt.utils.collectors.BigDecimalCollectors.toMaxBigDecimal;
-import static org.hzt.utils.collectors.BigDecimalCollectors.toMinBigDecimal;
+import static org.hzt.utils.collectors.BigDecimalCollectors.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class BigDecimalCollectorsTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BigDecimalCollectorsTest.class);
+
     @Test
     void testSummarizingBigDecimal() {
         final var sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
-        It.println("Sample bankaccountList:");
-        sampleBankAccountList.forEach(It::println);
+        LOGGER.atDebug().setMessage(() -> "Sample bankaccountList:").log();
+        sampleBankAccountList.forEach(it -> LOGGER.trace("{}", it));
 
         final var bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
 
-        It.println("bigDecimalSummaryStatistics = " + bigDecimalSummaryStatistics);
+        LOGGER.atDebug().setMessage(() -> "bigDecimalSummaryStatistics = " + bigDecimalSummaryStatistics).log();
 
         assertAll(
                 () -> assertEquals(BigDecimal.valueOf(46_502.27), bigDecimalSummaryStatistics.getAverage()),
@@ -47,8 +44,8 @@ class BigDecimalCollectorsTest {
     @Test
     void testAveragingBigDecimal() {
         final var sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
-        It.println("Sample bankaccountList:");
-        sampleBankAccountList.forEach(It::println);
+        LOGGER.atDebug().setMessage(() -> "Sample bankaccountList:").log();
+        sampleBankAccountList.forEach(it -> LOGGER.trace("{}", it));
 
         final var bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
@@ -56,7 +53,7 @@ class BigDecimalCollectorsTest {
         final var average = sampleBankAccountList.stream()
                 .collect(averagingBigDecimal(BankAccount::getBalance));
 
-        It.println("average = " + average);
+        LOGGER.atDebug().setMessage(() -> "average = " + average).log();
 
         final BigDecimal expected = bigDecimalSummaryStatistics.getAverage();
         assertEquals(average, expected);
@@ -65,8 +62,8 @@ class BigDecimalCollectorsTest {
     @Test
     void testStandardDeviatingBigDecimal() {
         final var sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
-        It.println("Sample bankaccountList:");
-        sampleBankAccountList.forEach(It::println);
+        LOGGER.atDebug().setMessage(() -> "Sample bankaccountList:").log();
+        sampleBankAccountList.forEach(it -> LOGGER.trace("{}", it));
 
         final var doubleStatistics = sampleBankAccountList.stream()
                 .map(BankAccount::getBalance)
@@ -82,8 +79,8 @@ class BigDecimalCollectorsTest {
         final var standardDeviationBalances = sampleBankAccountList.stream()
                 .collect(standardDeviatingBigDecimal(BankAccount::getBalance));
 
-        It.println("bigDecimalStatistics = " + bigDecimalStatistics);
-        It.println("doubleStatistics = " + doubleStatistics);
+        LOGGER.atDebug().setMessage(() -> "bigDecimalStatistics = " + bigDecimalStatistics).log();
+        LOGGER.atDebug().setMessage(() -> "doubleStatistics = " + doubleStatistics).log();
 
         assertAll(
                 () -> assertEquals(expected, standardDeviationBalances),
@@ -115,8 +112,8 @@ class BigDecimalCollectorsTest {
     @Test
     void testSummingBigDecimal() {
         final var sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
-        It.println("Sample bankaccountList:");
-        sampleBankAccountList.forEach(It::println);
+        LOGGER.atDebug().setMessage(() -> "Sample bankaccountList:").log();
+        sampleBankAccountList.forEach(it -> LOGGER.trace("{}", it));
 
         final var sumAsDouble = sampleBankAccountList.stream()
                 .map(BankAccount::getBalance)
@@ -129,7 +126,7 @@ class BigDecimalCollectorsTest {
         final var sum = sampleBankAccountList.stream()
                 .collect(summingBigDecimal(BankAccount::getBalance));
 
-        It.println("sum = " + sum);
+        LOGGER.atDebug().setMessage(() -> "sum = " + sum).log();
 
         final BigDecimal expected = bigDecimalSummaryStatistics.getSum();
 
@@ -142,8 +139,8 @@ class BigDecimalCollectorsTest {
     @Test
     void testToMaxBigDecimal() {
         final var sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
-        It.println("Sample bankaccountList:");
-        sampleBankAccountList.forEach(It::println);
+        LOGGER.atDebug().setMessage(() -> "Sample bankaccountList:").log();
+        sampleBankAccountList.forEach(it -> LOGGER.trace("{}", it));
 
         final var bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
@@ -151,7 +148,7 @@ class BigDecimalCollectorsTest {
         final var max = sampleBankAccountList.stream()
                 .collect(toMaxBigDecimal(BankAccount::getBalance));
 
-        It.println("max = " + max);
+        LOGGER.atDebug().setMessage(() -> "max = " + max).log();
 
         final BigDecimal expected = bigDecimalSummaryStatistics.getMax();
         assertEquals(max, expected);
@@ -160,8 +157,8 @@ class BigDecimalCollectorsTest {
     @Test
     void testToMinBigDecimal() {
         final var sampleBankAccountList = TestSampleGenerator.createSampleBankAccountList();
-        It.println("Sample bankaccountList:");
-        sampleBankAccountList.forEach(It::println);
+        LOGGER.atDebug().setMessage(() -> "Sample bankaccountList:").log();
+        sampleBankAccountList.forEach(it -> LOGGER.trace("{}", it));
 
         final var bigDecimalSummaryStatistics = sampleBankAccountList.stream()
                 .collect(summarizingBigDecimal(BankAccount::getBalance));
@@ -169,7 +166,7 @@ class BigDecimalCollectorsTest {
         final var min = sampleBankAccountList.stream()
                 .collect(toMinBigDecimal(BankAccount::getBalance));
 
-        It.println("min = " + min);
+        LOGGER.atDebug().setMessage(() -> "min = " + min).log();
 
         final BigDecimal expected = bigDecimalSummaryStatistics.getMin();
         assertEquals(min, expected);

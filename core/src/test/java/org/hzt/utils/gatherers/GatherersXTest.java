@@ -29,27 +29,10 @@ import java.util.stream.Stream;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hzt.utils.collectors.CollectorsX.doubleArrayOf;
-import static org.hzt.utils.collectors.CollectorsX.intArrayOf;
-import static org.hzt.utils.collectors.CollectorsX.longArrayOf;
-import static org.hzt.utils.gatherers.GatherersX.chunked;
-import static org.hzt.utils.gatherers.GatherersX.distinctBy;
-import static org.hzt.utils.gatherers.GatherersX.dropWhile;
-import static org.hzt.utils.gatherers.GatherersX.mapNotNull;
-import static org.hzt.utils.gatherers.GatherersX.runningDoubleStatisticsOf;
-import static org.hzt.utils.gatherers.GatherersX.runningIntStatisticsOf;
-import static org.hzt.utils.gatherers.GatherersX.runningLongStatisticsOf;
-import static org.hzt.utils.gatherers.GatherersX.sorted;
-import static org.hzt.utils.gatherers.GatherersX.sortedBy;
-import static org.hzt.utils.gatherers.GatherersX.sortedDescendingBy;
-import static org.hzt.utils.gatherers.GatherersX.sortedDistinct;
-import static org.hzt.utils.gatherers.GatherersX.takeWhile;
-import static org.hzt.utils.gatherers.GatherersX.takeWhileIncluding;
+import static org.hzt.utils.collectors.CollectorsX.*;
 import static org.hzt.utils.gatherers.GatherersX.windowed;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hzt.utils.gatherers.GatherersX.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class GatherersXTest {
 
@@ -316,7 +299,7 @@ class GatherersXTest {
             final var result = LongSequence.of(5, 6, 8, 4, 12, 15, Long.MAX_VALUE, 4)
                     .mapToObj(ChemicalSubstance::new)
                     .gather(runningLongStatisticsOf(ChemicalSubstance::mol))
-                    .onEach(System.out::println)
+                    .onEach(it -> LOGGER.trace("{}", it))
                     .teeing(longArrayOf(LongStatistics::getMax), longArrayOf(LongStatistics::getSum));
 
             final long[] expectedMaxes = {5, 6, 8, 8, 12, 15, Long.MAX_VALUE, Long.MAX_VALUE};
@@ -376,6 +359,36 @@ class GatherersXTest {
 
             assertEquals(reference, windows);
             assertEquals(reference, byCollector);
+        }
+
+        @Test
+        void testWindowedShortCircuitingIfDownstreamIsRejecting() {
+            final var size = 2;
+            var take = 4;
+            final var list = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+            final Function<List<Integer>, String> joinToString = w -> {
+                LOGGER.debug("joinToString {}", w);
+                return w.stream()
+                        .map(String::valueOf)
+                        .collect(joining());
+            };
+
+            final var windows = list.stream()
+                    .gather(windowed(size))
+                    .limit(take)
+                    .map(joinToString)
+                    .toList();
+
+            final var reference = Sequence.of(list)
+                    .windowed(size)
+                    .take(take)
+                    .map(w -> w.joinToString(""))
+                    .toList();
+
+            LOGGER.debug("{}", windows);
+
+            assertEquals(reference, windows);
         }
 
         @Test

@@ -1,24 +1,22 @@
 package org.hzt.graph;
 
-import org.hzt.utils.It;
+import org.hzt.graph.MutableNode.Mode;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
+import org.hzt.utils.collections.MutableLinkedSetX;
+import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class NodeTest {
+
+    private static final Logger log = LoggerFactory.getLogger(NodeTest.class);
 
     @Test
     void testBreadthFirstSequence() {
@@ -38,10 +36,10 @@ class NodeTest {
         final var leiden = graph.get("Leiden");
         final var vlissingen = graph.get("Vlissingen");
 
-        final var leastStopsPath = leiden.breadthFirstSequence(Node.Mode.SET_PREDECESSORS)
+        final var leastStopsPath = leiden.breadthFirstSequence(Mode.SET_PREDECESSORS)
                 .first(vlissingen::equals)
                 .predecessorSequence()
-                .onEach(n -> System.out.println(n.predecessorSequence().count()))
+                .onEach(n -> log.atDebug().setMessage(() -> "Predecessor count: " + n.predecessorSequence().count()).log())
                 .map(station -> station.name)
                 .toList();
 
@@ -56,9 +54,9 @@ class NodeTest {
 
         final List<String> visitedStation = new ArrayList<>();
 
-        final var vlissingen = leiden.depthFirstSequence(Node.Mode.SET_PREDECESSORS)
-                .onEach(It::println)
-                .onEach(s -> visitedStation.add(0, s.name))
+        final var vlissingen = leiden.depthFirstSequence(Mode.SET_PREDECESSORS)
+                .onEach(station -> log.debug(station.name))
+                .onEach(s -> visitedStation.addFirst(s.name))
                 .first(trainNet.get("Vlissingen")::equals);
 
         final var leastStopsPath = vlissingen.predecessorSequence().toListOf(station -> station.name);
@@ -72,12 +70,12 @@ class NodeTest {
 
     @Test
     void testFindRouteWithLeastStopsNoRoute() {
-        final var graph = buildTrainNet();
+        var timbuktu = new RailWayStation("Timbuktu");
+        final var graph = buildTrainNet().plus(timbuktu.name, timbuktu);
 
         final var source = graph.get("Leiden");
 
         final var railWayStations = source.breadthFirstSequence();
-        final var timbuktu = graph.get("Timbuktu");
 
         assertThrows(NoSuchElementException.class, () -> railWayStations.first(timbuktu::equals));
     }
@@ -136,12 +134,12 @@ class NodeTest {
     }
 
 
-    static class RailWayStation implements Node<RailWayStation, RailWayStation> {
+    static class RailWayStation implements MutableNode<RailWayStation, RailWayStation> {
 
 
         private final String name;
 
-        private final Set<RailWayStation> neighbors = new LinkedHashSet<>();
+        private final MutableSetX<RailWayStation> neighbors = MutableLinkedSetX.empty();
         private RailWayStation predecessor;
 
         public RailWayStation(final String name) {
@@ -160,10 +158,9 @@ class NodeTest {
         }
 
         @Override
-        public Set<RailWayStation> getMutableNeighbors() {
+        public MutableSetX<RailWayStation> getMutableNeighbors() {
             return neighbors;
         }
-
 
         @Override
         public Optional<RailWayStation> optionalPredecessor() {
@@ -173,8 +170,8 @@ class NodeTest {
         @Override
         public String toString() {
             return "RailWayStation{" +
-                   "name='" + name + '\'' +
-                   '}';
+                    "name='" + name + '\'' +
+                    '}';
         }
     }
 }

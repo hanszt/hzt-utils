@@ -10,25 +10,20 @@ import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.strings.StringX;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.reducing;
-import static java.util.stream.Collectors.toList;
-import static org.hzt.utils.It.println;
+import static java.util.stream.Collectors.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class GroupableTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GroupableTest.class);
 
     @Test
     void testGroupingByAggregateFromListX() {
@@ -39,7 +34,7 @@ class GroupableTest {
                 .aggregate(GroupableTest::toStringBuilder)
                 .mapByValues(StringBuilder::toString);
 
-        println(aggregated);
+        LOGGER.debug("aggregated = {}", aggregated);
 
         final var expected = MutableMapX.of(0, "0:3-6-9", 1, "1:4-7", 2, "2:5-8");
 
@@ -102,8 +97,8 @@ class GroupableTest {
 
         final NavigableMap<Integer, Long> expected = new TreeMap<>(MutableMapX.of(0, 3L, 1, 2L, 2, 2L));
 
-        println("expected = " + expected);
-        println("aggregated = " + aggregated);
+        LOGGER.atDebug().setMessage(() -> "expected = " + expected).log();
+        LOGGER.atDebug().setMessage(() -> "aggregated = " + aggregated).log();
 
         assertEquals(expected, aggregated);
         assertEquals(reference, aggregated);
@@ -121,7 +116,7 @@ class GroupableTest {
 
         final NavigableMap<Character, List<String>> sorted = Sequence.ofMap(evenFruits).toSortedMap(It::self);
 
-        println(sorted);
+        LOGGER.debug("sorted = {}", sorted);
 
         final NavigableMap<Character, List<String>> expected =
                 SortedMutableMapX.of(MapX.of('a', Collections.emptyList(),
@@ -146,7 +141,7 @@ class GroupableTest {
                 .groupingBy(fruit -> fruit.charAt(0))
                 .fold(0, (accLengths, next) -> accLengths + next.length());
 
-        println(fruitNameLengthSum);
+        LOGGER.debug("fruitNameLengthSum = {}", fruitNameLengthSum);
 
         final var expected = MutableMapX.of('c', 19, 'b', 15, 'a', 12);
 

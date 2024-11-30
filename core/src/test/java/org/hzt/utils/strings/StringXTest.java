@@ -10,25 +10,21 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class StringXTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StringXTest.class);
 
     @Test
     void testGroupStringX() {
@@ -50,7 +46,7 @@ class StringXTest {
     @Test
     void testReplaceFirstChar() {
         final var hallo = StringX.of("hallo")
-                .replaceFirstChar(c -> 'H').toString();
+                .replaceFirstChar(_ -> 'H').toString();
         assertEquals("Hallo", hallo);
     }
 
@@ -182,7 +178,7 @@ class StringXTest {
             final var comma = StringX.of(", ");
             final var strings = StringX.of(string).splitToSequence(comma, " -> ");
 
-            strings.forEach(System.out::println);
+            strings.forEach(it -> LOGGER.trace("{}", it));
 
             assertIterableEquals(Sequence.of("hallo", "this", "is", "a", "test", "answer"), strings);
         }
@@ -193,7 +189,7 @@ class StringXTest {
             final var oDelimiter = new StringBuilder(" o ");
             final var strings = StringX.of(string).splitToSequence(true, ", ", oDelimiter, " -> ");
 
-            strings.forEach(System.out::println);
+            strings.forEach(it -> LOGGER.trace("{}", it));
 
             assertIterableEquals(Sequence.of("hallo", "this", "is", "a", "test", "answer"), strings);
         }
@@ -204,7 +200,7 @@ class StringXTest {
                     .splitToSequence(Patterns.blankStringPattern)
                     .toList();
 
-            System.out.println("strings.size() = " + strings.size());
+            LOGGER.atDebug().setMessage(() -> "strings.size() = " + strings.size()).log();
 
             assertEquals(List.of("test@test.com", "this", "is", "some", "text"), strings);
         }
@@ -264,7 +260,7 @@ class StringXTest {
 
             final var split2 = Pattern.compile("").splitAsStream(testString)
                     .collect(Collectors.toList());
-            split2.add(0, "");
+            split2.addFirst("");
             split2.add("");
 
             final var expected = ListX.of("", "T", "e", "s", "t", "");
@@ -282,9 +278,9 @@ class StringXTest {
         final var MAX_LENGTH = 12;
         final var abbreviate = StringX.of(string).abbreviate(MAX_LENGTH);
 
-        println(abbreviate);
+        LOGGER.debug("abbreviate = {}", abbreviate);
 
-        assertTrue(abbreviate.length() <= MAX_LENGTH);
+        assertThat(abbreviate.length()).isLessThanOrEqualTo(MAX_LENGTH);
     }
     
     @Nested

@@ -1,15 +1,18 @@
 package org.hzt.utils.tuples;
 
-import org.hzt.utils.It;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.function.Predicate.not;
 import static org.hzt.utils.tuples.Result.catching;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ResultTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResultTest.class);
 
     @Test
     void testStreamHandlingExceptionsUsingEither() {
@@ -18,7 +21,7 @@ class ResultTest {
                 .boxed()
                 .plus(Sequence.of(null, null, 3))
                 .map(catching(ResultTest::throwingWhenLargerThan20Times2))
-                .onEach(It::println)
+                .onEach(it -> LOGGER.trace("{}", it))
                 .filter(not(Result::hasError))
                 .toList();
 

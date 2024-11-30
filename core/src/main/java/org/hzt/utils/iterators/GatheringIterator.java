@@ -16,7 +16,7 @@ import java.util.function.BiConsumer;
  * @param <A> The type of the state container
  * @param <R> The type of this iterator
  */
-final class GatheringIterator<T, A, R> implements Iterator<R> {
+final class GatheringIterator<T, A, R> implements Iterator<R>, Gatherer.Downstream<R> {
     private final Iterator<T> source;
     private final A state;
     private final Integrator<A, ? super T, R> integrator;
@@ -41,14 +41,14 @@ final class GatheringIterator<T, A, R> implements Iterator<R> {
             return false;
         }
         while (buffer.isEmpty() && source.hasNext()) {
-            if (!integrator.integrate(state, source.next(), buffer::add)) {
+            if (!integrator.integrate(state, source.next(), this)) {
                 emitNoMoreItems = true;
                 break;
             }
         }
         if (!source.hasNext() && !finisherCalled) {
+            finisher.accept(state, this);
             finisherCalled = true;
-            finisher.accept(state, buffer::add);
         }
         return !buffer.isEmpty();
     }
@@ -59,5 +59,15 @@ final class GatheringIterator<T, A, R> implements Iterator<R> {
             return buffer.remove();
         }
         throw new NoSuchElementException();
+    }
+
+    @Override
+    public boolean push(R element) {
+        return buffer.add(element);
+    }
+
+    @Override
+    public boolean isRejecting() {
+        return emitNoMoreItems;
     }
 }

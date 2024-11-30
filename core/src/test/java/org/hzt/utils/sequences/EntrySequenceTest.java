@@ -1,10 +1,13 @@
 package org.hzt.utils.sequences;
 
+import org.hzt.test.assertions.Assertions;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.MapX;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.hzt.utils.tuples.Pair;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,13 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 class EntrySequenceTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntrySequenceTest.class);
 
     @Test
     void testfilterValuesAndMapValues() {
@@ -28,7 +30,7 @@ class EntrySequenceTest {
 
         final var resultMap = mapX.asSequence()
                 .filterValues(value -> value <= 3)
-                .onEach((key, day) -> println("key: " + key + ", value: " + day))
+                .onEach((key, day) -> LOGGER.atDebug().setMessage(() -> "key: " + key + ", value: " + day).log())
                 .mapByValues(day -> LocalDate.of(2000, Month.JANUARY, day))
                 .toMapX();
 
@@ -44,12 +46,12 @@ class EntrySequenceTest {
                 .take(100)
                 .mapToObj(Math::sin)
                 .zipWithNext()
-                .onEntrySequence(sequence -> println(sequence.count()))
+                .onEntrySequence(sequence -> LOGGER.atDebug().setMessage(() -> "Count: " + sequence.count()).log())
                 .filter((cur, next) -> cur < next)
                 .mapToDouble(Map.Entry::getValue)
                 .toList();
 
-        println(doubleList);
+        LOGGER.debug("{}", doubleList);
 
         assertEquals(48, doubleList.size());
     }
@@ -72,12 +74,12 @@ class EntrySequenceTest {
         final var resultMap = map.asSequence()
                 .filterValues(value -> value <= 3)
                 .mapValues((month, day) -> LocalDate.of(2000, Month.of(Integer.parseInt(month)), day))
-                .onEachValue(It::println)
+                .onEachValue(it -> LOGGER.trace("{}", it))
                 .toMapX();
 
         assertAll(
                 () -> assertEquals(3, resultMap.size()),
-                () -> assertTrue(resultMap.containsValue(LocalDate.of(2000, Month.MARCH, 3)))
+                () -> assertThat(resultMap.values()).contains(LocalDate.of(2000, Month.MARCH, 3))
         );
     }
 
@@ -87,13 +89,13 @@ class EntrySequenceTest {
                 .asEntrySequence(It::self, BigDecimal::valueOf)
                 .mapByKeys(Year::of)
                 .takeWhileKeys(year -> year.isBefore(Year.of(2001)))
-                .onEachKey(It::println)
+                .onEachKey(it -> LOGGER.trace("{}", it))
                 .skip(20)
                 .toMutableMap();
 
         assertAll(
                 () -> assertEquals(1980, yearStringMap.size()),
-                () -> assertTrue(yearStringMap.last().getKey().isLeap())
+                () -> Assertions.assertThat(yearStringMap.last().getKey()).isLeap()
         );
     }
 
@@ -109,7 +111,7 @@ class EntrySequenceTest {
 
         assertAll(
                 () -> assertEquals(1980, yearStringMap.size()),
-                () -> assertTrue(yearStringMap.last().getKey().isLeap())
+                () -> Assertions.assertThat(yearStringMap.last().getKey()).isLeap()
         );
     }
 
@@ -124,7 +126,7 @@ class EntrySequenceTest {
 
         assertAll(
                 () -> assertEquals(1980, yearStringMap.size()),
-                () -> assertTrue(yearStringMap.last().getValue().isLeap())
+                () -> Assertions.assertThat(yearStringMap.last().getValue()).isLeap()
         );
     }
 

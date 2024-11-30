@@ -4,6 +4,8 @@ import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.NavigableSet;
 import java.util.Objects;
@@ -12,11 +14,11 @@ import java.util.function.Consumer;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toCollection;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SortedMutableSetXTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SortedMutableSetXTest.class);
 
     @Test
     void testGetNavigableSet() {
@@ -34,7 +36,7 @@ class SortedMutableSetXTest {
 
         final var average = names
                 .onEach(String::length, It
-                        .<Consumer<Integer>>self(It::println)
+                        .<Consumer<Integer>>self(it -> LOGGER.trace("{}", it))
                         .andThen(list::add))
                 .filterBy(String::length, length -> length > 14)
                 .averageOf(String::length);

@@ -3,7 +3,6 @@ package org.hzt.utils.collections;
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
-import org.hzt.utils.It;
 import org.hzt.utils.function.IndexedConsumer;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.EntrySequence;
@@ -12,6 +11,8 @@ import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -21,12 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MapXTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MapXTest.class);
 
     @Test
     void testInvertMap() {
@@ -38,7 +38,7 @@ class MapXTest {
 
         final var actual = MapX.of(museumMap).inverted();
 
-        It.println("actual = " + actual);
+        LOGGER.atDebug().setMessage(() -> "actual = " + actual).log();
 
         assertEquals(expected.entrySet(), actual.entrySet());
     }
@@ -56,7 +56,7 @@ class MapXTest {
                 .mapValuesTo(MutableListX::empty, Museum::getDateOfOpening)
                 .intSumOf(LocalDate::getDayOfMonth);
 
-        It.println("actual = " + actual);
+        LOGGER.atDebug().setMessage(() -> "actual = " + actual).log();
 
         assertEquals(expected, actual);
     }
@@ -70,7 +70,7 @@ class MapXTest {
 
         ListX.of(museumListContainingNulls).associateBy(Museum::getName).forEachIndexed(biConsumer);
 
-        list.forEach(It::println);
+        list.forEach(it -> LOGGER.trace("{}", it));
 
         assertEquals(3, list.size());
     }
@@ -85,7 +85,7 @@ class MapXTest {
 
         final List<Painting> actual = MapX.of(museumMap).flatMapValuesTo(MutableListX::empty, Museum::getPaintings);
 
-        It.println("actual = " + actual);
+        LOGGER.atDebug().setMessage(() -> "actual = " + actual).log();
 
         assertEquals(expected, actual);
     }
@@ -107,9 +107,9 @@ class MapXTest {
         final var museumMap = TestSampleGenerator.createMuseumMap();
 
         final var mapX = MapX.of(museumMap);
-        MapX.of(mapX).entrySet().forEach(It::println);
+        MapX.of(mapX).entrySet().forEach(it -> LOGGER.trace("{}", it));
 
-        It.println("map = " + mapX);
+        LOGGER.atDebug().setMessage(() -> "map = " + mapX).log();
 
         assertEquals(museumMap.entrySet(), mapX.entrySet());
     }
@@ -123,11 +123,11 @@ class MapXTest {
 
         final var map = MutableMapX.of(museumMap);
 
-        final var van_gogh = map.computeIfAbsent("Van Gogh Museum", key -> {
+        final var van_gogh = map.computeIfAbsent("Van Gogh Museum", _ -> {
             throw new IllegalStateException();
         });
 
-        It.println("van_gogh = " + van_gogh);
+        LOGGER.atDebug().setMessage(() -> "van_gogh = " + van_gogh).log();
 
         assertEquals(expected, van_gogh);
     }
@@ -170,9 +170,9 @@ class MapXTest {
         final MapX<Integer, LocalDate> map = MapX.build(m ->
                 IntRange.of(1990, 2022).forEachInt(year -> m.put(year, LocalDate.of(year, 1, 1))));
 
-        map.forEach(It::println);
+        map.forEach(it -> LOGGER.trace("{}", it));
 
-        It.println("map = " + map);
+        LOGGER.atDebug().setMessage(() -> "map = " + map).log();
 
         assertEquals(32, map.size());
     }

@@ -5,8 +5,6 @@ import org.hzt.graph.tuples.DepthToTreeNode;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.strings.StringX;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -15,10 +13,10 @@ import java.util.function.Function;
 /**
  * @param <T> The type of the node itself
  * @param <S> The type of the children
- *            <p>
- *            T and S must be of same type for this interface to work properly
- *            <p>
- *            The iterator that must be implemented, must provide an iterator over the children of the current node
+ * <p>
+ * T and S must be of same type for this interface to work properly
+ * <p>
+ * The iterator that must be implemented, must provide an iterator over the children of the current node
  */
 @FunctionalInterface
 public interface TreeNode<T, S extends TreeNode<T, S>> {
@@ -32,10 +30,14 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return Sequence.of(this::childrenIterator);
     }
 
+    /**
+     * @return a sequence of siblings including self
+     */
     default Sequence<S> siblingSequence() {
-        final TreeNode<T, S> noChildrenNode = Collections::emptyIterator;
         //noinspection unchecked
-        return optionalParent().orElse((S) noChildrenNode).childrenSequence();
+        return optionalParent()
+                .map(TreeNode::childrenSequence)
+                .orElse(Sequence.of((S) this));
     }
 
     default boolean isLeaf() {
@@ -50,73 +52,8 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return (int) parentSequence().count();
     }
 
-    default Collection<S> getMutableChildren() {
-        throw new UnsupportedOperationException("getMutableChildren() not supported by default. Override it if you want to use it");
-    }
-
     default Optional<S> optionalParent() {
         throw new IllegalStateException("optionalParent() is not implemented by default. Override it if you want to use it");
-    }
-
-    default S withParent(final S parent) {
-        throw new IllegalStateException("withParent(TreeNode) not supported by default. Override it if you want to use it. " +
-                "Tried to set " + parent + " as parent");
-    }
-
-    default S addChild(final S toAdd) {
-        final var children = getMutableChildren();
-        children.add(toAdd);
-        //noinspection unchecked
-        return (S) this;
-    }
-
-    default S addChildren(final Iterable<S> toAdd) {
-        final var children = getMutableChildren();
-        for (final var child : toAdd) {
-            children.add(child);
-        }
-        //noinspection unchecked
-        return (S) this;
-    }
-
-    default S addChildWithThisAsParent(final S toAdd) {
-        final var children = getMutableChildren();
-        children.add(toAdd);
-        try {
-            //noinspection unchecked
-            toAdd.withParent((S) this);
-        } catch (final IllegalStateException e) {
-            final var message = "Could not set parent. Override withParent(TreeNode) or try to use addChild(TreeNode) instead...";
-            throw new IllegalStateException(message, e);
-        }
-        //noinspection unchecked
-        return (S) this;
-    }
-
-    default S addChildrenWithThisAsParent(final Iterable<S> toAdd) {
-        final var children = getMutableChildren();
-        for (final var child : toAdd) {
-            children.add(child);
-            //noinspection unchecked
-            child.withParent((S) this);
-        }
-        //noinspection unchecked
-        return (S) this;
-    }
-
-    default S removeSubTree(final S branch) {
-        final var branchChildren = branch.getMutableChildren();
-        for (final var child : branchChildren) {
-            if (!child.isLeaf()) {
-                removeSubTree(child);
-            }
-        }
-        branchChildren.removeIf(TreeNode::isLeaf);
-        if (branch.isLeaf()) {
-            getMutableChildren().removeIf(branch::equals);
-        }
-        //noinspection unchecked
-        return (S) this;
     }
 
     default Sequence<S> breadthFirstSequence() {
@@ -139,36 +76,37 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return Sequence.of(() -> GraphIterators.treeNodeDepthFirstDepthTrackingIterator((S) this));
     }
 
+    /**
+     * @return a sequence containing this and the parents of this tree node
+     */
     default Sequence<S> parentSequence() {
         //noinspection unchecked
-        final var initial = (S) this;
-        final Iterator<S> iterator = new Iterator<>() {
-            boolean isThis = true;
-            S next = initial;
+        return Sequence.of(() -> new Iterator<>() {
+            boolean hasNext = true;
+            S next = (S) TreeNode.this;
 
             @Override
             public boolean hasNext() {
-                if (isThis) {
-                    isThis = false;
+                if (hasNext) {
                     return true;
                 }
                 final var optionalParent = next.optionalParent();
-                final var present = optionalParent.isPresent();
-                if (present) {
+                hasNext = optionalParent.isPresent();
+                if (hasNext) {
                     next = optionalParent.orElseThrow();
                 }
-                return next != null && present;
+                return hasNext;
             }
 
             @Override
             public S next() {
-                if (next == null) {
-                    throw new NoSuchElementException();
+                if (hasNext()) {
+                    hasNext = false;
+                    return next;
                 }
-                return next;
+                throw new NoSuchElementException();
             }
-        };
-        return Sequence.of(() -> iterator);
+        });
     }
 
     default String toTreeString() {

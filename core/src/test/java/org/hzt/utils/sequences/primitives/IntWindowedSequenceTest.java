@@ -1,9 +1,10 @@
 package org.hzt.utils.sequences.primitives;
 
-import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.ranges.IntRange;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -11,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IntWindowedSequenceTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IntWindowedSequenceTest.class);
 
     @Test
     void testLargeWindowedSequence() {
@@ -22,7 +25,7 @@ class IntWindowedSequenceTest {
 
         final var tail = windows.tailFrom(windows.size() - 2);
 
-        It.println("tail = " + tail);
+        LOGGER.atDebug().setMessage(() -> "tail = " + tail).log();
 
         assertAll(
                 () -> assertEquals(43479, windows.size()),
@@ -43,17 +46,17 @@ class IntWindowedSequenceTest {
 
         final var head = windows.headTo(5);
 
-        head.forEach(It::println);
+        head.forEach(it -> LOGGER.trace("{}", it));
 
         final var tail = windows.tailFrom(windows.size() - 5);
 
-        tail.forEach(It::println);
+        tail.forEach(it -> LOGGER.trace("{}", it));
 
         assertAll(
                 () -> assertEquals(2000, windows.size()),
                 () -> assertEquals(2000, firstWindow.size()),
                 () -> assertEquals(1, lastWindow.size()),
-                () -> assertEquals(1999000, lastWindow.single())
+                () -> assertEquals(1_999_000, lastWindow.single())
         );
     }
 
@@ -63,7 +66,7 @@ class IntWindowedSequenceTest {
 
         final var sizes = IntRange.of(0, 1000)
                 .chunked(chunkSize::incrementAndGet)
-                .onEach(It::println)
+                .onEach(it -> LOGGER.trace("{}", it))
                 .mapToInt(IntList::size)
                 .toArray();
 

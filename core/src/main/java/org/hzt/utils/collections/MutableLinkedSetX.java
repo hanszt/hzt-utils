@@ -1,9 +1,10 @@
 package org.hzt.utils.collections;
 
 import java.util.Collection;
+import java.util.SequencedSet;
 import java.util.Set;
 
-public interface MutableLinkedSetX<E> extends MutableSetX<E> {
+public interface MutableLinkedSetX<E> extends MutableSetX<E>, SequencedSet<E> {
 
     static <E> MutableLinkedSetX<E> empty() {
         return new LinkedHashSetX<>();
@@ -30,4 +31,13 @@ public interface MutableLinkedSetX<E> extends MutableSetX<E> {
         return new LinkedHashSetX<>(first, others);
     }
 
+    @Override
+    default E removeFirst() {
+        return SequencedSet.super.removeFirst();
+    }
+
+    @Override
+    default E removeLast() {
+        return SequencedSet.super.removeLast();
+    }
 }

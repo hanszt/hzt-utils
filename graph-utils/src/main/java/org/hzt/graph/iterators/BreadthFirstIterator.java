@@ -1,13 +1,9 @@
 package org.hzt.graph.iterators;
 
+import org.hzt.graph.MutableNode;
 import org.hzt.graph.Node;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @param <T> the type of this
@@ -42,7 +38,12 @@ final class BreadthFirstIterator<T, S extends Node<T, S>> implements Iterator<S>
             final var neighbor = iterator.next();
             if (!visited.contains(neighbor)) {
                 if (setPredecessor) {
-                    neighbor.withPredecessor(next);
+                    if (neighbor instanceof MutableNode<?, ?> mutN) {
+                        //noinspection unchecked
+                        ((MutableNode<T, S>) mutN).withPredecessor(next);
+                    } else {
+                        throw new IllegalStateException("Can not set predecessor");
+                    }
                 }
                 queue.add(neighbor);
                 visited.add(neighbor);

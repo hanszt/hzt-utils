@@ -1,6 +1,5 @@
 package org.hzt.utils.sequences;
 
-import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.numbers.IntX;
@@ -10,18 +9,19 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 class CustomSequenceTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomSequenceTest.class);
 
     @Test
     void testBigIntFibonacciSequencePrimes() {
@@ -82,7 +82,7 @@ class CustomSequenceTest {
         static void main(final String[] args) {
             fibonacciSequence()
                     .filter(bigInteger -> bigInteger.isProbablePrime(100))
-                    .forEach(It::println);
+                    .forEach(it -> LOGGER.trace("{}", it));
         }
     }
 
@@ -117,7 +117,7 @@ class CustomSequenceTest {
                     .joinToString(", ");
 
             for (final var s : fizzBuzzer.take(3)) {
-                println("s = " + s);
+                LOGGER.atDebug().setMessage(() -> "s = " + s).log();
             }
             assertAll(
                     () -> assertEquals("4, buzz, fizz, 7, 8, fizz, buzz, 11, fizz, 13, 14, fizzbuzz, 16", actual),
@@ -131,7 +131,7 @@ class CustomSequenceTest {
                     .fizz()
                     .buzz()
                     .withIndex()
-                    .onEach(It::println)
+                    .onEach(it -> LOGGER.trace("{}", it))
                     .filter(value -> (value.index() + 1) % 5 == 0)
                     .map(this::everyFifthContainsBuzz)
                     .take(100);
@@ -149,7 +149,7 @@ class CustomSequenceTest {
                     .fizz()
                     .buzz()
                     .withIndex()
-                    .onEach(It::println)
+                    .onEach(it -> LOGGER.trace("{}", it))
                     .filter(value -> (value.index() + 1) % 3 == 0)
                     .map(this::everyThirdContainsFizz)
                     .take(100);
@@ -222,9 +222,9 @@ class CustomSequenceTest {
                     .skip(3)
                     .joinToString(", ");
 
-            println(fizzBuzzer.take(2_000).joinToString());
-            println("count = " + count);
-            println("actual = " + actual);
+            LOGGER.atDebug().setMessage(() -> fizzBuzzer.take(2_000).joinToString()).log();
+            LOGGER.atDebug().setMessage(() -> "count = " + count).log();
+            LOGGER.atDebug().setMessage(() -> "actual = " + actual).log();
         }
     }
 }

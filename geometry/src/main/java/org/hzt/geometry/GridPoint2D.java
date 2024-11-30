@@ -2,29 +2,29 @@ package org.hzt.geometry;
 
 public interface GridPoint2D {
 
-    GridPoint2D ZERO = new GridPoint2DImpl(0, 0);
+    GridPoint2D ZERO = new StandardGridPoint2D(0, 0);
 
     static GridPoint2D from(final int x, final int y) {
-        return new GridPoint2DImpl(x, y);
+        return new StandardGridPoint2D(x, y);
     }
     int x();
 
     int y();
 
     default GridPoint2D multiply(final GridPoint2D other) {
-        return new GridPoint2DImpl(x() * other.x(), y() * other.y());
+        return new StandardGridPoint2D(x() * other.x(), y() * other.y());
     }
 
     default GridPoint2D multiply(final int scalar) {
-        return new GridPoint2DImpl(x() * scalar, y() * scalar);
+        return new StandardGridPoint2D(x() * scalar, y() * scalar);
     }
 
     default GridPoint2D add(final GridPoint2D other) {
-        return new GridPoint2DImpl(x() + other.x(), y() + other.y());
+        return new StandardGridPoint2D(x() + other.x(), y() + other.y());
     }
 
     default GridPoint2D subtract(final GridPoint2D other) {
-        return new GridPoint2DImpl(x() - other.x(), y() - other.y());
+        return new StandardGridPoint2D(x() - other.x(), y() - other.y());
     }
 
     default int distanceSquared(final int x, final int y) {
@@ -64,7 +64,7 @@ public interface GridPoint2D {
     }
 
     default GridPoint2D midpoint(final int x, final int y) {
-        return new GridPoint2DImpl(
+        return new StandardGridPoint2D(
                 x + (x() - x) / 2,
                 y + (y() - y) / 2);
     }
@@ -97,7 +97,7 @@ public interface GridPoint2D {
     default GridPoint3D crossProduct(final int x, final int y) {
         final var ax = x();
         final var ay = y();
-        return new GridPoint3DImpl(0, 0, ax * y - ay * x);
+        return new StandardPoint3D(0, 0, ax * y - ay * x);
     }
 
     default GridPoint3D crossProduct(final GridPoint2D point2D) {

@@ -14,18 +14,18 @@ import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.sequences.primitives.LongSequence;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
 
-import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ArraysXTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ArraysXTest.class);
 
     // unseeded because the test is about the sorted result
     private static final Random random = new Random();
@@ -39,7 +39,7 @@ class ArraysXTest {
         Arrays.sort(strings2);
         ArraysX.reverse(strings2);
 
-        System.out.println(Arrays.toString(strings));
+        LOGGER.atDebug().setMessage(() -> Arrays.toString(strings)).log();
         assertArrayEquals(strings, strings2);
     }
 
@@ -74,11 +74,11 @@ class ArraysXTest {
                     .mapToInt(It::asInt)
                     .toArray();
 
-            println(Arrays.toString(array));
+            LOGGER.atTrace().setMessage(() -> Arrays.toString(array)).log();
 
             ArraysX.sort(IntComparator.reverseOrder(), array);
 
-            println(Arrays.toString(array));
+            LOGGER.atTrace().setMessage(() -> Arrays.toString(array)).log();
 
             assertEquals(IntList.of(999, 998, 997, 996, 995, 994), IntSequence.of(array).take(6).toList());
         }
@@ -91,11 +91,11 @@ class ArraysXTest {
                     .mapToLong(It::asLong)
                     .toArray();
 
-            println(Arrays.toString(array));
+            LOGGER.atTrace().setMessage(() -> Arrays.toString(array)).log();
 
             ArraysX.sort(Long::compare, array);
 
-            println(Arrays.toString(array));
+            LOGGER.atTrace().setMessage(() -> Arrays.toString(array)).log();
 
             assertEquals(LongList.of(1, 2, 3, 4, 5, 6), LongSequence.of(array).take(6).toList());
         }
@@ -108,11 +108,11 @@ class ArraysXTest {
                     .mapToLong(It::asLong)
                     .toArray();
 
-            println(Arrays.toString(array));
+            LOGGER.atTrace().setMessage(() -> Arrays.toString(array)).log();
 
             ArraysX.sort(LongComparator.reverseOrder(), array);
 
-            println(Arrays.toString(array));
+            LOGGER.atTrace().setMessage(() -> Arrays.toString(array)).log();
 
             assertEquals(LongList.of(999, 998, 997, 996, 995, 994), LongSequence.of(array).take(6).toList());
         }
@@ -125,11 +125,11 @@ class ArraysXTest {
                     .mapToLong(It::asLong)
                     .toArray();
 
-            println(Arrays.toString(array));
+            LOGGER.atDebug().setMessage(() -> Arrays.toString(array)).log();
 
             ArraysX.sort(LongComparator.reverseOrder(), array);
 
-            println(Arrays.toString(array));
+            LOGGER.atDebug().setMessage(() -> Arrays.toString(array)).log();
 
             assertArrayEquals(new long[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, array);
         }
@@ -142,11 +142,11 @@ class ArraysXTest {
                     .mapToDouble(It::asDouble)
                     .toArray();
 
-            println(Arrays.toString(array));
+            LOGGER.atTrace().setMessage(() -> Arrays.toString(array)).log();
 
             ArraysX.sort(Double::compare, array);
 
-            println(Arrays.toString(array));
+            LOGGER.atTrace().setMessage(() -> Arrays.toString(array)).log();
 
             final var expected = DoubleList.of(.1, .2, .3, .4, .5, .6)
                     .mapToObj(DoubleX::toRoundedString);
@@ -167,11 +167,11 @@ class ArraysXTest {
                     .mapToDouble(It::asDouble)
                     .toArray();
 
-            println(Arrays.toString(array));
+            LOGGER.atTrace().setMessage(() -> Arrays.toString(array)).log();
 
             ArraysX.sort(DoubleComparator.reverseOrder(), array);
 
-            println(Arrays.toString(array));
+            LOGGER.atTrace().setMessage(() -> Arrays.toString(array)).log();
 
             final var expected = DoubleList.of(99.9, 99.8, 99.7, 99.6, 99.5, 99.4).mapToObj(DoubleX::toRoundedString);
             final var actual = DoubleSequence.of(array).take(6).toList().mapToObj(DoubleX::toRoundedString);

@@ -1,19 +1,18 @@
 package org.hzt.utils.io;
 
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CloserTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CloserTest.class);
 
     @Test
     void testCloserForResourceNotImplementingAutoClosable() {
@@ -50,7 +49,7 @@ class CloserTest {
         Closer.forResource(resource, Resource::close).executeAndClose(l -> list.add(l.read()));
 
         assertAll(
-                () -> assertEquals("Read result", list.get(0)),
+                () -> assertEquals("Read result", list.getFirst()),
                 () -> assertTrue(resource.closed)
         );
     }
@@ -83,18 +82,18 @@ class CloserTest {
 
 
         public void load() {
-            It.println(name + " loading...");
-            It.println(name + " loaded");
+            LOGGER.atDebug().setMessage(() -> name + " loading...").log();
+            LOGGER.atDebug().setMessage(() -> name + " loaded").log();
         }
 
         public String read() {
-            It.println(name + " reading...");
-            It.println(name + " read");
+            LOGGER.atDebug().setMessage(() -> name + " reading...").log();
+            LOGGER.atDebug().setMessage(() -> name + " read").log();
             return "Read result";
         }
 
         public void close() {
-            It.println(name + " is now closed");
+            LOGGER.atDebug().setMessage(() -> name + " is now closed").log();
             closed = true;
         }
 

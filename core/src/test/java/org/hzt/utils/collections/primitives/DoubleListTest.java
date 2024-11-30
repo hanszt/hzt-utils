@@ -4,17 +4,18 @@ import org.hzt.utils.arrays.ArraysX;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
 import static java.util.function.Predicate.not;
 import static org.hzt.utils.Patterns.commaPattern;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DoubleListTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DoubleListTest.class);
 
     @Test
     void testContainsAll() {
@@ -45,7 +46,7 @@ class DoubleListTest {
     void testIsSorted(final String string) {
         final var doubles = toDoubleArrayByCommaPattern(string);
 
-        System.out.println(Arrays.toString(doubles));
+        LOGGER.atDebug().setMessage(() -> Arrays.toString(doubles)).log();
 
         final var isSorted = ArraysX.isSorted(DoubleList.of(doubles).toArray());
 
@@ -61,7 +62,7 @@ class DoubleListTest {
     void testIsNotSorted(final String string) {
         final var doubles = toDoubleArrayByCommaPattern(string);
 
-        System.out.println(Arrays.toString(doubles));
+        LOGGER.atDebug().setMessage(() -> Arrays.toString(doubles)).log();
 
         final var isSorted = ArraysX.isSorted(DoubleList.of(doubles).toArray());
 

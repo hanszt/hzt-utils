@@ -1,18 +1,13 @@
 package org.hzt.graph.iterators;
 
+import org.hzt.graph.MutableNode;
 import org.hzt.graph.Node;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @param <T> the type of this
  * @param <S> the type of the child
- *
  * @see <a href="https://gist.github.com/Xrayez/e67858723beca83f972f5790aae3a26f">BFS and DFS Iterator for Graph</a>
  */
 final class DepthFirstIterator<T, S extends Node<T, S>> implements Iterator<S> {
@@ -58,9 +53,13 @@ final class DepthFirstIterator<T, S extends Node<T, S>> implements Iterator<S> {
             }
             final var neighbor = neighbors.next();
             if (!visited.contains(neighbor)) {
-                if (setPredecessor) {
-                    neighbor.withPredecessor(next);
-                }
+                if (setPredecessor)
+                    if (neighbor instanceof MutableNode<?, ?> mutN) {
+                        //noinspection unchecked
+                        ((MutableNode<T, S>) mutN).withPredecessor(next);
+                    } else {
+                        throw new IllegalStateException("Can not set predecessor");
+                    }
                 next = neighbor;
                 break;
             }

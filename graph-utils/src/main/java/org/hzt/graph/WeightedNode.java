@@ -1,16 +1,24 @@
 package org.hzt.graph;
 
 
+import org.hzt.utils.collections.MutableCollectionX;
+import org.hzt.utils.collections.MutableListX;
+
 import java.util.Iterator;
 import java.util.List;
 
-public interface WeightedNode<T> extends Node<WeightedNode<T>, WeightedNode<T>> {
+public interface WeightedNode<T> extends MutableNode<WeightedNode<T>, WeightedNode<T>> {
 
     static <T> WeightedNode<T> of(final T payload) {
         return new WeightedNode<>() {
             @Override
             public Iterator<WeightedNode<T>> neighborIterator() {
                 return null;
+            }
+
+            @Override
+            public MutableCollectionX<WeightedNode<T>> getMutableNeighbors() {
+                return MutableListX.empty();
             }
 
             @Override
@@ -38,11 +46,6 @@ public interface WeightedNode<T> extends Node<WeightedNode<T>, WeightedNode<T>> 
     T getPayload();
 
     List<WeightedEdge<T>> getEdges();
-
-    @Override
-    default List<WeightedNode<T>> getMutableNeighbors() {
-        return getEdges().stream().map(e -> e.getOpposite(this)).toList();
-    }
 
     default Iterator<WeightedEdge<T>> edgeIterator() {
         return getEdges().iterator();

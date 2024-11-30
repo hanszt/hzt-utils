@@ -4,6 +4,8 @@ import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Museum;
 import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.NavigableMap;
 import java.util.Objects;
@@ -11,11 +13,11 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SortedMutableMapXTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SortedMutableMapXTest.class);
 
     @Test
     void testNavigableMapComparingByKey() {
@@ -27,7 +29,7 @@ class SortedMutableMapXTest {
         final var mapX = MapX.of("hallo", 1, "greetings", 3, "Hi", 2);
         final var expected = SortedMutableMapX.of(mapX, String::length);
 
-        map.forEach(It::println);
+        map.forEach(it -> LOGGER.trace("{}", it));
 
         assertEquals(expected, map);
     }
@@ -68,7 +70,7 @@ class SortedMutableMapXTest {
 
         final var firstMuseum = actual.first().getKey();
 
-        It.println("firstMuseum = " + firstMuseum);
+        LOGGER.atDebug().setMessage(() -> "firstMuseum = " + firstMuseum).log();
 
         assertAll(
                 () -> assertIterableEquals(actual.keySet(), expected.keySet()),

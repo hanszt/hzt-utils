@@ -9,6 +9,8 @@ import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -16,7 +18,6 @@ import java.time.Month;
 import java.util.Collection;
 import java.util.List;
 import java.util.Spliterator;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -24,21 +25,12 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
-import static org.hzt.utils.streams.StreamExtensions.chunked;
-import static org.hzt.utils.streams.StreamExtensions.filter;
-import static org.hzt.utils.streams.StreamExtensions.map;
-import static org.hzt.utils.streams.StreamExtensions.mapConcurrent;
-import static org.hzt.utils.streams.StreamExtensions.peek;
-import static org.hzt.utils.streams.StreamExtensions.scan;
-import static org.hzt.utils.streams.StreamExtensions.windowed;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.hzt.utils.streams.StreamExtensions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class StreamXTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StreamXTest.class);
 
     @Test
     void mapFilterReduce() {
@@ -60,7 +52,7 @@ class StreamXTest {
                 .filter(this::contained)
                 .peek(Assertions::fail)
                 .map(String::length)
-                .peek(s -> fail());
+                .peek(_ -> fail());
 
         assertFalse(streamX.isParallel());
     }
@@ -73,7 +65,7 @@ class StreamXTest {
                 .filter(this::contained)
                 .peek(Assertions::fail)
                 .map(String::length)
-                .peek(s -> fail());
+                .peek(_ -> fail());
 
         assertTrue(streamX.isParallel());
     }
@@ -88,7 +80,7 @@ class StreamXTest {
                 .filter("This is a test"::contains)
                 .maxBy(String::length);
 
-        System.out.println("stream = " + stream);
+        LOGGER.atDebug().setMessage(() -> "stream = " + stream).log();
 
         //noinspection DataFlowIssue
         assertAll(
@@ -201,9 +193,7 @@ class StreamXTest {
 
         final var months = StreamX.of(generate)
                 .filter(this::dateInLeapYear)
-                .isParallel(System.out::println)
                 .parallel()
-                .isParallel(System.out::println)
                 .filter(this::dateInLeapYear)
                 .map(this::dateToMonth)
                 .toListX();
@@ -213,14 +203,15 @@ class StreamXTest {
     }
 
     private boolean dateInLeapYear(final LocalDate localDate) {
-        System.out.println("dateInLeapYear:");
-        System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
-        return localDate.isLeapYear();
+        var inLeapYear = localDate.isLeapYear();
+        LOGGER.trace("dateInLeapYear: {}", inLeapYear);
+        LOGGER.atTrace().setMessage(() -> "Thread.currentThread().getName() = " + Thread.currentThread().getName()).log();
+        return inLeapYear;
     }
 
     private Month dateToMonth(final LocalDate localDate) {
-        System.out.println("dateToMonth");
-        System.out.println("Thread.currentThread().getName() = " + Thread.currentThread().getName());
+        LOGGER.atTrace().setMessage(() -> "dateToMonth").log();
+        LOGGER.atTrace().setMessage(() -> "Thread.currentThread().getName() = " + Thread.currentThread().getName()).log();
         return localDate.getMonth();
     }
 
@@ -282,8 +273,8 @@ class StreamXTest {
             end = System.nanoTime();
             final var durationSequential = Duration.ofNanos(end - start);
 
-            System.out.println("durationConcurrent = " + durationConcurrent);
-            System.out.println("durationSequential = " + durationSequential);
+            LOGGER.atDebug().setMessage(() -> "durationConcurrent = " + durationConcurrent).log();
+            LOGGER.atDebug().setMessage(() -> "durationSequential = " + durationSequential).log();
 
             assertAll(
                     () -> assertTrue(durationConcurrent.compareTo(durationSequential) < 0),
@@ -317,7 +308,7 @@ class StreamXTest {
                     .take(10)
                     .toList();
 
-            System.out.println(expected);
+            LOGGER.debug("Expected: {}", expected);
 
             assertEquals(expected, windows);
         }
@@ -342,31 +333,31 @@ class StreamXTest {
 
         @Test
         void shortCircuitExtension() {
-            final var actualIterations = new AtomicInteger();
-            final var expectedIterations = new AtomicInteger();
+            final var actualIterations = new Counter();
+            final var expectedIterations = new Counter();
 
             final var windows = StreamX.iterate(0, i -> i + 1)
-                    .peek(e -> actualIterations.incrementAndGet())
+                    .peek(_ -> ++actualIterations.value)
                     .then(windowed(4, (List<Integer> window) -> window)
-                            .andThen(peek(System.out::println))
+                            .andThen(peek(it -> LOGGER.trace("{}", it)))
                             .andThen(scan(1, (acc, t) -> acc + t.size()))
                             .andThen(map(String::valueOf))
                             .andThen(filter(s -> s.length() == 3)))
                     .findFirst();
 
             final var expected = Sequence.iterate(0, i -> i + 1)
-                    .onEach(e -> expectedIterations.incrementAndGet())
+                    .onEach(_ -> ++expectedIterations.value)
                     .windowed(4)
                     .scan(1, (acc, t) -> acc + t.size())
                     .map(String::valueOf)
                     .filter(s -> s.length() == 3)
                     .findFirst();
 
-            System.out.println(expected);
+            LOGGER.debug("Expected: {}", expected);
 
             assertAll(
-                    () -> assertEquals(29, actualIterations.get()),
-                    () -> assertEquals(expectedIterations.get(), actualIterations.get() - 1),
+                    () -> assertEquals(29, actualIterations.value),
+                    () -> assertEquals(expectedIterations.value, actualIterations.value - 1),
                     () -> assertEquals(expected, windows)
             );
         }
@@ -389,5 +380,9 @@ class StreamXTest {
 
             assertEquals(expected, windows);
         }
+    }
+
+    private static final class Counter {
+        int value = 0;
     }
 }

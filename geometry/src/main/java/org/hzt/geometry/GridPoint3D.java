@@ -2,10 +2,10 @@ package org.hzt.geometry;
 
 public interface GridPoint3D {
 
-    GridPoint3D ZERO = new GridPoint3DImpl(0, 0, 0);
+    GridPoint3D ZERO = new StandardPoint3D(0, 0, 0);
 
     static GridPoint3D from(final int x, final int y, final int z) {
-        return new GridPoint3DImpl(x, y, z);
+        return new StandardPoint3D(x, y, z);
     }
     int x();
 
@@ -14,19 +14,19 @@ public interface GridPoint3D {
     int z();
 
     default GridPoint3D multiply(final GridPoint3D other) {
-        return new GridPoint3DImpl(x() * other.x(), y() * other.y(), z() * other.z());
+        return new StandardPoint3D(x() * other.x(), y() * other.y(), z() * other.z());
     }
 
     default GridPoint3D multiply(final int scalar) {
-        return new GridPoint3DImpl(x() * scalar, y() * scalar, z() * scalar);
+        return new StandardPoint3D(x() * scalar, y() * scalar, z() * scalar);
     }
 
     default GridPoint3D add(final GridPoint3D other) {
-        return new GridPoint3DImpl(x() + other.x(), y() + other.y(), z() + other.z());
+        return new StandardPoint3D(x() + other.x(), y() + other.y(), z() + other.z());
     }
 
     default GridPoint3D subtract(final GridPoint3D other) {
-        return new GridPoint3DImpl(x() - other.x(), y() - other.y(), z() - other.z());
+        return new StandardPoint3D(x() - other.x(), y() - other.y(), z() - other.z());
     }
 
     default int gridDistance(final int x, final int y, final int z) {
@@ -66,7 +66,7 @@ public interface GridPoint3D {
     }
 
     default GridPoint3D midpoint(final int x, final int y, final int z) {
-        return new GridPoint3DImpl(
+        return new StandardPoint3D(
                 x + (x() - x) / 2,
                 y + (y() - y) / 2,
                 z + (z() - z) / 2);
@@ -85,7 +85,7 @@ public interface GridPoint3D {
         final var ay = y();
         final var az = z();
 
-        return new GridPoint3DImpl(
+        return new StandardPoint3D(
                 ay * z - az * y,
                 az * x - ax * z,
                 ax * y - ay * x);

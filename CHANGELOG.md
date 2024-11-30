@@ -2,6 +2,13 @@
 
 ---
 
+### 1.0.4.22
+
+- Replaced println statements by logging
+- Added MutableTreeNode and MutableNode
+
+---
+
 ### 1.0.3.11
 
 - Added grouping method

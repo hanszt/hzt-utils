@@ -7,10 +7,11 @@ import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Comparator.reverseOrder;
 import static org.hzt.utils.Patterns.blankStringPattern;
@@ -22,41 +23,43 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SortableTest {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(SortableTest.class);
 
     @Test
     void testSortedSequenceLazyEvaluation() {
-        final var counter = new AtomicInteger();
+        final var counter = new Counter();
 
         final var sequence = Sequence.iterate(9, i -> --i)
                 .take(10)
-                .onEach(i -> counter.getAndIncrement())
+                .onEach(_ -> counter.value++)
                 .sorted();
 
-        assertEquals(0, counter.get());
+        assertEquals(0, counter.value);
 
         final var integers = sequence.toList();
 
         assertAll(
-                () -> assertEquals(10, counter.get()),
+                () -> assertEquals(10, counter.value),
                 () -> assertEquals(List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), integers)
         );
     }
 
     @Test
     void testSortedIntSequenceLazyEvaluation() {
-        final var counter = new AtomicInteger();
+        final var counter = new Counter();
 
         final var sequence = IntSequence.iterate(9, i -> --i)
                 .take(10)
-                .onEach(i -> counter.getAndIncrement())
+                .onEach(_ -> counter.value++)
                 .sorted();
 
-        assertEquals(0, counter.get());
+        assertEquals(0, counter.value);
 
         final var integers = sequence.toArray();
 
         assertAll(
-                () -> assertEquals(10, counter.get()),
+                () -> assertEquals(10, counter.value),
                 () -> assertArrayEquals(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, integers)
         );
     }
@@ -79,7 +82,7 @@ class SortableTest {
                 .sortedBy(String::length)
                 .toList();
 
-        System.out.println("names = " + names);
+        LOGGER.atDebug().setMessage(() -> "names = " + names).log();
 
         final var expectedNames = List.of("Leo, Noah, Jack, Harry, Jacob, Oscar, Oliver, George, Charlie"
                 .split(", "));
@@ -91,11 +94,11 @@ class SortableTest {
     void testSequenceDatesSortedBy() {
         final var localDates = Sequence.iterate(LocalDate.parse("2019-10-15"), date -> date.minusWeeks(1))
                 .take(10)
-                .onEach(System.out::println)
+                .onEach(it -> LOGGER.trace("{}", it))
                 .sortedBy(LocalDate::getDayOfYear)
                 .toList();
 
-        System.out.println("localDates = " + localDates);
+        LOGGER.atDebug().setMessage(() -> "localDates = " + localDates).log();
 
         final var expectedDates = Sequence
                 .of("2019-08-13, 2019-08-20, 2019-08-27, 2019-09-03, 2019-09-10, 2019-09-17, 2019-09-24, 2019-10-01, 2019-10-08, 2019-10-15"
@@ -138,5 +141,9 @@ class SortableTest {
                 .map(Person::new);
 
         assertFalse(people.isSortedBy(Person::getName));
+    }
+    
+    private static final class Counter {
+        int value = 0;
     }
 }

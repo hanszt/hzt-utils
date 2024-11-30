@@ -8,6 +8,8 @@ import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.IndexedValue;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,17 +20,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IndexedIterableTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(IndexedIterableTest.class);
+
     @Test
     void testForEachIndexed() {
         final List<IndexedValue<Integer>> list = new ArrayList<>();
 
         IntRange.closed(1, 100)
                 .filter(IntX::isEven)
-                .onEach(It::println)
+                .onEach(it -> LOGGER.trace("{}", it))
                 .boxed()
                 .forEachIndexedValue(list::add);
 
-        It.println("list = " + list);
+        LOGGER.atDebug().setMessage(() -> "list = " + list).log();
 
         assertEquals(50, list.size());
     }

@@ -316,7 +316,7 @@ class GatherersXTest {
             final var result = LongSequence.of(5, 6, 8, 4, 12, 15, Long.MAX_VALUE, 4)
                     .mapToObj(ChemicalSubstance::new)
                     .gather(runningLongStatisticsOf(ChemicalSubstance::mol))
-                    .onEach(System.out::println)
+                    .onEach(it -> LOGGER.trace("{}", it))
                     .teeing(longArrayOf(LongStatistics::getMax), longArrayOf(LongStatistics::getSum));
 
             final long[] expectedMaxes = {5, 6, 8, 8, 12, 15, Long.MAX_VALUE, Long.MAX_VALUE};
@@ -376,6 +376,36 @@ class GatherersXTest {
 
             assertEquals(reference, windows);
             assertEquals(reference, byCollector);
+        }
+
+        @Test
+        void testWindowedShortCircuitingIfDownstreamIsRejecting() {
+            final var size  = 2;
+            var take = 4;
+            final var list = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+            final Function<List<Integer>, String> joinToString = w -> {
+                LOGGER.debug("joinToString {}", w);
+                return w.stream()
+                        .map(String::valueOf)
+                        .collect(joining());
+            };
+
+            final var windows = list.stream()
+                    .gather(windowed(size))
+                    .limit(take)
+                    .map(joinToString)
+                    .toList();
+
+            final var reference = Sequence.of(list)
+                    .windowed(size)
+                    .take(take)
+                    .map(w -> w.joinToString(""))
+                    .toList();
+
+            LOGGER.debug("{}", windows);
+
+            assertEquals(reference, windows);
         }
 
         @Test

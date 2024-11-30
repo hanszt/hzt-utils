@@ -14,6 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.chrono.IsoChronology;
 import java.util.Arrays;
@@ -22,8 +24,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Gatherers;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
-import static org.hzt.utils.It.println;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hzt.utils.collectors.CollectorsX.intArrayOf;
 import static org.hzt.utils.collectors.CollectorsX.longArrayOf;
 import static org.hzt.utils.gatherers.primitives.IntGatherers.mapToObjNotNull;
@@ -32,16 +35,17 @@ import static org.hzt.utils.gatherers.primitives.IntGatherers.windowSliding;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class IntSequenceTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IntSequenceTest.class);
 
     @Test
     void testSteppedIntRange() {
         final var list = IntRange.until(15)
                 .step(4)
-                .onEach(System.out::println)
+                .onEach(e -> LOGGER.trace("{}", e))
                 .toList();
 
         assertEquals(IntList.of(0, 4, 8, 12), list);
@@ -53,14 +57,19 @@ class IntSequenceTest {
         final var endExclusive = 100_000;
 
         final var sumIntStream = IntStream.range(0, endExclusive).sum();
+        final var sumLongStream = LongStream.range(0, endExclusive).sum();
         final var sumIntRange = IntRange.of(0, endExclusive).sum();
         final var sumIntStreamUsingCollector = IntStream.range(0, endExclusive)
                 .summaryStatistics()
                 .getSum();
 
+        LOGGER.debug("sumIntStream: {}", sumIntStream);
+        LOGGER.debug("sumIntRange: {}", sumIntRange);
+
         assertAll(
                 () -> assertEquals(sumIntRange, sumIntStreamUsingCollector),
-                () -> assertTrue(sumIntStream < sumIntRange)
+                () -> assertEquals(sumLongStream, sumIntRange),
+                () -> assertThat((long) sumIntStream).isLessThan(sumIntRange)
         );
     }
 
@@ -74,7 +83,7 @@ class IntSequenceTest {
                 .plus(IntList.of(array))
                 .toArray();
 
-        println(Arrays.toString(result));
+        LOGGER.atTrace().setMessage(() -> Arrays.toString(result)).log();
 
         assertAll(
                 () -> assertEquals(18, result.length),
@@ -88,7 +97,7 @@ class IntSequenceTest {
                 .minus(2, 76, 5)
                 .toArray();
 
-        println(Arrays.toString(result));
+        LOGGER.atTrace().setMessage(() -> Arrays.toString(result)).log();
 
         assertAll(
                 () -> assertEquals(8, result.length),
@@ -102,7 +111,7 @@ class IntSequenceTest {
                 .minus(IntList.of(2, 76, 5))
                 .toArray();
 
-        println(Arrays.toString(result));
+        LOGGER.atTrace().setMessage(() -> Arrays.toString(result)).log();
 
         assertAll(
                 () -> assertEquals(8, result.length),
@@ -120,7 +129,7 @@ class IntSequenceTest {
                 .plus(ints)
                 .toArray();
 
-        println(Arrays.toString(result));
+        LOGGER.debug(Arrays.toString(result));
 
         assertAll(
                 () -> assertEquals(14, result.length),
@@ -132,7 +141,7 @@ class IntSequenceTest {
     void testDescendingSteppedIntRange() {
         final var list = MutableListX.<Integer>empty();
         IntRange.from(100).downTo(20).step(5)
-                .onEach(System.out::println)
+                .onEach(e -> LOGGER.trace("{}", e))
                 .forEachInt(list::add);
 
         assertAll(
@@ -161,7 +170,7 @@ class IntSequenceTest {
 
         final var actual = IntRange.of(0, 100).stats();
 
-        println("actual = " + actual);
+        LOGGER.debug("actual = {}", actual);
 
         assertAll(
                 () -> assertEquals(expected.getCount(), actual.getCount()),
@@ -177,7 +186,7 @@ class IntSequenceTest {
 
         final var actual = IntSequence.of(IntStream.range(0, 100)).stats();
 
-        println("actual = " + actual);
+        LOGGER.trace("actual = {}", actual);
 
         assertAll(
                 () -> assertEquals(expected.getCount(), actual.getCount()),
@@ -216,7 +225,7 @@ class IntSequenceTest {
                 .sortedDescending()
                 .toArray();
 
-        println("Arrays.toString(array) = " + Arrays.toString(sorted));
+        LOGGER.atTrace().setMessage(() -> "Arrays.toString(array) = " + Arrays.toString(sorted)).log();
 
         assertArrayEquals(new int[]{9, 8, 7, 6, 5, 5, 4, 4, 4, 3, 1}, sorted);
     }
@@ -230,7 +239,7 @@ class IntSequenceTest {
                         .thenComparing(Integer::compareUnsigned))
                 .toArray();
 
-        println("Arrays.toString(array) = " + Arrays.toString(sorted));
+        LOGGER.atTrace().setMessage(() -> "Arrays.toString(array) = " + Arrays.toString(sorted)).log();
 
         assertArrayEquals(new int[]{3, 4, 7, 8, 9, -6, -5, -5, -4, -4, -1}, sorted);
     }
@@ -349,7 +358,7 @@ class IntSequenceTest {
                 .flatMap(i -> IntSequence.of(1, 2, 3).plus(i))
                 .toArray();
 
-        println(Arrays.toString(ints));
+        LOGGER.trace(Arrays.toString(ints));
 
         assertEquals(80, ints.length);
     }

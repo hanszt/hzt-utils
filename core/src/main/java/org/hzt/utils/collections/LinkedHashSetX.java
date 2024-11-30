@@ -1,15 +1,10 @@
 package org.hzt.utils.collections;
 
-import java.util.AbstractSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 final class LinkedHashSetX<E> extends AbstractSet<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
 
-    private final Set<E> set;
+    private final SequencedSet<E> set;
 
     LinkedHashSetX() {
         this.set = new LinkedHashSet<>();
@@ -17,6 +12,10 @@ final class LinkedHashSetX<E> extends AbstractSet<E> implements MutableLinkedSet
 
     LinkedHashSetX(final int n) {
         this.set = LinkedHashSet.newLinkedHashSet(n);
+    }
+
+    private LinkedHashSetX(final SequencedSet<E> sequencedSet) {
+        this.set = sequencedSet;
     }
 
     LinkedHashSetX(final Collection<E> collection) {
@@ -60,5 +59,10 @@ final class LinkedHashSetX<E> extends AbstractSet<E> implements MutableLinkedSet
     @Override
     public boolean remove(final Object o) {
         return set.remove(o);
+    }
+
+    @Override
+    public LinkedHashSetX<E> reversed() {
+        return new LinkedHashSetX<>(set.reversed());
     }
 }

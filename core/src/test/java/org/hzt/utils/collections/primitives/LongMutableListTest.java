@@ -1,16 +1,16 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.It;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.sequences.primitives.LongSequence;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class LongMutableListTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LongMutableListTest.class);
 
     @Test
     void testDifferentMethods() {
@@ -31,7 +31,7 @@ class LongMutableListTest {
                 () -> assertEquals(2L, l),
                 () -> assertEquals(2, longs.size())
         );
-        It.println("longs = " + longs);
+        LOGGER.atDebug().setMessage(() -> "longs = " + longs).log();
         final var l2 = longs.removeAt(0);
         assertAll(
                 () -> assertFalse(longs.isEmpty()),

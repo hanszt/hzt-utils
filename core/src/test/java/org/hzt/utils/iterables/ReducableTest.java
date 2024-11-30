@@ -7,19 +7,22 @@ import org.hzt.utils.collections.SetX;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.IndexedValue;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ReducableTest {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReducableTest.class);
 
     @Test
     void testSingle() {
@@ -86,24 +89,24 @@ class ReducableTest {
     void testFoldTwoInOnePass() {
         final var dateSequence = generateLeapYearDateSequence();
 
-        final var iterations1 = new AtomicInteger();
+        final var iterations1 = new Counter();
 
         final var expected = dateSequence
-                .onEach(d -> iterations1.incrementAndGet())
+                .onEach(_ -> iterations1.value++)
                 .toTwo(Numerable::count, Reducable::last);
 
-        final var iterations2 = new AtomicInteger();
+        final var iterations2 = new Counter();
 
         final var actual = dateSequence
-                .onEach(d -> iterations2.incrementAndGet())
-                .foldTwo(0L, (acc, date) -> ++acc,
-                        LocalDate.EPOCH, (first, second) -> second);
+                .onEach(_ -> iterations2.value++)
+                .foldTwo(0L, (acc, _) -> ++acc,
+                        LocalDate.EPOCH, (_, second) -> second);
 
-        It.println("pair = " + actual);
+        LOGGER.atDebug().setMessage(() -> "pair = " + actual).log();
 
         assertAll(
                 () -> assertEquals(expected, actual),
-                () -> assertEquals(iterations1.get(), iterations2.get() * 2)
+                () -> assertEquals(iterations1.value, iterations2.value++ * 2)
         );
     }
 
@@ -111,25 +114,25 @@ class ReducableTest {
     void testFoldThreeInOnePass() {
         final var dateSequence = generateLeapYearDateSequence();
 
-        final var iterations1 = new AtomicInteger();
+        final var iterations1 = new Counter();
 
         final var expected = dateSequence
-                .onEach(d -> iterations1.incrementAndGet())
+                .onEach(_ -> iterations1.value++)
                 .toThree(Sequence::toMutableList, Numerable::count, Reducable::last);
 
-        final var iterations2 = new AtomicInteger();
+        final var iterations2 = new Counter();
 
         final var actual = dateSequence
-                .onEach(d -> iterations2.incrementAndGet())
+                .onEach(_ -> iterations2.value++)
                 .foldThree(MutableListX.empty(), MutableListX::plus,
-                        0L, (a, b) -> ++a,
-                        LocalDate.EPOCH, (first, second) -> second);
+                        0L, (a, _) -> ++a,
+                        LocalDate.EPOCH, (_, second) -> second);
 
-        It.println("pair = " + actual);
+        LOGGER.atDebug().setMessage(() -> "pair = " + actual).log();
 
         assertAll(
                 () -> assertEquals(expected, actual),
-                () -> assertEquals(iterations1.get(), iterations2.get() * 3)
+                () -> assertEquals(iterations1.value, iterations2.value * 3)
         );
     }
 
@@ -137,25 +140,25 @@ class ReducableTest {
     void tesReduceTwoInOnePass() {
         final var dateSequence = generateLeapYearDateSequence();
 
-        final var iterations1 = new AtomicInteger();
+        final var iterations1 = new Counter();
 
         final var expected = dateSequence
-                .onEach(d -> iterations1.incrementAndGet())
+                .onEach(_ -> iterations1.value++)
                 .toTwo(Reducable::last, Reducable::first);
 
-        final var iterations2 = new AtomicInteger();
+        final var iterations2 = new Counter();
 
         final var actual = dateSequence
-                .onEach(d -> iterations2.incrementAndGet())
-                .reduceTwo((a, last) -> last, (first, b) -> first);
+                .onEach(_ -> iterations2.value++)
+                .reduceTwo((_, last) -> last, (first, _) -> first);
 
         final var pair = actual.orElseThrow();
-        It.println("pair = " + pair);
+        LOGGER.atDebug().setMessage(() -> "pair = " + pair).log();
 
         assertAll(
                 () -> assertEquals(expected.first(), pair.first()),
                 () -> assertEquals(expected.second(), pair.second()),
-                () -> assertEquals(iterations1.get(), iterations2.get() + 1)
+                () -> assertEquals(iterations1.value, iterations2.value + 1)
         );
     }
 
@@ -191,5 +194,9 @@ class ReducableTest {
         final var last = list.last(s -> s.contains("i"));
 
         assertEquals("is", last);
+    }
+    
+    private static final class Counter {
+        int value = 0;
     }
 }

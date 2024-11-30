@@ -1,16 +1,16 @@
 package org.hzt.utils.sequences.primitives;
 
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.chrono.IsoChronology;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ConstrainOnceTests {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConstrainOnceTests.class);
 
     @Test
     void testIntSequenceConstrainOnce() {
@@ -30,7 +30,7 @@ class ConstrainOnceTests {
         final var doubles = DoubleSequence.iterate(0, i -> i + Math.PI)
                 .take(20)
                 .map(i -> i / 4)
-                .onEach(It::println)
+                .onEach(it -> LOGGER.trace("{}", it))
                 .constrainOnce();
 
         assertAll(
@@ -43,7 +43,7 @@ class ConstrainOnceTests {
     void testLongSequenceConstrainOnce() {
         final var integers = IntSequence.iterate(-1, i -> i + 7)
                 .take(100)
-                .onEach(It::println)
+                .onEach(it -> LOGGER.trace("{}", it))
                 .constrainOnce();
 
         assertAll(

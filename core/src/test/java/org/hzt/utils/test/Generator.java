@@ -5,6 +5,8 @@ import org.hzt.test.model.Painter;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.test.model.PaintingAuction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.hzt.utils.It.println;
-
 public final class Generator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Generator.class);
 
     private Generator() {
     }
@@ -49,7 +51,7 @@ public final class Generator {
 
     public static String printAndReturnAsString(final int integer) {
         final var s = "val " + integer;
-        println(s);
+        LOGGER.atDebug().setMessage(() -> s).log();
         return s;
     }
 

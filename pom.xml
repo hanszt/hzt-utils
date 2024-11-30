@@ -7,7 +7,7 @@
 
     <groupId>org.hzt.utils</groupId>
     <artifactId>hzt-utils</artifactId>
-    <version>1.0.3.22</version>
+    <version>1.0.4.22</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -29,7 +29,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--        dependencies-->
         <!--        test-->
-        <junit.jupiter.version>5.11.0</junit.jupiter.version>
+        <junit.jupiter.version>5.11.3</junit.jupiter.version>
         <assertj-core.version>3.24.2</assertj-core.version>
         <awaitility.version>4.2.0</awaitility.version>
         <!--test-logging-->
@@ -86,13 +86,13 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
                 <version>${logback.version}</version>
-                <scope>runtime</scope>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
-                <scope>runtime</scope>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

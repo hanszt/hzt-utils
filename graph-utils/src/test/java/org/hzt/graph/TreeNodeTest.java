@@ -1,30 +1,22 @@
 package org.hzt.graph;
 
 import org.hzt.graph.tuples.DepthToTreeNode;
-import org.hzt.utils.It;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
-import static org.hzt.utils.It.println;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TreeNodeTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TreeNodeTest.class);
 
     @Nested
     class ToTreeStringTests {
@@ -102,7 +94,7 @@ class TreeNodeTest {
         @Test
         void testToTreeStringCustomized3() {
             final var root = buildPersonTree();
-            final var s = root.toTreeString(n -> (n.isLeaf() ? "leaf: " : "") + n.name);
+            final var s = root.toTreeString(n -> (n.isLeaf() ? "leaf: " : "") + n.name());
 
             final var expected = "root[c1[c4[leaf: c10], leaf: c5], c2[leaf: c6, leaf: c7, leaf: c8], leaf: c3]";
 
@@ -124,11 +116,11 @@ class TreeNodeTest {
     void testToLeafs() {
         final var root = buildPersonTree();
 
-        System.out.println(root.toTreeString());
+        LOGGER.atDebug().setMessage(() -> root.toTreeString()).log();
 
         final var leafs = root.depthFirstSequence()
                 .filter(TreeNode::isLeaf)
-                .map(node -> node.name)
+                .map(node -> node.name())
                 .toList();
 
         assertEquals(List.of("c10", "c5", "c6", "c7", "c8", "c3"), leafs);
@@ -138,11 +130,11 @@ class TreeNodeTest {
     void testToAllInternalNodes() {
         final var root = buildPersonTree();
 
-        System.out.println(root.toTreeString());
+        LOGGER.atDebug().setMessage(() -> root.toTreeString(1)).log();
 
         final var internalNodes = root.depthFirstSequence()
                 .filter(TreeNode::isInternal)
-                .map(node -> node.name)
+                .map(node -> node.name())
                 .toList();
 
         assertEquals(List.of("root", "c1", "c4", "c2"), internalNodes);
@@ -152,9 +144,9 @@ class TreeNodeTest {
     void testMap() {
         final var root = buildPersonTree();
 
-        System.out.println(root.toTreeString());
+        LOGGER.atDebug().setMessage(() -> root.toTreeString()).log();
 
-        final List<String> strings = root.depthFirstSequence().mapTo(ArrayList::new, s -> s.name);
+        final List<String> strings = root.depthFirstSequence().mapTo(ArrayList::new, Person::name);
 
         assertEquals(List.of("root", "c1", "c4", "c10", "c5", "c2", "c6", "c7", "c8", "c3"), strings);
     }
@@ -164,54 +156,37 @@ class TreeNodeTest {
     void testDepthFirstSequence() {
         final var root = buildPersonTree();
 
-        System.out.println(root.toTreeString(1));
+        LOGGER.atDebug().setMessage(() -> root.toTreeString(1)).log();
 
         final var strings = root.depthFirstSequence()
-                .map(node -> node.name)
+                .map(Person::name)
                 .toList();
 
         assertEquals(List.of("root", "c1", "c4", "c10", "c5", "c2", "c6", "c7", "c8", "c3"), strings);
     }
 
-    @Test
-    void testRemoveBranch() {
-        final var root = buildPersonTree();
-
-        println(root.toTreeString(2));
-
-        final var c1 = root.breadthFirstSequence().first(s -> "c1".equals(s.name));
-        final var node = root.removeSubTree(c1);
-
-        println();
-        println(root.toTreeString(2));
-
-        final var expected = new String[]{"root", "c2", "c6", "c7", "c8", "c3"};
-        assertArrayEquals(expected, node.depthFirstSequence().toArrayOf(n -> n.name, String[]::new));
-    }
-
-    private static TreeNodeTest.Person buildPersonTree() {
-        final var c1 = new Person("c1")
+    private static Person buildPersonTree() {
+        final var c1 = new MutablePerson("c1")
                 .addChildrenWithThisAsParent(List.of(
-                        new Person("c4").addChildWithThisAsParent(new Person("c10")),
-                        new Person("c5")));
-        final var c2 = new Person("c2")
-                .addChildren(List.of(
-                        new Person("c6"),
-                        new Person("c7")));
-        return new Person("root")
-                .addChildren(List.of(c1, c2.addChild(new Person("c8").withParent(c2)), new Person("c3")));
+                        new MutablePerson("c4").addChildWithThisAsParent(new MutablePerson("c10")),
+                        new MutablePerson("c5")));
+        final var c2 = new MutablePerson("c2");
+        c2.addChildren(List.of(
+                new MutablePerson("c6"),
+                new MutablePerson("c7")));
+        return new MutablePerson("root")
+                .addChildrenWithThisAsParent(List.of(c1, c2.addChild(new MutablePerson("c8").withParent(c2)), new MutablePerson("c3")));
     }
 
-    private static class Person implements TreeNode<Person, Person> {
+    private static class MutablePerson implements MutableTreeNode<Person, Person>, Person {
 
         private final String name;
-        private final List<Person> children;
+        private final List<Person> children = new ArrayList<>();
 
         private Person parent;
 
-        public Person(final String name) {
+        private MutablePerson(final String name) {
             this.name = name;
-            this.children = new ArrayList<>();
         }
 
         @Override
@@ -239,6 +214,15 @@ class TreeNodeTest {
         public String toString() {
             return name;
         }
+
+        @Override
+        public String name() {
+            return name;
+        }
+    }
+
+    private interface Person extends TreeNode<Person, Person> {
+        String name();
     }
 
     @Nested
@@ -262,15 +246,18 @@ class TreeNodeTest {
         @Test
         void testSiblings() {
             final var root = new FileX(System.getProperty("user.dir"));
-            System.out.println("root.getName() = " + root.getName());
 
-            System.out.println(root.toTreeString());
+            LOGGER.atDebug().setMessage(() -> "root.getName() = " + root.getName()).log();
+            LOGGER.atDebug().setMessage(root::toTreeString).log();
 
             final var fileNames = root.siblingSequence().map(File::getName).toList();
 
+            LOGGER.debug("fileNames = {}", fileNames);
+
             assertAll(
-                    () -> assertFalse(fileNames.isEmpty()),
-                    () -> assertTrue(new FileX(".").siblingSequence().none())
+                    () -> assertThat(root.parentSequence().last().siblingSequence()).hasSize(1),
+                    () -> assertThat(fileNames).hasSizeGreaterThan(1),
+                    () -> assertThat(new FileX(".").siblingSequence()).hasSize(1)
             );
         }
 
@@ -281,13 +268,11 @@ class TreeNodeTest {
                     .first(f -> "graph-utils".equals(f.getName()));
 
             final var nodeToTreeDept1 = fileX.breadthFirstDepthTrackingSequence()
-                    .onEach(System.out::println)
+                    .onEach(e -> LOGGER.debug("{}", e))
                     .toList();
 
-            System.out.println();
-
             final var nodeToTreeDepth2 = fileX.depthFirstDepthTrackingSequence()
-                    .onEach(System.out::println)
+                    .onEach(e -> LOGGER.debug("{}", e))
                     .sorted(Comparator.comparingInt(DepthToTreeNode::treeDepth))
                     .toList();
 
@@ -302,7 +287,7 @@ class TreeNodeTest {
                     .map(File::getName)
                     .toList();
 
-            println(fileX.toTreeString(2, File::getName));
+            LOGGER.atDebug().setMessage(() -> fileX.toTreeString(2, File::getName)).log();
 
             assertTrue(files.contains("pom.xml"));
         }
@@ -315,7 +300,7 @@ class TreeNodeTest {
                     .first(n -> "TreeNodeTest.java".equals(n.getName()));
 
             final var root = file.parentSequence()
-                    .onEach(s -> System.out.println(s.getAbsolutePath()))
+                    .onEach(s -> LOGGER.atDebug().setMessage(() -> s.getAbsolutePath()).log())
                     .last();
 
             final var optionalParent = root.optionalParent();
@@ -333,7 +318,7 @@ class TreeNodeTest {
             final var map = root.breadthFirstSequence()
                     .filter(n -> n.getName().endsWith("java"))
                     .associateWith(TreeNode::treeDepth)
-                    .onEach(It::println)
+                    .onEach(e -> LOGGER.debug("{}", e))
                     .mapByKeys(File::getName)
                     .toMap();
 
@@ -347,12 +332,30 @@ class TreeNodeTest {
             final var map = root.depthFirstSequence()
                     .filter(n -> n.getName().endsWith("java"))
                     .associateWith(TreeNode::treeDepth)
-                    .onEach(It::println)
+                    .onEach(e -> LOGGER.debug("{}", e))
                     .mapByKeys(File::getName)
                     .toMap();
 
-            assertTrue(map.containsKey(TreeNodeTest.class.getSimpleName() + ".java"));
+            assertThat(map).containsKey(TreeNodeTest.class.getSimpleName() + ".java");
         }
+    }
+
+    @Test
+    void testParentIterator() {
+        var person = buildPersonTree();
+        LOGGER.atDebug().setMessage(() -> person.toTreeString()).log();
+        var leafPerson = person.depthFirstSequence().first(Person::isLeaf);
+
+        var parentIterator = leafPerson
+                .parentSequence()
+                .iterator();
+
+        assertThat(leafPerson.name()).isEqualTo("c10");
+        assertThat(parentIterator.next().name()).isEqualTo("c10");
+        assertThat(parentIterator.next().name()).isEqualTo("c4");
+        assertThat(parentIterator.next().name()).isEqualTo("c1");
+        assertThat(parentIterator.next().name()).isEqualTo("root");
+        assertThat(parentIterator).isExhausted();
     }
 
     @Nested
@@ -362,10 +365,10 @@ class TreeNodeTest {
         void testSimpleNode() {
             final var simpleTreeNode = buildSimpleTreeNodeTree();
 
-            println("Dfs string:");
-            println(simpleTreeNode.toTreeString(1, "-", n -> n.name) + "\n");
-            println("Bfs string");
-            println(simpleTreeNode.toBFSTreeString(1, "-", n -> n.name) + "\n");
+            LOGGER.atDebug().setMessage(() -> "Dfs string:").log();
+            LOGGER.atDebug().setMessage(() -> simpleTreeNode.toTreeString(1, "-", n -> n.name) + "\n").log();
+            LOGGER.atDebug().setMessage(() -> "Bfs string").log();
+            LOGGER.atDebug().setMessage(() -> simpleTreeNode.toBFSTreeString(1, "-", n -> n.name) + "\n").log();
 
             final var breadthFirst = simpleTreeNode.breadthFirstSequence().toListOf(s -> s.name);
 
@@ -409,7 +412,7 @@ class TreeNodeTest {
                 }
                 final var that = (Node) obj;
                 return Objects.equals(this.name, that.name) &&
-                       Arrays.equals(this.children, that.children);
+                        Arrays.equals(this.children, that.children);
             }
 
             @Override

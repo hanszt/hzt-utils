@@ -1,14 +1,15 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.It;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DoubleMutableCollectionTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DoubleMutableCollectionTest.class);
 
     @Test
     void testRemoveAll() {
@@ -41,7 +42,7 @@ class DoubleMutableCollectionTest {
 
         final var sum = listX.stream().sum();
 
-        It.println("sum = " + sum);
+        LOGGER.atDebug().setMessage(() -> "sum = " + sum).log();
 
         assertTrue(sum < 10);
     }

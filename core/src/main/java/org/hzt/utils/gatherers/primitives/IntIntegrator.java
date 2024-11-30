@@ -3,7 +3,7 @@ package org.hzt.utils.gatherers.primitives;
 import java.util.stream.Gatherer;
 
 @FunctionalInterface
-public interface IntIntegrator<A, R> {
+public interface IntIntegrator<A, R> extends Gatherer.Integrator<A, Integer, R> {
 
     /**
      * Integrate is the method which given:
@@ -20,4 +20,9 @@ public interface IntIntegrator<A, R> {
      * {@code false} if not
      */
     boolean integrate(A state, int element, Gatherer.Downstream<? super R> downstream);
+
+    @Override
+    default boolean integrate(A state, Integer element, Gatherer.Downstream<? super R> downstream) {
+        return integrate(state, (int) element, downstream);
+    }
 }

@@ -4,17 +4,16 @@ import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class IntRangeTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IntRangeTest.class);
 
     @Test
     void testIntRange() {
@@ -32,6 +31,7 @@ class IntRangeTest {
         final var list = IntMutableList.empty();
         range.forEachInt(list::add);
         range.forEachInt(list::add);
+
         assertEquals(IntMutableList.of(2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9), list);
     }
 
@@ -45,8 +45,8 @@ class IntRangeTest {
     void testSteppedRange() {
         final var range = IntRange.of(2, 20, 2).toList();
 
-        It.println("range = " + range);
-        range.forEachInt(It::println);
+        LOGGER.atDebug().setMessage(() -> "range = " + range).log();
+        range.forEachInt(it -> LOGGER.trace("{}", it));
 
         assertEquals(IntList.of(2, 4, 6, 8, 10, 12, 14, 16, 18), range);
     }
@@ -61,8 +61,8 @@ class IntRangeTest {
     void testSteppedRangeClosed() {
         final var range = IntRange.closed(2, 20, 2);
 
-        It.println("range = " + range);
-        range.forEachInt(It::println);
+        LOGGER.atDebug().setMessage(() -> "range = " + range).log();
+        range.forEachInt(it -> LOGGER.trace("{}", it));
 
         System.setProperty("org.openjdk.java.util.stream.tripwire", "false");
         assertIterableEquals(IntList.of(2, 4, 6, 8, 10, 12, 14, 16, 18, 20), range);
@@ -79,7 +79,7 @@ class IntRangeTest {
     @Test
     void emptyIntRange() {
         final var empty = IntRange.empty();
-        empty.forEach(It::println);
+        empty.forEach(it -> LOGGER.trace("{}", it));
         assertTrue(empty.none());
     }
 

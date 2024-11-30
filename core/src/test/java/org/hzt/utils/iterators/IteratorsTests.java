@@ -1,26 +1,28 @@
 package org.hzt.utils.iterators;
 
-import org.hzt.utils.It;
-import org.hzt.utils.numbers.IntX;
+import org.hzt.test.assertions.Assertions;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IteratorsTests {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IteratorsTests.class);
 
     @Test
     void testGeneratingIterator() {
         final Sequence<String> strings = () -> Iterators.generatorIterator(() -> "h", s1 -> s1 + s1);
         for (final var s : strings) {
             final var length = s.length();
-            It.println("s = " + s);
-            assertTrue(() -> isPowerOfTwo(length));
+            LOGGER.atDebug().setMessage(() -> "s = " + s).log();
+            Assertions.assertThat(length).is(this::isPowerOfTwo);
             if (length > 1000) {
                 break;
             }
@@ -35,19 +37,18 @@ class IteratorsTests {
 
     @Test
     void testIteratorChainIteratorObjectCanOnlyBeTraversedOnce() {
-        final var iterator =
-                Iterators.takeWhileIterator(
-                        Iterators.filteringIterator(
-                                Iterators.generatorIterator(() -> "|", s -> s + "\\"),
-                                s -> IntX.of(s.length()).isEven(), true), s -> s.length() < 100, false);
+        final var iterator = Iterators.takeWhileIterator(
+                Iterators.filteringIterator(
+                        Iterators.generatorIterator(() -> "|", s -> s + "\\"),
+                        s -> s.length() % 2 == 0, true), s -> s.length() < 100, false);
 
         final Iterable<String> strings = () -> iterator;
 
-        assertTrue(iterator.hasNext());
+        assertThat(iterator).hasNext();
 
-        strings.forEach(It::println);
+        strings.forEach(s -> LOGGER.debug("{}", s));
 
-        assertFalse(iterator.hasNext());
+        assertThat(iterator).isExhausted();
     }
 
     @Test
@@ -58,7 +59,7 @@ class IteratorsTests {
         final var iterator = distinctSequence.iterator();
         iterator.forEachRemaining(list::add);
 
-        System.out.println("list = " + list);
+        LOGGER.atDebug().setMessage(() -> "list = " + list).log();
 
         assertEquals(list, distinctSequence.toList());
     }

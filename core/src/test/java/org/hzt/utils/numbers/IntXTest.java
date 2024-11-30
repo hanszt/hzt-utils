@@ -3,6 +3,8 @@ package org.hzt.utils.numbers;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.hzt.utils.strings.StringX;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
@@ -10,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IntXTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IntXTest.class);
 
     @Test
     void testToDouble() {
@@ -32,7 +36,7 @@ class IntXTest {
     void testSequenceUntilNthPrimeNr() {
         final var oneThousandsPrimeNr = IntX.primeNrSequence()
                 .take(1_000)
-                .reduce((first, second) -> second)
+                .reduce((_, second) -> second)
                 .orElseThrow();
 
         assertEquals(7919, oneThousandsPrimeNr);
@@ -84,7 +88,7 @@ class IntXTest {
                 .mapToObj(IntX::asChar)
                 .toList();
 
-        System.out.println(characters);
+        LOGGER.debug("{}", characters);
 
         assertEquals(16, characters.size());
     }

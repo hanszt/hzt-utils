@@ -4,6 +4,8 @@ import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.hzt.utils.function.Functions.by;
 import static org.hzt.utils.function.predicates.StringPredicates.containsAllOf;
@@ -16,6 +18,8 @@ import static org.hzt.utils.function.predicates.StringPredicates.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StringPredicatesTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StringPredicatesTest.class);
 
     @Test
     void testContains() {
@@ -31,7 +35,7 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, containsAnyOf(O, A)))
                 .toList();
 
-        result.forEach(It::println);
+        result.forEach(it -> LOGGER.trace("{}", it));
         assertEquals(expected, result);
     }
 
@@ -49,7 +53,7 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, isEqualIgnoreCase(NAME1).or(isEqualIgnoreCase(NAME2))))
                 .toList();
 
-        result.forEach(It::println);
+        result.forEach(it -> LOGGER.trace("{}", it));
         assertEquals(expected, result);
     }
 
@@ -67,7 +71,7 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, startsWith(LE).or(startsWith(ME))))
                 .toList();
 
-        result.forEach(It::println);
+        result.forEach(it -> LOGGER.trace("{}", it));
         assertEquals(expected, result);
     }
 
@@ -86,7 +90,7 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, endsWithAnyOf(EL, HOED, NON)))
                 .toList();
 
-        result.forEach(It::println);
+        result.forEach(it -> LOGGER.trace("{}", it));
         assertEquals(expected, result);
     }
 
@@ -103,7 +107,7 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, hasEqualLength(NAME)))
                 .toList();
 
-        result.forEach(It::println);
+        result.forEach(it -> LOGGER.trace("{}", it));
 
         assertEquals(expected, result);
     }
@@ -124,7 +128,7 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, containsAllOf("Meisje", "de", "first")))
                 .toList();
 
-        result.forEach(It::println);
+        result.forEach(it -> LOGGER.trace("{}", it));
         assertEquals(expected, result);
     }
 
@@ -144,10 +148,10 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, containsAnyOf(EL, HOED, NON)))
                 .toList();
 
-        It.println("Input:");
-        paintingList.forEach(It::println);
-        It.println("result:");
-        result.forEach(It::println);
+        LOGGER.atDebug().setMessage(() -> "Input:").log();
+        paintingList.forEach(it -> LOGGER.trace("{}", it));
+        LOGGER.atDebug().setMessage(() -> "result:").log();
+        result.forEach(it -> LOGGER.trace("{}", it));
         //assert
         assertEquals(expected, result);
     }
@@ -168,10 +172,10 @@ class StringPredicatesTest {
                 .filter(by(Painting::name, containsNoneOf(EL, HOED, NON)))
                 .toList();
 
-        It.println("Input:");
-        paintingList.forEach(It::println);
-        It.println("result:");
-        result.forEach(It::println);
+        LOGGER.atDebug().setMessage(() -> "Input:").log();
+        paintingList.forEach(it -> LOGGER.trace("{}", it));
+        LOGGER.atDebug().setMessage(() -> "result:").log();
+        result.forEach(it -> LOGGER.trace("{}", it));
         //assert
         assertEquals(expected, result);
     }

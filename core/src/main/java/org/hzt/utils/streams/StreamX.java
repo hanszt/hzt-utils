@@ -335,10 +335,6 @@ public interface StreamX<T> extends Stream<T>, Gatherable<T>, Sortable<T>, Numer
         throw new UnsupportedOperationException("isParallel() not supported in StreamX interface");
     }
 
-    default StreamX<T> isParallel(final Consumer<Boolean> resultSupplier) {
-        return peek(s -> resultSupplier.accept(isParallel()));
-    }
-
     @Override
     default StreamX<T> sequential() {
         return StreamX.of(stream(spliterator(), false));

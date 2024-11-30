@@ -10,15 +10,19 @@ import org.hzt.utils.test.model.PaintingAuction;
 import org.hzt.utils.tuples.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TransformableTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransformableTest.class);
 
     @Test
     void testCreateATransformableOfSomethingAndUseTheDefaultFunctions() {
@@ -46,12 +50,12 @@ class TransformableTest {
         vanGoghAuction
                 .apply(auction -> auction.setMostPopularPainting(Painting.of(nijntje)))
                 .run(PaintingAuction::getMostPopularPainting)
-                .apply(It::println)
+                .apply(it -> LOGGER.trace("{}", it))
                 .alsoUnless(Painting::isInMuseum, list::add)
                 .takeIf(Objects::nonNull)
                 .map(Painting::name)
                 .ifPresentOrElse(name -> assertAll(
-                        () -> assertTrue(list::isNotEmpty),
+                        () -> assertThat(list).isNotEmpty(),
                         () -> assertEquals(nijntje, name)
                 ), Assertions::fail);
 
@@ -69,7 +73,7 @@ class TransformableTest {
     @Test
     void testTransformableSequence() {
         final var integers = TransformableSequence.of(IntList.of(1, 2, 3, 4, 3, 5))
-                .when(s -> s.count() > 4, s -> s.forEach(System.out::println))
+                .when(s -> s.count() > 4, s -> s.forEach(it -> LOGGER.trace("{}", it)))
                 .toSet();
 
         assertEquals(Set.of(1,2,3,4,5), integers);

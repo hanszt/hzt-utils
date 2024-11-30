@@ -1,9 +1,10 @@
 package org.hzt.utils.collections;
 
-import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.IntList;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Random;
@@ -19,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CollectionXTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CollectionXTest.class);
 
     @Test
     void testContainsNot() {
@@ -69,7 +72,7 @@ class CollectionXTest {
 
         final var strings = input.<String>mapMulti(Iterable::forEach);
 
-        strings.forEach(It::println);
+        strings.forEach(it -> LOGGER.trace("{}", it));
 
         assertEquals(ListX.of("a", "b", "c", "d", "e", "f", "g"), strings);
     }

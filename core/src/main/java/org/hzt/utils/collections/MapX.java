@@ -207,6 +207,13 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
         }
     }
 
+    default MapX<K ,V> plus(K key, V value) {
+        return MapX.build(s -> {
+           forEach((k, v) -> s.put(k, v));
+           s.put(key, value);
+        });
+    }
+
     @Override
     default EntrySequence<K, V> asSequence() {
         return EntrySequence.of(this);

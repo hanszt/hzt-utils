@@ -4,11 +4,12 @@ import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
-import org.hzt.utils.It;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.statistics.BigDecimalStatistics;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -25,6 +26,8 @@ import static org.hzt.utils.gatherers.GatherersX.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CollectorsXTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CollectorsXTest.class);
 
     @Test
     void testBranchingToBigDecimalSummaryStatistics() {
@@ -87,7 +90,7 @@ class CollectorsXTest {
         final var intersection = stringLists.stream()
                 .collect(toIntersection());
 
-        It.println("intersection = " + intersection);
+        LOGGER.atDebug().setMessage(() -> "intersection = " + intersection).log();
 
         assertAll(
                 () -> assertEquals(2, intersection.size()),
@@ -104,7 +107,7 @@ class CollectorsXTest {
                 .map(Museum::getPaintings)
                 .collect(intersectingBy(Painting::getMillenniumOfCreation));
 
-        It.println("paintingMadeInPreviousMilleniumPresentInAllMuseums = " + paintingNamesPresentInAllMuseums);
+        LOGGER.atDebug().setMessage(() -> "paintingMadeInPreviousMilleniumPresentInAllMuseums = " + paintingNamesPresentInAllMuseums).log();
 
         assertFalse(paintingNamesPresentInAllMuseums.isEmpty());
     }

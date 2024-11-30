@@ -1,7 +1,8 @@
 package org.hzt.utils.numbers;
 
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -9,6 +10,8 @@ import java.math.RoundingMode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BigDecimalXTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BigDecimalXTest.class);
 
     @Test
     void BigDecimalXOfInt() {
@@ -55,7 +58,7 @@ class BigDecimalXTest {
         final var bigDecimalX = BigDecimalX.of(val)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        It.println("bigDecimalX = " + bigDecimalX);
+        LOGGER.atDebug().setMessage(() -> "bigDecimalX = " + bigDecimalX).log();
 
         assertEquals(bigDecimal, bigDecimalX);
     }

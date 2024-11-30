@@ -3,10 +3,14 @@ package org.hzt.utils.sequences.primitives;
 import org.hzt.utils.It;
 import org.hzt.utils.test.Generator;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LongWindowedSequenceTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LongWindowedSequenceTest.class);
 
     @Test
     void testVariableSizedLongSequence() {
@@ -16,7 +20,7 @@ class LongWindowedSequenceTest {
                 .take(100)
                 .toListX();
 
-        chunks.forEach(It::println);
+        chunks.forEach(it -> LOGGER.trace("{}", it));
 
         assertEquals(5, chunks.count(chunk -> chunk.size() == 1));
     }

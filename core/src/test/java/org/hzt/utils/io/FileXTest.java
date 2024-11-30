@@ -1,18 +1,19 @@
 package org.hzt.utils.io;
 
-import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.strings.StringX;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FileXTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileXTest.class);
 
     @Test
     void testReadLines() {
@@ -52,7 +53,7 @@ class FileXTest {
                         .map(line -> line.split(" ").toIntArray(Integer::parseInt))
                 .toTypedArray(int[][]::new));
 
-        Arrays.stream(grid).map(Arrays::toString).forEach(It::println);
+        Arrays.stream(grid).map(Arrays::toString).forEach(it -> LOGGER.trace("{}", it));
 
         assertArrayEquals(new int[] {1, 1, 0, 0, 0, 0, 0}, grid[0]);
     }

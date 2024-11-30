@@ -1,8 +1,9 @@
 package org.hzt.utils.collections;
 
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MutableMapXTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MutableMapXTest.class);
 
     @Test
     void testComputeIfPresent() {
@@ -18,7 +20,7 @@ class MutableMapXTest {
 
         final var result = map.computeIfPresent("1", (k, v) -> Integer.parseInt(k) + v);
 
-        map.forEach(It::println);
+        map.forEach(it -> LOGGER.trace("{}", it));
 
         assertEquals(2, result);
     }

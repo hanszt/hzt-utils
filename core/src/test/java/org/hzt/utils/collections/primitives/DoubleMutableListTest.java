@@ -1,16 +1,16 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.It;
 import org.hzt.utils.primitive_comparators.DoubleComparator;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DoubleMutableListTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DoubleMutableListTest.class);
 
     @Test
     void testDifferentMethods() {
@@ -32,7 +32,7 @@ class DoubleMutableListTest {
                 () -> assertEquals(2L, l),
                 () -> assertEquals(2, doubles.size())
         );
-        It.println("doubles = " + doubles);
+        LOGGER.atDebug().setMessage(() -> "doubles = " + doubles).log();
         final var l2 = doubles.removeLast();
         assertAll(
                 () -> assertFalse(doubles.isEmpty()),
@@ -64,7 +64,7 @@ class DoubleMutableListTest {
         final var list = DoubleMutableList.of(1, 2, 3, 4, 5, 6, 7, 8);
 
         final var remove = list.remove(7);
-        It.println("list = " + list);
+        LOGGER.atDebug().setMessage(() -> "list = " + list).log();
 
         assertAll(
                 () -> assertTrue(remove),
@@ -80,7 +80,7 @@ class DoubleMutableListTest {
 
         doubles.sort();
 
-        doubles.forEachDouble(System.out::println);
+        doubles.forEachDouble(it -> LOGGER.trace("{}", it));
 
         assertEquals(DoubleMutableList.of(-9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0), doubles);
     }

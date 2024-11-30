@@ -61,11 +61,6 @@ public interface EntryStreamX<K, V> extends EntryIterable<K, V>, StreamX<Map.Ent
     }
 
     @Override
-    default EntryStreamX<K, V> isParallel(final Consumer<Boolean> resultSupplier) {
-        return peek(s -> resultSupplier.accept(isParallel()));
-    }
-
-    @Override
     default EntryStreamX<K, V> sequential() {
         return EntryStreamX.ofStream(StreamX.super.sequential());
     }

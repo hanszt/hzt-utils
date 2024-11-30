@@ -1,6 +1,5 @@
 package org.hzt.utils.sequences.primitives;
 
-import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.numbers.LongX;
@@ -8,17 +7,18 @@ import org.hzt.utils.ranges.LongRange;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.LongStream;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class LongSequenceTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LongSequenceTest.class);
 
     @Test
     void longRangeFromLongArray() {
@@ -48,7 +48,7 @@ class LongSequenceTest {
                 .plus(LongList.of(array))
                 .toArray();
 
-        It.println(Arrays.toString(result));
+        LOGGER.atDebug().setMessage(() -> Arrays.toString(result)).log();
 
         assertAll(
                 () -> assertEquals(18, result.length),
@@ -72,7 +72,7 @@ class LongSequenceTest {
                 .minus(2, 76, 5)
                 .toArray();
 
-        It.println(Arrays.toString(result));
+        LOGGER.atDebug().setMessage(() -> Arrays.toString(result)).log();
 
         assertAll(
                 () -> assertEquals(8, result.length),
@@ -96,7 +96,7 @@ class LongSequenceTest {
 
         LongSequence.of(array)
                 .filter(l -> l > 3)
-                .onEach(It::println)
+                .onEach(it -> LOGGER.debug("{}", it))
                 .forEachLong(l -> assertTrue(l > 3));
     }
 
@@ -112,7 +112,7 @@ class LongSequenceTest {
                 .mapMulti((v, c) -> LongSequence.of(array).forEachLong(l -> c.accept(v + l)))
                 .toArray();
 
-        It.println("Arrays.toString(result) = " + Arrays.toString(result));
+        LOGGER.atDebug().setMessage(() -> "Arrays.toString(result) = " + Arrays.toString(result)).log();
 
         assertAll(
                 () -> assertEquals(array.length * array.length, result.length),
@@ -138,7 +138,7 @@ class LongSequenceTest {
                 .sortedDescending()
                 .toArray();
 
-        It.println("Arrays.toString(array) = " + Arrays.toString(sorted));
+        LOGGER.atDebug().setMessage(() -> "Arrays.toString(array) = " + Arrays.toString(sorted)).log();
 
         assertArrayEquals(new long[]{9, 8, 7, 6, 5, 5, 4, 4, 4, 3, 1}, sorted);
     }
@@ -151,7 +151,7 @@ class LongSequenceTest {
                 .zip(Long::sum, 1, 2, 3, 4)
                 .toArray();
 
-        It.println("Arrays.toString(array) = " + Arrays.toString(zipped));
+        LOGGER.atDebug().setMessage(() -> "Arrays.toString(array) = " + Arrays.toString(zipped)).log();
 
         assertArrayEquals(new long[]{2, 4, 6, 8}, zipped);
     }
@@ -165,7 +165,7 @@ class LongSequenceTest {
                 .zip(Long::sum, list)
                 .toArray();
 
-        It.println("Arrays.toString(array) = " + Arrays.toString(zipped));
+        LOGGER.atDebug().setMessage(() -> "Arrays.toString(array) = " + Arrays.toString(zipped)).log();
 
         assertArrayEquals(new long[]{2, 4, 6, 8, 10, 12}, zipped);
     }
@@ -179,7 +179,7 @@ class LongSequenceTest {
                 .map(LongList::toArray)
                 .toTypedArray(long[][]::new);
 
-        Sequence.of(windowed).map(Arrays::toString).forEach(It::println);
+        Sequence.of(windowed).map(Arrays::toString).forEach(it -> LOGGER.trace("{}", it));
 
         assertEquals(3, windowed.length);
     }
@@ -192,7 +192,7 @@ class LongSequenceTest {
                 .windowed(3, LongList::sum)
                 .toArray();
 
-        LongSequence.of(sums).forEachLong(It::println);
+        LongSequence.of(sums).forEachLong(it -> LOGGER.trace("{}", it));
 
         assertArrayEquals(new long[]{6, 9, 12, 15, 18}, sums);
     }
@@ -206,7 +206,7 @@ class LongSequenceTest {
                 .map(LongList::toArray)
                 .toTypedArray(long[][]::new);
 
-        Sequence.of(windows).map(Arrays::toString).forEach(It::println);
+        Sequence.of(windows).map(Arrays::toString).forEach(it -> LOGGER.trace("{}", it));
 
         assertEquals(4, windows.length);
     }
@@ -219,7 +219,7 @@ class LongSequenceTest {
                 .windowed(3, 2, true, LongList::sum)
                 .toArray();
 
-        LongSequence.of(sums).forEachLong(It::println);
+        LongSequence.of(sums).forEachLong(it -> LOGGER.trace("{}", it));
 
         assertArrayEquals(new long[]{6, 12, 18, 7}, sums);
     }
@@ -230,18 +230,17 @@ class LongSequenceTest {
                 .take(1_000)
                 .chunked(10)
                 .chunked(10)
-                .map(chunk -> chunk
+                .map(chunk -> chunk.asSequence()
                         .map(LongList::toArray)
                         .toTypedArray(long[][]::new))
                 .toTypedArray(long[][][]::new);
 
         final var cubeAsString = Sequence.of(cube)
-                .map(plane -> Sequence.of(plane)
-                        .map(Arrays::toString))
+                .map(plane -> Sequence.of(plane).map(Arrays::toString))
                 .map(s -> s.joinToString(System.lineSeparator()))
                 .joinToString(String.format("%n%n"));
 
-        It.println(cubeAsString);
+        LOGGER.atDebug().setMessage(() -> cubeAsString).log();
 
         assertEquals(10, cube.length);
     }

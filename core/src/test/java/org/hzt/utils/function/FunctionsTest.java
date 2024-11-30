@@ -1,28 +1,27 @@
 package org.hzt.utils.function;
 
 import org.hzt.test.model.Person;
-import org.hzt.utils.It;
 import org.hzt.utils.numbers.IntX;
 import org.hzt.utils.numbers.LongX;
 import org.hzt.utils.ranges.DoubleRange;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import static org.hzt.utils.function.Functions.distinctBy;
-import static org.hzt.utils.function.Functions.not;
-import static org.hzt.utils.function.Functions.notDouble;
-import static org.hzt.utils.function.Functions.notInt;
-import static org.hzt.utils.function.Functions.notLong;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hzt.utils.function.Functions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FunctionsTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FunctionsTest.class);
 
     @Test
     void testBiPredicateNot() {
@@ -32,9 +31,9 @@ class FunctionsTest {
                 .merge()
                 .toList();
 
-        System.out.println("list = " + list);
+        LOGGER.atDebug().setMessage(() -> "list = " + list).log();
 
-        assertFalse(list.contains(8));
+        assertThat(list).doesNotContain(8);
     }
 
     @Test
@@ -73,7 +72,7 @@ class FunctionsTest {
         final var allDoublesOutsideRange = DoubleStream.generate(Math::random)
                 .limit(1_000)
                 .filter(notDouble(doubleRange::contains))
-                .peek(It::println)
+                .peek(e -> LOGGER.trace("item: {}", e))
                 .noneMatch(doubleRange::contains);
 
         assertTrue(allDoublesOutsideRange);

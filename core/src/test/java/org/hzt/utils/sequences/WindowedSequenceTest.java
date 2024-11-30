@@ -6,6 +6,8 @@ import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.tuples.Pair;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -17,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class WindowedSequenceTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WindowedSequenceTest.class);
+
     @Test
     void testChunkedSequence() {
         final var sumDays = Sequence
@@ -27,7 +31,7 @@ class WindowedSequenceTest {
                 .takeWhileInclusive(p -> p.first().equals(p.second()))
                 .toList();
 
-        sumDays.forEach(It::println);
+        sumDays.forEach(it -> LOGGER.trace("{}", it));
 
         assertEquals(4, sumDays.size());
     }
@@ -38,13 +42,13 @@ class WindowedSequenceTest {
                 .iterate(LocalDate.of(1900, Month.JANUARY, 1), date -> date.plusMonths(1))
                 .chunked(12)
                 .map(dates -> dates.mapToInt(LocalDate::getDayOfYear))
-                .onEach(days -> days.forEachInt(System.out::println))
+                .onEach(days -> days.forEachInt(it -> LOGGER.trace("{}", it)))
                 .map(IntNumerable::sum)
                 .zipWithNext(Pair::of)
                 .takeWhileInclusive(p -> p.first().equals(p.second()))
                 .toList();
 
-        sumDays.forEach(It::println);
+        sumDays.forEach(it -> LOGGER.trace("{}", it));
 
         assertEquals(4, sumDays.size());
     }
@@ -54,7 +58,7 @@ class WindowedSequenceTest {
         final var chunkSizes = Sequence.iterate(0, i -> i + 2)
                 .chunked(sineWaveGenerator())
                 .take(20)
-                .onEach(It::println)
+                .onEach(it -> LOGGER.trace("{}", it))
                 .mapToLong(ListX::size)
                 .toArray();
 
@@ -78,10 +82,10 @@ class WindowedSequenceTest {
                 .windowed(5, size -> ++size, 10, step -> --step, true)
                 .onSequence(w -> w
                         .zipWithNext()
-                        .forEach((w1, w2) -> It.println(w2.first() - w1.first())))
+                        .forEach((w1, w2) -> LOGGER.atDebug().setMessage(() -> "dif: " + (w2.first() - w1.first())).log()))
                 .toListX();
 
-        It.println("windows = " + windows);
+        LOGGER.atDebug().setMessage(() -> "windows = " + windows).log();
 
         assertAll(
                 () -> assertEquals(ListX.of(4, 5, 6, 7, 8), windows.first()),

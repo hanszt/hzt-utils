@@ -10,6 +10,8 @@ import org.hzt.utils.test.model.PaintingAuction;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -35,6 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ListXTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ListXTest.class);
 
     @Test
     void testGetElement() {
@@ -82,7 +86,7 @@ class ListXTest {
                 .takeWhile(museum -> museum.getPaintings().size() < 3)
                 .toMutableList();
 
-        It.println("actual = " + actual);
+        LOGGER.atDebug().setMessage(() -> "actual = " + actual).log();
 
         assertEquals(expected, actual);
     }
@@ -215,7 +219,7 @@ class ListXTest {
                 .mapNotNull(PaintingAuction::getDateOfOpening)
                 .plus(ListX.of(LocalDate.MIN, LocalDate.MAX));
 
-        It.println("dates = " + dates);
+        LOGGER.atDebug().setMessage(() -> "dates = " + dates).log();
 
         assertEquals(expected, dates);
     }
@@ -251,7 +255,7 @@ class ListXTest {
     void testTakeLastTo() {
         final var list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
-        final var integers = list.takeLastTo(size -> new LinkedTransferQueue<>(), 5);
+        final var integers = list.takeLastTo(_ -> new LinkedTransferQueue<>(), 5);
 
         assertIterableEquals(new LinkedTransferQueue<>(List.of(3, 4, 5, 6, 5)), integers);
     }
@@ -266,9 +270,9 @@ class ListXTest {
 
         final CollectionX<LocalDate> dates = museums
                 .mapTo(MutableListX::empty, PaintingAuction::getDateOfOpening)
-                .also(It::println);
+                .also(it -> LOGGER.trace("{}", it));
 
-        It.println("dates = " + dates);
+        LOGGER.atDebug().setMessage(() -> "dates = " + dates).log();
 
         assertEquals(expected, dates);
     }
@@ -284,13 +288,13 @@ class ListXTest {
 
         final List<LocalDate> dates = museums
                 .map(PaintingAuction::getDateOfOpening)
-                .when(ListX::isNotEmpty, It::println)
-                .when(list -> list.size() > 3, It::println)
+                .when(ListX::isNotEmpty, it -> LOGGER.trace("{}", it))
+                .when(list -> list.size() > 3, it -> LOGGER.trace("{}", it))
                 .takeIf(ListX::isNotEmpty)
                 .map(Collectable::toMutableList)
                 .orElseThrow();
 
-        It.println("dates = " + dates);
+        LOGGER.atDebug().setMessage(() -> "dates = " + dates).log();
 
         assertEquals(expected, dates);
     }
@@ -315,7 +319,7 @@ class ListXTest {
 
         final var shuffled = input.shuffled(new Random(0));
 
-        It.println("shuffled = " + shuffled);
+        LOGGER.atDebug().setMessage(() -> "shuffled = " + shuffled).log();
 
         assertAll(
                 () -> assertNotEquals(input, shuffled),
@@ -331,7 +335,7 @@ class ListXTest {
 
         final Executable executable = () -> {
             final var mutableList = (MutableListX<Integer>) integers;
-            System.out.println("mutableList = " + mutableList);
+            LOGGER.atDebug().setMessage(() -> "mutableList = " + mutableList).log();
         };
 
         assertAll(
@@ -352,7 +356,7 @@ class ListXTest {
                 .filter(n -> n > 4)
                 .toListX().let(ListXTest::calculateProduct);
 
-        It.println("product = " + product);
+        LOGGER.atDebug().setMessage(() -> "product = " + product).log();
 
         assertEquals(expected, product, () -> "Something went wrong. Did you know, you can also crate dates from ints? " +
                                               integers.toListOf(day -> LocalDate.of(2020, Month.JANUARY, day)));

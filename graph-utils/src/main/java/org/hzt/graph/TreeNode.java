@@ -3,7 +3,6 @@ package org.hzt.graph;
 import org.hzt.graph.iterators.GraphIterators;
 import org.hzt.graph.tuples.DepthToTreeNode;
 import org.hzt.utils.sequences.Sequence;
-import org.hzt.utils.strings.StringX;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -11,33 +10,35 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * @param <T> The type of the node itself
- * @param <S> The type of the children
+ * A tree node where the default traversal is breadth first traversal.
+ *
  * <p>
- * T and S must be of same type for this interface to work properly
+ * T (implementing type) and S (child type) must be of same type for this interface to work properly.
  * <p>
  * The iterator that must be implemented, must provide an iterator over the children of the current node
+ *
+ * @param <N> The type of the node.
  */
 @FunctionalInterface
-public interface TreeNode<T, S extends TreeNode<T, S>> {
+public interface TreeNode<N extends TreeNode<N>> {
 
     /**
      * @return Returns an iterator that iterates over the children of this tree node
      */
-    Iterator<S> childrenIterator();
+    Iterator<N> childrenIterator();
 
-    default Sequence<S> childrenSequence() {
+    default Sequence<N> childrenSequence() {
         return Sequence.of(this::childrenIterator);
     }
 
     /**
      * @return a sequence of siblings including self
      */
-    default Sequence<S> siblingSequence() {
+    default Sequence<N> siblingSequence() {
         //noinspection unchecked
         return optionalParent()
                 .map(TreeNode::childrenSequence)
-                .orElse(Sequence.of((S) this));
+                .orElse(Sequence.of((N) this));
     }
 
     default boolean isLeaf() {
@@ -52,38 +53,47 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return (int) parentSequence().count();
     }
 
-    default Optional<S> optionalParent() {
+    default Optional<N> optionalParent() {
         throw new IllegalStateException("optionalParent() is not implemented by default. Override it if you want to use it");
     }
 
-    default Sequence<S> breadthFirstSequence() {
+    default Sequence<N> breadthFirstSequence() {
         //noinspection unchecked
-        return Sequence.of(() -> GraphIterators.treeNodeBreadthFirstIterator((S) this));
+        return Sequence.of(() -> GraphIterators.treeNodeBreadthFirstIterator((N) this));
     }
 
-    default Sequence<DepthToTreeNode<S>> breadthFirstDepthTrackingSequence() {
+    default Sequence<DepthToTreeNode<N>> breadthFirstDepthTrackingSequence() {
         //noinspection unchecked
-        return Sequence.of(() -> GraphIterators.treeNodeBreadthFirstDepthTrackingIterator((S) this));
+        return Sequence.of(() -> GraphIterators.treeNodeBreadthFirstDepthTrackingIterator((N) this));
     }
 
-    default Sequence<S> depthFirstSequence() {
+    default Sequence<N> depthFirstSequence() {
         //noinspection unchecked
-        return Sequence.of(() -> GraphIterators.treeNodeDepthFirstIterator((S) this));
+        return Sequence.of(() -> GraphIterators.treeNodeDepthFirstIterator((N) this));
     }
 
-    default Sequence<DepthToTreeNode<S>> depthFirstDepthTrackingSequence() {
+    default Sequence<DepthToTreeNode<N>> depthFirstDepthTrackingSequence() {
         //noinspection unchecked
-        return Sequence.of(() -> GraphIterators.treeNodeDepthFirstDepthTrackingIterator((S) this));
+        return Sequence.of(() -> GraphIterators.treeNodeDepthFirstDepthTrackingIterator((N) this));
+    }
+
+    default boolean isTree() {
+        try {
+            checkTree(this, new HashSet<>());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
      * @return a sequence containing this and the parents of this tree node
      */
-    default Sequence<S> parentSequence() {
+    default Sequence<N> parentSequence() {
         //noinspection unchecked
         return Sequence.of(() -> new Iterator<>() {
             boolean hasNext = true;
-            S next = (S) TreeNode.this;
+            N next = (N) TreeNode.this;
 
             @Override
             public boolean hasNext() {
@@ -99,7 +109,7 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
             }
 
             @Override
-            public S next() {
+            public N next() {
                 if (hasNext()) {
                     hasNext = false;
                     return next;
@@ -113,12 +123,14 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return toTreeString(Object::toString);
     }
 
-    default String toTreeString(final Function<? super S, String> toStringFunction) {
+    default String toTreeString(final Function<? super N, String> toStringFunction) {
         return toTreeString("[", ", ", "]", toStringFunction);
     }
 
-    default String toTreeString(final String opening, final String separator, final String closing,
-                                final Function<? super S, String> toStringFunction) {
+    default String toTreeString(final String opening,
+                                final String separator,
+                                final String closing,
+                                final Function<? super N, String> toStringFunction) {
         final var sb = new StringBuilder();
         toTreeString(this, sb, opening, separator, closing, toStringFunction);
         return sb.toString();
@@ -128,13 +140,13 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return toTreeString(indent, Object::toString);
     }
 
-    default String toTreeString(final int indent, final Function<? super S, String> toStringFunction) {
+    default String toTreeString(final int indent, final Function<? super N, String> toStringFunction) {
         return toTreeString(indent, " ", toStringFunction);
     }
 
     default String toTreeString(final int indent,
                                 final String indentString,
-                                final Function<? super S, String> toStringFunction) {
+                                final Function<? super N, String> toStringFunction) {
         final var sb = new StringBuilder();
         toTreeString(this, sb, 0, indent, indentString, toStringFunction);
         final var sbNoTrailingWhiteSpace = sb.replace(sb.length() - 1, sb.length(), "");
@@ -145,28 +157,28 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         return toBFSTreeString(indent, Object::toString);
     }
 
-    default String toBFSTreeString(final int indent, final Function<? super S, String> toStringFunction) {
+    default String toBFSTreeString(final int indent, final Function<? super N, String> toStringFunction) {
         return toBFSTreeString(indent, " ", toStringFunction);
     }
 
     default String toBFSTreeString(final int indent,
                                    final String indentString,
-                                   final Function<? super S, String> toStringFunction) {
+                                   final Function<? super N, String> toStringFunction) {
         return breadthFirstDepthTrackingSequence()
                 .map(n -> indentString.repeat(n.treeDepth() * indent) + toStringFunction.apply(n.node()))
-                .joinToString("\n");
+                .joinToString(System.lineSeparator());
     }
 
-    private static <T, S extends TreeNode<T, S>> void toTreeString(final TreeNode<T, S> treeNode,
+    private static <S extends TreeNode<S>> void toTreeString(final TreeNode<S> treeNode,
                                                                    final StringBuilder sb,
                                                                    final int level,
                                                                    final int indent,
                                                                    final String indentString,
                                                                    final Function<? super S, String> toStringFunction) {
         //noinspection unchecked
-        sb.append(StringX.of(indentString).repeat(indent * level))
+        sb.append(indentString.repeat(indent * level))
                 .append(toStringFunction.apply((S) treeNode))
-                .append("\n");
+                .append(System.lineSeparator());
         if (treeNode.childrenSequence().none()) {
             return;
         }
@@ -175,7 +187,7 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
         }
     }
 
-    private static <T, S extends TreeNode<T, S>> void toTreeString(final TreeNode<T, S> treeNode,
+    private static <S extends TreeNode<S>> void toTreeString(final TreeNode<S> treeNode,
                                                                    final StringBuilder sb,
                                                                    final String opening,
                                                                    final String levelSeparator,
@@ -196,5 +208,19 @@ public interface TreeNode<T, S extends TreeNode<T, S>> {
             }
         }
         sb.append(closing);
+    }
+
+    private static <S extends TreeNode<S>> void checkTree(
+            final TreeNode<S> treeNode,
+            final Set<TreeNode<S>> visited
+    ) throws Exception {
+        visited.add(treeNode);
+        for (final var child : treeNode.childrenSequence()) {
+            if (visited.contains(child)) {
+                throw new Exception();
+            } else {
+                checkTree(child, visited);
+            }
+        }
     }
 }

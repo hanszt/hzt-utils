@@ -131,6 +131,7 @@ public interface IntList extends IntCollection,
      * @see BinarySearchable#binarySearch(int, int, Object)
      * @see java.util.Arrays#binarySearch(int[], int)
      */
+    @Override
     default int binarySearch(final int fromIndex, final int toIndex, final IntUnaryOperator comparison) {
         return BinarySearchable.binarySearch(size(), fromIndex, toIndex, mid -> comparison.applyAsInt(get(mid)));
     }

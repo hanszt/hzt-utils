@@ -49,6 +49,14 @@ public final class CollectorsX {
         return Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue);
     }
 
+    public static <T1, T2, R> Collector<Pair<T1, T2>, ?, R> unzip(BiFunction<? super List<T1>, ? super List<T2>, R> unzipper) {
+        return Collectors.teeing(
+                mapping(e -> e.first(), toUnmodifiableList()),
+                mapping(e -> e.second(), toUnmodifiableList()),
+                unzipper
+        );
+    }
+
     public static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> toUnModifiableMap() {
         return toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue);
     }
@@ -58,7 +66,7 @@ public final class CollectorsX {
     }
 
     public static <T, R> Collector<T, ?, List<R>> mappingToList(final Function<? super T, ? extends R> mapper) {
-        return Collectors.mapping(mapper, toUnmodifiableList());
+        return mapping(mapper, toUnmodifiableList());
     }
 
     public static <T, R> Collector<T, ?, List<R>> multiMappingToList(final BiConsumer<? super T, ? super Consumer<R>> mapper) {
@@ -74,7 +82,7 @@ public final class CollectorsX {
     }
 
     public static <T, R> Collector<T, ?, Set<R>> mappingToSet(final Function<? super T, ? extends R> mapper) {
-        return Collectors.mapping(mapper, toUnmodifiableSet());
+        return mapping(mapper, toUnmodifiableSet());
     }
 
     public static <T, R> Collector<T, ?, Set<R>> multiMappingToSet(final BiConsumer<? super T, ? super Consumer<R>> mapper) {
@@ -96,7 +104,7 @@ public final class CollectorsX {
     }
 
     public static <T, R> Collector<T, ?, ListX<R>> toListXOf(final Function<T, R> mapper) {
-        return Collectors.mapping(mapper, toListX());
+        return mapping(mapper, toListX());
     }
 
     public static <T> Collector<T, MutableListX<T>, SetX<T>> toSetX() {
@@ -104,7 +112,7 @@ public final class CollectorsX {
     }
 
     public static <T, R> Collector<T, ?, SetX<R>> toSetXOf(final Function<T, R> mapper) {
-        return Collectors.mapping(mapper, toSetX());
+        return mapping(mapper, toSetX());
     }
 
     public static <T, K, V> Collector<T, ?, MapX<K, V>> toMapX(final Function<T, K> keyMapper, final Function<T, V> valueMapper) {
@@ -601,15 +609,15 @@ public final class CollectorsX {
     /**
      * A function that allows a gatherer to be transformed to a collector.
      *
-     * @param gatherer the gatherer to convert to a collector
-     * @param supplier the supplier of the collection, the results should be stored in
+     * @param gatherer  the gatherer to convert to a collector
+     * @param supplier  the supplier of the collection, the results should be stored in
      * @param transform a transformation function that transforms the intermediate result to the final result in the collection {@code C}
+     * @param <T>       The input type
+     * @param <A>       The gatherer state type
+     * @param <R>       The intermediate result type
+     * @param <RR>      The final result type
+     * @param <C>       The Type of the collections the results are stored in
      * @return the Collector from the supplied gatherer
-     * @param <T> The input type
-     * @param <A> The gatherer state type
-     * @param <R> The intermediate result type
-     * @param <RR> The final result type
-     * @param <C> The Type of the collections the results are stored in
      */
     public static <T, A, R, RR, C extends Collection<RR>> Collector<T, ?, C> to(
             Supplier<C> supplier,

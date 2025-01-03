@@ -31,9 +31,7 @@ public final class LongTimSort extends PrimitiveTimSort<long[], LongComparator> 
 
     @Override
     protected void swap(final long[] array, final int index1, final int index2) {
-        final var temp = array[index1];
-        array[index1] = array[index2];
-        array[index2] = temp;
+        ArraysX.swap(array, index1, index2);
     }
 
     @Override

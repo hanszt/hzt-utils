@@ -5,7 +5,6 @@ import org.hzt.utils.tuples.Pair;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 final class HashMapX<K, V> extends AbstractMap<K, V> implements MutableMapX<K, V> {
@@ -13,7 +12,7 @@ final class HashMapX<K, V> extends AbstractMap<K, V> implements MutableMapX<K, V
     private final Map<K, V> map;
 
     HashMapX(final Map<? extends K, ? extends V> map) {
-        this.map = new LinkedHashMap<>(map);
+        this.map = new HashMap<>(map);
     }
 
     HashMapX() {
@@ -25,7 +24,7 @@ final class HashMapX<K, V> extends AbstractMap<K, V> implements MutableMapX<K, V
     }
 
     HashMapX(final Iterable<Entry<K, V>> iterable) {
-        map = new LinkedHashMap<>();
+        map = new HashMap<>();
         for (final var entry : iterable) {
             map.put(entry.getKey(), entry.getValue());
         }
@@ -94,7 +93,7 @@ final class HashMapX<K, V> extends AbstractMap<K, V> implements MutableMapX<K, V
 
     @Override
     public MutableSetX<K> keySet() {
-        return MutableLinkedSetX.of(map.keySet());
+        return MutableSetX.of(map.keySet());
     }
 
     @Override

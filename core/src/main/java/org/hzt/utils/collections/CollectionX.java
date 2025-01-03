@@ -2,12 +2,7 @@ package org.hzt.utils.collections;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
-import org.hzt.utils.collections.primitives.DoubleList;
-import org.hzt.utils.collections.primitives.DoubleMutableList;
-import org.hzt.utils.collections.primitives.IntList;
-import org.hzt.utils.collections.primitives.IntMutableList;
-import org.hzt.utils.collections.primitives.LongList;
-import org.hzt.utils.collections.primitives.LongMutableList;
+import org.hzt.utils.collections.primitives.*;
 import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
@@ -18,24 +13,8 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.IndexedValue;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
-import java.util.function.Function;
-import java.util.function.IntConsumer;
-import java.util.function.LongConsumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
+import java.util.*;
+import java.util.function.*;
 
 @FunctionalInterface
 @SuppressWarnings("squid:S1448")
@@ -201,7 +180,7 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     @Override
-    default <R> ListX<R> castIfInstanceOf(final Class<R> aClass) {
+    default <R> ListX<R> filterIsInstance(final Class<R> aClass) {
         return asSequence().filter(aClass::isInstance).map(aClass::cast).toListX();
     }
 

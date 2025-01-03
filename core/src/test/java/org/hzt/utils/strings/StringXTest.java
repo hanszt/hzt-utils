@@ -290,7 +290,7 @@ class StringXTest {
         @ValueSource(chars = {'a', 't', 'c', 'm', '!', 'T'})
         void testStringContainsChars(final char c) {
             final var s = "This is a test string to test contains method!";
-            assertTrue(StringX.of(s).contains(c));
+            assertTrue(StringX.of(s).contains(c), "Expected " + s + " to contain " + c + " but did not!");
         }
 
         @ParameterizedTest
@@ -302,7 +302,7 @@ class StringXTest {
     }
 
     @Nested
-    class OverridenSequenceMethodTests {
+    class OverriddenSequenceMethodTests {
 
         @Test
         void testFilterCharNrs() {
@@ -312,6 +312,19 @@ class StringXTest {
                     .toInt();
 
             assertEquals(904, s);
+        }
+    }
+
+    @Nested
+    class ToNrTests {
+
+        @Test
+        void testToIntTest() {
+            final var list = StringX.of("12").toIntX().until(24)
+                    .filter(i -> i % 4 == 0)
+                    .toList();
+
+            assertThat(list).containsExactly(12, 16, 20);
         }
     }
 }

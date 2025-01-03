@@ -16,6 +16,7 @@ import org.hzt.utils.statistics.BigDecimalSummaryStatistics;
 import org.hzt.utils.strings.StringX;
 import org.hzt.utils.test.Generator;
 import org.hzt.utils.tuples.Pair;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -640,17 +641,35 @@ class IterableXTest {
         assertEquals(expected, actual);
     }
 
-    @Test
-    void testFindLast() {
-        final var paintings = ListX.of(TestSampleGenerator.createPaintingList());
+    @Nested
+    class FindLastTests {
 
-        final var actual = paintings.findLast(painting -> !painting.isInMuseum());
+        @Test
+        void testFindLastInSequence() {
+            final var paintings = Sequence.of(TestSampleGenerator.createPaintingList());
 
-        LOGGER.atDebug().setMessage(() -> "actual = " + actual).log();
+            final var actual = paintings.findLast(painting -> !painting.isInMuseum());
 
-        assertEquals("Lentetuin, de pastorietuin te Nuenen in het voorjaar", actual
-                .map(Painting::name)
-                .orElseThrow());
+            LOGGER.atDebug().setMessage(() -> "actual = " + actual).log();
+
+            assertEquals("Lentetuin, de pastorietuin te Nuenen in het voorjaar", actual
+                    .map(Painting::name)
+                    .orElseThrow());
+        }
+
+
+        @Test
+        void testFindLastInListX() {
+            final var paintings = ListX.of(TestSampleGenerator.createPaintingList());
+
+            final var actual = paintings.findLast(painting -> !painting.isInMuseum());
+
+            LOGGER.atDebug().setMessage(() -> "actual = " + actual).log();
+
+            assertEquals("Lentetuin, de pastorietuin te Nuenen in het voorjaar", actual
+                    .map(Painting::name)
+                    .orElseThrow());
+        }
     }
 
     @Test
@@ -925,10 +944,10 @@ class IterableXTest {
     }
 
     @Test
-    void castIfInstanceOf() {
+    void filterIsInstance() {
         final ListX<Comparable<?>> list = ListX.of(3.0, 2, 4, 3, BigDecimal.valueOf(10), 5L, 'a', "String");
 
-        final var integers = list.castIfInstanceOf(Integer.class);
+        final var integers = list.filterIsInstance(Integer.class);
 
         LOGGER.atDebug().setMessage(() -> "integers = " + integers).log();
 

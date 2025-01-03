@@ -6,11 +6,8 @@ import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.LongComparator;
 import org.hzt.utils.sequences.primitives.LongSequence;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.OptionalLong;
-import java.util.PrimitiveIterator;
-import java.util.Random;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.LongConsumer;
 
 import static java.util.Objects.checkIndex;
@@ -48,7 +45,20 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
         }
     }
 
+    LongArrayList(final Consumer<? super LongMutableList> factory) {
+        this();
+        factory.accept(this);
+        isUnmodifiable = true;
+    }
+
+    LongArrayList(final int size, final Consumer<? super LongMutableList> factory) {
+        this(size);
+        factory.accept(this);
+        isUnmodifiable = true;
+    }
+
     public boolean add(final long value) {
+        throwIfNotModifiable();
         if (size == elementData.length) {
             final var isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
@@ -60,6 +70,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
 
     @Override
     public boolean add(final int index, final long value) {
+        throwIfNotModifiable();
         Objects.checkIndex(index, size + 1);
         if (size == elementData.length) {
             elementData = growArray(size, elementData.length == 0);
@@ -72,6 +83,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
 
     @Override
     public boolean addAll(final int index, final PrimitiveIterable.OfLong iterable) {
+        throwIfNotModifiable();
         rangeCheckForAdd(index);
         final var a = iterable instanceof final LongCollection c ? c.toArray() : LongSequence.of(iterable).toArray();
         final var numNew = a.length;
@@ -137,6 +149,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     public long removeAt(final int index) {
+        throwIfNotModifiable();
         final var oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveLong(elementData, size, index);
         return oldValue;
@@ -196,6 +209,7 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
 
     @Override
     public long set(final int index, final long value) {
+        throwIfNotModifiable();
         checkIndex(index, size);
         elementData[index] = value;
         return value;
@@ -251,11 +265,13 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
 
     @Override
     public void sort(final LongComparator comparator) {
+        throwIfNotModifiable();
         ArraysX.sort(0, size, comparator, elementData);
     }
 
     @Override
     public void sort() {
+        throwIfNotModifiable();
         Arrays.sort(elementData, 0, size);
     }
 

@@ -10,7 +10,6 @@ import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.LongSequence;
 
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.OptionalLong;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -26,12 +25,12 @@ public interface LongList extends LongCollection,
         return new LongImmutableList();
     }
 
-    static LongList of(final long... array) {
-        return new LongImmutableList(array);
-    }
-
     static LongList of(final Iterable<Long> iterable) {
         return LongSequence.of(iterable).toList();
+    }
+
+    static LongList of(final long... array) {
+        return new LongImmutableList(array);
     }
 
     static LongList copyOf(final LongCollection longCollection) {
@@ -39,9 +38,11 @@ public interface LongList extends LongCollection,
     }
 
     static LongList build(final Consumer<? super LongMutableList> factory) {
-        final var mutableList = LongMutableList.empty();
-        factory.accept(mutableList);
-        return LongList.copyOf(mutableList);
+        return new LongArrayList(factory);
+    }
+
+    static LongList build(int size, final Consumer<? super LongMutableList> factory) {
+        return new LongArrayList(size, factory);
     }
 
     default boolean contains(final long value) {
@@ -92,7 +93,7 @@ public interface LongList extends LongCollection,
     }
 
     default long random(final Random random) {
-        return findRandom(random).orElseThrow(NoSuchElementException::new);
+        return findRandom(random).orElseThrow();
     }
 
     OptionalLong findRandom(Random random);

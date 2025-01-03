@@ -3,11 +3,7 @@ package org.hzt.utils.sequences;
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.ListX;
-import org.hzt.utils.function.IndexedBiFunction;
-import org.hzt.utils.function.IndexedFunction;
-import org.hzt.utils.function.IndexedPredicate;
-import org.hzt.utils.function.QuadFunction;
-import org.hzt.utils.function.TriFunction;
+import org.hzt.utils.function.*;
 import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterables.EntryIterable;
 import org.hzt.utils.iterables.IterableExtension;
@@ -23,27 +19,8 @@ import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
-import java.util.SequencedCollection;
-import java.util.Set;
-import java.util.Spliterators;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
-import java.util.function.Function;
-import java.util.function.IntConsumer;
-import java.util.function.LongConsumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
-import java.util.function.UnaryOperator;
+import java.util.*;
+import java.util.function.*;
 import java.util.stream.StreamSupport;
 
 import static java.util.Spliterator.ORDERED;
@@ -223,7 +200,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default <R> Sequence<R> castIfInstanceOf(final Class<R> aClass) {
+    default <R> Sequence<R> filterIsInstance(final Class<R> aClass) {
         return filter(aClass::isInstance).map(aClass::cast);
     }
 

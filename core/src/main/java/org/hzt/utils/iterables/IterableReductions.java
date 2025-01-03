@@ -1,16 +1,9 @@
 package org.hzt.utils.iterables;
 
-import org.hzt.utils.collections.ListX;
-import org.hzt.utils.collections.MapX;
-import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.MutableMapX;
-import org.hzt.utils.collections.MutableSetX;
-import org.hzt.utils.collections.SetX;
+import org.hzt.utils.collections.*;
 import org.hzt.utils.tuples.Pair;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -45,7 +38,7 @@ public final class IterableReductions {
             final Function<? super T, ? extends R> valueMapper) {
         final MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
         for (final var t : iterable) {
-            groupedMap.computeIfAbsent(classifier.apply(t), key -> MutableListX.empty()).add(valueMapper.apply(t));
+            groupedMap.computeIfAbsent(classifier.apply(t), _ -> MutableListX.empty()).add(valueMapper.apply(t));
         }
         return groupedMap;
     }
@@ -121,8 +114,8 @@ public final class IterableReductions {
         final var iterator = iterable.iterator();
         if (!iterator.hasNext()) {
             return Optional.empty();
-        } else if (iterable instanceof final List<T> list) {
-            return Optional.ofNullable(list.getLast());
+        } else if (iterable instanceof final SequencedCollection<T> sc) {
+            return Optional.ofNullable(sc.getLast());
         } else {
             var result = iterator.next();
             while (iterator.hasNext()) {
@@ -132,12 +125,27 @@ public final class IterableReductions {
         }
     }
 
-    public static <T> Optional<T> findLast(final Iterable<T> iterable, final Predicate<T> predicate) {
+    public static <T> Optional<T> findLast(final Iterable<T> iterable, final Predicate<? super T> predicate) {
         final var iterator = iterable.iterator();
         if (!iterator.hasNext()) {
-            throw IterableXHelper.noValuePresentException();
+            return Optional.empty();
         } else if (iterable instanceof final List<T> list) {
             return IterableXHelper.findLastIfInstanceOfList(predicate, list);
+        } else if (iterable instanceof final ListX<T> list) {
+            return IterableXHelper.findLastIfInstanceOfList(predicate, new AbstractList<>() {
+
+                @Override
+                public int size() {
+                    return list.size();
+                }
+
+                @Override
+                public T get(final int index) {
+                    return list.get(index);
+                }
+            });
+        } else if (iterable instanceof final SequencedCollection<T> sc) {
+            return IterableXHelper.findLastIfInstanceOfSc(predicate, sc);
         } else {
             return IterableXHelper.findLastIfUnknownIterable(predicate, iterator);
         }

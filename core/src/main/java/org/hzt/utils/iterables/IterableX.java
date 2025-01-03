@@ -12,13 +12,7 @@ import org.hzt.utils.streams.StreamX;
 
 import java.util.Collection;
 import java.util.PrimitiveIterator;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
+import java.util.function.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -47,7 +41,7 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skippable<T>, 
 
     IterableX<T> minus(Iterable<T> values);
 
-    <R> IterableX<R> castIfInstanceOf(Class<R> aClass);
+    <R> IterableX<R> filterIsInstance(Class<R> aClass);
 
     default StreamX<T> stream() {
         return StreamX.of(StreamSupport.stream(spliterator(), false));

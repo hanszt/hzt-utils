@@ -133,9 +133,7 @@ class NodeTest {
         return map;
     }
 
-
-    static class RailWayStation implements MutableNode<RailWayStation, RailWayStation> {
-
+    static class RailWayStation implements MutableNode<RailWayStation> {
 
         private final String name;
 

@@ -8,41 +8,37 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
- * @param <T> The type of the node itself
- * @param <S> The type of the neighbors
- *            <p>
- *            T and S must be of same type for this interface to work properly
+ * @param <N> The type of the neighbors
  */
 @FunctionalInterface
-public interface Node<T, S extends Node<T, S>> {
+public interface Node<N extends Node<N>> {
 
-    Iterator<S> neighborIterator();
+    Iterator<N> neighborIterator();
 
-    default Sequence<S> breadthFirstSequence() {
+    default Sequence<N> breadthFirstSequence() {
         //noinspection unchecked
-        return Sequence.of(() -> GraphIterators.breadthFirstIterator((S) this, false));
+        return Sequence.of(() -> GraphIterators.breadthFirstIterator((N) this, false));
     }
 
-    default Sequence<S> depthFirstSequence() {
+    default Sequence<N> depthFirstSequence() {
         //noinspection unchecked
-        return Sequence.of(() -> GraphIterators.depthFirstIterator((S) this, false));
+        return Sequence.of(() -> GraphIterators.depthFirstIterator((N) this, false));
     }
 
-    default Sequence<S> predecessorSequence() {
+    default Sequence<N> predecessorSequence() {
         //noinspection unchecked
-        return () -> predecessorIterator((S) this);
+        return () -> predecessorIterator((N) this);
     }
 
-    default Optional<S> optionalPredecessor() {
+    default Optional<N> optionalPredecessor() {
         throw new IllegalStateException("optionalPredecessor() is not implemented by default. Override it if you want to use it");
     }
 
-
-    private Iterator<S> predecessorIterator(final S initial) {
+    private Iterator<N> predecessorIterator(final N initial) {
         return new Iterator<>() {
 
             private boolean hasNext = true;
-            private S next = initial;
+            private N next = initial;
 
             @Override
             public boolean hasNext() {
@@ -58,7 +54,7 @@ public interface Node<T, S extends Node<T, S>> {
             }
 
             @Override
-            public S next() {
+            public N next() {
                 if (hasNext()) {
                     hasNext = false;
                     return next;

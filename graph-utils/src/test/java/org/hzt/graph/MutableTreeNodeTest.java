@@ -1,16 +1,43 @@
 package org.hzt.graph;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MutableTreeNodeTest {
 
     private static final Logger logger = LoggerFactory.getLogger(MutableTreeNodeTest.class);
+
+    @Nested
+    class IsTreeTests {
+
+        @Test
+        void testHasSelfReferenceSoNoTree() {
+            final var root = buildPersonTree();
+            root.getMutableChildren().getFirst().getMutableChildren().add(root);
+
+            final var c2 = root.breadthFirstSequence().first(p -> "c2".equals(p.name));
+
+            assertTrue(c2.isTree());
+            assertFalse(root.isTree());
+        }
+
+        @Test
+        void testIsTreeStructure() {
+            final var root = buildPersonTree();
+            assertTrue(root.isTree());
+        }
+    }
 
     @Test
     void testRemoveBranch() {
@@ -24,7 +51,8 @@ class MutableTreeNodeTest {
         logger.atDebug().setMessage(() -> "After prune: " + root.toTreeString(2)).log();
 
         final var expected = new String[]{"root", "c2", "c6", "c7", "c8", "c3"};
-        assertArrayEquals(expected, node.depthFirstSequence().toArrayOf(n -> n.name, String[]::new));
+        final String[] actual = node.depthFirstSequence().toArrayOf(n -> n.name, String[]::new);
+        assertThat(actual).isEqualTo(expected);
     }
 
     private static MutableTreeNodeTest.Person buildPersonTree() {
@@ -41,7 +69,7 @@ class MutableTreeNodeTest {
     }
 
 
-    private static class Person implements MutableTreeNode<Person, Person> {
+    private static class Person implements MutableTreeNode<Person> {
 
         private final String name;
         private final List<Person> children;
@@ -59,7 +87,7 @@ class MutableTreeNodeTest {
         }
 
         @Override
-        public Collection<Person> getMutableChildren() {
+        public List<Person> getMutableChildren() {
             return children;
         }
 

@@ -4,9 +4,7 @@ import org.hzt.utils.numbers.DoubleX;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DoubleMutableSetTest {
 
@@ -43,6 +41,19 @@ class DoubleMutableSetTest {
         assertAll(
                 () -> assertTrue(doubles.containsAll(evenDoubles)),
                 () -> assertEquals(90_011, evenDoubles.size())
+        );
+    }
+
+    @Test
+    void testRemove() {
+        final var set = DoubleMutableSet.of(1, 2, 3, 4, 5, 6, 7, 8);
+
+        final var remove = set.remove(7);
+
+        assertAll(
+                () -> assertFalse(set.remove(7)),
+                () -> assertTrue(remove),
+                () -> assertEquals(DoubleMutableSet.of(1, 2, 3, 4, 5, 6, 8), set)
         );
     }
 

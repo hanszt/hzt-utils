@@ -7,7 +7,7 @@ import org.hzt.utils.collections.MutableListX;
 import java.util.Iterator;
 import java.util.List;
 
-public interface WeightedNode<T> extends MutableNode<WeightedNode<T>, WeightedNode<T>> {
+public interface WeightedNode<T> extends MutableNode<WeightedNode<T>> {
 
     static <T> WeightedNode<T> of(final T payload) {
         return new WeightedNode<>() {

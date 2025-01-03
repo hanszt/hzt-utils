@@ -20,11 +20,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -390,6 +386,10 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return splitToSequence(false, delimiters).toListX();
     }
 
+    public ListX<StringX> splitX(final CharSequence... delimiters) {
+        return splitXToSequence(false, 0, delimiters).toListX();
+    }
+
     public Sequence<String> splitToSequence(final CharSequence... delimiters) {
         return splitToSequence(false, delimiters);
     }
@@ -397,18 +397,26 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     public Sequence<String> splitToSequence(final boolean ignoreCase, final CharSequence... delimiters) {
         return splitToSequence(ignoreCase, 0, delimiters);
     }
+
     public Sequence<String> splitToSequence(final boolean ignoreCase,
                                             final int limit,
                                             final CharSequence... delimiters) {
-        return rangeDelimitedBy(string, delimiters, ignoreCase, limit)
+        return rangeDelimitedBy(this, delimiters, ignoreCase, limit)
                 .map(range -> string.substring(range.start(), range.endInclusive() + 1));
+    }
+
+    public Sequence<StringX> splitXToSequence(final boolean ignoreCase,
+                                              final int limit,
+                                              final CharSequence... delimiters) {
+        return rangeDelimitedBy(this, delimiters, ignoreCase, limit)
+                .map(range -> substring(range.start(), range.endInclusive() + 1));
     }
 
     public Sequence<String> splitToSequence(final Pattern pattern) {
         return Sequence.of(pattern.splitAsStream(string)::iterator);
     }
 
-    private static Sequence<IntRange> rangeDelimitedBy(final String string,
+    private static Sequence<IntRange> rangeDelimitedBy(final CharSequence string,
                                                        final CharSequence[] delimiters,
                                                        final boolean ignoreCase,
                                                        final int limit) {

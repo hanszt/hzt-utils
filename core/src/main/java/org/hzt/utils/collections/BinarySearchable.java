@@ -46,7 +46,7 @@ public interface BinarySearchable<COMPARISON_FUNCTION> {
     int binarySearch(int fromIndex, int toIndex, COMPARISON_FUNCTION comparison);
 
     /**
-     * This function only returns a valid value if the indexed collection to search in is sorted
+     * This function only returns a valid value if the indexed collection to search in is sorted.
      *
      * @param size               the size of the indexed collection to search in
      * @param fromIndex          the index to search from

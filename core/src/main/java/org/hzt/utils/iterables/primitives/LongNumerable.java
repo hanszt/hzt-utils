@@ -1,6 +1,5 @@
 package org.hzt.utils.iterables.primitives;
 
-import org.hzt.utils.It;
 import org.hzt.utils.sequences.primitives.LongSequence;
 import org.hzt.utils.statistics.LongStatistics;
 
@@ -11,7 +10,7 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
 
     @Override
     default long count() {
-        return count(It::noLongFilter);
+        return count(_ -> true);
     }
 
     default long count(final LongPredicate predicate) {

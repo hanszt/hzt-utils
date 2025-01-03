@@ -2,6 +2,14 @@
 
 ---
 
+### 1.0.5.22
+
+- Add SimpleTreeNode
+- Add build methods to Setx, DoubleList and LongList
+- Add zip Gatherer methods
+
+---
+
 ### 1.0.4.22
 
 - Replaced println statements by logging

@@ -7,12 +7,7 @@ import org.hzt.test.model.BankAccount;
 import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.It;
-import org.hzt.utils.collections.CollectionX;
-import org.hzt.utils.collections.LinkedSetX;
-import org.hzt.utils.collections.ListX;
-import org.hzt.utils.collections.MapX;
-import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.SetX;
+import org.hzt.utils.collections.*;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.iterables.IterableExtensions;
@@ -35,25 +30,10 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.Year;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -64,13 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hzt.test.Locales.testWithFixedLocale;
 import static org.hzt.utils.iterables.IterableExtensions.runningFold;
 import static org.hzt.utils.iterables.IterableExtensions.windowed;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
 class SequenceTest {
@@ -417,7 +391,7 @@ class SequenceTest {
 
         assertAll(
                 () -> assertEquals(integers.size(), group.size()),
-                () -> assertEquals(IntList.of(200084, 200023, 200084, 199562, 200247), actual)
+                () -> assertThat(actual).containsExactlyInAnyOrder(200084, 200023, 200084, 199562, 200247)
         );
     }
 
@@ -448,7 +422,7 @@ class SequenceTest {
                     .<Integer>mapMulti(Iterable::forEach)
                     .toListX();
 
-            windows.filterIndexed((i, v) -> IntX.multipleOf(10_000).test(i)).forEach(item -> LOGGER.trace("{}", item));
+            windows.filterIndexed((i, _) -> IntX.multipleOf(10_000).test(i)).forEach(item -> LOGGER.trace("{}", item));
 
             LOGGER.debug("windows.last() = {}", windows.last());
 
@@ -803,17 +777,17 @@ class SequenceTest {
         final List<String> orderCalledSequence = new ArrayList<>();
 
         final var ints1 = IntStream.of(6, 1, 456, 2)
-                .peek(s -> orderCalledStream.add("current"))
-                .peek(s -> orderCalledStream.add("pre-sort"))
+                .peek(_ -> orderCalledStream.add("current"))
+                .peek(_ -> orderCalledStream.add("pre-sort"))
                 .sorted()
-                .peek(s -> orderCalledStream.add("post-sort"))
+                .peek(_ -> orderCalledStream.add("post-sort"))
                 .toArray();
 
         final var ints2 = IntSequence.of(6, 1, 456, 2)
-                .onEach(s -> orderCalledSequence.add("current"))
-                .onEach(s -> orderCalledSequence.add("pre-sort"))
+                .onEach(_ -> orderCalledSequence.add("current"))
+                .onEach(_ -> orderCalledSequence.add("pre-sort"))
                 .sorted()
-                .onEach(s -> orderCalledSequence.add("post-sort"))
+                .onEach(_ -> orderCalledSequence.add("post-sort"))
                 .toArray();
 
         orderCalledSequence.forEach(item -> LOGGER.trace("{}", item));

@@ -7,11 +7,10 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Year;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SetXTest {
 
@@ -39,7 +38,7 @@ class SetXTest {
     class EqualsTests {
 
         @Test
-        void testListXEquals() {
+        void testSetXEquals() {
             final var set1 = SetX.of("This", "is", "a", "test");
             final var set2 = SetX.of("is", "This", "a", "test");
 
@@ -50,7 +49,7 @@ class SetXTest {
         }
 
         @Test
-        void testListXAndListDoNotEqual() {
+        void testSetXAndSetDoNotEqual() {
             final var setX = SetX.of("This", "is", "a", "test");
             final var set = Set.of("This", "is", "a", "test");
 
@@ -58,6 +57,47 @@ class SetXTest {
                     () -> assertNotEquals(set, setX),
                     () -> assertNotEquals(setX, set)
             );
+        }
+    }
+
+    @Nested
+    class BuildSetTests {
+
+        @Test
+        void testBuildSet() {
+            final var strings = SetX.build(this::getStringSet);
+
+            final var iterator = strings.iterator();
+            iterator.next();
+
+            assertAll(
+                    () -> assertEquals(100, strings.size()),
+                    () -> assertThat(strings).contains("42"),
+                    () -> assertThrows(UnsupportedOperationException.class, () -> ((MutableSetX<String>) strings).add("add")),
+                    () -> assertThrows(UnsupportedOperationException.class, () -> iterator.remove())
+            );
+        }
+
+        @Test
+        void testBuildSizedSet() {
+            final var reference = new AtomicReference<MutableSetX<String>>();
+            final var strings = SetX.<String>build(100, set -> {
+                getStringSet(set);
+                reference.set(set);
+            });
+
+            assertAll(
+                    () -> assertEquals(100, strings.size()),
+                    () -> assertThat(strings).contains("42"),
+                    () -> assertThrows(UnsupportedOperationException.class, () -> ((MutableSetX<String>) strings).add("add")),
+                    () -> assertThrows(UnsupportedOperationException.class, () -> reference.get().add("add"))
+            );
+        }
+
+        private void getStringSet(final MutableSetX<String> set) {
+            for (var i = 0; i < 100; i++) {
+                set.add(String.valueOf(i));
+            }
         }
     }
 }

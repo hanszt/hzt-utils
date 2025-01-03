@@ -1,6 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.ArraysX;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -10,11 +11,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 
 import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hzt.utils.Patterns.commaPattern;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DoubleListTest {
 
@@ -96,5 +95,18 @@ class DoubleListTest {
         final var indexInSortedList = reverseOrderSortedList.binarySearch(value -> Double.compare(Math.E, value));
 
         assertEquals(4, indexInSortedList);
+    }
+
+    @Nested
+    class ListBuildTests {
+
+        @Test
+        void testBuildIntList() {
+            final var list = DoubleList.build(5, b -> b.addAll(1, 2, 3, 4, 5));
+
+            assertThat(list).hasSize(5);
+            assertThat(list).containsExactly(1.0, 2.0, 3.0, 4.0, 5.0);
+            assertThrows(UnsupportedOperationException.class, () -> ((DoubleMutableList) list).add(3));
+        }
     }
 }

@@ -46,13 +46,6 @@ public final class SimpleBag<E> implements Bag<E> {
         };
     }
 
-    private static final class Node<T> {
-        private final T item;
-        private final Node<T> next;
-
-        public Node(final T item, final Node<T> next) {
-            this.item = item;
-            this.next = next;
-        }
+    private record Node<T>(T item, SimpleBag.Node<T> next) {
     }
 }

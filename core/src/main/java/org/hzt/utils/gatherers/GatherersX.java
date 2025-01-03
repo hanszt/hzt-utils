@@ -3,25 +3,14 @@ package org.hzt.utils.gatherers;
 import org.hzt.utils.statistics.DoubleStatistics;
 import org.hzt.utils.statistics.IntStatistics;
 import org.hzt.utils.statistics.LongStatistics;
+import org.hzt.utils.tuples.Pair;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.TreeSet;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
+import java.util.*;
+import java.util.function.*;
 import java.util.stream.Gatherer;
+import java.util.stream.Gatherer.Integrator;
 import java.util.stream.Gatherers;
+import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.reverseOrder;
@@ -83,10 +72,10 @@ public final class GatherersX {
     }
 
     public static <T, I extends Iterable<? extends T>> Gatherer<I, Void, T> flatten() {
-        return Gatherer.of((_, iterable, downstream) -> {
+        return Gatherer.of(Integrator.ofGreedy((_, iterable, downstream) -> {
             iterable.forEach(downstream::push);
             return true;
-        });
+        }));
     }
 
     public static <T, R> Gatherer<T, Void, R> mapMulti(final BiConsumer<? super T, Consumer<? super R>> mapper) {
@@ -209,13 +198,23 @@ public final class GatherersX {
         });
     }
 
+    public static <T, R> Gatherer<T, ?, R> zip(Stream<T> other, BiFunction<? super T, ? super T, ? extends R> zipper) {
+        return zip(other::iterator, zipper);
+    }
+
+    public static <T, R> Gatherer<T, ?, R> zip(Iterable<T> other, BiFunction<? super T, ? super T, ? extends R> zipper) {
+        return Gatherer.ofSequential(other::iterator,
+                (iterator, e, d) -> iterator.hasNext() && d.push(zipper.apply(e, iterator.next()))
+        );
+    }
+
     public static <T, R> Gatherer<T, ?, R> zipWithNext(final BiFunction<? super T, ? super T, ? extends R> mapper) {
         return Gatherers.<T>windowSliding(2)
                 .andThen(Gatherer.ofSequential((_, w, downstream) -> downstream.push(mapper.apply(w.getFirst(), w.get(1)))));
     }
 
-    public static <T> Gatherer<T, ?, List<T>> zipWithNext() {
-        return Gatherers.windowSliding(2);
+    public static <T> Gatherer<T, ?, Pair<T, T>> zipWithNext() {
+        return Gatherers.<T>windowSliding(2).andThen(map(l -> Pair.of(l.getFirst(), l.getLast())));
     }
 
     public static <T> Gatherer<T, ?, List<T>> chunked(final int size) {
@@ -303,7 +302,7 @@ public final class GatherersX {
         }
         return Gatherer.<T, Window, List<T>>ofSequential(
                 Window::new,
-                Gatherer.Integrator.<Window, T, List<T>>ofGreedy(Window::integrate),
+                Integrator.<Window, T, List<T>>ofGreedy(Window::integrate),
                 Window::finish
         );
     }

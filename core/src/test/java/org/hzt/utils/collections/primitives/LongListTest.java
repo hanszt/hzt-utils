@@ -1,10 +1,12 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.sequences.primitives.LongSequence;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.OptionalLong;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -60,5 +62,19 @@ class LongListTest {
 
         assertEquals(OptionalLong.of(8), last);
     }
+
+    @Nested
+    class ListBuildTests {
+
+        @Test
+        void testBuildIntList() {
+            final var list = LongList.build(5, b -> b.addAll(1, 2, 3, 4, 5));
+
+            assertThat(list).hasSize(5);
+            assertThat(list).containsExactly(1L, 2L, 3L, 4L, 5L);
+            assertThrows(UnsupportedOperationException.class, () -> ((LongMutableList) list).add(3));
+        }
+    }
+
 
 }

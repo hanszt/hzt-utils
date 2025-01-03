@@ -23,6 +23,14 @@ public interface SetX<E> extends CollectionX<E>, Transformable<SetX<E>> {
         return new ImmutableSetX<>(values);
     }
 
+    static <E> SetX<E> build(final Consumer<? super MutableSetX<E>> mutableSetConsumer) {
+        return new LinkedHashSetX<>(mutableSetConsumer);
+    }
+
+    static <E> SetX<E> build(int size, final Consumer<? super MutableSetX<E>> mutableSetConsumer) {
+        return new LinkedHashSetX<>(size, mutableSetConsumer);
+    }
+
     static <E> SetX<E> copyOf(final Iterable<E> iterable) {
         return new ImmutableSetX<>(iterable);
     }

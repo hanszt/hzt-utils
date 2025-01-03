@@ -1,6 +1,5 @@
 package org.hzt.utils.iterables;
 
-import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
@@ -42,7 +41,7 @@ import java.util.stream.Gatherer;
 public interface Collectable<T> extends IndexedIterable<T> {
 
     default T[] toTypedArray(final IntFunction<T[]> generator) {
-        return toArrayOf(It::self, generator);
+        return toArrayOf(e -> e, generator);
     }
 
     default <R> R[] toArrayOf(final Function<? super T, ? extends R> mapper, final IntFunction<R[]> generator) {
@@ -93,14 +92,14 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <A, R> R collect(final Supplier<A> supplier,
                              final BiConsumer<A, ? super T> accumulator,
                              final Function<A, R> finisher) {
-        return collect(supplier, It::noFilter, It::self, It::noFilter, accumulator, finisher);
+        return collect(supplier, _ -> true, e -> e, _ -> true, accumulator, finisher);
     }
 
     default <A, R> A collect(final Supplier<A> supplier,
                              final Predicate<T> filter,
                              final Function<T, R> mapper,
                              final BiConsumer<A, ? super R> accumulator) {
-        return collect(supplier, filter, mapper, It::noFilter, accumulator, It::self);
+        return collect(supplier, filter, mapper, _ -> true, accumulator, e -> e);
     }
 
     default <A, U, R> R collect(final Supplier<A> supplier,
@@ -202,7 +201,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default <C extends Collection<T>> C to(final Supplier<C> collectionFactory) {
-        return IterableXHelper.mapFilteringTo(this, collectionFactory, It::noFilter, It::self, It::noFilter);
+        return IterableXHelper.mapFilteringTo(this, collectionFactory, _ -> true, e -> e, _ -> true);
     }
 
     default MutableListX<T> toMutableList() {
@@ -222,7 +221,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default MutableSetX<T> toMutableSet() {
-        return IterableXHelper.mapFilteringTo(this, MutableSetX::empty, Objects::nonNull, It::self, It::noFilter);
+        return IterableXHelper.mapFilteringTo(this, MutableSetX::empty, Objects::nonNull, e -> e, _ -> true);
     }
 
     default SetX<T> toSetX() {
@@ -243,7 +242,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
 
     default <R, C extends Collection<R>> C mapTo(final Supplier<C> collectionFactory,
                                                  final Function<? super T, ? extends R> mapper) {
-        return IterableXHelper.mapFilteringTo(this, collectionFactory, Objects::nonNull, mapper, It::noFilter);
+        return IterableXHelper.mapFilteringTo(this, collectionFactory, Objects::nonNull, mapper, _ -> true);
     }
 
     default <R, C extends Collection<R>> C mapNotNullTo(final Supplier<C> collectionFactory,
@@ -353,7 +352,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
 
     default <C extends Collection<T>> C filterTo(final Supplier<C> collectionFactory,
                                                  final Predicate<? super T> predicate) {
-        return IterableXHelper.mapFilteringTo(this, collectionFactory, predicate, It::self, It::noFilter);
+        return IterableXHelper.mapFilteringTo(this, collectionFactory, predicate, e -> e, _ -> true);
     }
 
     default <C extends Collection<T>> C filterNotTo(final Supplier<C> collectionFactory,

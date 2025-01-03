@@ -97,7 +97,7 @@ public interface GridPoint2D {
     default GridPoint3D crossProduct(final int x, final int y) {
         final var ax = x();
         final var ay = y();
-        return new StandardPoint3D(0, 0, ax * y - ay * x);
+        return new StandardGridPoint3D(0, 0, ax * y - ay * x);
     }
 
     default GridPoint3D crossProduct(final GridPoint2D point2D) {

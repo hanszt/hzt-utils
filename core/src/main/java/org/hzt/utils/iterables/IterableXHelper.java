@@ -1,16 +1,10 @@
 package org.hzt.utils.iterables;
 
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntPredicate;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import org.hzt.utils.sequences.Sequence;
+
+import java.util.*;
+import java.util.function.*;
 
 public final class IterableXHelper {
 
@@ -113,7 +107,7 @@ public final class IterableXHelper {
     }
 
     static <T> Optional<T> findLastIfInstanceOfList(final Predicate<? super T> predicate, final List<T> list) {
-        final var last = list.get(list.size() - 1);
+        final var last = list.getLast();
         if (last != null && predicate.test(last)) {
             return Optional.of(last);
         }
@@ -126,6 +120,10 @@ public final class IterableXHelper {
             index--;
         }
         return Optional.empty();
+    }
+
+    static <T> Optional<T> findLastIfInstanceOfSc(final Predicate<? super T> predicate, final SequencedCollection<T> sq) {
+        return Sequence.reverseOf(sq).findFirst(predicate);
     }
 
     static NoSuchElementException noValuePresentException() {

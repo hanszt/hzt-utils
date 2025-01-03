@@ -1,6 +1,5 @@
 package org.hzt.utils.ranges;
 
-import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.junit.jupiter.api.Test;

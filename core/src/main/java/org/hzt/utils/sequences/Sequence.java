@@ -223,7 +223,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default <R> Sequence<R> castIfInstanceOf(final Class<R> aClass) {
+    default <R> Sequence<R> filterIsInstance(final Class<R> aClass) {
         return filter(aClass::isInstance).map(aClass::cast);
     }
 

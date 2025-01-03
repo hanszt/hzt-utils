@@ -47,7 +47,7 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skippable<T>, 
 
     IterableX<T> minus(Iterable<T> values);
 
-    <R> IterableX<R> castIfInstanceOf(Class<R> aClass);
+    <R> IterableX<R> filterIsInstance(Class<R> aClass);
 
     default StreamX<T> stream() {
         return StreamX.of(StreamSupport.stream(spliterator(), false));

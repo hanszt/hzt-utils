@@ -14,7 +14,7 @@ import java.util.Queue;
  *
  * @see <a href="https://gist.github.com/Xrayez/e67858723beca83f972f5790aae3a26f">BFS and DFS Iterator for Graph</a>
  */
-final class TreeNodeBreadthFirstDepthTrackingIterator<T, S extends TreeNode<T, S>> implements Iterator<DepthToTreeNode<S>> {
+final class TreeNodeBreadthFirstDepthTrackingIterator<T, S extends TreeNode<S>> implements Iterator<DepthToTreeNode<S>> {
     private final Queue<DepthToTreeNode<S>> queue = new LinkedList<>();
 
     TreeNodeBreadthFirstDepthTrackingIterator(final S node) {

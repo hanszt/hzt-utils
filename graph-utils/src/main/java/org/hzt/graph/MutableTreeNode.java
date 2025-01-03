@@ -3,69 +3,66 @@ package org.hzt.graph;
 import java.util.Collection;
 
 /**
- * @param <T> The type of the node itself
- * @param <S> The type of the children
- * <p>
- * T and S must be of same type for this interface to work properly
+ * @param <N> The type of the node.
  * <p>
  * The iterator that must be implemented, must provide an iterator over the children of the current node
  */
-public interface MutableTreeNode<T, S extends TreeNode<T, S>> extends TreeNode<T, S> {
+public interface MutableTreeNode<N extends TreeNode<N>> extends TreeNode<N> {
 
-    Collection<S> getMutableChildren();
+    Collection<N> getMutableChildren();
 
-    S withParent(final S parent);
+    N withParent(final N parent);
 
-    default S addChild(final S toAdd) {
+    default N addChild(final N toAdd) {
         final var children = getMutableChildren();
         children.add(toAdd);
         //noinspection unchecked
-        return (S) this;
+        return (N) this;
     }
 
-    default S addChildren(final Iterable<? extends S> toAdd) {
+    default N addChildren(final Iterable<? extends N> toAdd) {
         final var children = getMutableChildren();
         for (final var child : toAdd) {
             children.add(child);
         }
         //noinspection unchecked
-        return (S) this;
+        return (N) this;
     }
 
-    default S addChildWithThisAsParent(final S toAdd) {
+    default N addChildWithThisAsParent(final N toAdd) {
         final var children = getMutableChildren();
         children.add(toAdd);
         try {
             //noinspection unchecked
-            ((MutableTreeNode<T, S>) toAdd).withParent((S) this);
+            ((MutableTreeNode<N>) toAdd).withParent((N) this);
         } catch (final IllegalStateException e) {
             final var message = "Could not set parent. Override withParent(TreeNode) or try to use addChild(TreeNode) instead...";
             throw new IllegalStateException(message, e);
         }
         //noinspection unchecked
-        return (S) this;
+        return (N) this;
     }
 
-    default S addChildrenWithThisAsParent(final Iterable<S> toAdd) {
+    default N addChildrenWithThisAsParent(final Iterable<N> toAdd) {
         final var children = getMutableChildren();
         for (final var child : toAdd) {
             children.add(child);
             //noinspection unchecked
-            ((MutableTreeNode<T, S>) child).withParent((S) this);
+            ((MutableTreeNode<N>) child).withParent((N) this);
         }
         //noinspection unchecked
-        return (S) this;
+        return (N) this;
     }
 
-    default S removeSubTree(final S branch) {
-        if (!(branch instanceof MutableTreeNode<?, ?> mtn)) {
+    default N removeSubTree(final N branch) {
+        if (!(branch instanceof MutableTreeNode<?> mtn)) {
             throw new IllegalStateException("Branch not instance of MutableTreeNode");
         }
         final var branchChildren = mtn.getMutableChildren();
         for (final var child : branchChildren) {
             if (!child.isLeaf()) {
                 //noinspection unchecked
-                removeSubTree((S) child);
+                removeSubTree((N) child);
             }
         }
         branchChildren.removeIf(TreeNode::isLeaf);
@@ -73,6 +70,6 @@ public interface MutableTreeNode<T, S extends TreeNode<T, S>> extends TreeNode<T
             getMutableChildren().removeIf(branch::equals);
         }
         //noinspection unchecked
-        return (S) this;
+        return (N) this;
     }
 }

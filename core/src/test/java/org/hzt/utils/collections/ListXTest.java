@@ -2,7 +2,6 @@ package org.hzt.utils.collections;
 
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Painting;
-import org.hzt.utils.It;
 import org.hzt.utils.iterables.Collectable;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.test.Generator;
@@ -171,11 +170,15 @@ class ListXTest {
         void testBuildList() {
             final var strings = ListX.build(this::getStringList);
 
+            final var iterator = strings.iterator();
+            iterator.next();
+
             assertAll(
                     () -> assertEquals(101, strings.size()),
                     () -> assertThat(strings).contains("Hallo"),
-                    () -> assertThrows(UnsupportedOperationException.class, () -> ((MutableListX<String>) strings).add("add"))
-
+                    () -> assertThrows(UnsupportedOperationException.class, () -> ((MutableListX<String>) strings).add("add")),
+                    () -> assertThrows(UnsupportedOperationException.class, () -> iterator.remove()),
+                    () -> assertThrows(UnsupportedOperationException.class, () -> ((MutableListX<String>) strings.reversed()).add("add"))
             );
         }
 

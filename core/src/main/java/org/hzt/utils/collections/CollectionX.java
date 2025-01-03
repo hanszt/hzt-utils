@@ -201,7 +201,7 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     @Override
-    default <R> ListX<R> castIfInstanceOf(final Class<R> aClass) {
+    default <R> ListX<R> filterIsInstance(final Class<R> aClass) {
         return asSequence().filter(aClass::isInstance).map(aClass::cast).toListX();
     }
 

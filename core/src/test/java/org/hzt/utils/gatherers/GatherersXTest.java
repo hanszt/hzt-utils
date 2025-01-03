@@ -32,20 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hzt.utils.collectors.CollectorsX.doubleArrayOf;
 import static org.hzt.utils.collectors.CollectorsX.intArrayOf;
 import static org.hzt.utils.collectors.CollectorsX.longArrayOf;
-import static org.hzt.utils.gatherers.GatherersX.chunked;
-import static org.hzt.utils.gatherers.GatherersX.distinctBy;
-import static org.hzt.utils.gatherers.GatherersX.dropWhile;
-import static org.hzt.utils.gatherers.GatherersX.mapNotNull;
-import static org.hzt.utils.gatherers.GatherersX.runningDoubleStatisticsOf;
-import static org.hzt.utils.gatherers.GatherersX.runningIntStatisticsOf;
-import static org.hzt.utils.gatherers.GatherersX.runningLongStatisticsOf;
-import static org.hzt.utils.gatherers.GatherersX.sorted;
-import static org.hzt.utils.gatherers.GatherersX.sortedBy;
-import static org.hzt.utils.gatherers.GatherersX.sortedDescendingBy;
-import static org.hzt.utils.gatherers.GatherersX.sortedDistinct;
-import static org.hzt.utils.gatherers.GatherersX.takeWhile;
-import static org.hzt.utils.gatherers.GatherersX.takeWhileIncluding;
-import static org.hzt.utils.gatherers.GatherersX.windowed;
+import static org.hzt.utils.gatherers.GatherersX.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -108,6 +95,17 @@ class GatherersXTest {
                 () -> assertEquals(ListX.of("Math", "Science", "History"), result),
                 () -> assertEquals(byMapMulti, result)
         );
+    }
+
+    @Test
+    void testZip() {
+        var list = List.of(2, 4, 6, 8, 312, -3);
+
+        var result = Stream.of(1, 2, 3, 4)
+                .gather(zip(list, (n1, n2) -> n1 + n2))
+                .toList();
+
+        assertEquals(List.of(3, 6, 9, 12), result);
     }
 
     @Test
@@ -500,6 +498,23 @@ class GatherersXTest {
                     .toList();
 
             assertEquals(reference, windows);
+        }
+
+        @Test
+        void testZipWithNext() {
+            final var list = List.of(1, 2, 3, 4);
+
+            final var windows = list.stream()
+                    .gather(zipWithNext())
+                    .map(w -> "%d%d".formatted(w.first(), w.second()))
+                    .toList();
+
+            final var actual = Sequence.of(list)
+                    .zipWithNext()
+                    .map(w -> "%d%d".formatted(w.getKey(), w.getValue()))
+                    .toList();
+
+            assertEquals(actual, windows);
         }
     }
 }

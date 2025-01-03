@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
 import java.util.Random;
+import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 
 import static java.util.Objects.checkIndex;
@@ -48,7 +49,20 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
         }
     }
 
+    DoubleArrayList(final Consumer<? super DoubleMutableList> factory) {
+        this();
+        factory.accept(this);
+        isUnmodifiable = true;
+    }
+
+    DoubleArrayList(final int size, final Consumer<? super DoubleMutableList> factory) {
+        this(size);
+        factory.accept(this);
+        isUnmodifiable = true;
+    }
+
     public boolean add(final double value) {
+        throwIfNotModifiable();
         if (size == elementData.length) {
             final var isInitEmptyArray = elementData.length == 0;
             elementData = growArray(size, isInitEmptyArray);
@@ -60,6 +74,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
 
     @Override
     public boolean add(final int index, final double value) {
+        throwIfNotModifiable();
         Objects.checkIndex(index, size + 1);
         if (size == elementData.length) {
             elementData = growArray(size, elementData.length == 0);
@@ -72,6 +87,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
 
     @Override
     public boolean addAll(final int index, final PrimitiveIterable.OfDouble iterable) {
+        throwIfNotModifiable();
         rangeCheckForAdd(index);
         final var a = iterable instanceof final DoubleCollection c ? c.toArray() : DoubleSequence.of(iterable).toArray();
         final var numNew = a.length;
@@ -137,6 +153,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     public double removeAt(final int index) {
+        throwIfNotModifiable();
         final var oldValue = elementData[checkIndex(index, size)];
         size = fastRemoveDouble(elementData, size, index);
         return oldValue;
@@ -196,6 +213,7 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
 
     @Override
     public double set(final int index, final double value) {
+        throwIfNotModifiable();
         checkIndex(index, size);
         elementData[index] = value;
         return value;
@@ -251,11 +269,13 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
 
     @Override
     public void sort(final DoubleComparator comparator) {
+        throwIfNotModifiable();
         ArraysX.sort(0, size, comparator, elementData);
     }
 
     @Override
     public void sort() {
+        throwIfNotModifiable();
         Arrays.sort(elementData, 0, size);
     }
 

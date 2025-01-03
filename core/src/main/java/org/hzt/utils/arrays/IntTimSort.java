@@ -31,9 +31,7 @@ public final class IntTimSort extends PrimitiveTimSort<int[], IntComparator> {
 
     @Override
     protected void swap(final int[] array, final int index1, final int index2) {
-        final var temp = array[index1];
-        array[index1] = array[index2];
-        array[index2] = temp;
+        ArraysX.swap(array, index1, index2);
     }
 
     @Override

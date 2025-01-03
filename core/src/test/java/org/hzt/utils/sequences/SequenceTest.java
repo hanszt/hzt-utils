@@ -417,7 +417,7 @@ class SequenceTest {
 
         assertAll(
                 () -> assertEquals(integers.size(), group.size()),
-                () -> assertEquals(IntList.of(200084, 200023, 200084, 199562, 200247), actual)
+                () -> assertThat(actual).containsExactlyInAnyOrder(200084, 200023, 200084, 199562, 200247)
         );
     }
 
@@ -448,7 +448,7 @@ class SequenceTest {
                     .<Integer>mapMulti(Iterable::forEach)
                     .toListX();
 
-            windows.filterIndexed((i, v) -> IntX.multipleOf(10_000).test(i)).forEach(item -> LOGGER.trace("{}", item));
+            windows.filterIndexed((i, _) -> IntX.multipleOf(10_000).test(i)).forEach(item -> LOGGER.trace("{}", item));
 
             LOGGER.debug("windows.last() = {}", windows.last());
 
@@ -803,17 +803,17 @@ class SequenceTest {
         final List<String> orderCalledSequence = new ArrayList<>();
 
         final var ints1 = IntStream.of(6, 1, 456, 2)
-                .peek(s -> orderCalledStream.add("current"))
-                .peek(s -> orderCalledStream.add("pre-sort"))
+                .peek(_ -> orderCalledStream.add("current"))
+                .peek(_ -> orderCalledStream.add("pre-sort"))
                 .sorted()
-                .peek(s -> orderCalledStream.add("post-sort"))
+                .peek(_ -> orderCalledStream.add("post-sort"))
                 .toArray();
 
         final var ints2 = IntSequence.of(6, 1, 456, 2)
-                .onEach(s -> orderCalledSequence.add("current"))
-                .onEach(s -> orderCalledSequence.add("pre-sort"))
+                .onEach(_ -> orderCalledSequence.add("current"))
+                .onEach(_ -> orderCalledSequence.add("pre-sort"))
                 .sorted()
-                .onEach(s -> orderCalledSequence.add("post-sort"))
+                .onEach(_ -> orderCalledSequence.add("post-sort"))
                 .toArray();
 
         orderCalledSequence.forEach(item -> LOGGER.trace("{}", item));

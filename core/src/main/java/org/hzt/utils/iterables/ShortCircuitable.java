@@ -99,7 +99,7 @@ public interface ShortCircuitable<T> extends Iterable<T> {
         return findFirstOf(It::self);
     }
 
-    default Optional<T> findFirst(final Predicate<T> predicate) {
+    default Optional<T> findFirst(final Predicate<? super T> predicate) {
         for (final var next : this) {
             if (next != null && predicate.test(next)) {
                 return Optional.of(next);
@@ -121,7 +121,7 @@ public interface ShortCircuitable<T> extends Iterable<T> {
         return lastOf(It::self);
     }
 
-    default T last(final Predicate<T> predicate) {
+    default T last(final Predicate<? super T> predicate) {
         return findLast(predicate).orElseThrow();
     }
 
@@ -133,7 +133,7 @@ public interface ShortCircuitable<T> extends Iterable<T> {
         return findLastOf(It::self);
     }
 
-    default Optional<T> findLast(final Predicate<T> predicate) {
+    default Optional<T> findLast(final Predicate<? super T> predicate) {
         return IterableReductions.findLast(this, predicate);
     }
 

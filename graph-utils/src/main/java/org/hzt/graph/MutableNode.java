@@ -4,56 +4,48 @@ import org.hzt.graph.iterators.GraphIterators;
 import org.hzt.utils.collections.MutableCollectionX;
 import org.hzt.utils.sequences.Sequence;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 /**
- * @param <T> The type of the node itself
- * @param <S> The type of the neighbors
- * <p>
- * T and S must be of same type for this interface to work properly
+ * @param <N> The type of the node
  */
-public interface MutableNode<T, S extends Node<T, S>> extends Node<T, S> {
+public interface MutableNode<N extends Node<N>> extends Node<N> {
 
-    MutableCollectionX<S> getMutableNeighbors();
+    MutableCollectionX<N> getMutableNeighbors();
 
-    default S addNeighbor(final S toAdd) {
+    default N addNeighbor(final N toAdd) {
         final var children = getMutableNeighbors();
         children.add(toAdd);
         //noinspection unchecked
-        return (S) this;
+        return (N) this;
     }
 
-    default S addNeighbors(final Iterable<S> toAdd) {
+    default N addNeighbors(final Iterable<N> toAdd) {
         final var children = getMutableNeighbors();
         for (final var child : toAdd) {
             children.add(child);
         }
         //noinspection unchecked
-        return (S) this;
+        return (N) this;
     }
 
-    default S bidiAddNeighbor(final S toAdd) {
+    default N bidiAddNeighbor(final N toAdd) {
         if (shouldThrowIfNeighborCanNotBeAdded() && toAdd == null) {
             throw new IllegalStateException("Neighbor was null!");
         }
         if (toAdd != null) {
             final var neighbors = getMutableNeighbors();
             neighbors.add(toAdd);
-            if (toAdd instanceof MutableNode<?, ?> mutToAdd) {
+            if (toAdd instanceof MutableNode<?> mutToAdd) {
                 //noinspection unchecked
-                ((MutableNode<T, S>) mutToAdd).getMutableNeighbors().add((S) this);
+                ((MutableNode<N>) mutToAdd).getMutableNeighbors().add((N) this);
             } else {
                 throw new IllegalStateException(toAdd + " is not an instance of MutableNode");
             }
         }
         //noinspection unchecked
-        return (S) this;
+        return (N) this;
     }
 
-    default S bidiAddNeighbors(final Iterable<S> toAdd) {
+    default N bidiAddNeighbors(final Iterable<N> toAdd) {
         final var neighbors = getMutableNeighbors();
         for (final var neighbor : toAdd) {
             if (shouldThrowIfNeighborCanNotBeAdded() && neighbor == null) {
@@ -61,30 +53,30 @@ public interface MutableNode<T, S extends Node<T, S>> extends Node<T, S> {
             }
             if (neighbor != null) {
                 neighbors.add(neighbor);
-                if (neighbor instanceof MutableNode<?, ?> mutNeighbor) {
+                if (neighbor instanceof MutableNode<?> mutNeighbor) {
                     //noinspection unchecked
-                    ((MutableNode<T, S>) mutNeighbor).getMutableNeighbors().add((S) this);
+                    ((MutableNode<N>) mutNeighbor).getMutableNeighbors().add((N) this);
                 } else {
                     throw new IllegalStateException(toAdd + " is not an instance of MutableNode");
                 }
             }
         }
         //noinspection unchecked
-        return (S) this;
+        return (N) this;
     }
 
     default boolean shouldThrowIfNeighborCanNotBeAdded() {
         return true;
     }
 
-    default Sequence<S> breadthFirstSequence(final Mode mode) {
+    default Sequence<N> breadthFirstSequence(final Mode mode) {
         //noinspection unchecked
-        return Sequence.of(() -> GraphIterators.breadthFirstIterator((S) this, mode == Mode.SET_PREDECESSORS));
+        return Sequence.of(() -> GraphIterators.breadthFirstIterator((N) this, mode == Mode.SET_PREDECESSORS));
     }
 
-    default Sequence<S> depthFirstSequence(final Mode mode) {
+    default Sequence<N> depthFirstSequence(final Mode mode) {
         //noinspection unchecked
-        return Sequence.of(() -> GraphIterators.depthFirstIterator((S) this, mode == Mode.SET_PREDECESSORS));
+        return Sequence.of(() -> GraphIterators.depthFirstIterator((N) this, mode == Mode.SET_PREDECESSORS));
     }
 
     /**
@@ -95,7 +87,7 @@ public interface MutableNode<T, S extends Node<T, S>> extends Node<T, S> {
      *
      * @param predecessor node
      */
-    default S withPredecessor(final S predecessor) {
+    default N withPredecessor(final N predecessor) {
         throw new IllegalStateException("withPredecessor(Node) not supported by default. Override it if you want to use it. " +
                 "Tried to set " + predecessor + " as predecessor");
     }

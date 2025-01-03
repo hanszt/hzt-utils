@@ -6,6 +6,7 @@ import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.statistics.BigDecimalStatistics;
+import org.hzt.utils.tuples.Pair;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -78,14 +79,7 @@ class CollectorsXTest {
 
     @Test
     void testToIntersection() {
-        final var list1 = List.of("Hoi", "hoe", "het", "met", "jou", "lol");
-        final var list2 = List.of("Dit", "is", "een", "zin", "Hoi", "Papa", "lol");
-        final var list3 = List.of("Lalalala", "Nog meer", "zinnen", "Hoi", "Lief", "lol");
-        final var list4 = List.of("Hoi", "rere", "lol", "serse", "aweaw");
-        final var list5 = List.of("lol", "asdad", "wer", "werwe", "Hoi");
-        final var list6 = List.of("sdfsf", "", "awr", "awr", "Hoi", "lol");
-
-        final var stringLists = List.of(list1, list2, list3, list4, list5, list6);
+        final var stringLists = getLists();
 
         final var intersection = stringLists.stream()
                 .collect(toIntersection());
@@ -97,6 +91,26 @@ class CollectorsXTest {
                 () -> assertTrue(intersection.containsAll(List.of("Hoi", "lol"))),
                 () -> assertEquals(new HashSet<>(List.of("Hoi", "lol")), intersection)
         );
+    }
+
+    @Test
+    void testUnzipping() {
+        var lists = List.of(Pair.of(1, 2), Pair.of(4, 3)).stream()
+                .collect(unzip((l1, l2) -> Pair.of(l1, l2)));
+
+        assertEquals(List.of(1, 4), lists.first());
+        assertEquals(List.of(2, 3), lists.second());
+    }
+
+    private static List<List<String>> getLists() {
+        final var list1 = List.of("Hoi", "hoe", "het", "met", "jou", "lol");
+        final var list2 = List.of("Dit", "is", "een", "zin", "Hoi", "Papa", "lol");
+        final var list3 = List.of("Lalalala", "Nog meer", "zinnen", "Hoi", "Lief", "lol");
+        final var list4 = List.of("Hoi", "rere", "lol", "serse", "aweaw");
+        final var list5 = List.of("lol", "asdad", "wer", "werwe", "Hoi");
+        final var list6 = List.of("sdfsf", "", "awr", "awr", "Hoi", "lol");
+
+        return List.of(list1, list2, list3, list4, list5, list6);
     }
 
     @Test

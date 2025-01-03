@@ -10,7 +10,6 @@ import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.OptionalDouble;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -26,12 +25,12 @@ public interface DoubleList extends DoubleCollection,
         return new DoubleImmutableList();
     }
 
-    static DoubleList of(final double... array) {
-        return new DoubleImmutableList(array);
-    }
-
     static DoubleList of(final Iterable<Double> iterable) {
         return DoubleSequence.of(iterable).toList();
+    }
+
+    static DoubleList of(final double... array) {
+        return new DoubleImmutableList(array);
     }
 
     static DoubleList copyOf(final DoubleCollection doubleCollection) {
@@ -39,9 +38,11 @@ public interface DoubleList extends DoubleCollection,
     }
 
     static DoubleList build(final Consumer<? super DoubleMutableList> factory) {
-        final var listX = DoubleMutableList.empty();
-        factory.accept(listX);
-        return listX;
+        return new DoubleArrayList(factory);
+    }
+
+    static DoubleList build(int size, final Consumer<? super DoubleMutableList> factory) {
+        return new DoubleArrayList(size, factory);
     }
 
     default boolean contains(final double value) {
@@ -92,7 +93,7 @@ public interface DoubleList extends DoubleCollection,
     }
 
     default double random(final Random random) {
-        return findRandom(random).orElseThrow(NoSuchElementException::new);
+        return findRandom(random).orElseThrow();
     }
 
     OptionalDouble findRandom(Random random);

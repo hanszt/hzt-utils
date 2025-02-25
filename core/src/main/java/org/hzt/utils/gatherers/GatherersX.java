@@ -30,7 +30,7 @@ public final class GatherersX {
     }
 
     public static <T, R> Gatherer<T, Void, R> map(final Function<? super T, ? extends R> mapper) {
-        return Gatherer.of((_, item, downstream) -> downstream.push(mapper.apply(item)));
+        return Gatherer.of((unused, item, downstream) -> downstream.push(mapper.apply(item)));
     }
 
     public static <T> Gatherer<T, Void, T> filter(final Predicate<? super T> predicate) {
@@ -42,7 +42,7 @@ public final class GatherersX {
     }
 
     private static <T> Gatherer<T, Void, T> filter(final Predicate<? super T> predicate, final boolean push) {
-        return Gatherer.of((_, item, downstream) -> {
+        return Gatherer.of((unused, item, downstream) -> {
             if (predicate.test(item) == push) {
                 downstream.push(item);
             }
@@ -51,7 +51,7 @@ public final class GatherersX {
     }
 
     public static <T, R> Gatherer<T, Void, R> mapNotNull(final Function<? super T, ? extends R> mapper) {
-        return Gatherer.of((_, t, downstream) -> acceptIfResultNotNull(mapper, t, downstream::push));
+        return Gatherer.of((unused, t, downstream) -> acceptIfResultNotNull(mapper, t, downstream::push));
     }
 
     static <T, R> boolean acceptIfResultNotNull(final Function<? super T, ? extends R> mapper, final T t, final Consumer<R> consumer) {
@@ -74,21 +74,21 @@ public final class GatherersX {
     }
 
     public static <T, R> Gatherer<T, Void, R> flatMap(final Function<? super T, ? extends Iterable<R>> toIterableMapper) {
-        return Gatherer.of((_, item, downstream) -> {
+        return Gatherer.of((unused, item, downstream) -> {
             toIterableMapper.apply(item).forEach(downstream::push);
             return true;
         });
     }
 
     public static <T, I extends Iterable<? extends T>> Gatherer<I, Void, T> flatten() {
-        return Gatherer.of((_, iterable, downstream) -> {
+        return Gatherer.of((unused, iterable, downstream) -> {
             iterable.forEach(downstream::push);
             return true;
         });
     }
 
     public static <T, R> Gatherer<T, Void, R> mapMulti(final BiConsumer<? super T, Consumer<? super R>> mapper) {
-        return Gatherer.of((_, item, downstream) -> {
+        return Gatherer.of((unused, item, downstream) -> {
             mapper.accept(item, downstream::push);
             return true;
         });
@@ -127,7 +127,7 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, T> takeWhile(final Predicate<T> condition) {
-        return Gatherer.ofSequential((_, item, downStream) -> {
+        return Gatherer.ofSequential((unused, item, downStream) -> {
             final var test = condition.test(item);
             if (test) {
                 downStream.push(item);
@@ -137,7 +137,7 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, T> takeWhileIncluding(final Predicate<T> condition) {
-        return Gatherer.ofSequential((_, item, downStream) -> {
+        return Gatherer.ofSequential((unused, item, downStream) -> {
             downStream.push(item);
             return condition.test(item);
         });
@@ -154,7 +154,7 @@ public final class GatherersX {
 
     public static <T> Gatherer<T, ?, T> sorted(final Comparator<T> comparator) {
         return Gatherer.ofSequential(ArrayList<T>::new,
-                (list, item, _) -> list.add(item),
+                (list, item, unused) -> list.add(item),
                 (list, downstream) -> {
                     list.sort(comparator);
                     list.forEach(downstream::push);
@@ -163,7 +163,7 @@ public final class GatherersX {
 
     public static <T> Gatherer<T, ?, T> sortedDistinct(final Comparator<T> comparator) {
         return Gatherer.ofSequential(() -> new TreeSet<>(comparator),
-                (set, item, _) -> {
+                (set, item, unused) -> {
                     set.add(item);
                     return true;
                 },
@@ -209,7 +209,7 @@ public final class GatherersX {
 
     public static <T, R> Gatherer<T, ?, R> zipWithNext(final BiFunction<? super T, ? super T, ? extends R> mapper) {
         return Gatherers.<T>windowSliding(2)
-                .andThen(Gatherer.ofSequential((_, w, downstream) -> downstream.push(mapper.apply(w.getFirst(), w.get(1)))));
+                .andThen(Gatherer.ofSequential((unused, w, downstream) -> downstream.push(mapper.apply(w.getFirst(), w.get(1)))));
     }
 
     public static <T> Gatherer<T, ?, List<T>> zipWithNext() {
@@ -301,7 +301,7 @@ public final class GatherersX {
         }
         return Gatherer.<T, Window, List<T>>ofSequential(
                 Window::new,
-                Gatherer.Integrator.<Window, T, List<T>>ofGreedy(Window::integrate),
+                Integrator.<Window, T, List<T>>ofGreedy(Window::integrate),
                 Window::finish
         );
     }

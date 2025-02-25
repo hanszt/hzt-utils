@@ -24,7 +24,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
@@ -343,7 +342,7 @@ class GatherersXTest {
 
             final Function<List<Integer>, String> joinToString = w -> w.stream().map(String::valueOf).collect(joining());
 
-            final var windows = list.stream()
+            final var windows = Sequence.of(list)
                     .gather(windowed(size, step))
                     .map(joinToString)
                     .toList();
@@ -374,9 +373,9 @@ class GatherersXTest {
                         .collect(joining());
             };
 
-            final var windows = list.stream()
+            final var windows = Sequence.of(list)
                     .gather(windowed(size))
-                    .limit(take)
+                    .take(take)
                     .map(joinToString)
                     .toList();
 
@@ -393,7 +392,7 @@ class GatherersXTest {
 
         @Test
         void throwsIfContainsNullElement() {
-            final var windows = Stream.of(0, 1, null, 3, 4, 5, 6, 7, 8, 9).gather(windowed(3));
+            final var windows = Sequence.of(0, 1, null, 3, 4, 5, 6, 7, 8, 9).gather(windowed(3));
 
             final var e = assertThrows(NullPointerException.class, windows::toList);
             assertThat(e.getMessage()).contains("must not be null");
@@ -408,7 +407,7 @@ class GatherersXTest {
 
             Function<List<Integer>, String> joinToString = w -> w.stream().map(String::valueOf).collect(joining());
 
-            final var windows = list.stream()
+            final var windows = Sequence.of(list)
                     .gather(windowed(size, step, partialWindows))
                     .map(joinToString)
                     .toList();
@@ -437,7 +436,7 @@ class GatherersXTest {
                 "4, 100, false"
         })
         void testWindowedEmptyInput(final int size, final int step, final boolean partialWindows) {
-            final var windows = Stream.empty()
+            final var windows = Sequence.empty()
                     .gather(windowed(size, step, partialWindows))
                     .map(w -> w.stream().map(String::valueOf).collect(joining()))
                     .toList();
@@ -452,7 +451,7 @@ class GatherersXTest {
             final var size = 14;
             final var list = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-            final var windows = list.stream()
+            final var windows = Sequence.of(list)
                     .gather(chunked(size))
                     .map(w -> w.stream().map(String::valueOf).collect(joining()))
                     .toList();
@@ -472,7 +471,7 @@ class GatherersXTest {
             final var size = 14;
             final var list = List.of(1.618);
 
-            final var windows = list.stream()
+            final var windows = Sequence.of(list)
                     .gather(chunked(size))
                     .map(w -> w.stream().map(String::valueOf).collect(joining()))
                     .toList();

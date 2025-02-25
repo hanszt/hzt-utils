@@ -1,9 +1,10 @@
 package org.hzt.utils.gatherers.primitives;
 
 import org.hzt.utils.gatherers.Gatherer;
+import org.hzt.utils.gatherers.Integrator;
 
 @FunctionalInterface
-public interface IntIntegrator<A, R> extends Gatherer.Integrator<A, Integer, R> {
+public interface IntIntegrator<A, R> extends Integrator<A, Integer, R> {
 
     /**
      * Integrate is the method which given:

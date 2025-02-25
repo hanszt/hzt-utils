@@ -21,21 +21,9 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static org.hzt.utils.gatherers.Gatherers.fold;
-import static org.hzt.utils.gatherers.Gatherers.scan;
-import static org.hzt.utils.gatherers.Gatherers.unmodifiableListCopyOf;
-import static org.hzt.utils.gatherers.Gatherers.windowFixed;
-import static org.hzt.utils.gatherers.Gatherers.windowSliding;
-import static org.hzt.utils.gatherers.GatherersX.filterZippedWithNext;
-import static org.hzt.utils.gatherers.GatherersX.flatMap;
-import static org.hzt.utils.gatherers.GatherersX.flatten;
-import static org.hzt.utils.gatherers.GatherersX.limit;
-import static org.hzt.utils.gatherers.GatherersX.map;
-import static org.hzt.utils.gatherers.GatherersX.mapIndexed;
-import static org.hzt.utils.gatherers.GatherersX.skip;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hzt.utils.gatherers.Gatherers.*;
+import static org.hzt.utils.gatherers.GatherersX.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class GatherableTest {
 

@@ -38,9 +38,9 @@
         <!--        dependency management-->
         <javafx.version>21</javafx.version>
         <!--plugins-->
-        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
-        <maven-dependency-plugin.version>3.6.0</maven-dependency-plugin.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
+        <maven-dependency-plugin.version>3.8.0</maven-dependency-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -157,6 +157,12 @@
                                 </ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>
                                     org.openjdk.jmh:jmh-generator-annprocess:jar <!--needed for benchmark module-->
+                                </ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>
+                                    ch.qos.logback:logback-core:jar
+                                </ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>
+                                    ch.qos.logback:logback-classic
                                 </ignoredUnusedDeclaredDependency>
                             </ignoredUnusedDeclaredDependencies>
                         </configuration>

@@ -3,8 +3,17 @@ package org.hzt.utils.iterables;
 
 import org.hzt.utils.sequences.Sequence;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.SequencedCollection;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public final class IterableXHelper {
 

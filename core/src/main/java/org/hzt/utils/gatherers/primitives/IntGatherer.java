@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 public interface IntGatherer<A, R> extends Gatherer<Integer, A, R> {
 
     static <A, R> IntGatherer<A, R> ofSequential(final Supplier<A> initializer, final IntIntegrator<A, R> integrator) {
-        return ofSequential(initializer, integrator, (_, _) -> {
+        return ofSequential(initializer, integrator, (a, d) -> {
             // No finisher
         });
     }

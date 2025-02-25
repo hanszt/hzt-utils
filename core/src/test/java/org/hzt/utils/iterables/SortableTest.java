@@ -28,7 +28,7 @@ class SortableTest {
 
         final var sequence = Sequence.iterate(9, i -> --i)
                 .take(10)
-                .onEach(_ -> counter.value++)
+                .onEach(unused -> counter.value++)
                 .sorted();
 
         assertEquals(0, counter.value);
@@ -47,7 +47,7 @@ class SortableTest {
 
         final var sequence = IntSequence.iterate(9, i -> --i)
                 .take(10)
-                .onEach(_ -> counter.value++)
+                .onEach(unused -> counter.value++)
                 .sorted();
 
         assertEquals(0, counter.value);

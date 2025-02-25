@@ -15,7 +15,12 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -248,7 +253,7 @@ class ListXTest {
     void testTakeLastTo() {
         final var list = ListX.of(1, 2, 3, 4, 5, 6, 5);
 
-        final var integers = list.takeLastTo(_ -> new LinkedTransferQueue<>(), 5);
+        final var integers = list.takeLastTo(unused -> new LinkedTransferQueue<>(), 5);
 
         assertIterableEquals(new LinkedTransferQueue<>(List.of(3, 4, 5, 6, 5)), integers);
     }

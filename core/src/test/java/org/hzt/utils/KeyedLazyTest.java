@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class KeyedLazyTest {
 
-    private final KeyedLazy<String, String> lazyString = KeyedLazy.of("lazykey", _ -> "lazyvalue");
+    private final KeyedLazy<String, String> lazyString = KeyedLazy.of("lazykey", unused -> "lazyvalue");
     private final KeyedLazy<String, String> eagerString = KeyedLazy.of("eagerkey", "eagervalue");
-    private final KeyedLazy<String, Float> lazyFloat = KeyedLazy.of("lazyfloatkey", _ -> 2.4f);
+    private final KeyedLazy<String, Float> lazyFloat = KeyedLazy.of("lazyfloatkey", unused -> 2.4f);
 
     @Test
     void test() {

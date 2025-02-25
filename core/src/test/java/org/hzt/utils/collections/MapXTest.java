@@ -123,7 +123,7 @@ class MapXTest {
 
         final var map = MutableMapX.of(museumMap);
 
-        final var van_gogh = map.computeIfAbsent("Van Gogh Museum", _ -> {
+        final var van_gogh = map.computeIfAbsent("Van Gogh Museum", unused -> {
             throw new IllegalStateException();
         });
 

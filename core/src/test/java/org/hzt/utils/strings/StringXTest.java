@@ -13,7 +13,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -46,7 +50,7 @@ class StringXTest {
     @Test
     void testReplaceFirstChar() {
         final var hallo = StringX.of("hallo")
-                .replaceFirstChar(_ -> 'H').toString();
+                .replaceFirstChar(unused -> 'H').toString();
         assertEquals("Hallo", hallo);
     }
 

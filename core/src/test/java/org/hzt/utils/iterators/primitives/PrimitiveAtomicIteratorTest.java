@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class PrimitiveAtomicIteratorTest {
 

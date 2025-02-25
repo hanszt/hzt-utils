@@ -36,7 +36,7 @@ class IntXTest {
     void testSequenceUntilNthPrimeNr() {
         final var oneThousandsPrimeNr = IntX.primeNrSequence()
                 .take(1_000)
-                .reduce((_, second) -> second)
+                .reduce((unused, second) -> second)
                 .orElseThrow();
 
         assertEquals(7919, oneThousandsPrimeNr);

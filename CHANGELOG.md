@@ -2,7 +2,7 @@
 
 ---
 
-### 1.0.5.22
+### 1.0.5.21
 
 - Add SimpleTreeNode
 - Add build methods to Setx, DoubleList and LongList
@@ -10,7 +10,7 @@
 
 ---
 
-### 1.0.4.22
+### 1.0.4.21
 
 - Replaced println statements by logging
 - Added MutableTreeNode and MutableNode

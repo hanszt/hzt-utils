@@ -1,7 +1,12 @@
 package org.hzt.utils.iterables;
 
 import org.hzt.test.TestSampleGenerator;
-import org.hzt.test.model.*;
+import org.hzt.test.model.BankAccount;
+import org.hzt.test.model.Book;
+import org.hzt.test.model.Customer;
+import org.hzt.test.model.Museum;
+import org.hzt.test.model.Painter;
+import org.hzt.test.model.Painting;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
@@ -27,7 +32,17 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
 import java.time.Year;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.IntSummaryStatistics;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -133,7 +148,7 @@ class IterableXTest {
         final var museums = ListX.of(TestSampleGenerator.getMuseumListContainingNulls());
 
         final var sumsOfThree = museums
-                .mapIndexed((index, _) -> index)
+                .mapIndexed((index, unused) -> index)
                 .windowed(3, IntSequence::of)
                 .map(IntSequence::sum);
 

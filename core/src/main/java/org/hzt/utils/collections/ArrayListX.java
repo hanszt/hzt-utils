@@ -1,6 +1,15 @@
 package org.hzt.utils.collections;
 
-import java.util.*;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.ConcurrentModificationException;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 

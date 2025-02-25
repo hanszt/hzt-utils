@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.stream.Gatherers.fold;
 import static org.hzt.utils.collectors.BigDecimalCollectors.summarizingBigDecimal;
 import static org.hzt.utils.collectors.CollectorsX.*;
+import static org.hzt.utils.gatherers.Gatherers.fold;
 import static org.hzt.utils.gatherers.GatherersX.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -139,7 +139,7 @@ class CollectorsXTest {
                     .limit(100)
                     .toList();
 
-            var list = dates.stream()
+            var list = Sequence.of(dates)
                     .gather(mapFilterFold)
                     .toList();
 
@@ -156,7 +156,7 @@ class CollectorsXTest {
                     .andThen(filter(YearMonth::isLeapYear))
                     .andThen(limit(10));
 
-            var list = Stream.iterate(LocalDate.of(2023, 10, 1), date -> date.plus(Period.of(3, 2, 1)))
+            var list = Sequence.iterate(LocalDate.of(2023, 10, 1), date -> date.plus(Period.of(3, 2, 1)))
                     .gather(gatherer)
                     .toList();
 

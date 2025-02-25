@@ -90,15 +90,15 @@ class ReducableTest {
         final var iterations1 = new Counter();
 
         final var expected = dateSequence
-                .onEach(_ -> iterations1.value++)
+                .onEach(unused -> iterations1.value++)
                 .toTwo(Numerable::count, Reducable::last);
 
         final var iterations2 = new Counter();
 
         final var actual = dateSequence
-                .onEach(_ -> iterations2.value++)
-                .foldTwo(0L, (acc, _) -> ++acc,
-                        LocalDate.EPOCH, (_, second) -> second);
+                .onEach(unused -> iterations2.value++)
+                .foldTwo(0L, (acc, unused) -> ++acc,
+                        LocalDate.EPOCH, (unused, second) -> second);
 
         LOGGER.atDebug().setMessage(() -> "pair = " + actual).log();
 
@@ -115,16 +115,16 @@ class ReducableTest {
         final var iterations1 = new Counter();
 
         final var expected = dateSequence
-                .onEach(_ -> iterations1.value++)
+                .onEach(unused -> iterations1.value++)
                 .toThree(Sequence::toMutableList, Numerable::count, Reducable::last);
 
         final var iterations2 = new Counter();
 
         final var actual = dateSequence
-                .onEach(_ -> iterations2.value++)
+                .onEach(unused -> iterations2.value++)
                 .foldThree(MutableListX.empty(), MutableListX::plus,
-                        0L, (a, _) -> ++a,
-                        LocalDate.EPOCH, (_, second) -> second);
+                        0L, (a, unused) -> ++a,
+                        LocalDate.EPOCH, (unused, second) -> second);
 
         LOGGER.atDebug().setMessage(() -> "pair = " + actual).log();
 
@@ -141,14 +141,14 @@ class ReducableTest {
         final var iterations1 = new Counter();
 
         final var expected = dateSequence
-                .onEach(_ -> iterations1.value++)
+                .onEach(unused -> iterations1.value++)
                 .toTwo(Reducable::last, Reducable::first);
 
         final var iterations2 = new Counter();
 
         final var actual = dateSequence
-                .onEach(_ -> iterations2.value++)
-                .reduceTwo((_, last) -> last, (first, _) -> first);
+                .onEach(unused -> iterations2.value++)
+                .reduceTwo((unused, last) -> last, (first, unused) -> first);
 
         final var pair = actual.orElseThrow();
         LOGGER.atDebug().setMessage(() -> "pair = " + pair).log();

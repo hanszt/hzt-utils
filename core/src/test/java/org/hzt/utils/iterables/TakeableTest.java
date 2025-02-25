@@ -7,9 +7,7 @@ import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TakeableTest {
 

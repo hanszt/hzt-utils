@@ -122,7 +122,7 @@ public final class Assertions {
         }
     }
 
-    public static void assertSoftly(Executable assertions) throws Throwable {
+    static void assertSoftly(Executable assertions) throws Throwable {
         if (errorCollector().getErrorCollectionMode() == ErrorCollectionMode.SOFT) {
             final var oldError = errorCollector().getErrors();
             errorCollector().clear();

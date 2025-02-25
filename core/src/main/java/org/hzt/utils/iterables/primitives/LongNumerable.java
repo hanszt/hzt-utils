@@ -10,7 +10,7 @@ public interface LongNumerable extends PrimitiveIterable.OfLong, PrimitiveNumera
 
     @Override
     default long count() {
-        return count(_ -> true);
+        return count(unused -> true);
     }
 
     default long count(final LongPredicate predicate) {

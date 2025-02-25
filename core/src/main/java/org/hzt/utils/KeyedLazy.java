@@ -32,7 +32,7 @@ public final class KeyedLazy<K, V> implements Transformable<V> {
         Objects.requireNonNull(key, "Key must not be null");
         this.key = key;
         this.value = value;
-        this.loader = _ -> value;
+        this.loader = unused -> value;
     }
 
     public static <K, V> KeyedLazy<K, V> of(K key, final Loader<K, V> loader) {

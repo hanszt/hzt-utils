@@ -52,7 +52,7 @@ class StreamXTest {
                 .filter(this::contained)
                 .peek(Assertions::fail)
                 .map(String::length)
-                .peek(_ -> fail());
+                .peek(unused -> fail());
 
         assertFalse(streamX.isParallel());
     }
@@ -65,7 +65,7 @@ class StreamXTest {
                 .filter(this::contained)
                 .peek(Assertions::fail)
                 .map(String::length)
-                .peek(_ -> fail());
+                .peek(unused -> fail());
 
         assertTrue(streamX.isParallel());
     }
@@ -337,7 +337,7 @@ class StreamXTest {
             final var expectedIterations = new Counter();
 
             final var windows = StreamX.iterate(0, i -> i + 1)
-                    .peek(_ -> ++actualIterations.value)
+                    .peek(unused -> ++actualIterations.value)
                     .then(windowed(4, (List<Integer> window) -> window)
                             .andThen(peek(it -> LOGGER.trace("{}", it)))
                             .andThen(scan(1, (acc, t) -> acc + t.size()))
@@ -346,7 +346,7 @@ class StreamXTest {
                     .findFirst();
 
             final var expected = Sequence.iterate(0, i -> i + 1)
-                    .onEach(_ -> ++expectedIterations.value)
+                    .onEach(unused -> ++expectedIterations.value)
                     .windowed(4)
                     .scan(1, (acc, t) -> acc + t.size())
                     .map(String::valueOf)

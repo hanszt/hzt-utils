@@ -13,7 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
@@ -111,7 +117,7 @@ class GroupableTest {
         final Map<Character, List<String>> evenFruits = fruits
                 .groupingBy(fruit -> fruit.charAt(0))
                 .foldTo(HashMap::new,
-                        (_, _) -> new ArrayList<>(),
+                        (unused1, unused2) -> new ArrayList<>(),
                         GroupableTest::addEvenFruits);
 
         final NavigableMap<Character, List<String>> sorted = Sequence.ofMap(evenFruits).toSortedMap(It::self);

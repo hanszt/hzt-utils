@@ -40,14 +40,14 @@ class CollectableTest {
         final var toTwoCounter = new Counter();
 
         final var pair = integers.asSequence()
-                .onEach(_ -> toTwoCounter.value++)
+                .onEach(unused -> toTwoCounter.value++)
                 .mapToInt(It::asInt)
                 .intsToTwo(IntSequence::sum, IntSequence::average);
 
         final var collectorCounter = new Counter();
 
         final var collectedPair = integers.asSequence()
-                .onEach(_ -> collectorCounter.value++)
+                .onEach(unused -> collectorCounter.value++)
                 .teeing(summingLong(It::asInt), averagingInt(It::asInt));
 
         assertAll(
@@ -64,14 +64,14 @@ class CollectableTest {
         final var toThreeCounter = new Counter();
 
         final var triple = integers.asSequence()
-                .onEach(_ -> toThreeCounter.value++)
+                .onEach(unused -> toThreeCounter.value++)
                 .mapToInt(It::asInt)
                 .intsToThree(IntSequence::sum, IntSequence::average, IntSequence::stdDev);
 
         final var branchingCounter = new Counter();
 
         final var collectedTriple = integers.asSequence()
-                .onEach(_ -> branchingCounter.value++)
+                .onEach(unused -> branchingCounter.value++)
                 .branching(
                         summingLong(It::asInt),
                         averagingInt(It::asInt),

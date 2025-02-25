@@ -1,9 +1,18 @@
 package org.hzt.utils.iterables;
 
-import org.hzt.utils.collections.*;
+import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.MapX;
+import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.collections.MutableMapX;
+import org.hzt.utils.collections.MutableSetX;
+import org.hzt.utils.collections.SetX;
 import org.hzt.utils.tuples.Pair;
 
-import java.util.*;
+import java.util.AbstractList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.SequencedCollection;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -38,7 +47,7 @@ public final class IterableReductions {
             final Function<? super T, ? extends R> valueMapper) {
         final MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
         for (final var t : iterable) {
-            groupedMap.computeIfAbsent(classifier.apply(t), _ -> MutableListX.empty()).add(valueMapper.apply(t));
+            groupedMap.computeIfAbsent(classifier.apply(t), unused -> MutableListX.empty()).add(valueMapper.apply(t));
         }
         return groupedMap;
     }

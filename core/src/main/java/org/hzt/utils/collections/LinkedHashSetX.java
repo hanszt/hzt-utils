@@ -1,6 +1,11 @@
 package org.hzt.utils.collections;
 
-import java.util.*;
+import java.util.AbstractSet;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.SequencedSet;
 import java.util.function.Consumer;
 
 final class LinkedHashSetX<E> extends AbstractSet<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {

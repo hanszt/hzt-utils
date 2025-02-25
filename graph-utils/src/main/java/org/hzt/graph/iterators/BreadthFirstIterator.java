@@ -3,7 +3,12 @@ package org.hzt.graph.iterators;
 import org.hzt.graph.MutableNode;
 import org.hzt.graph.Node;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
+import java.util.Queue;
+import java.util.Set;
 
 /**
  * @param <S> the type of the child

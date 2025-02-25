@@ -2,9 +2,7 @@ package org.hzt.utils.function.predicates;
 
 import org.junit.jupiter.api.Test;
 
-import static org.hzt.utils.function.predicates.CollectionPredicates.containsAll;
-import static org.hzt.utils.function.predicates.CollectionPredicates.containsAny;
-import static org.hzt.utils.function.predicates.CollectionPredicates.containsNone;
+import static org.hzt.utils.function.predicates.CollectionPredicates.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class CollectionPredicatesTest {

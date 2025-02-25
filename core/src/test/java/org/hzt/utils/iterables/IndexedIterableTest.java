@@ -1,6 +1,5 @@
 package org.hzt.utils.iterables;
 
-import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.numbers.IntX;

@@ -1,6 +1,5 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.It;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Nested;
@@ -12,10 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class IntMutableListTest {
 

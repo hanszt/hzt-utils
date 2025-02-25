@@ -14,9 +14,7 @@ import java.util.function.Consumer;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toCollection;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SortedMutableSetXTest {
 

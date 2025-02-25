@@ -1,6 +1,5 @@
 package org.hzt.utils.sequences;
 
-import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.IntNumerable;
 import org.hzt.utils.ranges.IntRange;
@@ -13,9 +12,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.function.IntSupplier;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class WindowedSequenceTest {
 

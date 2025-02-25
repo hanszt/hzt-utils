@@ -12,12 +12,7 @@ import java.util.function.Predicate;
 
 import static java.util.stream.Gatherers.windowFixed;
 import static org.hzt.utils.gatherers.GatherersX.takeWhileIncluding;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CollectionXTest {
 

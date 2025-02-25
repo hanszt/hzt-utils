@@ -1,6 +1,5 @@
 package org.hzt.utils.sequences;
 
-import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.numbers.IntX;

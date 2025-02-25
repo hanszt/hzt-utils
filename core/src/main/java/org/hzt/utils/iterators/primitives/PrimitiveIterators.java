@@ -43,9 +43,7 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
-import static java.util.PrimitiveIterator.OfDouble;
-import static java.util.PrimitiveIterator.OfInt;
-import static java.util.PrimitiveIterator.OfLong;
+import static java.util.PrimitiveIterator.*;
 
 @SuppressWarnings("squid:S1200")
 public final class PrimitiveIterators {

@@ -2,19 +2,12 @@ package org.hzt.utils.function.predicates;
 
 import org.hzt.test.TestSampleGenerator;
 import org.hzt.test.model.Painting;
-import org.hzt.utils.It;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hzt.utils.function.Functions.by;
-import static org.hzt.utils.function.predicates.StringPredicates.containsAllOf;
-import static org.hzt.utils.function.predicates.StringPredicates.containsAnyOf;
-import static org.hzt.utils.function.predicates.StringPredicates.containsNoneOf;
-import static org.hzt.utils.function.predicates.StringPredicates.endsWithAnyOf;
-import static org.hzt.utils.function.predicates.StringPredicates.hasEqualLength;
-import static org.hzt.utils.function.predicates.StringPredicates.isEqualIgnoreCase;
-import static org.hzt.utils.function.predicates.StringPredicates.startsWith;
+import static org.hzt.utils.function.predicates.StringPredicates.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StringPredicatesTest {

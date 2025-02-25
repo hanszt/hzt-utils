@@ -2,6 +2,12 @@
 
 ---
 
+### 1.0.5.23
+
+- Update java version
+
+---
+
 ### 1.0.5.22
 
 - Add SimpleTreeNode

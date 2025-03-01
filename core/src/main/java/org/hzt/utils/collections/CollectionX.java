@@ -85,8 +85,29 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     @Override
-    default ListX<E> minus(final Iterable<E> values) {
+    default ListX<E> minus(final Iterable<? extends E> values) {
         return asSequence().minus(values).toListX();
+    }
+
+    @Override
+    default ListX<E> merge(Iterable<? extends E> other) {
+        final var it1 = iterator();
+        final var it2 = other.iterator();
+        final var size = size() + switch (other) {
+            case Collection<?> c -> c.size();
+            case CollectionX<?> c -> c.size();
+            default -> 0;
+        };
+        return ListX.build(size, ml -> {
+            while (it1.hasNext() || it2.hasNext()) {
+                if (it1.hasNext()) {
+                    ml.add(it1.next());
+                }
+                if (it2.hasNext()) {
+                    ml.add(it2.next());
+                }
+            }
+        });
     }
 
     default boolean containsNoneOf(final Iterable<E> iterable) {

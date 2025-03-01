@@ -1,6 +1,7 @@
 package org.hzt.utils.collections;
 
 import org.hzt.utils.collections.primitives.IntList;
+import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -138,5 +139,14 @@ class CollectionXTest {
                 () -> assertEquals(ListX.of(1, 3, 5, 6), result),
                 () -> assertEquals(ListX.of(1, 3, 5), takeWhileResult)
         );
+    }
+
+    @Test
+    void testMergeCollectionX() {
+        final var l1 = ListX.of(1, 2, 3, 4);
+        final var s2 = Sequence.of(1, 2, 3, 4, 5, 6);
+        final var result = l1.merge(s2).toList();
+
+        assertEquals(List.of(1, 1, 2, 2, 3, 3, 4, 4, 5, 6), result);
     }
 }

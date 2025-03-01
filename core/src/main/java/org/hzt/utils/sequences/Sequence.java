@@ -24,7 +24,9 @@ import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -128,9 +130,35 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> Iterators.removingIterator(this, value);
     }
 
-    default Sequence<T> minus(final Iterable<T> values) {
-        final var others = values instanceof Set<?> ? (Set<T>) values : Sequence.of(values).toMutableSet();
+    default Sequence<T> minus(final Iterable<? extends T> values) {
+        final var others = values instanceof Set<? extends T> set ? set : Sequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
+    }
+
+    @Override
+    default Sequence<T> merge(Iterable<? extends T> other) {
+        final var it1 = iterator();
+        final var it2 = other.iterator();
+        return () -> new Iterator<>() {
+            boolean takeFromThis = true;
+
+            @Override
+            public boolean hasNext() {
+                return it1.hasNext() || it2.hasNext();
+            }
+
+            @Override
+            public T next() {
+                if (hasNext()) {
+                    final var next = takeFromThis ?
+                            it1.hasNext() ? it1.next() : it2.next() :
+                            it2.hasNext() ? it2.next() : it1.next();
+                    takeFromThis = !takeFromThis;
+                    return next;
+                }
+                throw new NoSuchElementException();
+            }
+        };
     }
 
     default Sequence<T> intersperse(final T value) {
@@ -468,17 +496,15 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         /**
          * Adds an element to the sequence being built.
          *
-         * @implSpec
-         * The default implementation behaves as if:
+         * @param t the element to add
+         * @return {@code this} builder
+         * @throws IllegalStateException if the builder has already transitioned to
+         *                               the built state
+         * @implSpec The default implementation behaves as if:
          * <pre>{@code
          *     accept(t)
          *     return this;
          * }</pre>
-         *
-         * @param t the element to add
-         * @return {@code this} builder
-         * @throws IllegalStateException if the builder has already transitioned to
-         * the built state
          */
         default Sequence.Builder<T> add(final T t) {
             accept(t);

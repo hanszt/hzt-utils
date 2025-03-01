@@ -14,4 +14,6 @@ public interface Filterable<T> extends IndexedIterable<T> {
     Filterable<T> filterNot(Predicate<? super T> predicate);
 
     Filterable<T> filterIndexed(IndexedPredicate<? super T> predicate);
+
+    <R> Filterable<R> filterIsInstance(Class<R> aClass);
 }

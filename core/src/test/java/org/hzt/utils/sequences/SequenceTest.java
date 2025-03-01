@@ -820,6 +820,15 @@ class SequenceTest {
     }
 
     @Test
+    void testMergeSequence() {
+        final var s1 = Sequence.of(1, 2, 3, 4);
+        final var s2 = Sequence.of(1, 2, 3, 4, 5, 6);
+        final var result = s1.merge(s2).toList();
+
+        assertEquals(List.of(1, 1, 2, 2, 3, 3, 4, 4, 5, 6), result);
+    }
+
+    @Test
     void testToSortedLocalDateTime() {
         final var initDateTime = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0, 0);
 

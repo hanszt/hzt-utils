@@ -365,7 +365,7 @@ class IntSequenceTest {
         @Test
         void testNormalGathererInIntSequenceGatherer() {
             final var longs = IntSequence.iterate(0, i -> i + 1)
-                    .gather(Gatherers.windowSliding(3))
+                    .gatherToObj(Gatherers.windowSliding(3))
                     .take(3)
                     .mapToLong(s -> IntSequence.of(s).sum())
                     .toList();
@@ -376,7 +376,7 @@ class IntSequenceTest {
         @Test
         void testIntGathererInIntSequenceGatherer() {
             final var longs = IntSequence.iterate(0, i -> i + 1)
-                    .gather(windowSliding(3))
+                    .gatherToObj(windowSliding(3))
                     .take(3)
                     .mapToLong(IntNumerable::sum)
                     .toList();
@@ -388,7 +388,7 @@ class IntSequenceTest {
     @Test
     void testRunningIntStatistics() {
         final var result = IntSequence.of(5, 6, 8, 4, 12, 15, 16, 4)
-                .gather(runningStatistics())
+                .gatherToObj(runningStatistics())
                 .teeing(intArrayOf(IntStatistics::getMax), longArrayOf(IntStatistics::getSum));
 
         final var expectedMaxes = new int[]{5, 6, 8, 8, 12, 15, 16, 16};
@@ -412,7 +412,7 @@ class IntSequenceTest {
         final var courseIds = new int[]{13423, 2, 3, 5, 3432, 32};
 
         final var result = IntSequence.of(courseIds)
-                .gather(mapToObjNotNull(courseRepo::get))
+                .gatherToObj(mapToObjNotNull(courseRepo::get))
                 .toList();
 
         assertEquals(List.of("Math", "Science", "History"), result);

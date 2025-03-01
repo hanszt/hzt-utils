@@ -10,6 +10,7 @@ import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableSet;
 import org.hzt.utils.function.primitives.DoubleIndexedFunction;
 import org.hzt.utils.function.primitives.LongIndexedFunction;
+import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.gatherers.primitives.IntGatherer;
 
 import java.util.ArrayDeque;
@@ -86,7 +87,7 @@ public final class PrimitiveIterators {
     }
 
     public static <T> OfInt intIteratorOf(final Iterator<T> iterator,
-                                                            final ToIntFunction<? super T> mapper) {
+                                          final ToIntFunction<? super T> mapper) {
         return new OfInt() {
             @Override
             public int nextInt() {
@@ -104,25 +105,25 @@ public final class PrimitiveIterators {
     }
 
     public static <T> OfInt toIntFlatMappingIterator(final Iterator<T> iterator,
-                                                                       final Function<? super T,
-                                                                               ? extends OfInt> mapper) {
+                                                     final Function<? super T,
+                                                             ? extends OfInt> mapper) {
         return new ToIntFlatMappingIterator<>(iterator, mapper);
     }
 
     public static <T> OfLong toLongFlatMappingIterator(final Iterator<T> iterator,
-                                                                         final Function<? super T,
-                                                                                 ? extends OfLong> mapper) {
+                                                       final Function<? super T,
+                                                               ? extends OfLong> mapper) {
         return new ToLongFlatMappingIterator<>(iterator, mapper);
     }
 
     public static <T> OfDouble toDoubleFlatMappingIterator(final Iterator<T> iterator,
-                                                                             final Function<? super T,
-                                                                                     ? extends OfDouble> mapper) {
+                                                           final Function<? super T,
+                                                                   ? extends OfDouble> mapper) {
         return new ToDoubleFlatMappingIterator<>(iterator, mapper);
     }
 
     public static OfInt intTransformingIterator(final OfInt iterator,
-                                                                  final IntUnaryOperator mapper) {
+                                                final IntUnaryOperator mapper) {
         return new OfInt() {
             @Override
             public int nextInt() {
@@ -157,7 +158,7 @@ public final class PrimitiveIterators {
     }
 
     public static OfLong intToLongIterator(final OfInt iterator,
-                                                             final IntToLongFunction mapper) {
+                                           final IntToLongFunction mapper) {
         return new OfLong() {
             @Override
             public long nextLong() {
@@ -172,7 +173,7 @@ public final class PrimitiveIterators {
     }
 
     public static OfDouble intToDoubleIterator(final OfInt iterator,
-                                                                 final IntToDoubleFunction mapper) {
+                                               final IntToDoubleFunction mapper) {
         return new OfDouble() {
             @Override
             public double nextDouble() {
@@ -274,7 +275,7 @@ public final class PrimitiveIterators {
     }
 
     public static OfInt longToIntIterator(final OfLong iterator,
-                                                            final LongToIntFunction mapper) {
+                                          final LongToIntFunction mapper) {
         return new OfInt() {
             @Override
             public int nextInt() {
@@ -289,7 +290,7 @@ public final class PrimitiveIterators {
     }
 
     public static OfDouble longToDoubleIterator(final OfLong iterator,
-                                                                  final LongToDoubleFunction mapper) {
+                                                final LongToDoubleFunction mapper) {
         return new OfDouble() {
             @Override
             public double nextDouble() {
@@ -340,7 +341,7 @@ public final class PrimitiveIterators {
     }
 
     public static <T> OfDouble doubleIteratorOf(final Iterator<T> iterator,
-                                                                  final ToDoubleFunction<? super T> mapper) {
+                                                final ToDoubleFunction<? super T> mapper) {
         return new OfDouble() {
             @Override
             public double nextDouble() {
@@ -360,7 +361,7 @@ public final class PrimitiveIterators {
     }
 
     public static OfDouble doubleTransformingIterator(final OfDouble iterator,
-                                                                        final DoubleUnaryOperator mapper) {
+                                                      final DoubleUnaryOperator mapper) {
         return new OfDouble() {
             @Override
             public double nextDouble() {
@@ -375,7 +376,7 @@ public final class PrimitiveIterators {
     }
 
     public static OfDouble doubleIndexedTransformingIterator(final OfDouble iterator,
-                                                                               final DoubleIndexedFunction mapper) {
+                                                             final DoubleIndexedFunction mapper) {
         return new OfDouble() {
 
             int index = 0;
@@ -396,7 +397,7 @@ public final class PrimitiveIterators {
     }
 
     public static OfInt doubleToIntIterator(final OfDouble doubleIterator,
-                                                              final DoubleToIntFunction mapper) {
+                                            final DoubleToIntFunction mapper) {
         return new OfInt() {
             @Override
             public int nextInt() {
@@ -411,7 +412,7 @@ public final class PrimitiveIterators {
     }
 
     public static OfLong doubleToLongIterator(final OfDouble doubleIterator,
-                                                                final DoubleToLongFunction mapper) {
+                                              final DoubleToLongFunction mapper) {
         return new OfLong() {
             @Override
             public long nextLong() {
@@ -592,17 +593,17 @@ public final class PrimitiveIterators {
     }
 
     public static OfInt intScanningIterator(final OfInt iterator,
-                                                              final int initial, final IntBinaryOperator operation) {
+                                            final int initial, final IntBinaryOperator operation) {
         return new IntScanningIterator(iterator, initial, operation);
     }
 
     public static OfLong longScanningIterator(final OfLong iterator,
-                                                                final long initial, final LongBinaryOperator operation) {
+                                              final long initial, final LongBinaryOperator operation) {
         return new LongScanningIterator(iterator, initial, operation);
     }
 
     public static OfDouble doubleScanningIterator(final OfDouble iterator,
-                                                                    final double initial, final DoubleBinaryOperator operation) {
+                                                  final double initial, final DoubleBinaryOperator operation) {
         return new DoubleScanningIterator(iterator, initial, operation);
     }
 
@@ -665,6 +666,18 @@ public final class PrimitiveIterators {
         return new Iterator<>() {
             boolean finisherCalled = false;
             boolean emitNoMoreItems = false;
+            private final Gatherer.Downstream<R> downstream = new Gatherer.Downstream<>() {
+
+                @Override
+                public boolean push(final R element) {
+                    return buffer.add(element);
+                }
+
+                @Override
+                public boolean isRejecting() {
+                    return emitNoMoreItems;
+                }
+            };
 
             @Override
             public boolean hasNext() {
@@ -675,14 +688,14 @@ public final class PrimitiveIterators {
                     return false;
                 }
                 while (buffer.isEmpty() && source.hasNext()) {
-                    if (!integrator.integrate(state, source.nextInt(), buffer::add)) {
+                    if (!integrator.integrate(state, source.nextInt(), downstream)) {
                         emitNoMoreItems = true;
                         break;
                     }
                 }
                 if (!finisherCalled && !source.hasNext()) {
                     finisherCalled = true;
-                    finisher.accept(state, buffer::add);
+                    finisher.accept(state, downstream);
                 }
                 return !buffer.isEmpty();
             }

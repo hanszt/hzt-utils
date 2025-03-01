@@ -147,7 +147,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntGathe
     }
 
     @Override
-    default <A, R> Sequence<R> gather(final Gatherer<Integer, A, R> gatherer) {
+    default <A, R> Sequence<R> gatherToObj(final Gatherer<Integer, A, R> gatherer) {
         return gatherer instanceof IntGatherer<A, R> intGatherer ?
                 (() -> PrimitiveIterators.intGatheringIterator(iterator(), intGatherer)) :
                 (() -> Iterators.gatheringIterator(iterator(), gatherer));

@@ -9,9 +9,9 @@ import org.hzt.utils.iterators.primitives.PrimitiveIterators;
 @FunctionalInterface
 public interface IntGatherable extends IntCollectable {
 
-    default <A, R> Gatherable<R> gather(final Gatherer<Integer, A, R> gatherer) {
-        if (gatherer instanceof IntGatherer<?, ?>) {
-            return () -> PrimitiveIterators.intGatheringIterator(iterator(), (IntGatherer<A, R>) gatherer);
+    default <A, R> Gatherable<R> gatherToObj(final Gatherer<Integer, A, R> gatherer) {
+        if (gatherer instanceof IntGatherer<A, R> g) {
+            return () -> PrimitiveIterators.intGatheringIterator(iterator(), g);
         }
         return () -> Iterators.gatheringIterator(iterator(), gatherer);
     }

@@ -114,7 +114,12 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntGathe
 
     @Override
     default IntSequence distinct() {
-        return () -> PrimitiveIterators.distinctIterator(iterator());
+        return distinctBy(e -> e);
+    }
+
+    @Override
+    default IntSequence distinctBy(IntUnaryOperator selector) {
+        return () -> PrimitiveIterators.distinctIterator(iterator(), selector);
     }
 
     @Override

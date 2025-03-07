@@ -76,17 +76,16 @@ final class IntImmutableList extends
     }
 
     @Override
-    @SuppressWarnings("squid:S2162")
     public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof IntList)) {
+        if (!(o instanceof IntList ol)) {
             return false;
         }
 
         final var iterator1 = iterator();
-        final var iterator2 = ((IntList) o).iterator();
+        final var iterator2 = ol.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             final var l1 = iterator1.nextInt();
             final var l2 = iterator2.nextInt();

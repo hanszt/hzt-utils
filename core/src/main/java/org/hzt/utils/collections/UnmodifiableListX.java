@@ -10,12 +10,12 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.stream.StreamSupport;
 
-final class ImmutableListX<T> implements ListX<T> {
+final class UnmodifiableListX<T> implements ListX<T> {
 
     private final List<T> immutableList;
 
     @SafeVarargs
-    ImmutableListX(final T... values) {
+    UnmodifiableListX(final T... values) {
         for (final var item : values) {
             if (item == null) {
                 throw new IllegalStateException("No null values allowed!");
@@ -24,17 +24,17 @@ final class ImmutableListX<T> implements ListX<T> {
         this.immutableList = List.of(values);
     }
 
-    ImmutableListX(final Iterable<T> iterable) {
+    UnmodifiableListX(final Iterable<T> iterable) {
         immutableList = StreamSupport.stream(iterable.spliterator(), false)
                 .filter(Objects::nonNull)
                 .toList();
     }
 
-    ImmutableListX(final Collection<T> collection) {
+    UnmodifiableListX(final Collection<T> collection) {
         immutableList = List.copyOf(collection);
     }
 
-    ImmutableListX(final List<T> list) {
+    UnmodifiableListX(final List<T> list) {
         immutableList = Collections.unmodifiableList(list);
     }
 

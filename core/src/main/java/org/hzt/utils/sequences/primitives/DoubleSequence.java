@@ -109,7 +109,12 @@ public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable,
 
     @Override
     default DoubleSequence distinct() {
-        return () -> PrimitiveIterators.distinctIterator(iterator());
+        return distinctBy(e -> e);
+    }
+
+    @Override
+    default DoubleSequence distinctBy(DoubleUnaryOperator selector) {
+        return () -> PrimitiveIterators.distinctIterator(iterator(), selector);
     }
 
     @Override

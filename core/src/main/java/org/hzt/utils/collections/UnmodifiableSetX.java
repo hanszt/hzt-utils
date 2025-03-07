@@ -7,22 +7,22 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-final class ImmutableSetX<T> implements SetX<T> {
+final class UnmodifiableSetX<T> implements SetX<T> {
 
     private final Set<T> immutableSet;
 
     @SafeVarargs
-    ImmutableSetX(final T... values) {
+    UnmodifiableSetX(final T... values) {
         this.immutableSet = Set.of(values);
     }
 
-    ImmutableSetX(final Iterable<T> iterable) {
+    UnmodifiableSetX(final Iterable<T> iterable) {
         immutableSet = StreamSupport.stream(iterable.spliterator(), false)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableSet());
     }
 
-    ImmutableSetX(final Collection<T> collection) {
+    UnmodifiableSetX(final Collection<T> collection) {
         immutableSet = Set.copyOf(collection);
     }
 

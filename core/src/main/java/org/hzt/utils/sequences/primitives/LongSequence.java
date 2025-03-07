@@ -109,9 +109,15 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         final var others = values instanceof LongMutableSet ? (LongMutableSet) values : LongSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
+
     @Override
     default LongSequence distinct() {
-        return () -> PrimitiveIterators.distinctIterator(iterator());
+        return distinctBy(e -> e);
+    }
+
+    @Override
+    default LongSequence distinctBy(LongUnaryOperator selector) {
+        return () -> PrimitiveIterators.distinctIterator(iterator(), selector);
     }
 
     @Override

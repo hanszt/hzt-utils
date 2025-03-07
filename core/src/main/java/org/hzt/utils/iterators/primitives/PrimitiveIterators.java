@@ -4,7 +4,6 @@ import org.hzt.utils.It;
 import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.collections.primitives.DoubleMutableSet;
 import org.hzt.utils.collections.primitives.IntList;
-import org.hzt.utils.collections.primitives.IntMutableCollection;
 import org.hzt.utils.collections.primitives.IntMutableSet;
 import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableSet;
@@ -19,7 +18,6 @@ import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 import java.util.Queue;
 import java.util.function.DoubleBinaryOperator;
-import java.util.function.DoubleConsumer;
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleSupplier;
 import java.util.function.DoubleToIntFunction;
@@ -27,14 +25,12 @@ import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
-import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.IntSupplier;
 import java.util.function.IntToDoubleFunction;
 import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.LongBinaryOperator;
-import java.util.function.LongConsumer;
 import java.util.function.LongFunction;
 import java.util.function.LongSupplier;
 import java.util.function.LongToDoubleFunction;
@@ -535,61 +531,49 @@ public final class PrimitiveIterators {
         };
     }
 
-    public static OfInt distinctIterator(final OfInt iterator) {
+    public static OfInt distinctIterator(final OfInt iterator, final IntUnaryOperator selector) {
         final var observed = IntMutableSet.empty();
-        final PrimitiveAtomicIterator.OfInt iteratorX = action -> nextDistinctInt(iterator, observed, action);
+        final PrimitiveAtomicIterator.OfInt iteratorX = action -> {
+            while (iterator.hasNext()) {
+                final var next = iterator.nextInt();
+                if (observed.add(selector.applyAsInt(next))) {
+                    action.accept(next);
+                    return true;
+                }
+            }
+            return false;
+        };
         return iteratorX.asIterator();
     }
 
-    private static boolean nextDistinctInt(final OfInt iterator,
-                                           final IntMutableCollection observed,
-                                           final IntConsumer action) {
-        while (iterator.hasNext()) {
-            final var next = iterator.nextInt();
-            if (observed.add(next)) {
-                action.accept(next);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static OfLong distinctIterator(final OfLong iterator) {
+    public static OfLong distinctIterator(final OfLong iterator, final LongUnaryOperator selector) {
         final var observed = LongMutableSet.empty();
-        final PrimitiveAtomicIterator.OfLong iteratorX = action -> nextDistinctLong(iterator, observed, action);
+        final PrimitiveAtomicIterator.OfLong iteratorX = action -> {
+            while (iterator.hasNext()) {
+                final var next = iterator.nextLong();
+                if (observed.add(selector.applyAsLong(next))) {
+                    action.accept(next);
+                    return true;
+                }
+            }
+            return false;
+        };
         return iteratorX.asIterator();
     }
 
-    private static boolean nextDistinctLong(final OfLong iterator,
-                                            final LongMutableSet observed,
-                                            final LongConsumer action) {
-        while (iterator.hasNext()) {
-            final var next = iterator.nextLong();
-            if (observed.add(next)) {
-                action.accept(next);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static OfDouble distinctIterator(final OfDouble iterator) {
+    public static OfDouble distinctIterator(final OfDouble iterator, final DoubleUnaryOperator selector) {
         final var observed = DoubleMutableSet.empty();
-        final PrimitiveAtomicIterator.OfDouble iteratorX = action -> nextDistinctDouble(iterator, observed, action);
-        return iteratorX.asIterator();
-    }
-
-    private static boolean nextDistinctDouble(final OfDouble iterator,
-                                              final DoubleMutableSet observed,
-                                              final DoubleConsumer action) {
-        while (iterator.hasNext()) {
-            final var next = iterator.nextDouble();
-            if (observed.add(next)) {
-                action.accept(next);
-                return true;
+        final PrimitiveAtomicIterator.OfDouble iteratorX = action -> {
+            while (iterator.hasNext()) {
+                final var next = iterator.nextDouble();
+                if (observed.add(selector.applyAsDouble(next))) {
+                    action.accept(next);
+                    return true;
+                }
             }
-        }
-        return false;
+            return false;
+        };
+        return iteratorX.asIterator();
     }
 
     public static OfInt intScanningIterator(final OfInt iterator,

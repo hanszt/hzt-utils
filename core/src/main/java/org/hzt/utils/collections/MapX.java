@@ -20,15 +20,15 @@ import java.util.function.Predicate;
 public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<K, V> {
 
     static <K, V> MapX<K, V> empty() {
-        return new ImmutableMapX<>();
+        return new UnmodifiableMapX<>();
     }
 
     static <K, V> MapX<K, V> of(final Map<? extends K, ? extends V> map) {
-        return new ImmutableMapX<>(map);
+        return new UnmodifiableMapX<>(map);
     }
 
     static <K, V> MapX<K, V> of(final Iterable<Map.Entry<K, V>> entries) {
-        return new ImmutableMapX<>(entries);
+        return new UnmodifiableMapX<>(entries);
     }
 
     static <K, V> MapX<K, V> of(final K k1, final V v1) {
@@ -76,16 +76,16 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
 
     @SafeVarargs
     static <K, V> MapX<K, V> ofEntries(final Map.Entry<? extends K, ? extends V>... entries) {
-        return new ImmutableMapX<>(entries);
+        return new UnmodifiableMapX<>(entries);
     }
 
     static <K, V> MapX<K, V> ofPairs(final Iterable<Pair<K, V>> pairs) {
-        return new ImmutableMapX<>(EntrySequence.ofPairs(pairs));
+        return new UnmodifiableMapX<>(EntrySequence.ofPairs(pairs));
     }
 
     @SafeVarargs
     static <K, V> MapX<K, V> ofPairs(final Pair<K, V>... pairs) {
-        return new ImmutableMapX<>(pairs);
+        return new UnmodifiableMapX<>(pairs);
     }
 
     static <K, V> MapX<K, V> build(final Consumer<MutableMapX<K, V>> mapConsumer) {
@@ -220,6 +220,6 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     }
 
     static <K, V> MapX<K, V> copyOf(final MapX<K, V> map) {
-        return new ImmutableMapX<>(map);
+        return new UnmodifiableMapX<>(map);
     }
 }

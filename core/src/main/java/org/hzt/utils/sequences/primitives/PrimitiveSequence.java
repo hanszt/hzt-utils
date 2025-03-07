@@ -15,6 +15,7 @@ public interface PrimitiveSequence<T, C, F, P, B> extends Indexable<T> {
     Sequence<T> boxed();
 
     PrimitiveSequence<T, C, F, P, B> distinct();
+    PrimitiveSequence<T, C, F, P, B> distinctBy(F selector);
 
     PrimitiveSequence<T, C, F, P, B> plus(Iterable<T> values);
 

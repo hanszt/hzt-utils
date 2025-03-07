@@ -297,6 +297,15 @@ class IntSequenceTest {
     }
 
     @Test
+    void testDistinctByIntSequence() {
+        final var distinctArray = IntSequence.of(1, 2, 3, 4, 3, -51, 2, 1, 5, 4, 6, 3, 7, -1, -100, -100, -50)
+                .distinctBy(i -> i % 3)
+                .toArray();
+
+        assertArrayEquals(new int[]{1, 2, 3, -1, -50}, distinctArray);
+    }
+
+    @Test
     void testMapIndexed() {
         final var list = IntSequence.iterate(1, i -> i * 2)
                 .mapIndexed(Integer::sum)

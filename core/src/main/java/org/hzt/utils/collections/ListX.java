@@ -35,16 +35,16 @@ public interface ListX<E> extends CollectionX<E>,
         Reversable<ListX<E>> {
 
     static <E> ListX<E> empty() {
-        return new ImmutableListX<>();
+        return new UnmodifiableListX<>();
     }
 
     static <E> ListX<E> of(final Iterable<E> iterable) {
-        return new ImmutableListX<>(iterable);
+        return new UnmodifiableListX<>(iterable);
     }
 
     @SafeVarargs
     static <E> ListX<E> of(final E... values) {
-        return new ImmutableListX<>(values);
+        return new UnmodifiableListX<>(values);
     }
 
     static <E> ListX<E> build(final Consumer<? super MutableListX<E>> mutableListConsumer) {
@@ -56,11 +56,11 @@ public interface ListX<E> extends CollectionX<E>,
     }
 
     static <E> ListX<E> copyOf(final Collection<E> collection) {
-        return new ImmutableListX<>(collection);
+        return new UnmodifiableListX<>(collection);
     }
 
     static <E> ListX<E> copyOfNullsAllowed(final List<E> list) {
-        return new ImmutableListX<>(list);
+        return new UnmodifiableListX<>(list);
     }
 
     default <R> R foldRight(final R initial, final BiFunction<E, R, R> operation) {

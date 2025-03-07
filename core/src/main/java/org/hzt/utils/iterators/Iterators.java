@@ -1,18 +1,17 @@
 package org.hzt.utils.iterators;
 
 import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.primitives.IntMutableSet;
 import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.gatherers.Gatherer;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.PrimitiveIterator;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -144,27 +143,18 @@ public final class Iterators {
     }
 
     public static <T, K> Iterator<T> distinctIterator(final Iterator<T> inputIterator, final Function<? super T, ? extends K> selector) {
-        final var iterator = AtomicIterator.of(inputIterator);
-        final Set<K> observed = new HashSet<>();
-        final AtomicIterator<T> atomicIterator = action -> nextDistinctValue(iterator, observed, action, selector);
-        return atomicIterator.asIterator();
-    }
-
-    private static <T, K> boolean nextDistinctValue(final AtomicIterator<T> iterator,
-                                                    final Set<K> observed,
-                                                    final Consumer<? super T> action,
-                                                    final Function<? super T, ? extends K> selector) {
-        final var reference = new Object() {
-          T value = null;
-        };
-        while (iterator.tryAdvance(v -> reference.value = v)) {
-            final var next = reference.value;
-            if (observed.add(selector.apply(next))) {
-                action.accept(next);
-                return true;
+        final var observed = IntMutableSet.empty();
+        final AtomicIterator<T> atomicIterator = action -> {
+            while (inputIterator.hasNext()) {
+                final var next = inputIterator.next();
+                if (observed.add(selector.apply(next).hashCode())) {
+                    action.accept(next);
+                    return true;
+                }
             }
-        }
-        return false;
+            return false;
+        };
+        return atomicIterator.asIterator();
     }
 
     public static <T, A, R> Iterator<R> mergingIterator(final Iterator<T> thisIterator,

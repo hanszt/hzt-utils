@@ -7,6 +7,7 @@ import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableCollection;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.collections.primitives.IntMutableSet;
+import org.hzt.utils.collections.primitives.IntSet;
 import org.hzt.utils.collectors.primitves.IntCollector;
 
 import java.util.function.BiFunction;
@@ -55,12 +56,11 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
     }
 
     default IntList toList() {
-        return IntList.build(ml -> {
-            final var iterator = iterator();
-            while (iterator.hasNext()) {
-                ml.add(iterator.nextInt());
-            }
-        });
+        return IntList.build(ml -> to(() -> ml));
+    }
+
+    default IntSet toSet() {
+        return IntSet.build(ml -> to(() -> ml));
     }
 
     default <C extends IntMutableCollection> C to(final Supplier<C> collectionFactory) {

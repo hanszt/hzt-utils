@@ -5,7 +5,6 @@ import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.collections.primitives.IntList;
-import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.function.IndexedBiFunction;
@@ -70,13 +69,22 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default ListX<E> plus(final E value) {
-        final var list = MutableListX.of(this);
-        list.add(value);
-        return ListX.copyOf(list);
+        return ListX.build(size() + 1, ml -> {
+            ml.addAll(this);
+            ml.add(value);
+        });
     }
 
     default ListX<E> plus(final Iterable<? extends E> values) {
-        return ListX.copyOfNullsAllowed(MutableListX.of(this).plus(values));
+        final var otherSize = switch (values) {
+            case Collection<?> c -> c.size();
+            case CollectionX<?> c -> c.size();
+            default -> 0;
+        };
+        return ListX.build(size() + otherSize, ml -> {
+            ml.addAll(this);
+            ml.addAll(values);
+        });
     }
 
     @Override
@@ -119,7 +127,7 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> mapIndexed(final IndexedFunction<? super E, ? extends R> mapper) {
-        return ListX.copyOf(mapIndexedTo(() -> MutableListX.withInitCapacity(size()), mapper));
+        return ListX.build(size(), ml -> mapIndexedTo(() -> ml, mapper));
     }
 
     default ListX<E> filter(final Predicate<? super E> predicate) {
@@ -167,12 +175,12 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> flatMap(final Function<? super E, ? extends Iterable<? extends R>> mapper) {
-        return ListX.copyOf(flatMapTo(() -> MutableListX.withInitCapacity(size()), mapper));
+        return ListX.build(size(), ml -> flatMapTo(() -> ml, mapper));
     }
 
     @Override
     default IntList flatMapToInt(final Function<? super E, ? extends PrimitiveIterable.OfInt> mapper) {
-        return IntList.copyOf(flatMapIntsTo(() -> IntMutableList.withInitCapacity(size()), mapper));
+        return IntList.build(size(), ml -> flatMapIntsTo(() -> ml, mapper));
     }
 
     @Override
@@ -186,12 +194,12 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> mapMulti(final BiConsumer<? super E, ? super Consumer<R>> mapper) {
-        return ListX.copyOf(mapMultiTo(() -> MutableListX.withInitCapacity(size()), mapper));
+        return ListX.build(size(), ml -> mapMultiTo(() -> ml, mapper));
     }
 
     @Override
     default <A, R> ListX<R> gather(final Gatherer<? super E, A, R> gatherer) {
-        return gatherTo(MutableListX::empty, gatherer);
+        return ListX.build(ml -> gatherTo(() -> ml, gatherer));
     }
 
     default <R> ListX<R> then(final IterableExtension<E, R> extension) {
@@ -214,11 +222,11 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default <R> ListX<R> mapNotNull(final Function<? super E, ? extends R> mapper) {
-        return ListX.copyOf(mapNotNullTo(() -> MutableListX.withInitCapacity(size()), mapper));
+        return ListX.build(size(), ml -> mapNotNullTo(() -> ml, mapper));
     }
 
     default <R> ListX<R> mapIfPresent(final Function<? super E, Optional<R>> mapper) {
-        return ListX.copyOf(mapIfPresentTo(() -> MutableListX.withInitCapacity(size()), mapper));
+        return ListX.build(size(), ml -> mapIfPresentTo(() -> ml, mapper));
     }
 
     @Override
@@ -232,32 +240,27 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default ListX<E> sorted() {
-        final var sorted = (MutableListX<E>) IterableX.super.sorted();
-        return ListX.copyOf(sorted);
+        return (ListX<E>) IterableX.super.sorted();
     }
 
     @Override
     default <R extends Comparable<? super R>> ListX<E> sortedBy(final Function<? super E, ? extends R> selector) {
-        final var sorted = (MutableListX<E>) IterableX.super.sortedBy(selector);
-        return ListX.copyOf(sorted);
+        return (ListX<E>) IterableX.super.sortedBy(selector);
     }
 
     @Override
     default ListX<E> sorted(final Comparator<? super E> comparator) {
-        final var sorted = (MutableListX<E>) IterableX.super.sorted(comparator);
-        return ListX.copyOf(sorted);
+        return (ListX<E>) IterableX.super.sorted(comparator);
     }
 
     @Override
     default ListX<E> sortedDescending() {
-        final var listX = (MutableListX<E>) IterableX.super.sortedDescending();
-        return ListX.copyOf(listX);
+        return  (ListX<E>) IterableX.super.sortedDescending();
     }
 
     @Override
     default <R extends Comparable<? super R>> ListX<E> sortedByDescending(final Function<? super E, ? extends R> selector) {
-        final var listX = (MutableListX<E>) IterableX.super.sortedByDescending(selector);
-        return ListX.copyOf(listX);
+        return  (ListX<E>) IterableX.super.sortedByDescending(selector);
     }
 
     @Override
@@ -267,7 +270,7 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default <R> ListX<E> distinctBy(final Function<? super E, ? extends R> selector) {
-        return ListX.copyOf(distinctTo(MutableListX::empty, selector));
+        return ListX.build(ml -> distinctTo(() -> ml, selector));
     }
 
     default ListX<ListX<E>> chunked(final int size) {
@@ -304,11 +307,11 @@ public interface CollectionX<E> extends IterableX<E> {
     }
 
     default <A, R> ListX<R> zip(final Iterable<A> iterable, final BiFunction<? super E, ? super A, ? extends R> function) {
-        return ListX.copyOf(zipTo(MutableListX::empty, iterable, function));
+        return ListX.build(ml -> zipTo(() -> ml, iterable, function));
     }
 
     default <R> ListX<R> zipWithNext(final BiFunction<? super E, ? super E, ? extends R> function) {
-        return ListX.copyOf(zipWithNextTo(MutableListX::empty, function));
+        return ListX.build(ml -> zipWithNextTo(() -> ml, function));
     }
 
     default <K> MapX<K, E> associateBy(final Function<? super E, ? extends K> keyMapper) {

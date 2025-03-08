@@ -89,9 +89,11 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     }
 
     static <K, V> MapX<K, V> build(final Consumer<MutableMapX<K, V>> mapConsumer) {
-        final MutableMapX<K, V> map = MutableMapX.empty();
-        mapConsumer.accept(map);
-        return MapX.copyOf(map);
+        return new HashMapX<>(mapConsumer);
+    }
+
+    static <K, V> MapX<K, V> build(final int size, final Consumer<MutableMapX<K, V>> mapConsumer) {
+        return new HashMapX<>(size, mapConsumer);
     }
 
     <K1, V1> MapX<K1, V1> map(Function<? super K, ? extends K1> keyMapper,

@@ -185,10 +185,11 @@ final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E> {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof List) && !(o instanceof ListX)) {
-            return false;
-        }
-        return equalsRange((Iterable<?>) o, size());
+        return switch (o) {
+            case List<?> l -> equalsRange(l, size());
+            case ListX<?> l -> equalsRange(l, size());
+            case null, default -> false;
+        };
     }
 
     private boolean equalsRange(final Iterable<?> other, final int to) {

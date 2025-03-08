@@ -31,18 +31,6 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
         return new ArrayListX<>(value);
     }
 
-    @Override
-    default MutableListX<E> plus(final E value) {
-        add(value);
-        return this;
-    }
-
-    @Override
-    default MutableListX<E> plus(final Iterable<? extends E> iterable) {
-        addAll(iterable);
-        return this;
-    }
-
     MutableListX<E> headTo(int toIndex);
 
     MutableListX<E> tailFrom(int fromIndex);

@@ -13,6 +13,7 @@ import org.hzt.utils.iterables.primitives.DoubleReducable;
 import org.hzt.utils.iterables.primitives.DoubleStreamable;
 import org.hzt.utils.iterables.primitives.DoubleStringable;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterableX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.DoubleFilteringIterator;
@@ -46,7 +47,7 @@ import java.util.stream.StreamSupport;
 @FunctionalInterface
 public interface DoubleSequence extends DoubleWindowedSequence, DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable,
         DoubleGroupable, DoubleStringable, PrimitiveSortable<DoubleComparator>,
-        PrimitiveSequence<Double, DoubleConsumer, DoubleUnaryOperator, DoublePredicate, DoubleBinaryOperator> {
+        PrimitiveIterableX<Double, DoubleConsumer, DoubleUnaryOperator, DoublePredicate, DoubleBinaryOperator> {
 
     static DoubleSequence empty() {
         return PrimitiveIterators::emptyDoubleIterator;

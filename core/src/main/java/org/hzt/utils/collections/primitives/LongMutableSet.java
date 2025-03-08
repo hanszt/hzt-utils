@@ -1,7 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 
-public interface LongMutableSet extends LongMutableCollection {
+public interface LongMutableSet extends LongMutableCollection, LongSet {
 
     static LongMutableSet empty() {
         return new LongHashSet();

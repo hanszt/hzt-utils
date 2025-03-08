@@ -2,7 +2,7 @@ package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.collections.BinarySearchable;
-import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.IntComparator;
@@ -99,7 +99,7 @@ public interface IntList extends IntCollection,
     OptionalInt findRandom(Random random);
 
     @Override
-    default ListX<Integer> boxed() {
+    default CollectionX<Integer> boxed() {
         return asSequence().boxed().toListX();
     }
 

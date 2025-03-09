@@ -13,10 +13,10 @@ import org.hzt.utils.sequences.primitives.DoubleSequence;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.OptionalDouble;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
+import java.util.random.RandomGenerator;
 
 public interface DoubleList extends DoubleCollection,
         PrimitiveList<PrimitiveListIterator.OfDouble>,
@@ -96,11 +96,11 @@ public interface DoubleList extends DoubleCollection,
         return OptionalDouble.empty();
     }
 
-    default double random(final Random random) {
+    default double random(final RandomGenerator random) {
         return findRandom(random).orElseThrow();
     }
 
-    OptionalDouble findRandom(Random random);
+    OptionalDouble findRandom(RandomGenerator random);
 
     @Override
     default ListX<Double> boxed() {
@@ -129,7 +129,12 @@ public interface DoubleList extends DoubleCollection,
         return DoubleList.of(array);
     }
 
-    DoubleList shuffled(Random random);
+    default DoubleList shuffled(RandomGenerator random) {
+        return DoubleList.build(size(), ml -> {
+            ml.addAll(this);
+            PrimitiveListHelper.shuffle(ml, random);
+        });
+    }
 
     /**
      * @see BinarySearchable#binarySearch(int, int, Object)

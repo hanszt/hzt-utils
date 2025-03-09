@@ -1,17 +1,16 @@
 package org.hzt.utils.collections;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
-import java.util.Random;
+import java.util.RandomAccess;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
 
-final class UnmodifiableListX<T> implements ListX<T> {
+final class UnmodifiableListX<T> implements ListX<T>, RandomAccess {
 
     private final List<T> unmodifiableList;
 
@@ -43,13 +42,6 @@ final class UnmodifiableListX<T> implements ListX<T> {
     @Override
     public ListX<T> get() {
         return this;
-    }
-
-    @Override
-    public ListX<T> shuffled(final Random random) {
-        final var listX = to(MutableListX::empty);
-        Collections.shuffle(listX, random);
-        return ListX.of(listX);
     }
 
     @Override

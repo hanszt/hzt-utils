@@ -7,10 +7,10 @@ import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.ListIterator;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiFunction;
@@ -19,6 +19,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
+import java.util.random.RandomGenerator;
 
 import static org.hzt.utils.PreConditions.require;
 
@@ -96,17 +97,22 @@ public interface ListX<E> extends CollectionX<E>,
     }
 
     @Override
-    ListX<E> shuffled(Random random);
+    default ListX<E> shuffled(RandomGenerator random) {
+        return ListX.build(size(), ml -> {
+            ml.addAll(this);
+            Collections.shuffle(ml, random);
+        });
+    }
 
     default ListX<E> reversed() {
         return Sequence.reverseOf(this).toListX();
     }
 
-    default Optional<E> findRandom(final Random random) {
+    default Optional<E> findRandom(final RandomGenerator random) {
         return isNotEmpty() ? Optional.of(get(random.nextInt(size()))) : Optional.empty();
     }
 
-    default E random(final Random random) {
+    default E random(final RandomGenerator random) {
         return findRandom(random).orElseThrow();
     }
 

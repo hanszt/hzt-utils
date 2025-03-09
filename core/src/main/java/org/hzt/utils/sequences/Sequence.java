@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 import java.util.SequencedCollection;
 import java.util.Set;
 import java.util.Spliterators;
@@ -46,6 +45,7 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
+import java.util.random.RandomGenerator;
 import java.util.stream.StreamSupport;
 
 import static java.util.Spliterator.ORDERED;
@@ -391,7 +391,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
     }
 
     @Override
-    default Sequence<T> shuffled(final Random random) {
+    default Sequence<T> shuffled(final RandomGenerator random) {
         return () -> toListX().shuffled(random).iterator();
     }
 

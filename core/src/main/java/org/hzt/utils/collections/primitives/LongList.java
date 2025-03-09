@@ -13,10 +13,10 @@ import org.hzt.utils.sequences.primitives.LongSequence;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.OptionalLong;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.LongPredicate;
 import java.util.function.LongToIntFunction;
+import java.util.random.RandomGenerator;
 
 public interface LongList extends LongCollection,
         PrimitiveList<PrimitiveListIterator.OfLong>,
@@ -96,11 +96,11 @@ public interface LongList extends LongCollection,
         return OptionalLong.empty();
     }
 
-    default long random(final Random random) {
+    default long random(final RandomGenerator random) {
         return findRandom(random).orElseThrow();
     }
 
-    OptionalLong findRandom(Random random);
+    OptionalLong findRandom(RandomGenerator random);
 
     @Override
     default ListX<Long> boxed() {
@@ -129,7 +129,12 @@ public interface LongList extends LongCollection,
         return LongList.of(array);
     }
 
-    LongList shuffled(Random random);
+    default LongList shuffled(RandomGenerator random) {
+        return LongList.build(size(), ml -> {
+            ml.addAll(this);
+            PrimitiveListHelper.shuffle(ml, random);
+        });
+    }
 
     /**
      * @see BinarySearchable#binarySearch(int, int, Object)

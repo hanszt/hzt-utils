@@ -10,13 +10,13 @@ import org.hzt.utils.sequences.Sequence;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Random;
 import java.util.function.Function;
+import java.util.random.RandomGenerator;
 
 @FunctionalInterface
 public interface Sortable<T> extends Iterable<T> {
 
-    default Sortable<T> shuffled(final Random random) {
+    default Sortable<T> shuffled(final RandomGenerator random) {
         return sortedBy(s -> random.nextInt());
     }
 

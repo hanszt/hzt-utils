@@ -10,14 +10,15 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.OptionalLong;
 import java.util.PrimitiveIterator;
-import java.util.Random;
+import java.util.RandomAccess;
 import java.util.function.Consumer;
 import java.util.function.LongConsumer;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.checkIndex;
 
 public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongConsumer, long[], PrimitiveIterator.OfLong>
-        implements LongMutableList {
+        implements LongMutableList, RandomAccess {
 
     LongArrayList() {
         super(0, new long[DEFAULT_CAPACITY]);
@@ -132,15 +133,8 @@ public final class LongArrayList extends PrimitiveAbstractArrayList<Long, LongCo
     }
 
     @Override
-    public OptionalLong findRandom(final Random random) {
+    public OptionalLong findRandom(final RandomGenerator random) {
         return isNotEmpty() ? OptionalLong.of(get(random.nextInt(size()))) : OptionalLong.empty();
-    }
-
-    @Override
-    public LongList shuffled(final Random random) {
-        final var mutableList = LongMutableList.of(this);
-        PrimitiveListHelper.shuffle(mutableList, random);
-        return mutableList;
     }
 
     private int lastIndexOfRange(final long value, final int end) {

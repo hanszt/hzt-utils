@@ -13,10 +13,10 @@ import org.hzt.utils.sequences.primitives.IntSequence;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.OptionalInt;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
+import java.util.random.RandomGenerator;
 
 public interface IntList extends IntCollection,
         PrimitiveList<PrimitiveListIterator.OfInt>,
@@ -31,7 +31,6 @@ public interface IntList extends IntCollection,
         return switch (iterable) {
             case IntImmutableList l -> l;
             case IntArrayList l when l.isUnmodifiable -> l;
-            case IntCollection c -> new IntImmutableList(c);
             case Collection<Integer> c -> IntList.build(c.size(), ml -> ml.addAll(iterable));
             case Sizable s -> IntList.build(s.size(), ml -> ml.addAll(iterable));
             default -> IntSequence.of(iterable).toList();
@@ -97,11 +96,11 @@ public interface IntList extends IntCollection,
         return OptionalInt.empty();
     }
 
-    default int random(final Random random) {
+    default int random(final RandomGenerator random) {
         return findRandom(random).orElseThrow();
     }
 
-    OptionalInt findRandom(Random random);
+    OptionalInt findRandom(RandomGenerator random);
 
     @Override
     default CollectionX<Integer> boxed() {
@@ -130,7 +129,12 @@ public interface IntList extends IntCollection,
         return IntList.of(array);
     }
 
-    IntList shuffled(Random random);
+    default IntList shuffled(RandomGenerator random) {
+        return IntList.build(size(), ml -> {
+            ml.addAll(this);
+            PrimitiveListHelper.shuffle(ml, random);
+        });
+    }
 
     /**
      * @see BinarySearchable#binarySearch(int, int, Object)

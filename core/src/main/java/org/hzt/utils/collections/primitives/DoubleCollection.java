@@ -1,6 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.Sizable;
 import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.DoubleCollectable;
@@ -25,7 +26,7 @@ import java.util.function.DoubleToLongFunction;
 import java.util.function.DoubleUnaryOperator;
 
 public interface DoubleCollection extends
-        DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable, DoubleGroupable, DoubleStringable,
+        DoubleReducable, DoubleCollectable, DoubleNumerable, DoubleStreamable, DoubleGroupable, DoubleStringable, Sizable,
         PrimitiveIterableX<Double, DoubleConsumer, DoubleUnaryOperator, DoublePredicate, DoubleBinaryOperator>,
         PrimitiveCollection<Double, DoubleConsumer, double[]> {
 
@@ -113,16 +114,23 @@ public interface DoubleCollection extends
 
     @Override
     default DoubleList plus(final Iterable<Double> values) {
-        final var list = toMutableList();
-        list.addAll(values);
-        return DoubleList.copyOf(list);
+        final var otherSizeOrZero = switch (values) {
+            case Collection<Double> c -> c.size();
+            case Sizable c -> c.size();
+            default -> 0;
+        };
+        return DoubleList.build(size() + otherSizeOrZero, ml -> {
+            ml.addAll(this);
+            ml.addAll(values);
+        });
     }
 
     @Override
     default DoubleList plus(final double... array) {
-        final var list = toMutableList();
-        list.addAll(array);
-        return DoubleList.copyOf(list);
+        return DoubleList.build(size() + array.length, ml -> {
+           ml.addAll(this);
+           ml.addAll(array);
+        });
     }
 
     default DoubleSequence asSequence() {
@@ -142,7 +150,7 @@ public interface DoubleCollection extends
 
     default DoubleList skip(final long n) {
         PreConditions.require(n <= Integer.MAX_VALUE);
-        return DoubleList.copyOf(skipTo(() -> DoubleMutableList.withInitCapacity((int) (size() - n)), (int) n));
+        return DoubleList.build((int) (size() - n), ml ->  skipTo(() -> ml, (int) n));
     }
 
     @Override
@@ -159,17 +167,16 @@ public interface DoubleCollection extends
     default DoubleList minus(Iterable<Double> values) {
         return switch (values) {
             case Collection<Double> c -> minusSized(c.size(), values);
-            case CollectionX<Double> c -> minusSized(c.size(), values);
-            case DoubleCollection c -> minusSized(c.size(), values);
+            case Sizable c -> minusSized(c.size(), values);
             default -> DoubleList.build(ml -> {
-                final var set = DoubleSet.build(ms -> fillSet(values, ms));
+                final var set = DoubleSet.build(ms -> ms.addAll(values));
                 listMinusSet(ml, iterator(), set);
             });
         };
     }
 
     private DoubleList minusSized(final int size, final Iterable<Double> values) {
-        final var set = DoubleSet.build(size, ms -> fillSet(values, ms));
+        final var set = DoubleSet.build(size, ms -> ms.addAll(values));
         final var iterator = iterator();
         return DoubleList.build(size() - size, ml -> listMinusSet(ml, iterator, set));
     }
@@ -179,19 +186,6 @@ public interface DoubleCollection extends
             final var i = iterator.nextDouble();
             if (!set.contains(i)) {
                 ml.add(i);
-            }
-        }
-    }
-
-    private static void fillSet(final Iterable<Double> values, final DoubleMutableSet ms) {
-        final var iter = values.iterator();
-        if (iter instanceof PrimitiveIterator.OfDouble pi) {
-            while (pi.hasNext()) {
-                ms.add(pi.nextDouble());
-            }
-        } else {
-            for (final var value : values) {
-                ms.add(value);
             }
         }
     }

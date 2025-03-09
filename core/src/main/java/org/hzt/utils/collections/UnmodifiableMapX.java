@@ -22,11 +22,16 @@ final class UnmodifiableMapX<K, V> implements MapX<K, V> {
     }
 
     UnmodifiableMapX(final Iterable<Entry<K, V>> iterable) {
-        final var hashMap = new HashMap<K, V>();
-        for (final var entry : iterable) {
-            hashMap.put(entry.getKey(), entry.getValue());
-        }
-        this.map = Map.copyOf(hashMap);
+        this.map = switch (iterable) {
+            case UnmodifiableMapX<K, V> m ->  m.map;
+            default -> {
+                final var hashMap = new HashMap<K, V>();
+                for (final var entry : iterable) {
+                    hashMap.put(entry.getKey(), entry.getValue());
+                }
+                yield Map.copyOf(hashMap);
+            }
+        };
     }
 
     @SafeVarargs

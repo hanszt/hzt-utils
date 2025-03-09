@@ -44,7 +44,7 @@ final class WindowedIterator<T> extends AbstractIterator<ListX<T>> {
             computeNextOverlapping(windowInitCapacity);
         }
         step = calculateNextStep(step);
-        return ListX.copyOf(nextWindow);
+        return ListX.of(nextWindow);
     }
 
     private int calculateNextSize(final int cur) {

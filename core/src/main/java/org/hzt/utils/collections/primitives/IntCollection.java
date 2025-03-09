@@ -1,6 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.Sizable;
 import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.IntCollectable;
@@ -25,7 +26,7 @@ import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 
 public interface IntCollection extends
-        IntReducable, IntCollectable, IntNumerable, IntStreamable, IntGroupable, IntStringable,
+        IntReducable, IntCollectable, IntNumerable, IntStreamable, IntGroupable, IntStringable, Sizable,
         PrimitiveIterableX<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator>,
         PrimitiveCollection<Integer, IntConsumer, int[]> {
 
@@ -113,16 +114,23 @@ public interface IntCollection extends
 
     @Override
     default IntList plus(final Iterable<Integer> values) {
-        final var list = toMutableList();
-        list.addAll(values);
-        return IntList.copyOf(list);
+        final var otherSizeOrZero = switch (values) {
+            case Collection<Integer> c -> c.size();
+            case Sizable c -> c.size();
+            default -> 0;
+        };
+        return IntList.build(size() + otherSizeOrZero, ml -> {
+            ml.addAll(this);
+            ml.addAll(values);
+        });
     }
 
     @Override
     default IntList plus(final int... array) {
-        final var list = toMutableList();
-        list.addAll(array);
-        return IntList.copyOf(list);
+        return IntList.build(size() + array.length, ml -> {
+            ml.addAll(this);
+            ml.addAll(array);
+        });
     }
 
     default IntSequence asSequence() {
@@ -159,17 +167,16 @@ public interface IntCollection extends
     default IntList minus(Iterable<Integer> values) {
         return switch (values) {
             case Collection<Integer> c -> minusSized(c.size(), values);
-            case CollectionX<Integer> c -> minusSized(c.size(), values);
-            case IntCollection c -> minusSized(c.size(), values);
+            case Sizable c -> minusSized(c.size(), values);
             default -> IntList.build(ml -> {
-                final var set = IntSet.build(ms -> fillSet(values, ms));
+                final var set = IntSet.build(ms -> ms.addAll(values));
                 listMinusSet(ml, iterator(), set);
             });
         };
     }
 
     private IntList minusSized(final int size, final Iterable<Integer> values) {
-        final var set = IntSet.build(size, ms -> fillSet(values, ms));
+        final var set = IntSet.build(size, ms -> ms.addAll(values));
         final var iterator = iterator();
         return IntList.build(size() - size, ml -> listMinusSet(ml, iterator, set));
     }
@@ -179,19 +186,6 @@ public interface IntCollection extends
             final var i = iterator.nextInt();
             if (!set.contains(i)) {
                 ml.add(i);
-            }
-        }
-    }
-
-    private static void fillSet(final Iterable<Integer> values, final IntMutableSet ms) {
-        final var iter = values.iterator();
-        if (iter instanceof PrimitiveIterator.OfInt pi) {
-            while (pi.hasNext()) {
-                ms.add(pi.nextInt());
-            }
-        } else {
-            for (final var value : values) {
-                ms.add(value);
             }
         }
     }

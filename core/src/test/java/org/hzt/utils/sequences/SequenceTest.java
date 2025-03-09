@@ -154,7 +154,7 @@ class SequenceTest {
 
     @Test
     void testMapNotNull() {
-        final var list = ListX.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
+        final var list = ListX.ofNullsAllowed(TestSampleGenerator.createSampleBankAccountListContainingNulls());
 
         final var balances = Sequence.of(list)
                 .mapNotNull(BankAccount::getBalance)

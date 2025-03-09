@@ -75,6 +75,6 @@ public interface MutableListX<E> extends List<E>, ListX<E>, MutableCollectionX<E
 
     @Override
     default ListX<E> toListX() {
-        return ListX.copyOf(this);
+        return ListX.of(this);
     }
 }

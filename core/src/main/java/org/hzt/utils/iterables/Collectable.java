@@ -213,7 +213,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default ListX<T> toListX() {
-        return ListX.copyOf(toMutableList());
+        return ListX.of(toMutableList());
     }
 
     default List<T> toList() {

@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.Sizable;
 import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.collections.ListX;
@@ -10,6 +11,7 @@ import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.LongSequence;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.OptionalLong;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -26,15 +28,17 @@ public interface LongList extends LongCollection,
     }
 
     static LongList of(final Iterable<Long> iterable) {
-        return LongSequence.of(iterable).toList();
+        return switch (iterable) {
+            case LongImmutableList l -> l;
+            case LongArrayList l when l.isUnmodifiable -> l;
+            case Collection<Long> c -> LongList.build(c.size(), ml -> ml.addAll(iterable));
+            case Sizable s -> LongList.build(s.size(), ml -> ml.addAll(iterable));
+            default -> LongSequence.of(iterable).toList();
+        };
     }
 
     static LongList of(final long... array) {
         return new LongImmutableList(array);
-    }
-
-    static LongList copyOf(final LongCollection longCollection) {
-        return new LongImmutableList(longCollection);
     }
 
     static LongList build(final Consumer<? super LongMutableList> factory) {

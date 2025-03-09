@@ -1,6 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.Sizable;
 import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.iterables.primitives.LongCollectable;
@@ -25,7 +26,7 @@ import java.util.function.LongToIntFunction;
 import java.util.function.LongUnaryOperator;
 
 public interface LongCollection extends
-        LongReducable, LongCollectable, LongNumerable, LongStreamable, LongGroupable, LongStringable,
+        LongReducable, LongCollectable, LongNumerable, LongStreamable, LongGroupable, LongStringable, Sizable,
         PrimitiveIterableX<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator>,
         PrimitiveCollection<Long, LongConsumer, long[]> {
 
@@ -113,16 +114,23 @@ public interface LongCollection extends
 
     @Override
     default LongList plus(final Iterable<Long> values) {
-        final var listX = toMutableList();
-        listX.addAll(values);
-        return LongList.copyOf(listX);
+        final var otherSizeOrZero = switch (values) {
+            case Collection<Long> c -> c.size();
+            case Sizable c -> c.size();
+            default -> 0;
+        };
+        return LongList.build(size() + otherSizeOrZero, ml -> {
+            ml.addAll(this);
+            ml.addAll(values);
+        });
     }
 
     @Override
     default LongList plus(final long... array) {
-        final var list = toMutableList();
-        list.addAll(array);
-        return list;
+        return LongList.build(size() + array.length, ml -> {
+            ml.addAll(this);
+            ml.addAll(array);
+        });
     }
 
     default LongSequence asSequence() {
@@ -142,7 +150,7 @@ public interface LongCollection extends
 
     default LongList skip(final long n) {
         PreConditions.require(n <= Integer.MAX_VALUE);
-        return LongList.copyOf(skipTo(() -> LongMutableList.withInitCapacity((int) (size() - n)), (int) n));
+        return LongList.build((int) (size() - n), ml -> skipTo(() -> ml, (int) n));
     }
 
     @Override
@@ -159,17 +167,16 @@ public interface LongCollection extends
     default LongList minus(Iterable<Long> values) {
         return switch (values) {
             case Collection<Long> c -> minusSized(c.size(), values);
-            case CollectionX<Long> c -> minusSized(c.size(), values);
-            case LongCollection c -> minusSized(c.size(), values);
+            case Sizable c -> minusSized(c.size(), values);
             default -> LongList.build(ml -> {
-                final var set = LongSet.build(ms -> fillSet(values, ms));
+                final var set = LongSet.build(ms -> ms.addAll(values));
                 listMinusSet(ml, iterator(), set);
             });
         };
     }
 
     private LongList minusSized(final int size, final Iterable<Long> values) {
-        final var set = LongSet.build(size, ms -> fillSet(values, ms));
+        final var set = LongSet.build(size, ms -> ms.addAll(values));
         final var iterator = iterator();
         return LongList.build(size() - size, ml -> listMinusSet(ml, iterator, set));
     }
@@ -179,19 +186,6 @@ public interface LongCollection extends
             final var i = iterator.nextLong();
             if (!set.contains(i)) {
                 ml.add(i);
-            }
-        }
-    }
-
-    private static void fillSet(final Iterable<Long> values, final LongMutableSet ms) {
-        final var iter = values.iterator();
-        if (iter instanceof PrimitiveIterator.OfLong pi) {
-            while (pi.hasNext()) {
-                ms.add(pi.nextLong());
-            }
-        } else {
-            for (final var value : values) {
-                ms.add(value);
             }
         }
     }

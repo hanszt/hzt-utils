@@ -16,7 +16,7 @@ import java.util.function.UnaryOperator;
 final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E> {
 
     private final List<E> list;
-    private boolean isUnmodifiable = false;
+    boolean isUnmodifiable = false;
 
     ArrayListX() {
         this.list = new ArrayList<>();

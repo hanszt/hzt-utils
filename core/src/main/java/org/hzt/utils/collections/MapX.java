@@ -220,8 +220,4 @@ public interface MapX<K, V> extends CollectionX<Map.Entry<K, V>>, EntryIterable<
     default EntrySequence<K, V> asSequence() {
         return EntrySequence.of(this);
     }
-
-    static <K, V> MapX<K, V> copyOf(final MapX<K, V> map) {
-        return new UnmodifiableMapX<>(map);
-    }
 }

@@ -2,11 +2,10 @@ package org.hzt.utils.collections;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.Sizable;
 import org.hzt.utils.collections.primitives.DoubleList;
-import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.LongList;
-import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
@@ -38,7 +37,7 @@ import java.util.function.ToLongFunction;
 
 @FunctionalInterface
 @SuppressWarnings("squid:S1448")
-public interface CollectionX<E> extends IterableX<E> {
+public interface CollectionX<E> extends IterableX<E>, Sizable {
 
     default int size() {
         return (int) count(It::noFilter);
@@ -158,20 +157,20 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default LongList mapToLong(final ToLongFunction<? super E> mapper) {
-        final var longList = LongMutableList.withInitCapacity(size());
-        for (final var e : this) {
-            longList.add(mapper.applyAsLong(e));
-        }
-        return LongList.copyOf(longList);
+        return LongList.build(size(), ml -> {
+            for (final var e : this) {
+                ml.add(mapper.applyAsLong(e));
+            }
+        });
     }
 
     @Override
     default DoubleList mapToDouble(final ToDoubleFunction<? super E> mapper) {
-        final var doubleList = DoubleMutableList.withInitCapacity(size());
-        for (final var e : this) {
-            doubleList.add(mapper.applyAsDouble(e));
-        }
-        return DoubleList.copyOf(doubleList);
+        return DoubleList.build(size(), ml -> {
+            for (final var e : this) {
+                ml.add(mapper.applyAsDouble(e));
+            }
+        });
     }
 
     default <R> ListX<R> flatMap(final Function<? super E, ? extends Iterable<? extends R>> mapper) {
@@ -185,12 +184,12 @@ public interface CollectionX<E> extends IterableX<E> {
 
     @Override
     default LongList flatMapToLong(final Function<? super E, ? extends PrimitiveIterable.OfLong> mapper) {
-        return LongList.copyOf(flatMapLongsTo(() -> LongMutableList.withInitCapacity(size()), mapper));
+        return LongList.build(size(), ml -> flatMapLongsTo(() -> ml, mapper));
     }
 
     @Override
     default DoubleList flatMapToDouble(final Function<? super E, ? extends PrimitiveIterable.OfDouble> mapper) {
-        return DoubleList.copyOf(flatMapDoublesTo(() -> DoubleMutableList.withInitCapacity(size()), mapper));
+        return DoubleList.build(size(), ml -> flatMapDoublesTo(() -> ml, mapper));
     }
 
     default <R> ListX<R> mapMulti(final BiConsumer<? super E, ? super Consumer<R>> mapper) {
@@ -330,7 +329,7 @@ public interface CollectionX<E> extends IterableX<E> {
             accumulation = operation.apply(accumulation, value);
             mutableListX.add(accumulation);
         }
-        return ListX.copyOf(mutableListX);
+        return ListX.of(mutableListX);
     }
 
     @Override
@@ -343,35 +342,35 @@ public interface CollectionX<E> extends IterableX<E> {
             mutableListX.add(accumulation);
             index++;
         }
-        return ListX.copyOf(mutableListX);
+        return ListX.of(mutableListX);
     }
 
     default ListX<E> skip(final long count) {
-        return ListX.copyOf(skipTo(() -> MutableListX.withInitCapacity(size() - (int) count), (int) count));
+        return ListX.of(skipTo(() -> MutableListX.withInitCapacity(size() - (int) count), (int) count));
     }
 
     @Override
     default ListX<E> skipWhile(final Predicate<? super E> predicate) {
-        return ListX.copyOf(skipWhileTo(MutableListX::empty, predicate, false));
+        return ListX.of(skipWhileTo(MutableListX::empty, predicate, false));
     }
 
     @Override
     default ListX<E> skipWhileInclusive(final Predicate<? super E> predicate) {
-        return ListX.copyOf(skipWhileTo(MutableListX::empty, predicate, true));
+        return ListX.of(skipWhileTo(MutableListX::empty, predicate, true));
     }
 
     @Override
     default ListX<E> take(final long n) {
         PreConditions.require(n <= Integer.MAX_VALUE);
-        return ListX.copyOf(takeTo(() -> MutableListX.withInitCapacity((int) n), (int) n));
+        return ListX.of(takeTo(() -> MutableListX.withInitCapacity((int) n), (int) n));
     }
 
     default ListX<E> takeWhile(final Predicate<? super E> predicate) {
-        return ListX.copyOf(takeWhileTo(MutableListX::empty, predicate, false));
+        return ListX.of(takeWhileTo(MutableListX::empty, predicate, false));
     }
 
     default ListX<E> takeWhileInclusive(final Predicate<? super E> predicate) {
-        return ListX.copyOf(takeWhileTo(MutableListX::empty, predicate, true));
+        return ListX.of(takeWhileTo(MutableListX::empty, predicate, true));
     }
 
     @Override

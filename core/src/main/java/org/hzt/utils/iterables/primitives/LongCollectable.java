@@ -2,11 +2,13 @@ package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.Sizable;
 import org.hzt.utils.collections.primitives.LongCollection;
 import org.hzt.utils.collections.primitives.LongList;
 import org.hzt.utils.collections.primitives.LongMutableCollection;
 import org.hzt.utils.collections.primitives.LongMutableList;
 import org.hzt.utils.collections.primitives.LongMutableSet;
+import org.hzt.utils.collections.primitives.LongSet;
 import org.hzt.utils.collectors.primitves.LongCollector;
 
 import java.util.function.BiFunction;
@@ -55,7 +57,15 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
     }
 
     default LongList toList() {
-        return LongList.copyOf(toMutableList());
+        return this instanceof Sizable s ?
+                LongList.build(s.size(), ml -> to(() -> ml)) :
+                LongList.build(ml -> to(() -> ml));
+    }
+
+    default LongSet toSet() {
+        return this instanceof Sizable s ?
+                LongSet.build(s.size(), ml -> to(() -> ml)) :
+                LongSet.build(ml -> to(() -> ml));
     }
 
     default <C extends LongMutableCollection> C to(final Supplier<C> collectionFactory) {

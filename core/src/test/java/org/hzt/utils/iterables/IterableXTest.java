@@ -317,7 +317,7 @@ class IterableXTest {
 
     @Test
     void testToBigDecimalSummaryStatistics() {
-        final var bankAccounts = ListX.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
+        final var bankAccounts = ListX.ofNullsAllowed(TestSampleGenerator.createSampleBankAccountListContainingNulls());
 
         final var expected = bankAccounts.stream()
                 .filter(Objects::nonNull)

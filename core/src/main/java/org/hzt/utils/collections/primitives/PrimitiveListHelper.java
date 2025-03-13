@@ -1,7 +1,9 @@
 package org.hzt.utils.collections.primitives;
 
-import java.util.Random;
+import java.util.Collections;
+import java.util.List;
 import java.util.RandomAccess;
+import java.util.random.RandomGenerator;
 
 final class PrimitiveListHelper {
 
@@ -10,7 +12,10 @@ final class PrimitiveListHelper {
     private PrimitiveListHelper() {
     }
 
-    public static void shuffle(final IntMutableList list, final Random random) {
+    /**
+     * Copied from {@link Collections#shuffle(List, java.util.random.RandomGenerator)}
+     */
+    public static void shuffle(final IntMutableList list, final RandomGenerator random) {
         final var size = list.size();
         if (size < SHUFFLE_THRESHOLD || list instanceof RandomAccess) {
             for (var i = size; i > 1; i--) {
@@ -27,7 +32,7 @@ final class PrimitiveListHelper {
         }
     }
 
-    public static void shuffle(final LongMutableList list, final Random random) {
+    public static void shuffle(final LongMutableList list, final RandomGenerator random) {
         final var size = list.size();
         if (size < SHUFFLE_THRESHOLD || list instanceof RandomAccess) {
             for (var i = size; i > 1; i--) {
@@ -44,7 +49,7 @@ final class PrimitiveListHelper {
         }
     }
 
-    public static void shuffle(final DoubleMutableList list, final Random random) {
+    public static void shuffle(final DoubleMutableList list, final RandomGenerator random) {
         final var size = list.size();
         if (size < SHUFFLE_THRESHOLD || list instanceof RandomAccess) {
             for (var i = size; i > 1; i--) {
@@ -63,8 +68,8 @@ final class PrimitiveListHelper {
 
     public static void swap(final IntMutableList list, final int i, final int j) {
         final var element = list.get(i);
-        final var other = list.set(j, element);
-        list.set(i, other);
+        list.set(i, list.get(j));
+        list.set(j, element);
     }
 
     private static void swap(final int[] arr, final int i, final int j) {
@@ -75,8 +80,8 @@ final class PrimitiveListHelper {
 
     public static void swap(final LongMutableList list, final int i, final int j) {
         final var element = list.get(i);
-        final var other = list.set(j, element);
-        list.set(i, other);
+        list.set(i, list.get(j));
+        list.set(j, element);
     }
 
     private static void swap(final long[] arr, final int i, final int j) {
@@ -87,8 +92,8 @@ final class PrimitiveListHelper {
 
     public static void swap(final DoubleMutableList list, final int i, final int j) {
         final var element = list.get(i);
-        final var other = list.set(j, element);
-        list.set(i, other);
+        list.set(i, list.get(j));
+        list.set(j, element);
     }
 
     private static void swap(final double[] arr, final int i, final int j) {

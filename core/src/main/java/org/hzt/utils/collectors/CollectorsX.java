@@ -100,7 +100,12 @@ public final class CollectorsX {
     }
 
     public static <T> Collector<T, MutableListX<T>, ListX<T>> toListX() {
-        return Collector.of(MutableListX::empty, List::add, MutableListX::plus, ListX::of);
+        return Collector.of(MutableListX::empty, List::add, CollectorsX::addAll, ListX::of);
+    }
+
+    private static <T> MutableListX<T> addAll(final MutableListX<T> ml, final MutableListX<T> e) {
+        ml.addAll(e);
+        return ml;
     }
 
     public static <T, R> Collector<T, ?, ListX<R>> toListXOf(final Function<T, R> mapper) {
@@ -108,7 +113,7 @@ public final class CollectorsX {
     }
 
     public static <T> Collector<T, MutableListX<T>, SetX<T>> toSetX() {
-        return Collector.of(MutableListX::empty, List::add, MutableCollectionX::plus, SetX::of);
+        return Collector.of(MutableListX::empty, List::add, CollectorsX::addAll, SetX::of);
     }
 
     public static <T, R> Collector<T, ?, SetX<R>> toSetXOf(final Function<T, R> mapper) {

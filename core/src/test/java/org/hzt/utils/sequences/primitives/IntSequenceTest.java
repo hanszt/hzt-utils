@@ -301,6 +301,15 @@ class IntSequenceTest {
     }
 
     @Test
+    void testDistinctByIntSequence() {
+        final var distinctArray = IntSequence.of(1, 2, 3, 4, 3, -51, 2, 1, 5, 4, 6, 3, 7, -1, -100, -100, -50)
+                .distinctBy(i -> i % 3)
+                .toArray();
+
+        assertArrayEquals(new int[]{1, 2, 3, -1, -50}, distinctArray);
+    }
+
+    @Test
     void testMapIndexed() {
         final var list = IntSequence.iterate(1, i -> i * 2)
                 .mapIndexed(Integer::sum)
@@ -369,7 +378,7 @@ class IntSequenceTest {
         @Test
         void testNormalGathererInIntSequenceGatherer() {
             final var longs = IntSequence.iterate(0, i -> i + 1)
-                    .gather(Gatherers.windowSliding(3))
+                    .gatherToObj(Gatherers.windowSliding(3))
                     .take(3)
                     .mapToLong(s -> IntSequence.of(s).sum())
                     .toList();
@@ -380,7 +389,7 @@ class IntSequenceTest {
         @Test
         void testIntGathererInIntSequenceGatherer() {
             final var longs = IntSequence.iterate(0, i -> i + 1)
-                    .gather(windowSliding(3))
+                    .gatherToObj(windowSliding(3))
                     .take(3)
                     .mapToLong(IntNumerable::sum)
                     .toList();
@@ -392,7 +401,7 @@ class IntSequenceTest {
     @Test
     void testRunningIntStatistics() {
         final var result = IntSequence.of(5, 6, 8, 4, 12, 15, 16, 4)
-                .gather(runningStatistics())
+                .gatherToObj(runningStatistics())
                 .teeing(intArrayOf(IntStatistics::getMax), longArrayOf(IntStatistics::getSum));
 
         final var expectedMaxes = new int[]{5, 6, 8, 8, 12, 15, 16, 16};
@@ -416,7 +425,7 @@ class IntSequenceTest {
         final var courseIds = new int[]{13423, 2, 3, 5, 3432, 32};
 
         final var result = IntSequence.of(courseIds)
-                .gather(mapToObjNotNull(courseRepo::get))
+                .gatherToObj(mapToObjNotNull(courseRepo::get))
                 .toList();
 
         assertEquals(List.of("Math", "Science", "History"), result);

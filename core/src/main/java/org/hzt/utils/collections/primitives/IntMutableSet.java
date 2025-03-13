@@ -1,7 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
 
-public interface IntMutableSet extends IntMutableCollection {
+public interface IntMutableSet extends IntMutableCollection, IntSet {
 
     static IntMutableSet empty() {
         return new IntHashSet();

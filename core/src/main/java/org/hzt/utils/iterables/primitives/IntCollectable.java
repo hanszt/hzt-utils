@@ -2,11 +2,13 @@ package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.Sizable;
 import org.hzt.utils.collections.primitives.IntCollection;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableCollection;
 import org.hzt.utils.collections.primitives.IntMutableList;
 import org.hzt.utils.collections.primitives.IntMutableSet;
+import org.hzt.utils.collections.primitives.IntSet;
 import org.hzt.utils.collectors.primitves.IntCollector;
 
 import java.util.function.BiFunction;
@@ -55,18 +57,21 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
     }
 
     default IntList toList() {
-        return IntList.build(ml -> {
-            final var iterator = iterator();
-            while (iterator.hasNext()) {
-                ml.add(iterator.nextInt());
-            }
-        });
+        return this instanceof Sizable s ?
+                IntList.build(s.size(), ml -> to(() -> ml)) :
+                IntList.build(ml -> to(() -> ml));
+    }
+
+    default IntSet toSet() {
+        return this instanceof Sizable s ?
+                IntSet.build(s.size(), ml -> to(() -> ml)) :
+                IntSet.build(ml -> to(() -> ml));
     }
 
     default <C extends IntMutableCollection> C to(final Supplier<C> collectionFactory) {
         final var collection = collectionFactory.get();
         final var iterator = iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             collection.add(iterator.nextInt());
         }
         return collection;

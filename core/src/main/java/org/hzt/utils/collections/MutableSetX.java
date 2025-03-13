@@ -20,8 +20,8 @@ public interface MutableSetX<E> extends Set<E>, SetX<E>, MutableCollectionX<E> {
         return new HashSetX<>(set);
     }
 
-    static <E> MutableSetX<E> of(final Iterable<E> set) {
-        return new HashSetX<>(set);
+    static <E> MutableSetX<E> of(final Iterable<E> iterable) {
+        return new HashSetX<>(iterable);
     }
 
     static <E> MutableSetX<E> of(final Collection<E> collection) {

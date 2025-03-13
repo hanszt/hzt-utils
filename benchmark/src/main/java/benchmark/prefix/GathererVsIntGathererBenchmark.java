@@ -3,7 +3,10 @@ package benchmark.prefix;
 import org.hzt.utils.gatherers.primitives.IntGatherers;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
+import org.openjdk.jmh.profile.GCProfiler;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
@@ -11,6 +14,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import java.util.stream.Gatherers;
 import java.util.stream.IntStream;
 
+@State(Scope.Benchmark)
 public class GathererVsIntGathererBenchmark {
 
     private static final int[] input = IntStream.range(0, 100_000).toArray();
@@ -19,14 +23,14 @@ public class GathererVsIntGathererBenchmark {
     @Benchmark
     public void intSequenceNormalGathererWindowSliding(final Blackhole blackhole) {
         IntSequence.of(input)
-                .gather(Gatherers.windowSliding(WINDOW_SIZE))
+                .gatherToObj(Gatherers.windowSliding(WINDOW_SIZE))
                 .forEach(blackhole::consume);
     }
 
     @Benchmark
     public void intSequenceIntGathererWindowSliding(final Blackhole blackhole) {
         IntSequence.of(input)
-                .gather(IntGatherers.windowSliding(WINDOW_SIZE))
+                .gatherToObj(IntGatherers.windowSliding(WINDOW_SIZE))
                 .forEach(blackhole::consume);
     }
 
@@ -41,6 +45,7 @@ public class GathererVsIntGathererBenchmark {
     public static void main(final String... args) {
         final var options = new OptionsBuilder()
                 .include(GathererVsIntGathererBenchmark.class.getSimpleName())
+                .addProfiler(GCProfiler.class)
                 .forks(2)
                 .warmupIterations(2)
                 .measurementIterations(3)

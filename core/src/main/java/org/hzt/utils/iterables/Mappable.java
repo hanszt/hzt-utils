@@ -11,6 +11,9 @@ import java.util.function.DoubleConsumer;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 public interface Mappable<T> extends IndexedIterable<T> {
 
@@ -23,6 +26,12 @@ public interface Mappable<T> extends IndexedIterable<T> {
     <R> Mappable<R> mapIndexed(IndexedFunction<? super T, ? extends R> mapper);
 
     <R> Mappable<R> flatMap(Function<? super T, ? extends Iterable<? extends R>> mapper);
+
+    PrimitiveIterable.OfInt mapToInt(ToIntFunction<? super T> mapper);
+
+    PrimitiveIterable.OfLong mapToLong(ToLongFunction<? super T> toLongMapper);
+
+    PrimitiveIterable.OfDouble mapToDouble(ToDoubleFunction<? super T> mapper);
 
     PrimitiveIterable.OfInt flatMapToInt(Function<? super T, ? extends PrimitiveIterable.OfInt> mapper);
 

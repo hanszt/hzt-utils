@@ -7,11 +7,12 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.OptionalLong;
 import java.util.PrimitiveIterator;
-import java.util.Random;
+import java.util.RandomAccess;
 import java.util.function.LongConsumer;
+import java.util.random.RandomGenerator;
 
 final class LongImmutableList extends
-        PrimitiveAbstractCollection<Long, LongConsumer, long[], PrimitiveIterator.OfLong> implements LongList {
+        PrimitiveAbstractCollection<Long, LongConsumer, long[], PrimitiveIterator.OfLong> implements LongList, RandomAccess {
 
     private final long[] elementData;
 
@@ -23,11 +24,6 @@ final class LongImmutableList extends
     LongImmutableList(final long... array) {
         super(array.length);
         elementData = ArraysX.copyOf(array);
-    }
-
-    LongImmutableList(final LongCollection collection) {
-        super(collection.size());
-        elementData = ArraysX.copyOf(collection.toArray());
     }
 
     @Override
@@ -55,15 +51,8 @@ final class LongImmutableList extends
     }
 
     @Override
-    public OptionalLong findRandom(final Random random) {
+    public OptionalLong findRandom(final RandomGenerator random) {
         return isNotEmpty() ? OptionalLong.of(get(random.nextInt(size()))) : OptionalLong.empty();
-    }
-
-    @Override
-    public LongList shuffled(final Random random) {
-        final var mutableList = LongMutableList.of(this);
-        PrimitiveListHelper.shuffle(mutableList, random);
-        return mutableList;
     }
 
     private int lastIndexOfRange(final long value, final int end) {
@@ -76,17 +65,16 @@ final class LongImmutableList extends
     }
 
     @Override
-    @SuppressWarnings("squid:S2162")
     public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof LongList)) {
+        if (!(o instanceof LongList ol)) {
             return false;
         }
 
         final var iterator1 = iterator();
-        final var iterator2 = ((LongList) o).iterator();
+        final var iterator2 = ol.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             final var l1 = iterator1.nextLong();
             final var l2 = iterator2.nextLong();
@@ -117,7 +105,6 @@ final class LongImmutableList extends
     protected long[] newArray(final int length) {
         return new long[length];
     }
-
 
     @Override
     public long[] toArray() {

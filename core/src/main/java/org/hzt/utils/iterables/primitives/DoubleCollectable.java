@@ -2,11 +2,13 @@ package org.hzt.utils.iterables.primitives;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
+import org.hzt.utils.Sizable;
 import org.hzt.utils.collections.primitives.DoubleCollection;
 import org.hzt.utils.collections.primitives.DoubleList;
 import org.hzt.utils.collections.primitives.DoubleMutableCollection;
 import org.hzt.utils.collections.primitives.DoubleMutableList;
 import org.hzt.utils.collections.primitives.DoubleMutableSet;
+import org.hzt.utils.collections.primitives.DoubleSet;
 import org.hzt.utils.collectors.primitves.DoubleCollector;
 
 import java.util.function.BiFunction;
@@ -55,7 +57,15 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
     }
 
     default DoubleList toList() {
-        return DoubleList.copyOf(toMutableList());
+        return this instanceof Sizable s ?
+                DoubleList.build(s.size(), ml -> to(() -> ml)) :
+                DoubleList.build(ml -> to(() -> ml));
+    }
+
+    default DoubleSet toSet() {
+        return this instanceof Sizable s ?
+                DoubleSet.build(s.size(), ml -> to(() -> ml)) :
+                DoubleSet.build(ml -> to(() -> ml));
     }
 
     default <C extends DoubleMutableCollection> C to(final Supplier<C> collectionFactory) {

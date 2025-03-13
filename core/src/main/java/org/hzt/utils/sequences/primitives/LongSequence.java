@@ -13,6 +13,7 @@ import org.hzt.utils.iterables.primitives.LongReducable;
 import org.hzt.utils.iterables.primitives.LongStreamable;
 import org.hzt.utils.iterables.primitives.LongStringable;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterableX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.LongFilteringIterator;
@@ -46,7 +47,7 @@ import java.util.stream.StreamSupport;
 @FunctionalInterface
 public interface LongSequence extends LongWindowedSequence, LongReducable, LongCollectable, LongNumerable, LongStreamable,
         LongGroupable, LongStringable, PrimitiveSortable<LongComparator>,
-        PrimitiveSequence<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator> {
+        PrimitiveIterableX<Long, LongConsumer, LongUnaryOperator, LongPredicate, LongBinaryOperator> {
 
     static LongSequence empty() {
         return PrimitiveIterators::emptyLongIterator;
@@ -109,9 +110,15 @@ public interface LongSequence extends LongWindowedSequence, LongReducable, LongC
         final var others = values instanceof LongMutableSet ? (LongMutableSet) values : LongSequence.of(values).toMutableSet();
         return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
     }
+
     @Override
     default LongSequence distinct() {
-        return () -> PrimitiveIterators.distinctIterator(iterator());
+        return distinctBy(e -> e);
+    }
+
+    @Override
+    default LongSequence distinctBy(LongUnaryOperator selector) {
+        return () -> PrimitiveIterators.distinctIterator(iterator(), selector);
     }
 
     @Override

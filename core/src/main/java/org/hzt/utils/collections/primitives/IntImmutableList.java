@@ -7,11 +7,12 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
-import java.util.Random;
+import java.util.RandomAccess;
 import java.util.function.IntConsumer;
+import java.util.random.RandomGenerator;
 
 final class IntImmutableList extends
-        PrimitiveAbstractCollection<Integer, IntConsumer, int[], PrimitiveIterator.OfInt> implements IntList {
+        PrimitiveAbstractCollection<Integer, IntConsumer, int[], PrimitiveIterator.OfInt> implements IntList, RandomAccess {
 
     private final int[] elementData;
 
@@ -23,11 +24,6 @@ final class IntImmutableList extends
     IntImmutableList(final int... array) {
         super(array.length);
         elementData = ArraysX.copyOf(array);
-    }
-
-    IntImmutableList(final IntCollection collection) {
-        super(collection.size());
-        elementData = ArraysX.copyOf(collection.toArray());
     }
 
     @Override
@@ -55,15 +51,8 @@ final class IntImmutableList extends
     }
 
     @Override
-    public OptionalInt findRandom(final Random random) {
+    public OptionalInt findRandom(final RandomGenerator random) {
         return isNotEmpty() ? OptionalInt.of(get(random.nextInt(size()))) : OptionalInt.empty();
-    }
-
-    @Override
-    public IntList shuffled(final Random random) {
-        final var mutableList = IntMutableList.of(this);
-        PrimitiveListHelper.shuffle(mutableList, random);
-        return mutableList;
     }
 
     private int lastIndexOfRange(final int value, final int end) {
@@ -76,17 +65,16 @@ final class IntImmutableList extends
     }
 
     @Override
-    @SuppressWarnings("squid:S2162")
     public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof IntList)) {
+        if (!(o instanceof IntList ol)) {
             return false;
         }
 
         final var iterator1 = iterator();
-        final var iterator2 = ((IntList) o).iterator();
+        final var iterator2 = ol.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             final var l1 = iterator1.nextInt();
             final var l2 = iterator2.nextInt();
@@ -117,7 +105,6 @@ final class IntImmutableList extends
     protected int[] newArray(final int length) {
         return new int[length];
     }
-
 
     @Override
     public int[] toArray() {

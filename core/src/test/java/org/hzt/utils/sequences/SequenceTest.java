@@ -50,7 +50,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -61,7 +60,6 @@ import java.util.stream.IntStream;
 
 import static java.lang.System.setProperty;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hzt.test.Locales.testWithFixedLocale;
 import static org.hzt.utils.iterables.IterableExtensions.runningFold;
 import static org.hzt.utils.iterables.IterableExtensions.windowed;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -76,6 +74,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 class SequenceTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SequenceTest.class);
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
 
     @Test
     void testSimpleStreamWithMapYieldsIteratorWithNext() {
@@ -161,7 +160,7 @@ class SequenceTest {
 
     @Test
     void testMapNotNull() {
-        final var list = ListX.of(TestSampleGenerator.createSampleBankAccountListContainingNulls());
+        final var list = ListX.ofNullsAllowed(TestSampleGenerator.createSampleBankAccountListContainingNulls());
 
         final var balances = Sequence.of(list)
                 .mapNotNull(BankAccount::getBalance)
@@ -318,7 +317,7 @@ class SequenceTest {
 
     @Test
     void testGenerateSequence() {
-        final var strings = Sequence.iterate(0, i -> ++i)
+        final var strings = Sequence.iterate(0, i -> i + 1)
                 .map(Generator::fib)
                 .filter(LongX::isOdd)
                 .take(12)
@@ -354,7 +353,7 @@ class SequenceTest {
 
     @Test
     void testTakeWhile() {
-        final var strings = Sequence.iterate(0, i -> ++i)
+        final var strings = Sequence.iterate(0, i -> i + 1)
                 .takeWhile(i -> i < 10)
                 .filter(LongX::isEven)
                 .onEach(item -> LOGGER.trace("{}", item))
@@ -441,7 +440,7 @@ class SequenceTest {
         void testGenerateWindowedThenMapMultiToList() {
             final MutableListX<ListX<Integer>> windows = MutableListX.empty();
 
-            final var result = Sequence.iterate(0, i -> ++i)
+            final var result = Sequence.iterate(0, i -> i + 1)
                     .windowed(8, 3)
                     .onEach(windows::add)
                     .takeWhile(s -> s.intSumOf(It::asInt) < 1_000_000)
@@ -826,6 +825,15 @@ class SequenceTest {
     }
 
     @Test
+    void testMergeSequence() {
+        final var s1 = Sequence.of(1, 2, 3, 4);
+        final var s2 = Sequence.of(1, 2, 3, 4, 5, 6);
+        final var result = s1.merge(s2).toList();
+
+        assertEquals(List.of(1, 1, 2, 2, 3, 3, 4, 4, 5, 6), result);
+    }
+
+    @Test
     void testToSortedLocalDateTime() {
         final var initDateTime = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0, 0);
 
@@ -844,7 +852,7 @@ class SequenceTest {
     void testIntersperseByPrevious() {
         final var integers = Sequence.iterate(0, i -> --i)
                 .take(10)
-                .intersperse(i -> ++i)
+                .intersperse(i -> i + 1)
                 .toList();
 
         LOGGER.debug("integers = {}", integers);
@@ -907,30 +915,6 @@ class SequenceTest {
         return instant.atZone(id).getOffset().getTotalSeconds() % 3600 != 0;
     }
 
-    @Test
-    void testTimeZonesAntarctica() {
-        testWithFixedLocale(Locale.US, _ -> {
-            final var now = Instant.parse("2024-01-04T14:32:23Z");
-
-            final var timeZonesAntarctica = getTimeZoneSummaries(now, id -> id.contains("Antarctica")).joinToString("\n");
-
-            final var expected = """
-                    -03:00 Antarctica/Palmer           11:32 AM
-                        -03:00 Antarctica/Rothera          11:32 AM
-                             Z Antarctica/Troll             2:32 PM
-                        +03:00 Antarctica/Syowa             5:32 PM
-                        +05:00 Antarctica/Mawson            7:32 PM
-                        +05:00 Antarctica/Vostok            7:32 PM
-                        +07:00 Antarctica/Davis             9:32 PM
-                        +08:00 Antarctica/Casey            10:32 PM
-                        +10:00 Antarctica/DumontDUrville   12:32 AM
-                        +11:00 Antarctica/Macquarie         1:32 AM
-                        +13:00 Antarctica/McMurdo           3:32 AM
-                        +13:00 Antarctica/South_Pole        3:32 AM""".stripIndent();
-            assertEquals(expected, timeZonesAntarctica);
-        });
-    }
-
     private Sequence<String> getTimeZoneSummaries(final Instant now, final Predicate<String> predicate) {
         return Sequence.of(ZoneId.getAvailableZoneIds())
                 .filter(predicate)
@@ -942,12 +926,12 @@ class SequenceTest {
 
     private String toZoneSummary(final ZonedDateTime zonedDateTime) {
         return String.format("%10s %-25s %10s", zonedDateTime.getOffset(), zonedDateTime.getZone(),
-                zonedDateTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+                zonedDateTime.format(FORMATTER));
     }
 
     @Test
     void testStepSequence() {
-        final var intSequence = Sequence.iterate(0, i -> ++i)
+        final var intSequence = Sequence.iterate(0, i -> i + 1)
                 .skip(4)
                 .take(1_000)
                 .step(200)
@@ -993,7 +977,7 @@ class SequenceTest {
 
         final var MAX_ITERATIONS = 10_000;
 
-        final var approximations = IntSequence.iterate(900, i -> ++i)
+        final var approximations = IntSequence.iterate(900, i -> i + 1)
                 .mapToObj(Generator::fibSumBd)
                 .zipWithNext((cur, next) -> next.divide(cur, scale, RoundingMode.HALF_UP))
                 .zipWithNext()

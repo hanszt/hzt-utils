@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
+import java.util.random.RandomGenerator;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,7 +32,7 @@ class ArraysXTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ArraysXTest.class);
 
     // unseeded because the test is about the sorted result
-    private static final Random random = new Random();
+    private static final RandomGenerator random = new Random();
 
     @Test
     void testReverseArray() {

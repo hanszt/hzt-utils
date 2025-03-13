@@ -14,7 +14,7 @@ import java.util.stream.Gatherer;
  * @param <A> The type of the state container
  * @param <R> The type of this iterator
  */
-final class GatheringIterator<T, A, R> implements Iterator<R>, Gatherer.Downstream<R> {
+final class GatheringIterator<T, A, R> implements Iterator<R> {
     private final Iterator<T> source;
     private final A state;
     private final Gatherer.Integrator<A, ? super T, R> integrator;
@@ -22,6 +22,19 @@ final class GatheringIterator<T, A, R> implements Iterator<R>, Gatherer.Downstre
     private final Queue<R> buffer = new ArrayDeque<>();
     private boolean finisherCalled = false;
     private boolean emitNoMoreItems = false;
+    private final Gatherer.Downstream<R> downstream = new Gatherer.Downstream<>() {
+
+        @Override
+        public boolean push(final R element) {
+            return buffer.add(element);
+        }
+
+        @Override
+        public boolean isRejecting() {
+            return emitNoMoreItems;
+        }
+    };
+
 
     GatheringIterator(final Iterator<T> iterator, final Gatherer<? super T, A, R> gatherer) {
         source = iterator;
@@ -39,13 +52,13 @@ final class GatheringIterator<T, A, R> implements Iterator<R>, Gatherer.Downstre
             return false;
         }
         while (buffer.isEmpty() && source.hasNext()) {
-            if (!integrator.integrate(state, source.next(), this)) {
+            if (!integrator.integrate(state, source.next(), downstream)) {
                 emitNoMoreItems = true;
                 break;
             }
         }
         if (!source.hasNext() && !finisherCalled) {
-            finisher.accept(state, this);
+            finisher.accept(state, downstream);
             finisherCalled = true;
         }
         return !buffer.isEmpty();
@@ -57,15 +70,5 @@ final class GatheringIterator<T, A, R> implements Iterator<R>, Gatherer.Downstre
             return buffer.remove();
         }
         throw new NoSuchElementException();
-    }
-
-    @Override
-    public boolean push(R element) {
-        return buffer.add(element);
-    }
-
-    @Override
-    public boolean isRejecting() {
-        return emitNoMoreItems;
     }
 }

@@ -10,14 +10,15 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
-import java.util.Random;
+import java.util.RandomAccess;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.checkIndex;
 
 final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleConsumer, double[], PrimitiveIterator.OfDouble>
-        implements DoubleMutableList {
+        implements DoubleMutableList, RandomAccess {
 
     DoubleArrayList() {
         super(0, new double[DEFAULT_CAPACITY]);
@@ -132,15 +133,8 @@ final class DoubleArrayList extends PrimitiveAbstractArrayList<Double, DoubleCon
     }
 
     @Override
-    public OptionalDouble findRandom(final Random random) {
+    public OptionalDouble findRandom(final RandomGenerator random) {
         return isNotEmpty() ? OptionalDouble.of(get(random.nextInt(size()))) : OptionalDouble.empty();
-    }
-
-    @Override
-    public DoubleList shuffled(final Random random) {
-        final var mutableList = DoubleMutableList.of(this);
-        PrimitiveListHelper.shuffle(mutableList, random);
-        return mutableList;
     }
 
     private int lastIndexOfRange(final double value, final int end) {

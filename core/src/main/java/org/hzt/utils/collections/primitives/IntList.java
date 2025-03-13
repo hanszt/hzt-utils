@@ -1,8 +1,9 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.Sizable;
 import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.collections.BinarySearchable;
-import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.CollectionX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.primitives.PrimitiveListIterator;
 import org.hzt.utils.primitive_comparators.IntComparator;
@@ -10,11 +11,12 @@ import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.IntSequence;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.OptionalInt;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
+import java.util.random.RandomGenerator;
 
 public interface IntList extends IntCollection,
         PrimitiveList<PrimitiveListIterator.OfInt>,
@@ -26,15 +28,17 @@ public interface IntList extends IntCollection,
     }
 
     static IntList of(final Iterable<Integer> iterable) {
-        return IntSequence.of(iterable).toList();
+        return switch (iterable) {
+            case IntImmutableList l -> l;
+            case IntArrayList l when l.isUnmodifiable -> l;
+            case Collection<Integer> c -> IntList.build(c.size(), ml -> ml.addAll(iterable));
+            case Sizable s -> IntList.build(s.size(), ml -> ml.addAll(iterable));
+            default -> IntSequence.of(iterable).toList();
+        };
     }
 
     static IntList of(final int... array) {
         return new IntImmutableList(array);
-    }
-
-    static IntList copyOf(final IntCollection intCollection) {
-        return new IntImmutableList(intCollection);
     }
 
     static IntList build(final Consumer<? super IntMutableList> factory) {
@@ -92,14 +96,14 @@ public interface IntList extends IntCollection,
         return OptionalInt.empty();
     }
 
-    default int random(final Random random) {
+    default int random(final RandomGenerator random) {
         return findRandom(random).orElseThrow();
     }
 
-    OptionalInt findRandom(Random random);
+    OptionalInt findRandom(RandomGenerator random);
 
     @Override
-    default ListX<Integer> boxed() {
+    default CollectionX<Integer> boxed() {
         return asSequence().boxed().toListX();
     }
 
@@ -125,7 +129,12 @@ public interface IntList extends IntCollection,
         return IntList.of(array);
     }
 
-    IntList shuffled(Random random);
+    default IntList shuffled(RandomGenerator random) {
+        return IntList.build(size(), ml -> {
+            ml.addAll(this);
+            PrimitiveListHelper.shuffle(ml, random);
+        });
+    }
 
     /**
      * @see BinarySearchable#binarySearch(int, int, Object)

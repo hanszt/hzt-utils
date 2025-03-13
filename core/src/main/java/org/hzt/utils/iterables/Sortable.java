@@ -1,34 +1,38 @@
 package org.hzt.utils.iterables;
 
 import org.hzt.utils.It;
+import org.hzt.utils.collections.CollectionX;
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.SortedMutableSetX;
 import org.hzt.utils.comparables.ComparableX;
 import org.hzt.utils.sequences.Sequence;
 
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.Random;
 import java.util.function.Function;
+import java.util.random.RandomGenerator;
 
 @FunctionalInterface
 public interface Sortable<T> extends Iterable<T> {
 
-    default Sortable<T> shuffled(final Random random) {
+    default Sortable<T> shuffled(final RandomGenerator random) {
         return sortedBy(s -> random.nextInt());
     }
 
     default <R extends Comparable<? super R>> Sortable<T> sorted() {
-        return toMutableListSortedBy((Function<T, R>) IterableXHelper::asComparableOrThrow);
+        return toListSortedBy((Function<T, R>) IterableXHelper::asComparableOrThrow);
     }
 
     default Sortable<T> sorted(final Comparator<? super T> comparator) {
-        final var list = MutableListX.of(this);
-        list.sort(comparator);
-        return list;
+        return ListX.build(sizeIfKnown(), ml -> {
+           ml.addAll(this);
+           ml.sort(comparator);
+        });
     }
 
     default <R extends Comparable<? super R>> Sortable<T> sortedBy(final Function<? super T, ? extends R> selector) {
-        return toMutableListSortedBy(selector);
+        return toListSortedBy(selector);
     }
 
     default Sortable<T> sortedDescending() {
@@ -36,15 +40,26 @@ public interface Sortable<T> extends Iterable<T> {
     }
 
     default <R extends Comparable<? super R>> Sortable<T> sortedByDescending(final Function<? super T, ? extends R> selector) {
-        final var list = MutableListX.of(this);
-        list.sort(Comparator.comparing(selector).reversed());
-        return list;
+        return ListX.build(sizeIfKnown(), ml -> {
+            ml.addAll(this);
+            ml.sort(Comparator.comparing(selector).reversed());
+        });
     }
 
-    private <R extends Comparable<? super R>> MutableListX<T> toMutableListSortedBy(final Function<? super T, ? extends R> selector) {
-        final var list = MutableListX.of(this);
-        list.sort(Comparator.comparing(selector));
-        return list;
+    private <R extends Comparable<? super R>> ListX<T> toListSortedBy(final Function<? super T, ? extends R> selector) {
+        final var size = sizeIfKnown();
+        return ListX.build(size, ml -> {
+            ml.addAll(this);
+            ml.sort(Comparator.comparing(selector));
+        });
+    }
+
+    private int sizeIfKnown() {
+        return switch (this) {
+            case Collection<?> c -> c.size();
+            case CollectionX<?> c -> c.size();
+            default -> 0;
+        };
     }
 
     default <R extends Comparable<? super R>> SortedMutableSetX<T> toSortedSet(final Function<? super T, ? extends R> selector) {
@@ -58,7 +73,7 @@ public interface Sortable<T> extends Iterable<T> {
     }
 
     default <R extends Comparable<? super R>> SortedMutableSetX<R> toSortedSetOf(final Function<? super T, ? extends R> selector) {
-        final MutableListX<R> list = MutableListX.empty();
+        final var list = MutableListX.<R>empty();
         for (final var t : this) {
             if (t != null) {
                 final var r = selector.apply(t);

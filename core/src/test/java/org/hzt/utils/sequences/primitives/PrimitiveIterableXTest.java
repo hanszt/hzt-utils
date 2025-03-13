@@ -11,9 +11,9 @@ import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PrimitiveSequenceTest {
+class PrimitiveIterableXTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PrimitiveSequenceTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrimitiveIterableXTest.class);
 
     @Test
     void testLongRangeToListGetBigDecimalAverage() {

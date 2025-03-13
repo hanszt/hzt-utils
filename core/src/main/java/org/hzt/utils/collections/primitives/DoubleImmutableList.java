@@ -7,11 +7,12 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.OptionalDouble;
 import java.util.PrimitiveIterator;
-import java.util.Random;
+import java.util.RandomAccess;
 import java.util.function.DoubleConsumer;
+import java.util.random.RandomGenerator;
 
 final class DoubleImmutableList extends
-        PrimitiveAbstractCollection<Double, DoubleConsumer, double[], PrimitiveIterator.OfDouble> implements DoubleList {
+        PrimitiveAbstractCollection<Double, DoubleConsumer, double[], PrimitiveIterator.OfDouble> implements DoubleList, RandomAccess {
 
     private final double[] elementData;
 
@@ -23,11 +24,6 @@ final class DoubleImmutableList extends
     DoubleImmutableList(final double... array) {
         super(array.length);
         elementData = ArraysX.copyOf(array);
-    }
-
-    DoubleImmutableList(final DoubleCollection collection) {
-        super(collection.size());
-        elementData = ArraysX.copyOf(collection.toArray());
     }
 
     @Override
@@ -55,15 +51,8 @@ final class DoubleImmutableList extends
     }
 
     @Override
-    public OptionalDouble findRandom(final Random random) {
+    public OptionalDouble findRandom(final RandomGenerator random) {
         return isNotEmpty() ? OptionalDouble.of(get(random.nextInt(size()))) : OptionalDouble.empty();
-    }
-
-    @Override
-    public DoubleList shuffled(final Random random) {
-        final var mutableList = DoubleMutableList.of(this);
-        PrimitiveListHelper.shuffle(mutableList, random);
-        return mutableList;
     }
 
     private int lastIndexOfRange(final double value, final int end) {
@@ -76,17 +65,16 @@ final class DoubleImmutableList extends
     }
 
     @Override
-    @SuppressWarnings("squid:S2162")
     public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof DoubleList)) {
+        if (!(o instanceof DoubleList ol)) {
             return false;
         }
 
         final var iterator1 = iterator();
-        final var iterator2 = ((DoubleList) o).iterator();
+        final var iterator2 = ol.iterator();
         while (iterator1.hasNext() && iterator2.hasNext()) {
             final var l1 = iterator1.nextDouble();
             final var l2 = iterator2.nextDouble();
@@ -117,7 +105,6 @@ final class DoubleImmutableList extends
     protected double[] newArray(final int length) {
         return new double[length];
     }
-
 
     @Override
     public double[] toArray() {

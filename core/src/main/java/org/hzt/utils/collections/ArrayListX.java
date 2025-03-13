@@ -9,14 +9,15 @@ import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
-import java.util.Random;
+import java.util.RandomAccess;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import java.util.random.RandomGenerator;
 
-final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E> {
+final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E>, RandomAccess {
 
     private final List<E> list;
-    private boolean isUnmodifiable = false;
+    boolean isUnmodifiable = false;
 
     ArrayListX() {
         this.list = new ArrayList<>();
@@ -63,13 +64,6 @@ final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E> {
         this(size);
         factory.accept(this);
         isUnmodifiable = true;
-    }
-
-    @Override
-    public ListX<E> shuffled(final Random random) {
-        final var listX = new ArrayListX<>(this);
-        Collections.shuffle(listX, random);
-        return listX;
     }
 
     @Override
@@ -185,10 +179,11 @@ final class ArrayListX<E> extends AbstractList<E> implements MutableListX<E> {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof List) && !(o instanceof ListX)) {
-            return false;
-        }
-        return equalsRange((Iterable<?>) o, size());
+        return switch (o) {
+            case List<?> l -> equalsRange(l, size());
+            case ListX<?> l -> equalsRange(l, size());
+            case null, default -> false;
+        };
     }
 
     private boolean equalsRange(final Iterable<?> other, final int to) {

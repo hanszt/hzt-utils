@@ -1,5 +1,6 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.Sizable;
 import org.hzt.utils.arrays.ArraysX;
 import org.hzt.utils.collections.BinarySearchable;
 import org.hzt.utils.collections.ListX;
@@ -10,11 +11,12 @@ import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.OptionalDouble;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleToIntFunction;
+import java.util.random.RandomGenerator;
 
 public interface DoubleList extends DoubleCollection,
         PrimitiveList<PrimitiveListIterator.OfDouble>,
@@ -26,15 +28,17 @@ public interface DoubleList extends DoubleCollection,
     }
 
     static DoubleList of(final Iterable<Double> iterable) {
-        return DoubleSequence.of(iterable).toList();
+        return switch (iterable) {
+            case DoubleImmutableList l -> l;
+            case DoubleArrayList l when l.isUnmodifiable -> l;
+            case Collection<Double> c -> DoubleList.build(c.size(), ml -> ml.addAll(iterable));
+            case Sizable s -> DoubleList.build(s.size(), ml -> ml.addAll(iterable));
+            default -> DoubleSequence.of(iterable).toList();
+        };
     }
 
     static DoubleList of(final double... array) {
         return new DoubleImmutableList(array);
-    }
-
-    static DoubleList copyOf(final DoubleCollection doubleCollection) {
-        return new DoubleImmutableList(doubleCollection);
     }
 
     static DoubleList build(final Consumer<? super DoubleMutableList> factory) {
@@ -92,11 +96,11 @@ public interface DoubleList extends DoubleCollection,
         return OptionalDouble.empty();
     }
 
-    default double random(final Random random) {
+    default double random(final RandomGenerator random) {
         return findRandom(random).orElseThrow();
     }
 
-    OptionalDouble findRandom(Random random);
+    OptionalDouble findRandom(RandomGenerator random);
 
     @Override
     default ListX<Double> boxed() {
@@ -125,7 +129,12 @@ public interface DoubleList extends DoubleCollection,
         return DoubleList.of(array);
     }
 
-    DoubleList shuffled(Random random);
+    default DoubleList shuffled(RandomGenerator random) {
+        return DoubleList.build(size(), ml -> {
+            ml.addAll(this);
+            PrimitiveListHelper.shuffle(ml, random);
+        });
+    }
 
     /**
      * @see BinarySearchable#binarySearch(int, int, Object)

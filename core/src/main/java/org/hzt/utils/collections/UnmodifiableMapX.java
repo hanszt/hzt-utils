@@ -9,28 +9,33 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 
-final class ImmutableMapX<K, V> implements MapX<K, V> {
+final class UnmodifiableMapX<K, V> implements MapX<K, V> {
 
     private final Map<K, V> map;
 
-    ImmutableMapX(final Map<? extends K, ? extends V> map) {
+    UnmodifiableMapX(final Map<? extends K, ? extends V> map) {
         this.map = Map.copyOf(map);
     }
 
-    ImmutableMapX() {
+    UnmodifiableMapX() {
         this(Map.of());
     }
 
-    ImmutableMapX(final Iterable<Entry<K, V>> iterable) {
-        final var hashMap = new HashMap<K, V>();
-        for (final var entry : iterable) {
-            hashMap.put(entry.getKey(), entry.getValue());
-        }
-        this.map = Map.copyOf(hashMap);
+    UnmodifiableMapX(final Iterable<Entry<K, V>> iterable) {
+        this.map = switch (iterable) {
+            case UnmodifiableMapX<K, V> m ->  m.map;
+            default -> {
+                final var hashMap = new HashMap<K, V>();
+                for (final var entry : iterable) {
+                    hashMap.put(entry.getKey(), entry.getValue());
+                }
+                yield Map.copyOf(hashMap);
+            }
+        };
     }
 
     @SafeVarargs
-    ImmutableMapX(final Pair<K, V>... pairs) {
+    UnmodifiableMapX(final Pair<K, V>... pairs) {
         final Map<K, V> hashMap = new HashMap<>();
         for (final var pair : pairs) {
             hashMap.put(pair.first(), pair.second());
@@ -39,7 +44,7 @@ final class ImmutableMapX<K, V> implements MapX<K, V> {
     }
 
     @SafeVarargs
-    ImmutableMapX(final Entry<? extends K, ? extends V>... entries) {
+    UnmodifiableMapX(final Entry<? extends K, ? extends V>... entries) {
         final var hashMap = new HashMap<K, V>();
         for (final var entry : entries) {
             hashMap.put(entry.getKey(), entry.getValue());

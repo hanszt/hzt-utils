@@ -35,10 +35,9 @@ public interface DoubleMutableCollection extends DoubleCollection,
 
     @Override
     default boolean addAll(final double... array) {
-        final var iterator = PrimitiveIterators.doubleArrayIterator(array);
         var allAdded = true;
-        while (iterator.hasNext()) {
-            if (!add(iterator.nextDouble())) {
+        for (final var v : array) {
+            if (!add(v)) {
                 allAdded = false;
             }
         }

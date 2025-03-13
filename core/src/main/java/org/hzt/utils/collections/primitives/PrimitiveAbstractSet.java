@@ -10,6 +10,7 @@ public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIte
     static final float MAXIMUM_LOAD_FACTOR = 0.75F;
     static final int INITIAL_CAPACITY = 8;
     PrimitiveNode[] table;
+    boolean isUnmodifiable = false;
 
     int mask = INITIAL_CAPACITY - 1;
 
@@ -104,6 +105,12 @@ public abstract class PrimitiveAbstractSet<T, T_CONST, A, I extends PrimitiveIte
 
         PrimitiveNode(final PrimitiveNode next) {
             this.next = next;
+        }
+    }
+
+    protected void throwIfNotModifiable() {
+        if (isUnmodifiable) {
+            throw new UnsupportedOperationException();
         }
     }
 }

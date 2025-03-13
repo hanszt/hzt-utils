@@ -27,11 +27,6 @@ public interface MutableCollectionX<E> extends Collection<E>, CollectionX<E>, Mu
         return (MutableListX<E>) CollectionX.super.plus(value);
     }
 
-    @Override
-    default MutableListX<E> plus(final Iterable<? extends E> iterable) {
-        return MutableListX.of(this).plus(iterable);
-    }
-
     default boolean addAll(final Iterable<? extends E> iterable) {
         if (iterable instanceof final Collection<?> c) {
             return addAll((Collection<? extends E>) c);

@@ -5,7 +5,6 @@ import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.function.IndexedBiFunction;
-import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.streams.StreamX;
@@ -45,9 +44,9 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skippable<T>, 
 
     IterableX<T> minus(T value);
 
-    IterableX<T> minus(Iterable<T> values);
+    IterableX<T> minus(Iterable<? extends T> values);
 
-    <R> IterableX<R> filterIsInstance(Class<R> aClass);
+    IterableX<T> merge(Iterable<? extends T> other);
 
     default StreamX<T> stream() {
         return StreamX.of(StreamSupport.stream(spliterator(), false));
@@ -56,12 +55,6 @@ public interface IterableX<T> extends Mappable<T>, Filterable<T>, Skippable<T>, 
     default Sequence<T> asSequence() {
         return Sequence.of(this);
     }
-
-    PrimitiveIterable.OfInt mapToInt(ToIntFunction<? super T> mapper);
-
-    PrimitiveIterable.OfLong mapToLong(ToLongFunction<? super T> toLongMapper);
-
-    PrimitiveIterable.OfDouble mapToDouble(ToDoubleFunction<? super T> mapper);
 
     <K> EntryIterable<K, T> associateBy(Function<? super T, ? extends K> keyMapper);
 

@@ -3,11 +3,14 @@ package org.hzt.utils.collections.primitives;
 import org.hzt.utils.collections.MutableSetX;
 
 import java.util.PrimitiveIterator;
+import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 
 /**
  * This class implements a simple hash set for {@code double} values.
  * keep track of nodes that are being pointed to by fingers.
+ *
+ * @see <a href="https://codereview.stackexchange.com/questions/266541/a-simple-java-integer-hash-set">A simple Java integer hash set</a>
  */
 final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, double[], PrimitiveIterator.OfDouble>
         implements DoubleMutableSet {
@@ -16,8 +19,20 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
         this(0);
     }
 
+    public DoubleHashSet(Consumer<DoubleMutableSet> factory) {
+        this();
+        factory.accept(this);
+        isUnmodifiable = true;
+    }
+
+    public DoubleHashSet(int size, Consumer<DoubleMutableSet> factory) {
+        this(size);
+        factory.accept(this);
+        isUnmodifiable = true;
+    }
+
     DoubleHashSet(final double[] values) {
-        this(values.length > 0 ? 1 : 0);
+        this();
         for (final var value : values) {
             add(value);
         }
@@ -28,6 +43,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
     }
 
     public boolean add(final double value) {
+        throwIfNotModifiable();
         if (contains(value)) {
             return false;
         }
@@ -58,6 +74,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
     }
 
     public boolean remove(final double value) {
+        throwIfNotModifiable();
         if (!contains(value)) {
             return false;
         }
@@ -97,6 +114,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
     }
 
     public void clear() {
+        throwIfNotModifiable();
         size = 0;
         table = new CollisionChainNode[INITIAL_CAPACITY];
         mask = table.length - 1;
@@ -116,6 +134,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
 
         return MAXIMUM_LOAD_FACTOR * size * 4 < table.length;
     }
+
     private void expand() {
         final var newTable = new CollisionChainNode[table.length * 2];
 
@@ -174,6 +193,7 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
             return "Chain node, double = " + value;
         }
     }
+
     @Override
     protected void appendNextPrimitive(final StringBuilder sb, final PrimitiveIterator.OfDouble iterator) {
         sb.append(iterator.nextDouble());

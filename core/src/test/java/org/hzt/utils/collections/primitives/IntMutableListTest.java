@@ -1,5 +1,7 @@
 package org.hzt.utils.collections.primitives;
 
+import org.hzt.utils.It;
+import org.hzt.utils.collections.ListX;
 import org.hzt.utils.primitive_comparators.IntComparator;
 import org.hzt.utils.sequences.primitives.IntSequence;
 import org.junit.jupiter.api.Nested;
@@ -8,8 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.random.RandomGenerator;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +22,7 @@ class IntMutableListTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IntMutableListTest.class);
 
-    private static final Random random = new Random();
+    private static final RandomGenerator random = new Random();
 
     @Test
     void testDifferentMethods() {
@@ -82,8 +87,21 @@ class IntMutableListTest {
     }
 
     @Test
+    void testSortList() {
+        final var ints = IntSequence.iterate(10_000, i -> i - 1)
+                .take(10_000)
+                .boxed()
+                .shuffled(new Random(0))
+                .toMutableList();
+
+        ints.sort(Comparator.comparing(It::self));
+
+        assertEquals(ListX.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ints.take(10));
+    }
+
+    @Test
     void testSortIntList() {
-        final var ints = IntSequence.iterate(10_000, i -> --i)
+        final var ints = IntSequence.iterate(10_000, i -> i - 1)
                 .take(10_000)
                 .shuffled(new Random(0))
                 .toMutableList();
@@ -95,7 +113,7 @@ class IntMutableListTest {
 
     @Test
     void testSortReversedIntList() {
-        final var ints = IntSequence.iterate(-10_000, i -> ++i)
+        final var ints = IntSequence.iterate(-10_000, i -> i + 1)
                 .take(10_000)
                 .shuffled(random)
                 .toMutableList();

@@ -10,14 +10,15 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.PrimitiveIterator;
-import java.util.Random;
+import java.util.RandomAccess;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.checkIndex;
 
 final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer, int[], PrimitiveIterator.OfInt>
-        implements IntMutableList {
+        implements IntMutableList, RandomAccess {
 
     IntArrayList() {
         super(0, new int[DEFAULT_CAPACITY]);
@@ -132,15 +133,8 @@ final class IntArrayList extends PrimitiveAbstractArrayList<Integer, IntConsumer
     }
 
     @Override
-    public OptionalInt findRandom(final Random random) {
+    public OptionalInt findRandom(final RandomGenerator random) {
         return isNotEmpty() ? OptionalInt.of(get(random.nextInt(size()))) : OptionalInt.empty();
-    }
-
-    @Override
-    public IntList shuffled(final Random random) {
-        final var mutableListX = IntMutableList.of(this);
-        PrimitiveListHelper.shuffle(mutableListX, random);
-        return mutableListX;
     }
 
     private int lastIndexOfRange(final int value, final int end) {

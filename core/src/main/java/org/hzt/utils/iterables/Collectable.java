@@ -57,6 +57,11 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <K, V> MutableMapX<K, V> toMutableMap(final Function<? super T, ? extends K> keyMapper,
                                                   final Function<? super T, ? extends V> valueMapper) {
         final MutableMapX<K, V> map = MutableMapX.empty();
+        fillMap(keyMapper, valueMapper, map);
+        return map;
+    }
+
+    private <K, V> void fillMap(final Function<? super T, ? extends K> keyMapper, final Function<? super T, ? extends V> valueMapper, final MutableMapX<K, V> map) {
         for (final var t : this) {
             if (t != null) {
                 final var key = keyMapper.apply(t);
@@ -65,12 +70,11 @@ public interface Collectable<T> extends IndexedIterable<T> {
                 }
             }
         }
-        return map;
     }
 
     default <K, V> MapX<K, V> toMapX(final Function<? super T, ? extends K> keyMapper,
                                      final Function<? super T, ? extends V> valueMapper) {
-        return toMutableMap(keyMapper, valueMapper);
+        return MapX.build(mm -> fillMap(keyMapper, valueMapper, mm));
     }
 
     default <K, V> Map<K, V> toMap(final Function<? super T, ? extends K> keyMapper,
@@ -209,7 +213,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default ListX<T> toListX() {
-        return ListX.copyOf(toMutableList());
+        return ListX.of(toMutableList());
     }
 
     default List<T> toList() {

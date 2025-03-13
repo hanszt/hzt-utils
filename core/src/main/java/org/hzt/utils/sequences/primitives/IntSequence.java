@@ -13,6 +13,7 @@ import org.hzt.utils.iterables.primitives.IntReducable;
 import org.hzt.utils.iterables.primitives.IntStreamable;
 import org.hzt.utils.iterables.primitives.IntStringable;
 import org.hzt.utils.iterables.primitives.PrimitiveIterable;
+import org.hzt.utils.iterables.primitives.PrimitiveIterableX;
 import org.hzt.utils.iterables.primitives.PrimitiveSortable;
 import org.hzt.utils.iterators.Iterators;
 import org.hzt.utils.iterators.primitives.IntFilteringIterator;
@@ -26,7 +27,6 @@ import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 
-import java.util.Random;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiFunction;
@@ -42,13 +42,14 @@ import java.util.function.IntToLongFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.ToIntFunction;
 import java.util.stream.Gatherer;
+import java.util.random.RandomGenerator;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 @FunctionalInterface
 public interface IntSequence extends IntWindowedSequence, IntReducable, IntGatherable, IntNumerable,
         IntStreamable, IntGroupable, IntStringable, PrimitiveSortable<IntComparator>,
-        PrimitiveSequence<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator> {
+        PrimitiveIterableX<Integer, IntConsumer, IntUnaryOperator, IntPredicate, IntBinaryOperator> {
 
     static IntSequence empty() {
         return PrimitiveIterators::emptyIntIterator;
@@ -114,7 +115,12 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntGathe
 
     @Override
     default IntSequence distinct() {
-        return () -> PrimitiveIterators.distinctIterator(iterator());
+        return distinctBy(e -> e);
+    }
+
+    @Override
+    default IntSequence distinctBy(IntUnaryOperator selector) {
+        return () -> PrimitiveIterators.distinctIterator(iterator(), selector);
     }
 
     @Override
@@ -147,7 +153,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntGathe
     }
 
     @Override
-    default <A, R> Sequence<R> gather(final Gatherer<Integer, A, R> gatherer) {
+    default <A, R> Sequence<R> gatherToObj(final Gatherer<Integer, A, R> gatherer) {
         return gatherer instanceof IntGatherer<A, R> intGatherer ?
                 (() -> PrimitiveIterators.intGatheringIterator(iterator(), intGatherer)) :
                 (() -> Iterators.gatheringIterator(iterator(), gatherer));
@@ -240,7 +246,7 @@ public interface IntSequence extends IntWindowedSequence, IntReducable, IntGathe
         return sorted((IntX::compareReversed));
     }
 
-    default IntSequence shuffled(final Random random) {
+    default IntSequence shuffled(final RandomGenerator random) {
         return () -> toList().shuffled(random).iterator();
     }
 

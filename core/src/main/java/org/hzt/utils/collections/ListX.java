@@ -7,11 +7,10 @@ import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiFunction;
@@ -20,6 +19,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
+import java.util.random.RandomGenerator;
 
 import static org.hzt.utils.PreConditions.require;
 
@@ -35,16 +35,20 @@ public interface ListX<E> extends CollectionX<E>,
         Reversable<ListX<E>> {
 
     static <E> ListX<E> empty() {
-        return new ImmutableListX<>();
-    }
-
-    static <E> ListX<E> of(final Iterable<E> iterable) {
-        return new ImmutableListX<>(iterable);
+        return new UnmodifiableListX<>();
     }
 
     @SafeVarargs
     static <E> ListX<E> of(final E... values) {
-        return new ImmutableListX<>(values);
+        return new UnmodifiableListX<>(values);
+    }
+
+    static <E> ListX<E> of(final Iterable<E> iterable) {
+        return new UnmodifiableListX<>(iterable, false);
+    }
+
+    static <E> ListX<E> ofNullsAllowed(final Iterable<E> iterable) {
+        return new UnmodifiableListX<>(iterable, true);
     }
 
     static <E> ListX<E> build(final Consumer<? super MutableListX<E>> mutableListConsumer) {
@@ -53,14 +57,6 @@ public interface ListX<E> extends CollectionX<E>,
 
     static <E> ListX<E> build(int size, final Consumer<? super MutableListX<E>> mutableListConsumer) {
         return new ArrayListX<>(size, mutableListConsumer);
-    }
-
-    static <E> ListX<E> copyOf(final Collection<E> collection) {
-        return new ImmutableListX<>(collection);
-    }
-
-    static <E> ListX<E> copyOfNullsAllowed(final List<E> list) {
-        return new ImmutableListX<>(list);
     }
 
     default <R> R foldRight(final R initial, final BiFunction<E, R, R> operation) {
@@ -97,21 +93,26 @@ public interface ListX<E> extends CollectionX<E>,
     }
 
     default ListX<E> takeLast(final int n) {
-        return ListX.copyOfNullsAllowed(takeLastTo(MutableListX::withInitCapacity, n));
+        return ListX.ofNullsAllowed(takeLastTo(MutableListX::withInitCapacity, n));
     }
 
     @Override
-    ListX<E> shuffled(Random random);
+    default ListX<E> shuffled(RandomGenerator random) {
+        return ListX.build(size(), ml -> {
+            ml.addAll(this);
+            Collections.shuffle(ml, random);
+        });
+    }
 
     default ListX<E> reversed() {
         return Sequence.reverseOf(this).toListX();
     }
 
-    default Optional<E> findRandom(final Random random) {
+    default Optional<E> findRandom(final RandomGenerator random) {
         return isNotEmpty() ? Optional.of(get(random.nextInt(size()))) : Optional.empty();
     }
 
-    default E random(final Random random) {
+    default E random(final RandomGenerator random) {
         return findRandom(random).orElseThrow();
     }
 
@@ -183,11 +184,11 @@ public interface ListX<E> extends CollectionX<E>,
     }
 
     default ListX<E> skipLast(final int n) {
-        return ListX.copyOf(skipLastTo(MutableListX::withInitCapacity, n));
+        return ListX.of(skipLastTo(MutableListX::withInitCapacity, n));
     }
 
     default ListX<E> skipLastWhile(final Predicate<? super E> predicate) {
-        return ListX.copyOf(skipLastWhileTo(MutableListX::withInitCapacity, predicate));
+        return ListX.of(skipLastWhileTo(MutableListX::withInitCapacity, predicate));
     }
 
     default <C extends Collection<E>> C skipLastWhileTo(final IntFunction<C> collectionFactory,
@@ -209,7 +210,7 @@ public interface ListX<E> extends CollectionX<E>,
     }
 
     default ListX<E> takeLastWhile(final Predicate<? super E> predicate) {
-        return ListX.copyOf(takeLastWhileTo(MutableListX::withInitCapacity, predicate));
+        return ListX.of(takeLastWhileTo(MutableListX::withInitCapacity, predicate));
     }
 
     default <C extends Collection<E>> C takeLastWhileTo(final IntFunction<C> collectionFactory,

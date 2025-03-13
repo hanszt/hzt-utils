@@ -11,16 +11,16 @@ import java.util.function.Function;
 public interface SetX<E> extends CollectionX<E>, Transformable<SetX<E>> {
 
     static <E> SetX<E> empty() {
-        return new ImmutableSetX<>();
+        return new UnmodifiableSetX<>();
     }
 
     static <E> SetX<E> of(final Iterable<E> iterable) {
-        return new ImmutableSetX<>(iterable);
+        return new UnmodifiableSetX<>(iterable);
     }
 
     @SafeVarargs
     static <E> SetX<E> of(final E... values) {
-        return new ImmutableSetX<>(values);
+        return new UnmodifiableSetX<>(values);
     }
 
     static <E> SetX<E> build(final Consumer<? super MutableSetX<E>> mutableSetConsumer) {
@@ -32,11 +32,11 @@ public interface SetX<E> extends CollectionX<E>, Transformable<SetX<E>> {
     }
 
     static <E> SetX<E> copyOf(final Iterable<E> iterable) {
-        return new ImmutableSetX<>(iterable);
+        return new UnmodifiableSetX<>(iterable);
     }
 
     static <E> SetX<E> copyOf(final Collection<E> collection) {
-        return new ImmutableSetX<>(collection);
+        return new UnmodifiableSetX<>(collection);
     }
 
     @Override

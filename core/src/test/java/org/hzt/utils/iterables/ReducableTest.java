@@ -175,11 +175,11 @@ class ReducableTest {
 
         final var expected = Sequence.of(ZoneId.getAvailableZoneIds())
                 .maxBy(String::length)
-                .orElse("");
+                .orElseThrow();
 
         final var expected2 = ZoneId.getAvailableZoneIds().stream()
                 .max(Comparator.comparing(String::length))
-                .orElse("");
+                .orElseThrow();
 
         assertAll(
                 () -> assertEquals("America/Argentina/ComodRivadavia", result),

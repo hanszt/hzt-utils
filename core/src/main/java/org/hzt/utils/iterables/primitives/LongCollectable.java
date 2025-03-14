@@ -92,8 +92,7 @@ public interface LongCollectable extends PrimitiveCollectable<LongCollection>, P
         if (n == 0) {
             return collection;
         }
-        final PrimitiveIterable.OfLong iterable = this;
-        if (iterable instanceof final LongMutableCollection c && n >= c.size()) {
+        if (this instanceof final LongCollection c && n >= c.size()) {
             collection.addAll(c);
             return collection;
         }

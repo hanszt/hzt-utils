@@ -1,8 +1,10 @@
 package org.hzt.utils.collections.primitives;
 
 import org.hzt.utils.Sizable;
+import org.hzt.utils.collections.SetX;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.function.Consumer;
 
 public interface DoubleSet extends DoubleCollection {
@@ -30,5 +32,20 @@ public interface DoubleSet extends DoubleCollection {
 
     static DoubleSet build(int size, Consumer<DoubleMutableSet> factory) {
         return new DoubleHashSet(size, factory);
+    }
+
+    @Override
+    default SetX<Double> boxed() {
+        return new SetX<>() {
+            @Override
+            public int size() {
+                return DoubleSet.this.size();
+            }
+
+            @Override
+            public Iterator<Double> iterator() {
+                return DoubleSet.this.iterator();
+            }
+        };
     }
 }

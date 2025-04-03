@@ -6,9 +6,11 @@ import org.hzt.utils.iterables.Reversable;
 import org.hzt.utils.ranges.IntRange;
 import org.hzt.utils.sequences.Sequence;
 
+import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Spliterator;
@@ -256,5 +258,31 @@ public interface ListX<E> extends CollectionX<E>,
     @Override
     default IntRange indices() {
         return IntRange.of(0, size());
+    }
+
+    /**
+     * When the ListX implementation is unmodifiable, return it as AbstractList saving a copy round.
+     */
+    @Override
+    default List<E> toList() {
+        return switch (this) {
+            case UnmodifiableListX<E> ignored -> asAbstractList();
+            case ArrayListX<E> l when l.isUnmodifiable -> asAbstractList();
+            default -> CollectionX.super.toList();
+        };
+    }
+
+    private AbstractList<E> asAbstractList() {
+        return new AbstractList<>() {
+            @Override
+            public E get(final int index) {
+                return ListX.this.get(index);
+            }
+
+            @Override
+            public int size() {
+                return ListX.this.size();
+            }
+        };
     }
 }

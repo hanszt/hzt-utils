@@ -1,7 +1,6 @@
 package org.hzt.utils.sequences.primitives;
 
 import org.hzt.test.ReplaceCamelCaseBySentence;
-import org.hzt.utils.It;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.LongList;
@@ -231,7 +230,7 @@ class IntSequenceTest {
         final var array = new int[]{-1, 4, -5, 3, -6, 7, -4, 8, -5, 9, -4};
 
         final var sorted = IntSequence.of(array)
-                .sorted(IntComparator.comparing(It::asInt)
+                .sorted(IntComparator.naturalOrder()
                         .thenComparing(Integer::compareUnsigned))
                 .toArray();
 

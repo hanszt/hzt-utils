@@ -35,13 +35,9 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
-@FunctionalInterface
-@SuppressWarnings("squid:S1448")
 public interface CollectionX<E> extends IterableX<E>, Sizable {
 
-    default int size() {
-        return (int) count(It::noFilter);
-    }
+    int size();
 
     default boolean isEmpty() {
         return size() == 0;

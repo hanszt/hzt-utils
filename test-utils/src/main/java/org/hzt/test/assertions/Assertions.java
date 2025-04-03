@@ -3,14 +3,24 @@ package org.hzt.test.assertions;
 import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.AbstractIteratorAssert;
 import org.assertj.core.api.AbstractLocalDateAssert;
+import org.assertj.core.api.ListAssert;
 import org.junit.jupiter.api.function.Executable;
 import org.opentest4j.AssertionFailedError;
 
 import java.time.LocalDate;
 import java.time.Year;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Spliterators;
+import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,6 +40,10 @@ public final class Assertions {
 
     public static IntAssert assertThat(int actual) {
         return new IntAssert(actual);
+    }
+
+    public static <T> IterableAssert<T> assertThat(Iterable<? extends T> iterable) {
+        return new IterableAssert<>(iterable);
     }
 
     public static <T> ListIteratorAssert<T> assertThat(ListIterator<? extends T> actual) {
@@ -100,6 +114,21 @@ public final class Assertions {
         public ListIteratorAssert<T> doesNotHavePrevious() {
             assertFalse(actual.hasPrevious(), () -> "Expected " + actual + " to not have previous but did");
             return this;
+        }
+    }
+
+    public static final class IterableAssert<T> extends ListAssert<T> {
+
+        public IterableAssert(final Iterable<? extends T> actual) {
+            this(StreamSupport.stream(Spliterators.spliteratorUnknownSize(actual.iterator(), 0), false));
+        }
+
+        public IterableAssert(final Stream<? extends T> actual) {
+            super(actual);
+        }
+
+        public <S extends Comparable<? super S>> ListAssert<T> isSortedBy(Function<? super T, ? extends S> selector) {
+            return isSortedAccordingTo(Comparator.comparing(selector));
         }
     }
 
@@ -195,7 +224,7 @@ public final class Assertions {
             if (obj == null || obj.getClass() != this.getClass()) return false;
             var that = (MultiAssertionError) obj;
             return Objects.equals(this.errors, that.errors) &&
-                   this.depth == that.depth;
+                    this.depth == that.depth;
         }
 
         @Override
@@ -206,8 +235,8 @@ public final class Assertions {
         @Override
         public String toString() {
             return "MultiAssertionError[" +
-                   "errors=" + errors + ", " +
-                   "depth=" + depth + ']';
+                    "errors=" + errors + ", " +
+                    "depth=" + depth + ']';
         }
 
 

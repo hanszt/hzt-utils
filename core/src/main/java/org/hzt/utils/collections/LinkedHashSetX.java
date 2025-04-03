@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 final class LinkedHashSetX<E> extends AbstractSet<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
 
     private final SequencedSet<E> set;
-    private boolean isUnmodifiable = false;
+    boolean isUnmodifiable = false;
 
     LinkedHashSetX() {
         this.set = new LinkedHashSet<>();

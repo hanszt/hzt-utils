@@ -49,6 +49,29 @@ public final class SequenceExtensions {
         };
     }
 
+    public static <T, R> SequenceExtension<T, R> zip(final Iterable<T> iterable, final BiFunction<T, T, R> function) {
+        return new SequenceExtension<T, R>() {
+            public Sequence<R> extend(final Sequence<T> sequence) {
+                return new Sequence<R>() {
+                    public Iterator<R> iterator() {
+                        final Iterator<T> iterator1 = sequence.iterator();
+                        final Iterator<T> iterator2 = iterable.iterator();
+                        return new AbstractIterator<R>() {
+
+                            public boolean hasNext() {
+                                return iterator1.hasNext() && iterator2.hasNext();
+                            }
+
+                            public R next() {
+                                return function.apply(iterator1.next(), iterator2.next());
+                            }
+                        };
+                    }
+                };
+            }
+        };
+    }
+
     public static <T> SequenceExtension<T, List<T>> chunked(final int size) {
         return windowed(size, size, true);
     }

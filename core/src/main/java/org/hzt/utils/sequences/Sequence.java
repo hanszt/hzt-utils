@@ -21,7 +21,7 @@ import java.util.Set;
  * <p>
  * It does not support parallel execution.
  * <p>
- * The implementation is heavily inspired on Kotlin's sequences api. This api provides offers simpler syntax than streams
+ * The implementation is heavily inspired on Kotlin's sequences api. This api offers simpler syntax than streams
  * and is easier to understand
  *
  * @param <T> the type of the items in the Sequence
@@ -72,7 +72,10 @@ public abstract class Sequence<T> implements Iterable<T> {
                     }
 
                     public T next() {
-                        return elements[index++];
+                        if (hasNext()) {
+                            return elements[index++];
+                        }
+                        throw new NoSuchElementException();
                     }
                 };
             }
@@ -271,6 +274,83 @@ public abstract class Sequence<T> implements Iterable<T> {
         };
     }
 
+    public Sequence<T> takeWhile(final Predicate<? super T> predicate) {
+        return new Sequence<T>() {
+            public Iterator<T> iterator() {
+                final Iterator<T> iterator = Sequence.this.iterator();
+                return new AbstractIterator<T>() {
+                    boolean hasNext = false;
+                    T next = null;
+                    boolean takeMore = true;
+
+                    public boolean hasNext() {
+                        if (hasNext) {
+                            return true;
+                        }
+                        if (iterator.hasNext() && takeMore) {
+                            hasNext = true;
+                            next = iterator.next();
+                            if (predicate.test(next)) {
+                                return true;
+                            }
+                            takeMore = false;
+                            return false;
+                        }
+                        return false;
+                    }
+
+                    public T next() {
+                        if (hasNext()) {
+                            hasNext = false;
+                            return next;
+                        }
+                        throw new NoSuchElementException();
+                    }
+                };
+            }
+        };
+    }
+
+    public Sequence<T> skipWhile(final Predicate<? super T> predicate) {
+        return new Sequence<T>() {
+            public Iterator<T> iterator() {
+                final Iterator<T> iterator = Sequence.this.iterator();
+                return new AbstractIterator<T>() {
+                    boolean hasNext = false;
+                    T next = null;
+                    boolean skipMore = true;
+
+                    public boolean hasNext() {
+                        if (hasNext) {
+                            return true;
+                        }
+                        while (skipMore && iterator.hasNext()) {
+                            hasNext = true;
+                            next = iterator.next();
+                            if (!predicate.test(next)) {
+                                skipMore = false;
+                                return true;
+                            }
+                        }
+                        if (iterator.hasNext()) {
+                            hasNext = true;
+                            next = iterator.next();
+                        }
+                        return hasNext;
+                    }
+
+                    public T next() {
+                        if (hasNext()) {
+                            hasNext = false;
+                            return next;
+                        }
+                        throw new NoSuchElementException();
+                    }
+                };
+            }
+        };
+    }
+
     public Sequence<T> sorted(final Comparator<? super T> comparator) {
         return new Sequence<T>() {
 
@@ -311,7 +391,6 @@ public abstract class Sequence<T> implements Iterable<T> {
 
                     public T next() {
                         if (hasNext()) {
-                            final T next = iterator.next();
                             hasNext = false;
                             seen.add(next);
                             return next;

@@ -11,12 +11,19 @@ import static org.hzt.demo.function.IntegerFunctions.*;
 import static org.hzt.demo.function.StringFunctions.plusStringLength;
 import static org.hzt.demo.function.StringFunctions.stringLength;
 import static org.hzt.utils.function.Comparators.comparing;
-import static org.hzt.utils.function.Functions.greaterThan;
+import static org.hzt.utils.function.Functions.*;
 import static org.hzt.utils.sequences.SequenceExtensions.scan;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SequenceTest {
+
+    @Test
+    void testSequenceEmpty() {
+        final Sequence<Object> sequence = Sequence.empty();
+
+        assertThat(sequence.firstOrNull()).isNull();
+        assertTrue(sequence.none());
+    }
 
     @Test
     void testSimpleStreamWithMapYieldsIteratorWithNext() {
@@ -37,6 +44,7 @@ class SequenceTest {
     @Test
     void testFilterReduce() {
         final List<String> list = Arrays.asList("Hallo", "dit", "is", "een", "test");
+
         final int result = Sequence.of(list)
                 .map(stringLength)
                 .filter(greaterThan(3))
@@ -62,15 +70,18 @@ class SequenceTest {
 
     @Test
     public void testWindowedCustom() {
-        final List<List<Integer>> windows = Sequence
+        final Sequence<List<Integer>> windowedSequence = Sequence
                 .iterate(1, plus(2).andThen(mod(20)))
                 .take(22)
-                .andThen(SequenceExtensions.<Integer>windowed(10, 2, true))
+                .andThen(SequenceExtensions.<Integer>windowed(10, 2, true));
+
+        final List<List<Integer>> windows = windowedSequence
 //                .andThen(IO.<List<Integer>>println())
                 .toList();
 
         System.out.println("windows = " + windows);
 
+        assertTrue(windowedSequence.any());
         assertEquals(11, windows.size());
     }
 
@@ -82,6 +93,26 @@ class SequenceTest {
 
         assertEquals(Arrays.asList(0, 4, 7, 11), list);
     }
+
+    @Test
+    public void testSkipWhileTakeWhile() {
+        final List<Integer> list = Sequence.iterate(1, times(2))
+                .skipWhile(lessThan(8))
+                .takeWhile(lessThanEqual(8192))
+                .toList();
+
+        assertEquals(Arrays.asList(8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192), list);
+    }
+
+    @Test
+    public void testDistinct() {
+        final List<Integer> list = Sequence.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 1, 2, 11)
+                .distinct()
+                .toList();
+
+        assertEquals(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11), list);
+    }
+
 
     @Test
     public void testSorted() {

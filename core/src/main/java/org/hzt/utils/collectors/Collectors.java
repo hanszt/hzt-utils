@@ -81,7 +81,7 @@ public final class Collectors {
                 for (final Map.Entry<K, A> e : map.entrySet()) {
                     result.put(e.getKey(), downsStreamCollector.finish(e.getValue()));
                 }
-                return result;
+                return Collections.unmodifiableMap(result);
             }
         };
     }

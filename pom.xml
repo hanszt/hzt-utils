@@ -7,24 +7,16 @@
 
     <groupId>org.hzt.utils</groupId>
     <artifactId>hzt-utils</artifactId>
-    <version>1.0.5.21</version>
+    <version>1.0.0.5</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>core</module>
-        <module>test-utils</module>
-        <module>benchmark</module>
-        <module>swing-utils</module>
-        <module>reflection</module>
-        <module>fx-utils</module>
-        <module>geometry</module>
-        <module>graph-utils</module>
-        <module>kotlin-utils</module>
     </modules>
 
     <properties>
-        <java.source.version>21</java.source.version>
-        <java.target.version>21</java.target.version>
+        <java.source.version>1.5</java.source.version>
+        <java.target.version>1.5</java.target.version>
         <coverage.target>50%</coverage.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--        dependencies-->
@@ -45,30 +37,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.hzt.utils</groupId>
-                <artifactId>test-utils</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.hzt.utils</groupId>
-                <artifactId>core</artifactId>
-                <version>${project.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.awaitility/awaitility -->
-            <dependency>
-                <groupId>org.awaitility</groupId>
-                <artifactId>awaitility</artifactId>
-                <version>${awaitility.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-base</artifactId>
-                <version>${javafx.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>

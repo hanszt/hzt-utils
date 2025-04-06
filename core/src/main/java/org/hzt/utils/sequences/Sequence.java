@@ -1,54 +1,19 @@
 package org.hzt.utils.sequences;
 
-import org.hzt.utils.It;
-import org.hzt.utils.PreConditions;
-import org.hzt.utils.collections.ListX;
-import org.hzt.utils.function.IndexedBiFunction;
-import org.hzt.utils.function.IndexedFunction;
-import org.hzt.utils.function.IndexedPredicate;
-import org.hzt.utils.function.QuadFunction;
-import org.hzt.utils.function.TriFunction;
-import org.hzt.utils.gatherers.Gatherer;
-import org.hzt.utils.iterables.EntryIterable;
-import org.hzt.utils.iterables.IterableExtension;
-import org.hzt.utils.iterables.IterableX;
-import org.hzt.utils.iterables.primitives.PrimitiveIterable;
-import org.hzt.utils.iterators.Iterators;
-import org.hzt.utils.iterators.primitives.PrimitiveIterators;
-import org.hzt.utils.sequences.primitives.DoubleSequence;
-import org.hzt.utils.sequences.primitives.IntSequence;
-import org.hzt.utils.sequences.primitives.LongSequence;
-import org.hzt.utils.streams.StreamX;
-import org.hzt.utils.tuples.IndexedValue;
-import org.hzt.utils.tuples.Pair;
-import org.hzt.utils.tuples.Triple;
+import org.hzt.utils.collectors.Collector;
+import org.hzt.utils.function.BiFunction;
+import org.hzt.utils.function.Consumer;
+import org.hzt.utils.function.Function;
+import org.hzt.utils.function.Predicate;
+import org.hzt.utils.iterators.AbstractIterator;
 
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.SequencedCollection;
 import java.util.Set;
-import java.util.Spliterators;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
-import java.util.function.Function;
-import java.util.function.IntConsumer;
-import java.util.function.LongConsumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
-import java.util.function.UnaryOperator;
-import java.util.random.RandomGenerator;
-import java.util.stream.StreamSupport;
-
-import static java.util.Spliterator.ORDERED;
 
 /**
  * A sequence is a simplified stream. It evaluates its operations in a lazy way.
@@ -60,466 +25,406 @@ import static java.util.Spliterator.ORDERED;
  *
  * @param <T> the type of the items in the Sequence
  */
-@FunctionalInterface
-@SuppressWarnings("squid:S1448")
-public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
+public abstract class Sequence<T> implements Iterable<T> {
 
-    static <T> Sequence<T> empty() {
-        return new EmptySequence<>();
-    }
+    public abstract Iterator<T> iterator();
 
-    static <T> Sequence.Builder<T> builder() {
-        return new SequenceBuilder<>();
-    }
-
-    @SafeVarargs
-    static <T> Sequence<T> of(final T... values) {
-        return () -> Iterators.arrayIterator(values);
-    }
-
-    static <T> Sequence<T> of(final Iterable<T> iterable) {
-        return iterable::iterator;
-    }
-
-    @SafeVarargs
-    static <T> Sequence<T> reverseOf(final T... values) {
-        return () -> Iterators.reverseArrayIterator(values);
-    }
-
-    static <T> Sequence<T> reverseOf(final SequencedCollection<T> sequencedCollection) {
-        return () -> sequencedCollection.reversed().iterator();
-    }
-
-    static <T> Sequence<T> reverseOf(final ListX<T> list) {
-        return () -> Iterators.reverseIterator(list);
-    }
-
-    static <K, V> EntrySequence<K, V> of(final EntryIterable<K, V> entryIterable) {
-        return entryIterable::iterator;
-    }
-
-    static <K, V> EntrySequence<K, V> ofMap(final Map<K, V> map) {
-        return map.entrySet()::iterator;
-    }
-
-    static <T> Sequence<T> ofNullable(final T value) {
-        return value != null ? Sequence.of(value) : new EmptySequence<>();
-    }
-
-    static <T> Sequence<T> iterate(final T seedValue, final UnaryOperator<T> nextFunction) {
-        return seedValue == null ? new EmptySequence<>() : (() -> Iterators.generatorIterator(() -> seedValue, nextFunction));
-    }
-
-    static <T> Sequence<T> generate(final Supplier<? extends T> nextFunction) {
-        return generate(nextFunction, t -> nextFunction.get());
-    }
-
-    static <T> Sequence<T> generate(final Supplier<? extends T> seedFunction, final UnaryOperator<T> nextFunction) {
-        return () -> Iterators.generatorIterator(seedFunction, nextFunction);
-    }
-
-    default Sequence<T> plus(final T value) {
-        return Sequence.of(this, Sequence.of(value)).mapMulti(Iterable::forEach);
-    }
-
-    default Sequence<T> plus(final Iterable<? extends T> values) {
-        return Sequence.of(this, Sequence.of(values)).mapMulti(Iterable::forEach);
-    }
-
-    default Sequence<T> minus(final T value) {
-        return () -> Iterators.removingIterator(this, value);
-    }
-
-    default Sequence<T> minus(final Iterable<? extends T> values) {
-        final var others = values instanceof Set<? extends T> set ? set : Sequence.of(values).toMutableSet();
-        return () -> others.isEmpty() ? iterator() : filterNot(others::contains).iterator();
-    }
-
-    @Override
-    default Sequence<T> merge(Iterable<? extends T> other) {
-        final var it1 = iterator();
-        final var it2 = other.iterator();
-        return () -> new Iterator<>() {
-            boolean takeFromThis = true;
-
+    public static <T> Sequence<T> empty() {
+        return new Sequence<T>() {
             @Override
-            public boolean hasNext() {
-                return it1.hasNext() || it2.hasNext();
-            }
+            public Iterator<T> iterator() {
+                return new AbstractIterator<T>() {
 
-            @Override
-            public T next() {
-                if (hasNext()) {
-                    final var next = takeFromThis ?
-                            it1.hasNext() ? it1.next() : it2.next() :
-                            it2.hasNext() ? it2.next() : it1.next();
-                    takeFromThis = !takeFromThis;
-                    return next;
-                }
-                throw new NoSuchElementException();
+                    public boolean hasNext() {
+                        return false;
+                    }
+
+                    public T next() {
+                        throw new NoSuchElementException();
+                    }
+                };
             }
         };
     }
 
-    default Sequence<T> intersperse(final T value) {
-        return intersperse(t -> value);
+    public static <T> Builder<T> builder() {
+        return new Builder<T>();
     }
 
-    default Sequence<T> intersperse(final UnaryOperator<T> operator) {
-        return () -> Iterators.interspersingIterator(iterator(), operator);
+    // Factory methods
+    public static <T> Sequence<T> of(final Iterable<T> iterable) {
+        return new Sequence<T>() {
+
+            public Iterator<T> iterator() {
+                return iterable.iterator();
+            }
+        };
     }
 
-    default Sequence<T> intersperse(final Supplier<T> operator) {
-        return intersperse(operator, t -> operator.get());
+    public static <T> Sequence<T> of(final T... elements) {
+        return new Sequence<T>() {
+
+            public Iterator<T> iterator() {
+                return new AbstractIterator<T>() {
+                    int index = 0;
+
+                    public boolean hasNext() {
+                        return index < elements.length;
+                    }
+
+                    public T next() {
+                        return elements[index++];
+                    }
+                };
+            }
+        };
     }
 
-    default Sequence<T> intersperse(final T initValue, final UnaryOperator<T> operator) {
-        return intersperse(() -> initValue, operator);
+    // Infinite generator
+    public static <T> Sequence<T> iterate(final T initial, final Function<T, T> nextItemGenerator) {
+        return new Sequence<T>() {
+
+            public Iterator<T> iterator() {
+                return new AbstractIterator<T>() {
+                    boolean hasNext = true;
+                    T item = initial;
+
+                    public boolean hasNext() {
+                        if (hasNext) {
+                            return true;
+                        }
+                        item = nextItemGenerator.apply(item);
+                        hasNext = true;
+                        return true;
+                    }
+
+                    public T next() {
+                        if (hasNext()) {
+                            hasNext = false;
+                            return item;
+                        }
+                        throw new NoSuchElementException();
+                    }
+                };
+            }
+        };
     }
 
-    default Sequence<T> intersperse(final Supplier<T> initSupplier, final UnaryOperator<T> operator) {
-        return () -> Iterators.interspersingIterator(iterator(), initSupplier, operator);
+    // Intermediate ops
+    public Sequence<T> take(final long count) {
+        final Iterator<T> iterator = iterator();
+        return new Sequence<T>() {
+
+            public Iterator<T> iterator() {
+                return new AbstractIterator<T>() {
+                    boolean hasNext = false;
+                    T next = null;
+                    long counter = 0L;
+
+                    public boolean hasNext() {
+                        if (hasNext) {
+                            return true;
+                        }
+                        if (iterator.hasNext() && counter < count) {
+                            hasNext = true;
+                            next = iterator.next();
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    public T next() {
+                        if (hasNext()) {
+                            hasNext = false;
+                            counter++;
+                            return next;
+                        }
+                        throw new NoSuchElementException();
+                    }
+                };
+            }
+        };
     }
 
-    default <R> Sequence<R> map(final Function<? super T, ? extends R> mapper) {
-        return () -> Iterators.transformingIterator(iterator(), mapper);
+    public Sequence<T> skip(final long count) {
+        final Iterator<T> iterator = iterator();
+        return new Sequence<T>() {
+
+            public Iterator<T> iterator() {
+                return new AbstractIterator<T>() {
+                    boolean hasNext = false;
+                    T next = null;
+                    int counter = 0;
+
+                    public boolean hasNext() {
+                        if (hasNext) {
+                            return true;
+                        }
+                        while (iterator.hasNext()) {
+                            hasNext = true;
+                            next = iterator.next();
+                            if (counter == count) {
+                                return true;
+                            }
+                            counter++;
+                        }
+                        return hasNext;
+                    }
+
+                    public T next() {
+                        if (hasNext()) {
+                            hasNext = false;
+                            return next;
+                        }
+                        throw new NoSuchElementException();
+                    }
+                };
+            }
+        };
     }
 
-    default <R> Sequence<R> mapNotNull(final Function<? super T, ? extends R> mapper) {
-        return () -> Iterators.filteringIterator(
-                Iterators.transformingIterator(
-                        Iterators.filteringIterator(iterator(),
-                                Objects::nonNull, true),
-                        mapper),
-                Objects::nonNull, true);
+    public <R> Sequence<R> map(final Function<? super T, ? extends R> mapper) {
+        final Iterator<T> iterator = iterator();
+        return new Sequence<R>() {
+            public Iterator<R> iterator() {
+                return new AbstractIterator<R>() {
+
+                    public boolean hasNext() {
+                        return iterator.hasNext();
+                    }
+
+                    public R next() {
+                        return mapper.apply(iterator.next());
+                    }
+                };
+            }
+        };
     }
 
-    @Override
-    default <A, R> Sequence<R> gather(final Gatherer<? super T, A, R> gatherer) {
-        return () -> Iterators.gatheringIterator(iterator(), gatherer);
+    public Sequence<T> filter(final Predicate<? super T> predicate) {
+        final Iterator<T> iterator = iterator();
+        return new Sequence<T>() {
+            public Iterator<T> iterator() {
+                return new AbstractIterator<T>() {
+                    boolean hasNext = false;
+                    T next = null;
+
+                    public boolean hasNext() {
+                        if (hasNext) {
+                            return true;
+                        }
+                        while (iterator.hasNext()) {
+                            next = iterator.next();
+                            if (predicate.test(next)) {
+                                hasNext = true;
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+
+                    public T next() {
+                        if (hasNext()) {
+                            hasNext = false;
+                            return next;
+                        }
+                        throw new NoSuchElementException();
+                    }
+                };
+            }
+        };
     }
 
-    default <R> Sequence<R> then(final IterableExtension<T, R> extension) {
-        return () -> extension.extend(this).iterator();
+    public <R> Sequence<R> flatMap(final Function<? super T, ? extends Iterable<R>> mapper) {
+        final Iterator<T> iterator = iterator();
+        return new Sequence<R>() {
+            public Iterator<R> iterator() {
+                return new AbstractIterator<R>() {
+                    boolean hasNext = false;
+                    R next = null;
+                    Iterator<R> itemIterator = null;
+
+                    public boolean hasNext() {
+                        if (hasNext) {
+                            return true;
+                        }
+                        if (itemIterator != null && itemIterator.hasNext()) {
+                            hasNext = true;
+                            next = itemIterator.next();
+                            return true;
+                        }
+                        if (iterator.hasNext()) {
+                            itemIterator = mapper.apply(iterator.next()).iterator();
+                            if (itemIterator.hasNext()) {
+                                hasNext = true;
+                                next = itemIterator.next();
+                            }
+                        }
+                        return hasNext;
+                    }
+
+                    public R next() {
+                        if (hasNext()) {
+                            hasNext = false;
+                            return next;
+                        }
+                        throw new NoSuchElementException();
+                    }
+                };
+            }
+        };
     }
 
-    default <R> Sequence<R> mapIfPresent(final Function<? super T, Optional<R>> mapper) {
-        return () -> Iterators.multiMappingIterator(iterator(), (t, consumer) -> mapper.apply(t).ifPresent(consumer));
+    public Sequence<T> distinct() {
+        final Iterator<T> iterator = iterator();
+        final Set<T> seen = new HashSet<T>();
+        return new Sequence<T>() {
+            public Iterator<T> iterator() {
+                return new AbstractIterator<T>() {
+                    boolean hasNext = false;
+                    T next = null;
+
+                    public boolean hasNext() {
+                        if (hasNext) {
+                            return true;
+                        }
+                        while (iterator.hasNext()) {
+                            hasNext = true;
+                            next = iterator.next();
+                            if (!seen.contains(next)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+
+                    public T next() {
+                        if (hasNext()) {
+                            final T next = iterator.next();
+                            hasNext = false;
+                            seen.add(next);
+                            return next;
+                        }
+                        throw new NoSuchElementException();
+                    }
+                };
+            }
+        };
     }
 
-    @Override
-    default <R> Sequence<R> mapIndexed(final IndexedFunction<? super T, ? extends R> mapper) {
-        return () -> Iterators.transformingIndexedIterator(iterator(), mapper);
+    public <R> Sequence<R> then(SequenceExtension<T, R> extension) {
+        return extension.extend(this);
     }
 
-    default <R> Sequence<R> flatMap(final Function<? super T, ? extends Iterable<? extends R>> transform) {
-        return () -> Iterators.flatMappingIterator(iterator(), t -> transform.apply(t).iterator());
-    }
-
-    @Override
-    default IntSequence flatMapToInt(final Function<? super T, ? extends PrimitiveIterable.OfInt> mapper) {
-        return () -> PrimitiveIterators.toIntFlatMappingIterator(iterator(), t -> mapper.apply(t).iterator());
-    }
-
-    @Override
-    default LongSequence flatMapToLong(final Function<? super T, ? extends PrimitiveIterable.OfLong> mapper) {
-        return () -> PrimitiveIterators.toLongFlatMappingIterator(iterator(), t -> mapper.apply(t).iterator());
-    }
-
-    @Override
-    default DoubleSequence flatMapToDouble(final Function<? super T, ? extends PrimitiveIterable.OfDouble> mapper) {
-        return () -> PrimitiveIterators.toDoubleFlatMappingIterator(iterator(), t -> mapper.apply(t).iterator());
-    }
-
-    default <R> Sequence<R> mapMulti(final BiConsumer<? super T, ? super Consumer<R>> mapper) {
-        return () -> Iterators.multiMappingIterator(iterator(), mapper);
-    }
-
-    @Override
-    default IntSequence mapMultiToInt(final BiConsumer<? super T, IntConsumer> mapper) {
-        return (IntSequence) IterableX.super.mapMultiToInt(mapper);
-    }
-
-    @Override
-    default LongSequence mapMultiToLong(final BiConsumer<? super T, LongConsumer> mapper) {
-        return (LongSequence) IterableX.super.mapMultiToLong(mapper);
-    }
-
-    @Override
-    default DoubleSequence mapMultiToDouble(final BiConsumer<? super T, DoubleConsumer> mapper) {
-        return (DoubleSequence) IterableX.super.mapMultiToDouble(mapper);
-    }
-
-    @Override
-    default <R> Sequence<R> filterIsInstance(final Class<R> aClass) {
-        return filter(aClass::isInstance).map(aClass::cast);
-    }
-
-    default Sequence<T> filter(final Predicate<? super T> predicate) {
-        return () -> Iterators.filteringIterator(iterator(), predicate, true);
-    }
-
-    default Sequence<T> filterNot(final Predicate<? super T> predicate) {
-        return () -> Iterators.filteringIterator(iterator(), predicate, false);
-    }
-
-    default <R> Sequence<T> filterBy(final Function<? super T, ? extends R> selector,
-                                     final Predicate<? super R> predicate) {
-        return filter(Objects::nonNull).filter(t -> predicate.test(selector.apply(t)));
-    }
-
-    @Override
-    default Sequence<T> filterIndexed(final IndexedPredicate<? super T> predicate) {
-        return withIndex()
-                .filter(indexedValue -> predicate.test(indexedValue.index(), indexedValue.value()))
-                .map(IndexedValue::value);
-    }
-
-    default Sequence<T> step(final int step) {
-        return filterIndexed((index, v) -> index % step == 0);
-    }
-
-    default Sequence<IndexedValue<T>> withIndex() {
-        return this::indexedIterator;
-    }
-
-    @Override
-    default Sequence<T> onEach(final Consumer<? super T> consumer) {
-        return onEach(It::self, consumer);
-    }
-
-    @Override
-    default <R> Sequence<T> onEach(final Function<? super T, ? extends R> selector, final Consumer<? super R> consumer) {
-        return map(item -> {
-            consumer.accept(selector.apply(item));
-            return item;
-        });
-    }
-
-    @Override
-    default <R> Sequence<R> scan(final R initial, final BiFunction<? super R, ? super T, ? extends R> operation) {
-        return () -> Iterators.scanningIterator(iterator(), initial, (i, acc, t) -> operation.apply(acc, t));
-    }
-
-    @Override
-    default <R> Sequence<R> scanIndexed(final R initial, final IndexedBiFunction<? super R, ? super T, ? extends R> operation) {
-        return () -> Iterators.scanningIterator(iterator(), initial, operation);
-    }
-
-    @Override
-    default Sequence<T> distinct() {
-        return distinctBy(It::self);
-    }
-
-    @Override
-    default <R> Sequence<T> distinctBy(final Function<? super T, ? extends R> selector) {
-        return () -> Iterators.distinctIterator(iterator(), selector);
-    }
-
-    default Sequence<T> constrainOnce() {
-        final var consumed = new Iterators.BooleanHolder();
-        return () -> Iterators.constrainOnceIterator(iterator(), consumed);
-    }
-
-    default <R> Sequence<R> zipWithNext(final BiFunction<? super T, ? super T, ? extends R> function) {
-        return windowed(2, list -> function.apply(list.first(), list.last()));
-    }
-
-    default <A, R> Sequence<R> zip(final Iterable<A> other, final BiFunction<? super T, ? super A, ? extends R> function) {
-        return () -> Iterators.mergingIterator(iterator(), other.iterator(), function);
-    }
-
-    @Override
-    default Sequence<T> take(final long n) {
-        PreConditions.requireGreaterThanOrEqualToZero(n);
-        if (n == 0) {
-            return new EmptySequence<>();
-        } else if (this instanceof final SkipTakeSequence<T> skipTakeSequence) {
-            return skipTakeSequence.take(n);
-        } else {
-            return new TakeSequence<>(this, n);
+    // terminal ops
+    public void forEach(final Consumer<? super T> action) {
+        final Iterator<T> iterator = iterator();
+        while (iterator.hasNext()) {
+            action.accept(iterator.next());
         }
     }
 
-    default Sequence<T> takeWhile(final Predicate<? super T> predicate) {
-        return () -> Iterators.takeWhileIterator(iterator(), predicate, false);
-    }
-
-    default Sequence<T> takeWhileInclusive(final Predicate<? super T> predicate) {
-        return () -> Iterators.takeWhileIterator(iterator(), predicate, true);
-    }
-
-    default Sequence<T> skip(final long n) {
-        PreConditions.requireGreaterThanOrEqualToZero(n);
-        if (n == 0) {
-            return this;
-        } else if (this instanceof final SkipTakeSequence<T> skipTakeSequence) {
-            return skipTakeSequence.skip(n);
-        } else {
-            return new SkipSequence<>(this, n);
+    public T reduceOrNull(BiFunction<T, T, T> reducer) {
+        final Iterator<T> iterator = iterator();
+        if (iterator.hasNext()) {
+            T acc = iterator.next();
+            while (iterator.hasNext()) {
+                acc = reducer.apply(acc, iterator.next());
+            }
+            return acc;
         }
+        return null;
     }
 
-    @Override
-    default Sequence<T> skipWhile(final Predicate<? super T> predicate) {
-        return () -> Iterators.skipWhileIterator(iterator(), predicate, false);
+    public <R> R fold(R initial, BiFunction<R, T, R> folder) {
+        final Iterator<T> iterator = iterator();
+        R acc = initial;
+        while (iterator.hasNext()) {
+            acc = folder.apply(acc, iterator.next());
+        }
+        return acc;
     }
 
-    @Override
-    default Sequence<T> skipWhileInclusive(final Predicate<? super T> predicate) {
-        return () -> Iterators.skipWhileIterator(iterator(), predicate, true);
+    public <A, R> R collect(Collector<? super T, A, R> collector) {
+        final Iterator<T> iterator = iterator();
+        final A mutableContainer = collector.supply();
+        while (iterator.hasNext()) {
+            collector.accumulate(mutableContainer, iterator.next());
+        }
+        return collector.finish(mutableContainer);
     }
 
-    @Override
-    default Sequence<T> sorted() {
-        return () -> IterableX.super.sorted().iterator();
+
+    public List<T> toList() {
+        final List<T> result = new ArrayList<T>();
+        final Iterator<T> iterator = iterator();
+        while (iterator.hasNext()) {
+            result.add(iterator.next());
+        }
+        return Collections.unmodifiableList(result);
     }
 
-    @Override
-    default Sequence<T> sorted(final Comparator<? super T> comparator) {
-        return () -> IterableX.super.sorted(comparator).iterator();
+    // short-circuiting terminal ops
+    public T firstOrNull() {
+        final Iterator<T> iterator = iterator();
+        return iterator.hasNext() ? iterator.next() : null;
     }
 
-    @Override
-    default <R extends Comparable<? super R>> Sequence<T> sortedBy(final Function<? super T, ? extends R> selector) {
-        return () -> IterableX.super.sortedBy(selector).iterator();
+    public boolean any(final Predicate<? super T> predicate) {
+        final Iterator<T> iterator = iterator();
+        while (iterator.hasNext()) {
+            if (predicate.test(iterator.next())) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    @Override
-    default Sequence<T> sortedDescending() {
-        return () -> IterableX.super.sortedDescending().iterator();
+    public boolean any() {
+        return iterator().hasNext();
     }
 
-    @Override
-    default Sequence<T> shuffled(final RandomGenerator random) {
-        return () -> toListX().shuffled(random).iterator();
+    public boolean all(final Predicate<? super T> predicate) {
+        final Iterator<T> iterator = iterator();
+        while (iterator.hasNext()) {
+            if (!predicate.test(iterator.next())) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    @Override
-    default <R extends Comparable<? super R>> Sequence<T> sortedByDescending(final Function<? super T, ? extends R> selector) {
-        return () -> IterableX.super.sortedByDescending(selector).iterator();
+    public boolean none(final Predicate<? super T> predicate) {
+        final Iterator<T> iterator = iterator();
+        while (iterator.hasNext()) {
+            if (predicate.test(iterator.next())) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    default <K, V> EntrySequence<K, V> asEntrySequence(final Function<? super T, ? extends K> keyMapper,
-                                                       final Function<? super T, ? extends V> valueMapper) {
-        return EntrySequence.of(map(value -> Map.entry(keyMapper.apply(value), valueMapper.apply(value))));
+    public boolean none() {
+        return !iterator().hasNext();
     }
 
-    default <K, V> EntrySequence<K, V> asEntrySequence(final Function<? super T, Pair<K, V>> toPairMapper) {
-        return EntrySequence.ofPairs(map(toPairMapper));
-    }
+    public static class Builder<T> {
+        private final List<T> buffer = new ArrayList<T>();
 
-    @Override
-    default <K> EntrySequence<K, T> associateBy(final Function<? super T, ? extends K> keyMapper) {
-        return EntrySequence.ofPairs(map(e -> Pair.of(keyMapper.apply(e), e)));
-    }
-
-    default <V> EntrySequence<T, V> associateWith(final Function<? super T, ? extends V> valueMapper) {
-        return EntrySequence.ofPairs(map(e -> Pair.of(e, valueMapper.apply(e))));
-    }
-
-    @Override
-    default IntSequence mapToInt(final ToIntFunction<? super T> toIntMapper) {
-        return () -> PrimitiveIterators.intIteratorOf(iterator(), toIntMapper);
-    }
-
-    @Override
-    default LongSequence mapToLong(final ToLongFunction<? super T> toLongMapper) {
-        return () -> PrimitiveIterators.longIteratorOf(iterator(), toLongMapper);
-    }
-
-    @Override
-    default DoubleSequence mapToDouble(final ToDoubleFunction<? super T> toDoubleMapper) {
-        return () -> PrimitiveIterators.doubleIteratorOf(iterator(), toDoubleMapper);
-    }
-
-    default <R> R transform(final Function<? super Sequence<T>, ? extends R> resultMapper) {
-        return resultMapper.apply(this);
-    }
-
-    @Override
-    default StreamX<T> stream() {
-        return StreamX.of(StreamSupport.stream(() -> Spliterators.spliteratorUnknownSize(iterator(), ORDERED), ORDERED, false));
-    }
-
-    default Sequence<T> onSequence(final Consumer<? super Sequence<T>> sequenceConsumer) {
-        sequenceConsumer.accept(this);
-        return this;
-    }
-
-    default <R1, R2, R> R toTwo(final Function<? super Sequence<T>, ? extends R1> resultMapper1,
-                                final Function<? super Sequence<T>, ? extends R2> resultMapper2,
-                                final BiFunction<? super R1, ? super R2, ? extends R> merger) {
-        return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this));
-    }
-
-    default <R1, R2> Pair<R1, R2> toTwo(final Function<? super Sequence<T>, ? extends R1> resultMapper1,
-                                        final Function<? super Sequence<T>, ? extends R2> resultMapper2) {
-        return toTwo(resultMapper1, resultMapper2, Pair::of);
-    }
-
-    default <R1, R2, R3, R> R toThree(final Function<? super Sequence<T>, ? extends R1> resultMapper1,
-                                      final Function<? super Sequence<T>, ? extends R2> resultMapper2,
-                                      final Function<? super Sequence<T>, ? extends R3> resultMapper3,
-                                      final TriFunction<R1, R2, R3, R> merger) {
-        return merger.apply(resultMapper1.apply(this), resultMapper2.apply(this), resultMapper3.apply(this));
-    }
-
-    default <R1, R2, R3> Triple<R1, R2, R3> toThree(final Function<? super Sequence<T>, ? extends R1> resultMapper1,
-                                                    final Function<? super Sequence<T>, ? extends R2> resultMapper2,
-                                                    final Function<? super Sequence<T>, ? extends R3> resultMapper3) {
-        return toThree(resultMapper1, resultMapper2, resultMapper3, Triple::of);
-    }
-
-    default <R1, R2, R3, R4, R> R toFour(final Function<? super Sequence<T>, ? extends R1> resultMapper1,
-                                         final Function<? super Sequence<T>, ? extends R2> resultMapper2,
-                                         final Function<? super Sequence<T>, ? extends R3> resultMapper3,
-                                         final Function<? super Sequence<T>, ? extends R4> resultMapper4,
-                                         final QuadFunction<R1, R2, R3, R4, R> merger) {
-        final var r1 = resultMapper1.apply(this);
-        final var r2 = resultMapper2.apply(this);
-        final var r3 = resultMapper3.apply(this);
-        final var r4 = resultMapper4.apply(this);
-        return merger.apply(r1, r2, r3, r4);
-    }
-
-    interface Builder<T> extends Consumer<T> {
-
-        /**
-         * Adds an element to the sequence being built.
-         *
-         * @throws IllegalStateException if the builder has already transitioned to the built state
-         */
-        @Override
-        void accept(T t);
-
-        /**
-         * Adds an element to the sequence being built.
-         *
-         * @param t the element to add
-         * @return {@code this} builder
-         * @throws IllegalStateException if the builder has already transitioned to
-         *                               the built state
-         * @implSpec The default implementation behaves as if:
-         * <pre>{@code
-         *     accept(t)
-         *     return this;
-         * }</pre>
-         */
-        default Sequence.Builder<T> add(final T t) {
-            accept(t);
-            return this;
+        private Builder() {
         }
 
-        /**
-         * Builds the sequence, transitioning this builder to the built state.
-         * An {@code IllegalStateException} is thrown if there are further attempts
-         * to operate on the builder after it has entered the built state.
-         *
-         * @return the built sequence
-         * @throws IllegalStateException if the builder has already transitioned to the built state
-         */
-        Sequence<T> build();
+        public void add(T item) {
+            buffer.add(item);
+        }
 
+        public Sequence<T> build() {
+            return new Sequence<T>() {
+
+                public Iterator<T> iterator() {
+                    return buffer.iterator();
+                }
+            };
+        }
     }
 }

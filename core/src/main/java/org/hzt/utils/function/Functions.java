@@ -1,119 +1,175 @@
 package org.hzt.utils.function;
 
-import org.hzt.utils.PreConditions;
-
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.function.DoublePredicate;
-import java.util.function.Function;
-import java.util.function.IntPredicate;
-import java.util.function.LongPredicate;
-import java.util.function.Predicate;
+import org.hzt.utils.Objects;
 
 public final class Functions {
+
+    public static final BiFunction<Integer, Integer, Integer> sum = new BiFunction<Integer, Integer, Integer>() {
+        public Integer apply(final Integer i1, final Integer i2) {
+            return i1 + i2;
+        }
+    };
 
     private Functions() {
     }
 
-    /**
-     * A function that first maps to some other type which can than be used to test with.
-     *
-     * @param mapper    the mapper that is applied before testing the predicate
-     * @param predicate the predicate to be tested
-     * @param <T>       the incoming type
-     * @param <R>       the type to test the predicate on
-     * @return first predicate for the incoming type
-     * @throws NullPointerException if the mapper or predicate is null
-     * @apiNote This allows for easy filtering by some nested object while maintaining the original object in the stream
-     * <p><second>Example:</second>
-     * <pre>{@code
-     * List<Book> filteredBookList = books.stream()
-     *          .filter(by(Book::getAuthor, contains("first")
-     *          .or(startsWith("j"))))
-     *          .toList();
-     * }</pre>
-     * It can help clean up code
-     */
-    public static <T, R> Predicate<T> by(final Function<? super T, ? extends R> mapper, final Predicate<? super R> predicate) {
-        Objects.requireNonNull(predicate);
-        Objects.requireNonNull(mapper);
-        return t -> {
-            final var r = mapper.apply(t);
-            return r != null && predicate.test(r);
+    public static AbstractFunction<Integer, Integer> plus(final int other) {
+        return new AbstractFunction<Integer, Integer>() {
+            public Integer apply(final Integer i) {
+                return i + other;
+            }
         };
     }
 
-    public static <T, U, R> Predicate<T> by(
-            final Function<? super T, ? extends U> toUMapper,
-            final Function<? super U, ? extends R> toRMapper,
-            final Predicate<? super R> predicate) {
-        Objects.requireNonNull(predicate);
-        Objects.requireNonNull(toUMapper);
-        Objects.requireNonNull(toRMapper);
-        return t -> {
-            final var u = toUMapper.apply(t);
-            final var r = u != null ? toRMapper.apply(u) : null;
-            return r != null && predicate.test(r);
+    public static AbstractFunction<Integer, Integer> times(final int other) {
+        return new AbstractFunction<Integer, Integer>() {
+            public Integer apply(final Integer i) {
+                return i * other;
+            }
         };
     }
 
-    public static <T, U, V, R> Predicate<T> by(
-            final Function<? super T, ? extends U> toUMapper,
-            final Function<? super U, ? extends V> toVMapper,
-            final Function<? super V, ? extends R> toRMapper,
-            final Predicate<? super R> predicate) {
-        PreConditions.requireAllNonNull(Object.class, toUMapper, toVMapper, toRMapper, predicate);
-        return t -> {
-            final var u = toUMapper.apply(t);
-            final var v = u != null ? toVMapper.apply(u) : null;
-            final var r = u != null ? toRMapper.apply(v) : null;
-            return r != null && predicate.test(r);
+    public static AbstractFunction<Integer, Integer> mod(final int other) {
+        return new AbstractFunction<Integer, Integer>() {
+            public Integer apply(final Integer i) {
+                return i % other;
+            }
         };
     }
 
-    /**
-     * Allows for easier use of combiner functions 'and()' and 'or()' in the Predicate class
-     *
-     * @param predicate the input predicate
-     * @param <T>       the type
-     * @return the input predicate
-     * @throws NullPointerException if the predicate is null
-     *                              <p><second>Example:</second>
-     *                              <pre>{@code
-     *                               List<Painting> filteredPaintings = paintings.stream()
-     *                                         .filter((by(Painting::isFromPicasso)
-     *                                               .or(Painting::isFromRembrandt))
-     *                                               .and(Painting::isInMuseum)))
-     *                                         .toList();
-     *                              }</pre>
-     * @see java.util.function.Predicate#and(Predicate)
-     * @see java.util.function.Predicate#or(Predicate)
-     */
-    public static <T> Predicate<T> by(final Predicate<T> predicate) {
-        Objects.requireNonNull(predicate);
-        return predicate;
+    public static <T extends Comparable<T>> AbstractPredicate<T> lessThan(final T other) {
+        return new AbstractPredicate<T>() {
+            public boolean test(final T item) {
+                return item.compareTo(other) < 0;
+            }
+        };
     }
 
-    public static <T, U> BiPredicate<T, U> not(final BiPredicate<T, U> predicate) {
-        return predicate.negate();
+    public static <T extends Comparable<T>> AbstractPredicate<T> lessThanEqual(final T other) {
+        return new AbstractPredicate<T>() {
+            public boolean test(final T item) {
+                return item.compareTo(other) <= 0;
+            }
+        };
     }
 
-    public static IntPredicate notInt(final IntPredicate predicate) {
-        return predicate.negate();
+    public static <T extends Comparable<T>> AbstractPredicate<T> greaterThan(final T other) {
+        return new AbstractPredicate<T>() {
+            public boolean test(final T item) {
+                return item.compareTo(other) > 0;
+            }
+        };
     }
 
-    public static LongPredicate notLong(final LongPredicate predicate) {
-        return predicate.negate();
+    public static <T extends Comparable<T>> AbstractPredicate<T> greaterThanEqual(final T other) {
+        return new AbstractPredicate<T>() {
+            public boolean test(final T item) {
+                return item.compareTo(other) >= 0;
+            }
+        };
     }
 
-    public static DoublePredicate notDouble(final DoublePredicate predicate) {
-        return predicate.negate();
+    public static abstract class AbstractFunction<T, R> implements Function<T, R> {
+
+        /**
+         * Returns a composed function that first applies this function to
+         * its input, and then applies the {@code after} function to the result.
+         * If evaluation of either function throws an exception, it is relayed to
+         * the caller of the composed function.
+         *
+         * @param <V>   the type of output of the {@code after} function, and of the
+         *              composed function
+         * @param after the function to apply after this function is applied
+         * @return a composed function that first applies this function and then
+         * applies the {@code after} function
+         * @throws NullPointerException if after is null
+         */
+        public <V> AbstractFunction<T, V> andThen(final Function<? super R, ? extends V> after) {
+            Objects.requireNonNull(after);
+            return new AbstractFunction<T, V>() {
+
+                public V apply(final T t) {
+                    return after.apply(AbstractFunction.this.apply(t));
+                }
+            };
+        }
     }
 
-    public static <T, R> Predicate<T> distinctBy(final Function<? super T, ? extends R> function) {
-        final Set<R> seen = new HashSet<>();
-        return t -> seen.add(function.apply(t));
+    public static abstract class AbstractPredicate<T> implements Predicate<T> {
+
+        /**
+         * Returns a composed predicate that represents a short-circuiting logical
+         * AND of this predicate and another.  When evaluating the composed
+         * predicate, if this predicate is {@code false}, then the {@code other}
+         * predicate is not evaluated.
+         *
+         * <p>Any exceptions thrown during evaluation of either predicate are relayed
+         * to the caller; if evaluation of this predicate throws an exception, the
+         * {@code other} predicate will not be evaluated.
+         *
+         * @param other a predicate that will be logically-ANDed with this
+         *              predicate
+         * @return a composed predicate that represents the short-circuiting logical
+         * AND of this predicate and the {@code other} predicate
+         * @throws NullPointerException if other is null
+         */
+        public AbstractPredicate<T> and(final Predicate<? super T> other) {
+            Objects.requireNonNull(other);
+            return new AbstractPredicate<T>() {
+
+                public boolean test(final T t) {
+                    return AbstractPredicate.this.test(t) && other.test(t);
+                }
+            };
+        }
+
+        /**
+         * Returns a predicate that represents the logical negation of this
+         * predicate.
+         *
+         * @return a predicate that represents the logical negation of this
+         * predicate
+         */
+        public AbstractPredicate<T> negate() {
+            return new AbstractPredicate<T>() {
+                public boolean test(final T t) {
+                    return !AbstractPredicate.this.test(t);
+                }
+            };
+        }
+
+        /**
+         * Returns a composed predicate that represents a short-circuiting logical
+         * OR of this predicate and another.  When evaluating the composed
+         * predicate, if this predicate is {@code true}, then the {@code other}
+         * predicate is not evaluated.
+         *
+         * <p>Any exceptions thrown during evaluation of either predicate are relayed
+         * to the caller; if evaluation of this predicate throws an exception, the
+         * {@code other} predicate will not be evaluated.
+         *
+         * @param other a predicate that will be logically-ORed with this
+         *              predicate
+         * @return a composed predicate that represents the short-circuiting logical
+         * OR of this predicate and the {@code other} predicate
+         * @throws NullPointerException if other is null
+         */
+        public AbstractPredicate<T> or(final Predicate<? super T> other) {
+            Objects.requireNonNull(other);
+            return new AbstractPredicate<T>() {
+                public boolean test(final T t) {
+                    return AbstractPredicate.this.test(t) || other.test(t);
+                }
+            };
+        }
+
+        static <T> AbstractPredicate<T> isEqual(final Object targetRef) {
+            return new AbstractPredicate<T>() {
+
+                public boolean test(final T t) {
+                    return targetRef == null ? t == null : targetRef.equals(t);
+                }
+            };
+        }
     }
 }

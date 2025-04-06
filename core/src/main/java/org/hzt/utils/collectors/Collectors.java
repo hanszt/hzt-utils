@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public final class CollectorsX {
+public final class Collectors {
 
-    private CollectorsX() {
+    private Collectors() {
     }
 
     public static <T> Collector<T, Set<T>, Set<T>> toSet() {

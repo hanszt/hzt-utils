@@ -1,9 +1,9 @@
-package org.hzt;
+package org.hzt.demo;
 
-import org.hzt.utils.collectors.CollectorsX;
-import org.hzt.utils.function.BiFunction;
+import org.hzt.utils.collectors.Collectors;
 import org.hzt.utils.function.Consumer;
 import org.hzt.utils.function.Function;
+import org.hzt.utils.function.Functions;
 import org.hzt.utils.function.Predicate;
 import org.hzt.utils.iterators.AbstractIterator;
 import org.hzt.utils.sequences.Sequence;
@@ -13,54 +13,59 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static org.hzt.utils.collectors.CollectorsX.*;
+import static org.hzt.demo.function.IntegerFunctions.plus;
+import static org.hzt.demo.function.IntegerFunctions.sum;
+import static org.hzt.demo.function.StringFunctions.plusStringLength;
+import static org.hzt.demo.function.StringFunctions.stringLength;
+import static org.hzt.utils.collectors.Collectors.*;
+import static org.hzt.utils.function.Functions.lessThan;
 
 public final class Launcher {
 
-    private static final Function<String, Integer> stringLength = new Function<String, Integer>() {
-        public Integer apply(final String i) {
-            return i.length();
+    private static final Predicate<Integer> isEven = new Predicate<Integer>() {
+        public boolean test(final Integer s) {
+            return s % 2 == 0;
         }
     };
 
-    private static final Function<Integer, Integer> increment = new Function<Integer, Integer>() {
-        public Integer apply(final Integer i) {
-            return i + 1;
+    private static final Function<String, Integer> toCharCode = new Function<String, Integer>() {
+        public Integer apply(final String s) {
+            return (int) s.charAt(0);
         }
     };
-
-    private static <T> Function<T, T> identity() {
-        return new Function<T, T>() {
-            public T apply(final T t) {
-                return t;
-            }
-        };
-    }
 
     public static void main(String[] args) {
-        final Sequence<String> sequence = Sequence.of("a", "b", "c", "d", "e", "f", "g", "h", "i", "j");
+        final Sequence<String> letters = Sequence.of("a", "b", "c", "d", "e", "f", "g", "h", "i", "j");
 
-        final List<Integer> list = getMappedFilteredSequence(sequence).toList();
-        System.out.println("list = " + list);
+        System.out.println("Map filter to list demo");
+        final List<Integer> evenCharCodes = letters
+                .map(toCharCode)
+                .filter(isEven)
+                .toList();
+        System.out.println("list = " + evenCharCodes);
 
-        System.out.println(sequence.none(new Predicate<String>() {
-            public boolean test(final String s) {
-                return s.equals("a");
-            }
-        }));
+        System.out.println("None demo");
+        System.out.println(letters.none(Functions.<String>isEqual("a")));
 
-        anyDemo(list);
+        System.out.println("Any demo");
+        System.out.println(Sequence.of(evenCharCodes).any(lessThan(42)));
         // First or null demo
-        System.out.println(getMappedFilteredSequence(sequence).firstOrNull());
+        System.out.println("First or null demo");
+        System.out.println(letters
+                .map(toCharCode)
+                .filter(isEven)
+                .firstOrNull());
 
         iterateDemo();
-        foldDemo(sequence);
+        foldDemo(letters);
         flatMapDemo();
         groupByDemoCounting();
         groupByDemoSumming();
-        System.out.println(Sequence.iterate(10, increment)
+
+        System.out.println("Summing demo");
+        System.out.println(Sequence.iterate(10, plus(1))
                 .take(4)
-                .collect(sumOf(Launcher.<Integer>identity())));
+                .collect(sumOf(Functions.<Integer>identity())));
 
         chunkedDemo();
         windowedDemo();
@@ -70,18 +75,16 @@ public final class Launcher {
         System.out.println("chunkedDemo");
         final Sequence.Builder<Integer> builder = Sequence.builder();
         gcdByEuclidesAlgorithm(10230, 612, builder);
-        final Sequence<List<Integer>> s = builder.build().then(SequenceExtensions.<Integer>chunked(3));
-        for (final List<Integer> integers : s) {
+        for (final List<Integer> integers : builder.build().andThen(SequenceExtensions.<Integer>chunked(3))) {
             System.out.println(integers);
         }
     }
 
     private static void windowedDemo() {
         System.out.println("windowedDemo");
-        final Sequence<List<Integer>> windows = Sequence.iterate(1, increment)
+        for (final List<Integer> integers : Sequence.iterate(1, plus(1))
                 .take(22)
-                .then(SequenceExtensions.<Integer>windowed(3, 2, true));
-        for (final List<Integer> integers : windows) {
+                .andThen(SequenceExtensions.<Integer>windowed(3, 2, true))) {
             System.out.println(integers);
         }
     }
@@ -91,16 +94,8 @@ public final class Launcher {
         return n2 == 0 ? n1 : gcdByEuclidesAlgorithm(n2, n1 % n2, builder);
     }
 
-    private static void anyDemo(final List<Integer> list) {
-        final Predicate<Integer> smallerThan42 = new Predicate<Integer>() {
-            public boolean test(final Integer s) {
-                return s < 42;
-            }
-        };
-        System.out.println(Sequence.of(list).any(smallerThan42));
-    }
-
     private static void flatMapDemo() {
+        System.out.println("flatMapDemo");
         final Function<String, Iterable<Character>> toChars = new Function<String, Iterable<Character>>() {
             public Iterable<Character> apply(final String s) {
                 return toChars(s);
@@ -112,33 +107,32 @@ public final class Launcher {
     }
 
     private static void groupByDemoCounting() {
+        System.out.println("groupByDemoCounting");
         final Map<Integer, Long> grouping = Sequence.of("This", "is", "an", "example")
-                .collect(groupBy(stringLength, CollectorsX.<String>count()));
+                .collect(groupBy(stringLength, Collectors.<String>count()));
         System.out.println(grouping);
     }
 
     private static void groupByDemoSumming() {
+        System.out.println("groupByDemoSumming");
         final Map<Integer, Integer> grouping = Sequence.of("This", "is", "an", "example", "text")
                 .collect(groupBy(stringLength, sumOf(stringLength)));
         System.out.println(grouping);
     }
 
     private static void foldDemo(final Sequence<String> sequence) {
-        final BiFunction<Integer, String, Integer> sumOfStringLength = new BiFunction<Integer, String, Integer>() {
-            public Integer apply(final Integer acc, final String s) {
-                return acc + s.length();
-            }
-        };
-        System.out.println(sequence.fold(1, sumOfStringLength));
+        System.out.println("foldDemo");
+        System.out.println(sequence.fold(1, plusStringLength));
     }
 
     private static void iterateDemo() {
+        System.out.println("iterateDemo");
         final Function<Integer, Integer> powerOf2Mod30 = new Function<Integer, Integer>() {
             public Integer apply(final Integer exp) {
                 return (int) Math.pow(2, exp % 30);
             }
         };
-        final Sequence<Integer> sequence = Sequence.iterate(0, increment)
+        final Sequence<Integer> sequence = Sequence.iterate(0, plus(1))
                 .map(powerOf2Mod30)
                 .skip(2)
                 .take(3);
@@ -156,13 +150,7 @@ public final class Launcher {
         };
         sequence.forEach(printAndSleep);
 
-        final BiFunction<Integer, Integer, Integer> IncrementAssign = new BiFunction<Integer, Integer, Integer>() {
-            public Integer apply(final Integer acc, final Integer c) {
-                return acc + c;
-            }
-        };
-        final Integer x = sequence.reduceOrNull(IncrementAssign);
-        System.out.println("Reduced: " + x);
+        System.out.println("Reduced: " + sequence.reduceOrNull(sum));
     }
 
     private static Iterable<Character> toChars(final String s) {
@@ -184,21 +172,4 @@ public final class Launcher {
             }
         };
     }
-
-    private static Sequence<Integer> getMappedFilteredSequence(final Sequence<String> sequence) {
-        final Function<String, Integer> toCharCode = new Function<String, Integer>() {
-            public Integer apply(final String s) {
-                return (int) s.charAt(0);
-            }
-        };
-        final Predicate<Integer> isEven = new Predicate<Integer>() {
-            public boolean test(final Integer s) {
-                return s % 2 == 0;
-            }
-        };
-        return sequence
-                .map(toCharCode)
-                .filter(isEven);
-    }
-
 }

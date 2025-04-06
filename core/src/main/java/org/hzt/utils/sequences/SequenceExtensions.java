@@ -1,5 +1,6 @@
 package org.hzt.utils.sequences;
 
+import org.hzt.utils.function.BiFunction;
 import org.hzt.utils.iterators.AbstractIterator;
 
 import java.util.ArrayList;
@@ -11,6 +12,41 @@ import java.util.NoSuchElementException;
 public final class SequenceExtensions {
 
     private SequenceExtensions() {
+    }
+
+    public static <T, R> SequenceExtension<T, R> scan(final R initial, final BiFunction<R, T, R> function) {
+        return new SequenceExtension<T, R>() {
+            public Sequence<R> extend(final Sequence<T> sequence) {
+                return new Sequence<R>() {
+                    public Iterator<R> iterator() {
+                        final Iterator<T> iterator = sequence.iterator();
+                        return new AbstractIterator<R>() {
+                            boolean hasNext = true;
+                            R next = initial;
+
+                            public boolean hasNext() {
+                                if (hasNext) {
+                                    return true;
+                                }
+                                if (iterator.hasNext()) {
+                                    hasNext = true;
+                                    next = function.apply(next, iterator.next());
+                                }
+                                return hasNext;
+                            }
+
+                            public R next() {
+                                if (hasNext()) {
+                                    hasNext = false;
+                                    return next;
+                                }
+                                throw new NoSuchElementException();
+                            }
+                        };
+                    }
+                };
+            }
+        };
     }
 
     public static <T> SequenceExtension<T, List<T>> chunked(final int size) {
@@ -29,17 +65,12 @@ public final class SequenceExtensions {
         return new SequenceExtension<T, List<T>>() {
             public Sequence<List<T>> extend(final Sequence<T> sequence) {
                 return new Sequence<List<T>>() {
-
                     public Iterator<List<T>> iterator() {
-                        return windowedIterator();
-                    }
-
-                    private Iterator<List<T>> windowedIterator() {
                         final Iterator<T> iterator = sequence.iterator();
                         return new AbstractIterator<List<T>>() {
+                            boolean hasNext = false;
                             List<T> next = new ArrayList<T>();
                             int skip = 0;
-                            boolean hasNext = false;
 
                             public boolean hasNext() {
                                 if (hasNext) {
@@ -59,7 +90,7 @@ public final class SequenceExtensions {
                             public List<T> next() {
                                 if (hasNext()) {
                                     hasNext = false;
-                                    return Collections.unmodifiableList(new ArrayList<T>(next));
+                                    return Collections.unmodifiableList(next);
                                 }
                                 throw new NoSuchElementException();
                             }

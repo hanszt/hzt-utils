@@ -4,35 +4,22 @@ import org.hzt.utils.Objects;
 
 public final class Functions {
 
-    public static final BiFunction<Integer, Integer, Integer> sum = new BiFunction<Integer, Integer, Integer>() {
-        public Integer apply(final Integer i1, final Integer i2) {
-            return i1 + i2;
-        }
-    };
-
     private Functions() {
     }
 
-    public static AbstractFunction<Integer, Integer> plus(final int other) {
-        return new AbstractFunction<Integer, Integer>() {
-            public Integer apply(final Integer i) {
-                return i + other;
+    public static <T> Function<T, T> identity() {
+        return new Function<T, T>() {
+            public T apply(final T t) {
+                return t;
             }
         };
     }
 
-    public static AbstractFunction<Integer, Integer> times(final int other) {
-        return new AbstractFunction<Integer, Integer>() {
-            public Integer apply(final Integer i) {
-                return i * other;
-            }
-        };
-    }
+    public static <T> AbstractPredicate<T> isEqual(final Object targetRef) {
+        return new AbstractPredicate<T>() {
 
-    public static AbstractFunction<Integer, Integer> mod(final int other) {
-        return new AbstractFunction<Integer, Integer>() {
-            public Integer apply(final Integer i) {
-                return i % other;
+            public boolean test(final T t) {
+                return targetRef == null ? t == null : targetRef.equals(t);
             }
         };
     }
@@ -159,15 +146,6 @@ public final class Functions {
             return new AbstractPredicate<T>() {
                 public boolean test(final T t) {
                     return AbstractPredicate.this.test(t) || other.test(t);
-                }
-            };
-        }
-
-        static <T> AbstractPredicate<T> isEqual(final Object targetRef) {
-            return new AbstractPredicate<T>() {
-
-                public boolean test(final T t) {
-                    return targetRef == null ? t == null : targetRef.equals(t);
                 }
             };
         }

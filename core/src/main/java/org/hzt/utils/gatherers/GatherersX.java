@@ -311,6 +311,29 @@ public final class GatherersX {
                 .andThen(filter(s -> predicate.test(s.getFirst(), s.get(1))));
     }
 
+    public static <T> Gatherer<T, ?, T> single() {
+        return Gatherer.ofSequential(
+                () -> new Object() {
+                    boolean hasSingle = false;
+                    T single = null;
+                },
+                (s, item, downstream) -> {
+                    if (s.hasSingle) {
+                        s.hasSingle = false;
+                        return false;
+                    }
+                    s.single = item;
+                    s.hasSingle = true;
+                    return !downstream.isRejecting();
+                },
+                (s, downstream) -> {
+                    if (s.hasSingle && !downstream.isRejecting()) {
+                        downstream.push(s.single);
+                    }
+                }
+        );
+    }
+
     private static class Counter {
         long count = 0;
     }

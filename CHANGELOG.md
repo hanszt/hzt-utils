@@ -2,6 +2,12 @@
 
 ---
 
+### 1.0.5.24
+
+- Update java version
+
+---
+
 ### 1.0.5.23
 
 - Update java version

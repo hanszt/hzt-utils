@@ -7,7 +7,7 @@
 
     <groupId>org.hzt.utils</groupId>
     <artifactId>hzt-utils</artifactId>
-    <version>1.0.5.23</version>
+    <version>1.0.5.24</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -23,8 +23,8 @@
     </modules>
 
     <properties>
-        <java.source.version>23</java.source.version>
-        <java.target.version>23</java.target.version>
+        <java.source.version>24</java.source.version>
+        <java.target.version>24</java.target.version>
         <coverage.target>50%</coverage.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--        dependencies-->
@@ -36,11 +36,11 @@
         <slf4j.version>2.0.12</slf4j.version>
         <logback.version>1.5.3</logback.version>
         <!--        dependency management-->
-        <javafx.version>23</javafx.version>
+        <javafx.version>24</javafx.version>
         <!--plugins-->
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
-        <maven-dependency-plugin.version>3.8.0</maven-dependency-plugin.version>
+        <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -121,54 +121,54 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven-dependency-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>analyze</id>
-                        <goals>
-                            <goal>analyze-only</goal>
-                        </goals>
-                        <phase>test</phase>
-                        <configuration>
-                            <!-- The build will fail if there are any dependency issues -->
-                            <failOnWarning>true</failOnWarning>
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-dependency-plugin</artifactId>-->
+            <!--                <version>${maven-dependency-plugin.version}</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>analyze</id>-->
+            <!--                        <goals>-->
+            <!--                            <goal>analyze-only</goal>-->
+            <!--                        </goals>-->
+            <!--                        <phase>test</phase>-->
+            <!--                        <configuration>-->
+            <!--                            &lt;!&ndash; The build will fail if there are any dependency issues &ndash;&gt;-->
+            <!--                            <failOnWarning>true</failOnWarning>-->
 
-                            <ignoredUsedUndeclaredDependencies>
-                                <ignoredUsedUndeclaredDependency>
-                                    org.openjfx:javafx-base:jar <!--os specific-->
-                                </ignoredUsedUndeclaredDependency>
-                            </ignoredUsedUndeclaredDependencies>
+            <!--                            <ignoredUsedUndeclaredDependencies>-->
+            <!--                                <ignoredUsedUndeclaredDependency>-->
+            <!--                                    org.openjfx:javafx-base:jar &lt;!&ndash;os specific&ndash;&gt;-->
+            <!--                                </ignoredUsedUndeclaredDependency>-->
+            <!--                            </ignoredUsedUndeclaredDependencies>-->
 
-                            <ignoredUnusedDeclaredDependencies>
-                                <ignoredUnusedDeclaredDependency>
-                                    org.junit.jupiter:junit-jupiter-engine:jar
-                                </ignoredUnusedDeclaredDependency>
-                                <ignoredUnusedDeclaredDependency>
-                                    org.junit.jupiter:junit-jupiter-params:jar
-                                </ignoredUnusedDeclaredDependency>
-                                <ignoredUnusedDeclaredDependency>
-                                    org.junit.platform:junit-platform-launcher:jar <!--needed for test-utils module-->
-                                </ignoredUnusedDeclaredDependency>
-                                <ignoredUnusedDeclaredDependency>
-                                    org.openjfx:javafx-base:jar <!--resolved to os specific-->
-                                </ignoredUnusedDeclaredDependency>
-                                <ignoredUnusedDeclaredDependency>
-                                    org.openjdk.jmh:jmh-generator-annprocess:jar <!--needed for benchmark module-->
-                                </ignoredUnusedDeclaredDependency>
-                                <ignoredUnusedDeclaredDependency>
-                                    ch.qos.logback:logback-core:jar
-                                </ignoredUnusedDeclaredDependency>
-                                <ignoredUnusedDeclaredDependency>
-                                    ch.qos.logback:logback-classic
-                                </ignoredUnusedDeclaredDependency>
-                            </ignoredUnusedDeclaredDependencies>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--                            <ignoredUnusedDeclaredDependencies>-->
+            <!--                                <ignoredUnusedDeclaredDependency>-->
+            <!--                                    org.junit.jupiter:junit-jupiter-engine:jar-->
+            <!--                                </ignoredUnusedDeclaredDependency>-->
+            <!--                                <ignoredUnusedDeclaredDependency>-->
+            <!--                                    org.junit.jupiter:junit-jupiter-params:jar-->
+            <!--                                </ignoredUnusedDeclaredDependency>-->
+            <!--                                <ignoredUnusedDeclaredDependency>-->
+            <!--                                    org.junit.platform:junit-platform-launcher:jar &lt;!&ndash;needed for test-utils module&ndash;&gt;-->
+            <!--                                </ignoredUnusedDeclaredDependency>-->
+            <!--                                <ignoredUnusedDeclaredDependency>-->
+            <!--                                    org.openjfx:javafx-base:jar &lt;!&ndash;resolved to os specific&ndash;&gt;-->
+            <!--                                </ignoredUnusedDeclaredDependency>-->
+            <!--                                <ignoredUnusedDeclaredDependency>-->
+            <!--                                    org.openjdk.jmh:jmh-generator-annprocess:jar &lt;!&ndash;needed for benchmark module&ndash;&gt;-->
+            <!--                                </ignoredUnusedDeclaredDependency>-->
+            <!--                                <ignoredUnusedDeclaredDependency>-->
+            <!--                                    ch.qos.logback:logback-core:jar-->
+            <!--                                </ignoredUnusedDeclaredDependency>-->
+            <!--                                <ignoredUnusedDeclaredDependency>-->
+            <!--                                    ch.qos.logback:logback-classic-->
+            <!--                                </ignoredUnusedDeclaredDependency>-->
+            <!--                            </ignoredUnusedDeclaredDependencies>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

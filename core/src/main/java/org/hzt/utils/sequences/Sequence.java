@@ -1,5 +1,6 @@
 package org.hzt.utils.sequences;
 
+import org.hzt.utils.Optional;
 import org.hzt.utils.collectors.Collector;
 import org.hzt.utils.function.BiFunction;
 import org.hzt.utils.function.Consumer;
@@ -13,6 +14,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -30,6 +32,7 @@ public abstract class Sequence<T> implements Iterable<T> {
 
     public abstract Iterator<T> iterator();
 
+    // Factory methods
     public static <T> Sequence<T> empty() {
         return new Sequence<T>() {
             @Override
@@ -52,7 +55,6 @@ public abstract class Sequence<T> implements Iterable<T> {
         return new Builder<T>();
     }
 
-    // Factory methods
     public static <T> Sequence<T> of(final Iterable<T> iterable) {
         return new Sequence<T>() {
             public Iterator<T> iterator() {
@@ -76,6 +78,51 @@ public abstract class Sequence<T> implements Iterable<T> {
                             return elements[index++];
                         }
                         throw new NoSuchElementException();
+                    }
+                };
+            }
+        };
+    }
+
+    public static <T> Sequence<T> ofNullable(final T element) {
+        //noinspection unchecked
+        return element == null ? Sequence.<T>empty() : Sequence.of(element);
+    }
+
+    public static <T> Sequence<T> reverseOf(final T... elements) {
+        return new Sequence<T>() {
+            public Iterator<T> iterator() {
+                return new AbstractIterator<T>() {
+                    int index = elements.length - 1;
+
+                    public boolean hasNext() {
+                        return index >= 0;
+                    }
+
+                    public T next() {
+                        if (hasNext()) {
+                            return elements[index--];
+                        }
+                        throw new NoSuchElementException();
+                    }
+                };
+            }
+        };
+
+    }
+
+    public static <T> Sequence<T> reverseOf(final List<T> list) {
+        return new Sequence<T>() {
+            public Iterator<T> iterator() {
+                final ListIterator<T> listIterator = list.listIterator(list.size());
+                return new AbstractIterator<T>() {
+
+                    public boolean hasNext() {
+                        return listIterator.hasPrevious();
+                    }
+
+                    public T next() {
+                        return listIterator.previous();
                     }
                 };
             }
@@ -167,39 +214,42 @@ public abstract class Sequence<T> implements Iterable<T> {
     public <R> Sequence<R> flatMap(final Function<? super T, ? extends Iterable<R>> mapper) {
         return new Sequence<R>() {
             public Iterator<R> iterator() {
-                final Iterator<T> iterator = Sequence.this.iterator();
-                return new AbstractIterator<R>() {
-                    boolean hasNext = false;
-                    R next = null;
-                    Iterator<R> itemIterator = null;
+                return flatMappingIterator(Sequence.this.iterator(), mapper);
+            }
+        };
+    }
 
-                    public boolean hasNext() {
-                        if (hasNext) {
-                            return true;
-                        }
-                        if (itemIterator != null && itemIterator.hasNext()) {
-                            hasNext = true;
-                            next = itemIterator.next();
-                            return true;
-                        }
-                        if (iterator.hasNext()) {
-                            itemIterator = mapper.apply(iterator.next()).iterator();
-                            if (itemIterator.hasNext()) {
-                                hasNext = true;
-                                next = itemIterator.next();
-                            }
-                        }
-                        return hasNext;
-                    }
+    static <T, R> AbstractIterator<R> flatMappingIterator(final Iterator<T> iterator, final Function<? super T, ? extends Iterable<R>> mapper) {
+        return new AbstractIterator<R>() {
+            boolean hasNext = false;
+            R next = null;
+            Iterator<R> itemIterator = null;
 
-                    public R next() {
-                        if (hasNext()) {
-                            hasNext = false;
-                            return next;
-                        }
-                        throw new NoSuchElementException();
+            public boolean hasNext() {
+                if (hasNext) {
+                    return true;
+                }
+                if (itemIterator != null && itemIterator.hasNext()) {
+                    hasNext = true;
+                    next = itemIterator.next();
+                    return true;
+                }
+                if (iterator.hasNext()) {
+                    itemIterator = mapper.apply(iterator.next()).iterator();
+                    if (itemIterator.hasNext()) {
+                        hasNext = true;
+                        next = itemIterator.next();
                     }
-                };
+                }
+                return hasNext;
+            }
+
+            public R next() {
+                if (hasNext()) {
+                    hasNext = false;
+                    return next;
+                }
+                throw new NoSuchElementException();
             }
         };
     }
@@ -318,19 +368,22 @@ public abstract class Sequence<T> implements Iterable<T> {
                 return new AbstractIterator<T>() {
                     boolean hasNext = false;
                     T next = null;
-                    boolean skipMore = true;
+                    boolean skip = true;
 
                     public boolean hasNext() {
                         if (hasNext) {
                             return true;
                         }
-                        while (skipMore && iterator.hasNext()) {
+                        while (skip && iterator.hasNext()) {
                             hasNext = true;
                             next = iterator.next();
                             if (!predicate.test(next)) {
-                                skipMore = false;
+                                skip = false;
                                 return true;
                             }
+                        }
+                        if (skip) {
+                            return false;
                         }
                         if (iterator.hasNext()) {
                             hasNext = true;
@@ -402,8 +455,9 @@ public abstract class Sequence<T> implements Iterable<T> {
         };
     }
 
-    public <R> Sequence<R> andThen(SequenceExtension<T, R> extension) {
-        return extension.extend(this);
+    public <R> Sequence<R> andThen(SequenceExtension<? super T, ? extends R> extension) {
+        //noinspection unchecked,rawtypes
+        return extension.extend((Sequence) this);
     }
 
     // terminal ops
@@ -413,16 +467,16 @@ public abstract class Sequence<T> implements Iterable<T> {
         }
     }
 
-    public T reduceOrNull(BiFunction<T, T, T> reducer) {
+    public Optional<T> reduce(BiFunction<T, T, T> reducer) {
         final Iterator<T> iterator = iterator();
         if (iterator.hasNext()) {
             T acc = iterator.next();
             while (iterator.hasNext()) {
                 acc = reducer.apply(acc, iterator.next());
             }
-            return acc;
+            return Optional.of(acc);
         }
-        return null;
+        return Optional.empty();
     }
 
     public <R> R fold(R initial, BiFunction<R, T, R> folder) {
@@ -453,9 +507,24 @@ public abstract class Sequence<T> implements Iterable<T> {
     }
 
     // short-circuiting terminal ops
-    public T firstOrNull() {
+    public Optional<T> first() {
         final Iterator<T> iterator = iterator();
-        return iterator.hasNext() ? iterator.next() : null;
+        if (iterator.hasNext()) {
+            return Optional.ofNullable(iterator.next());
+        }
+        return Optional.empty();
+    }
+
+    public Optional<T> single() {
+        final Iterator<T> iterator = iterator();
+        if (iterator.hasNext()) {
+            T single = iterator.next();
+            if (iterator.hasNext()) {
+                return Optional.empty();
+            }
+            return Optional.ofNullable(single);
+        }
+        return Optional.empty();
     }
 
     public boolean any(final Predicate<? super T> predicate) {

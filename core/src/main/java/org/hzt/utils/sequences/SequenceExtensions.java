@@ -1,6 +1,7 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.function.BiFunction;
+import org.hzt.utils.function.Functions;
 import org.hzt.utils.iterators.AbstractIterator;
 
 import java.util.ArrayList;
@@ -12,6 +13,18 @@ import java.util.NoSuchElementException;
 public final class SequenceExtensions {
 
     private SequenceExtensions() {
+    }
+
+    public static <T> SequenceExtension<Iterable<T>, T> flatten() {
+        return new SequenceExtension<Iterable<T>, T>() {
+            public Sequence<T> extend(final Sequence<Iterable<T>> sequence) {
+                return new Sequence<T>() {
+                    public Iterator<T> iterator() {
+                        return Sequence.flatMappingIterator(sequence.iterator(), Functions.<Iterable<T>>identity());
+                    }
+                };
+            }
+        };
     }
 
     public static <T, R> SequenceExtension<T, R> scan(final R initial, final BiFunction<R, T, R> function) {

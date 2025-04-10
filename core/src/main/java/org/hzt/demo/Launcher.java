@@ -16,7 +16,7 @@ import java.util.Map;
 import static org.hzt.demo.function.IntegerFunctions.plus;
 import static org.hzt.demo.function.IntegerFunctions.sum;
 import static org.hzt.demo.function.StringFunctions.plusStringLength;
-import static org.hzt.demo.function.StringFunctions.stringLength;
+import static org.hzt.demo.function.StringFunctions.toStringLength;
 import static org.hzt.utils.collectors.Collectors.*;
 import static org.hzt.utils.function.Functions.lessThan;
 
@@ -54,7 +54,7 @@ public final class Launcher {
         System.out.println(letters
                 .map(toCharCode)
                 .filter(isEven)
-                .firstOrNull());
+                .first());
 
         iterateDemo();
         foldDemo(letters);
@@ -109,14 +109,14 @@ public final class Launcher {
     private static void groupByDemoCounting() {
         System.out.println("groupByDemoCounting");
         final Map<Integer, Long> grouping = Sequence.of("This", "is", "an", "example")
-                .collect(groupBy(stringLength, Collectors.<String>count()));
+                .collect(groupBy(toStringLength, Collectors.<String>count()));
         System.out.println(grouping);
     }
 
     private static void groupByDemoSumming() {
         System.out.println("groupByDemoSumming");
         final Map<Integer, Integer> grouping = Sequence.of("This", "is", "an", "example", "text")
-                .collect(groupBy(stringLength, sumOf(stringLength)));
+                .collect(groupBy(toStringLength, sumOf(toStringLength)));
         System.out.println(grouping);
     }
 
@@ -150,7 +150,7 @@ public final class Launcher {
         };
         sequence.forEach(printAndSleep);
 
-        System.out.println("Reduced: " + sequence.reduceOrNull(sum));
+        System.out.println("Reduced: " + sequence.reduce(sum));
     }
 
     private static Iterable<Character> toChars(final String s) {

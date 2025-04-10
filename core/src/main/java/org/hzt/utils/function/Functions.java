@@ -2,6 +2,7 @@ package org.hzt.utils.function;
 
 import org.hzt.utils.Objects;
 
+
 public final class Functions {
 
     private Functions() {
@@ -11,6 +12,28 @@ public final class Functions {
         return new Function<T, T>() {
             public T apply(final T t) {
                 return t;
+            }
+        };
+    }
+
+    public static <T> AbstractPredicate<T> isNull() {
+        return new AbstractPredicate<T>() {
+
+            public boolean test(final T t) {
+                return t == null;
+            }
+        };
+    }
+
+    public static <T> AbstractPredicate<T> isNotNull() {
+        return not(isNull());
+    }
+
+    public static <T> AbstractPredicate<T> not(final Predicate<? super T> predicate) {
+        return new AbstractPredicate<T>() {
+
+            public boolean test(final T t) {
+                return !predicate.test(t);
             }
         };
     }
@@ -56,6 +79,15 @@ public final class Functions {
         };
     }
 
+    public static <T extends Comparable<T>> AbstractBiFunction<T, T, T> max() {
+        return new AbstractBiFunction<T, T, T>() {
+
+            public T apply(final T t1, final T t2) {
+                return t1.compareTo(t2) > 0 ? t1 : t2;
+            }
+        };
+    }
+
     public static abstract class AbstractFunction<T, R> implements Function<T, R> {
 
         /**
@@ -77,6 +109,31 @@ public final class Functions {
 
                 public V apply(final T t) {
                     return after.apply(AbstractFunction.this.apply(t));
+                }
+            };
+        }
+    }
+
+    public static abstract class AbstractBiFunction<T, U, R> implements BiFunction<T, U, R> {
+
+        /**
+         * Returns a composed function that first applies this function to
+         * its input, and then applies the {@code after} function to the result.
+         * If evaluation of either function throws an exception, it is relayed to
+         * the caller of the composed function.
+         *
+         * @param <V> the type of output of the {@code after} function, and of the
+         *           composed function
+         * @param after the function to apply after this function is applied
+         * @return a composed function that first applies this function and then
+         * applies the {@code after} function
+         * @throws NullPointerException if after is null
+         */
+        public  <V> AbstractBiFunction<T, U, V> andThen(final Function<? super R, ? extends V> after) {
+            Objects.requireNonNull(after);
+            return new AbstractBiFunction<T, U, V>() {
+                public V apply(final T t, final U u) {
+                    return after.apply(AbstractBiFunction.this.apply(t, u));
                 }
             };
         }

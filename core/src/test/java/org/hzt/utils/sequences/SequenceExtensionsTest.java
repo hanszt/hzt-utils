@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hzt.demo.function.StringFunctions.plusStringLength;
+import static org.hzt.utils.sequences.SequenceExtensions.scan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SequenceExtensionsTest {
@@ -21,6 +23,15 @@ class SequenceExtensionsTest {
                 .toList();
 
         assertEquals(Arrays.asList(5, 4, 5), list);
+    }
+
+    @Test
+    public void testScan() {
+        final List<Integer> list = Sequence.of("Some", "new", "text")
+                .andThen(scan(0, plusStringLength))
+                .toList();
+
+        assertEquals(Arrays.asList(0, 4, 7, 11), list);
     }
 
 }

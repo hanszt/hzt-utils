@@ -2,9 +2,7 @@ package org.hzt.utils.collections;
 
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
-import org.hzt.utils.iterables.Reversable;
 import org.hzt.utils.ranges.IntRange;
-import org.hzt.utils.sequences.Sequence;
 
 import java.util.AbstractList;
 import java.util.Collection;
@@ -31,10 +29,9 @@ import static org.hzt.utils.PreConditions.require;
  * @param <E> the type of the elements
  * @author Hans Zuidervaart
  */
-public interface ListX<E> extends CollectionX<E>,
+public interface ListX<E> extends SequencedCollectionX<E>,
         Transformable<ListX<E>>,
-        BinarySearchable<ToIntFunction<E>>,
-        Reversable<ListX<E>> {
+        BinarySearchable<ToIntFunction<E>> {
 
     static <E> ListX<E> empty() {
         return new UnmodifiableListX<>();
@@ -106,9 +103,7 @@ public interface ListX<E> extends CollectionX<E>,
         });
     }
 
-    default ListX<E> reversed() {
-        return Sequence.reverseOf(this).toListX();
-    }
+    ListX<E> reversed();
 
     default Optional<E> findRandom(final RandomGenerator random) {
         return isNotEmpty() ? Optional.of(get(random.nextInt(size()))) : Optional.empty();
@@ -242,12 +237,12 @@ public interface ListX<E> extends CollectionX<E>,
 
     @Override
     default ListX<E> onEach(final Consumer<? super E> consumer) {
-        return ListX.of(CollectionX.super.onEach(consumer));
+        return ListX.of(SequencedCollectionX.super.onEach(consumer));
     }
 
     @Override
     default <R> ListX<E> onEach(final Function<? super E, ? extends R> selector, final Consumer<? super R> consumer) {
-        return ListX.of(CollectionX.super.onEach(selector, consumer));
+        return ListX.of(SequencedCollectionX.super.onEach(selector, consumer));
     }
 
     @Override
@@ -268,7 +263,7 @@ public interface ListX<E> extends CollectionX<E>,
         return switch (this) {
             case UnmodifiableListX<E> ignored -> asAbstractList();
             case ArrayListX<E> l when l.isUnmodifiable -> asAbstractList();
-            default -> CollectionX.super.toList();
+            default -> SequencedCollectionX.super.toList();
         };
     }
 

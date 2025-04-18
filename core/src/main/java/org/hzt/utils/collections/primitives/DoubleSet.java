@@ -46,6 +46,11 @@ public interface DoubleSet extends DoubleCollection {
             public Iterator<Double> iterator() {
                 return DoubleSet.this.iterator();
             }
+
+            @Override
+            public boolean contains(final Double value) {
+                return DoubleSet.this.contains(value);
+            }
         };
     }
 }

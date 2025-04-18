@@ -2,7 +2,7 @@ package org.hzt.utils.sequences;
 
 import org.hzt.utils.It;
 import org.hzt.utils.PreConditions;
-import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.SequencedCollectionX;
 import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.function.IndexedPredicate;
@@ -74,7 +74,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
 
     @SafeVarargs
     static <T> Sequence<T> of(final T... values) {
-        return () -> Iterators.arrayIterator(values);
+        return () -> Iterators.indexedIterator(values.length, i -> values[i]);
     }
 
     static <T> Sequence<T> of(final Iterable<T> iterable) {
@@ -90,7 +90,7 @@ public interface Sequence<T> extends IterableX<T>, WindowedSequence<T> {
         return () -> sequencedCollection.reversed().iterator();
     }
 
-    static <T> Sequence<T> reverseOf(final ListX<T> list) {
+    static <T> Sequence<T> reverseOf(final SequencedCollectionX<T> list) {
         return () -> Iterators.reverseIterator(list);
     }
 

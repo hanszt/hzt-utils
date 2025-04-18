@@ -3,9 +3,9 @@ package org.hzt.utils.iterables;
 import org.hzt.utils.PreConditions;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
-import org.hzt.utils.collections.MutableLinkedSetX;
 import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.collections.MutableMapX;
+import org.hzt.utils.collections.MutableSequencedSetX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collections.primitives.DoubleMutableCollection;
@@ -450,7 +450,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     default <R, C extends Collection<T>> C distinctTo(final Supplier<C> collectionFactory,
                                                       final Function<? super T, ? extends R> selector) {
         final var c = collectionFactory.get();
-        final MutableSetX<R> set = MutableLinkedSetX.empty();
+        final MutableSetX<R> set = MutableSequencedSetX.empty();
         for (final var t : this) {
             if (t != null) {
                 final var r = selector.apply(t);

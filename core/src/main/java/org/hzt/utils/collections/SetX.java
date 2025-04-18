@@ -46,6 +46,15 @@ public interface SetX<E> extends CollectionX<E>, Transformable<SetX<E>> {
         return this;
     }
 
+    /**
+     * Since sets are often used to check for element presence, this method should be explicitly implemented for sets.
+     *
+     * @param value the value to check
+     * @return true if the set contains the value, false otherwise.
+     */
+    @Override
+    boolean contains(final E value);
+
     @Override
     default SetX<E> onEach(final Consumer<? super E> consumer) {
         return SetX.of(CollectionX.super.onEach(consumer));

@@ -8,7 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.SequencedSet;
 import java.util.function.Consumer;
 
-final class LinkedHashSetX<E> extends AbstractSet<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
+final class LinkedHashSetX<E> extends AbstractSet<E> implements MutableSequencedSetX<E>, SequencedSetX<E> {
 
     private final SequencedSet<E> set;
     boolean isUnmodifiable = false;

@@ -8,10 +8,10 @@ import org.hzt.test.model.Museum;
 import org.hzt.test.model.Painting;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.CollectionX;
-import org.hzt.utils.collections.LinkedSetX;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
 import org.hzt.utils.collections.MutableListX;
+import org.hzt.utils.collections.SequencedSetX;
 import org.hzt.utils.collections.SetX;
 import org.hzt.utils.collections.primitives.IntList;
 import org.hzt.utils.collections.primitives.IntMutableList;
@@ -299,7 +299,7 @@ class SequenceTest {
                 .flatMapToInt(s -> s.chars()::iterator)
                 .transform(this::toFilteredMapX);
 
-        assertEquals(LinkedSetX.of(115, 116, 101, 104, 108, 111), map.keySet());
+        assertEquals(SequencedSetX.of(115, 116, 101, 104, 108, 111), map.keySet());
     }
 
     private MapX<Integer, String> toFilteredMapX(final IntSequence sequence) {

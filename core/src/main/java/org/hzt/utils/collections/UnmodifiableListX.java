@@ -33,6 +33,15 @@ final class UnmodifiableListX<T> implements ListX<T>, RandomAccess {
         };
     }
 
+    /**
+     * Only for internal use.
+     *
+     * @param unmodifiableList the list to modify
+     */
+    private UnmodifiableListX(final List<T> unmodifiableList) {
+        this.unmodifiableList = unmodifiableList;
+    }
+
     private static <T> List<T> listCopy(final Iterable<T> iterable, final Predicate<T> predicate) {
         return StreamSupport.stream(iterable.spliterator(), false)
                 .filter(predicate)
@@ -42,6 +51,11 @@ final class UnmodifiableListX<T> implements ListX<T>, RandomAccess {
     @Override
     public ListX<T> get() {
         return this;
+    }
+
+    @Override
+    public ListX<T> reversed() {
+        return new UnmodifiableListX<>(unmodifiableList.reversed());
     }
 
     @Override

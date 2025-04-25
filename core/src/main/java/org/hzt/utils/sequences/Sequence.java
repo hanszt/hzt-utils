@@ -6,7 +6,7 @@ import org.hzt.utils.function.BiFunction;
 import org.hzt.utils.function.Consumer;
 import org.hzt.utils.function.Function;
 import org.hzt.utils.function.Predicate;
-import org.hzt.utils.iterators.AbstractIterator;
+import org.hzt.utils.iterators.UnmodifiableIterator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +37,7 @@ public abstract class Sequence<T> implements Iterable<T> {
         return new Sequence<T>() {
             @Override
             public Iterator<T> iterator() {
-                return new AbstractIterator<T>() {
+                return new UnmodifiableIterator<T>() {
 
                     public boolean hasNext() {
                         return false;
@@ -66,7 +66,7 @@ public abstract class Sequence<T> implements Iterable<T> {
     public static <T> Sequence<T> of(final T... elements) {
         return new Sequence<T>() {
             public Iterator<T> iterator() {
-                return new AbstractIterator<T>() {
+                return new UnmodifiableIterator<T>() {
                     int index = 0;
 
                     public boolean hasNext() {
@@ -92,7 +92,7 @@ public abstract class Sequence<T> implements Iterable<T> {
     public static <T> Sequence<T> reverseOf(final T... elements) {
         return new Sequence<T>() {
             public Iterator<T> iterator() {
-                return new AbstractIterator<T>() {
+                return new UnmodifiableIterator<T>() {
                     int index = elements.length - 1;
 
                     public boolean hasNext() {
@@ -115,7 +115,7 @@ public abstract class Sequence<T> implements Iterable<T> {
         return new Sequence<T>() {
             public Iterator<T> iterator() {
                 final ListIterator<T> listIterator = list.listIterator(list.size());
-                return new AbstractIterator<T>() {
+                return new UnmodifiableIterator<T>() {
 
                     public boolean hasNext() {
                         return listIterator.hasPrevious();
@@ -133,7 +133,7 @@ public abstract class Sequence<T> implements Iterable<T> {
     public static <T> Sequence<T> iterate(final T initial, final Function<T, T> nextItemGenerator) {
         return new Sequence<T>() {
             public Iterator<T> iterator() {
-                return new AbstractIterator<T>() {
+                return new UnmodifiableIterator<T>() {
                     boolean hasNext = true;
                     T item = initial;
 
@@ -163,7 +163,7 @@ public abstract class Sequence<T> implements Iterable<T> {
         return new Sequence<R>() {
             public Iterator<R> iterator() {
                 final Iterator<T> iterator = Sequence.this.iterator();
-                return new AbstractIterator<R>() {
+                return new UnmodifiableIterator<R>() {
 
                     public boolean hasNext() {
                         return iterator.hasNext();
@@ -181,7 +181,7 @@ public abstract class Sequence<T> implements Iterable<T> {
         return new Sequence<T>() {
             public Iterator<T> iterator() {
                 final Iterator<T> iterator = Sequence.this.iterator();
-                return new AbstractIterator<T>() {
+                return new UnmodifiableIterator<T>() {
                     boolean hasNext = false;
                     T next = null;
 
@@ -219,8 +219,8 @@ public abstract class Sequence<T> implements Iterable<T> {
         };
     }
 
-    static <T, R> AbstractIterator<R> flatMappingIterator(final Iterator<T> iterator, final Function<? super T, ? extends Iterable<R>> mapper) {
-        return new AbstractIterator<R>() {
+    static <T, R> UnmodifiableIterator<R> flatMappingIterator(final Iterator<T> iterator, final Function<? super T, ? extends Iterable<R>> mapper) {
+        return new UnmodifiableIterator<R>() {
             boolean hasNext = false;
             R next = null;
             Iterator<R> itemIterator = null;
@@ -258,7 +258,7 @@ public abstract class Sequence<T> implements Iterable<T> {
         return new Sequence<T>() {
             public Iterator<T> iterator() {
                 final Iterator<T> iterator = Sequence.this.iterator();
-                return new AbstractIterator<T>() {
+                return new UnmodifiableIterator<T>() {
                     boolean hasNext = false;
                     T next = null;
                     long counter = 0L;
@@ -292,7 +292,7 @@ public abstract class Sequence<T> implements Iterable<T> {
         return new Sequence<T>() {
             public Iterator<T> iterator() {
                 final Iterator<T> iterator = Sequence.this.iterator();
-                return new AbstractIterator<T>() {
+                return new UnmodifiableIterator<T>() {
                     boolean hasNext = false;
                     T next = null;
                     int counter = 0;
@@ -328,7 +328,7 @@ public abstract class Sequence<T> implements Iterable<T> {
         return new Sequence<T>() {
             public Iterator<T> iterator() {
                 final Iterator<T> iterator = Sequence.this.iterator();
-                return new AbstractIterator<T>() {
+                return new UnmodifiableIterator<T>() {
                     boolean hasNext = false;
                     T next = null;
                     boolean takeMore = true;
@@ -365,7 +365,7 @@ public abstract class Sequence<T> implements Iterable<T> {
         return new Sequence<T>() {
             public Iterator<T> iterator() {
                 final Iterator<T> iterator = Sequence.this.iterator();
-                return new AbstractIterator<T>() {
+                return new UnmodifiableIterator<T>() {
                     boolean hasNext = false;
                     T next = null;
                     boolean skip = true;
@@ -424,7 +424,7 @@ public abstract class Sequence<T> implements Iterable<T> {
             public Iterator<T> iterator() {
                 final Iterator<T> iterator = Sequence.this.iterator();
                 final Set<T> seen = new HashSet<T>();
-                return new AbstractIterator<T>() {
+                return new UnmodifiableIterator<T>() {
                     boolean hasNext = false;
                     T next = null;
 
@@ -562,7 +562,7 @@ public abstract class Sequence<T> implements Iterable<T> {
         return !iterator().hasNext();
     }
 
-    public static class Builder<T> {
+    public static final class Builder<T> {
         private final List<T> buffer = new ArrayList<T>();
 
         private Builder() {

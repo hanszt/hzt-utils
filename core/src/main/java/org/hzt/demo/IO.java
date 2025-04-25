@@ -1,6 +1,6 @@
 package org.hzt.demo;
 
-import org.hzt.utils.iterators.AbstractIterator;
+import org.hzt.utils.iterators.UnmodifiableIterator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.SequenceExtension;
 
@@ -16,7 +16,7 @@ public final class IO {
             public Sequence<T> extend(final Sequence<T> sequence) {
                 return new Sequence<T>() {
                     public Iterator<T> iterator() {
-                        return new AbstractIterator<T>() {
+                        return new UnmodifiableIterator<T>() {
                             final Iterator<T> iter = sequence.iterator();
 
                             public boolean hasNext() {

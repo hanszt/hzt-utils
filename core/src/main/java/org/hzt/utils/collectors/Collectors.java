@@ -27,8 +27,8 @@ public final class Collectors {
                 acc.add(t);
             }
 
-            public Set<T> finish(final Set<T> t) {
-                return Collections.unmodifiableSet(t);
+            public Set<T> finish(final Set<T> set) {
+                return Collections.unmodifiableSet(set);
             }
         };
     }

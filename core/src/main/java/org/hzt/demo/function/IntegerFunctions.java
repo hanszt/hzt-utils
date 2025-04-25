@@ -1,7 +1,7 @@
 package org.hzt.demo.function;
 
 import org.hzt.utils.function.BiFunction;
-import org.hzt.utils.function.Functions.AbstractFunction;
+import org.hzt.utils.function.Function;
 
 public final class IntegerFunctions {
 
@@ -14,24 +14,24 @@ public final class IntegerFunctions {
         }
     };
 
-    public static AbstractFunction<Integer, Integer> plus(final int other) {
-        return new AbstractFunction<Integer, Integer>() {
+    public static Function<Integer, Integer> plus(final int other) {
+        return new Function<Integer, Integer>() {
             public Integer apply(final Integer i) {
                 return i + other;
             }
         };
     }
 
-    public static AbstractFunction<Integer, Integer> times(final int other) {
-        return new AbstractFunction<Integer, Integer>() {
+    public static Function<Integer, Integer> times(final int other) {
+        return new Function<Integer, Integer>() {
             public Integer apply(final Integer i) {
                 return i * other;
             }
         };
     }
 
-    public static AbstractFunction<Integer, Integer> mod(final int other) {
-        return new AbstractFunction<Integer, Integer>() {
+    public static Function<Integer, Integer> mod(final int other) {
+        return new Function<Integer, Integer>() {
             public Integer apply(final Integer i) {
                 return i % other;
             }

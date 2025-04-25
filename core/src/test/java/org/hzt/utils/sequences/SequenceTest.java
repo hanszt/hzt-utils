@@ -17,6 +17,7 @@ import static org.hzt.demo.function.StringFunctions.startsWith;
 import static org.hzt.demo.function.StringFunctions.toStringLength;
 import static org.hzt.utils.function.Comparators.comparing;
 import static org.hzt.utils.function.Functions.*;
+import static org.hzt.utils.function.Predicate.isEqual;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SequenceTest {
@@ -87,11 +88,11 @@ class SequenceTest {
         final Sequence<List<Integer>> windowedSequence = Sequence
                 .iterate(1, plus(2).andThen(mod(20)))
                 .take(22)
-                .andThen(SequenceExtensions.<Integer>windowed(10, 2, true));
+                .andThen(SequenceExtensions
+                        .<Integer>windowed(10, 2, true)
+                        .andThen(IO.<List<Integer>>println()));
 
-        final List<List<Integer>> windows = windowedSequence
-                .andThen(IO.<List<Integer>>println())
-                .toList();
+        final List<List<Integer>> windows = windowedSequence.toList();
 
         System.out.println("windows = " + windows);
 
@@ -155,11 +156,18 @@ class SequenceTest {
 
     @Test
     void testReverseOf() {
-        final List<String> list = Sequence.reverseOf("hoi", "liesje", "leerde", "lotje", "lopen")
+        final String[] input = {"hoi", "liesje", "leerde", "lotje", "lopen"};
+        final List<String> list1 = Sequence.reverseOf(input)
                 .filter(startsWith("l"))
                 .toList();
 
-        assertEquals(Arrays.asList("lopen", "lotje", "leerde", "liesje"), list);
+        final String single = Sequence.of(input)
+                .filter(startsWith("l").negate())
+                .single()
+                .orElseThrow();
+
+        assertEquals(Arrays.asList("lopen", "lotje", "leerde", "liesje"), list1);
+        assertEquals("hoi", single);
     }
 
     @Test

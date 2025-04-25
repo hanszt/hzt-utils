@@ -1,8 +1,8 @@
 package org.hzt.utils.sequences;
 
 import org.hzt.utils.function.BiFunction;
-import org.hzt.utils.function.Functions;
-import org.hzt.utils.iterators.AbstractIterator;
+import org.hzt.utils.function.Function;
+import org.hzt.utils.iterators.UnmodifiableIterator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +20,7 @@ public final class SequenceExtensions {
             public Sequence<T> extend(final Sequence<Iterable<T>> sequence) {
                 return new Sequence<T>() {
                     public Iterator<T> iterator() {
-                        return Sequence.flatMappingIterator(sequence.iterator(), Functions.<Iterable<T>>identity());
+                        return Sequence.flatMappingIterator(sequence.iterator(), Function.<Iterable<T>>identity());
                     }
                 };
             }
@@ -33,7 +33,7 @@ public final class SequenceExtensions {
                 return new Sequence<R>() {
                     public Iterator<R> iterator() {
                         final Iterator<T> iterator = sequence.iterator();
-                        return new AbstractIterator<R>() {
+                        return new UnmodifiableIterator<R>() {
                             boolean hasNext = true;
                             R next = initial;
 
@@ -69,7 +69,7 @@ public final class SequenceExtensions {
                     public Iterator<R> iterator() {
                         final Iterator<T> iterator1 = sequence.iterator();
                         final Iterator<T> iterator2 = iterable.iterator();
-                        return new AbstractIterator<R>() {
+                        return new UnmodifiableIterator<R>() {
 
                             public boolean hasNext() {
                                 return iterator1.hasNext() && iterator2.hasNext();
@@ -103,7 +103,7 @@ public final class SequenceExtensions {
                 return new Sequence<List<T>>() {
                     public Iterator<List<T>> iterator() {
                         final Iterator<T> iterator = sequence.iterator();
-                        return new AbstractIterator<List<T>>() {
+                        return new UnmodifiableIterator<List<T>>() {
                             boolean hasNext = false;
                             List<T> next = new ArrayList<T>();
                             int skip = 0;

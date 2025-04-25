@@ -3,9 +3,8 @@ package org.hzt.demo;
 import org.hzt.utils.collectors.Collectors;
 import org.hzt.utils.function.Consumer;
 import org.hzt.utils.function.Function;
-import org.hzt.utils.function.Functions;
 import org.hzt.utils.function.Predicate;
-import org.hzt.utils.iterators.AbstractIterator;
+import org.hzt.utils.iterators.UnmodifiableIterator;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.sequences.SequenceExtensions;
 
@@ -13,12 +12,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static org.hzt.demo.function.IntegerFunctions.plus;
-import static org.hzt.demo.function.IntegerFunctions.sum;
+import static org.hzt.demo.function.IntegerFunctions.*;
 import static org.hzt.demo.function.StringFunctions.plusStringLength;
 import static org.hzt.demo.function.StringFunctions.toStringLength;
 import static org.hzt.utils.collectors.Collectors.*;
-import static org.hzt.utils.function.Functions.lessThan;
+import static org.hzt.utils.function.Functions.*;
 
 public final class Launcher {
 
@@ -33,31 +31,51 @@ public final class Launcher {
             return (int) s.charAt(0);
         }
     };
+    private static final Consumer<Object> println = new Consumer<Object>() {
+
+        public void accept(final Object o) {
+            System.out.println(o);
+        }
+    };
+
+    private static Consumer<Integer> sleep(final int millis) {
+        return new Consumer<Integer>() {
+
+            public void accept(final Integer integer) {
+                try {
+                    Thread.sleep(millis);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        };
+    }
 
     public static void main(String[] args) {
         final Sequence<String> letters = Sequence.of("a", "b", "c", "d", "e", "f", "g", "h", "i", "j");
 
         System.out.println("Map filter to list demo");
-        final List<Integer> evenCharCodes = letters
+        final List<Integer> charCodes = letters
                 .map(toCharCode)
-                .filter(isEven)
+                .filter(isEven.or(greaterThan(104)))
                 .toList();
-        System.out.println("list = " + evenCharCodes);
+        System.out.println("list = " + charCodes);
 
         System.out.println("None demo");
-        System.out.println(letters.none(Functions.<String>isEqual("a")));
+        System.out.println(letters.none(Predicate.<String>isEqual("a")));
 
         System.out.println("Any demo");
-        System.out.println(Sequence.of(evenCharCodes).any(lessThan(42)));
+        System.out.println(Sequence.of(charCodes).any(lessThan(42)));
         // First or null demo
-        System.out.println("First or null demo");
+        System.out.println("First demo");
         System.out.println(letters
                 .map(toCharCode)
-                .filter(isEven)
+                .filter(isEven.and(greaterThanEqual(100)))
                 .first());
 
         iterateDemo();
-        foldDemo(letters);
+        System.out.println("Fold demo");
+        System.out.println(letters.fold(1, plusStringLength.andThen(times(2))));
         flatMapDemo();
         groupByDemoCounting();
         groupByDemoSumming();
@@ -65,7 +83,7 @@ public final class Launcher {
         System.out.println("Summing demo");
         System.out.println(Sequence.iterate(10, plus(1))
                 .take(4)
-                .collect(sumOf(Functions.<Integer>identity())));
+                .collect(sumOf(Function.<Integer>identity())));
 
         chunkedDemo();
         windowedDemo();
@@ -120,11 +138,6 @@ public final class Launcher {
         System.out.println(grouping);
     }
 
-    private static void foldDemo(final Sequence<String> sequence) {
-        System.out.println("foldDemo");
-        System.out.println(sequence.fold(1, plusStringLength));
-    }
-
     private static void iterateDemo() {
         System.out.println("iterateDemo");
         final Function<Integer, Integer> powerOf2Mod30 = new Function<Integer, Integer>() {
@@ -137,18 +150,7 @@ public final class Launcher {
                 .skip(2)
                 .take(3);
 
-        final Consumer<Integer> printAndSleep = new Consumer<Integer>() {
-
-            public void accept(final Integer integer) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                System.out.println(integer);
-            }
-        };
-        sequence.forEach(printAndSleep);
+        sequence.forEach(sleep(100).andThen(println));
 
         System.out.println("Reduced: " + sequence.reduce(sum));
     }
@@ -158,7 +160,7 @@ public final class Launcher {
         return new Iterable<Character>() {
 
             public Iterator<Character> iterator() {
-                return new AbstractIterator<Character>() {
+                return new UnmodifiableIterator<Character>() {
                     int index = 0;
 
                     public boolean hasNext() {

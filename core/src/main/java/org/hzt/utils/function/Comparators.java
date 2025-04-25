@@ -3,6 +3,7 @@ package org.hzt.utils.function;
 import org.hzt.utils.Objects;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Comparator;
 
 public final class Comparators {
@@ -45,6 +46,16 @@ public final class Comparators {
                     return (res != 0) ? res : other.compare(c1, c2);
                 }
             };
+        }
+
+        /**
+         * Returns a comparator that imposes the reverse ordering of this
+         * comparator.
+         *
+         * @return a comparator that imposes the reverse ordering of this comparator.
+         */
+        public Comparator<T> reversed() {
+            return Collections.reverseOrder(this);
         }
     }
 }

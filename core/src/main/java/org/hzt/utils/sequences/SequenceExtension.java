@@ -1,6 +1,15 @@
 package org.hzt.utils.sequences;
 
-public interface SequenceExtension<T, R> {
+public abstract class SequenceExtension<T, R> {
 
-    Sequence<R> extend(Sequence<T> sequence);
+    public abstract Sequence<R> extend(Sequence<T> sequence);
+
+    public <V> SequenceExtension<T, V> andThen(final SequenceExtension<R, V> next) {
+        return new SequenceExtension<T, V>() {
+            @Override
+            public Sequence<V> extend(Sequence<T> sequence) {
+                return next.extend(SequenceExtension.this.extend(sequence));
+            }
+        };
+    }
 }

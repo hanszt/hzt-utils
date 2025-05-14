@@ -27,7 +27,9 @@
         <java.target.version>21</java.target.version>
         <coverage.target>50%</coverage.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlin-maven-plugin.jvmTarget>21</kotlin-maven-plugin.jvmTarget>
         <!--        dependencies-->
+        <kotlin.version>2.0.0</kotlin.version>
         <!--        test-->
         <junit.jupiter.version>5.11.3</junit.jupiter.version>
         <assertj-core.version>3.24.2</assertj-core.version>

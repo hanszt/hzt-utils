@@ -2,6 +2,7 @@ module fx.utils {
 
     requires javafx.base;
     requires hzt.utils.core;
+    requires kotlin.stdlib;
 
     exports org.hzt.fx.utils;
     exports org.hzt.fx.utils.function;

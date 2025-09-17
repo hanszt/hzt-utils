@@ -1,5 +1,6 @@
 package org.hzt.utils.iterables;
 
+import org.hzt.test.assertions.Assertions;
 import org.hzt.test.model.Person;
 import org.hzt.utils.collectors.CollectorsX;
 import org.hzt.utils.sequences.Sequence;
@@ -126,7 +127,7 @@ class SortableTest {
                 .map(Person::new)
                 .collect(CollectorsX.toListX());
 
-        assertTrue(people.isSortedBy(Person::getName));
+        Assertions.assertThat(people).isSortedBy(Person::getName);
     }
 
     @ParameterizedTest

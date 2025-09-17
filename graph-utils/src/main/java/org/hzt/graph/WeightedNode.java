@@ -4,7 +4,6 @@ package org.hzt.graph;
 import org.hzt.utils.collections.MutableCollectionX;
 import org.hzt.utils.collections.MutableListX;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 

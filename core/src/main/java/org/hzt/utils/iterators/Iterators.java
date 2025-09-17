@@ -1,6 +1,7 @@
 package org.hzt.utils.iterators;
 
 import org.hzt.utils.collections.ListX;
+import org.hzt.utils.collections.SequencedCollectionX;
 import org.hzt.utils.collections.primitives.IntMutableSet;
 import org.hzt.utils.function.IndexedBiFunction;
 import org.hzt.utils.function.IndexedFunction;
@@ -8,13 +9,14 @@ import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -26,9 +28,23 @@ public final class Iterators {
     private Iterators() {
     }
 
-    @SafeVarargs
-    public static <T> Iterator<T> arrayIterator(final T... array) {
-        return new ArrayIterator<>(array, false);
+    public static <T> Iterator<T> indexedIterator(int size, IntFunction<T> next) {
+        return new Iterator<>() {
+            int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return index < size;
+            }
+
+            @Override
+            public T next() {
+                if (hasNext()) {
+                    return next.apply(index++);
+                }
+                throw new NoSuchElementException();
+            }
+        };
     }
 
     @SafeVarargs
@@ -36,12 +52,8 @@ public final class Iterators {
         return new ArrayIterator<>(array, true);
     }
 
-    public static <T> Iterator<T> reverseIterator(final List<T> list) {
-        return reverseIterator(list.listIterator(list.size()));
-    }
-
-    public static <T> Iterator<T> reverseIterator(final ListX<T> list) {
-        return reverseIterator(list.listIterator(list.size()));
+    public static <T> Iterator<T> reverseIterator(final SequencedCollectionX<T> collectionX) {
+        return collectionX.reversed().iterator();
     }
 
     private static <T> Iterator<T> reverseIterator(final ListIterator<T> listIterator) {

@@ -92,8 +92,7 @@ public interface DoubleCollectable extends PrimitiveCollectable<DoubleCollection
         if (n == 0) {
             return collection;
         }
-        final PrimitiveIterable.OfDouble iterable = this;
-        if (iterable instanceof final DoubleMutableCollection c && n >= c.size()) {
+        if (this instanceof final DoubleCollection c && n >= c.size()) {
             collection.addAll(c);
             return collection;
         }

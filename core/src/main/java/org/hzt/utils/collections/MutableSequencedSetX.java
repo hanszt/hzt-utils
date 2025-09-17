@@ -4,30 +4,30 @@ import java.util.Collection;
 import java.util.SequencedSet;
 import java.util.Set;
 
-public interface MutableLinkedSetX<E> extends MutableSetX<E>, SequencedSet<E> {
+public interface MutableSequencedSetX<E> extends MutableSetX<E>, SequencedSetX<E>, SequencedSet<E> {
 
-    static <E> MutableLinkedSetX<E> empty() {
+    static <E> MutableSequencedSetX<E> empty() {
         return new LinkedHashSetX<>();
     }
 
-    static <E> MutableLinkedSetX<E> withInitCapacity(final int capacity) {
+    static <E> MutableSequencedSetX<E> withInitCapacity(final int capacity) {
         return new LinkedHashSetX<>(capacity);
     }
 
-    static <E> MutableLinkedSetX<E> of(final Set<E> set) {
+    static <E> MutableSequencedSetX<E> of(final Set<E> set) {
         return new LinkedHashSetX<>(set);
     }
 
-    static <E> MutableLinkedSetX<E> of(final Iterable<E> set) {
+    static <E> MutableSequencedSetX<E> of(final Iterable<E> set) {
         return new LinkedHashSetX<>(set);
     }
 
-    static <E> MutableLinkedSetX<E> of(final Collection<E> collection) {
+    static <E> MutableSequencedSetX<E> of(final Collection<E> collection) {
         return new LinkedHashSetX<>(collection);
     }
 
     @SafeVarargs
-    static <E> MutableLinkedSetX<E> of(final E first, final E... others) {
+    static <E> MutableSequencedSetX<E> of(final E first, final E... others) {
         return new LinkedHashSetX<>(first, others);
     }
 
@@ -40,4 +40,6 @@ public interface MutableLinkedSetX<E> extends MutableSetX<E>, SequencedSet<E> {
     default E removeLast() {
         return SequencedSet.super.removeLast();
     }
+
+    MutableSequencedSetX<E> reversed();
 }

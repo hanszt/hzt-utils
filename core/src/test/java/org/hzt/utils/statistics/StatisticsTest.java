@@ -1,7 +1,7 @@
 package org.hzt.utils.statistics;
 
 import org.hzt.utils.It;
-import org.hzt.utils.sequences.Sequence;
+import org.hzt.utils.sequences.primitives.DoubleSequence;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +17,12 @@ class StatisticsTest {
 
     @Test
     void testStatisticsStandardDeviation() {
-        final var list = Sequence.generate(new Random(0)::nextGaussian)
+        final var list = DoubleSequence.generate(new Random(0)::nextGaussian)
                 .take(1_000)
                 .map(d -> (int) (d * 100))
-                .toListX();
+                .toList();
 
-        final var intRange = list.mapToInt(It::asInt);
+        final var intRange = list.mapToInt(It::doubleAsInt);
         final var longRange = intRange.mapToLong(It::asLong);
         final var doubleRange = intRange.mapToDouble(It::asDouble);
 
@@ -35,9 +35,9 @@ class StatisticsTest {
         LOGGER.atDebug().setMessage(() -> "standard deviation: " + longRange.sum()).log();
 
         System.setProperty("org.openjdk.java.util.stream.tripwire", "false");
-        LOGGER.atDebug().setMessage(() -> intRange.joinToString()).log();
-        LOGGER.atDebug().setMessage(() -> longRange.joinToString()).log();
-        LOGGER.atDebug().setMessage(() -> doubleRange.joinToString()).log();
+        LOGGER.atDebug().setMessage(intRange::joinToString).log();
+        LOGGER.atDebug().setMessage(longRange::joinToString).log();
+        LOGGER.atDebug().setMessage(doubleRange::joinToString).log();
         System.setProperty("org.openjdk.java.util.stream.tripwire", "true");
 
         LOGGER.debug("standard deviation: {}", standardDeviationIntRange);

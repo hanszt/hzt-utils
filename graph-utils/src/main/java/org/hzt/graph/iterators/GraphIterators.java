@@ -18,6 +18,7 @@ public final class GraphIterators {
     public static <S extends TreeNode<S>> Iterator<DepthToTreeNode<S>> treeNodeBreadthFirstDepthTrackingIterator(final S source) {
         return new TreeNodeBreadthFirstDepthTrackingIterator<>(source);
     }
+
     public static <S extends TreeNode<S>> Iterator<S> treeNodeDepthFirstIterator(final S source) {
         return new TreeNodeDepthFirstIterator<>(source);
     }

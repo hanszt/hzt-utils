@@ -3,21 +3,21 @@ package org.hzt.utils.collections;
 import org.hzt.test.TestSampleGenerator;
 import org.junit.jupiter.api.Test;
 
+import static org.hzt.test.assertions.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MutableLinkedSetXTest {
+class MutableSequencedSetXTest {
 
     @Test
     void testMutableLinkedEmptySetIsEmpty() {
-        assertTrue(MutableLinkedSetX.empty()::isEmpty);
+        assertThat(MutableSequencedSetX.empty()).isEmpty();
     }
 
     @Test
     void testMutableLinkedSetOfIterableMaintainsOrder() {
         final var bookList = TestSampleGenerator.createBookList();
 
-        final var set = MutableLinkedSetX.of(bookList);
+        final var set = MutableSequencedSetX.of(bookList);
 
         assertEquals(bookList.get(0), set.first());
     }

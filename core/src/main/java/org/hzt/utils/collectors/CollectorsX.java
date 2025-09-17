@@ -51,8 +51,8 @@ public final class CollectorsX {
 
     public static <T1, T2, R> Collector<Pair<T1, T2>, ?, R> unzip(BiFunction<? super List<T1>, ? super List<T2>, R> unzipper) {
         return Collectors.teeing(
-                mapping(e -> e.first(), toUnmodifiableList()),
-                mapping(e -> e.second(), toUnmodifiableList()),
+                mapping(Pair::first, toUnmodifiableList()),
+                mapping(Pair::second, toUnmodifiableList()),
                 unzipper
         );
     }

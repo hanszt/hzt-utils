@@ -3,10 +3,10 @@ package org.hzt.utils.collections;
 import java.util.*;
 import java.util.function.Consumer;
 
-final class LinkedHashSetX<E> extends AbstractSet<E> implements MutableLinkedSetX<E>, LinkedSetX<E> {
+final class LinkedHashSetX<E> extends AbstractSet<E> implements MutableSequencedSetX<E>, SequencedSetX<E> {
 
     private final SequencedSet<E> set;
-    private boolean isUnmodifiable = false;
+    boolean isUnmodifiable = false;
 
     LinkedHashSetX() {
         this.set = new LinkedHashSet<>();

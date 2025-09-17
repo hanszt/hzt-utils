@@ -3,14 +3,18 @@ package org.hzt.graph;
 import org.hzt.graph.MutableNode.Mode;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
-import org.hzt.utils.collections.MutableLinkedSetX;
+import org.hzt.utils.collections.MutableSequencedSetX;
 import org.hzt.utils.collections.MutableSetX;
 import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -137,7 +141,7 @@ class NodeTest {
 
         private final String name;
 
-        private final MutableSetX<RailWayStation> neighbors = MutableLinkedSetX.empty();
+        private final MutableSetX<RailWayStation> neighbors = MutableSequencedSetX.empty();
         private RailWayStation predecessor;
 
         public RailWayStation(final String name) {

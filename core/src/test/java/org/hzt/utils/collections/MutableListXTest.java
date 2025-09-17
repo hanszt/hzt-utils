@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.hzt.test.assertions.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MutableListXTest {
@@ -32,6 +33,18 @@ class MutableListXTest {
         assertAll(
                 () -> assertEquals(5, removed),
                 () -> assertEquals(List.of(1, 2, 3, 4), integers)
+        );
+    }
+
+    @Test
+    void testWhenChangingOriginalListDoesNotChangeToListResult() {
+        final var integers = MutableListX.of(1, 2, 3, 4, 5);
+        final var list = integers.toList();
+        integers.clear();
+
+        assertAll(
+                () -> assertThat(integers).isEmpty(),
+                () -> assertThat(list).isNotEmpty()
         );
     }
 

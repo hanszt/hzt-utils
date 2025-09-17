@@ -8,15 +8,13 @@
     <parent>
         <groupId>org.hzt.utils</groupId>
         <artifactId>hzt-utils</artifactId>
-        <version>1.0.5.24</version>
+        <version>1.0.5.25</version>
     </parent>
 
     <artifactId>kotlin-utils</artifactId>
 
     <properties>
-        <kotlin.version>2.0.20</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <kotlin-maven-plugin.jvmTarget>21</kotlin-maven-plugin.jvmTarget>
     </properties>
 
     <dependencies>

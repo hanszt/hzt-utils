@@ -130,7 +130,7 @@ final class TreeMapX<K, V, R extends Comparable<? super R>> extends AbstractMap<
 
     @Override
     public MutableSetX<K> keySet() {
-        return MutableLinkedSetX.of(map.keySet());
+        return MutableSequencedSetX.of(map.keySet());
     }
 
     @Override

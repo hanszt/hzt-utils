@@ -14,6 +14,7 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterableX;
 import org.hzt.utils.sequences.primitives.DoubleSequence;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.PrimitiveIterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -74,7 +75,22 @@ public interface DoubleCollection extends
     }
 
     @Override
-    CollectionX<Double> boxed();
+    default CollectionX<Double> boxed() {
+        return new CollectionX<>() {
+
+            @Override
+            public int size() {
+                return DoubleCollection.this.size();
+            }
+
+            @Override
+            public Iterator<Double> iterator() {
+                return DoubleCollection.this.iterator();
+            }
+        };
+    }
+
+    ;
 
     default DoubleList map(final DoubleUnaryOperator mapper) {
         final var iterator = iterator();

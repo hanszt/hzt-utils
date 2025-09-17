@@ -1,7 +1,5 @@
 package org.hzt.utils.collections.primitives;
 
-import org.hzt.utils.collections.MutableSetX;
-
 import java.util.PrimitiveIterator;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
@@ -101,11 +99,6 @@ final class DoubleHashSet extends PrimitiveAbstractSet<Double, DoubleConsumer, d
             current = next;
         }
         return true;
-    }
-
-    @Override
-    public MutableSetX<Double> boxed() {
-        return MutableSetX.of(this);
     }
 
     @Override

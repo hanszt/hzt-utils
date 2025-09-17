@@ -2,7 +2,10 @@ package org.hzt.utils.collections;
 
 import org.hzt.utils.Transformable;
 
+import java.util.AbstractSet;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -39,15 +42,18 @@ public interface SetX<E> extends CollectionX<E>, Transformable<SetX<E>> {
         return new UnmodifiableSetX<>(collection);
     }
 
-    @Override
-    int size();
-
-    @Override
-    boolean contains(Object value);
-
     default SetX<E> get() {
         return this;
     }
+
+    /**
+     * Since sets are often used to check for element presence, this method should be explicitly implemented for sets.
+     *
+     * @param value the value to check
+     * @return true if the set contains the value, false otherwise.
+     */
+    @Override
+    boolean contains(final E value);
 
     @Override
     default SetX<E> onEach(final Consumer<? super E> consumer) {
@@ -57,6 +63,28 @@ public interface SetX<E> extends CollectionX<E>, Transformable<SetX<E>> {
     @Override
     default <R> SetX<E> onEach(final Function<? super E, ? extends R> selector, final Consumer<? super R> consumer) {
         return SetX.of(CollectionX.super.onEach(selector, consumer));
+    }
+
+    @Override
+    default Set<E> toSet() {
+        return switch (this) {
+            case LinkedHashSetX<E> s when s.isUnmodifiable -> asSet();
+            default -> CollectionX.super.toSet();
+        };
+    }
+
+    private AbstractSet<E> asSet() {
+        return new AbstractSet<>() {
+            @Override
+            public Iterator<E> iterator() {
+                return SetX.this.iterator();
+            }
+
+            @Override
+            public int size() {
+                return SetX.this.size();
+            }
+        };
     }
 
     @Override

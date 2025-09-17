@@ -21,6 +21,8 @@ import java.util.stream.Gatherers;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hzt.utils.gatherers.GatherersX.*;
 import static java.util.stream.Gatherers.fold;
 import static java.util.stream.Gatherers.scan;
 import static java.util.stream.Gatherers.windowFixed;
@@ -466,4 +468,29 @@ class GatherableTest {
 
         assertEquals(new Reading("2023-09-21T10:15:32.00Z", 350), firstSuspicious);
     }
+
+    @Test
+    void testSingle() {
+        final var single = Sequence.of(42)
+                .gather(single())
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+
+        final var o = new Object() {
+            int counter = 0;
+        };
+        assertThat(Sequence.of(42, 23, 24, 14, 13, 23, 17)
+                .onEach(s -> o.counter++)
+                .gather(single())
+                .toList()).isEmpty();
+
+        assertThat(Sequence.empty()
+                .gather(single())
+                .toList()).isEmpty();
+
+        // Verify that the single method short circuits if it sees more than one element
+        assertEquals(2, o.counter);
+        assertEquals(42, single);
+    }
+
 }

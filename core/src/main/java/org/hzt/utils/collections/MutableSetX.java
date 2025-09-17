@@ -35,6 +35,11 @@ public interface MutableSetX<E> extends Set<E>, SetX<E>, MutableCollectionX<E> {
 
     boolean isEmpty();
 
+    int size();
+
+    @Override
+    boolean contains(Object o);
+
     @Override
     default Spliterator<E> spliterator() {
         return Set.super.spliterator();

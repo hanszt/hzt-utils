@@ -7,7 +7,7 @@
 
     <groupId>org.hzt.utils</groupId>
     <artifactId>hzt-utils</artifactId>
-    <version>1.0.5.24</version>
+    <version>1.0.5.25</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -23,11 +23,13 @@
     </modules>
 
     <properties>
-        <java.source.version>24</java.source.version>
-        <java.target.version>24</java.target.version>
+        <java.source.version>25</java.source.version>
+        <java.target.version>25</java.target.version>
         <coverage.target>50%</coverage.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlin-maven-plugin.jvmTarget>21</kotlin-maven-plugin.jvmTarget>
         <!--        dependencies-->
+        <kotlin.version>2.2.0</kotlin.version>
         <!--        test-->
         <junit.jupiter.version>5.11.3</junit.jupiter.version>
         <assertj-core.version>3.24.2</assertj-core.version>
@@ -39,7 +41,7 @@
         <javafx.version>24</javafx.version>
         <!--plugins-->
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
     </properties>
 

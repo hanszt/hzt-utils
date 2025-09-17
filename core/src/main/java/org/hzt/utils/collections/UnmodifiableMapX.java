@@ -95,7 +95,7 @@ final class UnmodifiableMapX<K, V> implements MapX<K, V> {
 
     @Override
     public MutableSetX<K> keySet() {
-        return MutableLinkedSetX.of(map.keySet());
+        return MutableSequencedSetX.of(map.keySet());
     }
 
     @Override

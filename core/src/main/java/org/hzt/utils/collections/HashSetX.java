@@ -24,8 +24,12 @@ final class HashSetX<E> extends AbstractSet<E> implements MutableSetX<E> {
     }
 
     HashSetX(final Iterable<E> iterable) {
-        set = new HashSet<>();
-        iterable.forEach(set::add);
+        if (iterable instanceof Collection<E> c) {
+            set = new HashSet<>(c);
+        } else {
+            set = new HashSet<>();
+            iterable.forEach(set::add);
+        }
     }
 
     @SafeVarargs

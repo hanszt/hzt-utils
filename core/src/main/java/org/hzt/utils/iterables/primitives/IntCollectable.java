@@ -92,8 +92,7 @@ public interface IntCollectable extends PrimitiveCollectable<IntCollection>, Pri
         if (n == 0) {
             return collection;
         }
-        final PrimitiveIterable.OfInt iterable = this;
-        if (iterable instanceof final IntMutableCollection c && n >= c.size()) {
+        if (this instanceof final IntCollection c && n >= c.size()) {
             collection.addAll(c);
             return collection;
         }

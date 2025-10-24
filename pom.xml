@@ -40,7 +40,7 @@
         <!--        dependency management-->
         <javafx.version>24</javafx.version>
         <!--plugins-->
-        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
     </properties>
@@ -190,5 +190,13 @@
         </plugins>
 
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/hanszt/hzt-utils</url>
+        </repository>
+    </distributionManagement>
 
 </project>

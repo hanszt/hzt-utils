@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayNameGeneration(ReplaceCamelCaseBySentence.class)
@@ -28,7 +30,12 @@ class ReplaceCamelCaseBySentenceTest {
                 .getClass()
                 .getEnclosingMethod();
 
-        final var name = replaceCamelCaseBySentence.generateDisplayNameForMethod(ReplaceCamelCaseBySentenceTest.class, methodName);
+        final var enclosingInstanceTypes = Collections.<Class<?>>emptyList();
+        final var name = replaceCamelCaseBySentence.generateDisplayNameForMethod(
+                enclosingInstanceTypes,
+                ReplaceCamelCaseBySentenceTest.class,
+                methodName
+        );
 
         assertEquals("Test replace camel case method name by sentence", name);
     }
@@ -42,17 +49,26 @@ class ReplaceCamelCaseBySentenceTest {
                 .getClass()
                 .getEnclosingMethod();
 
-        final var name = replaceCamelCaseBySentence.generateDisplayNameForMethod(ReplaceCamelCaseBySentenceTest.class, methodName);
+        final var enclosingInstanceTypes = Collections.<Class<?>>emptyList();
+        final var name = replaceCamelCaseBySentence.generateDisplayNameForMethod(
+                enclosingInstanceTypes,
+                ReplaceCamelCaseBySentenceTest.class,
+                methodName
+        );
 
         assertEquals("Test replace camel case method name by sentence(String)", name);
     }
 
-   @Nested
+    @Nested
     class NestedClassTest {
 
         @Test
         void testReplaceCamelCaseNestedClassBySentence() {
-            final var name = replaceCamelCaseBySentence.generateDisplayNameForNestedClass(NestedClassTest.class);
+            final var enclosingInstanceTypes = Collections.<Class<?>>emptyList();
+            final var name = replaceCamelCaseBySentence.generateDisplayNameForNestedClass(
+                    enclosingInstanceTypes,
+                    NestedClassTest.class
+            );
 
             assertEquals("Nested class test", name);
         }

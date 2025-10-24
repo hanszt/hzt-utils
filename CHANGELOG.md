@@ -2,6 +2,12 @@
 
 ---
 
+### 1.0.6.25
+
+- Upgrade to junit 6.0.0
+
+---
+
 ### 1.0.5.25
 
 - Update to java 25 version

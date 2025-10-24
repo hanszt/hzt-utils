@@ -14,7 +14,7 @@
     <artifactId>test-utils</artifactId>
 
     <properties>
-        <junit-platform-launcher.version>1.9.1</junit-platform-launcher.version>
+        <junit-platform-launcher.version>6.0.0</junit-platform-launcher.version>
         <opentest4j.version>1.3.0</opentest4j.version>
     </properties>
 
@@ -58,6 +58,7 @@
                     <!-- required due to https://github.com/apache/maven-surefire/pull/263 -->
                     <argLine>
                         --add-exports org.junit.platform.commons/org.junit.platform.commons.util=ALL-UNNAMED
+                        --add-exports org.junit.platform.commons/org.junit.platform.commons.logging=ALL-UNNAMED
                     </argLine>
                 </configuration>
             </plugin>

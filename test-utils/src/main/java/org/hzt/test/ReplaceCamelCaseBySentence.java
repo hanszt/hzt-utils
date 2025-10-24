@@ -3,6 +3,7 @@ package org.hzt.test;
 import org.junit.jupiter.api.DisplayNameGenerator;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -19,12 +20,18 @@ public class ReplaceCamelCaseBySentence extends DisplayNameGenerator.Standard {
     }
 
     @Override
-    public String generateDisplayNameForNestedClass(final Class<?> nestedClass) {
-        return replaceCamelCaseBySentence(super.generateDisplayNameForNestedClass(nestedClass));
+    public String generateDisplayNameForNestedClass(
+            final List<Class<?>> enclosingInstanceTypes,
+            final Class<?> nestedClass
+    ) {
+        return replaceCamelCaseBySentence(super.generateDisplayNameForNestedClass(enclosingInstanceTypes, nestedClass));
     }
 
     @Override
-    public String generateDisplayNameForMethod(final Class<?> testClass, final Method testMethod) {
+    public String generateDisplayNameForMethod(
+            final List<Class<?>> enclosingInstanceTypes,
+            final Class<?> testClass, final Method testMethod
+    ) {
         return replaceCamelCaseBySentence(testMethod.getName()) + parameterTypesAsString(testMethod);
     }
 

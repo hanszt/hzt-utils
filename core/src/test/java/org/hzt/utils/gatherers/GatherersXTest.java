@@ -29,14 +29,10 @@ import java.util.stream.Stream;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hzt.utils.collectors.CollectorsX.doubleArrayOf;
-import static org.hzt.utils.collectors.CollectorsX.intArrayOf;
-import static org.hzt.utils.collectors.CollectorsX.longArrayOf;
+import static org.hzt.utils.collectors.CollectorsX.*;
 import static org.hzt.utils.gatherers.GatherersX.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hzt.utils.gatherers.GatherersX.windowed;
+import static org.junit.jupiter.api.Assertions.*;
 
 class GatherersXTest {
 
@@ -378,7 +374,7 @@ class GatherersXTest {
 
         @Test
         void testWindowedShortCircuitingIfDownstreamIsRejecting() {
-            final var size  = 2;
+            final var size = 2;
             var take = 4;
             final var list = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
@@ -515,6 +511,24 @@ class GatherersXTest {
                     .toList();
 
             assertEquals(actual, windows);
+        }
+
+        @Test
+        void testNextWindowIf() {
+            final var integers = List.of("Hello", "Where", "are", "You", "This", "is", "Some", "Test");
+
+            final var list = integers.stream()
+                    .gather(nextWindowIf(s -> s.contains("o")))
+                    .toList();
+
+            final var expected = List.of(
+                    List.of("Hello"),
+                    List.of("Where", "are", "You"),
+                    List.of("This", "is", "Some"),
+                    List.of("Test")
+            );
+
+            assertThat(list).isEqualTo(expected);
         }
     }
 }

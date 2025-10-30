@@ -98,7 +98,7 @@ class GatherersXTest {
         var list = List.of(2, 4, 6, 8, 312, -3);
 
         var result = Stream.of(1, 2, 3, 4)
-                .gather(zip(list, (n1, n2) -> n1 + n2))
+                .gather(zip(list, Integer::sum))
                 .toList();
 
         assertEquals(List.of(3, 6, 9, 12), result);

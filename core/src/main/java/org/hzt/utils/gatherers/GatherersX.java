@@ -1,30 +1,9 @@
 package org.hzt.utils.gatherers;
 
-import org.hzt.utils.statistics.DoubleStatistics;
-import org.hzt.utils.statistics.IntStatistics;
-import org.hzt.utils.statistics.LongStatistics;
-import org.hzt.utils.tuples.Pair;
+import module hzt.utils.core;
+import module java.base;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.TreeSet;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
-import java.util.stream.Gatherer;
 import java.util.stream.Gatherer.Integrator;
-import java.util.stream.Gatherers;
-import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.reverseOrder;

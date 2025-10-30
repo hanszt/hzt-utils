@@ -1,23 +1,8 @@
 package org.hzt.utils.collectors;
 
-import org.hzt.utils.It;
-import org.hzt.utils.PreConditions;
-import org.hzt.utils.collections.*;
-import org.hzt.utils.collections.primitives.DoubleMutableList;
-import org.hzt.utils.collections.primitives.IntMutableList;
-import org.hzt.utils.collections.primitives.LongMutableList;
-import org.hzt.utils.function.QuadFunction;
-import org.hzt.utils.function.QuintFunction;
-import org.hzt.utils.function.TriFunction;
-import org.hzt.utils.gatherers.GatherersX;
+import module hzt.utils.core;
+import module java.base;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
-import org.hzt.utils.statistics.DoubleStatistics;
-import org.hzt.utils.tuples.Pair;
-import org.hzt.utils.tuples.Triple;
-
-import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
 
 import static java.util.stream.Collectors.*;
 

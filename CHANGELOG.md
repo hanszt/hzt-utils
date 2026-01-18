@@ -4,6 +4,8 @@
 
 ### 1.0.6.25
 
+- Make Char sequence reusable
+- Return grouping function with immutable collection value
 - Upgrade to junit 6.0.0
 
 ---

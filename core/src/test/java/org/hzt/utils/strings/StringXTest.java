@@ -13,11 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -330,5 +326,12 @@ class StringXTest {
 
             assertThat(list).containsExactly(12, 16, 20);
         }
+    }
+
+    @Test
+    void testCharSequenceCanBeReused() {
+        final var codePointSequence = StringX.of("This is a test").codePointSequence();
+        assertEquals('T', codePointSequence.first());
+        assertEquals("This is a test", codePointSequence.joinToStringBy(cp -> (char) cp, ""));
     }
 }

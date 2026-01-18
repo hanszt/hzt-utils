@@ -20,11 +20,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -539,12 +535,12 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
     }
 
     public IntSequence codePointSequence() {
-        return IntSequence.of(codePoints());
+        return IntSequence.of(codePoints().toArray());
     }
 
     @Override
     public IntStream chars() {
-        return string.codePoints();
+        return string.chars();
     }
 
     public char[] toCharArray() {
@@ -693,7 +689,7 @@ public final class StringX implements CharSequence, Sequence<Character>, Transfo
         return charIterator();
     }
 
-    //overriden sequence methods
+    //overridden sequence methods
     @Override
     public StringX plus(final Character value) {
         return StringX.ofChars(Sequence.super.plus(value));

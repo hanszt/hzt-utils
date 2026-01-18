@@ -3,7 +3,6 @@ package org.hzt.utils.iterables;
 import org.hzt.utils.It;
 import org.hzt.utils.collections.ListX;
 import org.hzt.utils.collections.MapX;
-import org.hzt.utils.collections.MutableListX;
 import org.hzt.utils.tuples.Pair;
 
 import java.util.Iterator;
@@ -13,15 +12,15 @@ import java.util.function.Predicate;
 @FunctionalInterface
 public interface Groupable<T> extends Iterable<T> {
 
-    default MapX<T, MutableListX<T>> group() {
+    default MapX<T, ListX<T>> group() {
         return groupBy(It::self);
     }
 
-    default <K> MapX<K, MutableListX<T>> groupBy(final Function<? super T, ? extends K> classifier) {
+    default <K> MapX<K, ListX<T>> groupBy(final Function<? super T, ? extends K> classifier) {
         return groupMapping(classifier, It::self);
     }
 
-    default <K, R> MapX<K, MutableListX<R>> groupMapping(final Function<? super T, ? extends K> classifier,
+    default <K, R> MapX<K, ListX<R>> groupMapping(final Function<? super T, ? extends K> classifier,
                                                          final Function<? super T, ? extends R> valueMapper) {
         return IterableReductions.groupMapping(this, classifier, valueMapper);
     }

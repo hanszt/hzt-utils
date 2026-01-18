@@ -32,13 +32,13 @@ public final class IterableReductions {
         return Optional.empty();
     }
 
-    public static <T, R, K> MapX<K, MutableListX<R>> groupMapping(
+    public static <T, R, K> MapX<K, ListX<R>> groupMapping(
             final Iterable<T> iterable,
             final Function<? super T, ? extends K> classifier,
             final Function<? super T, ? extends R> valueMapper) {
-        final MutableMapX<K, MutableListX<R>> groupedMap = MutableMapX.empty();
+        final var groupedMap = MutableMapX.<K, ListX<R>>empty();
         for (final var t : iterable) {
-            groupedMap.computeIfAbsent(classifier.apply(t), _ -> MutableListX.empty()).add(valueMapper.apply(t));
+            ((MutableListX<R>) groupedMap.computeIfAbsent(classifier.apply(t), _ -> MutableListX.empty())).add(valueMapper.apply(t));
         }
         return groupedMap;
     }

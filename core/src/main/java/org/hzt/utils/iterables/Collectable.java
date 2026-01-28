@@ -1,13 +1,7 @@
 package org.hzt.utils.iterables;
 
 import org.hzt.utils.PreConditions;
-import org.hzt.utils.collections.ListX;
-import org.hzt.utils.collections.MapX;
-import org.hzt.utils.collections.MutableListX;
-import org.hzt.utils.collections.MutableMapX;
-import org.hzt.utils.collections.MutableSequencedSetX;
-import org.hzt.utils.collections.MutableSetX;
-import org.hzt.utils.collections.SetX;
+import org.hzt.utils.collections.*;
 import org.hzt.utils.collections.primitives.DoubleMutableCollection;
 import org.hzt.utils.collections.primitives.IntMutableCollection;
 import org.hzt.utils.collections.primitives.LongMutableCollection;
@@ -20,20 +14,8 @@ import org.hzt.utils.tuples.IndexedValue;
 import org.hzt.utils.tuples.Pair;
 import org.hzt.utils.tuples.Triple;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.*;
+import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Gatherer;
 
@@ -213,7 +195,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default ListX<T> toListX() {
-        return ListX.of(toMutableList());
+        return ListX.build(ml -> to(() -> ml));
     }
 
     default List<T> toList() {
@@ -229,7 +211,7 @@ public interface Collectable<T> extends IndexedIterable<T> {
     }
 
     default SetX<T> toSetX() {
-        return SetX.copyOf(toMutableSet());
+        return SetX.build(ms -> IterableXHelper.mapFilteringTo(this, () -> ms, Objects::nonNull, e -> e, _ -> true));
     }
 
     default <R> SetX<R> toSetXOf(final Function<? super T, ? extends R> transform) {

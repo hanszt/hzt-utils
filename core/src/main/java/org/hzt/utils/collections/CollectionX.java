@@ -15,26 +15,11 @@ import org.hzt.utils.iterables.primitives.PrimitiveIterable;
 import org.hzt.utils.sequences.Sequence;
 import org.hzt.utils.tuples.IndexedValue;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
-import java.util.function.Function;
-import java.util.function.IntConsumer;
-import java.util.function.LongConsumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
+import java.util.*;
+import java.util.function.*;
 import java.util.stream.Gatherer;
 
+/// An immutable Collection interface. There are no mutating methods defined in this interface or parents.
 public interface CollectionX<E> extends IterableX<E>, Sizable {
 
     int size();
@@ -96,12 +81,8 @@ public interface CollectionX<E> extends IterableX<E>, Sizable {
     default ListX<E> merge(Iterable<? extends E> other) {
         final var it1 = iterator();
         final var it2 = other.iterator();
-        final var size = size() + switch (other) {
-            case Collection<?> c -> c.size();
-            case CollectionX<?> c -> c.size();
-            default -> 0;
-        };
-        return ListX.build(size, ml -> {
+        final var size = size(other);
+        return ListX.build(size() + size, ml -> {
             while (it1.hasNext() || it2.hasNext()) {
                 if (it1.hasNext()) {
                     ml.add(it1.next());
@@ -129,9 +110,16 @@ public interface CollectionX<E> extends IterableX<E>, Sizable {
         return ListX.build(size(), ml -> filterTo(() -> ml, predicate));
     }
 
-    default <R> ListX<E> filterBy(final Function<? super E, ? extends R> selector,
-                                  final Predicate<? super R> predicate) {
-        return filter(Objects::nonNull).filter(t -> predicate.test(selector.apply(t)));
+    default <R> ListX<E> filterBy(
+            final Function<? super E, ? extends R> selector,
+            final Predicate<? super R> predicate
+    ) {
+        Objects.requireNonNull(selector);
+        Objects.requireNonNull(predicate);
+        return asSequence()
+                .filter(Objects::nonNull)
+                .filter(t -> predicate.test(selector.apply(t)))
+                .toListX();
     }
 
     default ListX<E> filterIndexed(final IndexedPredicate<? super E> predicate) {
@@ -250,12 +238,12 @@ public interface CollectionX<E> extends IterableX<E>, Sizable {
 
     @Override
     default ListX<E> sortedDescending() {
-        return  (ListX<E>) IterableX.super.sortedDescending();
+        return (ListX<E>) IterableX.super.sortedDescending();
     }
 
     @Override
     default <R extends Comparable<? super R>> ListX<E> sortedByDescending(final Function<? super E, ? extends R> selector) {
-        return  (ListX<E>) IterableX.super.sortedByDescending(selector);
+        return (ListX<E>) IterableX.super.sortedByDescending(selector);
     }
 
     @Override
@@ -302,11 +290,16 @@ public interface CollectionX<E> extends IterableX<E>, Sizable {
     }
 
     default <A, R> ListX<R> zip(final Iterable<A> iterable, final BiFunction<? super E, ? super A, ? extends R> function) {
-        return ListX.build(ml -> zipTo(() -> ml, iterable, function));
+        final var otherSize = switch (iterable) {
+            case Collection<A> c -> c.size();
+            case CollectionX<A> c -> c.size();
+            default -> 0;
+        };
+        return ListX.build(size() + otherSize, ml -> zipTo(() -> ml, iterable, function));
     }
 
     default <R> ListX<R> zipWithNext(final BiFunction<? super E, ? super E, ? extends R> function) {
-        return ListX.build(ml -> zipWithNextTo(() -> ml, function));
+        return ListX.build(size() - 1, ml -> zipWithNextTo(() -> ml, function));
     }
 
     default <K> MapX<K, E> associateBy(final Function<? super E, ? extends K> keyMapper) {
@@ -319,54 +312,59 @@ public interface CollectionX<E> extends IterableX<E>, Sizable {
 
     @Override
     default <R> ListX<R> scan(final R initial, final BiFunction<? super R, ? super E, ? extends R> operation) {
-        var accumulation = initial;
-        final var mutableListX = MutableListX.of(initial);
-        for (final var value : this) {
-            accumulation = operation.apply(accumulation, value);
-            mutableListX.add(accumulation);
-        }
-        return ListX.of(mutableListX);
+        Objects.requireNonNull(operation);
+        return ListX.build(size() + 1, ml -> {
+            ml.add(initial);
+            var accumulation = initial;
+            for (final var value : this) {
+                accumulation = operation.apply(accumulation, value);
+                ml.add(accumulation);
+            }
+        });
     }
 
     @Override
     default <R> ListX<R> scanIndexed(final R initial, final IndexedBiFunction<? super R, ? super E, ? extends R> operation) {
-        var index = 0;
-        var accumulation = initial;
-        final var mutableListX = MutableListX.of(initial);
-        for (final var value : this) {
-            accumulation = operation.apply(index, accumulation, value);
-            mutableListX.add(accumulation);
-            index++;
-        }
-        return ListX.of(mutableListX);
+        Objects.requireNonNull(operation);
+        return ListX.build(size() + 1, ml -> {
+            ml.add(initial);
+            var index = 0;
+            var accumulation = initial;
+            for (final var value : this) {
+                accumulation = operation.apply(index, accumulation, value);
+                ml.add(accumulation);
+                index++;
+            }
+        });
     }
 
     default ListX<E> skip(final long count) {
-        return ListX.of(skipTo(() -> MutableListX.withInitCapacity(size() - (int) count), (int) count));
+        final var capacity = size() - (int) count;
+        return ListX.build(capacity, ml -> skipTo(() -> ml, (int) count));
     }
 
     @Override
     default ListX<E> skipWhile(final Predicate<? super E> predicate) {
-        return ListX.of(skipWhileTo(MutableListX::empty, predicate, false));
+        return ListX.build(ml -> skipWhileTo(() -> ml, predicate, false));
     }
 
     @Override
     default ListX<E> skipWhileInclusive(final Predicate<? super E> predicate) {
-        return ListX.of(skipWhileTo(MutableListX::empty, predicate, true));
+        return ListX.build(ml -> skipWhileTo(() -> ml, predicate, true));
     }
 
     @Override
     default ListX<E> take(final long n) {
         PreConditions.require(n <= Integer.MAX_VALUE);
-        return ListX.of(takeTo(() -> MutableListX.withInitCapacity((int) n), (int) n));
+        return ListX.build((int) n, ml -> takeTo(() -> ml, (int) n));
     }
 
     default ListX<E> takeWhile(final Predicate<? super E> predicate) {
-        return ListX.of(takeWhileTo(MutableListX::empty, predicate, false));
+        return ListX.build(ml -> takeWhileTo(() -> ml, predicate, false));
     }
 
     default ListX<E> takeWhileInclusive(final Predicate<? super E> predicate) {
-        return ListX.of(takeWhileTo(MutableListX::empty, predicate, true));
+        return ListX.build(ml -> takeWhileTo(() -> ml, predicate, true));
     }
 
     @Override
@@ -377,5 +375,13 @@ public interface CollectionX<E> extends IterableX<E>, Sizable {
     @Override
     default MutableListX<E> toMutableList() {
         return to(() -> MutableListX.withInitCapacity(size()));
+    }
+
+    private static <E> int size(final Iterable<? extends E> other) {
+        return switch (other) {
+            case Collection<?> c -> c.size();
+            case CollectionX<?> c -> c.size();
+            default -> 0;
+        };
     }
 }

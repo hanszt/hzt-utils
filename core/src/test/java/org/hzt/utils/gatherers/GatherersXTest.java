@@ -11,6 +11,8 @@ import org.hzt.utils.statistics.DoubleStatistics;
 import org.hzt.utils.statistics.IntStatistics;
 import org.hzt.utils.statistics.LongStatistics;
 import org.hzt.utils.streams.StreamX;
+import org.hzt.utils.testFixtures.Streams;
+import org.hzt.utils.tuples.IndexedValue;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,6 +20,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -514,6 +517,21 @@ class GatherersXTest {
         }
 
         @Test
+        void testZipWithNextMapped() {
+            final var list = List.of(1, 2, 3, 4);
+
+            final var windows = list.stream()
+                    .gather(zipWithNext("%d%d"::formatted))
+                    .toList();
+
+            final var actual = Sequence.of(list)
+                    .zipWithNext("%d%d"::formatted)
+                    .toList();
+
+            assertEquals(actual, windows);
+        }
+
+        @Test
         void testNextWindowIf() {
             final var integers = List.of("Hello", "Where", "are", "You", "This", "is", "Some", "Test");
 
@@ -529,6 +547,67 @@ class GatherersXTest {
             );
 
             assertThat(list).isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    class Indexed {
+
+        @Test
+        void testWithIndex() {
+            final var list = Stream.of(2, 4, 8, 16)
+                    .gather(withIndex())
+                    .toList();
+
+            assertThat(list).isEqualTo(List.of(
+                    IndexedValue.of(0, 2),
+                    IndexedValue.of(1, 4),
+                    IndexedValue.of(2, 8),
+                    IndexedValue.of(3, 16)
+            ));
+        }
+
+        @Test
+        void testMapIndexed() {
+            final var list = Stream.of(2, 4, 8, 16)
+                    .gather(mapIndexed((i, v) -> i * v))
+                    .toList();
+
+            assertThat(list).isEqualTo(List.of(0, 4, 16, 48));
+        }
+
+        @Test
+        void testFilterIndexed() {
+            final var list = Streams.fibonacci()
+                    .map(BigInteger::intValueExact)
+                    .peek(IO::println)
+                    .gather(GatherersX.filterIndexed((i, v) -> i == v))
+                    .limit(3)
+                    .toList();
+
+            assertThat(list).isEqualTo(List.of(1, 2, 3));
+        }
+
+        @Test
+        void testFlatmapIndexed() {
+            final var list = Stream.of(1, 1, 2, 3, 5, 8)
+                    .gather(flatMapIndexed(List::of))
+                    .toList();
+
+            assertThat(list).isEqualTo(List.of(0, 1, 1, 1, 2, 2, 3, 3, 4, 5, 5, 8));
+        }
+
+        @Test
+        void testMapMultiIndexed() {
+            final var list = Streams.fibonacci()
+                    .gather(mapMultiIndexed((i, v, c) -> {
+                        c.accept(i);
+                        c.accept(v.intValueExact());
+                    }))
+                    .limit(12)
+                    .toList();
+
+            assertThat(list).isEqualTo(List.of(0, 1, 1, 1, 2, 2, 3, 3, 4, 5, 5, 8));
         }
     }
 }

@@ -7,36 +7,16 @@ import org.hzt.utils.sequences.Sequence;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Gatherers;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Gatherers.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hzt.utils.gatherers.GatherersX.*;
-import static java.util.stream.Gatherers.fold;
-import static java.util.stream.Gatherers.scan;
-import static java.util.stream.Gatherers.windowFixed;
-import static java.util.stream.Gatherers.windowSliding;
-import static org.hzt.utils.gatherers.GatherersX.filterZippedWithNext;
-import static org.hzt.utils.gatherers.GatherersX.flatMap;
-import static org.hzt.utils.gatherers.GatherersX.flatten;
-import static org.hzt.utils.gatherers.GatherersX.limit;
-import static org.hzt.utils.gatherers.GatherersX.map;
-import static org.hzt.utils.gatherers.GatherersX.mapIndexed;
-import static org.hzt.utils.gatherers.GatherersX.skip;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class GatherableTest {
 
@@ -185,12 +165,12 @@ class GatherableTest {
         final var integers = Sequence.iterate(1, i -> i * 2)
                 .take(10)
                 .gather(skip(5))
-                .collect(toList());
+                .toList();
 
         final var reference = Stream.iterate(1, i -> i * 2)
                 .limit(10)
                 .skip(5)
-                .collect(toList());
+                .toList();
 
         final var expected = List.of(32, 64, 128, 256, 512);
 
@@ -244,9 +224,9 @@ class GatherableTest {
     @Test
     void limitAfterGatherInInfiniteStreamTerminating() {
         final var count = 10;
-        final var list = Sequence.iterate(1, i -> i * 2)
+        final var list = Stream.iterate(1, i -> i * 2)
                 .gather(mapIndexed((index, power) -> index + ", " + power))
-                .take(count)
+                .limit(count)
                 .toList();
 
         assertEquals(List.of("0, 1", "1, 2", "2, 4", "3, 8", "4, 16", "5, 32", "6, 64", "7, 128", "8, 256", "9, 512"), list);

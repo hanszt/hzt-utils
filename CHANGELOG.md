@@ -2,6 +2,13 @@
 
 ---
 
+### Upcoming
+
+- Add indexed gatherers
+- Return truly immutable lists from CollectionX higher order functions
+
+---
+
 ### 1.0.6.25
 
 - Make Char sequence reusable

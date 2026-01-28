@@ -16,6 +16,7 @@ import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static org.hzt.utils.testFixtures.Sequences.fibonacci;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -25,20 +26,13 @@ class CustomSequenceTest {
 
     @Test
     void testBigIntFibonacciSequencePrimes() {
-        final var probableFibNrPrimeCount = fibonacciSequence()
+        final var probableFibNrPrimeCount = fibonacci()
                 .filter(fibNr -> fibNr.isProbablePrime(100))
                 .map(BigInteger::toString)
                 .takeWhile(fibNr -> fibNr.length() <= 100)
                 .count();
 
         assertEquals(18, probableFibNrPrimeCount);
-    }
-
-    static Sequence<BigInteger> fibonacciSequence() {
-        final var seedValue = new BigInteger[]{BigInteger.ZERO, BigInteger.ONE};
-        return Sequence
-                .iterate(seedValue, pair -> new BigInteger[]{pair[1], pair[0].add(pair[1])})
-                .map(pair -> pair[0]);
     }
 
     @Test
@@ -79,8 +73,8 @@ class CustomSequenceTest {
             return sum;
         }
 
-        static void main(final String[] args) {
-            fibonacciSequence()
+        static void main() {
+            fibonacci()
                     .filter(bigInteger -> bigInteger.isProbablePrime(100))
                     .forEach(it -> LOGGER.trace("{}", it));
         }
@@ -203,7 +197,7 @@ class CustomSequenceTest {
             return match ? current + string : current;
         }
 
-        static void main(final String[] args) {
+        static void main() {
             final var fizzBuzzer = FizzBuzzer
                     .start()
                     .fizz()

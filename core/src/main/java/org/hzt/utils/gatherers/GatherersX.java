@@ -15,6 +15,7 @@ public final class GatherersX {
     }
 
     public static <T, R> Gatherer<T, Void, R> map(final Function<? super T, ? extends R> mapper) {
+        Objects.requireNonNull(mapper, "'mapper' must not be null");
         return Gatherer.of((_, item, downstream) -> downstream.push(mapper.apply(item)));
     }
 
@@ -27,15 +28,17 @@ public final class GatherersX {
     }
 
     private static <T> Gatherer<T, Void, T> filter(final Predicate<? super T> predicate, final boolean push) {
+        Objects.requireNonNull(predicate, "'predicate' must not be null");
         return Gatherer.of((_, item, downstream) -> {
             if (predicate.test(item) == push) {
-                downstream.push(item);
+                return downstream.push(item);
             }
             return !downstream.isRejecting();
         });
     }
 
     public static <T, R> Gatherer<T, Void, R> mapNotNull(final Function<? super T, ? extends R> mapper) {
+        Objects.requireNonNull(mapper, "'mapper' must not be null");
         return Gatherer.of((_, t, downstream) -> acceptIfResultNotNull(mapper, t, downstream::push));
     }
 
@@ -49,16 +52,49 @@ public final class GatherersX {
         return true;
     }
 
-    public static <T, R> Gatherer<T, ?, R> mapIndexed(final BiFunction<Integer, ? super T, ? extends R> mapper) {
+    public static <T, R> Gatherer<T, ?, R> mapIndexed(final IndexedFunction<? super T, ? extends R> mapper) {
+        Objects.requireNonNull(mapper, "'mapper' must not be null");
+        return mapMultiIndexed((i, v, c) -> c.accept(mapper.apply(i, v)));
+    }
+
+    public static <T> Gatherer<T, ?, T> filterIndexed(final IndexedPredicate<? super T> predicate) {
+        Objects.requireNonNull(predicate, "'predicate' must not be null");
+        return mapMultiIndexed((i, v, c) -> {
+            if (predicate.test(i, v)) {
+                c.accept(v);
+            }
+        });
+    }
+
+    public static <T> Gatherer<T, ?, IndexedValue<T>> withIndex() {
+        return mapIndexed(IndexedValue::new);
+    }
+
+    public static <T, R> Gatherer<T, ?, R> flatMapIndexed(final IndexedFunction<? super T, ? extends Iterable<R>> toIterableMapper) {
+        Objects.requireNonNull(toIterableMapper, "'toIterableMapper' must not be null");
+        return mapMultiIndexed((i, v, c) -> toIterableMapper.apply(i, v).forEach(c));
+    }
+
+    public static <T, R> Gatherer<T, ?, R> mapMultiIndexed(final IndexedBiConsumer<T, Consumer<R>> consumer) {
+        Objects.requireNonNull(consumer, "'consumer' must not be null");
         return Gatherer.ofSequential(
                 () -> new Object() {
                     int index = 0;
+                    boolean proceed = true;
                 },
-                (state, item, downstream) -> downstream.push(mapper.apply(state.index++, item))
-        );
+                Integrator.ofGreedy((s, item, downstream) -> {
+                    consumer.accept(s.index++, item, element -> s.proceed = downstream.push(element));
+                    return s.proceed && !downstream.isRejecting();
+                }));
+    }
+
+    @FunctionalInterface
+    public interface IndexedBiConsumer<T, U> {
+        void accept(int index, T t, U u);
     }
 
     public static <T, R> Gatherer<T, Void, R> flatMap(final Function<? super T, ? extends Iterable<R>> toIterableMapper) {
+        Objects.requireNonNull(toIterableMapper, "'toIterableMapper' must not be null");
         return Gatherer.of((_, item, downstream) -> {
             toIterableMapper.apply(item).forEach(downstream::push);
             return true;
@@ -72,11 +108,12 @@ public final class GatherersX {
         }));
     }
 
-    public static <T, R> Gatherer<T, Void, R> mapMulti(final BiConsumer<? super T, Consumer<? super R>> mapper) {
-        return Gatherer.of((_, item, downstream) -> {
-            mapper.accept(item, downstream::push);
+    public static <T, R> Gatherer<T, Void, R> mapMulti(final BiConsumer<? super T, Consumer<? super R>> consumer) {
+        Objects.requireNonNull(consumer, "'consumer' must not be null");
+        return Gatherer.of(Integrator.ofGreedy((_, item, downstream) -> {
+            consumer.accept(item, downstream::push);
             return !downstream.isRejecting();
-        });
+        }));
     }
 
     public static <T> Gatherer<T, ?, T> skip(final long n) {
@@ -89,30 +126,32 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, T> limit(final long max) {
-        return Gatherer.ofSequential(Counter::new, (count, item, downStream) -> {
-            if (count.count++ < max) {
-                return !downStream.isRejecting() && downStream.push(item);
+        return Gatherer.ofSequential(Counter::new, (s, item, downstream) -> {
+            if (s.count++ < max) {
+                return !downstream.isRejecting() && downstream.push(item);
             }
             return false;
         });
     }
 
     public static <T> Gatherer<T, ?, T> dropWhile(final Predicate<? super T> condition) {
+        Objects.requireNonNull(condition, "'condition' must not be null");
         return Gatherer.ofSequential(() -> new Object() {
-            boolean value = false;
-        }, (firstSeen, item, downStream) -> {
-            if (firstSeen.value) {
-                return !downStream.isRejecting() && downStream.push(item);
+            boolean firstSeen = false;
+        }, (s, item, downstream) -> {
+            if (s.firstSeen) {
+                return !downstream.isRejecting() && downstream.push(item);
             }
             if (!condition.test(item)) {
-                firstSeen.value = true;
-                downStream.push(item);
+                s.firstSeen = true;
+                downstream.push(item);
             }
-            return !downStream.isRejecting();
+            return !downstream.isRejecting();
         });
     }
 
     public static <T> Gatherer<T, ?, T> takeWhile(final Predicate<? super T> condition) {
+        Objects.requireNonNull(condition, "'condition' must not be null");
         return Gatherer.ofSequential((_, item, downStream) -> {
             final var test = !downStream.isRejecting() && condition.test(item);
             if (test) {
@@ -123,6 +162,7 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, T> takeWhileIncluding(final Predicate<? super T> condition) {
+        Objects.requireNonNull(condition, "'condition' must not be null");
         return Gatherer.ofSequential((_, item, downStream) -> {
             downStream.push(item);
             return !downStream.isRejecting() && condition.test(item);
@@ -130,15 +170,18 @@ public final class GatherersX {
     }
 
     public static <T, R> Gatherer<T, ?, T> distinctBy(final Function<? super T, ? extends R> selector) {
-        return Gatherer.ofSequential(HashSet<R>::new, (set, item, downstream) -> {
+        Objects.requireNonNull(selector);
+        return Gatherer.ofSequential(HashSet<R>::new,
+                Integrator.ofGreedy((set, item, downstream) -> {
             if (set.add(selector.apply(item))) {
                 downstream.push(item);
             }
             return !downstream.isRejecting();
-        });
+                }));
     }
 
     public static <T> Gatherer<T, ?, T> sorted(final Comparator<T> comparator) {
+        Objects.requireNonNull(comparator);
         return Gatherer.ofSequential(ArrayList<T>::new,
                 (list, item, _) -> list.add(item),
                 (list, downstream) -> {
@@ -148,6 +191,7 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, T> sortedDistinct(final Comparator<T> comparator) {
+        Objects.requireNonNull(comparator);
         return Gatherer.ofSequential(() -> new TreeSet<>(comparator),
                 (set, item, downstream) -> {
                     set.add(item);
@@ -176,6 +220,7 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, IntStatistics> runningIntStatisticsOf(final ToIntFunction<? super T> selector) {
+        Objects.requireNonNull(selector);
         return Gatherer.ofSequential(IntStatistics::new, (stats, item, downstream) -> {
             stats.accept(selector.applyAsInt(item));
             return downstream.push(new IntStatistics().combine(stats));
@@ -183,6 +228,7 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, LongStatistics> runningLongStatisticsOf(final ToLongFunction<? super T> selector) {
+        Objects.requireNonNull(selector);
         return Gatherer.ofSequential(LongStatistics::new, (stats, item, downstream) -> {
             stats.accept(selector.applyAsLong(item));
             return downstream.push(new LongStatistics().combine(stats));
@@ -190,6 +236,7 @@ public final class GatherersX {
     }
 
     public static <T> Gatherer<T, ?, DoubleStatistics> runningDoubleStatisticsOf(final ToDoubleFunction<? super T> selector) {
+        Objects.requireNonNull(selector);
         return Gatherer.ofSequential(DoubleStatistics::new, (stats, item, downstream) -> {
             stats.accept(selector.applyAsDouble(item));
             return downstream.push(new DoubleStatistics().combine(stats));
@@ -201,14 +248,27 @@ public final class GatherersX {
     }
 
     public static <T, R> Gatherer<T, ?, R> zip(Iterable<T> other, BiFunction<? super T, ? super T, ? extends R> zipper) {
+        Objects.requireNonNull(other);
+        Objects.requireNonNull(zipper);
         return Gatherer.ofSequential(other::iterator,
                 (iterator, e, d) -> iterator.hasNext() && d.push(zipper.apply(e, iterator.next()))
         );
     }
 
     public static <T, R> Gatherer<T, ?, R> zipWithNext(final BiFunction<? super T, ? super T, ? extends R> mapper) {
-        return Gatherers.<T>windowSliding(2)
-                .andThen(Gatherer.ofSequential((_, w, downstream) -> downstream.push(mapper.apply(w.getFirst(), w.get(1)))));
+        Objects.requireNonNull(mapper, "'mapper' must not be null");
+        return Gatherer.ofSequential(
+                () -> new Object() {
+                    boolean hasPrev = false;
+                    T prev = null;
+                },
+                (s, v, ds) -> {
+                    final var proceed = !s.hasPrev || ds.push(mapper.apply(s.prev, v));
+                    s.prev = v;
+                    s.hasPrev = true;
+                    return proceed && !ds.isRejecting();
+                }
+        );
     }
 
     public static <T> Gatherer<T, ?, Pair<T, T>> zipWithNext() {

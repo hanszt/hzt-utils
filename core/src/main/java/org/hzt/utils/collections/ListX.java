@@ -4,21 +4,8 @@ import org.hzt.utils.PreConditions;
 import org.hzt.utils.Transformable;
 import org.hzt.utils.ranges.IntRange;
 
-import java.util.AbstractList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
+import java.util.*;
+import java.util.function.*;
 import java.util.random.RandomGenerator;
 
 import static org.hzt.utils.PreConditions.require;
@@ -261,7 +248,7 @@ public interface ListX<E> extends SequencedCollectionX<E>,
     @Override
     default List<E> toList() {
         return switch (this) {
-            case UnmodifiableListX<E> ignored -> asAbstractList();
+            case UnmodifiableListX<E> _ -> asAbstractList();
             case ArrayListX<E> l when l.isUnmodifiable -> asAbstractList();
             default -> SequencedCollectionX.super.toList();
         };

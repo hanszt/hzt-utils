@@ -1,13 +1,6 @@
 package org.hzt.utils.collections;
 
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Objects;
-import java.util.RandomAccess;
-import java.util.function.Predicate;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 final class UnmodifiableListX<T> implements ListX<T>, RandomAccess {
@@ -28,8 +21,12 @@ final class UnmodifiableListX<T> implements ListX<T>, RandomAccess {
         unmodifiableList = switch (iterable) {
             case UnmodifiableListX<T> l -> l.unmodifiableList;
             case ArrayListX<T> l when l.isUnmodifiable -> l;
-            case Collection<T> c -> nullsAllowed ? listCopy(iterable, e -> true) : List.copyOf(c);
-            default -> nullsAllowed ? listCopy(iterable, e -> true) : listCopy(iterable, Objects::nonNull);
+            case Collection<T> c -> nullsAllowed ? StreamSupport.stream(iterable.spliterator(), false).toList() : List.copyOf(c);
+            default -> nullsAllowed ?
+                    StreamSupport.stream(iterable.spliterator(), false).toList() :
+                    StreamSupport.stream(iterable.spliterator(), false)
+                    .filter(Objects::nonNull)
+                    .toList();
         };
     }
 
@@ -40,12 +37,6 @@ final class UnmodifiableListX<T> implements ListX<T>, RandomAccess {
      */
     private UnmodifiableListX(final List<T> unmodifiableList) {
         this.unmodifiableList = unmodifiableList;
-    }
-
-    private static <T> List<T> listCopy(final Iterable<T> iterable, final Predicate<T> predicate) {
-        return StreamSupport.stream(iterable.spliterator(), false)
-                .filter(predicate)
-                .toList();
     }
 
     @Override

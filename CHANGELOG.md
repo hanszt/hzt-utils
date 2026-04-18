@@ -2,7 +2,7 @@
 
 ---
 
-### Upcoming
+### 1.0.7.25
 
 - Add indexed gatherers
 - Return truly immutable lists from CollectionX higher order functions

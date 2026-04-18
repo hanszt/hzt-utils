@@ -8,13 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -141,11 +135,11 @@ class TreeNodeTest {
     void testToLeafs() {
         final var root = buildPersonTree();
 
-        LOGGER.atDebug().setMessage(() -> root.toTreeString()).log();
+        LOGGER.atDebug().setMessage(root::toTreeString).log();
 
         final var leafs = root.depthFirstSequence()
                 .filter(TreeNode::isLeaf)
-                .map(node -> node.name())
+                .map(Person::name)
                 .toList();
 
         assertEquals(List.of("c10", "c5", "c6", "c7", "c8", "c3"), leafs);
@@ -159,7 +153,7 @@ class TreeNodeTest {
 
         final var internalNodes = root.depthFirstSequence()
                 .filter(TreeNode::isInternal)
-                .map(node -> node.name())
+                .map(Person::name)
                 .toList();
 
         assertEquals(List.of("root", "c1", "c4", "c2"), internalNodes);
@@ -169,7 +163,7 @@ class TreeNodeTest {
     void testMap() {
         final var root = buildPersonTree();
 
-        LOGGER.atDebug().setMessage(() -> root.toTreeString()).log();
+        LOGGER.atDebug().setMessage(root::toTreeString).log();
 
         final List<String> strings = root.depthFirstSequence().mapTo(ArrayList::new, Person::name);
 
@@ -325,7 +319,7 @@ class TreeNodeTest {
                     .first(n -> "TreeNodeTest.java".equals(n.getName()));
 
             final var root = file.parentSequence()
-                    .onEach(s -> LOGGER.atDebug().setMessage(() -> s.getAbsolutePath()).log())
+                    .onEach(s -> LOGGER.atDebug().setMessage(s::getAbsolutePath).log())
                     .last();
 
             final var optionalParent = root.optionalParent();
@@ -368,7 +362,7 @@ class TreeNodeTest {
     @Test
     void testParentIterator() {
         var person = buildPersonTree();
-        LOGGER.atDebug().setMessage(() -> person.toTreeString()).log();
+        LOGGER.atDebug().setMessage(person::toTreeString).log();
         var leafPerson = person.depthFirstSequence().first(Person::isLeaf);
 
         var parentIterator = leafPerson

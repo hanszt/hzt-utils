@@ -100,6 +100,40 @@ class SequencesKtTest {
             }
         }
     }
+
+    @Nested
+    inner class NextChunkIf {
+
+        @Test
+        fun testNextBatchIf() {
+            val result = sequenceOf(2, 5, 6, 1, 3, 1, 1, 4, 3, 1, 3)
+                .nextChunkIf { it == 1 }
+                .toList()
+
+            result shouldBe listOf(
+                listOf(2, 5, 6),
+                listOf(1, 3),
+                listOf(1),
+                listOf(1, 4, 3),
+                listOf(1, 3)
+            )
+        }
+
+        @Test
+        fun testNextBatchIfStartWithPredicateCondition() {
+            val result = sequenceOf(1, 5, 6, 1, 3, 1, 1, 4, 3, 1)
+                .nextChunkIf { it == 1 }
+                .toList()
+
+            result shouldBe listOf(
+                listOf(1, 5, 6),
+                listOf(1, 3),
+                listOf(1),
+                listOf(1, 4, 3),
+                listOf(1)
+            )
+        }
+    }
 }
 
 fun Sequence<Int>.runningStatistics(): Sequence<IntStatistics> = Sequence {

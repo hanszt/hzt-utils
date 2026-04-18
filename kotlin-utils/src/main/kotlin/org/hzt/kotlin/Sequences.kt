@@ -4,6 +4,11 @@ import org.hzt.utils.iterators.Iterators
 import java.util.stream.Collector
 import java.util.stream.Gatherer
 
+fun <T> Sequence<T>.nextChunkIf(predicate: (T) -> Boolean): Sequence<List<T>> = nextChunkIf(predicate) { it }
+fun <T, R> Sequence<T>.nextChunkIf(predicate: (T) -> Boolean, transform: (List<T>) -> R): Sequence<R> = Sequence {
+    Iterators.nextChunkIfIterator<T, R>(this@nextChunkIf.iterator(), predicate) { transform(it.toList()) }
+}
+
 fun <T, A, R> Sequence<T>.gather(gatherer: Gatherer<T, A, R>): Sequence<R> =
     Sequence { Iterators.gatheringIterator(iterator(), gatherer) }
 

@@ -6,6 +6,7 @@
 
 - Add indexed gatherers
 - Return truly immutable lists from CollectionX higher order functions
+- Add nextChunkIf to WindowedSequence and CollectionX
 
 ---
 

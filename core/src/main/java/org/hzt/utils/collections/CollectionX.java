@@ -260,6 +260,17 @@ public interface CollectionX<E> extends IterableX<E>, Sizable {
         return windowed(size, size, true);
     }
 
+    default ListX<ListX<E>> nextChunkedIf(final Predicate<E> predicate) {
+        return nextChunkedIf(predicate, It::self);
+    }
+
+    default <R> ListX<R> nextChunkedIf(
+            final Predicate<E> predicate,
+            final Function<ListX<E>, R> transform
+    ) {
+        return Sequence.of(this).nextChunkedIf(predicate, transform).toListX();
+    }
+
     default ListX<ListX<E>> windowed(final int size) {
         return windowed(size, 1);
     }

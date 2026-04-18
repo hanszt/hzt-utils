@@ -8,19 +8,11 @@ import org.hzt.utils.function.IndexedFunction;
 import org.hzt.utils.iterators.functional_iterator.AtomicIterator;
 import org.hzt.utils.spined_buffers.SpinedBuffer;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.IntUnaryOperator;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Gatherer;
 
 public final class Iterators {
@@ -54,20 +46,6 @@ public final class Iterators {
 
     public static <T> Iterator<T> reverseIterator(final SequencedCollectionX<T> collectionX) {
         return collectionX.reversed().iterator();
-    }
-
-    private static <T> Iterator<T> reverseIterator(final ListIterator<T> listIterator) {
-        return new Iterator<>() {
-            @Override
-            public boolean hasNext() {
-                return listIterator.hasPrevious();
-            }
-
-            @Override
-            public T next() {
-                return listIterator.previous();
-            }
-        };
     }
 
     public static <T> Iterator<T> generatorIterator(final Supplier<? extends T> initValueSupplier,
@@ -236,7 +214,7 @@ public final class Iterators {
 
     public static <T> Iterator<T> removingIterator(final Iterable<T> iterable, final T value) {
         final var holder = new Object() {
-          boolean isRemoved = false;
+            boolean isRemoved = false;
         };
         return filteringIterator(iterable.iterator(), e -> {
             if (!holder.isRemoved && e == value) {
@@ -268,5 +246,48 @@ public final class Iterators {
                                                       final R initial,
                                                       final IndexedBiFunction<? super R, ? super T, ? extends R> operation) {
         return new ScanningIterator<>(iterator, initial, operation);
+    }
+
+    public static <T, R> Iterator<R> nextChunkIfIterator(
+            final Iterator<T> source,
+            final Predicate<T> predicate,
+            final Function<ListX<T>, R> transform
+    ) {
+        final var buffer = new ArrayList<T>();
+        return new Iterator<>() {
+            private R nextElement = null;
+
+            @Override
+            public boolean hasNext() {
+                if (nextElement != null) {
+                    return true;
+                }
+                while (source.hasNext()) {
+                    final var item = source.next();
+                    if (predicate.test(item) && !buffer.isEmpty()) {
+                        nextElement = transform.apply(ListX.ofNullsAllowed(buffer));
+                        buffer.clear();
+                        buffer.add(item);
+                        return true;
+                    }
+                    buffer.add(item);
+                }
+                if (!buffer.isEmpty()) {
+                    nextElement = transform.apply(ListX.ofNullsAllowed(buffer));
+                    buffer.clear();
+                }
+                return nextElement != null;
+            }
+
+            @Override
+            public R next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                final var result = nextElement;
+                nextElement = null;
+                return result;
+            }
+        };
     }
 }

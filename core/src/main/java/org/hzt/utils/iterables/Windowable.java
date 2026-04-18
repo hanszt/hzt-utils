@@ -3,11 +3,16 @@ package org.hzt.utils.iterables;
 import org.hzt.utils.collections.ListX;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 @SuppressWarnings("squid:S1452")
 public interface Windowable<T> extends Iterable<T> {
 
     Windowable<? extends Iterable<T>> chunked(int size);
+
+    Windowable<? extends Iterable<T>> nextChunkedIf(final Predicate<T> predicate);
+
+    <R> Windowable<R> nextChunkedIf(final Predicate<T> predicate, final Function<ListX<T>, R> transform);
 
     Windowable<? extends Iterable<T>> windowed(int size);
 

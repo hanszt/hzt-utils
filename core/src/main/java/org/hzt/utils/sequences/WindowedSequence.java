@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
+import java.util.function.Predicate;
 
 @FunctionalInterface
 public interface WindowedSequence<T> extends Windowable<T> {
@@ -18,7 +19,7 @@ public interface WindowedSequence<T> extends Windowable<T> {
     }
 
     default Sequence<ListX<T>> chunked(final IntSupplier nextSizeSupplier) {
-        return chunked(nextSizeSupplier.getAsInt(), size -> nextSizeSupplier.getAsInt());
+        return chunked(nextSizeSupplier.getAsInt(), _ -> nextSizeSupplier.getAsInt());
     }
 
     default Sequence<ListX<T>> chunked(final int initSize, final IntUnaryOperator nextSizeSupplier) {
@@ -30,7 +31,18 @@ public interface WindowedSequence<T> extends Windowable<T> {
             final var nextSize = nextSizeSupplier.applyAsInt(size);
             holdingConsumer.set(nextSize);
             return nextSize;
-        }, initSize, step -> holdingConsumer.get(), true);
+        }, initSize, _ -> holdingConsumer.get(), true);
+    }
+
+    default Sequence<ListX<T>> nextChunkedIf(final Predicate<T> predicate) {
+        return nextChunkedIf(predicate, It::self);
+    }
+
+    default <R> Sequence<R> nextChunkedIf(
+            final Predicate<T> predicate,
+            final Function<ListX<T>, R> transform
+    ) {
+        return () -> Iterators.nextChunkIfIterator(iterator(), predicate, transform);
     }
 
     default Sequence<ListX<T>> windowed(final int size) {

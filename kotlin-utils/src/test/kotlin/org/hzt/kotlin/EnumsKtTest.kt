@@ -1,9 +1,9 @@
-package org.hzt
+package org.hzt.kotlin
 
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
-import java.time.Month
 import org.junit.jupiter.api.Test
+import java.time.Month
 
 class EnumsKtTest {
 

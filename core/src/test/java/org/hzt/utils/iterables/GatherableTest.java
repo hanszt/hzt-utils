@@ -95,12 +95,10 @@ class GatherableTest {
         );
     }
 
-    private static final class Tests implements Gatherable<String> {
+    private record Tests(List<String> testNames) implements Gatherable<String> {
 
-        private final List<String> testNames;
-
-        public Tests(final String... testNames) {
-            this.testNames = List.of(testNames);
+        private Tests(final String... testNames) {
+            this(List.of(testNames));
         }
 
         @Override
@@ -460,7 +458,7 @@ class GatherableTest {
             int counter = 0;
         };
         assertThat(Sequence.of(42, 23, 24, 14, 13, 23, 17)
-                .onEach(s -> o.counter++)
+                .onEach(_ -> o.counter++)
                 .gather(single())
                 .toList()).isEmpty();
 

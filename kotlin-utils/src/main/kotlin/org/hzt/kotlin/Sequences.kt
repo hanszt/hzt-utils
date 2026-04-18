@@ -1,8 +1,8 @@
-package org.hzt
+package org.hzt.kotlin
 
+import org.hzt.utils.iterators.Iterators
 import java.util.stream.Collector
 import java.util.stream.Gatherer
-import org.hzt.utils.iterators.Iterators
 
 fun <T, A, R> Sequence<T>.gather(gatherer: Gatherer<T, A, R>): Sequence<R> =
     Sequence { Iterators.gatheringIterator(iterator(), gatherer) }

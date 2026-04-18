@@ -1,4 +1,4 @@
-package org.hzt
+package org.hzt.kotlin
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow

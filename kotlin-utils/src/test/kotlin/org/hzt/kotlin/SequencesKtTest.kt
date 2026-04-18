@@ -1,15 +1,13 @@
-package org.hzt
+package org.hzt.kotlin
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
-import java.util.stream.Collectors.mapping
-import java.util.stream.Collectors.toList
-import java.util.stream.Collectors.toUnmodifiableList
 import org.hzt.utils.gatherers.GatherersX.runningIntStatisticsOf
 import org.hzt.utils.statistics.IntStatistics
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.util.stream.Collectors.*
 
 class SequencesKtTest {
 
